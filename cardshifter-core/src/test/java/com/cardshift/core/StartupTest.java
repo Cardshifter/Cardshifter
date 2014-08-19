@@ -36,6 +36,6 @@ public class StartupTest {
 		action.isAllowed(card);
 		action.perform(card);
 		assertEquals(41, game.getPlayers().get(1).data.get("life").toint());
-		
+		assertNull(card.getZone());
 	}
 }

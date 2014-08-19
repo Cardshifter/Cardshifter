@@ -22,9 +22,21 @@ public class Events {
 		}
 		LuaJC.install(globals);
 		this.scriptPaths = directory;
-		
 	}
 	
+	public Zone zoneMove(Card card, Zone source, Zone destination) {
+		// TODO: Execute some event for when cards get moved, should perhaps also be possible to cancel it
+		// To support things like: "Whenever a creature enters the battlefield, you gain 1 life"
+		// for now this only returns the new destination zone.
+		// in the future this should perhaps be changed to an `ZoneChangeEvent` with methods like `setDestination` and `setCancelled(true)`
+		return destination;
+	}
+	
+	/**
+	 * Execute Lua code for setting up game
+	 * 
+	 * @param game Game to setup
+	 */
 	public void startGame(Game game) {
 		File file = new File(scriptPaths, "start.lua");
 		if (!file.exists() || !file.isFile()) {

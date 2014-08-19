@@ -2,12 +2,13 @@ package com.cardshift.core;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.luaj.vm2.LuaValue;
 
 public class Card {
 
-	private final Zone zone;
+	private Zone zone;
 	private final Map<String, Action> actions;
 	public final LuaValue data;
 	
@@ -45,6 +46,47 @@ public class Card {
 	
 	public Action getAction(String name) {
 		return actions.get(name);
+	}
+	
+	public void destroy() {
+		zoneMoveInternal(null, false);
+	}
+	
+	/**
+	 * Move this card to the top of another zone
+	 * 
+	 * @param destination Zone to move to
+	 */
+	public void moveToTopOf(Zone destination) {
+		zoneMoveInternal(destination, true);
+	}
+	
+	/**
+	 * Move this card to the bottom of another zone
+	 * 
+	 * @param destination Zone to move to
+	 */
+	public void moveToBottomOf(Zone destination) {
+		zoneMoveInternal(destination, false);
+	}
+	
+	private void zoneMoveInternal(Zone destination, boolean top) {
+		Zone zone = this.getZone();
+		Game game = zone.getGame();
+		Objects.requireNonNull(game);
+		
+		destination = game.getEvents().zoneMove(this, zone, destination);
+		zone.getCards().remove(this);
+		
+		if (destination != null) {
+			if (top) {
+				destination.getCards().addFirst(this);
+			}
+			else {
+				destination.getCards().addLast(this);
+			}
+		}
+		this.zone = destination;
 	}
 	
 }
