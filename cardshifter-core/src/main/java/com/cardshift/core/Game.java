@@ -9,22 +9,18 @@ import org.luaj.vm2.LuaValue;
 public class Game {
 
 	private final List<Zone> zones;
-	private final LuaValue luaData;
 	private final List<Player> players;
 	private final Events events;
+	public final LuaValue data;
 	
 	public Game(File scriptDirectory) {
 		this.zones = new ArrayList<>();
-		this.luaData = LuaValue.tableOf();
+		this.data = LuaValue.tableOf();
 		this.players = new ArrayList<>();
 		this.events = new Events(scriptDirectory);
 		
 		this.players.add(new Player(this));
 		this.players.add(new Player(this));
-	}
-	
-	public LuaValue getLuaData() {
-		return luaData;
 	}
 	
 	public List<Zone> getZones() {
@@ -35,8 +31,26 @@ public class Game {
 		return players;
 	}
 	
+	public Player getFirstPlayer() {
+		return players.get(0);
+	}
+	
+	public Player getPlayer(int index) {
+		return players.get(index);
+	}
+	
+	public Player getLastPlayer() {
+		return players.get(players.size() - 1);
+	}
+	
 	public Events getEvents() {
 		return events;
+	}
+	
+	public Zone createZone(Player owner, String name) {
+		Zone zone = new Zone(owner, name);
+		this.zones.add(zone);
+		return zone;
 	}
 	
 }

@@ -1,27 +1,28 @@
 package com.cardshift.core;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
 import java.util.Objects;
 
 import org.luaj.vm2.LuaValue;
 
 public class Zone {
 
-	private final List<Card> cards;
+	private final LinkedList<Card> cards; // `LinkedList` is both a `Deque` and a `List`
 	private final Game game;
 	private final Player owner;
-	private final LuaValue luaData;
+	private final String name;
+	public final LuaValue data;
 	
-	public Zone(Player owner) {
+	Zone(Player owner, String name) {
 		Objects.requireNonNull(owner);
 		this.owner = owner;
 		this.game = owner.getGame();
-		this.cards = new ArrayList<>();
-		this.luaData = LuaValue.tableOf();
+		this.cards = new LinkedList<>();
+		this.data = LuaValue.tableOf();
+		this.name = name;
 	}
 	
-	public List<Card> getCards() {
+	public LinkedList<Card> getCards() {
 		return cards;
 	}
 	
@@ -33,8 +34,27 @@ public class Zone {
 		return owner;
 	}
 	
-	public LuaValue getLuaData() {
-		return luaData;
+	public String getName() {
+		return name;
 	}
 	
+	public Card createCardOnTop() {
+		Card card = new Card(this);
+		this.cards.addFirst(card);
+		return card;
+	}
+	
+	public Card createCardOnBottom() {
+		Card card = new Card(this);
+		this.cards.addLast(card);
+		return card;
+	}
+	
+	public Card getTopCard() {
+		return cards.getFirst();
+	}
+	
+	public Card getBottomCard() {
+		return cards.getLast();
+	}
 }

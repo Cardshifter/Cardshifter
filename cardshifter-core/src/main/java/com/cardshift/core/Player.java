@@ -1,5 +1,7 @@
 package com.cardshift.core;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import org.luaj.vm2.LuaValue;
@@ -14,6 +16,32 @@ public class Player {
 		this.game = game;
 		this.data = LuaValue.tableOf();
 	}
+	
+	public Player getNextPlayer() {
+		List<Player> players = game.getPlayers();
+		int index = players.indexOf(this);
+		if (index == players.size() - 1) {
+			return players.get(0);
+		}
+		return players.get(index + 1);
+	}
+	
+	/**
+	 * Returns a list of all opponents of this player, ordered by who is the next opponent
+	 * 
+	 * @return Ordered list of opponents, ordered by player order
+	 */
+	public List<Player> getOpponents() {
+		List<Player> players = game.getPlayers();
+		int index = players.indexOf(this);
+		List<Player> before = players.subList(0, index);
+		List<Player> after = players.subList(index + 1, players.size());
+		
+		List<Player> result = new ArrayList<Player>(after.size() + before.size());
+		result.addAll(after);
+		result.addAll(before);
+		return result;
+	}	
 	
 	public Game getGame() {
 		return game;
