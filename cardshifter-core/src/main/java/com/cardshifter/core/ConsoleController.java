@@ -1,4 +1,4 @@
-package com.cardshift.core;
+package com.cardshifter.core;
 
 import java.io.File;
 import java.util.Iterator;

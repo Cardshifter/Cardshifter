@@ -1,4 +1,4 @@
-package com.cardshift.core;
+package com.cardshifter.core;
 
 import java.util.HashMap;
 import java.util.Map;

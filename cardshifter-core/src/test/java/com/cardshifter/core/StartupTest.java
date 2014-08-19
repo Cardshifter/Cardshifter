@@ -1,4 +1,4 @@
-package com.cardshift.core;
+package com.cardshifter.core;
 
 import static org.junit.Assert.*;
 
@@ -7,6 +7,11 @@ import java.io.File;
 import org.junit.Test;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.jse.CoerceLuaToJava;
+
+import com.cardshifter.core.Action;
+import com.cardshifter.core.Card;
+import com.cardshifter.core.Game;
+import com.cardshifter.core.Zone;
 
 public class StartupTest {
 	@Test
