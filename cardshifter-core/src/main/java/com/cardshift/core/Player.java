@@ -1,7 +1,9 @@
 package com.cardshift.core;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import org.luaj.vm2.LuaValue;
@@ -9,12 +11,16 @@ import org.luaj.vm2.LuaValue;
 public class Player {
 
 	private final Game game;
+	private final String name;
+	private final Map<String, Action> actions;
 	public final LuaValue data;
 	
-	public Player(Game game) {
+	public Player(Game game, String name) {
 		Objects.requireNonNull(game);
 		this.game = game;
+		this.name = name;
 		this.data = LuaValue.tableOf();
+		this.actions = new HashMap<>();
 	}
 	
 	public Player getNextPlayer() {
@@ -47,4 +53,12 @@ public class Player {
 		return game;
 	}
 	
+	public Map<String, Action> getActions() {
+		return actions;
+	}
+	
+	@Override
+	public String toString() {
+		return "{Player '" + this.name + "'}";
+	}
 }

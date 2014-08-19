@@ -57,4 +57,10 @@ public class Zone {
 	public Card getBottomCard() {
 		return cards.getLast();
 	}
+	
+	@Override
+	public String toString() {
+		return "{Zone " + this.name + " owned by " + this.owner + "}";
+	}
+	
 }

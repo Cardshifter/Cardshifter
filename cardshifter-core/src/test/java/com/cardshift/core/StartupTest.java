@@ -33,8 +33,8 @@ public class StartupTest {
 		
 		Card card = zone.getTopCard();
 		Action action = card.getAction("Use");
-		action.isAllowed(card);
-		action.perform(card);
+		assertTrue(action.isAllowed());
+		action.perform();
 		assertEquals(41, game.getPlayers().get(1).data.get("life").toint());
 		assertNull(card.getZone());
 	}

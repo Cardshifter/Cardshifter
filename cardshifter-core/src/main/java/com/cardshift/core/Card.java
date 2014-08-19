@@ -22,13 +22,8 @@ public class Card {
 		return zone;
 	}
 	
-	public Action addAction(Action action) {
-		this.actions.put(action.getName(), action);
-		return action;
-	}
-	
 	public Action addAction(String name, LuaValue actionAllowed, LuaValue actionPerformed) {
-		Action action = new Action(name, actionAllowed, actionPerformed);
+		Action action = new Action(this, name, actionAllowed, actionPerformed);
 		actions.put(name, action);
 		return action;
 	}

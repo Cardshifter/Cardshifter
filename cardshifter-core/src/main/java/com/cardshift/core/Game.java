@@ -3,6 +3,7 @@ package com.cardshift.core;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.luaj.vm2.LuaValue;
 
@@ -19,8 +20,8 @@ public class Game {
 		this.players = new ArrayList<>();
 		this.events = new Events(scriptDirectory);
 		
-		this.players.add(new Player(this));
-		this.players.add(new Player(this));
+		this.players.add(new Player(this, "Player1"));
+		this.players.add(new Player(this, "Player2"));
 	}
 	
 	public List<Zone> getZones() {
@@ -51,6 +52,16 @@ public class Game {
 		Zone zone = new Zone(owner, name);
 		this.zones.add(zone);
 		return zone;
+	}
+
+	public List<Action> getAllActions() {
+		List<Action> actions = new ArrayList<>();
+		actions.addAll(getPlayers().stream().flatMap(player -> player.getActions().values().stream()).collect(Collectors.toList()));
+		actions.addAll(getZones().stream().flatMap(zone -> zone.getCards().stream())
+			.flatMap(card -> card.getActions().values().stream())
+			.collect(Collectors.toList()));
+		return actions;
+		
 	}
 	
 }
