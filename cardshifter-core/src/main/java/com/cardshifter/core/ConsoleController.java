@@ -1,6 +1,6 @@
 package com.cardshifter.core;
 
-import java.io.File;
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
@@ -17,7 +17,7 @@ public class ConsoleController {
 	}
 
 	public static void main(String[] args) {
-		File file = new File(Game.class.getResource("start.lua").getPath()).getParentFile();
+		InputStream file = Game.class.getResourceAsStream("start.lua");
 		Game game = new Game(file);
 		game.getEvents().startGame(game);
 		new ConsoleController(game).play();		
@@ -31,30 +31,40 @@ public class ConsoleController {
 			List<Action> actions = game.getAllActions();
 			outputAvailableActions(actions);
 			
-			print("Choose an action:");
 			String in = input.nextLine();
-			
 			if (in.equals("exit")) {
 				break;
 			}
-			try {
-				Integer value = Integer.parseInt(in);
-				Action action = actions.get(value);
-				print("Action " + action + " on card " + action);
-				if (action.isAllowed()) {
-					action.perform();
-					print("Action performed");
-				}
-				else {
-					print("Action is not allowed");
-				}
-			}
-			catch (NumberFormatException ex) {
-				print("Illegal action index: " + in);
-			}
+			
+			handleActionInput(actions, in);
 		}
 		
 		input.close();
+	}
+
+	private void handleActionInput(List<Action> actions, String in) {
+		print("Choose an action:");
+		
+		try {
+			Integer value = Integer.parseInt(in);
+			if (value < 0 || value >= actions.size()) {
+				print("Action index out of range: " + value);
+				return;
+			}
+			
+			Action action = actions.get(value);
+			print("Action " + action + " on card " + action);
+			if (action.isAllowed()) {
+				action.perform();
+				print("Action performed");
+			}
+			else {
+				print("Action is not allowed");
+			}
+		}
+		catch (NumberFormatException ex) {
+			print("Illegal action index: " + in);
+		}
 	}
 
 	private void outputAvailableActions(List<Action> actions) {

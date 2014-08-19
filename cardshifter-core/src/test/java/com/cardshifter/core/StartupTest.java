@@ -1,24 +1,19 @@
 package com.cardshifter.core;
 
-import static org.junit.Assert.*;
-
-import java.io.File;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.jse.CoerceLuaToJava;
 
-import com.cardshifter.core.Action;
-import com.cardshifter.core.Card;
-import com.cardshifter.core.Game;
-import com.cardshifter.core.Zone;
-
 public class StartupTest {
 	@Test
 	public void createGameWithDecks() {
 		assertTrue(true);
-		File file = new File(Game.class.getResource("start.lua").getPath()).getParentFile();
-		Game game = new Game(file);
+		Game game = new Game(Game.class.getResourceAsStream("start.lua"));
 		game.getEvents().startGame(game);
 		
 		assertEquals(2, game.getPlayers().size());

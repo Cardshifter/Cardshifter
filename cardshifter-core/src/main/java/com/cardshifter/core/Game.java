@@ -1,6 +1,6 @@
 package com.cardshifter.core;
 
-import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,11 +14,11 @@ public class Game {
 	private final Events events;
 	public final LuaValue data;
 	
-	public Game(File scriptDirectory) {
+	public Game(InputStream file) {
 		this.zones = new ArrayList<>();
 		this.data = LuaValue.tableOf();
 		this.players = new ArrayList<>();
-		this.events = new Events(scriptDirectory);
+		this.events = new Events(file);
 		
 		this.players.add(new Player(this, "Player1"));
 		this.players.add(new Player(this, "Player2"));
