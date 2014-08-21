@@ -3,48 +3,57 @@ package com.cardshifter.core;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Consumer;
 
+import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 
 public class Card {
-
-	private Zone zone;
-	private final Map<String, Action> actions;
-	public final LuaValue data;
+	public final LuaTable data = LuaValue.tableOf();
 	
-	Card(Zone zone) {
-		this.data = LuaValue.tableOf();
-		this.zone = zone;
-		this.actions = new HashMap<>();
+	private final Map<String, Action> actions = new HashMap<>();
+	
+	private Optional<Zone> currentZone;
+	
+	Card(final Zone currentZone) {
+		this.currentZone = Optional.ofNullable(currentZone);
 	}
 	
 	public Zone getZone() {
-		return zone;
+		return currentZone.get();
 	}
 	
-	public Action addAction(String name, LuaValue actionAllowed, LuaValue actionPerformed) {
+	public boolean hasZone() {
+		return currentZone.isPresent();
+	}
+	
+	public Action addAction(final String name, final LuaValue actionAllowed, final LuaValue actionPerformed) {
+		Objects.requireNonNull(name, "name");
+		Objects.requireNonNull(actionAllowed, "actionAllowed");
+		Objects.requireNonNull(actionPerformed, "actionPerformed");
 		Action action = new Action(this, name, actionAllowed, actionPerformed);
 		actions.put(name, action);
 		return action;
 	}
 	
 	public Player getOwner() {
-		if (zone == null) {
-			throw new NullPointerException("Card is not inside a zone: " + this);
+		if (!currentZone.isPresent()) {
+			throw new IllegalStateException("Card is not inside a zone: " + this);
 		}
-		return zone.getOwner();
+		return currentZone.get().getOwner();
 	}
 	
 	public Map<String, Action> getActions() {
 		return actions;
 	}
 	
-	public Action getAction(String name) {
-		return actions.get(name);
+	public Action getAction(final String name) {
+		return actions.get(Objects.requireNonNull(name, "name"));
 	}
 	
 	public void destroy() {
-		zoneMoveInternal(null, false);
+		setZoneInternal(null);
 	}
 	
 	/**
@@ -52,8 +61,8 @@ public class Card {
 	 * 
 	 * @param destination Zone to move to
 	 */
-	public void moveToTopOf(Zone destination) {
-		zoneMoveInternal(destination, true);
+	public void moveToTopOf(final Zone destination) {
+		moveToZoneInternal(Objects.requireNonNull(destination, "destination"), true);
 	}
 	
 	/**
@@ -61,27 +70,30 @@ public class Card {
 	 * 
 	 * @param destination Zone to move to
 	 */
-	public void moveToBottomOf(Zone destination) {
-		zoneMoveInternal(destination, false);
+	public void moveToBottomOf(final Zone destination) {
+		moveToZoneInternal(Objects.requireNonNull(destination, "destination"), false);
 	}
 	
-	private void zoneMoveInternal(Zone destination, boolean top) {
-		Zone zone = this.getZone();
-		Game game = zone.getGame();
-		Objects.requireNonNull(game);
-		
-		destination = game.getEvents().zoneMove(this, zone, destination);
-		zone.getCards().remove(this);
-		
-		if (destination != null) {
-			if (top) {
-				destination.getCards().addFirst(this);
-			}
-			else {
-				destination.getCards().addLast(this);
-			}
-		}
-		this.zone = destination;
+	private void moveToZoneInternal(final Zone destination, final boolean top) {
+		setZone(destination, zone -> {
+			Consumer<Card> consumer = (top) 
+				? zone.getCards()::addFirst 
+				: zone.getCards()::addLast;
+			consumer.accept(this);
+		});
 	}
 	
+	private void setZoneInternal(final Zone destination) {
+		setZone(destination, zone -> {});
+	}
+	
+	private void setZone(final Zone destination, final Consumer<Zone> zoneConsumer) {
+		Objects.requireNonNull(zoneConsumer, "zoneConsumer");
+		
+		Zone resultDestination = currentZone.get().getGame().getEvents().zoneMove(this, currentZone.get(), destination);
+		currentZone.get().getCards().remove(this);
+		zoneConsumer.accept(destination);
+		
+		this.currentZone = Optional.ofNullable(resultDestination);
+	}
 }
