@@ -18,7 +18,7 @@ public class MainServer {
 			server.addConnections(new ServerWeb(server, 4243));
 			
 			logger.info("Starting Console...");
-			ServerConsole console = new ServerConsole(server);
+			ServerConsole console = new ServerConsole(server, new CommandHandler());
 			new Thread(console, "Console-Thread").start();
 			console.addHandler("threads", cmd -> showAllStackTraces(server, System.out::println));
 			logger.info("Started");

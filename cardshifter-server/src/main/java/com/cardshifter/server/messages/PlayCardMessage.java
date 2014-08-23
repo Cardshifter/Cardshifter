@@ -18,11 +18,11 @@ public class PlayCardMessage extends CardMessage {
 	public void perform(ClientIO client) {
 		System.out.println(cardId);
 		System.out.println(getServer());
+		client.sendToClient("OK");
 	}
 	
 	public String getCardId() {
 		return cardId;
 	}
 	
-	// { requestId: 1, command: 'playCard', cardId: '123abc' }
 }

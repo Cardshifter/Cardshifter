@@ -3,8 +3,11 @@ package com.cardshifter.server.clients;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import com.cardshifter.server.model.Command;
+import com.cardshifter.server.messages.Message;
 import com.cardshifter.server.model.Server;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 
 
 public abstract class ClientIO {
@@ -13,6 +16,7 @@ public abstract class ClientIO {
 	
 	private String name = "";
 	private final Server server;
+	private final ObjectWriter writer = new ObjectMapper().writer();
 	
 	public ClientIO(Server server) {
 		this.server = server;
@@ -26,6 +30,25 @@ public abstract class ClientIO {
 	public final void sendToClient(String data) {
 		logger.debug("Send to " + this.name + ": " + data);
 		onSendToClient(data);
+	}
+	
+	/**
+	 * Send a message to this client
+	 * 
+	 * @param message Message to send
+	 * @throws IllegalArgumentException If message is not serializable
+	 */
+	public final void sendToClient(Message message) throws IllegalArgumentException {
+		logger.debug("Send to " + this.name + ": " + message);
+		String data;
+		try {
+			data = writer.writeValueAsString(message);
+		} catch (JsonProcessingException e) {
+			String error = "Error occured when serializing message " + message;
+			logger.fatal(error, e);
+			throw new IllegalArgumentException(error, e);
+		}
+		this.sendToClient(data);
 	}
 	
 	protected abstract void onSendToClient(String data);
@@ -44,11 +67,6 @@ public abstract class ClientIO {
 	 */
 	public abstract void close();
 	
-	@Deprecated
-	public Command parseMessage(String input) {
-		return new Command(this, input);
-	}
-
 	public boolean isLoggedIn() {
 		return name.length() > 0;
 	}

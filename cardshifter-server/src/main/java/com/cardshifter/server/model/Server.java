@@ -32,7 +32,7 @@ public class Server {
 	private final AtomicInteger inviteId = new AtomicInteger(0);
 	private final AtomicInteger gameId = new AtomicInteger(0);
 	
-	private final CommandHandler incomingHandler;
+	private final IncomingHandler incomingHandler;
 	
 	private final Set<ClientIO> clients = Collections.synchronizedSet(new HashSet<>());
 	private final Map<Integer, ChatArea> chats = new ConcurrentHashMap<>();
@@ -43,11 +43,11 @@ public class Server {
 	private final Set<ConnectionHandler> handlers = Collections.synchronizedSet(new HashSet<>());
 
 	public Server() {
-		this.incomingHandler = new CommandHandler(this);
+		this.incomingHandler = new IncomingHandler(this);
 		this.newChatRoom("Main");
 		
 		Server server = this;
-		CommandHandler incomings = server.getIncomingHandler();
+		IncomingHandler incomings = server.getIncomingHandler();
 		
 		incomings.addHandler("chat", ChatMessage.class);
 		incomings.addHandler("playCard", PlayCardMessage.class);
@@ -73,7 +73,7 @@ public class Server {
 		return new ArrayList<>(clients);
 	}
 	
-	public CommandHandler getIncomingHandler() {
+	public IncomingHandler getIncomingHandler() {
 		return incomingHandler;
 	}
 
@@ -190,5 +190,5 @@ public class Server {
 		handler.start();
 		this.handlers.add(handler);
 	}
-	
+
 }
