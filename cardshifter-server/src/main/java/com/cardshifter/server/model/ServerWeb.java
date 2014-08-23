@@ -73,12 +73,16 @@ public class ServerWeb implements ConnectionHandler {
 
 	@Override
 	public void start() {
+		logger.info("Starting WebSocket server at port " + websocketServer.getPort() + "...");
 		websocketServer.start();
+		logger.info("WebSocket server started");
 	}
 
 	@Override
 	public void shutdown() throws Exception {
+		logger.info("Shutting down WebSocket server...");
 		websocketServer.stop();
+		logger.info("WebSocket server shutdown.");
 	}
 	
 }

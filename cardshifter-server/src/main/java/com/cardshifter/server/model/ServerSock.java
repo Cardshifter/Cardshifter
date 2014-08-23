@@ -53,9 +53,10 @@ public class ServerSock implements ConnectionHandler {
 
 	@Override
 	public void start() {
+		logger.info("Starting Socket server at port " + serverSocket.getLocalPort() + "...");
 		thread.start();
+		logger.info("Socket server started.");
 	}
-
 
 	@Override
 	public void shutdown() throws Exception {
