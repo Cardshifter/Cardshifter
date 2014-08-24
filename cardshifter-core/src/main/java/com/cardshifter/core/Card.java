@@ -15,9 +15,11 @@ public class Card {
 	private final Map<String, Action> actions = new HashMap<>();
 	
 	private Optional<Zone> currentZone;
+	private final Game game;
 	
 	Card(final Zone currentZone) {
-		this.currentZone = Optional.ofNullable(currentZone);
+		this.currentZone = Optional.of(currentZone);
+		this.game = currentZone.getGame();
 	}
 	
 	public Zone getZone() {
@@ -95,5 +97,9 @@ public class Card {
 		zoneConsumer.accept(destination);
 		
 		this.currentZone = Optional.ofNullable(resultDestination);
+	}
+
+	public Game getGame() {
+		return game;
 	}
 }

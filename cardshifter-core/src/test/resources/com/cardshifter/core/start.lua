@@ -1,6 +1,7 @@
 -- Always name this function "startGame"
 function startGame(game)
     print("test: " .. game:toString())
+    game:on('actionUsed', onActionUsed)
 
 	local numPlayers = game:getPlayers():size()
 	for i=0,numPlayers-1 do
@@ -16,6 +17,10 @@ function startGame(game)
 			card:addAction("Use", useAllowed, useCard)
 	    end
 	end 
+end
+
+function onActionUsed(card, action)
+	print("Action Used! " .. card:toString() .. " with action " .. action:toString())
 end
 
 function useAllowed(card)

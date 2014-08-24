@@ -38,6 +38,7 @@ public class Action {
 	
 	public void perform() {
 		actionFunction.invoke(CoerceJavaToLua.coerce(card));
+		getCard().getGame().getEvents().callEvent(Events.ACTION_USED, CoerceJavaToLua.coerce(card), CoerceJavaToLua.coerce(this));
 	}
 	
 	public Card getCard() {

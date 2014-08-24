@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.luaj.vm2.LuaFunction;
 import org.luaj.vm2.LuaValue;
 
 public class Game {
@@ -61,7 +62,10 @@ public class Game {
 			.flatMap(card -> card.getActions().values().stream())
 			.collect(Collectors.toList()));
 		return actions;
-		
+	}
+	
+	public void on(String eventName, LuaFunction function) {
+		this.events.registerListener(eventName, function);
 	}
 	
 }
