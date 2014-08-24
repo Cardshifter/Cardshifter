@@ -1,33 +1,30 @@
 package com.cardshifter.core;
 
+import java.util.Objects;
+
+import org.luaj.vm2.LuaFunction;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 
 public class Action {
 
 	private final String name;
-	private final LuaValue allowedFunction;
-	private final LuaValue actionFunction;
+	private final LuaFunction allowedFunction;
+	private final LuaFunction actionFunction;
 	private final Card card;
 
-	public Action(Card card, String name, LuaValue allowedFunction, LuaValue actionFunction) {
-		if (!allowedFunction.isfunction()) {
-			throw new IllegalArgumentException("Must specify a function for determining if action is allowed");
-		}
-		if (!actionFunction.isfunction()) {
-			throw new IllegalArgumentException("Must specify an action function");
-		}
-		this.card = card;
-		this.name = name;
-		this.allowedFunction = allowedFunction;
-		this.actionFunction = actionFunction;
+	public Action(final Card card, final String name, final LuaValue allowedFunction, final LuaValue actionFunction) {
+		this.card = Objects.requireNonNull(card, "card");
+		this.name = Objects.requireNonNull(name, "name");
+		this.allowedFunction = allowedFunction.checkfunction();
+		this.actionFunction = actionFunction.checkfunction();
 	}
 	
-	public LuaValue getActionFunction() {
+	public LuaFunction getActionFunction() {
 		return actionFunction;
 	}
 	
-	public LuaValue getAllowedFunction() {
+	public LuaFunction getAllowedFunction() {
 		return allowedFunction;
 	}
 	

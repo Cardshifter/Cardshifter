@@ -1,9 +1,6 @@
 package com.cardshifter.core;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 import org.luaj.vm2.LuaValue;
@@ -12,7 +9,6 @@ import org.luaj.vm2.lib.jse.CoerceLuaToJava;
 public class StartupTest {
 	@Test
 	public void createGameWithDecks() {
-		assertTrue(true);
 		Game game = new Game(Game.class.getResourceAsStream("start.lua"));
 		game.getEvents().startGame(game);
 		
@@ -36,6 +32,6 @@ public class StartupTest {
 		assertTrue(action.isAllowed());
 		action.perform();
 		assertEquals(41, game.getPlayers().get(1).data.get("life").toint());
-		assertNull(card.getZone());
+		assertFalse(card.hasZone());
 	}
 }
