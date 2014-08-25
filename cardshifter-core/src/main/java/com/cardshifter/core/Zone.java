@@ -2,7 +2,9 @@ package com.cardshifter.core;
 
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.luaj.vm2.LuaValue;
 
@@ -12,7 +14,9 @@ public class Zone {
 	private final Game game;
 	private final Player owner;
 	private final String name;
+	private final Map<Player, Boolean> knownToPlayers = new ConcurrentHashMap<>();
 	public final LuaValue data;
+	private boolean globallyKnown;
 	
 	Zone(Player owner, String name) {
 		Objects.requireNonNull(owner);
@@ -25,6 +29,18 @@ public class Zone {
 	
 	public LinkedList<Card> getCards() {
 		return cards;
+	}
+	
+	public boolean isKnownToPlayer(Player player) {
+		return knownToPlayers.getOrDefault(player, this.globallyKnown);
+	}
+	
+	public void setGloballyKnown(boolean globallyKnown) {
+		this.globallyKnown = globallyKnown;
+	}
+	
+	public void setKnown(Player player, boolean known) {
+		this.knownToPlayers.put(player, known);
 	}
 	
 	public Game getGame() {
@@ -61,7 +77,7 @@ public class Zone {
 	
 	@Override
 	public String toString() {
-		return "{Zone " + this.name + " owned by " + this.owner + "}";
+		return "{Zone " + this.name + " (" + this.cards.size() + ") owned by " + this.owner + "}";
 	}
 	
 	public void shuffle() {
