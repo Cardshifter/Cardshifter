@@ -6,6 +6,7 @@ import java.util.ListIterator;
 import java.util.Objects;
 import java.util.Scanner;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
@@ -22,7 +23,7 @@ public class ConsoleController {
 		Scanner input = new Scanner(System.in);
 		while (true) {
 			outputGameState();
-			List<Action> actions = game.getAllActions();
+			List<Action> actions = game.getAllActions().stream().filter(action -> action.isAllowed()).collect(Collectors.toList());
 			outputAvailableActions(actions);
 			
 			String in = input.nextLine();
