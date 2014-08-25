@@ -1,5 +1,6 @@
 package com.cardshifter.core;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Objects;
 
@@ -63,4 +64,11 @@ public class Zone {
 		return "{Zone " + this.name + " owned by " + this.owner + "}";
 	}
 	
+	public void shuffle() {
+		Collections.shuffle(this.cards, getGame().getRandom());
+	}
+	
+	public boolean isEmpty() {
+		return this.cards.isEmpty();
+	}
 }
