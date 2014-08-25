@@ -20,6 +20,9 @@ import org.luaj.vm2.luajc.LuaJC;
 public class Events {
 
 	public static final String ACTION_USED = "actionUsed";
+
+	public static final String TURN_END = "turnEnd";
+	public static final String TURN_START = "turnStart";
 	
 	private final Globals globals = JsePlatform.standardGlobals();
 	private final Map<String, List<LuaFunction>> eventListeners = new ConcurrentHashMap<>();
@@ -43,8 +46,7 @@ public class Events {
 		return destination;
 	}
 	
-// TODO: Add events: game started, game ended, turn started, turn ended, card played, card attacked, card died, card invoked ability
-	// TODO: game:on('played', function(subject, event) ... end)
+	// TODO: Add events: game started, game ended, card attacked, card died, card invoked ability
 	
 	/**
 	 * Execute Lua code for setting up game
