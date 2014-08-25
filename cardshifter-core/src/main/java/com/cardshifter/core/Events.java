@@ -60,6 +60,7 @@ public class Events {
         LuaValue applyFunction = globals.get("startGame");
         Varargs applyFunctionResult = applyFunction.invoke(CoerceJavaToLua.coerce(game));
         System.out.println("Result: " + applyFunctionResult);
+        game.setCurrentPlayer(game.getFirstPlayer());
 	}
 	
 	public void callEvent(String eventName, LuaValue source, LuaValue table) {
