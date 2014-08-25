@@ -32,6 +32,7 @@ public class Zone {
 	}
 	
 	public boolean isKnownToPlayer(Player player) {
+		Objects.requireNonNull(player);
 		return knownToPlayers.getOrDefault(player, this.globallyKnown);
 	}
 	
