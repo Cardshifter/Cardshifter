@@ -64,8 +64,8 @@ public class Game {
 		return zone;
 	}
 
-	public List<Action> getAllActions() {
-		List<Action> actions = new ArrayList<>();
+	public List<UsableAction> getAllActions() {
+		List<UsableAction> actions = new ArrayList<>();
 		actions.addAll(getPlayers().stream().flatMap(player -> player.getActions().values().stream()).collect(Collectors.toList()));
 		actions.addAll(getZones().stream().flatMap(zone -> zone.getCards().stream())
 			.flatMap(card -> card.getActions().values().stream())
@@ -93,5 +93,9 @@ public class Game {
 	
 	public Random getRandom() {
 		return this.random;
+	}
+	
+	public void setCurrentPlayer(Player currentPlayer) {
+		this.currentPlayer = currentPlayer;
 	}
 }

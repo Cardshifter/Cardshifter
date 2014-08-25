@@ -12,7 +12,7 @@ public class Player {
 
 	private final Game game;
 	private final String name;
-	private final Map<String, Action> actions;
+	private final Map<String, UsableAction> actions;
 	public final LuaValue data;
 	
 	public Player(Game game, String name) {
@@ -53,7 +53,7 @@ public class Player {
 		return game;
 	}
 	
-	public Map<String, Action> getActions() {
+	public Map<String, UsableAction> getActions() {
 		return actions;
 	}
 	
@@ -61,4 +61,14 @@ public class Player {
 	public String toString() {
 		return "{Player '" + this.name + "'}";
 	}
+	
+	public PlayerAction addAction(final String name, final LuaValue actionAllowed, final LuaValue actionPerformed) {
+		Objects.requireNonNull(name, "name");
+		Objects.requireNonNull(actionAllowed, "actionAllowed");
+		Objects.requireNonNull(actionPerformed, "actionPerformed");
+		PlayerAction action = new PlayerAction(this, name, actionAllowed, actionPerformed);
+		actions.put(name, action);
+		return action;
+	}
+	
 }

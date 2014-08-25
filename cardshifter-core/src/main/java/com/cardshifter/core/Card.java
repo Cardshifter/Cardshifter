@@ -12,7 +12,7 @@ import org.luaj.vm2.LuaValue;
 public class Card {
 	public final LuaTable data = LuaValue.tableOf();
 	
-	private final Map<String, Action> actions = new HashMap<>();
+	private final Map<String, CardAction> actions = new HashMap<>();
 	
 	private Optional<Zone> currentZone;
 	private final Game game;
@@ -35,11 +35,11 @@ public class Card {
 	// TODO: Client UI: Single target action - show available targets - call script to verify target is OK
 	// TODO: Client UI: Single target action - then perform (or cancel)
 	// TODO: Client UI: Multi target action - 
-	public Action addAction(final String name, final LuaValue actionAllowed, final LuaValue actionPerformed) {
+	public CardAction addAction(final String name, final LuaValue actionAllowed, final LuaValue actionPerformed) {
 		Objects.requireNonNull(name, "name");
 		Objects.requireNonNull(actionAllowed, "actionAllowed");
 		Objects.requireNonNull(actionPerformed, "actionPerformed");
-		Action action = new Action(this, name, actionAllowed, actionPerformed);
+		CardAction action = new CardAction(this, name, actionAllowed, actionPerformed);
 		actions.put(name, action);
 		return action;
 	}
@@ -51,11 +51,11 @@ public class Card {
 		return currentZone.get().getOwner();
 	}
 	
-	public Map<String, Action> getActions() {
+	public Map<String, CardAction> getActions() {
 		return actions;
 	}
 	
-	public Action getAction(final String name) {
+	public CardAction getAction(final String name) {
 		return actions.get(Objects.requireNonNull(name, "name"));
 	}
 	

@@ -23,7 +23,7 @@ public class ConsoleController {
 		Scanner input = new Scanner(System.in);
 		while (true) {
 			outputGameState();
-			List<Action> actions = game.getAllActions().stream().filter(action -> action.isAllowed()).collect(Collectors.toList());
+			List<UsableAction> actions = game.getAllActions().stream().filter(action -> action.isAllowed()).collect(Collectors.toList());
 			outputAvailableActions(actions);
 			
 			String in = input.nextLine();
@@ -35,7 +35,7 @@ public class ConsoleController {
 		}
 	}
 
-	private void handleActionInput(final List<Action> actions, final String in) {
+	private void handleActionInput(final List<UsableAction> actions, final String in) {
 		Objects.requireNonNull(actions, "actions");
 		Objects.requireNonNull(in, "in");
 		print("Choose an action:");
@@ -47,7 +47,7 @@ public class ConsoleController {
 				return;
 			}
 			
-			Action action = actions.get(value);
+			UsableAction action = actions.get(value);
 			print("Action " + action + " on card " + action);
 			if (action.isAllowed()) {
 				action.perform();
@@ -62,10 +62,10 @@ public class ConsoleController {
 		}
 	}
 
-	private void outputAvailableActions(final List<Action> actions) {
+	private void outputAvailableActions(final List<UsableAction> actions) {
 		Objects.requireNonNull(actions, "actions");
 		print("------------------");
-		ListIterator<Action> it = actions.listIterator();
+		ListIterator<UsableAction> it = actions.listIterator();
 		while (it.hasNext()) {
 			print(it.nextIndex() + ": " + it.next());
 		}
@@ -77,16 +77,18 @@ public class ConsoleController {
 		for (Player player : game.getPlayers()) {
 			print(player);
 			player.getActions().values().forEach(action -> print(4, "Action: " + action));
-			printLua(4, player.data);
+			printLua(4, player.data); // TODO: Some LuaData should probably be hidden from other players, or even from self.
 		}
 		
 		for (Zone zone : game.getZones()) {
 			print(zone);
-			zone.getCards().forEach(card -> {
-				print(4, card);
-				card.getActions().values().forEach(action -> print(8, "Action: " + action));
-				printLua(8, card.data);
-			});
+			if (zone.isKnownToPlayer(game.getCurrentPlayer())) {
+				zone.getCards().forEach(card -> {
+					print(4, card);
+					card.getActions().values().forEach(action -> print(8, "Action: " + action));
+					printLua(8, card.data);
+				});
+			}
 		}
 	}
 
