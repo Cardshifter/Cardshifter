@@ -3,17 +3,22 @@ package com.cardshifter.core;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.luaj.vm2.LuaFunction;
 import org.luaj.vm2.LuaValue;
+import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 
 public class Game {
 
 	private final List<Zone> zones;
 	private final List<Player> players;
 	private final Events events;
+	private final Random random = new Random(42); // fixed random seed for now for debugging purposes
 	public final LuaValue data;
+	
+	private Player currentPlayer;
 	
 	public Game(InputStream file) {
 		this.zones = new ArrayList<>();
@@ -23,6 +28,10 @@ public class Game {
 		
 		this.players.add(new Player(this, "Player1"));
 		this.players.add(new Player(this, "Player2"));
+	}
+	
+	public Player getCurrentPlayer() {
+		return currentPlayer;
 	}
 	
 	public List<Zone> getZones() {
@@ -68,4 +77,21 @@ public class Game {
 		this.events.registerListener(eventName, function);
 	}
 	
+	public void nextTurn() {
+		if (this.currentPlayer != null) {
+			this.events.callEvent(Events.TURN_END, CoerceJavaToLua.coerce(this.currentPlayer), null);
+		}
+		
+		this.currentPlayer = currentPlayer == null ? players.get(0) : currentPlayer.getNextPlayer();
+				
+		this.events.callEvent(Events.TURN_START, CoerceJavaToLua.coerce(this.currentPlayer), null);
+	}
+	
+	public int randomInt(int count) {
+		return this.random.nextInt(count);
+	}
+	
+	public Random getRandom() {
+		return this.random;
+	}
 }
