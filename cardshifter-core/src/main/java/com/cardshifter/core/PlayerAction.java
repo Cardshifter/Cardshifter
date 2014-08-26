@@ -22,4 +22,9 @@ public class PlayerAction extends UsableAction {
 		return player.getGame();
 	}
 
+	@Override
+	public String toString() {
+		return "{Action " + getName() + " for player " + player + "}";
+	}
+
 }
