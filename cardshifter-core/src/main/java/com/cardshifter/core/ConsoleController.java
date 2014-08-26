@@ -24,18 +24,18 @@ public class ConsoleController {
 		while (true) {
 			outputGameState();
 			List<UsableAction> actions = game.getAllActions().stream().filter(action -> action.isAllowed()).collect(Collectors.toList());
-			outputAvailableActions(actions);
+			outputList(actions);
 			
 			String in = input.nextLine();
 			if (in.equals("exit")) {
 				break;
 			}
 			
-			handleActionInput(actions, in);
+			handleActionInput(actions, in, input);
 		}
 	}
 
-	private void handleActionInput(final List<UsableAction> actions, final String in) {
+	private void handleActionInput(final List<UsableAction> actions, final String in, Scanner input) {
 		Objects.requireNonNull(actions, "actions");
 		Objects.requireNonNull(in, "in");
 		print("Choose an action:");
@@ -48,9 +48,28 @@ public class ConsoleController {
 			}
 			
 			UsableAction action = actions.get(value);
-			print("Action " + action + " on card " + action);
+			print("Action " + action);
 			if (action.isAllowed()) {
-				action.perform();
+				if (action instanceof TargetAction) {
+					TargetAction targetAction = (TargetAction) action;
+					List<Targetable> targets = targetAction.findTargets();
+					if (targets.isEmpty()) {
+						print("No available targets for action");
+						return;
+					}
+					
+					outputList(targets);
+					print("Enter target index:");
+					int targetIndex = Integer.parseInt(input.nextLine());
+					if (value < 0 || value >= actions.size()) {
+						print("Target index out of range: " + value);
+						return;
+					}
+					
+					Targetable target = targets.get(targetIndex);
+					targetAction.perform(target);
+				}
+				else action.perform();
 				print("Action performed");
 			}
 			else {
@@ -62,10 +81,10 @@ public class ConsoleController {
 		}
 	}
 
-	private void outputAvailableActions(final List<UsableAction> actions) {
+	private void outputList(final List<?> actions) {
 		Objects.requireNonNull(actions, "actions");
 		print("------------------");
-		ListIterator<UsableAction> it = actions.listIterator();
+		ListIterator<?> it = actions.listIterator();
 		while (it.hasNext()) {
 			print(it.nextIndex() + ": " + it.next());
 		}
@@ -98,10 +117,6 @@ public class ConsoleController {
 	
 	private void print(final int indentation, final Object object) {
 		System.out.println(indent(indentation) + object.toString());
-	}
-	
-	private void printLua(final LuaValue value) {
-		printLua(0, value);
 	}
 	
 	private void printLua(final int indentation, final LuaValue value) {

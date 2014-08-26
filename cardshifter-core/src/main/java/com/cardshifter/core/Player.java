@@ -6,14 +6,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 
-public class Player {
+public class Player implements Targetable {
 
 	private final Game game;
 	private final String name;
 	private final Map<String, UsableAction> actions;
-	public final LuaValue data;
+	public final LuaTable data;
 	
 	public Player(Game game, String name) {
 		Objects.requireNonNull(game);
@@ -69,6 +70,11 @@ public class Player {
 		PlayerAction action = new PlayerAction(this, name, actionAllowed, actionPerformed);
 		actions.put(name, action);
 		return action;
+	}
+
+	@Override
+	public LuaTable getData() {
+		return data;
 	}
 	
 }

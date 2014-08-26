@@ -9,10 +9,10 @@ import java.util.function.Consumer;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 
-public class Card {
+public class Card implements Targetable {
 	public final LuaTable data = LuaValue.tableOf();
 	
-	private final Map<String, CardAction> actions = new HashMap<>();
+	private final Map<String, UsableAction> actions = new HashMap<>();
 	
 	private Optional<Zone> currentZone;
 	private final Game game;
@@ -44,6 +44,15 @@ public class Card {
 		return action;
 	}
 	
+	public TargetAction addTargetAction(final String name, final LuaValue actionAllowed, final LuaValue targetAllowed, final LuaValue actionPerformed) {
+		Objects.requireNonNull(name, "name");
+		Objects.requireNonNull(actionAllowed, "actionAllowed");
+		Objects.requireNonNull(actionPerformed, "actionPerformed");
+		TargetAction action = new TargetAction(this, name, actionAllowed, targetAllowed, actionPerformed);
+		actions.put(name, action);
+		return action;
+	}
+	
 	public Player getOwner() {
 		if (!currentZone.isPresent()) {
 			throw new IllegalStateException("Card is not inside a zone: " + this);
@@ -51,11 +60,11 @@ public class Card {
 		return currentZone.get().getOwner();
 	}
 	
-	public Map<String, CardAction> getActions() {
+	public Map<String, UsableAction> getActions() {
 		return actions;
 	}
 	
-	public CardAction getAction(final String name) {
+	public UsableAction getAction(final String name) {
 		return actions.get(Objects.requireNonNull(name, "name"));
 	}
 	
@@ -106,5 +115,10 @@ public class Card {
 
 	public Game getGame() {
 		return game;
+	}
+	
+	@Override
+	public LuaTable getData() {
+		return data;
 	}
 }

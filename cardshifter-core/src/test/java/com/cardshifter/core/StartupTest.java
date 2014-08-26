@@ -28,7 +28,7 @@ public class StartupTest {
 		assertNotNull(zone);
 		
 		Card card = zone.getTopCard();
-		CardAction action = card.getAction("Use");
+		UsableAction action = card.getAction("Use");
 		assertTrue(action.isAllowed());
 		action.perform();
 		assertEquals(41, game.getPlayers().get(1).data.get("life").toint());
