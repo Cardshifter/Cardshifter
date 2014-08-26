@@ -15,6 +15,7 @@ function startGame(game)
 	    player.data.mana = 0
 	    player.data.manaMax = 0
 	    player.data.scrap = 0
+	    player.data.cardType = 'Player'
 	    local field = game:createZone(player, "Battlefield")
 	    field:setGloballyKnown(true)
 	    player.data.battlefield = field
@@ -61,8 +62,9 @@ end
 function createSpecialEnchantment(deck, strength, health, cost)
     -- A special enchantment can only target a creature that has been enchanted already
 	local card = deck:createCardOnBottom()
-	card:addAction("Enchant", enchAllowed, enchCard)
-	card.data.manaCost = cost
+	card:addTargetAction("Enchant", enchAllowed, enchSpecialTargetAllowed, enchCard)
+	card.data.manaCost = 0
+	card.data.scrapCost = cost
 	card.data.enchStrength = strength
 	card.data.enchHealth = health
 	card.data.cardType = 'Enchantment'
@@ -72,7 +74,7 @@ end
 function createEnchantment(deck, strength, health, cost)
     -- Can only target creatureType == 'Bio'
 	local card = deck:createCardOnBottom()
-	card:addAction("Enchant", enchAllowed, enchCard)
+	card:addTargetAction("Enchant", enchAllowed, enchTargetAllowed, enchCard)
 	card.data.manaCost = 0
 	card.data.scrapCost = cost
 	card.data.enchStrength = strength
@@ -84,12 +86,12 @@ end
 function createCreature(deck, cost, strength, health, creatureType)
 	local card = deck:createCardOnBottom()
 	card:addAction("Play", playAllowed, playCard)
-	card:addAction("Attack", attackAllowed, attackCard)
+	card:addTargetAction("Attack", attackAllowed, attackTargetAllowed, attackCard)
 	card:addAction("Scrap", scrapAllowed, scrapCard)
 	card.data.manaCost = cost
 	card.data.strength = strength
 	card.data.health = health
-	card.data.enchantments = {}
+	card.data.enchantments = 0
 	card.data.creatureType = creatureType
 	card.data.cardType = 'Creature'
 	card.data.sickness = 1
@@ -106,6 +108,18 @@ function onTurnStart(player, event)
 	if player.data.deck:isEmpty() then
 		print("(This is Lua) Deck is empty!")
 	end
+	
+	local field = player.data.battlefield
+	local iterator = field:getCards():iterator()
+	while iterator:hasNext() do
+		local card = iterator:next()
+		if card.data.sickness > 0 then
+			card.data.sickness = card.data.sickness - 1
+			print("Card on field now has sickness" .. card.data.sickness)
+		end
+		card.data.attacksAvailable = 1
+	end
+	
 	drawCard(player)
 	player.data.manaMax = player.data.manaMax + 1
 	player.data.mana = player.data.manaMax
@@ -133,9 +147,29 @@ end
 function playCard(card)
     local owner = card:getOwner()
 	card:moveToBottomOf(owner.data.battlefield)
+	
+	owner.data.mana = owner.data.mana - card.data.manaCost
 end
 
-function attackAllowed(card)
+function attackTargetAllowed(card, target, action)
+	local currPlayer = card:getGame():getCurrentPlayer()
+	local oppPlayer = currPlayer:getNextPlayer()
+	local oppBattlefield = oppPlayer.data.battlefield
+	
+	if oppBattlefield:isEmpty() then
+		return target == oppPlayer
+	end
+	if target.data.cardType == 'Player' then
+		return false
+	end
+	if target:getZone() ~= oppBattlefield then
+		return false
+	end
+	print("Allowed to target unit in " .. target:getZone():toString() .. " Target is " .. target.data.cardType)
+	return true
+end
+
+function attackAllowed(card, action)
 	local currPlayer = card:getGame():getCurrentPlayer()
 	if card:getOwner() ~= currPlayer then
 		return false
@@ -143,9 +177,41 @@ function attackAllowed(card)
 	if card:getZone() ~= currPlayer.data.battlefield then
 		return false
 	end
+	if card.data.attacksAvailable <= 0 then
+		return false
+	end
+	if card.data.sickness > 0 then
+		return false
+	end
+	return true
 end
 
-function attackCard(card)
+function attackCard(card, target, action)
+	card.data.attacksAvailable = card.data.attacksAvailable - 1
+	if target.data.cardType == 'Player' then
+		target.data.life = target.data.life - card.data.strength
+		if target.data.life <= 0 then
+			card:getGame():gameOver()
+		end
+		return true
+	end
+	target.data.health = target.data.health - card.data.strength
+	card.data.health = card.data.health - target.data.strength
+	
+	if target.data.health <= 0 then
+		local opp = target:getOwner()
+		-- All units have trample
+		-- Target health is negative so add that to opponent life
+		opp.data.life = opp.data.life + target.data.health
+		if opp.data.life <= 0 then
+			card:getGame():gameOver()
+		end
+		target:destroy()
+	end
+	if card.data.health <= 0 then
+		card:destroy()
+	end
+
 	return false
 end
 
@@ -154,14 +220,43 @@ function enchAllowed(card)
 		return false
 	end
 	local currPlayer = card:getGame():getCurrentPlayer()
-	if card.data.scrapCost < currPlayer.data.scrap then
+	if card.data.cardType ~= 'Enchantment' then
 		return false
 	end
-	return false
+	if card.data.scrapCost > currPlayer.data.scrap then
+		return false
+	end
+	return true
 end
 
-function enchCard(card)
-	return false
+function enchSpecialTargetAllowed(source, target, action)
+	if target.data.cardType ~= 'Creature' then
+		return false
+	end
+--	if table.getn(target.data.enchantments) == 0 then
+	if target.data.enchantments <= 0 then
+		return false
+	end
+	return true
+end
+
+function enchTargetAllowed(source, target, action)
+	if target.data.cardType ~= 'Creature' then
+		return false
+	end
+	if target.data.creatureType ~= 'Bio' then
+		return false
+	end
+	return true
+end
+
+function enchCard(card, target, action)
+	target.data.enchantments = target.data.enchantments + 1
+	target.data.health = target.data.health + card.data.enchHealth
+	target.data.strength = target.data.strength + card.data.enchStrength
+	local owner = card:getOwner()
+	owner.data.scrap = owner.data.scrap - card.data.scrapCost 
+	card:destroy()
 end
 
 function scrapAllowed(card)
