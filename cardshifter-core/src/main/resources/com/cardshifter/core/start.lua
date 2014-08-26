@@ -9,7 +9,7 @@ function startGame(game)
 		local player = game:getPlayer(i)
 		print("Player: " .. player:toString())
 		
-		player:addAction("End Turn", alwaysAllowed, endTurn)
+		player:addAction("End Turn", allowNextTurn, endTurn)
 		
 	    player.data.life = 10
 	    player.data.mana = 0
@@ -102,7 +102,7 @@ function onActionUsed(card, action)
 end
 
 function onTurnStart(player, event)
-	print("(This is Lua) Turn Start! " .. player:toString() .. " with action " .. event)
+	print("(This is Lua) Turn Start! " .. player:toString())
 	if player.data.deck:isEmpty() then
 		print("(This is Lua) Deck is empty!")
 	end
@@ -153,6 +153,7 @@ function enchAllowed(card)
 	if not playAllowed(card) then
 		return false
 	end
+	local currPlayer = card:getGame():getCurrentPlayer()
 	if card.data.scrapCost < currPlayer.data.scrap then
 		return false
 	end
@@ -180,10 +181,11 @@ function scrapCard(card)
 	owner.data.scrap = owner.data.scrap + 1
 end
 
-function endTurn(card)
-	card:getGame():nextTurn()
+function endTurn(player)
+	local game = player:getGame()
+	game:nextTurn()
 end
 
-function alwaysAllowed(card)
-	return true
+function allowNextTurn(player)
+	return player:getGame():getCurrentPlayer() == player
 end
