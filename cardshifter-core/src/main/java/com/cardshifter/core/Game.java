@@ -17,6 +17,7 @@ public class Game {
 	private final Events events;
 	private final Random random = new Random(42); // fixed random seed for now for debugging purposes
 	public final LuaValue data;
+	private boolean gameOver = false;
 	
 	private Player currentPlayer;
 	
@@ -98,4 +99,13 @@ public class Game {
 	public void setCurrentPlayer(Player currentPlayer) {
 		this.currentPlayer = currentPlayer;
 	}
+	
+	public void gameOver() {
+		this.gameOver = true;
+	}
+	
+	public boolean isGameOver() {
+		return gameOver;
+	}
+	
 }

@@ -21,7 +21,7 @@ public class ConsoleController {
 
 	public void play() {
 		Scanner input = new Scanner(System.in);
-		while (true) {
+		while (!game.isGameOver()) {
 			outputGameState();
 			List<UsableAction> actions = game.getAllActions().stream().filter(action -> action.isAllowed()).collect(Collectors.toList());
 			outputList(actions);
@@ -33,6 +33,9 @@ public class ConsoleController {
 			
 			handleActionInput(actions, in, input);
 		}
+		print("--------------------------------------------");
+		outputGameState();
+		print("Game over!");
 	}
 
 	private void handleActionInput(final List<UsableAction> actions, final String in, Scanner input) {
