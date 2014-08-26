@@ -42,7 +42,7 @@ public class TargetAction extends UsableAction {
 				targets.add(target);
 			}
 		}
-		targets.addAll(game.getZones().stream().flatMap(zone -> zone.getCards().stream()).collect(Collectors.toList()));
+		targets.addAll(game.getZones().stream().flatMap(zone -> zone.getCards().stream()).filter(this::isValidTarget).collect(Collectors.toList()));
 		return targets;
 	}
 
@@ -54,6 +54,11 @@ public class TargetAction extends UsableAction {
 		Game game = getGame(); // stored here in case it is unavailable after action has been performed
 		getActionFunction().invoke(CoerceJavaToLua.coerce(card), CoerceJavaToLua.coerce(target), CoerceJavaToLua.coerce(this));
 		game.getEvents().callEvent(Events.ACTION_USED, CoerceJavaToLua.coerce(card), CoerceJavaToLua.coerce(this));
+	}
+	
+	@Override
+	public String toString() {
+		return "{TargetAction " + this.getName() + " on card " + this.card + "}";
 	}
 	
 }
