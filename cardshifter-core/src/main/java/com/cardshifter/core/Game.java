@@ -3,6 +3,7 @@ package com.cardshifter.core;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -15,13 +16,15 @@ public class Game {
 	private final List<Zone> zones;
 	private final List<Player> players;
 	private final Events events;
-	private final Random random = new Random(42); // fixed random seed for now for debugging purposes
+	private final Random random;
 	public final LuaValue data;
 	private boolean gameOver = false;
 	
 	private Player currentPlayer;
 	
-	public Game(InputStream file) {
+	public Game(InputStream file, Random random) {
+		Objects.requireNonNull(random);
+		Objects.requireNonNull(file);
 		this.zones = new ArrayList<>();
 		this.data = LuaValue.tableOf();
 		this.players = new ArrayList<>();
@@ -29,6 +32,11 @@ public class Game {
 		
 		this.players.add(new Player(this, "Player1"));
 		this.players.add(new Player(this, "Player2"));
+		this.random = random;
+	}
+	
+	public Game(InputStream file) {
+		this(file, new Random());
 	}
 	
 	public Player getCurrentPlayer() {

@@ -1,5 +1,8 @@
 package com.cardshifter.core;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.ListIterator;
@@ -11,6 +14,9 @@ import java.util.stream.Collectors;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.Varargs;
+
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.ParameterException;
 
 public class ConsoleController {
 	private final Game game;
@@ -153,9 +159,20 @@ public class ConsoleController {
 		return sb.toString();
 	}
 	
-	public static void main(String[] args) {
-		InputStream file = Game.class.getResourceAsStream("start.lua");
-		Game game = new Game(file);
+	public static void main(String[] args) throws FileNotFoundException {
+		CommandLineOptions options = new CommandLineOptions();
+		JCommander jcommander = new JCommander(options);
+		try {
+			jcommander.parse(args);
+		}
+		catch (ParameterException ex) {
+			System.out.println(ex.getMessage());
+			jcommander.usage();
+			return;
+		}
+		InputStream file = options.getScript() == null ? Game.class.getResourceAsStream("start.lua") : new FileInputStream(new File(options.getScript()));
+		
+		Game game = new Game(file, options.getRandom());
 		game.getEvents().startGame(game);
 		new ConsoleController(game).play();		
 	}
