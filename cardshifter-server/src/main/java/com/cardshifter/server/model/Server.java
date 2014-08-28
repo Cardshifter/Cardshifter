@@ -18,10 +18,10 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import com.cardshifter.server.clients.ClientIO;
-import com.cardshifter.server.messages.ChatMessage;
-import com.cardshifter.server.messages.Message;
-import com.cardshifter.server.messages.PlayCardMessage;
-import com.cardshifter.server.messages.UseAbilityMessage;
+import com.cardshifter.server.incoming.ChatMessage;
+import com.cardshifter.server.incoming.Message;
+import com.cardshifter.server.incoming.PlayCardMessage;
+import com.cardshifter.server.incoming.UseAbilityMessage;
 
 
 public class Server {

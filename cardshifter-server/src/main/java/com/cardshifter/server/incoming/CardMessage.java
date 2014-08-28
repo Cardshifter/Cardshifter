@@ -1,4 +1,4 @@
-package com.cardshifter.server.messages;
+package com.cardshifter.server.incoming;
 
 import com.cardshifter.server.model.Server;
 
