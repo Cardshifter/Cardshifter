@@ -1,15 +1,22 @@
 package com.cardshifter.core;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
 import java.util.Scanner;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.Varargs;
+
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.ParameterException;
 
 public class ConsoleController {
 	private final Game game;
@@ -20,21 +27,24 @@ public class ConsoleController {
 
 	public void play() {
 		Scanner input = new Scanner(System.in);
-		while (true) {
+		while (!game.isGameOver()) {
 			outputGameState();
-			List<Action> actions = game.getAllActions();
-			outputAvailableActions(actions);
+			List<UsableAction> actions = game.getAllActions().stream().filter(action -> action.isAllowed()).collect(Collectors.toList());
+			outputList(actions);
 			
 			String in = input.nextLine();
 			if (in.equals("exit")) {
 				break;
 			}
 			
-			handleActionInput(actions, in);
+			handleActionInput(actions, in, input);
 		}
+		print("--------------------------------------------");
+		outputGameState();
+		print("Game over!");
 	}
 
-	private void handleActionInput(final List<Action> actions, final String in) {
+	private void handleActionInput(final List<UsableAction> actions, final String in, Scanner input) {
 		Objects.requireNonNull(actions, "actions");
 		Objects.requireNonNull(in, "in");
 		print("Choose an action:");
@@ -46,10 +56,29 @@ public class ConsoleController {
 				return;
 			}
 			
-			Action action = actions.get(value);
-			print("Action " + action + " on card " + action);
+			UsableAction action = actions.get(value);
+			print("Action " + action);
 			if (action.isAllowed()) {
-				action.perform();
+				if (action instanceof TargetAction) {
+					TargetAction targetAction = (TargetAction) action;
+					List<Targetable> targets = targetAction.findTargets();
+					if (targets.isEmpty()) {
+						print("No available targets for action");
+						return;
+					}
+					
+					outputList(targets);
+					print("Enter target index:");
+					int targetIndex = Integer.parseInt(input.nextLine());
+					if (value < 0 || value >= actions.size()) {
+						print("Target index out of range: " + value);
+						return;
+					}
+					
+					Targetable target = targets.get(targetIndex);
+					targetAction.perform(target);
+				}
+				else action.perform();
 				print("Action performed");
 			}
 			else {
@@ -61,10 +90,10 @@ public class ConsoleController {
 		}
 	}
 
-	private void outputAvailableActions(final List<Action> actions) {
+	private void outputList(final List<?> actions) {
 		Objects.requireNonNull(actions, "actions");
 		print("------------------");
-		ListIterator<Action> it = actions.listIterator();
+		ListIterator<?> it = actions.listIterator();
 		while (it.hasNext()) {
 			print(it.nextIndex() + ": " + it.next());
 		}
@@ -76,16 +105,18 @@ public class ConsoleController {
 		for (Player player : game.getPlayers()) {
 			print(player);
 			player.getActions().values().forEach(action -> print(4, "Action: " + action));
-			printLua(4, player.data);
+			printLua(4, player.data); // TODO: Some LuaData should probably be hidden from other players, or even from self.
 		}
 		
 		for (Zone zone : game.getZones()) {
 			print(zone);
-			zone.getCards().forEach(card -> {
-				print(4, card);
-				card.getActions().values().forEach(action -> print(8, "Action: " + action));
-				printLua(8, card.data);
-			});
+			if (zone.isKnownToPlayer(game.getCurrentPlayer())) {
+				zone.getCards().forEach(card -> {
+					print(4, card);
+					card.getActions().values().forEach(action -> print(8, "Action: " + action));
+					printLua(8, card.data);
+				});
+			}
 		}
 	}
 
@@ -95,10 +126,6 @@ public class ConsoleController {
 	
 	private void print(final int indentation, final Object object) {
 		System.out.println(indent(indentation) + object.toString());
-	}
-	
-	private void printLua(final LuaValue value) {
-		printLua(0, value);
 	}
 	
 	private void printLua(final int indentation, final LuaValue value) {
@@ -132,9 +159,20 @@ public class ConsoleController {
 		return sb.toString();
 	}
 	
-	public static void main(String[] args) {
-		InputStream file = Game.class.getResourceAsStream("start.lua");
-		Game game = new Game(file);
+	public static void main(String[] args) throws FileNotFoundException {
+		CommandLineOptions options = new CommandLineOptions();
+		JCommander jcommander = new JCommander(options);
+		try {
+			jcommander.parse(args);
+		}
+		catch (ParameterException ex) {
+			System.out.println(ex.getMessage());
+			jcommander.usage();
+			return;
+		}
+		InputStream file = options.getScript() == null ? Game.class.getResourceAsStream("start.lua") : new FileInputStream(new File(options.getScript()));
+		
+		Game game = new Game(file, options.getRandom());
 		game.getEvents().startGame(game);
 		new ConsoleController(game).play();		
 	}

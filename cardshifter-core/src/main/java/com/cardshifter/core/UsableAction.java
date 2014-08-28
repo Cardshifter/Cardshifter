@@ -6,20 +6,18 @@ import org.luaj.vm2.LuaFunction;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 
-public class Action {
+public abstract class UsableAction {
 
 	private final String name;
 	private final LuaFunction allowedFunction;
 	private final LuaFunction actionFunction;
-	private final Card card;
-
-	public Action(final Card card, final String name, final LuaValue allowedFunction, final LuaValue actionFunction) {
-		this.card = Objects.requireNonNull(card, "card");
+	
+	public UsableAction(String name, LuaValue allowedFunction, LuaValue actionFunction) {
 		this.name = Objects.requireNonNull(name, "name");
 		this.allowedFunction = allowedFunction.checkfunction();
 		this.actionFunction = actionFunction.checkfunction();
 	}
-	
+
 	public LuaFunction getActionFunction() {
 		return actionFunction;
 	}
@@ -33,19 +31,17 @@ public class Action {
 	}
 	
 	public boolean isAllowed() {
-		return allowedFunction.invoke(CoerceJavaToLua.coerce(card)).arg1().toboolean();
+		return allowedFunction.invoke(methodArg()).arg1().toboolean();
 	}
 	
+	protected abstract LuaValue methodArg();
+
 	public void perform() {
-		actionFunction.invoke(CoerceJavaToLua.coerce(card));
+		Game game = getGame(); // stored here in case it is unavailable after action has been performed
+		getActionFunction().invoke(methodArg());
+		game.getEvents().callEvent(Events.ACTION_USED, methodArg(), CoerceJavaToLua.coerce(this));
 	}
+
+	protected abstract Game getGame();
 	
-	public Card getCard() {
-		return card;
-	}
-	
-	@Override
-	public String toString() {
-		return "{Action " + name + " on card " + card + "}";
-	}
 }

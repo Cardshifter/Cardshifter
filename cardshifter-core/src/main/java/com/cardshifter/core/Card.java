@@ -9,15 +9,17 @@ import java.util.function.Consumer;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 
-public class Card {
+public class Card implements Targetable {
 	public final LuaTable data = LuaValue.tableOf();
 	
-	private final Map<String, Action> actions = new HashMap<>();
+	private final Map<String, UsableAction> actions = new HashMap<>();
 	
 	private Optional<Zone> currentZone;
+	private final Game game;
 	
 	Card(final Zone currentZone) {
-		this.currentZone = Optional.ofNullable(currentZone);
+		this.currentZone = Optional.of(currentZone);
+		this.game = currentZone.getGame();
 	}
 	
 	public Zone getZone() {
@@ -28,11 +30,25 @@ public class Card {
 		return currentZone.isPresent();
 	}
 	
-	public Action addAction(final String name, final LuaValue actionAllowed, final LuaValue actionPerformed) {
+	// TODO: Add actions that need target(s)
+	// TODO: Client UI: Single target action - First click for using action - call script to verify it's OK at all
+	// TODO: Client UI: Single target action - show available targets - call script to verify target is OK
+	// TODO: Client UI: Single target action - then perform (or cancel)
+	// TODO: Client UI: Multi target action - 
+	public CardAction addAction(final String name, final LuaValue actionAllowed, final LuaValue actionPerformed) {
 		Objects.requireNonNull(name, "name");
 		Objects.requireNonNull(actionAllowed, "actionAllowed");
 		Objects.requireNonNull(actionPerformed, "actionPerformed");
-		Action action = new Action(this, name, actionAllowed, actionPerformed);
+		CardAction action = new CardAction(this, name, actionAllowed, actionPerformed);
+		actions.put(name, action);
+		return action;
+	}
+	
+	public TargetAction addTargetAction(final String name, final LuaValue actionAllowed, final LuaValue targetAllowed, final LuaValue actionPerformed) {
+		Objects.requireNonNull(name, "name");
+		Objects.requireNonNull(actionAllowed, "actionAllowed");
+		Objects.requireNonNull(actionPerformed, "actionPerformed");
+		TargetAction action = new TargetAction(this, name, actionAllowed, targetAllowed, actionPerformed);
 		actions.put(name, action);
 		return action;
 	}
@@ -44,11 +60,11 @@ public class Card {
 		return currentZone.get().getOwner();
 	}
 	
-	public Map<String, Action> getActions() {
+	public Map<String, UsableAction> getActions() {
 		return actions;
 	}
 	
-	public Action getAction(final String name) {
+	public UsableAction getAction(final String name) {
 		return actions.get(Objects.requireNonNull(name, "name"));
 	}
 	
@@ -95,5 +111,14 @@ public class Card {
 		zoneConsumer.accept(destination);
 		
 		this.currentZone = Optional.ofNullable(resultDestination);
+	}
+
+	public Game getGame() {
+		return game;
+	}
+	
+	@Override
+	public LuaTable getData() {
+		return data;
 	}
 }
