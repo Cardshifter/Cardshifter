@@ -94,4 +94,8 @@ public class Zone {
 	public int getId() {
 		return id;
 	}
+
+	public int size() {
+		return cards.size();
+	}
 }
