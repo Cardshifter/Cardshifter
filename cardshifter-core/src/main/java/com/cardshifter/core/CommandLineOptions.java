@@ -12,12 +12,19 @@ public class CommandLineOptions {
 	@Parameter(names = { "--seed", "-s" }, description = "Set random seed")
 	private Integer seed;
 	
+	@Parameter(names = { "--network" }, description = "Connect to a server for playing")
+	private String host;
+	
 	public Random getRandom() {
 		return seed == null ? new Random() : new Random(seed);
 	}
 	
 	public String getScript() {
 		return script;
+	}
+	
+	public String getHost() {
+		return host;
 	}
 	
 }
