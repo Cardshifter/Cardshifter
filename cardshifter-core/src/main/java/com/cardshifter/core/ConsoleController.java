@@ -8,12 +8,9 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
 import java.util.Scanner;
-import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
-import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
-import org.luaj.vm2.Varargs;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
@@ -129,23 +126,7 @@ public class ConsoleController {
 	}
 	
 	private void printLua(final int indentation, final LuaValue value) {
-		processLuaTable(value.checktable(), (k, v) -> print(indentation, k + ": " + v));
-	}
-	
-	private void processLuaTable(final LuaTable luaTable, final BiConsumer<LuaValue, LuaValue> pairConsumer) {
-		luaTable.checktable();
-		Objects.requireNonNull(pairConsumer, "pairConsumer");
-		//search uses last key to find next key, starts with NIL
-		LuaValue key = LuaValue.NIL;
-		while (true) {
-			Varargs pair = luaTable.next(key);
-			key = pair.arg1();
-			if (key.isnil()) {
-				//no more keys
-				break;
-			}
-			pairConsumer.accept(key, pair.arg(2));
-		}
+		LuaTools.processLuaTable(value.checktable(), (k, v) -> print(indentation, k + ": " + v));
 	}
 	
 	private String indent(final int amount) {
