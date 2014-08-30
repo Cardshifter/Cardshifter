@@ -16,8 +16,10 @@ public class Card implements Targetable {
 	
 	private Optional<Zone> currentZone;
 	private final Game game;
+	private final int id;
 	
-	Card(final Zone currentZone) {
+	Card(final Zone currentZone, int id) {
+		this.id = id;
 		this.currentZone = Optional.of(currentZone);
 		this.game = currentZone.getGame();
 	}
@@ -120,5 +122,9 @@ public class Card implements Targetable {
 	@Override
 	public LuaTable getData() {
 		return data;
+	}
+	
+	public int getId() {
+		return id;
 	}
 }

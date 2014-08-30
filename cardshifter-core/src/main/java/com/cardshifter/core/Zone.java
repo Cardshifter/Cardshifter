@@ -17,9 +17,11 @@ public class Zone {
 	private final Map<Player, Boolean> knownToPlayers = new ConcurrentHashMap<>();
 	public final LuaValue data;
 	private boolean globallyKnown;
+	private final int id;
 	
-	Zone(Player owner, String name) {
+	Zone(Player owner, String name, int id) {
 		Objects.requireNonNull(owner);
+		this.id = id;
 		this.owner = owner;
 		this.game = owner.getGame();
 		this.cards = new LinkedList<>();
@@ -57,13 +59,13 @@ public class Zone {
 	}
 	
 	public Card createCardOnTop() {
-		Card card = new Card(this);
+		Card card = new Card(this, getGame().nextId());
 		this.cards.addFirst(card);
 		return card;
 	}
 	
 	public Card createCardOnBottom() {
-		Card card = new Card(this);
+		Card card = new Card(this, getGame().nextId());
 		this.cards.addLast(card);
 		return card;
 	}
@@ -87,5 +89,9 @@ public class Zone {
 	
 	public boolean isEmpty() {
 		return this.cards.isEmpty();
+	}
+	
+	public int getId() {
+		return id;
 	}
 }
