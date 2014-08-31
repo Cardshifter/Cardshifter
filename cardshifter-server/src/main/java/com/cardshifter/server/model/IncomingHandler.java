@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.cardshifter.server.clients.ClientIO;
 import com.cardshifter.server.incoming.Message;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.InjectableValues;
@@ -19,12 +20,13 @@ import com.fasterxml.jackson.databind.ObjectReader;
 public class IncomingHandler {
 	
 	private final Map<String, ObjectReader> commandTypes;
+	private final Map<Class<?>, MessageHandler<?>> consumer;
 	private final ObjectMapper mapper;
 	private final InjectableValues inject;
 
 	public IncomingHandler(Server server) {
 		this.commandTypes = new ConcurrentHashMap<>();
-		
+		this.consumer = new ConcurrentHashMap<>();
 		mapper = new ObjectMapper();
 		inject = new InjectableValues.Std().addValue(Server.class, server);
 	}
@@ -37,9 +39,10 @@ public class IncomingHandler {
 	 * @param command Command-identifier to be supplied to the 'command' JSON parameter.
 	 * @param handler The class to associate with this command identifier
 	 */
-	public void addHandler(String command, Class<? extends Message> handler) {
+	public <E extends Message> void addHandler(String command, Class<E> handler, MessageHandler<E> consumer) {
 		ObjectReader reader = mapper.reader(handler).with(inject);
 		this.commandTypes.put(command, reader);
+		this.consumer.put(handler, consumer);
 	}
 	
 	/**
@@ -49,7 +52,7 @@ public class IncomingHandler {
 	 * @return A subclass of {@link Message} that is associated with the command identifier
 	 * @throws IOException If there was a problem parsing the JSON
 	 */
-	public <T> T parse(String json) throws IOException {
+	public <T extends Message> T parse(String json) throws IOException {
 	    ObjectMapper mapper = new ObjectMapper(); 
 	    TypeReference<HashMap<String, String>> typeRef = new TypeReference<HashMap<String, String>>() {};
 	    HashMap<String, String> o = mapper.readValue(json, typeRef);
@@ -57,6 +60,12 @@ public class IncomingHandler {
 	    String command = o.get("command");
 	    ObjectReader reader = commandTypes.get(command);
 		return reader.readValue(json);
+	}
+
+	public <E extends Message> void perform(E message, ClientIO client) {
+		@SuppressWarnings("unchecked")
+		MessageHandler<E> messagePerform = (MessageHandler<E>) this.consumer.get(message.getClass());
+		messagePerform.handle(message, client);
 	}
 
 }
