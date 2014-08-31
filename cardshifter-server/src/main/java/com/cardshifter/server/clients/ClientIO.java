@@ -75,4 +75,8 @@ public abstract class ClientIO {
 		return isLoggedIn() ? "online" : "offline";
 	}
 	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
 }
