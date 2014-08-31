@@ -15,7 +15,7 @@ public class PlayCardMessageTest {
 		Server server = new Server();
 		
 		FakeClient client = new FakeClient(server, System.out::println);
-		client.sentToServer("{ \"command\": \"playCard\", \"requestId\": 1, \"cardId\": \"123abc\" }");
+		client.sentToServer("{ \"command\": \"playCard\", \"requestId\": 1, \"cardId\": \"12\" }");
 		
 		
 	}
