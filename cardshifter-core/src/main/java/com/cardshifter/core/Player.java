@@ -81,4 +81,7 @@ public class Player implements Targetable {
 		return getGame().getPlayers().indexOf(this);
 	}
 	
+	public String getName() {
+		return name;
+	}
 }
