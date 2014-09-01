@@ -1,18 +1,17 @@
 package com.cardshifter.core;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 
 public class TargetAction extends UsableAction {
-
 	private final Card card;
 	private final LuaValue targetAllowed;
 
-	public TargetAction(Card card, String name, LuaValue actionAllowed, LuaValue targetAllowed, LuaValue actionPerformed) {
+	public TargetAction(final Card card, final String name, final LuaValue actionAllowed, final LuaValue targetAllowed, final LuaValue actionPerformed) {
 		super(name, actionAllowed, actionPerformed);
 		this.card = card;
 		this.targetAllowed = targetAllowed;
@@ -35,22 +34,23 @@ public class TargetAction extends UsableAction {
 	}
 
 	public List<Targetable> findTargets() {
-		List<Targetable> targets = new ArrayList<>();
 		Game game = getGame();
-		for (Targetable target : game.getPlayers()) {
-			if (isValidTarget(target)) {
-				targets.add(target);
-			}
-		}
-		targets.addAll(game.getZones().stream().flatMap(zone -> zone.getCards().stream()).filter(this::isValidTarget).collect(Collectors.toList()));
-		return targets;
+		
+		Stream<? extends Targetable> targetablePlayers = game.getPlayers().stream()
+			.filter(this::isValidTarget);
+		
+		Stream<? extends Targetable> targetableCards = game.getZones().stream()
+			.flatMap(zone -> zone.getCards().stream())
+			.filter(this::isValidTarget);
+		
+		return Stream.concat(targetablePlayers, targetableCards).collect(Collectors.toList());
 	}
 
-	private boolean isValidTarget(Targetable target) {
+	private boolean isValidTarget(final Targetable target) {
 		return targetAllowed.invoke(CoerceJavaToLua.coerce(card), CoerceJavaToLua.coerce(target), CoerceJavaToLua.coerce(this)).arg1().toboolean();
 	}
 
-	public void perform(Targetable target) {
+	public void perform(final Targetable target) {
 		Game game = getGame(); // stored here in case it is unavailable after action has been performed
 		getActionFunction().invoke(CoerceJavaToLua.coerce(card), CoerceJavaToLua.coerce(target), CoerceJavaToLua.coerce(this));
 		game.getEvents().callEvent(Events.ACTION_USED, CoerceJavaToLua.coerce(card), CoerceJavaToLua.coerce(this));
@@ -60,5 +60,4 @@ public class TargetAction extends UsableAction {
 	public String toString() {
 		return "{TargetAction " + this.getName() + " on card " + this.card + "}";
 	}
-	
 }

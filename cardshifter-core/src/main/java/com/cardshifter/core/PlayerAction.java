@@ -4,10 +4,9 @@ import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 
 public class PlayerAction extends UsableAction {
-
 	private final Player player;
 
-	public PlayerAction(Player player, String name, LuaValue actionAllowed, LuaValue actionPerformed) {
+	public PlayerAction(final Player player, final String name, final LuaValue actionAllowed, final LuaValue actionPerformed) {
 		super(name, actionAllowed, actionPerformed);
 		this.player = player;
 	}
@@ -26,5 +25,4 @@ public class PlayerAction extends UsableAction {
 	public String toString() {
 		return "{Action " + getName() + " for player " + player + "}";
 	}
-
 }

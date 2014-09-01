@@ -78,7 +78,9 @@ public class ConsoleController {
 					Targetable target = targets.get(targetIndex);
 					targetAction.perform(target);
 				}
-				else action.perform();
+				else {
+					action.perform();
+				}
 				print("Action performed");
 			}
 			else {

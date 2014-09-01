@@ -6,13 +6,12 @@ import org.luaj.vm2.LuaFunction;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 
-public abstract class UsableAction {
-
+public abstract class UsableAction implements Action {
 	private final String name;
 	private final LuaFunction allowedFunction;
 	private final LuaFunction actionFunction;
 	
-	public UsableAction(String name, LuaValue allowedFunction, LuaValue actionFunction) {
+	public UsableAction(final String name, final LuaValue allowedFunction, final LuaValue actionFunction) {
 		this.name = Objects.requireNonNull(name, "name");
 		this.allowedFunction = allowedFunction.checkfunction();
 		this.actionFunction = actionFunction.checkfunction();
@@ -30,12 +29,14 @@ public abstract class UsableAction {
 		return name;
 	}
 	
+	@Override
 	public boolean isAllowed() {
 		return allowedFunction.invoke(methodArg()).arg1().toboolean();
 	}
 	
 	protected abstract LuaValue methodArg();
 
+	@Override
 	public void perform() {
 		Game game = getGame(); // stored here in case it is unavailable after action has been performed
 		getActionFunction().invoke(methodArg());
@@ -43,5 +44,4 @@ public abstract class UsableAction {
 	}
 
 	protected abstract Game getGame();
-	
 }

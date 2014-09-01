@@ -6,7 +6,6 @@ import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 
 public class CardAction extends UsableAction {
-
 	private final Card card;
 
 	public CardAction(final Card card, final String name, final LuaValue allowedFunction, final LuaValue actionFunction) {
@@ -17,11 +16,6 @@ public class CardAction extends UsableAction {
 	public Card getCard() {
 		return card;
 	}
-	
-	@Override
-	public String toString() {
-		return "{Action " + getName() + " on card " + card + "}";
-	}
 
 	@Override
 	protected LuaValue methodArg() {
@@ -31,5 +25,10 @@ public class CardAction extends UsableAction {
 	@Override
 	protected Game getGame() {
 		return card.getGame();
+	}
+	
+	@Override
+	public String toString() {
+		return "{Action " + getName() + " on card " + card + "}";
 	}
 }
