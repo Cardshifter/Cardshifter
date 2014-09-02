@@ -60,8 +60,13 @@ public class FXMLDocumentController implements Initializable {
             label.setText("Starting Game");
             game.getEvents().startGame(game);
             gameHasStarted = true;
-            this.renderPlayerHand();
+            this.renderHands();
         }
+    }
+    
+    private void renderHands() {
+        this.renderPlayerHand();
+        this.renderOpponentHand();
     }
     
     @FXML
@@ -72,7 +77,7 @@ public class FXMLDocumentController implements Initializable {
         if (gameHasStarted == true) {
             game.nextTurn();
             turnLabel.setText(String.format("Turn Number %d", game.getTurnNumber()));
-            this.renderPlayerHand();
+            this.renderHands();
         }
     }
     
@@ -84,9 +89,24 @@ public class FXMLDocumentController implements Initializable {
     Pane player02Pane;
     private void renderOpponentHand() {
         int cardCount = this.getOpponentCardCount();
+        int currentCard = 0;
+        while(currentCard < cardCount) {
+            Group cardGroup = new Group();
+            cardGroup.setTranslateX(currentCard * 130);
+            player02Pane.getChildren().add(cardGroup);
+            
+            Rectangle cardBack = new Rectangle(0,0,125,145);
+            cardBack.setFill(Color.AQUAMARINE);
+            cardGroup.getChildren().add(cardBack);
+            
+            currentCard++;
+        }
     }
     private int getOpponentCardCount() {
-        return 0;
+        Player player = game.getLastPlayer(); 
+        Zone hand = (Zone)CoerceLuaToJava.coerce(player.data.get("hand"), Zone.class);
+        List<Card> cardsInHand = hand.getCards();
+        return cardsInHand.size();
     }
     
     @FXML
