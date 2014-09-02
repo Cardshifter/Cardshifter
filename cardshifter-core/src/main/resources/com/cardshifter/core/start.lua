@@ -62,7 +62,7 @@ end
 function createSpecialEnchantment(deck, strength, health, cost)
     -- A special enchantment can only target a creature that has been enchanted already
 	local card = deck:createCardOnBottom()
-	card:addTargetAction("Enchant", enchAllowed, enchSpecialTargetAllowed, enchCard)
+	card:addTargetAction("Enchant", enchAllowed, enchCard, enchSpecialTargetAllowed)
 	card.data.manaCost = 0
 	card.data.scrapCost = cost
 	card.data.enchStrength = strength
@@ -74,7 +74,7 @@ end
 function createEnchantment(deck, strength, health, cost)
     -- Can only target creatureType == 'Bio'
 	local card = deck:createCardOnBottom()
-	card:addTargetAction("Enchant", enchAllowed, enchTargetAllowed, enchCard)
+	card:addTargetAction("Enchant", enchAllowed, enchCard, enchTargetAllowed)
 	card.data.manaCost = 0
 	card.data.scrapCost = cost
 	card.data.enchStrength = strength
@@ -86,7 +86,7 @@ end
 function createCreature(deck, cost, strength, health, creatureType)
 	local card = deck:createCardOnBottom()
 	card:addAction("Play", playAllowed, playCard)
-	card:addTargetAction("Attack", attackAllowed, attackTargetAllowed, attackCard)
+	card:addTargetAction("Attack", attackAllowed, attackCard, attackTargetAllowed)
 	card:addAction("Scrap", scrapAllowed, scrapCard)
 	card.data.manaCost = cost
 	card.data.strength = strength
