@@ -19,7 +19,7 @@ public class Game {
 	private final Random random;
 	public final LuaValue data;
 	private boolean gameOver = false;
-	private int turnNumber;
+	
 	private Player currentPlayer;
 	
 	public Game(InputStream file, Random random) {
@@ -33,17 +33,11 @@ public class Game {
 		this.players.add(new Player(this, "Player1"));
 		this.players.add(new Player(this, "Player2"));
 		this.random = random;
-                
-                this.turnNumber = 0;
 	}
 	
 	public Game(InputStream file) {
 		this(file, new Random());
 	}
-        
-        public int getTurnNumber() {
-            return this.turnNumber;
-        }
 	
 	public Player getCurrentPlayer() {
 		return currentPlayer;
@@ -100,8 +94,6 @@ public class Game {
 		this.currentPlayer = currentPlayer == null ? players.get(0) : currentPlayer.getNextPlayer();
 				
 		this.events.callEvent(Events.TURN_START, CoerceJavaToLua.coerce(this.currentPlayer), null);
-                
-                turnNumber++;
 	}
 	
 	public int randomInt(int count) {
