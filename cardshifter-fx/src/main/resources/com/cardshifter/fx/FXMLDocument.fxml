@@ -6,9 +6,21 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="406.0" prefWidth="467.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cardshifter.fx.FXMLDocumentController">
+<AnchorPane id="AnchorPane" maxHeight="600" maxWidth="1200" minHeight="600" minWidth="1200" prefHeight="600.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cardshifter.fx.FXMLDocumentController">
     <children>
-        <Button fx:id="button" layoutX="192.0" layoutY="177.0" onAction="#handleButtonAction" text="Click Me!" />
-        <Label fx:id="label" layoutX="199.0" layoutY="236.0" minHeight="16" minWidth="69" />
+        <Button fx:id="button" layoutX="1098.0" layoutY="530.0" onAction="#handleButtonAction" text="Start Game" />
+        <Label fx:id="label" layoutX="1098.0" layoutY="564.0" minHeight="16" minWidth="69" />
+        <Button layoutX="1093.0" layoutY="367.0" mnemonicParsing="false" onAction="#handleTurnButtonAction" text="Next Turn" />
+        <Label fx:id="turnLabel" layoutX="1091.0" layoutY="412.0" text="Turn Number" />
+      <Pane layoutX="120.0" layoutY="393.0" prefHeight="200.0" prefWidth="960.0">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Pane>
+      <Pane layoutX="120.0" layoutY="14.0" prefHeight="200.0" prefWidth="960.0">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Pane>
     </children>
 </AnchorPane>
