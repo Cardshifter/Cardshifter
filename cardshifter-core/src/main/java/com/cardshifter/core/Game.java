@@ -45,12 +45,6 @@ public class Game {
             return this.turnNumber;
         }
         
-        /*
-        public List<Card> getCards() {
-            return 
-        }
-	*/
-        
 	public Player getCurrentPlayer() {
 		return currentPlayer;
 	}

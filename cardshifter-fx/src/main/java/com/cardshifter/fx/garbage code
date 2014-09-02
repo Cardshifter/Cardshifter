@@ -9,3 +9,14 @@
         */
 
     //game.getFirstPlayer().data.hand
+
+
+            /*
+            Group cardTextGroup = new Group();
+            cardTextGroup.setTranslateY(40);
+            cardGroup.getChildren().add(cardTextGroup);
+            
+            Label allCardLabel = new Label();
+            allCardLabel.setText(card.toString());
+            cardTextGroup.getChildren().add(allCardLabel);
+            */

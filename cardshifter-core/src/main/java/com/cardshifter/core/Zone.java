@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.luaj.vm2.LuaValue;
@@ -17,6 +18,7 @@ public class Zone {
 	private final Map<Player, Boolean> knownToPlayers = new ConcurrentHashMap<>();
 	public final LuaValue data;
 	private boolean globallyKnown;
+        private Random random;
 	
 	Zone(Player owner, String name) {
 		Objects.requireNonNull(owner);
@@ -25,6 +27,7 @@ public class Zone {
 		this.cards = new LinkedList<>();
 		this.data = LuaValue.tableOf();
 		this.name = name;
+                this.random = new Random();
 	}
 	
 	public LinkedList<Card> getCards() {
@@ -57,15 +60,15 @@ public class Zone {
 	}
 	
 	public Card createCardOnTop() {
-                int testIdNumber = 1;
-		Card card = new Card(this, 1);
+                int randomNumber = this.random.nextInt(150) + 1;
+		Card card = new Card(this, randomNumber);
 		this.cards.addFirst(card);
 		return card;
 	}
 	
 	public Card createCardOnBottom() {
-                int testIdNumber = 2;
-		Card card = new Card(this, 2);
+                int randomNumber = this.random.nextInt(150) + 1;
+		Card card = new Card(this, randomNumber);
 		this.cards.addLast(card);
 		return card;
 	}

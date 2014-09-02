@@ -3,6 +3,7 @@ package com.cardshifter.fx;
 import com.cardshifter.core.CommandLineOptions;
 import com.cardshifter.core.Game;
 import com.cardshifter.core.Card;
+import com.cardshifter.core.LuaTools;
 import com.cardshifter.core.Player;
 import com.cardshifter.core.TargetAction;
 import com.cardshifter.core.Targetable;
@@ -59,7 +60,7 @@ public class FXMLDocumentController implements Initializable {
             label.setText("Starting Game");
             game.getEvents().startGame(game);
             gameHasStarted = true;
-            this.createHand();
+            this.renderPlayerHand();
         }
     }
     
@@ -71,32 +72,63 @@ public class FXMLDocumentController implements Initializable {
         if (gameHasStarted == true) {
             game.nextTurn();
             turnLabel.setText(String.format("Turn Number %d", game.getTurnNumber()));
-            Text testText = new Text("test");
+            this.renderPlayerHand();
         }
     }
     
     @FXML
     private QuadCurve handGuide;
     
+    //NOT YET FINISHED
+    @FXML
+    Pane player02Pane;
+    private void renderOpponentHand() {
+        int cardCount = this.getOpponentCardCount();
+    }
+    private int getOpponentCardCount() {
+        return 0;
+    }
+    
     @FXML
     private Pane player01Pane;
-    private void createHand() {
+    private void renderPlayerHand() {
+        //First get the list of Card objects
         List<Card> cardsInHand = this.getCurrentPlayerHand();
+        
+        //Create a group for each card for positioning
+        //Another group is needed for each element in the LuaTable
         int cardIndex = 0;
         for (Card card : cardsInHand) {
             System.out.println("found a card");
             
             Group cardGroup = new Group();
-            cardGroup.setTranslateX(cardIndex * 150);
+            cardGroup.setTranslateX(cardIndex * 165);
             player01Pane.getChildren().add(cardGroup);
             
-            Rectangle cardBack = new Rectangle(25,25,100,250);
+            Rectangle cardBack = new Rectangle(0,0,150,220);
             cardBack.setFill(Color.FIREBRICK);
             cardGroup.getChildren().add(cardBack);
 
             Label cardIdLabel = new Label();
-            cardIdLabel.setText(String.format("%d", card.getId()));
+            cardIdLabel.setText(String.format("CardID = %d", card.getId()));
+            cardIdLabel.setTextFill(Color.WHITE);
             cardGroup.getChildren().add(cardIdLabel);
+           
+            //This gets the text from Lua and makes labels for each property
+            int stringIndex = 0;
+            List<String> stringList = new ArrayList<String>();
+            LuaTools.processLuaTable(card.data.checktable(), (k, v) -> stringList.add(k + ": " + v));
+            for (String string : stringList) {
+                Group cardTextStrings = new Group();
+                cardTextStrings.setTranslateY(25 + (stringIndex * 25));
+                cardGroup.getChildren().add(cardTextStrings);
+            
+                Label cardStringLabel = new Label();
+                cardStringLabel.setText(string);
+                cardStringLabel.setTextFill(Color.WHITE);
+                cardTextStrings.getChildren().add(cardStringLabel);
+                stringIndex++;
+            }
             
             cardIndex++;
         }
