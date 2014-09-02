@@ -23,10 +23,14 @@ import java.util.stream.Collectors;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Group;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 
 import javafx.scene.text.Text;
 import javafx.scene.shape.QuadCurve;
+import javafx.scene.shape.Rectangle;
 
 import org.luaj.vm2.lib.jse.CoerceLuaToJava;
 
@@ -72,15 +76,29 @@ public class FXMLDocumentController implements Initializable {
     }
     
     @FXML
-    private Label card01;
-    
-    @FXML
     private QuadCurve handGuide;
     
+    @FXML
+    private Pane player01Pane;
     private void createHand() {
         List<Card> cardsInHand = this.getCurrentPlayerHand();
+        int cardIndex = 0;
         for (Card card : cardsInHand) {
             System.out.println("found a card");
+            
+            Group cardGroup = new Group();
+            cardGroup.setTranslateX(cardIndex * 150);
+            player01Pane.getChildren().add(cardGroup);
+            
+            Rectangle cardBack = new Rectangle(25,25,100,250);
+            cardBack.setFill(Color.FIREBRICK);
+            cardGroup.getChildren().add(cardBack);
+
+            Label cardIdLabel = new Label();
+            cardIdLabel.setText(String.format("%d", card.getId()));
+            cardGroup.getChildren().add(cardIdLabel);
+            
+            cardIndex++;
         }
     }
     private List<Card> getCurrentPlayerHand() {
