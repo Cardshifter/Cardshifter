@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
+<?import javafx.scene.shape.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
 <?import javafx.scene.*?>
@@ -16,11 +18,15 @@
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor>
+         <children>
+            <QuadCurve fx:id="handGuide" controlY="-100.0" endX="100.0" fill="DODGERBLUE" layoutX="480.0" layoutY="200.0" startX="-100.0" stroke="BLACK" strokeType="INSIDE" />
+         </children>
       </Pane>
       <Pane layoutX="120.0" layoutY="14.0" prefHeight="200.0" prefWidth="960.0">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor>
       </Pane>
+      <Label layoutX="14.0" layoutY="245.0" text="Card 01" />
     </children>
 </AnchorPane>

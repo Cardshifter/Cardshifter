@@ -57,13 +57,15 @@ public class Zone {
 	}
 	
 	public Card createCardOnTop() {
-		Card card = new Card(this);
+                int testIdNumber = 1;
+		Card card = new Card(this, 1);
 		this.cards.addFirst(card);
 		return card;
 	}
 	
 	public Card createCardOnBottom() {
-		Card card = new Card(this);
+                int testIdNumber = 2;
+		Card card = new Card(this, 2);
 		this.cards.addLast(card);
 		return card;
 	}

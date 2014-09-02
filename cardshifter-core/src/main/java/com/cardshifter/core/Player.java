@@ -76,5 +76,12 @@ public class Player implements Targetable {
 	public LuaTable getData() {
 		return data;
 	}
+
+	public int getIndex() {
+		return getGame().getPlayers().indexOf(this);
+	}
 	
+	public String getName() {
+		return name;
+	}
 }

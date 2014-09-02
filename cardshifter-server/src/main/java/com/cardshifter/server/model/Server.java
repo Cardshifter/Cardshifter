@@ -2,31 +2,38 @@ package com.cardshifter.server.model;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import com.cardshifter.server.clients.ClientIO;
-import com.cardshifter.server.messages.ChatMessage;
-import com.cardshifter.server.messages.Message;
-import com.cardshifter.server.messages.PlayCardMessage;
-import com.cardshifter.server.messages.UseAbilityMessage;
+import com.cardshifter.server.incoming.LoginMessage;
+import com.cardshifter.server.incoming.Message;
+import com.cardshifter.server.incoming.PlayCardMessage;
+import com.cardshifter.server.incoming.PlayRequest;
+import com.cardshifter.server.incoming.UseAbilityMessage;
 
 
 public class Server {
 	private static final Logger	logger = LogManager.getLogger(Server.class);
-	
+
+	private static final String VANILLA = "vanilla";
+
 	// Counters for various things
 	private final AtomicInteger roomCounter = new AtomicInteger(0);
 	private final AtomicInteger inviteId = new AtomicInteger(0);
@@ -41,6 +48,8 @@ public class Server {
 	private final Map<String, GameFactory> gameFactories = new ConcurrentHashMap<>();
 
 	private final Set<ConnectionHandler> handlers = Collections.synchronizedSet(new HashSet<>());
+	private AtomicReference<ClientIO> playAny;
+	private final Random random = new Random();
 
 	public Server() {
 		this.incomingHandler = new IncomingHandler(this);
@@ -49,11 +58,15 @@ public class Server {
 		Server server = this;
 		IncomingHandler incomings = server.getIncomingHandler();
 		
-		incomings.addHandler("chat", ChatMessage.class);
-		incomings.addHandler("playCard", PlayCardMessage.class);
-		incomings.addHandler("useAbility", UseAbilityMessage.class);
+		Handlers handlers = new Handlers(this);
 		
-//		server.addGameFactory("default", (serv, id) -> new Game(serv, id));
+		incomings.addHandler("login", LoginMessage.class, handlers::loginMessage);
+//		incomings.addHandler("chat", ChatMessage.class);
+		incomings.addHandler("playCard", PlayCardMessage.class, handlers::playCard);
+		incomings.addHandler("play", PlayRequest.class, handlers::play);
+		incomings.addHandler("useAbility", UseAbilityMessage.class, handlers::useAbility);
+		
+		server.addGameFactory(VANILLA, (serv, id) -> new TCGGame(serv, id));
 		
 	}
 	
@@ -82,7 +95,7 @@ public class Server {
 		Message message;
 		try {
 			message = incomingHandler.parse(json);
-			message.perform(client);
+			incomingHandler.perform(message, client);
 		} catch (IOException e) {
 			logger.error("Unable to parse incoming json: " + json, e);
 		}
@@ -191,4 +204,17 @@ public class Server {
 		this.handlers.add(handler);
 	}
 
+	public AtomicReference<ClientIO> getPlayAny() {
+		return playAny;
+	}
+
+	public void newGame(ClientIO client, ClientIO opponent) {
+		ServerGame game = this.gameFactories.get(VANILLA).newGame(this, this.gameId.getAndIncrement());
+		List<ClientIO> players = Arrays.asList(client, opponent);
+		Collections.shuffle(players, random);
+		
+		this.games.put(game.getId(), game);
+		game.start(players);
+	}
+	
 }

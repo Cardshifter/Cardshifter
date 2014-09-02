@@ -44,7 +44,13 @@ public class Game {
         public int getTurnNumber() {
             return this.turnNumber;
         }
-	
+        
+        /*
+        public List<Card> getCards() {
+            return 
+        }
+	*/
+        
 	public Player getCurrentPlayer() {
 		return currentPlayer;
 	}

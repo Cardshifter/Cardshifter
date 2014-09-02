@@ -1,0 +1,11 @@
+        /*
+            for (Zone zone : game.getZones()) {
+            if (zone.isKnownToPlayer(game.getCurrentPlayer())) {
+		zone.getCards().forEach(card -> {
+                    cardsInHand.add(card);
+                });
+            }
+	}
+        */
+
+    //game.getFirstPlayer().data.hand

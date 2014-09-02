@@ -10,6 +10,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import com.cardshifter.server.clients.ClientIO;
+import com.cardshifter.server.incoming.Message;
 
 public abstract class ServerGame {
 	private static final Logger logger = LogManager.getLogger(ServerGame.class);
@@ -76,6 +77,10 @@ public abstract class ServerGame {
 		players.forEach(pl -> pl.sendToClient(data));
 	}
 	
+	public void send(Message data) {
+		players.forEach(pl -> pl.sendToClient(data));
+	}
+	
 	public int getId() {
 		return id;
 	}
@@ -86,6 +91,10 @@ public abstract class ServerGame {
 	
 	public GameState getState() {
 		return state;
+	}
+	
+	public List<ClientIO> getPlayers() {
+		return Collections.unmodifiableList(players);
 	}
 	
 }

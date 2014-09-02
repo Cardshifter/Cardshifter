@@ -19,6 +19,7 @@
 		<module>cardshifter-core</module>
 		<module>cardshifter-module1</module>
 		<module>cardshifter-server</module>
+		<module>cardshifter-api</module>
 	</modules>
 	<dependencies>
 		<dependency>

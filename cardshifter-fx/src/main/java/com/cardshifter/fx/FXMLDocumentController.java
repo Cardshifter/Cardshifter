@@ -2,6 +2,7 @@ package com.cardshifter.fx;
 
 import com.cardshifter.core.CommandLineOptions;
 import com.cardshifter.core.Game;
+import com.cardshifter.core.Card;
 import com.cardshifter.core.Player;
 import com.cardshifter.core.TargetAction;
 import com.cardshifter.core.Targetable;
@@ -12,6 +13,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
@@ -22,6 +24,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+
+import javafx.scene.text.Text;
+import javafx.scene.shape.QuadCurve;
+
+import org.luaj.vm2.lib.jse.CoerceLuaToJava;
 
 public class FXMLDocumentController implements Initializable {
     
@@ -44,10 +51,11 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private void handleButtonAction(ActionEvent event) {
         //System.out.println("You clicked me!");
-        if (!gameHasStarted) {
+        if (gameHasStarted == false) {
             label.setText("Starting Game");
             game.getEvents().startGame(game);
             gameHasStarted = true;
+            this.createHand();
         }
     }
     
@@ -56,10 +64,33 @@ public class FXMLDocumentController implements Initializable {
     
     @FXML
     private void handleTurnButtonAction(ActionEvent event) {
-        if (gameHasStarted) {
+        if (gameHasStarted == true) {
             game.nextTurn();
             turnLabel.setText(String.format("Turn Number %d", game.getTurnNumber()));
+            Text testText = new Text("test");
         }
+    }
+    
+    @FXML
+    private Label card01;
+    
+    @FXML
+    private QuadCurve handGuide;
+    
+    private void createHand() {
+        List<Card> cardsInHand = this.getCurrentPlayerHand();
+        for (Card card : cardsInHand) {
+            System.out.println("found a card");
+        }
+    }
+    private List<Card> getCurrentPlayerHand() {
+        Player player = game.getFirstPlayer(); 
+        Zone hand = (Zone)CoerceLuaToJava.coerce(player.data.get("hand"), Zone.class);
+        List<Card> cardsInHand = new ArrayList<Card>();
+        hand.getCards().forEach(card -> {
+            cardsInHand.add(card);
+        });
+        return cardsInHand;
     }
     
     @Override
