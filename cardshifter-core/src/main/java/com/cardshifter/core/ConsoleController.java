@@ -17,6 +17,8 @@ import org.luaj.vm2.Varargs;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
+import com.cardshifter.core.actions.TargetAction;
+import com.cardshifter.core.actions.UsableAction;
 
 public class ConsoleController {
 	private final Game game;

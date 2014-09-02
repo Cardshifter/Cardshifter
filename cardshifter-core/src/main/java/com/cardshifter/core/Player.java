@@ -8,6 +8,9 @@ import java.util.Objects;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 
+import com.cardshifter.core.actions.PlayerAction;
+import com.cardshifter.core.actions.UsableAction;
+
 public class Player implements Targetable {
 	public final LuaTable data = LuaValue.tableOf();
 	

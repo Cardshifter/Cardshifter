@@ -1,13 +1,16 @@
-package com.cardshifter.core;
+package com.cardshifter.core.actions;
 
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 
+import com.cardshifter.core.Game;
+import com.cardshifter.core.Player;
+
 public class PlayerAction extends UsableAction {
 	private final Player player;
 
-	public PlayerAction(final Player player, final String name, final LuaValue actionAllowed, final LuaValue actionPerformed) {
-		super(name, actionAllowed, actionPerformed);
+	public PlayerAction(final Player player, final String name, final LuaValue isAllowedFunction, final LuaValue performFunction) {
+		super(name, isAllowedFunction, performFunction);
 		this.player = player;
 	}
 

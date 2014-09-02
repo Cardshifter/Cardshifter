@@ -1,20 +1,26 @@
-package com.cardshifter.core;
+package com.cardshifter.core.actions;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.luaj.vm2.LuaFunction;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 
+import com.cardshifter.core.Card;
+import com.cardshifter.core.Events;
+import com.cardshifter.core.Game;
+import com.cardshifter.core.Targetable;
+
 public class TargetAction extends UsableAction {
 	private final Card card;
-	private final LuaValue targetAllowed;
+	private final LuaFunction isTargetAllowedFunction;
 
-	public TargetAction(final Card card, final String name, final LuaValue actionAllowed, final LuaValue targetAllowed, final LuaValue actionPerformed) {
-		super(name, actionAllowed, actionPerformed);
+	public TargetAction(final Card card, final String name, final LuaValue isAllowedFunction, final LuaValue performFunction, final LuaValue isTargetAllowedFunction) {
+		super(name, isAllowedFunction, performFunction);
 		this.card = card;
-		this.targetAllowed = targetAllowed;
+		this.isTargetAllowedFunction = isTargetAllowedFunction.checkfunction();
 	}
 
 	@Override
@@ -47,12 +53,13 @@ public class TargetAction extends UsableAction {
 	}
 
 	private boolean isValidTarget(final Targetable target) {
-		return targetAllowed.invoke(CoerceJavaToLua.coerce(card), CoerceJavaToLua.coerce(target), CoerceJavaToLua.coerce(this)).arg1().toboolean();
+		return isTargetAllowedFunction.invoke(CoerceJavaToLua.coerce(card), CoerceJavaToLua.coerce(target), CoerceJavaToLua.coerce(this)).arg1().toboolean();
 	}
 
+	//TODO confuses with UsableAction#perform()
 	public void perform(final Targetable target) {
 		Game game = getGame(); // stored here in case it is unavailable after action has been performed
-		getActionFunction().invoke(CoerceJavaToLua.coerce(card), CoerceJavaToLua.coerce(target), CoerceJavaToLua.coerce(this));
+		getPerformFunction().invoke(CoerceJavaToLua.coerce(card), CoerceJavaToLua.coerce(target), CoerceJavaToLua.coerce(this));
 		game.getEvents().callEvent(Events.ACTION_USED, CoerceJavaToLua.coerce(card), CoerceJavaToLua.coerce(this));
 	}
 	

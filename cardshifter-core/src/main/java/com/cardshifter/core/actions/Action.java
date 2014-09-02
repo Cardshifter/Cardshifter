@@ -1,5 +1,5 @@
 
-package com.cardshifter.core;
+package com.cardshifter.core.actions;
 
 /**
  *

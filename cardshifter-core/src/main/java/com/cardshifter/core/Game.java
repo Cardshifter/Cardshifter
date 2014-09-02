@@ -12,6 +12,8 @@ import org.luaj.vm2.LuaFunction;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 
+import com.cardshifter.core.actions.UsableAction;
+
 public class Game {
 	public final LuaValue data = LuaValue.tableOf();
 	
