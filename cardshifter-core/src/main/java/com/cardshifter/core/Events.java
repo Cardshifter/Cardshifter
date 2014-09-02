@@ -68,7 +68,6 @@ public class Events {
 	public void callEvent(final String eventName, final LuaValue source, final LuaValue table) {
 		Objects.requireNonNull(eventName, "eventName");
 		Objects.requireNonNull(source, "source");
-		Objects.requireNonNull(table, "table");
 		eventListeners.getOrDefault(eventName, Collections.emptyList())
 			.forEach(func -> func.call(source, table));
 	}
