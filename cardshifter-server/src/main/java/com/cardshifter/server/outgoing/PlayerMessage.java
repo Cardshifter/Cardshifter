@@ -14,6 +14,7 @@ public class PlayerMessage extends Message {
 	private final Map<String, String> properties;
 
 	public PlayerMessage(Player playerFor) {
+		super("player");
 		this.name = playerFor.getName();
 		this.properties = LuaTools.tableToJava(playerFor.data);
 	}

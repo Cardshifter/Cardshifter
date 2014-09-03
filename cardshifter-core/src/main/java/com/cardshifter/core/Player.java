@@ -20,6 +20,7 @@ public class Player implements Targetable {
 		Objects.requireNonNull(game);
 		this.game = game;
 		this.name = name;
+		
 		this.data = LuaValue.tableOf();
 		this.actions = new HashMap<>();
 	}

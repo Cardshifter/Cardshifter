@@ -28,7 +28,7 @@ public abstract class ClientIO {
 	 * @param data Message to send
 	 */
 	public final void sendToClient(String data) {
-		logger.debug("Send to " + this.name + ": " + data);
+		logger.info("Send to " + this.name + ": " + data);
 		onSendToClient(data);
 	}
 	
@@ -58,7 +58,7 @@ public abstract class ClientIO {
 	}
 	
 	public void sentToServer(String message) {
-		logger.debug("Incoming message from " + this.name + ": " + message);
+		logger.info("Incoming message from " + this.name + ": " + message);
 		server.handleMessage(this, message);
 	}
 	

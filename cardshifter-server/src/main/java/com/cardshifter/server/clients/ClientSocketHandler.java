@@ -58,7 +58,7 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 					}
 				}
 
-				logger.info("Socket Communication no more bytes to read for " + this.toString());
+				logger.info("Socket Communication no more bytes to read for " + this);
 				if (socket != null) {
 					socket.close();
 				}
@@ -75,6 +75,7 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 				logger.debug("Socket has been set to null: " + this);
 			}
 		}
+		logger.info("End of run method for " + this);
 	}
 
 	@Override

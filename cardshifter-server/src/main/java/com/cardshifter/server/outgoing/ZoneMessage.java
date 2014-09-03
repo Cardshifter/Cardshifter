@@ -14,6 +14,7 @@ public class ZoneMessage extends Message {
 	private final boolean hidden;
 
 	public ZoneMessage(Zone zone, Player player) {
+		super("zone");
 		this.id = zone.getId();
 		this.name = zone.getName();
 		this.owner = zone.getOwner().getIndex();

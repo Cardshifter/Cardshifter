@@ -16,6 +16,7 @@ public class CardInfoMessage extends Message {
 	private final Map<String, String> properties;
 	
 	public CardInfoMessage(Card card) {
+		super("card");
 		this.zone = card.getZone().getId();
 		this.id = card.getId();
 		this.properties = LuaTools.tableToJava(card.data);

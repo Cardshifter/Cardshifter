@@ -58,7 +58,10 @@ public class IncomingHandler {
 	    HashMap<String, String> o = mapper.readValue(json, typeRef);
 
 	    String command = o.get("command");
-	    ObjectReader reader = commandTypes.get(command);
+	    if (command == null || !commandTypes.containsKey(command)) {
+	    	throw new UnsupportedOperationException("Command " + command + " is not supported. JSON: " + json);
+	    }
+	    ObjectReader reader = commandTypes.getOrDefault(command, null);
 		return reader.readValue(json);
 	}
 

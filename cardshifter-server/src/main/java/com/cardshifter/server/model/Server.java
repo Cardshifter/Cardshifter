@@ -1,6 +1,5 @@
 package com.cardshifter.server.model;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -92,11 +91,13 @@ public class Server {
 
 	public void handleMessage(ClientIO client, String json) {
 		Objects.requireNonNull(client, "Cannot handle message from a null client");
+		logger.info("Handle message " + client + ": " + json);
 		Message message;
 		try {
 			message = incomingHandler.parse(json);
+			logger.info("Parsed Message: " + message);
 			incomingHandler.perform(message, client);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			logger.error("Unable to parse incoming json: " + json, e);
 		}
 	}

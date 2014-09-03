@@ -4,7 +4,12 @@ public class LoginMessage extends Message {
 
 	private String username;
 
+	LoginMessage() {
+		super("login");
+	}
+	
 	public LoginMessage(String username) {
+		this();
 		this.username = username;
 	}
 	
