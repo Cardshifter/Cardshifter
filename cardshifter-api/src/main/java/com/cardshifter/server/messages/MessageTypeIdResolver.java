@@ -8,11 +8,14 @@ import com.cardshifter.server.incoming.LoginMessage;
 import com.cardshifter.server.incoming.PlayCardMessage;
 import com.cardshifter.server.incoming.StartGameRequest;
 import com.cardshifter.server.incoming.UseAbilityMessage;
+import com.cardshifter.server.outgoing.CardInfoMessage;
 import com.cardshifter.server.outgoing.EndOfSequenceMessage;
 import com.cardshifter.server.outgoing.GameMessage;
 import com.cardshifter.server.outgoing.NewGameMessage;
+import com.cardshifter.server.outgoing.PlayerMessage;
 import com.cardshifter.server.outgoing.WaitMessage;
 import com.cardshifter.server.outgoing.WelcomeMessage;
+import com.cardshifter.server.outgoing.ZoneMessage;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.jsontype.TypeIdResolver;
@@ -34,6 +37,9 @@ public class MessageTypeIdResolver implements TypeIdResolver {
 		clazzes.put("wait", WaitMessage.class);
 		clazzes.put("loginresponse", WelcomeMessage.class);
 		clazzes.put("newgame", NewGameMessage.class);
+		clazzes.put("player", PlayerMessage.class);
+		clazzes.put("card", CardInfoMessage.class);
+		clazzes.put("zone", ZoneMessage.class);
 	}
 	
 	private JavaType mBaseType;

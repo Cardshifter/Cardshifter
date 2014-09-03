@@ -1,5 +1,6 @@
 package com.cardshifter.server.messages;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
@@ -15,6 +16,7 @@ public abstract class Message {
 		this.command = string;
 	}
 
+	@JsonIgnore
 	public final String getCommand() {
 		return command;
 	}

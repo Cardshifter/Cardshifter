@@ -1,8 +1,7 @@
 package com.cardshifter.server.outgoing;
 
-import com.cardshifter.core.Player;
-import com.cardshifter.core.Zone;
 import com.cardshifter.server.messages.Message;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ZoneMessage extends Message {
 //	SERVER: command: zone, name: 'Deck', owner: 0, id: 7, (playerIndex), size: 42, hidden: true
@@ -11,15 +10,16 @@ public class ZoneMessage extends Message {
 	private final String name;
 	private final int owner;
 	private final int size;
-	private final boolean hidden;
+	private final boolean known;
 
-	public ZoneMessage(Zone zone, Player player) {
+	public ZoneMessage(@JsonProperty("id") int id, @JsonProperty("name") String name, 
+			@JsonProperty("owner") int owner, @JsonProperty("size") int size, @JsonProperty("known") boolean known) {
 		super("zone");
-		this.id = zone.getId();
-		this.name = zone.getName();
-		this.owner = zone.getOwner().getIndex();
-		this.size = zone.size();
-		this.hidden = zone.isKnownToPlayer(player);
+		this.id = id;
+		this.name = name;
+		this.owner = owner;
+		this.size = size;
+		this.known = known;
 	}
 	
 	public int getId() {
@@ -38,8 +38,8 @@ public class ZoneMessage extends Message {
 		return size;
 	}
 
-	public boolean isHidden() {
-		return hidden;
+	public boolean isKnown() {
+		return known;
 	}
 	
 }

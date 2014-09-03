@@ -59,10 +59,12 @@ public class NetworkConsoleController {
 		Message message = receive(Message.class);
 		if (message instanceof WaitMessage) {
 			System.out.println(((WaitMessage) message).getMessage());
+			NewGameMessage game = receive(NewGameMessage.class);
+			this.playLoop(game, input);
 		}
-		
-		NewGameMessage game = receive(NewGameMessage.class);
-		this.playLoop(game, input);
+		else {
+			this.playLoop((NewGameMessage) message, input);
+		}
 	}
 
 	private void playLoop(NewGameMessage game, Scanner input) throws JsonParseException, JsonMappingException, IOException {
@@ -71,7 +73,7 @@ public class NetworkConsoleController {
 			Message mess;
 			do {
 				mess = receive(Message.class);
-				System.out.println(mess);
+//				System.out.println(mess);
 			}
 			while (!(mess instanceof EndOfSequenceMessage));
 			
@@ -94,7 +96,11 @@ public class NetworkConsoleController {
 
 
 	private <T> T receive(Class<T> class1) throws JsonParseException, JsonMappingException, IOException {
-		 return mapper.readValue(in, class1);
+//		String value = IOUtils.toString(in);
+//		System.out.println("Reading: " + value);
+		T mapp = mapper.readValue(in, class1);
+		System.out.println("Received: " + mapper.writeValueAsString(mapp));
+		return mapp;
 	}
 
 
