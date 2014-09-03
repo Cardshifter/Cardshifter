@@ -1,9 +1,12 @@
 package com.cardshifter.fx;
 
+import com.cardshifter.ai.CardshifterAI;
+import com.cardshifter.ai.CompleteIdiot;
 import com.cardshifter.core.CommandLineOptions;
 import com.cardshifter.core.Game;
 import com.cardshifter.core.Card;
 import com.cardshifter.core.Player;
+import com.cardshifter.core.UsableAction;
 import com.cardshifter.core.Zone;
 
 import java.io.File;
@@ -12,6 +15,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -25,7 +29,8 @@ import javafx.scene.shape.Rectangle;
 import org.luaj.vm2.lib.jse.CoerceLuaToJava;
 
 public class FXMLGameController implements Initializable {
-    
+    private final CardshifterAI opponent = new CompleteIdiot();
+	
     //INITIAL GAME SETUP
     //need a forward declaration so that this is  global to the class
     Game game;
@@ -69,6 +74,16 @@ public class FXMLGameController implements Initializable {
     private void handleTurnButtonAction(ActionEvent event) {
         if (gameHasStarted == true) {
             game.nextTurn();
+            
+            while (game.getCurrentPlayer() == game.getLastPlayer()) {
+            	UsableAction action = opponent.getAction(game.getCurrentPlayer());
+            	if (action == null) {
+            		System.out.println("Warning: Opponent did not properly end turn");
+            		break;
+            	}
+            	action.perform();
+            }
+            
             turnLabel.setText(String.format("Turn Number %d", game.getTurnNumber()));
             this.renderHands();
         }
