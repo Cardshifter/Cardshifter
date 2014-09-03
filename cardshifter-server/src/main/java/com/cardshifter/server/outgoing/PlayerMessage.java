@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.cardshifter.core.LuaTools;
 import com.cardshifter.core.Player;
-import com.cardshifter.server.incoming.Message;
+import com.cardshifter.server.messages.Message;
 
 public class PlayerMessage extends Message {
 //	SERVER: command: player, name: 'Bubu', properties: { hp: 23 }

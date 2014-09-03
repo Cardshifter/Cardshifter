@@ -1,4 +1,5 @@
-package com.cardshifter.server.incoming;
+package com.cardshifter.server.abstr;
+
 
 
 public abstract class CardMessage extends RequestMessage {

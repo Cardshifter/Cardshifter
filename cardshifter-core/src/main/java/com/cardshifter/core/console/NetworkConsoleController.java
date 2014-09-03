@@ -8,16 +8,23 @@ import java.net.UnknownHostException;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
+import java.util.Random;
 import java.util.Scanner;
 
 import com.cardshifter.core.TargetAction;
 import com.cardshifter.core.Targetable;
 import com.cardshifter.core.UsableAction;
 import com.cardshifter.server.incoming.LoginMessage;
-import com.cardshifter.server.incoming.Message;
+import com.cardshifter.server.incoming.StartGameRequest;
+import com.cardshifter.server.messages.Message;
+import com.cardshifter.server.outgoing.EndOfSequenceMessage;
+import com.cardshifter.server.outgoing.NewGameMessage;
+import com.cardshifter.server.outgoing.WaitMessage;
 import com.cardshifter.server.outgoing.WelcomeMessage;
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class NetworkConsoleController {
@@ -38,13 +45,36 @@ public class NetworkConsoleController {
 	
 	public void play(Scanner input) throws IOException {
 		System.out.println("Enter your name: ");
-		String name = input.nextLine();
+//		String name = input.nextLine();
+		String name = "Player" + new Random().nextInt(100);
 		this.send(new LoginMessage(name));
 		
-		WelcomeMessage response = mapper.readValue(in, WelcomeMessage.class);
+		WelcomeMessage response = receive(WelcomeMessage.class);
 		System.out.println(response.getMessage());
+		if (!response.isOK()) {
+			return;
+		}
 		
+		this.send(new StartGameRequest());
+		Message message = receive(Message.class);
+		if (message instanceof WaitMessage) {
+			System.out.println(((WaitMessage) message).getMessage());
+		}
+		
+		NewGameMessage game = receive(NewGameMessage.class);
+		this.playLoop(game, input);
+	}
+
+	private void playLoop(NewGameMessage game, Scanner input) throws JsonParseException, JsonMappingException, IOException {
+		System.out.printf("Game id %d. You are player index %d.%n", game.getGameId(), game.getPlayerIndex());
 		while (true) {
+			Message mess;
+			do {
+				mess = receive(Message.class);
+				System.out.println(mess);
+			}
+			while (!(mess instanceof EndOfSequenceMessage));
+			
 			
 			System.out.println("Retrieve game state...");
 			
@@ -61,6 +91,12 @@ public class NetworkConsoleController {
 		print("--------------------------------------------");
 		print("Game over!");
 	}
+
+
+	private <T> T receive(Class<T> class1) throws JsonParseException, JsonMappingException, IOException {
+		 return mapper.readValue(in, class1);
+	}
+
 
 	private void send(Message message) {
 		try {

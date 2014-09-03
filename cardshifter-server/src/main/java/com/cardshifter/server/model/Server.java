@@ -22,10 +22,10 @@ import org.apache.log4j.Logger;
 
 import com.cardshifter.server.clients.ClientIO;
 import com.cardshifter.server.incoming.LoginMessage;
-import com.cardshifter.server.incoming.Message;
 import com.cardshifter.server.incoming.PlayCardMessage;
-import com.cardshifter.server.incoming.PlayRequest;
+import com.cardshifter.server.incoming.StartGameRequest;
 import com.cardshifter.server.incoming.UseAbilityMessage;
+import com.cardshifter.server.messages.Message;
 
 
 public class Server {
@@ -47,7 +47,7 @@ public class Server {
 	private final Map<String, GameFactory> gameFactories = new ConcurrentHashMap<>();
 
 	private final Set<ConnectionHandler> handlers = Collections.synchronizedSet(new HashSet<>());
-	private AtomicReference<ClientIO> playAny;
+	private final AtomicReference<ClientIO> playAny = new AtomicReference<>();
 	private final Random random = new Random();
 
 	public Server() {
@@ -61,8 +61,8 @@ public class Server {
 		
 		incomings.addHandler("login", LoginMessage.class, handlers::loginMessage);
 //		incomings.addHandler("chat", ChatMessage.class);
-		incomings.addHandler("playCard", PlayCardMessage.class, handlers::playCard);
-		incomings.addHandler("play", PlayRequest.class, handlers::play);
+		incomings.addHandler("use", PlayCardMessage.class, handlers::playCard);
+		incomings.addHandler("startgame", StartGameRequest.class, handlers::play);
 		incomings.addHandler("useAbility", UseAbilityMessage.class, handlers::useAbility);
 		
 		server.addGameFactory(VANILLA, (serv, id) -> new TCGGame(serv, id));

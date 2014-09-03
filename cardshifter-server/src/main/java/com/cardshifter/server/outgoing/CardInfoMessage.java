@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.cardshifter.core.Card;
 import com.cardshifter.core.LuaTools;
-import com.cardshifter.server.incoming.Message;
+import com.cardshifter.server.messages.Message;
 
 public class CardInfoMessage extends Message {
 //	SERVER: command: card, zone: 3, id: 3, properties: { name: 'Biofsd', power: 3, health: 4, cardType: 'Creature', creatureType: 'B0T' }

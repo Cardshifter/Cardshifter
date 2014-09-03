@@ -8,7 +8,7 @@ import org.apache.log4j.Logger;
 import com.cardshifter.server.clients.ClientIO;
 import com.cardshifter.server.incoming.LoginMessage;
 import com.cardshifter.server.incoming.PlayCardMessage;
-import com.cardshifter.server.incoming.PlayRequest;
+import com.cardshifter.server.incoming.StartGameRequest;
 import com.cardshifter.server.incoming.UseAbilityMessage;
 import com.cardshifter.server.outgoing.WaitMessage;
 import com.cardshifter.server.outgoing.WelcomeMessage;
@@ -37,19 +37,14 @@ public class Handlers {
 		
 	}
 
-	public void play(PlayRequest message, ClientIO client) {
+	public void play(StartGameRequest message, ClientIO client) {
 		AtomicReference<ClientIO> playAny = server.getPlayAny();
 		if (playAny.compareAndSet(null, client)) {
-			
 			client.sendToClient(new WaitMessage());
-			
 		}
 		else {
 			ClientIO opponent = playAny.getAndSet(null);
-			
 			server.newGame(client, opponent);
-			
-			// TODO: Start game with opponent vs client
 		}
 	}
 

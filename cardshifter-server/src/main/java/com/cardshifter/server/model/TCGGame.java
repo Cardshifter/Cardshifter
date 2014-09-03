@@ -8,6 +8,7 @@ import com.cardshifter.core.Player;
 import com.cardshifter.core.Zone;
 import com.cardshifter.server.clients.ClientIO;
 import com.cardshifter.server.outgoing.CardInfoMessage;
+import com.cardshifter.server.outgoing.EndOfSequenceMessage;
 import com.cardshifter.server.outgoing.PlayerMessage;
 import com.cardshifter.server.outgoing.ZoneMessage;
 
@@ -42,6 +43,7 @@ public class TCGGame extends ServerGame {
 	protected void onStart() {
 		this.getPlayers().stream().forEach(pl -> this.send(new PlayerMessage(playerFor(pl))));
 		this.game.getZones().stream().forEach(this::sendZone);
+		this.send(new EndOfSequenceMessage());
 	}
 	
 	private void sendZone(Zone zone) {

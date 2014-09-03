@@ -2,7 +2,7 @@ package com.cardshifter.server.outgoing;
 
 import com.cardshifter.core.Player;
 import com.cardshifter.core.Zone;
-import com.cardshifter.server.incoming.Message;
+import com.cardshifter.server.messages.Message;
 
 public class ZoneMessage extends Message {
 //	SERVER: command: zone, name: 'Deck', owner: 0, id: 7, (playerIndex), size: 42, hidden: true

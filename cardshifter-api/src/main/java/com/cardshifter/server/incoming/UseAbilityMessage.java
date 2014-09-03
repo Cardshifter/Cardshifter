@@ -1,5 +1,7 @@
 package com.cardshifter.server.incoming;
 
+import com.cardshifter.server.abstr.CardMessage;
+
 
 public class UseAbilityMessage extends CardMessage {
 
