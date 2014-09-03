@@ -1,0 +1,26 @@
+        /*
+            for (Zone zone : game.getZones()) {
+            if (zone.isKnownToPlayer(game.getCurrentPlayer())) {
+		zone.getCards().forEach(card -> {
+                    cardsInHand.add(card);
+                });
+            }
+	}
+        */
+
+    //game.getFirstPlayer().data.hand
+
+
+            /*
+            Group cardTextGroup = new Group();
+            cardTextGroup.setTranslateY(40);
+            cardGroup.getChildren().add(cardTextGroup);
+            
+            Label allCardLabel = new Label();
+            allCardLabel.setText(card.toString());
+            cardTextGroup.getChildren().add(allCardLabel);
+            */
+
+
+//used for layouts
+//button.setMaxSize(activeBackground.getWidth(), activeBackground.getHeight());

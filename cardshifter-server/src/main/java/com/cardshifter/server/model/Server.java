@@ -27,7 +27,6 @@ import com.cardshifter.server.incoming.StartGameRequest;
 import com.cardshifter.server.incoming.UseAbilityMessage;
 import com.cardshifter.server.messages.Message;
 
-
 public class Server {
 	private static final Logger	logger = LogManager.getLogger(Server.class);
 

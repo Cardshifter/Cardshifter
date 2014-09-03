@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.shape.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" maxHeight="600" maxWidth="1200" minHeight="600" minWidth="1200" prefHeight="600.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cardshifter.fx.FXMLGameController">
+    <children>
+        <Button fx:id="button" layoutX="1098.0" layoutY="530.0" onAction="#startGameButtonAction" text="Start Game" />
+        <Label fx:id="startGameLabel" layoutX="1098.0" layoutY="564.0" minHeight="16" minWidth="69" />
+        <Button layoutX="1093.0" layoutY="367.0" mnemonicParsing="false" onAction="#handleTurnButtonAction" text="Next Turn" />
+        <Label fx:id="turnLabel" layoutX="1091.0" layoutY="412.0" text="Turn Number" />
+      <Pane fx:id="player01Pane" layoutX="14.0" layoutY="367.0" prefHeight="200.0" prefWidth="1066.0">
+         <children>
+            <QuadCurve fx:id="handGuide" controlY="-100.0" endX="100.0" fill="DODGERBLUE" layoutX="480.0" layoutY="200.0" opacity="0.0" startX="-100.0" stroke="BLACK" strokeType="INSIDE" />
+         </children>
+      </Pane>
+      <Pane fx:id="player02Pane" layoutX="14.0" layoutY="14.0" prefHeight="72.0" prefWidth="924.0">
+      </Pane>
+    </children>
+</AnchorPane>

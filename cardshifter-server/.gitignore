@@ -1,2 +1,6 @@
 /target
 Server.log
+
+### Ignore Netbeans workspace
+nb-configuration.xml
+nbactions.xml

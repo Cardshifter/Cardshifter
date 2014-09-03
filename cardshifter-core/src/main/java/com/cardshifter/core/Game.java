@@ -21,6 +21,7 @@ public class Game {
 	public final LuaValue data;
 	private boolean gameOver = false;
 	private final AtomicInteger ids;
+	private int turnNumber;
 	
 	private Player currentPlayer;
 	
@@ -36,12 +37,18 @@ public class Game {
 		this.players.add(new Player(this, "Player1"));
 		this.players.add(new Player(this, "Player2"));
 		this.random = random;
+                
+                this.turnNumber = 0;
 	}
 	
 	public Game(InputStream file) {
 		this(file, new Random());
 	}
-	
+
+	public int getTurnNumber() {
+		return this.turnNumber;
+	}
+        
 	public Player getCurrentPlayer() {
 		return currentPlayer;
 	}
@@ -97,6 +104,8 @@ public class Game {
 		this.currentPlayer = currentPlayer == null ? players.get(0) : currentPlayer.getNextPlayer();
 				
 		this.events.callEvent(Events.TURN_START, CoerceJavaToLua.coerce(this.currentPlayer), null);
+
+		turnNumber++;
 	}
 	
 	public int randomInt(int count) {
