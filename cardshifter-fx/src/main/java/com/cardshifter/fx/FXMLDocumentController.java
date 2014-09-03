@@ -53,7 +53,7 @@ public class FXMLDocumentController implements Initializable {
     }
    
     //UPDATE LOOP
-    private void render() {
+    public void render() {
         this.renderHands();
     }
     private void renderHands() {
@@ -111,7 +111,7 @@ public class FXMLDocumentController implements Initializable {
         for (Card card : cardsInHand) {
             System.out.println("found a card");
             
-            CardNode cardNode = new CardNode(100, 100, "testName", card);
+            CardNode cardNode = new CardNode(100, 100, "testName", card, this);
             Group cardGroup = cardNode.getCardGroup();
             cardGroup.setAutoSizeChildren(true); //NEW
             cardGroup.setId(String.format("player01card%d", cardIndex));

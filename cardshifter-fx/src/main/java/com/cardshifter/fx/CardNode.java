@@ -18,18 +18,20 @@ import javafx.scene.shape.Rectangle;
 
 public class CardNode {
     
-    final private int sizeX;
-    final private int sizeY;
-    final private String name;
-    final private Card card;
+    private final int sizeX;
+    private final int sizeY;
+    private final String name;
+    private final Card card;
+    private final FXMLDocumentController controller;
     
-    private Group cardGroup;
+    private final Group cardGroup;
     
-    public CardNode(int sizeX, int sizeY, String name, Card card) {
+    public CardNode(int sizeX, int sizeY, String name, Card card, FXMLDocumentController controller) {
         this.sizeX = sizeX;
         this.sizeY = sizeY;
         this.name = name;
         this.card = card;
+        this.controller = controller;
         this.cardGroup = new Group();
         this.createCard();
     }
@@ -96,36 +98,36 @@ public class CardNode {
         button.minHeight(100);
         button.prefWidth(100);
         button.prefHeight(100);
-        button.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                System.out.println("Trying to Perform Action");
-                List<UsableAction> cardActions = card.getActions().values().stream().filter(UsableAction::isAllowed).collect(Collectors.toList());
-                for (UsableAction action : cardActions) {
-                    if (action.isAllowed()) {
-                        if (action instanceof TargetAction) {
-                            TargetAction targetAction = (TargetAction) action;
-                            List<Targetable> targets = targetAction.findTargets();
-                            if (targets.isEmpty()) {
-                                return;
-                            }
-					
-                            //int targetIndex = Integer.parseInt(input.nextLine());
-                            int targetIndex = 0;
-                            if (targetIndex < 0 || targetIndex >= cardActions.size()) {
-                                return;
-                            }
-					
-                            //TODO: add a check to make sure the target is valid//
-                            Targetable target = targets.get(targetIndex);
-				targetAction.perform(target);
-                        }
-                        else action.perform();
-                    }
-                }
-            }
-        });
+        button.setOnAction(this::buttonClick);
         cardGroup.getChildren().add(button);
+    }
+    
+    private void buttonClick(ActionEvent event) {
+        System.out.println("Trying to Perform Action");
+        List<UsableAction> cardActions = card.getActions().values().stream().filter(UsableAction::isAllowed).collect(Collectors.toList());
+        for (UsableAction action : cardActions) {
+            if (action.isAllowed()) {
+                if (action instanceof TargetAction) {
+                    TargetAction targetAction = (TargetAction) action;
+                    List<Targetable> targets = targetAction.findTargets();
+                    if (targets.isEmpty()) {
+                        return;
+                    }
+
+                    //int targetIndex = Integer.parseInt(input.nextLine());
+                    int targetIndex = 0;
+                    if (targetIndex < 0 || targetIndex >= cardActions.size()) {
+                        return;
+                    }
+                        
+                    //TODO: add a check to make sure the target is valid//
+                    Targetable target = targets.get(targetIndex);
+                    targetAction.perform(target);
+                }
+                else action.perform();
+            }
+            this.controller.render();
+        }
     }
     
     private boolean isCardActive() {
@@ -133,8 +135,3 @@ public class CardNode {
         return cardActions.size() > 0;
     }
 }
-
-/*
-
-            }
-*/
