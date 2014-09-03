@@ -21,10 +21,12 @@ import com.cardshifter.server.outgoing.EndOfSequenceMessage;
 import com.cardshifter.server.outgoing.NewGameMessage;
 import com.cardshifter.server.outgoing.WaitMessage;
 import com.cardshifter.server.outgoing.WelcomeMessage;
+import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class NetworkConsoleController {
@@ -70,9 +72,20 @@ public class NetworkConsoleController {
 	private void playLoop(NewGameMessage game, Scanner input) throws JsonParseException, JsonMappingException, IOException {
 		System.out.printf("Game id %d. You are player index %d.%n", game.getGameId(), game.getPlayerIndex());
 		while (true) {
-			Message mess;
+			Message mess = null;
 			do {
-				mess = receive(Message.class);
+				System.out.println("Start loop");
+				
+				MappingIterator<Message> values = mapper.readValues(new JsonFactory().createParser(in), Message.class);
+				while (values.hasNext()) {
+					mess = values.next();
+					System.out.println("iterator: " + mess);
+					if (mess instanceof EndOfSequenceMessage) {
+						break;
+					}
+				}
+				System.out.println("End of loop, mess is " + mess);
+//				mess = receive(Message.class);
 //				System.out.println(mess);
 			}
 			while (!(mess instanceof EndOfSequenceMessage));
