@@ -136,6 +136,23 @@ public class FXMLGameController implements Initializable {
         return hand.getCards();
     }
     
+    //RENDER BATTLEFIELD
+    @FXML
+    Pane player02Battlefield;
+    @FXML
+    Pane player01Battlefield;
+    private void renderBattlefield() {
+        player01Battlefield.getChildren().clear();
+        player02Battlefield.getChildren().clear();
+        
+        
+    }
+    
+    private List<Card> getPlayerBattlefield(Player player) {
+        Zone battlefield = (Zone)CoerceLuaToJava.coerce(player.data.get("battlefield"), Zone.class);
+        return battlefield.getCards();
+    }
+    
     //BOILERPLATE
     @Override
     public void initialize(URL url, ResourceBundle rb) {

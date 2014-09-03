@@ -21,5 +21,7 @@
       </Pane>
       <Pane fx:id="player02Pane" layoutX="153.0" layoutY="6.0" prefHeight="61.0" prefWidth="895.0">
       </Pane>
+      <Pane fx:id="player02Battlefield" layoutX="47.0" layoutY="112.0" prefHeight="98.0" prefWidth="1001.0" />
+      <Pane fx:id="player01Battlefield" layoutX="47.0" layoutY="237.0" prefHeight="98.0" prefWidth="1001.0" />
     </children>
 </AnchorPane>
