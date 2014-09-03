@@ -95,14 +95,18 @@ public class FXMLGameController implements Initializable {
     private void renderOpponentHand() {
         player02Pane.getChildren().clear();
         
-        int cardCount = this.getOpponentCardCount();
+        int numCards = this.getOpponentCardCount();
+        double paneHeight = player02Pane.getHeight();
+        double paneWidth = player02Pane.getWidth();
+        double cardWidth = paneWidth / numCards;
+        
         int currentCard = 0;
-        while(currentCard < cardCount) {
+        while(currentCard < numCards) {
             Group cardGroup = new Group();
-            cardGroup.setTranslateX(currentCard * 130);
+            cardGroup.setTranslateX(currentCard * (cardWidth*1.05));
             player02Pane.getChildren().add(cardGroup);
             
-            Rectangle cardBack = new Rectangle(0,0,125,145);
+            Rectangle cardBack = new Rectangle(0,0,cardWidth,paneHeight);
             cardBack.setFill(Color.AQUAMARINE);
             cardGroup.getChildren().add(cardBack);
             
@@ -117,21 +121,25 @@ public class FXMLGameController implements Initializable {
     }
     
     //RENDER PLAYER ONE CARDS
-    /*BIG TO DO: Make all dimensions relative to the Pane size or Screen size*/
     @FXML
     private Pane player01Pane;
     private void renderPlayerHand() {
         player01Pane.getChildren().clear();
                 
         List<Card> cardsInHand = this.getCurrentPlayerHand();
+        
+        int numCards = cardsInHand.size();
+        double paneHeight = player01Pane.getHeight();
+        double paneWidth = player01Pane.getWidth();
+        double cardWidth = paneWidth / numCards;
 
         int cardIndex = 0;
         for (Card card : cardsInHand) {
-            CardNode cardNode = new CardNode(100, 100, "testName", card, this);
+            CardNode cardNode = new CardNode(cardWidth, paneHeight, "testName", card, this);
             Group cardGroup = cardNode.getCardGroup();
             cardGroup.setAutoSizeChildren(true); //NEW
             cardGroup.setId(String.format("player01card%d", cardIndex));
-            cardGroup.setTranslateX(cardIndex * 165);
+            cardGroup.setTranslateX(cardIndex * cardWidth);
             player01Pane.getChildren().add(cardGroup);
             
             cardIndex++;
