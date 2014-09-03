@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -18,15 +17,15 @@ import javafx.scene.shape.Rectangle;
 
 public class CardNode {
     
-    private final int sizeX;
-    private final int sizeY;
+    private final double sizeX;
+    private final double sizeY;
     private final String name;
     private final Card card;
     private final FXMLGameController controller;
     
     private final Group cardGroup;
     
-    public CardNode(int sizeX, int sizeY, String name, Card card, FXMLGameController controller) {
+    public CardNode(double sizeX, double sizeY, String name, Card card, FXMLGameController controller) {
         this.sizeX = sizeX;
         this.sizeY = sizeY;
         this.name = name;
@@ -45,13 +44,15 @@ public class CardNode {
         this.createCardArt();
         this.createCardIDLabel();
         this.createCardPropertyLabelsGroup();
+        
+        //only make the button when the card is active
         if(this.isCardActive() == true) {
             this.createCardActivateButton();
         }
     }
     
     private void createCardBackground() {
-        Rectangle activeBackground = new Rectangle(-10,-10,170,240);
+        Rectangle activeBackground = new Rectangle(-10,-10,this.sizeX, this.sizeY);
         activeBackground.setFill(Color.BLACK);
         if(this.isCardActive() == true) {
             activeBackground.setFill(Color.YELLOW);
@@ -60,7 +61,7 @@ public class CardNode {
     }
     
     private void createCardArt() {
-        Rectangle cardBack = new Rectangle(0,0,150,220);
+        Rectangle cardBack = new Rectangle(0,0,this.sizeX*0.90,this.sizeY*0.90);
         cardBack.setFill(Color.FIREBRICK);
         cardGroup.getChildren().add(cardBack);
     }
@@ -91,13 +92,12 @@ public class CardNode {
     }
     
     private void createCardActivateButton() {
-        //only make a button when the card is active
         Button button = new Button();
         //button.setStyle("-fx-background-color:transparent");
-        button.minWidth(100);
-        button.minHeight(100);
-        button.prefWidth(100);
-        button.prefHeight(100);
+        //button.minWidth(100);
+        //button.minHeight(100);
+        //button.prefWidth(100);
+        //button.prefHeight(100);
         button.setOnAction(this::buttonClick);
         cardGroup.getChildren().add(button);
     }
