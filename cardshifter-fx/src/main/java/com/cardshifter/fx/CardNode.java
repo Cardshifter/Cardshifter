@@ -22,11 +22,11 @@ public class CardNode {
     private final int sizeY;
     private final String name;
     private final Card card;
-    private final FXMLDocumentController controller;
+    private final FXMLGameController controller;
     
     private final Group cardGroup;
     
-    public CardNode(int sizeX, int sizeY, String name, Card card, FXMLDocumentController controller) {
+    public CardNode(int sizeX, int sizeY, String name, Card card, FXMLGameController controller) {
         this.sizeX = sizeX;
         this.sizeY = sizeY;
         this.name = name;

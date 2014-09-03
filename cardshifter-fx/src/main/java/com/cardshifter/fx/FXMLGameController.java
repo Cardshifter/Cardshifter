@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -25,7 +24,7 @@ import javafx.scene.shape.Rectangle;
 
 import org.luaj.vm2.lib.jse.CoerceLuaToJava;
 
-public class FXMLDocumentController implements Initializable {
+public class FXMLGameController implements Initializable {
     
     //INITIAL GAME SETUP
     //need a forward declaration so that this is  global to the class
@@ -33,7 +32,7 @@ public class FXMLDocumentController implements Initializable {
     //hack to make the buttons work properly
     private boolean gameHasStarted = false;
     //I think this is a public constructor, this code initializes the Game
-    public FXMLDocumentController() throws Exception {
+    public FXMLGameController() throws Exception {
         CommandLineOptions options = new CommandLineOptions();
         InputStream file = options.getScript() == null ? Game.class.getResourceAsStream("start.lua") : new FileInputStream(new File(options.getScript()));
         game = new Game(file, options.getRandom());
@@ -79,6 +78,8 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     Pane player02Pane;
     private void renderOpponentHand() {
+        player02Pane.getChildren().clear();
+        
         int cardCount = this.getOpponentCardCount();
         int currentCard = 0;
         while(currentCard < cardCount) {
@@ -105,12 +106,12 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private Pane player01Pane;
     private void renderPlayerHand() {
+        player01Pane.getChildren().clear();
+                
         List<Card> cardsInHand = this.getCurrentPlayerHand();
 
         int cardIndex = 0;
         for (Card card : cardsInHand) {
-            System.out.println("found a card");
-            
             CardNode cardNode = new CardNode(100, 100, "testName", card, this);
             Group cardGroup = cardNode.getCardGroup();
             cardGroup.setAutoSizeChildren(true); //NEW
@@ -124,11 +125,7 @@ public class FXMLDocumentController implements Initializable {
     private List<Card> getCurrentPlayerHand() {
         Player player = game.getFirstPlayer(); 
         Zone hand = (Zone)CoerceLuaToJava.coerce(player.data.get("hand"), Zone.class);
-        List<Card> cardsInHand = new ArrayList<>();
-        hand.getCards().forEach(card -> {
-            cardsInHand.add(card);
-        });
-        return cardsInHand;
+        return hand.getCards();
     }
     
     //BOILERPLATE
