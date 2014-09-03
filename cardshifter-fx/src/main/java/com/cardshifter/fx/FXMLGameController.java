@@ -1,14 +1,5 @@
 package com.cardshifter.fx;
 
-import com.cardshifter.ai.CardshifterAI;
-import com.cardshifter.ai.CompleteIdiot;
-import com.cardshifter.core.CommandLineOptions;
-import com.cardshifter.core.Game;
-import com.cardshifter.core.Card;
-import com.cardshifter.core.Player;
-import com.cardshifter.core.UsableAction;
-import com.cardshifter.core.Zone;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -27,6 +18,15 @@ import javafx.scene.shape.QuadCurve;
 import javafx.scene.shape.Rectangle;
 
 import org.luaj.vm2.lib.jse.CoerceLuaToJava;
+
+import com.cardshifter.ai.CardshifterAI;
+import com.cardshifter.ai.CompleteIdiot;
+import com.cardshifter.core.Card;
+import com.cardshifter.core.Game;
+import com.cardshifter.core.Player;
+import com.cardshifter.core.UsableAction;
+import com.cardshifter.core.Zone;
+import com.cardshifter.core.console.CommandLineOptions;
 
 public class FXMLGameController implements Initializable {
     private final CardshifterAI opponent = new CompleteIdiot();

@@ -1,4 +1,4 @@
-package com.cardshifter.core;
+package com.cardshifter.core.console;
 
 import java.util.Random;
 
@@ -15,6 +15,9 @@ public class CommandLineOptions {
 	@Parameter(names = { "--network" }, description = "Connect to a server for playing")
 	private String host;
 	
+	@Parameter(names = { "--port" }, description = "Port for use with network playing")
+	private int port = 4242;
+	
 	public Random getRandom() {
 		return seed == null ? new Random() : new Random(seed);
 	}
@@ -25,6 +28,10 @@ public class CommandLineOptions {
 	
 	public String getHost() {
 		return host;
+	}
+	
+	public int getPort() {
+		return port;
 	}
 	
 }

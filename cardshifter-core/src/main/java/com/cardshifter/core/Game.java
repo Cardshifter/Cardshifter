@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.luaj.vm2.LuaFunction;
@@ -19,12 +20,15 @@ public class Game {
 	private final Random random;
 	public final LuaValue data;
 	private boolean gameOver = false;
+	private final AtomicInteger ids;
 	private int turnNumber;
+	
 	private Player currentPlayer;
 	
 	public Game(InputStream file, Random random) {
 		Objects.requireNonNull(random);
 		Objects.requireNonNull(file);
+		this.ids = new AtomicInteger(1);
 		this.zones = new ArrayList<>();
 		this.data = LuaValue.tableOf();
 		this.players = new ArrayList<>();
@@ -40,10 +44,10 @@ public class Game {
 	public Game(InputStream file) {
 		this(file, new Random());
 	}
-        
-        public int getTurnNumber() {
-            return this.turnNumber;
-        }
+
+	public int getTurnNumber() {
+		return this.turnNumber;
+	}
         
 	public Player getCurrentPlayer() {
 		return currentPlayer;
@@ -74,7 +78,7 @@ public class Game {
 	}
 	
 	public Zone createZone(Player owner, String name) {
-		Zone zone = new Zone(owner, name);
+		Zone zone = new Zone(owner, name, this.nextId());
 		this.zones.add(zone);
 		return zone;
 	}
@@ -100,8 +104,8 @@ public class Game {
 		this.currentPlayer = currentPlayer == null ? players.get(0) : currentPlayer.getNextPlayer();
 				
 		this.events.callEvent(Events.TURN_START, CoerceJavaToLua.coerce(this.currentPlayer), null);
-                
-                turnNumber++;
+
+		turnNumber++;
 	}
 	
 	public int randomInt(int count) {
@@ -122,6 +126,10 @@ public class Game {
 	
 	public boolean isGameOver() {
 		return gameOver;
+	}
+
+	int nextId() {
+		return this.ids.getAndIncrement();
 	}
 	
 }

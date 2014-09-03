@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.cardshifter.server.clients.ClientIO;
-import com.cardshifter.server.incoming.Message;
+import com.cardshifter.server.messages.Message;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -58,7 +58,10 @@ public class IncomingHandler {
 	    HashMap<String, String> o = mapper.readValue(json, typeRef);
 
 	    String command = o.get("command");
-	    ObjectReader reader = commandTypes.get(command);
+	    if (command == null || !commandTypes.containsKey(command)) {
+	    	throw new UnsupportedOperationException("Command " + command + " is not supported. JSON: " + json);
+	    }
+	    ObjectReader reader = commandTypes.getOrDefault(command, null);
 		return reader.readValue(json);
 	}
 

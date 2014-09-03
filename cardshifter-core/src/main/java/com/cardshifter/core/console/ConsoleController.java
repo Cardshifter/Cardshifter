@@ -1,9 +1,5 @@
-package com.cardshifter.core;
+package com.cardshifter.core.console;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
@@ -12,8 +8,13 @@ import java.util.stream.Collectors;
 
 import org.luaj.vm2.LuaValue;
 
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.ParameterException;
+import com.cardshifter.core.Game;
+import com.cardshifter.core.LuaTools;
+import com.cardshifter.core.Player;
+import com.cardshifter.core.TargetAction;
+import com.cardshifter.core.Targetable;
+import com.cardshifter.core.UsableAction;
+import com.cardshifter.core.Zone;
 
 public class ConsoleController {
 	private final Game game;
@@ -22,8 +23,7 @@ public class ConsoleController {
 		this.game = Objects.requireNonNull(game, "game");;
 	}
 
-	public void play() {
-		Scanner input = new Scanner(System.in);
+	public void play(Scanner input) {
 		while (!game.isGameOver()) {
 			outputGameState();
 			List<UsableAction> actions = game.getAllActions().stream().filter(action -> action.isAllowed()).collect(Collectors.toList());
@@ -139,23 +139,5 @@ public class ConsoleController {
 			sb.append(' ');
 		}
 		return sb.toString();
-	}
-	
-	public static void main(String[] args) throws FileNotFoundException {
-		CommandLineOptions options = new CommandLineOptions();
-		JCommander jcommander = new JCommander(options);
-		try {
-			jcommander.parse(args);
-		}
-		catch (ParameterException ex) {
-			System.out.println(ex.getMessage());
-			jcommander.usage();
-			return;
-		}
-		InputStream file = options.getScript() == null ? Game.class.getResourceAsStream("start.lua") : new FileInputStream(new File(options.getScript()));
-		
-		Game game = new Game(file, options.getRandom());
-		game.getEvents().startGame(game);
-		new ConsoleController(game).play();		
 	}
 }

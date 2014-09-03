@@ -1,17 +1,17 @@
 Examples of client-server JSON commands:
 
-CLI: command: login, user: name, TODO: password: hashed
-SER: command: login, status: 200, response: OK
-SER: command: login, status: 404, response: Wrong username or password
+CLI: LoginMessage command: login, user: name, TODO: password: hashed
+SER: WelcomeMessage command: login, status: 200, response: OK
+SER: WelcomeMessage command: login, status: 404, response: Wrong username or password
 
-CLI: command: play, mod: vanilla
-SER: command: wait, message: Looking for opponent
+CLI: StartGameRequest command: play, mod: vanilla
+SER: WaitMessage command: play, message: Looking for opponent
 
-SER: command: game, gameid: 42, opponent: { name: Bubu, rating: 4200 }
-SER: command: player, name: 'Player1', hp: 42
-SER: command: player, name: 'Bubu', hp: 23
-SER: command: zone, name: 'Deck', owner: 0, id: 7, (playerIndex), size: 42, hidden: true
-SER: command: card, zone: 'Hand', owner: 0, id: 3, name: 'Biofsd', power: 3, health: 4, cardType: 'Creature', creatureType: 'B0T'
+SER: GameMessage command: game, gameid: 42, opponent: { name: Bubu, rating: 4200 }
+SER: PlayerMessage command: player, name: 'Player1', hp: 42
+SER: PlayerMessage command: player, name: 'Bubu', hp: 23
+SER: ZoneMessage command: zone, name: 'Deck', owner: 0, id: 7, size: 42, hidden: true
+SER: CardMessage command: card, zone: 7, id: 3, properties: { name: 'Biofsd', power: 3, health: 4, cardType: 'Creature', creatureType: 'B0T' }
 
 ? CLI: command: choices
 ? SER: command: action, card: 4, ability: 'Use', targets: { 6, 8, 12, 3 }

@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.luaj.vm2.LuaValue;
@@ -18,16 +17,16 @@ public class Zone {
 	private final Map<Player, Boolean> knownToPlayers = new ConcurrentHashMap<>();
 	public final LuaValue data;
 	private boolean globallyKnown;
-        private Random random;
+	private final int id;
 	
-	Zone(Player owner, String name) {
+	Zone(Player owner, String name, int id) {
 		Objects.requireNonNull(owner);
+		this.id = id;
 		this.owner = owner;
 		this.game = owner.getGame();
 		this.cards = new LinkedList<>();
 		this.data = LuaValue.tableOf();
 		this.name = name;
-                this.random = new Random();
 	}
 	
 	public LinkedList<Card> getCards() {
@@ -60,15 +59,13 @@ public class Zone {
 	}
 	
 	public Card createCardOnTop() {
-                int randomNumber = this.random.nextInt(150) + 1;
-		Card card = new Card(this, randomNumber);
+		Card card = new Card(this, getGame().nextId());
 		this.cards.addFirst(card);
 		return card;
 	}
 	
 	public Card createCardOnBottom() {
-                int randomNumber = this.random.nextInt(150) + 1;
-		Card card = new Card(this, randomNumber);
+		Card card = new Card(this, getGame().nextId());
 		this.cards.addLast(card);
 		return card;
 	}
@@ -92,5 +89,13 @@ public class Zone {
 	
 	public boolean isEmpty() {
 		return this.cards.isEmpty();
+	}
+	
+	public int getId() {
+		return id;
+	}
+
+	public int size() {
+		return cards.size();
 	}
 }

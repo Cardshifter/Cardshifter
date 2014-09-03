@@ -4,10 +4,12 @@ import java.util.Random;
 
 import com.cardshifter.core.Card;
 import com.cardshifter.core.Game;
+import com.cardshifter.core.LuaTools;
 import com.cardshifter.core.Player;
 import com.cardshifter.core.Zone;
 import com.cardshifter.server.clients.ClientIO;
 import com.cardshifter.server.outgoing.CardInfoMessage;
+import com.cardshifter.server.outgoing.EndOfSequenceMessage;
 import com.cardshifter.server.outgoing.PlayerMessage;
 import com.cardshifter.server.outgoing.ZoneMessage;
 
@@ -40,22 +42,33 @@ public class TCGGame extends ServerGame {
 	
 	@Override
 	protected void onStart() {
-		this.getPlayers().stream().forEach(pl -> this.send(new PlayerMessage(playerFor(pl))));
+		game.getEvents().startGame(game);
+		this.getPlayers().stream().forEach(pl -> this.send(new PlayerMessage(playerFor(pl).getName(), LuaTools.tableToJava(playerFor(pl).data))));
 		this.game.getZones().stream().forEach(this::sendZone);
+		this.send(new EndOfSequenceMessage());
 	}
 	
 	private void sendZone(Zone zone) {
 		for (ClientIO io : this.getPlayers()) {
 			Player player = playerFor(io);
-			io.sendToClient(new ZoneMessage(zone, player));
+			io.sendToClient(constructZoneMessage(zone, player));
 			if (zone.isKnownToPlayer(player)) {
-				zone.getCards().forEach(this::sendCard);
+				zone.getCards().forEach(card -> this.sendCard(io, card));
 			}
 		}
 	}
 	
-	private void sendCard(Card card) {
-		this.send(new CardInfoMessage(card));
+	private ZoneMessage constructZoneMessage(Zone zone, Player player) {
+		return new ZoneMessage(zone.getId(), zone.getName(), zone.getOwner().getIndex(), zone.size(), zone.isKnownToPlayer(player));
+	}
+	
+	private void sendCard(ClientIO io, Card card) {
+		io.sendToClient(new CardInfoMessage(card.getZone().getId(), card.getId(), LuaTools.tableToJava(card.data)));
+//		try {
+//			Thread.sleep(1000);
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
 	}
 
 }
