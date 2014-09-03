@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.cardshifter.core.Player;
+import com.cardshifter.core.TargetAction;
+import com.cardshifter.core.Targetable;
 import com.cardshifter.core.UsableAction;
 
 public class CompleteIdiot implements CardshifterAI {
@@ -19,15 +21,27 @@ public class CompleteIdiot implements CardshifterAI {
 			.flatMap(zone -> zone.getCards().stream())
 			.flatMap(card -> card.getActions().values().stream());
 		
-		Stream<UsableAction> allActions = Stream.concat(actions, cardActions).filter(action -> action.isAllowed());
+		Stream<UsableAction> allActions = Stream.concat(actions, cardActions).filter(action -> action.isAllowed())
+				.filter(action -> setTargetIfPossible(action));
 		List<UsableAction> list = allActions.collect(Collectors.toList());
-		
-		// TODO: If it is a TargetAction, make sure that there are valid targets for it.
 		
 		if (list.isEmpty()) {
 			return null;
 		}
 		return list.get(random.nextInt(list.size()));
+	}
+
+	private boolean setTargetIfPossible(UsableAction action) {
+		if (action instanceof TargetAction) {
+			TargetAction targetAction = (TargetAction) action;
+			List<Targetable> targets = targetAction.findTargets();
+			if (targets.isEmpty()) {
+				return false;
+			}
+			targetAction.setTarget(targets.get(random.nextInt(targets.size())));
+			return true;
+		}
+		return true;
 	}
 
 }

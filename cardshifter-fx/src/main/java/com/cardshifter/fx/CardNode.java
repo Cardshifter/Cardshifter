@@ -122,7 +122,8 @@ public class CardNode {
                         
                     //TODO: add a check to make sure the target is valid//
                     Targetable target = targets.get(targetIndex);
-                    targetAction.perform(target);
+                    targetAction.setTarget(target);
+                    targetAction.perform();
                 }
                 else action.perform();
             }
