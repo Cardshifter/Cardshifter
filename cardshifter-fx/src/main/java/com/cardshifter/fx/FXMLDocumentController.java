@@ -3,6 +3,7 @@ package com.cardshifter.fx;
 import com.cardshifter.core.CommandLineOptions;
 import com.cardshifter.core.Game;
 import com.cardshifter.core.Card;
+import com.cardshifter.core.CardAction;
 import com.cardshifter.core.LuaTools;
 import com.cardshifter.core.Player;
 import com.cardshifter.core.TargetAction;
@@ -25,11 +26,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
-import javafx.scene.text.Text;
 import javafx.scene.shape.QuadCurve;
 import javafx.scene.shape.Rectangle;
 
@@ -109,11 +110,22 @@ public class FXMLDocumentController implements Initializable {
         return cardsInHand.size();
     }
     
+    /*BIG TO DO: Make all dimensions relative to the Pane size or Screen size*/
     @FXML
     private Pane player01Pane;
     private void renderPlayerHand() {
         //First get the list of Card objects
         List<Card> cardsInHand = this.getCurrentPlayerHand();
+        
+        List<Card> cardsWithActions = new ArrayList<>();
+        List<UsableAction> actions = game.getAllActions().stream().filter(action -> 
+                action.isAllowed()).collect(Collectors.toList());
+        for (UsableAction action : actions) {
+            if (action instanceof CardAction) {
+                Card card = ((CardAction)action).getCard();
+                cardsWithActions.add(card);
+            }
+        }
         
         //Create a group for each card for positioning
         //Another group is needed for each element in the LuaTable
@@ -121,9 +133,27 @@ public class FXMLDocumentController implements Initializable {
         for (Card card : cardsInHand) {
             System.out.println("found a card");
             
+            //check if the card is active
+            boolean isCardActive = false;
+            for (Card cardWithAction : cardsWithActions) {
+                if (card == cardWithAction) {
+                    isCardActive = true;
+                    //do a test to see if another break is needed
+                    break;
+                }
+            }
+            
             Group cardGroup = new Group();
+            cardGroup.setId(String.format("player01card%d", cardIndex));
             cardGroup.setTranslateX(cardIndex * 165);
             player01Pane.getChildren().add(cardGroup);
+            
+            Rectangle activeBackground = new Rectangle(-10,-10,170,240);
+            activeBackground.setFill(Color.BLACK);
+            if(isCardActive == true) {
+                activeBackground.setFill(Color.YELLOW);
+            }
+            cardGroup.getChildren().add(activeBackground);
             
             Rectangle cardBack = new Rectangle(0,0,150,220);
             cardBack.setFill(Color.FIREBRICK);
@@ -149,7 +179,7 @@ public class FXMLDocumentController implements Initializable {
                 cardTextStrings.getChildren().add(cardStringLabel);
                 stringIndex++;
             }
-            
+
             cardIndex++;
         }
     }
