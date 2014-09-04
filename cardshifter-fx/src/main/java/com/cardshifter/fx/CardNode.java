@@ -149,6 +149,7 @@ public class CardNode {
                     }
                     else action.perform();
                 }
+                this.controller.createData();
                 this.controller.render();
             }
         }

@@ -14,14 +14,14 @@
         <Label fx:id="startGameLabel" layoutX="1098.0" layoutY="564.0" minHeight="16" minWidth="69" />
         <Button layoutX="1093.0" layoutY="367.0" mnemonicParsing="false" onAction="#handleTurnButtonAction" text="Next Turn" />
         <Label fx:id="turnLabel" layoutX="1091.0" layoutY="412.0" text="Turn Number" />
-      <Pane fx:id="player01Pane" layoutX="14.0" layoutY="393.0" prefHeight="200.0" prefWidth="1066.0">
+      <Pane fx:id="playerHandPane" layoutX="14.0" layoutY="393.0" prefHeight="200.0" prefWidth="1066.0">
          <children>
             <QuadCurve fx:id="handGuide" controlY="-100.0" endX="100.0" fill="DODGERBLUE" layoutX="480.0" layoutY="200.0" opacity="0.0" startX="-100.0" stroke="BLACK" strokeType="INSIDE" />
          </children>
       </Pane>
-      <Pane fx:id="player02Pane" layoutX="153.0" layoutY="6.0" prefHeight="61.0" prefWidth="895.0">
+      <Pane fx:id="opponentHandPane" layoutX="153.0" layoutY="6.0" prefHeight="61.0" prefWidth="895.0">
       </Pane>
-      <Pane fx:id="player01Battlefield" layoutX="47.0" layoutY="237.0" prefHeight="98.0" prefWidth="1001.0" />
-      <Pane fx:id="player02Battlefield" layoutX="47.0" layoutY="107.0" prefHeight="98.0" prefWidth="1001.0" />
+      <Pane fx:id="playerBattlefieldPane" layoutX="47.0" layoutY="237.0" prefHeight="98.0" prefWidth="1001.0" />
+      <Pane fx:id="opponentBattlefieldPane" layoutX="47.0" layoutY="107.0" prefHeight="98.0" prefWidth="1001.0" />
     </children>
 </AnchorPane>

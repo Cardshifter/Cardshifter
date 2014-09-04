@@ -24,10 +24,10 @@ import com.cardshifter.ai.CompleteIdiot;
 import com.cardshifter.core.Card;
 import com.cardshifter.core.Game;
 import com.cardshifter.core.Player;
-import com.cardshifter.core.Targetable;
 import com.cardshifter.core.UsableAction;
 import com.cardshifter.core.Zone;
 import com.cardshifter.core.console.CommandLineOptions;
+import java.util.ArrayList;
 import javafx.scene.Node;
 
 public class FXMLGameController implements Initializable {
@@ -35,7 +35,7 @@ public class FXMLGameController implements Initializable {
     //INITIAL GAME SETUP
     private final CardshifterAI opponent = new CompleteIdiot();
     //need a forward declaration so that this is  global to the class
-    Game game;
+    private Game game;
     //hack to make the buttons work properly
     private boolean gameHasStarted = false;
     //I think this is a public constructor, this code initializes the Game
@@ -46,8 +46,7 @@ public class FXMLGameController implements Initializable {
         InputStream file = options.getScript() == null ? Game.class.getResourceAsStream("start.lua") : new FileInputStream(new File(options.getScript()));
         game = new Game(file, options.getRandom());
     }
-    
-    //START GAME BUTTON
+    //GAME START
     @FXML
     private Label startGameLabel;
     @FXML
@@ -57,14 +56,20 @@ public class FXMLGameController implements Initializable {
             game.getEvents().startGame(game);
             gameHasStarted = true;
             turnLabel.setText(String.format("Turn Number %d", game.getTurnNumber()));
-            this.renderHands();
+            
+            this.playerBattlefieldData = new ArrayList<>();
+            this.opponentBattlefieldData = new ArrayList<>();
+            this.playerHandData = new ArrayList<>();
+            this.opponentHandData = new ArrayList<>();
+            
+            this.createData();
+            this.render();
         }
     }
-   
-    //TODO: Create a fixed time step and render in that
-    //UPDATE LOOP
-    public void render() {
 
+    //TODO: Create a fixed time step and render in that
+    //RENDER - eventually change this to an Update method
+    public void render() {
         //this is a hack to make the buttons disappear when the choice is made
         //will not work with a fixed time step
         Node choiceBoxPane = anchorPane.lookup("#choiceBoxPane");
@@ -73,16 +78,165 @@ public class FXMLGameController implements Initializable {
         this.renderHands();
         this.renderBattlefields();
     }
+    
+    //RENDER HANDS
+    @FXML
+    private Pane opponentHandPane;
+    @FXML
+    private Pane playerHandPane;
     private void renderHands() {
-        player02Pane.getChildren().clear();
-        player01Pane.getChildren().clear();
         this.renderOpponentHand();
         this.renderPlayerHand();
+    }
+    private void renderOpponentHand() {
+        opponentHandPane.getChildren().clear();
+        opponentHandPane.getChildren().addAll(opponentHandData);
+    }
+    private void renderPlayerHand() {
+        playerHandPane.getChildren().clear();
+        playerHandPane.getChildren().addAll(playerHandData);
+    }
+    
+    //RENDER BATTLEFIELDS
+    @FXML
+    Pane opponentBattlefieldPane;
+    @FXML
+    Pane playerBattlefieldPane;
+    private void renderBattlefields() {
+        this.renderOpponentBattlefield();
+        this.renderPlayerBattlefield();
+    }
+    private void renderOpponentBattlefield() {
+        opponentBattlefieldPane.getChildren().clear();
+        opponentBattlefieldPane.getChildren().addAll(opponentBattlefieldData);
+    }
+    private void renderPlayerBattlefield() {
+        playerBattlefieldPane.getChildren().clear();
+        playerBattlefieldPane.getChildren().addAll(playerBattlefieldData);
+    }
+    
+    //Called at the end of turn, and when a card is played
+    public void createData() {
+        this.createHands();
+        this.createBattlefields();
+    }
+    
+    //CREATE HANDS
+    private void createHands() {
+        this.createOpponentHand();
+        this.createPlayerHand();
+    }
+    //CREATE OPPONENT CARD BACKS
+    private List<Group> opponentHandData;
+    private void createOpponentHand() {
+        opponentHandData.clear();
+        
+        //Opponent cards are rendered differently because the faces are not visible
+        double paneHeight = opponentHandPane.getHeight();
+        double paneWidth = opponentHandPane.getWidth();
+        
+        int numCards = this.getOpponentCardCount();
+        int maxCards = Math.max(numCards, 8);
+        double cardWidth = paneWidth / maxCards;
+        
+        int currentCard = 0;
+        while(currentCard < numCards) {
+            Group cardGroup = new Group();
+            cardGroup.setTranslateX(currentCard * (cardWidth*1.05)); //1.05 so there is space between cards
+            opponentHandData.add(cardGroup);
+            
+            Rectangle cardBack = new Rectangle(0,0,cardWidth,paneHeight);
+            cardBack.setFill(Color.AQUAMARINE);
+            cardGroup.getChildren().add(cardBack);
+            
+            currentCard++;
+        }
+    }
+    private int getOpponentCardCount() {
+        Player player = game.getLastPlayer(); 
+        Zone hand = (Zone)CoerceLuaToJava.coerce(player.data.get("hand"), Zone.class);
+        List<Card> cardsInHand = hand.getCards();
+        return cardsInHand.size();
+    }
+    //CREATE PLAYER HAND
+    private List<Group> playerHandData;
+    private void createPlayerHand() {
+        playerHandData.clear();
+        
+        List<Card> cardsInHand = this.getCurrentPlayerHand();
+        int numCards = cardsInHand.size();
+
+        int cardIndex = 0;
+        for (Card card : cardsInHand) {
+            CardNode cardNode = new CardNode(playerHandPane, numCards, "testName", card, this);
+            Group cardGroup = cardNode.getCardGroup();
+            cardGroup.setAutoSizeChildren(true); //NEW
+            cardGroup.setId(String.format("card%d", card.getId()));
+            cardGroup.setTranslateX(cardIndex * cardNode.getWidth());
+            playerHandData.add(cardGroup);
+            
+            cardIndex++;
+        }
+    }
+    private List<Card> getCurrentPlayerHand() {
+        Player player = game.getFirstPlayer(); 
+        Zone hand = (Zone)CoerceLuaToJava.coerce(player.data.get("hand"), Zone.class);
+        return hand.getCards();
+    }
+    
+    //CREATE BATTLEFIELDS
+    private void createBattlefields() {
+        this.createOpponentBattlefield();
+        this.createPlayerBattlefield();
+    }
+    //CREATE OPPONENT BATTLEFIELD
+    private List<Group> opponentBattlefieldData;
+    private void createOpponentBattlefield() {
+        opponentBattlefieldData.clear();
+        
+        List<Card> cardsInBattlefield = this.getBattlefield(game.getLastPlayer());
+        int numCards = cardsInBattlefield.size();
+
+        int cardIndex = 0;
+        for (Card card : cardsInBattlefield) {
+            CardNodeBattlefield cardNode = new CardNodeBattlefield(opponentBattlefieldPane, numCards, "testName", card, this, false);
+            Group cardGroup = cardNode.getCardGroup();
+            cardGroup.setAutoSizeChildren(true); //NEW
+            cardGroup.setId(String.format("card%d", card.getId()));
+            cardGroup.setTranslateX(cardIndex * cardNode.getWidth());
+            opponentBattlefieldData.add(cardGroup);
+            
+            cardIndex++;
+        } 
+    }
+    //CREATE PLAYER BATTLEFIELD
+    private List<Group> playerBattlefieldData;
+    private void createPlayerBattlefield() {
+        playerBattlefieldData.clear();
+        
+        List<Card> cardsInBattlefield = this.getBattlefield(game.getFirstPlayer());
+        int numCards = cardsInBattlefield.size();
+
+        int cardIndex = 0;
+        for (Card card : cardsInBattlefield) {
+            CardNodeBattlefield cardNode = new CardNodeBattlefield(playerBattlefieldPane, numCards, "testName", card, this, true);
+            Group cardGroup = cardNode.getCardGroup();
+            cardGroup.setAutoSizeChildren(true); //NEW
+            cardGroup.setId(String.format("card%d", card.getId()));
+            cardGroup.setTranslateX(cardIndex * cardNode.getWidth());
+            playerBattlefieldData.add(cardGroup);
+            
+            cardIndex++;
+        } 
+    }
+    private List<Card> getBattlefield(Player player) {
+        Zone battlefield = (Zone)CoerceLuaToJava.coerce(player.data.get("battlefield"), Zone.class);
+        return battlefield.getCards();
     }
     
     //TODO: Convert this to mana totals for players
     //TODO: Play rotation needs to be changed so that it does not revolve around player 1
-    //TURN LABEL
+    //END TURN LABEL
     @FXML
     private Label turnLabel;
     //ADVANCE TURNS
@@ -102,113 +256,11 @@ public class FXMLGameController implements Initializable {
             }
             
             turnLabel.setText(String.format("Turn Number %d", game.getTurnNumber()));
+            
+            //reload data at the start of a new turn
+            this.createData();
             this.render();
         }
-    }
-    
-    //RENDER PLAYER 2 CARD BACKS
-    @FXML
-    Pane player02Pane;
-    private void renderOpponentHand() {
-        //Opponent cards are rendered differently because the faces are not visible
-        double paneHeight = player02Pane.getHeight();
-        double paneWidth = player02Pane.getWidth();
-        
-        int numCards = this.getOpponentCardCount();
-        int maxCards = Math.max(numCards, 8);
-        double cardWidth = paneWidth / maxCards;
-        
-        int currentCard = 0;
-        while(currentCard < numCards) {
-            Group cardGroup = new Group();
-            cardGroup.setTranslateX(currentCard * (cardWidth*1.05)); //1.05 so there is space between cards
-            player02Pane.getChildren().add(cardGroup);
-            
-            Rectangle cardBack = new Rectangle(0,0,cardWidth,paneHeight);
-            cardBack.setFill(Color.AQUAMARINE);
-            cardGroup.getChildren().add(cardBack);
-            
-            currentCard++;
-        }
-    }
-    private int getOpponentCardCount() {
-        Player player = game.getLastPlayer(); 
-        Zone hand = (Zone)CoerceLuaToJava.coerce(player.data.get("hand"), Zone.class);
-        List<Card> cardsInHand = hand.getCards();
-        return cardsInHand.size();
-    }
-    
-    //RENDER PLAYER ONE CARDS
-    @FXML
-    private Pane player01Pane;
-    private void renderPlayerHand() {
-        List<Card> cardsInHand = this.getCurrentPlayerHand();
-        int numCards = cardsInHand.size();
-
-        int cardIndex = 0;
-        for (Card card : cardsInHand) {
-            CardNode cardNode = new CardNode(player01Pane, numCards, "testName", card, this);
-            Group cardGroup = cardNode.getCardGroup();
-            cardGroup.setAutoSizeChildren(true); //NEW
-            cardGroup.setId(String.format("card%d", card.getId()));
-            cardGroup.setTranslateX(cardIndex * cardNode.getWidth());
-            player01Pane.getChildren().add(cardGroup);
-            
-            cardIndex++;
-        }
-    }
-    private List<Card> getCurrentPlayerHand() {
-        Player player = game.getFirstPlayer(); 
-        Zone hand = (Zone)CoerceLuaToJava.coerce(player.data.get("hand"), Zone.class);
-        return hand.getCards();
-    }
-    
-    //RENDER BATTLEFIELD
-    @FXML
-    Pane player02Battlefield;
-    @FXML
-    Pane player01Battlefield;
-    private void renderBattlefields() {
-        player02Battlefield.getChildren().clear();
-        player01Battlefield.getChildren().clear();
-        this.renderOpponentBattlefield();
-        this.renderPlayerBattlefield();
-    }
-    private void renderOpponentBattlefield() {
-        List<Card> cardsInBattlefield = this.getBattlefield(game.getLastPlayer());
-        int numCards = cardsInBattlefield.size();
-
-        int cardIndex = 0;
-        for (Card card : cardsInBattlefield) {
-            CardNodeBattlefield cardNode = new CardNodeBattlefield(player02Battlefield, numCards, "testName", card, this, false);
-            Group cardGroup = cardNode.getCardGroup();
-            cardGroup.setAutoSizeChildren(true); //NEW
-            cardGroup.setId(String.format("card%d", card.getId()));
-            cardGroup.setTranslateX(cardIndex * cardNode.getWidth());
-            player02Battlefield.getChildren().add(cardGroup);
-            
-            cardIndex++;
-        } 
-    }
-    private void renderPlayerBattlefield() {
-        List<Card> cardsInBattlefield = this.getBattlefield(game.getFirstPlayer());
-        int numCards = cardsInBattlefield.size();
-
-        int cardIndex = 0;
-        for (Card card : cardsInBattlefield) {
-            CardNodeBattlefield cardNode = new CardNodeBattlefield(player01Battlefield, numCards, "testName", card, this, true);
-            Group cardGroup = cardNode.getCardGroup();
-            cardGroup.setAutoSizeChildren(true); //NEW
-            cardGroup.setId(String.format("card%d", card.getId()));
-            cardGroup.setTranslateX(cardIndex * cardNode.getWidth());
-            player01Battlefield.getChildren().add(cardGroup);
-            
-            cardIndex++;
-        } 
-    }
-    private List<Card> getBattlefield(Player player) {
-        Zone battlefield = (Zone)CoerceLuaToJava.coerce(player.data.get("battlefield"), Zone.class);
-        return battlefield.getCards();
     }
     
     //CHOICE BOX PANE
@@ -239,11 +291,11 @@ public class FXMLGameController implements Initializable {
         
         anchorPane.getChildren().add(choiceBoxPane);
     }
-    
+   
     //TARGETING
     public void markTargets(List<Card> targets) {
-        List<Node> cardsInPlayerBattlefield = player01Battlefield.getChildren();
-        List<Node> cardsInOpponentBattlefield = player02Battlefield.getChildren();
+        List<Node> cardsInPlayerBattlefield = playerBattlefieldPane.getChildren();
+        List<Node> cardsInOpponentBattlefield = opponentBattlefieldPane.getChildren();
         for (Card target : targets) {
             for(Node node : cardsInPlayerBattlefield) {
                 if(node.getId().equals(String.format("card%d",target.getId())) == true) {

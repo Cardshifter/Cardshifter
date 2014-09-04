@@ -25,8 +25,6 @@ public class CardNodeBattlefield extends Group {
     private final FXMLGameController controller;
     private final boolean isPlayer;
     
-    //private final Group cardGroup;
-    
     public CardNodeBattlefield (Pane pane, int numCards, String name, Card card, FXMLGameController controller, boolean isPlayer) {
         //calculate card width based on pane size
         double paneWidth = pane.getWidth();
@@ -40,7 +38,6 @@ public class CardNodeBattlefield extends Group {
         this.card = card;
         this.controller = controller;
         this.isPlayer = isPlayer;
-        //this.cardGroup = new Group();
         this.createCard();
     }
     
@@ -74,12 +71,12 @@ public class CardNodeBattlefield extends Group {
         //background border will be smaller for these and a ratio
         Rectangle activeBackground = new Rectangle(-this.sizeX*0.02,-this.sizeY*0.02,this.sizeX, this.sizeY);
         activeBackground.setFill(Color.BLACK);
-        if(this.isCardActive() == true) {
+        if(this.isCardActive()) {
             activeBackground.setFill(Color.YELLOW);
         }
         
         if(targetMode) {
-            activeBackground.setFill(Color.AZURE);
+            activeBackground.setFill(Color.BLUE);
         }
         
         this.getChildren().add(activeBackground);
