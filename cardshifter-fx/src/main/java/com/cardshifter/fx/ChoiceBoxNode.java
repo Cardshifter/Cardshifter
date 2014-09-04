@@ -1,8 +1,10 @@
 package com.cardshifter.fx;
 
+import com.cardshifter.core.Card;
 import com.cardshifter.core.TargetAction;
 import com.cardshifter.core.Targetable;
 import com.cardshifter.core.UsableAction;
+import java.util.ArrayList;
 import java.util.List;
 import javafx.event.ActionEvent;
 import javafx.scene.Group;
@@ -83,14 +85,22 @@ public class ChoiceBoxNode {
                 if (targets.isEmpty()) {
                     return;
                 }
-
+                
+                List<Card>targetCards = new ArrayList<>();
+                for(Targetable target : targets) {
+                    if (target instanceof Card) {
+                        targetCards.add((Card)target);
+                    }
+                }
+                this.controller.markTargets(targetCards);
+                
                 //int targetIndex = Integer.parseInt(input.nextLine());
-                int targetIndex = 0;
+                //int targetIndex = 0;
                         
                 //TODO: add a check to make sure the target is valid//
-                Targetable target = targets.get(targetIndex);
-                targetAction.setTarget(target);
-                targetAction.perform();
+                //Targetable target = targets.get(targetIndex);
+                //targetAction.setTarget(target);
+                //targetAction.perform();
             }
             else this.action.perform();
         }

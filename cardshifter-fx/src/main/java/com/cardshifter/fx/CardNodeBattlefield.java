@@ -16,7 +16,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-public class CardNodeBattlefield {
+public class CardNodeBattlefield extends Group {
     
     private final double sizeX;
     private final double sizeY;
@@ -25,9 +25,9 @@ public class CardNodeBattlefield {
     private final FXMLGameController controller;
     private final boolean isPlayer;
     
-    private final Group cardGroup;
+    //private final Group cardGroup;
     
-    public CardNodeBattlefield(Pane pane, int numCards, String name, Card card, FXMLGameController controller, boolean isPlayer) {
+    public CardNodeBattlefield (Pane pane, int numCards, String name, Card card, FXMLGameController controller, boolean isPlayer) {
         //calculate card width based on pane size
         double paneWidth = pane.getWidth();
         //reduce card size if there are over a certain amount of them
@@ -40,20 +40,24 @@ public class CardNodeBattlefield {
         this.card = card;
         this.controller = controller;
         this.isPlayer = isPlayer;
-        this.cardGroup = new Group();
+        //this.cardGroup = new Group();
         this.createCard();
     }
     
     public Group getCardGroup() {
-        return this.cardGroup;
+        return this;
     }
     
     public double getWidth() {
         return this.sizeX;
     }
     
+    public Card getCard() {
+        return this.card;
+    }
+    
     private void createCard() {
-        this.createCardBackground();
+        this.createCardBackground(false);
         this.createCardArt();
         this.createCardIDLabel();
         //this.createCardPropertyLabelsGroup();
@@ -66,27 +70,32 @@ public class CardNodeBattlefield {
         }
     }
     
-    private void createCardBackground() {
+    private void createCardBackground(boolean targetMode) {
         //background border will be smaller for these and a ratio
         Rectangle activeBackground = new Rectangle(-this.sizeX*0.02,-this.sizeY*0.02,this.sizeX, this.sizeY);
         activeBackground.setFill(Color.BLACK);
         if(this.isCardActive() == true) {
             activeBackground.setFill(Color.YELLOW);
         }
-        cardGroup.getChildren().add(activeBackground);
+        
+        if(targetMode) {
+            activeBackground.setFill(Color.AZURE);
+        }
+        
+        this.getChildren().add(activeBackground);
     }
     
     private void createCardArt() {
         Rectangle cardBack = new Rectangle(0,0,this.sizeX*0.95,this.sizeY*0.95);
         cardBack.setFill(Color.FIREBRICK);
-        cardGroup.getChildren().add(cardBack);
+        this.getChildren().add(cardBack);
     }
     
     private void createCardIDLabel() {
         Label cardIdLabel = new Label();
         cardIdLabel.setText(String.format("CardID = %d", card.getId()));
         cardIdLabel.setTextFill(Color.WHITE);
-        cardGroup.getChildren().add(cardIdLabel);
+        this.getChildren().add(cardIdLabel);
     }
     
     private void createCardPropertyLabelsGroup() {
@@ -97,7 +106,7 @@ public class CardNodeBattlefield {
         for (String string : stringList) {
             Group cardTextStrings = new Group();
             cardTextStrings.setTranslateY(25 + (stringIndex * 25));
-            cardGroup.getChildren().add(cardTextStrings);
+            this.getChildren().add(cardTextStrings);
             
             Label cardStringLabel = new Label();
             cardStringLabel.setText(string);
@@ -115,7 +124,7 @@ public class CardNodeBattlefield {
         //button.prefWidth(100);
         //button.prefHeight(100);
         button.setOnAction(this::buttonClick);
-        cardGroup.getChildren().add(button);
+        this.getChildren().add(button);
     }
     
     private void buttonClick(ActionEvent event) {
@@ -156,5 +165,22 @@ public class CardNodeBattlefield {
     private boolean isCardActive() {
         List<UsableAction> cardActions = card.getActions().values().stream().filter(UsableAction::isAllowed).collect(Collectors.toList());
         return cardActions.size() > 0;
+    }
+    
+    //TARGETING
+    public void createTargetButton() {
+        this.getChildren().clear();
+        this.createCardBackground(true);
+        this.createCardArt();
+        this.createCardIDLabel();
+        this.createCardTargetButton();
+    }
+    private void createCardTargetButton() {
+        Button button = new Button();
+        button.setOnAction(this::targetButtonClick);
+        this.getChildren().add(button);
+    }
+    private void targetButtonClick(ActionEvent event) {
+        
     }
 }

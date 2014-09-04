@@ -24,6 +24,7 @@ import com.cardshifter.ai.CompleteIdiot;
 import com.cardshifter.core.Card;
 import com.cardshifter.core.Game;
 import com.cardshifter.core.Player;
+import com.cardshifter.core.Targetable;
 import com.cardshifter.core.UsableAction;
 import com.cardshifter.core.Zone;
 import com.cardshifter.core.console.CommandLineOptions;
@@ -149,7 +150,7 @@ public class FXMLGameController implements Initializable {
             CardNode cardNode = new CardNode(player01Pane, numCards, "testName", card, this);
             Group cardGroup = cardNode.getCardGroup();
             cardGroup.setAutoSizeChildren(true); //NEW
-            cardGroup.setId(String.format("player01card%d", cardIndex));
+            cardGroup.setId(String.format("card%d", card.getId()));
             cardGroup.setTranslateX(cardIndex * cardNode.getWidth());
             player01Pane.getChildren().add(cardGroup);
             
@@ -182,7 +183,7 @@ public class FXMLGameController implements Initializable {
             CardNodeBattlefield cardNode = new CardNodeBattlefield(player02Battlefield, numCards, "testName", card, this, false);
             Group cardGroup = cardNode.getCardGroup();
             cardGroup.setAutoSizeChildren(true); //NEW
-            cardGroup.setId(String.format("player02card%d", cardIndex));
+            cardGroup.setId(String.format("card%d", card.getId()));
             cardGroup.setTranslateX(cardIndex * cardNode.getWidth());
             player02Battlefield.getChildren().add(cardGroup);
             
@@ -198,7 +199,7 @@ public class FXMLGameController implements Initializable {
             CardNodeBattlefield cardNode = new CardNodeBattlefield(player01Battlefield, numCards, "testName", card, this, true);
             Group cardGroup = cardNode.getCardGroup();
             cardGroup.setAutoSizeChildren(true); //NEW
-            cardGroup.setId(String.format("player01card%d", cardIndex));
+            cardGroup.setId(String.format("card%d", card.getId()));
             cardGroup.setTranslateX(cardIndex * cardNode.getWidth());
             player01Battlefield.getChildren().add(cardGroup);
             
@@ -237,6 +238,26 @@ public class FXMLGameController implements Initializable {
         }
         
         anchorPane.getChildren().add(choiceBoxPane);
+    }
+    
+    //TARGETING
+    public void markTargets(List<Card> targets) {
+        List<Node> cardsInPlayerBattlefield = player01Battlefield.getChildren();
+        List<Node> cardsInOpponentBattlefield = player02Battlefield.getChildren();
+        for (Card target : targets) {
+            for(Node node : cardsInPlayerBattlefield) {
+                if(node.getId().equals(String.format("card%d",target.getId())) == true) {
+                    CardNodeBattlefield actionNode = (CardNodeBattlefield)node;
+                    actionNode.createTargetButton();
+                }
+            }
+            for(Node node : cardsInOpponentBattlefield) {
+                if(node.getId().equals(String.format("card%d",target.getId())) == true) {
+                    CardNodeBattlefield actionNode = (CardNodeBattlefield)node;
+                    actionNode.createTargetButton();
+                }
+            }
+        }
     }
     
     //BOILERPLATE
