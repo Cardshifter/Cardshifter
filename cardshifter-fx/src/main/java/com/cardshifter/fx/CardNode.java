@@ -136,20 +136,18 @@ public class CardNode {
                             return;
                         }
 
-                        //int targetIndex = Integer.parseInt(input.nextLine());
-                        int targetIndex = 0;
-                        if (targetIndex < 0 || targetIndex >= cardActions.size()) {
-                            return;
+                        List<Card>targetCards = new ArrayList<>();
+                        for(Targetable target : targets) {
+                            if (target instanceof Card) {
+                                targetCards.add((Card)target);
+                            }
                         }
-                        
-                        //TODO: add a check to make sure the target is valid//
-                        Targetable target = targets.get(targetIndex);
-                        targetAction.setTarget(target);
-                        targetAction.perform();
+                        this.controller.markTargets(targetCards);
+                        this.controller.nextAction = targetAction;
                     }
                     else action.perform();
+                    this.controller.createData();
                 }
-                this.controller.createData();
                 this.controller.render();
             }
         }

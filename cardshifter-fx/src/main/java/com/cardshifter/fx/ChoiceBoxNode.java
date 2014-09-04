@@ -90,19 +90,18 @@ public class ChoiceBoxNode {
                 for(Targetable target : targets) {
                     if (target instanceof Card) {
                         targetCards.add((Card)target);
+                    } else {
+                        //attacking the other player here
+                        targetAction.setTarget(target);
+                        targetAction.perform();
                     }
                 }
                 this.controller.markTargets(targetCards);
-                
-                //int targetIndex = Integer.parseInt(input.nextLine());
-                //int targetIndex = 0;
-                        
-                //TODO: add a check to make sure the target is valid//
-                //Targetable target = targets.get(targetIndex);
-                //targetAction.setTarget(target);
-                //targetAction.perform();
+                this.controller.nextAction = targetAction;
+            } else {
+                this.action.perform();
+                this.controller.createData();
             }
-            else this.action.perform();
         }
         this.controller.render();
     }

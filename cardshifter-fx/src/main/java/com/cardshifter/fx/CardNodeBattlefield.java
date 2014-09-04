@@ -151,10 +151,12 @@ public class CardNodeBattlefield extends Group {
                         Targetable target = targets.get(targetIndex);
                         targetAction.setTarget(target);
                         targetAction.perform();
+                    } else {
+                        action.perform();
+                        this.controller.createData();
+                        this.controller.render();
                     }
-                    else action.perform();
                 }
-                this.controller.render();
             }
         }
     }
@@ -178,6 +180,6 @@ public class CardNodeBattlefield extends Group {
         this.getChildren().add(button);
     }
     private void targetButtonClick(ActionEvent event) {
-        
+        this.controller.performNextAction(this.card);
     }
 }

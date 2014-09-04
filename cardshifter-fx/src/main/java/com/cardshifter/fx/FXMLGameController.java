@@ -24,6 +24,8 @@ import com.cardshifter.ai.CompleteIdiot;
 import com.cardshifter.core.Card;
 import com.cardshifter.core.Game;
 import com.cardshifter.core.Player;
+import com.cardshifter.core.TargetAction;
+import com.cardshifter.core.Targetable;
 import com.cardshifter.core.UsableAction;
 import com.cardshifter.core.Zone;
 import com.cardshifter.core.console.CommandLineOptions;
@@ -293,6 +295,13 @@ public class FXMLGameController implements Initializable {
     }
    
     //TARGETING
+    public TargetAction nextAction;
+    public void performNextAction(Targetable target) {
+        nextAction.setTarget(target);
+        nextAction.perform();
+        this.createData();
+        this.render();
+    }
     public void markTargets(List<Card> targets) {
         List<Node> cardsInPlayerBattlefield = playerBattlefieldPane.getChildren();
         List<Node> cardsInOpponentBattlefield = opponentBattlefieldPane.getChildren();
