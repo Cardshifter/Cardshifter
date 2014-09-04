@@ -59,6 +59,7 @@ public class ChoiceBoxNode {
         Label choiceBoxText = new Label();
         choiceBoxText.setText(String.format("Action = \n %s", this.action.getName()));
         choiceBoxText.setTextFill(Color.WHITE);
+        choiceBoxText.relocate(this.sizeX/2,this.sizeY/2);
         choiceBoxGroup.getChildren().add(choiceBoxText);
     }
    

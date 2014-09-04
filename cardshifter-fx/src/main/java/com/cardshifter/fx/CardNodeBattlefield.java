@@ -12,6 +12,7 @@ import javafx.event.ActionEvent;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -26,9 +27,15 @@ public class CardNodeBattlefield {
     
     private final Group cardGroup;
     
-    public CardNodeBattlefield(double sizeX, double sizeY, String name, Card card, FXMLGameController controller, boolean isPlayer) {
-        this.sizeX = sizeX;
-        this.sizeY = sizeY;
+    public CardNodeBattlefield(Pane pane, int numCards, String name, Card card, FXMLGameController controller, boolean isPlayer) {
+        //calculate card width based on pane size
+        double paneWidth = pane.getWidth();
+        //reduce card size if there are over a certain amount of them
+        int maxCards = Math.max(numCards, 8);
+        double cardWidth = paneWidth / maxCards;
+        
+        this.sizeX = cardWidth;
+        this.sizeY = pane.getHeight();
         this.name = name;
         this.card = card;
         this.controller = controller;
@@ -39,6 +46,10 @@ public class CardNodeBattlefield {
     
     public Group getCardGroup() {
         return this.cardGroup;
+    }
+    
+    public double getWidth() {
+        return this.sizeX;
     }
     
     private void createCard() {

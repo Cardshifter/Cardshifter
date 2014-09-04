@@ -12,17 +12,15 @@ import javafx.event.ActionEvent;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-/* The purpose of this class is to take in certain values from the 
+/* 
+   The purpose of this class is to take in certain values from the 
    Game controller and create a Group that the controller can 
    retrieve in order to render a Player card on the screen
 */
-
-//TODO: Refactor this so that it takes a Pane and produces its own sizes
-
-//TODO: make a maximum card size (get the card size based on pane size / how big cards should be
 
 public class CardNode {
     
@@ -34,9 +32,15 @@ public class CardNode {
     
     private final Group cardGroup;
     
-    public CardNode(double sizeX, double sizeY, String name, Card card, FXMLGameController controller) {
-        this.sizeX = sizeX;
-        this.sizeY = sizeY;
+    public CardNode(Pane pane, int numCards, String name, Card card, FXMLGameController controller) {
+        //calculate card width based on pane size
+        double paneWidth = pane.getWidth();
+        //reduce card size if there are over a certain amount of them
+        int maxCards = Math.max(numCards, 8);
+        double cardWidth = paneWidth / maxCards;
+        
+        this.sizeX = cardWidth;
+        this.sizeY = pane.getHeight();
         this.name = name;
         this.card = card;
         this.controller = controller;
@@ -46,6 +50,10 @@ public class CardNode {
     
     public Group getCardGroup() {
         return this.cardGroup;
+    }
+    
+    public double getWidth() {
+        return this.sizeX;
     }
     
     private void createCard() {

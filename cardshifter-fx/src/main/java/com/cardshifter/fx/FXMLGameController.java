@@ -109,15 +109,18 @@ public class FXMLGameController implements Initializable {
     @FXML
     Pane player02Pane;
     private void renderOpponentHand() {
-        int numCards = this.getOpponentCardCount();
+        //Opponent cards are rendered differently because the faces are not visible
         double paneHeight = player02Pane.getHeight();
         double paneWidth = player02Pane.getWidth();
-        double cardWidth = paneWidth / numCards;
+        
+        int numCards = this.getOpponentCardCount();
+        int maxCards = Math.max(numCards, 8);
+        double cardWidth = paneWidth / maxCards;
         
         int currentCard = 0;
         while(currentCard < numCards) {
             Group cardGroup = new Group();
-            cardGroup.setTranslateX(currentCard * (cardWidth*1.05));
+            cardGroup.setTranslateX(currentCard * (cardWidth*1.05)); //1.05 so there is space between cards
             player02Pane.getChildren().add(cardGroup);
             
             Rectangle cardBack = new Rectangle(0,0,cardWidth,paneHeight);
@@ -139,19 +142,15 @@ public class FXMLGameController implements Initializable {
     private Pane player01Pane;
     private void renderPlayerHand() {
         List<Card> cardsInHand = this.getCurrentPlayerHand();
-        
         int numCards = cardsInHand.size();
-        double paneHeight = player01Pane.getHeight();
-        double paneWidth = player01Pane.getWidth();
-        double cardWidth = paneWidth / numCards;
 
         int cardIndex = 0;
         for (Card card : cardsInHand) {
-            CardNode cardNode = new CardNode(cardWidth, paneHeight, "testName", card, this);
+            CardNode cardNode = new CardNode(player01Pane, numCards, "testName", card, this);
             Group cardGroup = cardNode.getCardGroup();
             cardGroup.setAutoSizeChildren(true); //NEW
             cardGroup.setId(String.format("player01card%d", cardIndex));
-            cardGroup.setTranslateX(cardIndex * cardWidth);
+            cardGroup.setTranslateX(cardIndex * cardNode.getWidth());
             player01Pane.getChildren().add(cardGroup);
             
             cardIndex++;
@@ -176,19 +175,15 @@ public class FXMLGameController implements Initializable {
     }
     private void renderOpponentBattlefield() {
         List<Card> cardsInBattlefield = this.getBattlefield(game.getLastPlayer());
-        
         int numCards = cardsInBattlefield.size();
-        double paneHeight = player02Battlefield.getHeight();
-        double paneWidth = player02Battlefield.getWidth();
-        double cardWidth = paneWidth / numCards;
 
         int cardIndex = 0;
         for (Card card : cardsInBattlefield) {
-            CardNodeBattlefield cardNode = new CardNodeBattlefield(cardWidth, paneHeight, "testName", card, this, false);
+            CardNodeBattlefield cardNode = new CardNodeBattlefield(player02Battlefield, numCards, "testName", card, this, false);
             Group cardGroup = cardNode.getCardGroup();
             cardGroup.setAutoSizeChildren(true); //NEW
-            cardGroup.setId(String.format("player01card%d", cardIndex));
-            cardGroup.setTranslateX(cardIndex * cardWidth);
+            cardGroup.setId(String.format("player02card%d", cardIndex));
+            cardGroup.setTranslateX(cardIndex * cardNode.getWidth());
             player02Battlefield.getChildren().add(cardGroup);
             
             cardIndex++;
@@ -196,19 +191,15 @@ public class FXMLGameController implements Initializable {
     }
     private void renderPlayerBattlefield() {
         List<Card> cardsInBattlefield = this.getBattlefield(game.getFirstPlayer());
-        
         int numCards = cardsInBattlefield.size();
-        double paneHeight = player01Battlefield.getHeight();
-        double paneWidth = player01Battlefield.getWidth();
-        double cardWidth = paneWidth / numCards;
 
         int cardIndex = 0;
         for (Card card : cardsInBattlefield) {
-            CardNodeBattlefield cardNode = new CardNodeBattlefield(cardWidth, paneHeight, "testName", card, this, true);
+            CardNodeBattlefield cardNode = new CardNodeBattlefield(player01Battlefield, numCards, "testName", card, this, true);
             Group cardGroup = cardNode.getCardGroup();
             cardGroup.setAutoSizeChildren(true); //NEW
             cardGroup.setId(String.format("player01card%d", cardIndex));
-            cardGroup.setTranslateX(cardIndex * cardWidth);
+            cardGroup.setTranslateX(cardIndex * cardNode.getWidth());
             player01Battlefield.getChildren().add(cardGroup);
             
             cardIndex++;
