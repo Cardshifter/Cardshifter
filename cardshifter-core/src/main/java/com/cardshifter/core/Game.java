@@ -38,7 +38,7 @@ public class Game {
 		this.players.add(new Player(this, "Player2"));
 		this.random = random;
                 
-                this.turnNumber = 0;
+                this.turnNumber = 1;
 	}
 	
 	public Game(InputStream file) {

@@ -52,6 +52,7 @@ public class FXMLGameController implements Initializable {
             startGameLabel.setText("Starting Game");
             game.getEvents().startGame(game);
             gameHasStarted = true;
+            turnLabel.setText(String.format("Turn Number %d", game.getTurnNumber()));
             this.renderHands();
         }
     }
@@ -59,10 +60,13 @@ public class FXMLGameController implements Initializable {
     //UPDATE LOOP
     public void render() {
         this.renderHands();
+        this.renderBattlefields();
     }
     private void renderHands() {
-        this.renderPlayerHand();
+        player02Pane.getChildren().clear();
+        player01Pane.getChildren().clear();
         this.renderOpponentHand();
+        this.renderPlayerHand();
     }
     
     //TODO: Convert this to mana totals for players, and only increment every play rotation
@@ -86,7 +90,7 @@ public class FXMLGameController implements Initializable {
             }
             
             turnLabel.setText(String.format("Turn Number %d", game.getTurnNumber()));
-            this.renderHands();
+            this.render();
         }
     }
     
@@ -94,8 +98,6 @@ public class FXMLGameController implements Initializable {
     @FXML
     Pane player02Pane;
     private void renderOpponentHand() {
-        player02Pane.getChildren().clear();
-        
         int numCards = this.getOpponentCardCount();
         double paneHeight = player02Pane.getHeight();
         double paneWidth = player02Pane.getWidth();
@@ -125,8 +127,6 @@ public class FXMLGameController implements Initializable {
     @FXML
     private Pane player01Pane;
     private void renderPlayerHand() {
-        player01Pane.getChildren().clear();
-                
         List<Card> cardsInHand = this.getCurrentPlayerHand();
         
         int numCards = cardsInHand.size();
@@ -157,14 +157,55 @@ public class FXMLGameController implements Initializable {
     Pane player02Battlefield;
     @FXML
     Pane player01Battlefield;
-    private void renderBattlefield() {
-        player01Battlefield.getChildren().clear();
+    private void renderBattlefields() {
         player02Battlefield.getChildren().clear();
-        
-        
+        player01Battlefield.getChildren().clear();
+        this.renderOpponentBattlefield();
+        this.renderPlayerBattlefield();
     }
+    private void renderOpponentBattlefield() {
+        List<Card> cardsInBattlefield = this.getBattlefield(game.getLastPlayer());
+        
+        int numCards = cardsInBattlefield.size();
+        double paneHeight = player02Battlefield.getHeight();
+        double paneWidth = player02Battlefield.getWidth();
+        double cardWidth = paneWidth / numCards;
+
+        int cardIndex = 0;
+        for (Card card : cardsInBattlefield) {
+            CardNodeBattlefield cardNode = new CardNodeBattlefield(cardWidth, paneHeight, "testName", card, this, false);
+            Group cardGroup = cardNode.getCardGroup();
+            cardGroup.setAutoSizeChildren(true); //NEW
+            cardGroup.setId(String.format("player01card%d", cardIndex));
+            cardGroup.setTranslateX(cardIndex * cardWidth);
+            player02Battlefield.getChildren().add(cardGroup);
+            
+            cardIndex++;
+        } 
+    }
+    private void renderPlayerBattlefield() {
+        List<Card> cardsInBattlefield = this.getBattlefield(game.getFirstPlayer());
+        
+        int numCards = cardsInBattlefield.size();
+        double paneHeight = player01Battlefield.getHeight();
+        double paneWidth = player01Battlefield.getWidth();
+        double cardWidth = paneWidth / numCards;
+
+        int cardIndex = 0;
+        for (Card card : cardsInBattlefield) {
+            CardNodeBattlefield cardNode = new CardNodeBattlefield(cardWidth, paneHeight, "testName", card, this, true);
+            Group cardGroup = cardNode.getCardGroup();
+            cardGroup.setAutoSizeChildren(true); //NEW
+            cardGroup.setId(String.format("player01card%d", cardIndex));
+            cardGroup.setTranslateX(cardIndex * cardWidth);
+            player01Battlefield.getChildren().add(cardGroup);
+            
+            cardIndex++;
+        } 
+    }
+        
     
-    private List<Card> getPlayerBattlefield(Player player) {
+    private List<Card> getBattlefield(Player player) {
         Zone battlefield = (Zone)CoerceLuaToJava.coerce(player.data.get("battlefield"), Zone.class);
         return battlefield.getCards();
     }
