@@ -105,7 +105,10 @@ public class Game {
 				
 		this.events.callEvent(Events.TURN_START, CoerceJavaToLua.coerce(this.currentPlayer), null);
 
-		turnNumber++;
+                //Quick hack to only advance the turn number when control passes back to player
+		if (this.currentPlayer == this.getLastPlayer()) {
+                    turnNumber++;
+                }
 	}
 	
 	public int randomInt(int count) {

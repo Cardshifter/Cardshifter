@@ -29,9 +29,9 @@ import com.cardshifter.core.Zone;
 import com.cardshifter.core.console.CommandLineOptions;
 
 public class FXMLGameController implements Initializable {
-    private final CardshifterAI opponent = new CompleteIdiot();
-	
+   
     //INITIAL GAME SETUP
+    private final CardshifterAI opponent = new CompleteIdiot();
     //need a forward declaration so that this is  global to the class
     Game game;
     //hack to make the buttons work properly
@@ -75,6 +75,7 @@ public class FXMLGameController implements Initializable {
         if (gameHasStarted == true) {
             game.nextTurn();
             
+            //This is the AI doing the turn action
             while (game.getCurrentPlayer() == game.getLastPlayer()) {
             	UsableAction action = opponent.getAction(game.getCurrentPlayer());
             	if (action == null) {
