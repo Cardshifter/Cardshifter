@@ -9,20 +9,25 @@ import java.util.Objects;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 
-public class Player implements Targetable {
+public class Player implements Targetable, IdEntity {
 
 	private final Game game;
 	private final String name;
 	private final Map<String, UsableAction> actions;
-	public final LuaTable data;
+	public final LuaTable data = new ExtLuaTable(this::onChange);
+	private final int id;
 	
-	public Player(Game game, String name) {
+	public Player(Game game, String name, int id) {
 		Objects.requireNonNull(game);
 		this.game = game;
 		this.name = name;
-		
-		this.data = LuaValue.tableOf();
 		this.actions = new HashMap<>();
+		this.id = id;
+	}
+	
+	private void onChange(Object key, Object value) {
+		System.out.println(this + ": " + key + " = " + value);
+		getGame().broadcastChange(this, key, value);
 	}
 	
 	public Player getNextPlayer() {
@@ -84,5 +89,10 @@ public class Player implements Targetable {
 	
 	public String getName() {
 		return name;
+	}
+	
+	@Override
+	public int getId() {
+		return id;
 	}
 }

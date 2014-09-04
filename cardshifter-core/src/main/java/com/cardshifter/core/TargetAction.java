@@ -70,5 +70,10 @@ public class TargetAction extends UsableAction {
 		}
 		this.target = target;
 	}
+
+	@Override
+	public int getEntityId() {
+		return card.getId();
+	}
 	
 }

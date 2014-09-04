@@ -7,7 +7,6 @@ import org.apache.log4j.Logger;
 
 import com.cardshifter.server.clients.ClientIO;
 import com.cardshifter.server.incoming.LoginMessage;
-import com.cardshifter.server.incoming.PlayCardMessage;
 import com.cardshifter.server.incoming.StartGameRequest;
 import com.cardshifter.server.incoming.UseAbilityMessage;
 import com.cardshifter.server.outgoing.WaitMessage;
@@ -33,10 +32,6 @@ public class Handlers {
 		client.sendToClient(new WelcomeMessage(true));
 	}
 
-	public void playCard(PlayCardMessage message, ClientIO client) {
-		
-	}
-
 	public void play(StartGameRequest message, ClientIO client) {
 		AtomicReference<ClientIO> playAny = server.getPlayAny();
 		if (playAny.compareAndSet(null, client)) {
@@ -49,7 +44,8 @@ public class Handlers {
 	}
 
 	public void useAbility(UseAbilityMessage message, ClientIO client) {
-		
+		TCGGame game = (TCGGame) server.getGames().get(message.getGameId());
+		game.handleMove(message, client);
 	}
 
 }

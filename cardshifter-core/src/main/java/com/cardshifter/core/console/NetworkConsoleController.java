@@ -5,20 +5,20 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
 import java.util.Random;
 import java.util.Scanner;
 
-import com.cardshifter.core.TargetAction;
-import com.cardshifter.core.Targetable;
-import com.cardshifter.core.UsableAction;
 import com.cardshifter.server.incoming.LoginMessage;
 import com.cardshifter.server.incoming.StartGameRequest;
+import com.cardshifter.server.incoming.UseAbilityMessage;
 import com.cardshifter.server.messages.Message;
 import com.cardshifter.server.outgoing.EndOfSequenceMessage;
 import com.cardshifter.server.outgoing.NewGameMessage;
+import com.cardshifter.server.outgoing.UseableActionMessage;
 import com.cardshifter.server.outgoing.WaitMessage;
 import com.cardshifter.server.outgoing.WelcomeMessage;
 import com.fasterxml.jackson.core.JsonFactory;
@@ -34,6 +34,7 @@ public class NetworkConsoleController {
 	private InputStream in;
 	private OutputStream out;
 	private final ObjectMapper mapper = new ObjectMapper();
+	private int gameId;
 	
 	public NetworkConsoleController(String hostname, int port) throws UnknownHostException, IOException {
 		socket = new Socket(hostname, port);
@@ -71,8 +72,10 @@ public class NetworkConsoleController {
 
 	private void playLoop(NewGameMessage game, Scanner input) throws JsonParseException, JsonMappingException, IOException {
 		System.out.printf("Game id %d. You are player index %d.%n", game.getGameId(), game.getPlayerIndex());
+		this.gameId = game.getGameId();
 		while (true) {
 			Message mess = null;
+			List<UseableActionMessage> actions = new ArrayList<>();
 			do {
 				System.out.println("Start loop");
 				
@@ -83,94 +86,53 @@ public class NetworkConsoleController {
 					if (mess instanceof EndOfSequenceMessage) {
 						break;
 					}
+					if (mess instanceof UseableActionMessage) {
+						actions.add((UseableActionMessage) mess);
+					}
 				}
 				System.out.println("End of loop, mess is " + mess);
-//				mess = receive(Message.class);
-//				System.out.println(mess);
 			}
 			while (!(mess instanceof EndOfSequenceMessage));
 			
 			
-			System.out.println("Retrieve game state...");
+			System.out.println("Waiting for input...");
 			
-//			List<UsableAction> actions = game.getAllActions().stream().filter(action -> action.isAllowed()).collect(Collectors.toList());
-//			outputList(actions);
-//			
+			outputList(actions);
+			if (actions.isEmpty()) {
+				System.out.println("No available actions to perform right now.");
+			}
+			
 			String in = input.nextLine();
 			if (in.equals("exit")) {
 				break;
 			}
 			
-//			handleActionInput(actions, in, input);
+			try {
+				int actionIndex = Integer.parseInt(in);
+				UseableActionMessage action = actions.get(actionIndex);
+				this.send(new UseAbilityMessage(gameId, action.getId(), action.getAction()));
+			}
+			catch (NumberFormatException ex) {
+				System.out.println("Not a valid action");
+			}
 		}
 		print("--------------------------------------------");
 		print("Game over!");
 	}
 
-
 	private <T> T receive(Class<T> class1) throws JsonParseException, JsonMappingException, IOException {
-//		String value = IOUtils.toString(in);
-//		System.out.println("Reading: " + value);
 		T mapp = mapper.readValue(in, class1);
 		System.out.println("Received: " + mapper.writeValueAsString(mapp));
 		return mapp;
 	}
 
-
 	private void send(Message message) {
 		try {
+			System.out.println("Sending: " + this.mapper.writeValueAsString(message));
 			this.mapper.writeValue(out, message);
 		} catch (IOException e) {
 			System.out.println("Error sending message: " + message);
 			throw new RuntimeException(e);
-		}
-	}
-
-
-	private void handleActionInput(final List<UsableAction> actions, final String in, Scanner input) {
-		Objects.requireNonNull(actions, "actions");
-		Objects.requireNonNull(in, "in");
-		print("Choose an action:");
-		
-		try {
-			int value = Integer.parseInt(in);
-			if (value < 0 || value >= actions.size()) {
-				print("Action index out of range: " + value);
-				return;
-			}
-			
-			UsableAction action = actions.get(value);
-			print("Action " + action);
-			if (action.isAllowed()) {
-				if (action instanceof TargetAction) {
-					TargetAction targetAction = (TargetAction) action;
-					List<Targetable> targets = targetAction.findTargets();
-					if (targets.isEmpty()) {
-						print("No available targets for action");
-						return;
-					}
-					
-					outputList(targets);
-					print("Enter target index:");
-					int targetIndex = Integer.parseInt(input.nextLine());
-					if (value < 0 || value >= actions.size()) {
-						print("Target index out of range: " + value);
-						return;
-					}
-					
-					Targetable target = targets.get(targetIndex);
-					targetAction.setTarget(target);
-					targetAction.perform();
-				}
-				else action.perform();
-				print("Action performed");
-			}
-			else {
-				print("Action is not allowed");
-			}
-		}
-		catch (NumberFormatException ex) {
-			print("Illegal action index: " + in);
 		}
 	}
 

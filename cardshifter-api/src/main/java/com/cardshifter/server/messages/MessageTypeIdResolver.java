@@ -5,7 +5,6 @@ import java.util.Map;
 
 import com.cardshifter.server.incoming.ChatMessage;
 import com.cardshifter.server.incoming.LoginMessage;
-import com.cardshifter.server.incoming.PlayCardMessage;
 import com.cardshifter.server.incoming.StartGameRequest;
 import com.cardshifter.server.incoming.UseAbilityMessage;
 import com.cardshifter.server.outgoing.CardInfoMessage;
@@ -13,6 +12,8 @@ import com.cardshifter.server.outgoing.EndOfSequenceMessage;
 import com.cardshifter.server.outgoing.GameMessage;
 import com.cardshifter.server.outgoing.NewGameMessage;
 import com.cardshifter.server.outgoing.PlayerMessage;
+import com.cardshifter.server.outgoing.UpdateMessage;
+import com.cardshifter.server.outgoing.UseableActionMessage;
 import com.cardshifter.server.outgoing.WaitMessage;
 import com.cardshifter.server.outgoing.WelcomeMessage;
 import com.cardshifter.server.outgoing.ZoneMessage;
@@ -28,7 +29,6 @@ public class MessageTypeIdResolver implements TypeIdResolver {
 	static {
 		clazzes.put("chat", ChatMessage.class);
 		clazzes.put("login", LoginMessage.class);
-		clazzes.put("play", PlayCardMessage.class);
 		clazzes.put("startgame", StartGameRequest.class);
 		clazzes.put("use", UseAbilityMessage.class);
 		
@@ -40,6 +40,8 @@ public class MessageTypeIdResolver implements TypeIdResolver {
 		clazzes.put("player", PlayerMessage.class);
 		clazzes.put("card", CardInfoMessage.class);
 		clazzes.put("zone", ZoneMessage.class);
+		clazzes.put("update", UpdateMessage.class);
+		clazzes.put("useable", UseableActionMessage.class);
 	}
 	
 	private JavaType mBaseType;

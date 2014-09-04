@@ -43,5 +43,7 @@ public abstract class UsableAction {
 	}
 
 	protected abstract Game getGame();
-	
+
+	public abstract int getEntityId();
+
 }

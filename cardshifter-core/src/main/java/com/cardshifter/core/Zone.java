@@ -6,18 +6,23 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.luaj.vm2.LuaValue;
+import org.luaj.vm2.LuaTable;
 
-public class Zone {
+public class Zone implements IdEntity {
 
 	private final LinkedList<Card> cards; // `LinkedList` is both a `Deque` and a `List`
 	private final Game game;
 	private final Player owner;
 	private final String name;
 	private final Map<Player, Boolean> knownToPlayers = new ConcurrentHashMap<>();
-	public final LuaValue data;
+	public final LuaTable data = new ExtLuaTable(this::onChange);
 	private boolean globallyKnown;
 	private final int id;
+	
+	private void onChange(Object key, Object value) {
+		System.out.println(this + ": " + key + " = " + value);
+		getGame().broadcastChange(this, key, value);
+	}
 	
 	Zone(Player owner, String name, int id) {
 		Objects.requireNonNull(owner);
@@ -25,7 +30,6 @@ public class Zone {
 		this.owner = owner;
 		this.game = owner.getGame();
 		this.cards = new LinkedList<>();
-		this.data = LuaValue.tableOf();
 		this.name = name;
 	}
 	
@@ -91,6 +95,7 @@ public class Zone {
 		return this.cards.isEmpty();
 	}
 	
+	@Override
 	public int getId() {
 		return id;
 	}

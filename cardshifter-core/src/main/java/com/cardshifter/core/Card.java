@@ -9,8 +9,8 @@ import java.util.function.Consumer;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 
-public class Card implements Targetable {
-	public final LuaTable data = LuaValue.tableOf();
+public class Card implements Targetable, IdEntity {
+	public final LuaTable data = new ExtLuaTable(this::onChange);
 	
 	private final Map<String, UsableAction> actions = new HashMap<>();
 	
@@ -22,6 +22,11 @@ public class Card implements Targetable {
 		this.id = id;
 		this.currentZone = Optional.of(currentZone);
 		this.game = currentZone.getGame();
+	}
+	
+	private void onChange(Object key, Object value) {
+		System.out.println(this + ": " + key + " = " + value);
+		getGame().broadcastChange(this, key, value);
 	}
 	
 	public Zone getZone() {
@@ -124,6 +129,7 @@ public class Card implements Targetable {
 		return data;
 	}
 	
+	@Override
 	public int getId() {
 		return id;
 	}

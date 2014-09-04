@@ -27,4 +27,9 @@ public class PlayerAction extends UsableAction {
 		return "{Action " + getName() + " for player " + player + "}";
 	}
 
+	@Override
+	public int getEntityId() {
+		return player.getId();
+	}
+	
 }

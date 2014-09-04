@@ -32,4 +32,10 @@ public class CardAction extends UsableAction {
 	protected Game getGame() {
 		return card.getGame();
 	}
+
+	@Override
+	public int getEntityId() {
+		return card.getId();
+	}
+	
 }
