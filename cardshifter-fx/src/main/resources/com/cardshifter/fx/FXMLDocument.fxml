@@ -8,7 +8,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" maxHeight="600" maxWidth="1200" minHeight="600" minWidth="1200" prefHeight="600.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cardshifter.fx.FXMLGameController">
+<AnchorPane fx:id="anchorPane" maxHeight="600" maxWidth="1200" minHeight="600" minWidth="1200" prefHeight="600.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cardshifter.fx.FXMLGameController">
     <children>
         <Button fx:id="button" layoutX="1098.0" layoutY="530.0" onAction="#startGameButtonAction" text="Start Game" />
         <Label fx:id="startGameLabel" layoutX="1098.0" layoutY="564.0" minHeight="16" minWidth="69" />

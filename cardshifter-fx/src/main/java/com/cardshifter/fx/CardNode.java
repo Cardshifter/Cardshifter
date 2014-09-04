@@ -15,6 +15,15 @@ import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+/* The purpose of this class is to take in certain values from the 
+   Game controller and create a Group that the controller can 
+   retrieve in order to render a Player card on the screen
+*/
+
+//TODO: Refactor this so that it takes a Pane and produces its own sizes
+
+//TODO: make a maximum card size (get the card size based on pane size / how big cards should be
+
 public class CardNode {
     
     private final double sizeX;
@@ -105,29 +114,35 @@ public class CardNode {
     private void buttonClick(ActionEvent event) {
         System.out.println("Trying to Perform Action");
         List<UsableAction> cardActions = card.getActions().values().stream().filter(UsableAction::isAllowed).collect(Collectors.toList());
-        for (UsableAction action : cardActions) {
-            if (action.isAllowed()) {
-                if (action instanceof TargetAction) {
-                    TargetAction targetAction = (TargetAction) action;
-                    List<Targetable> targets = targetAction.findTargets();
-                    if (targets.isEmpty()) {
-                        return;
-                    }
+        
+        //If there is more than one action, create the choice box
+        if(cardActions.size() > 1) {
+            this.controller.buildChoiceBoxPane(card, cardActions);
+        } else if (cardActions.size() == 1) {
+            for (UsableAction action : cardActions) {
+                if (action.isAllowed()) {
+                    if (action instanceof TargetAction) {
+                        TargetAction targetAction = (TargetAction) action;
+                        List<Targetable> targets = targetAction.findTargets();
+                        if (targets.isEmpty()) {
+                            return;
+                        }
 
-                    //int targetIndex = Integer.parseInt(input.nextLine());
-                    int targetIndex = 0;
-                    if (targetIndex < 0 || targetIndex >= cardActions.size()) {
-                        return;
-                    }
+                        //int targetIndex = Integer.parseInt(input.nextLine());
+                        int targetIndex = 0;
+                        if (targetIndex < 0 || targetIndex >= cardActions.size()) {
+                            return;
+                        }
                         
-                    //TODO: add a check to make sure the target is valid//
-                    Targetable target = targets.get(targetIndex);
-                    targetAction.setTarget(target);
-                    targetAction.perform();
+                        //TODO: add a check to make sure the target is valid//
+                        Targetable target = targets.get(targetIndex);
+                        targetAction.setTarget(target);
+                        targetAction.perform();
+                    }
+                    else action.perform();
                 }
-                else action.perform();
+                this.controller.render();
             }
-            this.controller.render();
         }
     }
     

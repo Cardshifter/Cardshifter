@@ -27,6 +27,7 @@ import com.cardshifter.core.Player;
 import com.cardshifter.core.UsableAction;
 import com.cardshifter.core.Zone;
 import com.cardshifter.core.console.CommandLineOptions;
+import javafx.scene.Node;
 
 public class FXMLGameController implements Initializable {
    
@@ -37,6 +38,8 @@ public class FXMLGameController implements Initializable {
     //hack to make the buttons work properly
     private boolean gameHasStarted = false;
     //I think this is a public constructor, this code initializes the Game
+    @FXML
+    Pane anchorPane;
     public FXMLGameController() throws Exception {
         CommandLineOptions options = new CommandLineOptions();
         InputStream file = options.getScript() == null ? Game.class.getResourceAsStream("start.lua") : new FileInputStream(new File(options.getScript()));
@@ -57,8 +60,15 @@ public class FXMLGameController implements Initializable {
         }
     }
    
+    //TODO: Create a fixed time step and render in that
     //UPDATE LOOP
     public void render() {
+
+        //this is a hack to make the buttons disappear when the choice is made
+        //will not work with a fixed time step
+        Node choiceBoxPane = anchorPane.lookup("#choiceBoxPane");
+        anchorPane.getChildren().remove(choiceBoxPane);
+        
         this.renderHands();
         this.renderBattlefields();
     }
@@ -69,7 +79,8 @@ public class FXMLGameController implements Initializable {
         this.renderPlayerHand();
     }
     
-    //TODO: Convert this to mana totals for players, and only increment every play rotation
+    //TODO: Convert this to mana totals for players
+    //TODO: Play rotation needs to be changed so that it does not revolve around player 1
     //TURN LABEL
     @FXML
     private Label turnLabel;
@@ -203,11 +214,38 @@ public class FXMLGameController implements Initializable {
             cardIndex++;
         } 
     }
-        
-    
     private List<Card> getBattlefield(Player player) {
         Zone battlefield = (Zone)CoerceLuaToJava.coerce(player.data.get("battlefield"), Zone.class);
         return battlefield.getCards();
+    }
+    
+    //CHOICE BOX PANE
+    public void buildChoiceBoxPane(Card card, List<UsableAction> actionList) {
+        Pane choiceBoxPane = new Pane();
+        choiceBoxPane.setPrefHeight(367);
+        choiceBoxPane.setPrefWidth(550);
+        choiceBoxPane.setTranslateX(326);
+        choiceBoxPane.setTranslateY(150);
+        choiceBoxPane.setId("choiceBoxPane");
+        
+        choiceBoxPane.getChildren().clear();
+        
+        int numChoices  = actionList.size();
+        double paneHeight = choiceBoxPane.getPrefHeight();
+        double paneWidth = choiceBoxPane.getPrefWidth();
+        double choiceBoxWidth = paneWidth / numChoices;
+        
+        int actionIndex = 0;
+        for(UsableAction action : actionList) {
+            ChoiceBoxNode choiceBox = new ChoiceBoxNode(choiceBoxWidth, paneHeight, "testName", action, this);
+            Group choiceBoxGroup = choiceBox.getChoiceBoxGroup();
+            choiceBoxGroup.setTranslateX(actionIndex * choiceBoxWidth);
+            choiceBoxPane.getChildren().add(choiceBox.getChoiceBoxGroup());
+            
+            actionIndex++;
+        }
+        
+        anchorPane.getChildren().add(choiceBoxPane);
     }
     
     //BOILERPLATE
