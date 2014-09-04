@@ -19,3 +19,8 @@ We would like everyone to follow the following guidelines:
  - Use the most common coding standard for the language you are coding in.
  - Use tabs for indentation in Java.
  - Use two blanks for indentation in Lua.
+
+Platform
+--------
+
+Currently we plan to support version Java 8u20 or above.
