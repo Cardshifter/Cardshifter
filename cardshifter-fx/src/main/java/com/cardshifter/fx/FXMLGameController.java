@@ -37,18 +37,21 @@ public class FXMLGameController implements Initializable {
     //INITIAL GAME SETUP
     private final CardshifterAI opponent = new CompleteIdiot();
     //need a forward declaration so that this is  global to the class
-    private final Game game;
+    private Game game;
     //hack to make the buttons work properly
     private boolean gameHasStarted = false;
     //I think this is a public constructor, this code initializes the Game
     @FXML
     Pane anchorPane;
     public FXMLGameController() throws Exception {
+        this.initializeGame();
+    }
+    private void initializeGame() throws Exception {
         CommandLineOptions options = new CommandLineOptions();
         InputStream file = options.getScript() == null ? Game.class.getResourceAsStream("start.lua") : new FileInputStream(new File(options.getScript()));
         game = new Game(file, options.getRandom());
     }
-    //GAME START
+    //GAME START and NEW GAME
     @FXML
     private Label startGameLabel;
     @FXML
@@ -67,6 +70,23 @@ public class FXMLGameController implements Initializable {
             this.createData();
             this.render();
         }
+    }
+    @FXML
+    private void newGameButtonAction(ActionEvent event) throws Exception {
+        this.initializeGame();
+        
+        startGameLabel.setText("Starting Game");
+        game.getEvents().startGame(game);
+        gameHasStarted = true;
+        turnLabel.setText(String.format("Turn Number %d", game.getTurnNumber()));
+            
+        this.playerBattlefieldData = new ArrayList<>();
+        this.opponentBattlefieldData = new ArrayList<>();
+        this.playerHandData = new ArrayList<>();
+        this.opponentHandData = new ArrayList<>();
+            
+        this.createData();
+        this.render();
     }
 
     //TODO: Create a fixed time step and render in that
