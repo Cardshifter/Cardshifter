@@ -5,8 +5,8 @@ function startGame(game)
   game:on('actionUsed', onActionUsed)
   game:on('turnStart', onTurnStart)
 
-	local numPlayers = game:getPlayers():size()
-	for i=0,numPlayers-1 do
+  local numPlayers = game:getPlayers():size()
+	for i = 0, numPlayers - 1 do
 		local player = game:getPlayer(i)
 		print("Player: " .. player:toString())
 		
@@ -28,9 +28,9 @@ function startGame(game)
     hand:setKnown(player, true)
     player.data.hand = hand
 		
-		for i=1,4 do
+		for i = 1, 4 do
 			local card
-			for strength = 1,5 do
+			for strength = 1, 5 do
 				card = createCreature(deck, strength, strength, strength, 'B0T')
 				if strength == 2 then
 					card.data.strength = card.data.strength + 1
@@ -45,13 +45,13 @@ function startGame(game)
 			card = createEnchantment(deck, 3, 0, 3)
 			card = createEnchantment(deck, 0, 3, 3)
 			card = createSpecialEnchantment(deck, 2, 2, 5)
-	    end
+	  end
 	    
-	    deck:shuffle()
+	  deck:shuffle()
 	    
-	    for i=1,5 do
-		    drawCard(player)
-	    end
+	  for i=1,5 do
+      drawCard(player)
+	  end
 	end
 	
 	-- Turn Start event is not called when starting game (player should not draw card), setup initial mana for first player
