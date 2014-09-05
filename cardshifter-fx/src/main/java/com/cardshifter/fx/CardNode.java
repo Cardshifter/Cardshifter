@@ -144,9 +144,10 @@ public class CardNode {
                         }
                         this.controller.markTargets(targetCards);
                         this.controller.nextAction = targetAction;
-                    }
-                    else action.perform();
-                    this.controller.createData();
+                    } else {
+                        action.perform();
+                        this.controller.createData();
+                    } 
                 }
                 this.controller.render();
             }

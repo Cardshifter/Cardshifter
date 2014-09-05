@@ -79,6 +79,8 @@ public class FXMLGameController implements Initializable {
         
         this.renderHands();
         this.renderBattlefields();
+        
+        this.updateGameLabels();
     }
     
     //RENDER HANDS
@@ -319,6 +321,37 @@ public class FXMLGameController implements Initializable {
                 }
             }
         }
+    }
+    
+    //GAME STATE LABELS
+    @FXML
+    Label opponentLife;
+    @FXML
+    Label opponentCurrentMana;
+    @FXML
+    Label opponentTotalMana;
+    @FXML
+    Label opponentScrap;
+    @FXML
+    Label playerLife;
+    @FXML
+    Label playerCurrentMana;
+    @FXML
+    Label playerTotalMana;
+    @FXML
+    Label playerScrap;
+    private void updateGameLabels() {
+        Player opponent = game.getLastPlayer();
+        opponentLife.setText(String.format("%d",opponent.data.get("life").toint()));
+        opponentCurrentMana.setText(String.format("%d",opponent.data.get("mana").toint()));
+        opponentTotalMana.setText(String.format("%d",opponent.data.get("maxMana").toint()));
+        opponentScrap.setText(String.format("%d",opponent.data.get("scrap").toint()));
+        
+        Player player = game.getFirstPlayer();
+        playerLife.setText(String.format("%d", player.data.get("life").toint()));
+        playerCurrentMana.setText(String.format("%d", player.data.get("mana").toint()));
+        playerTotalMana.setText(String.format("%d", player.data.get("maxMana").toint()));
+        playerScrap.setText(String.format("%d", player.data.get("scrap").toint()));
     }
     
     //BOILERPLATE
