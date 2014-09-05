@@ -57,7 +57,7 @@ public class CardNodeBattlefield extends Group {
         this.createCardBackground(false);
         this.createCardArt();
         this.createCardIDLabel();
-        //this.createCardPropertyLabelsGroup();
+        this.createCardPropertyLabelsGroup();
         
         //only make the button when the card is active
         if(this.isCardActive() == true) {
@@ -95,26 +95,47 @@ public class CardNodeBattlefield extends Group {
     private void createCardIDLabel() {
         Label cardIdLabel = new Label();
         cardIdLabel.setText(String.format("CardID = %d", card.getId()));
+        cardIdLabel.relocate(this.sizeX*0.15,0); //moving this over so it is out of the way of the temporary button
         cardIdLabel.setTextFill(Color.WHITE);
         this.getChildren().add(cardIdLabel);
     }
     
     private void createCardPropertyLabelsGroup() {
-        //This gets the text from Lua and makes labels for each property
-        int stringIndex = 0;
-        List<String> stringList = new ArrayList<>();
-        LuaTools.processLuaTable(card.data.checktable(), (k, v) -> stringList.add(k + ": " + v));
-        for (String string : stringList) {
-            Group cardTextStrings = new Group();
-            cardTextStrings.setTranslateY(25 + (stringIndex * 25));
-            this.getChildren().add(cardTextStrings);
-            
-            Label cardStringLabel = new Label();
-            cardStringLabel.setText(string);
-            cardStringLabel.setTextFill(Color.WHITE);
-            cardTextStrings.getChildren().add(cardStringLabel);
-            stringIndex++;
+        //Only these values will be loaded from Lua, and only if they are contained in the data
+        int health = 0;
+        int strength = 0;
+        int manaCost = 0;
+        
+        List<String> keyList = new ArrayList<>();
+        LuaTools.processLuaTable(card.data.checktable(), (k, v) -> keyList.add(k + ""));
+        for (String string : keyList) {
+            if(string.equals("health")) {
+                health = card.data.get("health").toint();
+            } else if (string.equals("strength")) {
+                strength = card.data.get("strength").toint();
+            } else if (string.equals("manaCost")) {
+                manaCost = card.data.get("manaCost").toint();
+            }
         }
+        
+        //Need separate code for each label because they are in arbitrary locations
+        Label strengthLabel = new Label();
+        strengthLabel.setText(String.format("%d/", strength)); // do the "/" to have something between strength and health
+        strengthLabel.relocate(this.sizeX*0.75,this.sizeY*0.80);
+        strengthLabel.setTextFill(Color.WHITE);
+        this.getChildren().add(strengthLabel);
+        
+        Label healthLabel = new Label();
+        healthLabel.setText(String.format("%d", health));
+        healthLabel.relocate(this.sizeX*0.88,this.sizeY*0.80);
+        healthLabel.setTextFill(Color.WHITE);
+        this.getChildren().add(healthLabel);
+        
+        Label manaCostLabel = new Label();
+        manaCostLabel.setText(String.format("Cost = %d", manaCost));
+        manaCostLabel.relocate(this.sizeX*0.50,this.sizeY*0.15);
+        manaCostLabel.setTextFill(Color.WHITE);
+        this.getChildren().add(manaCostLabel);
     }
     
     private void createCardActivateButton() {
@@ -186,7 +207,8 @@ public class CardNodeBattlefield extends Group {
         this.createCardBackground(true);
         this.createCardArt();
         this.createCardIDLabel();
-        this.createCardTargetButton();
+        this.createCardPropertyLabelsGroup();
+        this.createCardTargetButton();   
     }
     private void createCardTargetButton() {
         Button button = new Button();
