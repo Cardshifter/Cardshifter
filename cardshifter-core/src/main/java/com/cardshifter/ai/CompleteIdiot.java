@@ -30,6 +30,15 @@ public class CompleteIdiot implements CardshifterAI {
 			return null;
 		}
                 
+                //Do not scrap if it is the only thing you can do
+                if(list.size() == 1) {
+                    for(UsableAction action : list) {
+                        if(action.getName().equals("Scrap")) {
+                            return null;
+                        }
+                    }
+                }
+                
                 //parse the actions and return an appropriate one based on the actions available
                 //For example, if there are less than 3 creatures on the board, do not scrap any
                 //If any attacks are available, do those
