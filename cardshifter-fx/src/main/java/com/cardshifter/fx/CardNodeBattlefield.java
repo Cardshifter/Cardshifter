@@ -71,19 +71,33 @@ public class CardNodeBattlefield extends Group {
         //background border will be smaller for these and a ratio
         Rectangle activeBackground = new Rectangle(-this.sizeX*0.02,-this.sizeY*0.02,this.sizeX, this.sizeY);
         activeBackground.setFill(Color.BLACK);
+        
+        //change the background color based on the state
+        //this cannot be elseif because multiple states could be true
         if(this.isCardActive()) {
             activeBackground.setFill(Color.YELLOW);
         }
-        
         if(this.canCardAttack()) {
             activeBackground.setFill(Color.GREEN);
         }
-        
         if(targetMode) {
             activeBackground.setFill(Color.BLUE);
         }
         
         this.getChildren().add(activeBackground);
+    }
+    private boolean isCardActive() {
+        List<UsableAction> cardActions = card.getActions().values().stream().filter(UsableAction::isAllowed).collect(Collectors.toList());
+        return cardActions.size() > 0;
+    }
+    private boolean canCardAttack() {
+        List<UsableAction> cardActions = card.getActions().values().stream().filter(UsableAction::isAllowed).collect(Collectors.toList());
+        for (UsableAction action : cardActions) {
+            if (action.getName().equals("Attack")) {
+                return true;
+            }
+        }
+        return false;
     }
     
     private void createCardArt() {
@@ -148,12 +162,12 @@ public class CardNodeBattlefield extends Group {
         button.setOnAction(this::buttonClick);
         this.getChildren().add(button);
     }
-    
     private void buttonClick(ActionEvent event) {
         System.out.println("Trying to Perform Action");
         List<UsableAction> cardActions = card.getActions().values().stream().filter(UsableAction::isAllowed).collect(Collectors.toList());
         
         //If there is more than one action, create the choice box
+        //Otherwise, the action will be automaticcally performed if there is only one
         if(cardActions.size() > 1) {
             this.controller.buildChoiceBoxPane(card, cardActions);
         } else if (cardActions.size() == 1) {
@@ -184,21 +198,6 @@ public class CardNodeBattlefield extends Group {
                 }
             }
         }
-    }
-    
-    private boolean isCardActive() {
-        List<UsableAction> cardActions = card.getActions().values().stream().filter(UsableAction::isAllowed).collect(Collectors.toList());
-        return cardActions.size() > 0;
-    }
-    
-    private boolean canCardAttack() {
-        List<UsableAction> cardActions = card.getActions().values().stream().filter(UsableAction::isAllowed).collect(Collectors.toList());
-        for (UsableAction action : cardActions) {
-            if (action.getName().equals("Attack")) {
-                return true;
-            }
-        }
-        return false;
     }
     
     //TARGETING

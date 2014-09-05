@@ -37,7 +37,7 @@ public class FXMLGameController implements Initializable {
     //INITIAL GAME SETUP
     private final CardshifterAI opponent = new CompleteIdiot();
     //need a forward declaration so that this is  global to the class
-    private Game game;
+    private final Game game;
     //hack to make the buttons work properly
     private boolean gameHasStarted = false;
     //I think this is a public constructor, this code initializes the Game

@@ -86,6 +86,7 @@ public class CardNode {
     private void createCardIDLabel() {
         Label cardIdLabel = new Label();
         cardIdLabel.setText(String.format("CardID = %d", card.getId()));
+        cardIdLabel.relocate(this.sizeX*0.15,0); //moving this over so it is out of the way of the temporary button
         cardIdLabel.setTextFill(Color.WHITE);
         cardGroup.getChildren().add(cardIdLabel);
     }
@@ -95,15 +96,12 @@ public class CardNode {
         int stringIndex = 0;
         List<String> stringList = new ArrayList<>();
         LuaTools.processLuaTable(card.data.checktable(), (k, v) -> stringList.add(k + ": " + v));
-        for (String string : stringList) {
-            Group cardTextStrings = new Group();
-            cardTextStrings.setTranslateY(25 + (stringIndex * 25));
-            cardGroup.getChildren().add(cardTextStrings);
-            
+        for (String string : stringList) {           
             Label cardStringLabel = new Label();
             cardStringLabel.setText(string);
+            cardStringLabel.relocate(0, 25 + (stringIndex * 25));
             cardStringLabel.setTextFill(Color.WHITE);
-            cardTextStrings.getChildren().add(cardStringLabel);
+            cardGroup.getChildren().add(cardStringLabel);
             stringIndex++;
         }
     }
