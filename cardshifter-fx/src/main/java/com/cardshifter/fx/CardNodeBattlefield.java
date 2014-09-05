@@ -75,6 +75,10 @@ public class CardNodeBattlefield extends Group {
             activeBackground.setFill(Color.YELLOW);
         }
         
+        if(this.canCardAttack()) {
+            activeBackground.setFill(Color.GREEN);
+        }
+        
         if(targetMode) {
             activeBackground.setFill(Color.BLUE);
         }
@@ -164,6 +168,16 @@ public class CardNodeBattlefield extends Group {
     private boolean isCardActive() {
         List<UsableAction> cardActions = card.getActions().values().stream().filter(UsableAction::isAllowed).collect(Collectors.toList());
         return cardActions.size() > 0;
+    }
+    
+    private boolean canCardAttack() {
+        List<UsableAction> cardActions = card.getActions().values().stream().filter(UsableAction::isAllowed).collect(Collectors.toList());
+        for (UsableAction action : cardActions) {
+            if (action.getName().equals("Attack")) {
+                return true;
+            }
+        }
+        return false;
     }
     
     //TARGETING

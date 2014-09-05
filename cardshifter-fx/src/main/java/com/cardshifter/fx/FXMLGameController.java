@@ -344,13 +344,13 @@ public class FXMLGameController implements Initializable {
         Player opponent = game.getLastPlayer();
         opponentLife.setText(String.format("%d",opponent.data.get("life").toint()));
         opponentCurrentMana.setText(String.format("%d",opponent.data.get("mana").toint()));
-        opponentTotalMana.setText(String.format("%d",opponent.data.get("maxMana").toint()));
+        opponentTotalMana.setText(String.format("%d",opponent.data.get("manaMax").toint()));
         opponentScrap.setText(String.format("%d",opponent.data.get("scrap").toint()));
         
         Player player = game.getFirstPlayer();
         playerLife.setText(String.format("%d", player.data.get("life").toint()));
         playerCurrentMana.setText(String.format("%d", player.data.get("mana").toint()));
-        playerTotalMana.setText(String.format("%d", player.data.get("maxMana").toint()));
+        playerTotalMana.setText(String.format("%d", player.data.get("manaMax").toint()));
         playerScrap.setText(String.format("%d", player.data.get("scrap").toint()));
     }
     

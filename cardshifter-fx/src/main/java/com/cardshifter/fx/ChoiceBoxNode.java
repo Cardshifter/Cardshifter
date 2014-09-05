@@ -94,6 +94,7 @@ public class ChoiceBoxNode {
                         //attacking the other player here
                         targetAction.setTarget(target);
                         targetAction.perform();
+                        this.controller.createData();
                     }
                 }
                 this.controller.markTargets(targetCards);
