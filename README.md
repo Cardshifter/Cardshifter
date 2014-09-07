@@ -23,4 +23,4 @@ We would like everyone to follow the following guidelines:
 Platform
 --------
 
-Currently we plan to support version Java 8u20 or above.
+Currently we plan to support version Java 8u20 and above.
