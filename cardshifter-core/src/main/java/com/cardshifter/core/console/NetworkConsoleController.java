@@ -6,18 +6,21 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import com.cardshifter.server.incoming.LoginMessage;
 import com.cardshifter.server.incoming.StartGameRequest;
 import com.cardshifter.server.incoming.UseAbilityMessage;
 import com.cardshifter.server.messages.Message;
-import com.cardshifter.server.outgoing.EndOfSequenceMessage;
 import com.cardshifter.server.outgoing.NewGameMessage;
+import com.cardshifter.server.outgoing.ResetAvailableActionsMessage;
 import com.cardshifter.server.outgoing.UseableActionMessage;
 import com.cardshifter.server.outgoing.WaitMessage;
 import com.cardshifter.server.outgoing.WelcomeMessage;
@@ -31,9 +34,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class NetworkConsoleController {
 	private final Socket socket;
-	private InputStream in;
-	private OutputStream out;
+	private final InputStream in;
+	private final OutputStream out;
 	private final ObjectMapper mapper = new ObjectMapper();
+	private final BlockingQueue<Message> messages = new LinkedBlockingQueue<>();
+	private final List<UseableActionMessage> actions = Collections.synchronizedList(new ArrayList<>());
 	private int gameId;
 	
 	public NetworkConsoleController(String hostname, int port) throws UnknownHostException, IOException {
@@ -42,60 +47,73 @@ public class NetworkConsoleController {
 		in = socket.getInputStream();
 		mapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, false);
 		mapper.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
-//		mapper.reader().readValues(in);
+		new Thread(this::listen).start();
 	}
 	
 	
-	public void play(Scanner input) throws IOException {
+	public void play(Scanner input) throws IOException, InterruptedException {
 		System.out.println("Enter your name: ");
 //		String name = input.nextLine();
 		String name = "Player" + new Random().nextInt(100);
 		this.send(new LoginMessage(name));
 		
-		WelcomeMessage response = receive(WelcomeMessage.class);
+		WelcomeMessage response = (WelcomeMessage) messages.take();
 		System.out.println(response.getMessage());
 		if (!response.isOK()) {
 			return;
 		}
 		
 		this.send(new StartGameRequest());
-		Message message = receive(Message.class);
+		Message message = messages.take();
 		if (message instanceof WaitMessage) {
 			System.out.println(((WaitMessage) message).getMessage());
-			NewGameMessage game = receive(NewGameMessage.class);
+			NewGameMessage game = (NewGameMessage) messages.take();
 			this.playLoop(game, input);
 		}
 		else {
 			this.playLoop((NewGameMessage) message, input);
 		}
 	}
-
-	private void playLoop(NewGameMessage game, Scanner input) throws JsonParseException, JsonMappingException, IOException {
-		System.out.printf("Game id %d. You are player index %d.%n", game.getGameId(), game.getPlayerIndex());
-		this.gameId = game.getGameId();
+	
+	private void listen() {
 		while (true) {
-			Message mess = null;
-			List<UseableActionMessage> actions = new ArrayList<>();
-			do {
+			try {
+				Message mess = null;
 				System.out.println("Start loop");
-				
 				MappingIterator<Message> values = mapper.readValues(new JsonFactory().createParser(in), Message.class);
 				while (values.hasNext()) {
 					mess = values.next();
 					System.out.println("iterator: " + mess);
-					if (mess instanceof EndOfSequenceMessage) {
-						break;
+					messages.offer(mess);
+					if (mess instanceof ResetAvailableActionsMessage) {
+						actions.clear();
 					}
 					if (mess instanceof UseableActionMessage) {
+						System.out.println("New Action Available: " + actions.size() + " - " + mess);
 						actions.add((UseableActionMessage) mess);
 					}
 				}
 				System.out.println("End of loop, mess is " + mess);
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-			while (!(mess instanceof EndOfSequenceMessage));
-			
-			
+		}
+	}
+	
+	private void playLoop(NewGameMessage game, Scanner input) throws JsonParseException, JsonMappingException, IOException {
+		System.out.printf("Game id %d. You are player index %d.%n", game.getGameId(), game.getPlayerIndex());
+		this.gameId = game.getGameId();
+		while (true) {
 			System.out.println("Waiting for input...");
+			
+			// TODO: Empty messages, perhaps do something with some of them as well...
+//			try {
+//				while (true) {
+//					// 
+//					messages.poll(500, TimeUnit.MILLISECONDS);
+//				}
+//			} catch (InterruptedException e) {
+//			}
 			
 			outputList(actions);
 			if (actions.isEmpty()) {
@@ -112,7 +130,7 @@ public class NetworkConsoleController {
 				UseableActionMessage action = actions.get(actionIndex);
 				this.send(new UseAbilityMessage(gameId, action.getId(), action.getAction()));
 			}
-			catch (NumberFormatException ex) {
+			catch (NumberFormatException | IndexOutOfBoundsException ex) {
 				System.out.println("Not a valid action");
 			}
 		}
@@ -120,6 +138,7 @@ public class NetworkConsoleController {
 		print("Game over!");
 	}
 
+	@Deprecated
 	private <T> T receive(Class<T> class1) throws JsonParseException, JsonMappingException, IOException {
 		T mapp = mapper.readValue(in, class1);
 		System.out.println("Received: " + mapper.writeValueAsString(mapp));
@@ -164,7 +183,7 @@ public class NetworkConsoleController {
 		return sb.toString();
 	}
 	
-	public static void main(String[] args) throws UnknownHostException, IOException {
+	public static void main(String[] args) throws UnknownHostException, IOException, InterruptedException {
 		NetworkConsoleController control = new NetworkConsoleController("127.0.0.1", 4242);
 		control.play(new Scanner(System.in));
 	}

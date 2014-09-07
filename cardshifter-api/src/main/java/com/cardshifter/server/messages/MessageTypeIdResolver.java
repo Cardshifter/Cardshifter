@@ -8,7 +8,7 @@ import com.cardshifter.server.incoming.LoginMessage;
 import com.cardshifter.server.incoming.StartGameRequest;
 import com.cardshifter.server.incoming.UseAbilityMessage;
 import com.cardshifter.server.outgoing.CardInfoMessage;
-import com.cardshifter.server.outgoing.EndOfSequenceMessage;
+import com.cardshifter.server.outgoing.ResetAvailableActionsMessage;
 import com.cardshifter.server.outgoing.GameMessage;
 import com.cardshifter.server.outgoing.NewGameMessage;
 import com.cardshifter.server.outgoing.PlayerMessage;
@@ -32,7 +32,7 @@ public class MessageTypeIdResolver implements TypeIdResolver {
 		clazzes.put("startgame", StartGameRequest.class);
 		clazzes.put("use", UseAbilityMessage.class);
 		
-		clazzes.put("eosq", EndOfSequenceMessage.class);
+		clazzes.put("resetActions", ResetAvailableActionsMessage.class);
 		clazzes.put("game", GameMessage.class);
 		clazzes.put("wait", WaitMessage.class);
 		clazzes.put("loginresponse", WelcomeMessage.class);

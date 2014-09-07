@@ -29,5 +29,10 @@ public class UpdateMessage extends Message {
 	public Object getValue() {
 		return value;
 	}
+
+	@Override
+	public String toString() {
+		return "UpdateMessage [id=" + id + ", key=" + key + ", value=" + value + "]";
+	}
 	
 }

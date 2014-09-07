@@ -13,7 +13,7 @@ import com.cardshifter.core.Game;
 
 public class Main {
 
-	public static void main(String[] args) throws UnknownHostException, IOException {
+	public static void main(String[] args) throws UnknownHostException, IOException, InterruptedException {
 		try (Scanner input = new Scanner(System.in)) {
 			CommandLineOptions options = new CommandLineOptions();
 			JCommander jcommander = new JCommander(options);

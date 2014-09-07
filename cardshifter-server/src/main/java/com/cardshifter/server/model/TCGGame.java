@@ -14,7 +14,7 @@ import com.cardshifter.core.Zone;
 import com.cardshifter.server.clients.ClientIO;
 import com.cardshifter.server.incoming.UseAbilityMessage;
 import com.cardshifter.server.outgoing.CardInfoMessage;
-import com.cardshifter.server.outgoing.EndOfSequenceMessage;
+import com.cardshifter.server.outgoing.ResetAvailableActionsMessage;
 import com.cardshifter.server.outgoing.PlayerMessage;
 import com.cardshifter.server.outgoing.UpdateMessage;
 import com.cardshifter.server.outgoing.UseableActionMessage;
@@ -78,7 +78,8 @@ public class TCGGame extends ServerGame {
 			throw new IllegalArgumentException("No such action was found.");
 		}
 		action.perform();
-		
+		// TODO: Add listener to game for ZoneMoves, inform players about card movements, and send CardInfoMessage when a card becomes known
+		sendAvailableActions();
 	}
 
 	@Override
@@ -105,12 +106,12 @@ public class TCGGame extends ServerGame {
 		this.getPlayers().stream().forEach(pl -> this.send(new PlayerMessage(playerFor(pl).getName(), LuaTools.tableToJava(playerFor(pl).data))));
 		this.game.getZones().stream().forEach(this::sendZone);
 		this.sendAvailableActions();
-		this.send(new EndOfSequenceMessage());
 	}
 	
 	private void sendAvailableActions() {
 		for (ClientIO io : this.getPlayers()) {
 			Player player = playerFor(io);
+			io.sendToClient(new ResetAvailableActionsMessage());
 			if (game.getCurrentPlayer() == player) {
 				game.getAllActions().stream().filter(action -> action.isAllowed())
 						.forEach(action -> io.sendToClient(new UseableActionMessage(action.getEntityId(), action.getName(), action instanceof TargetAction)));

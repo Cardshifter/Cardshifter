@@ -133,4 +133,9 @@ public class Card implements Targetable, IdEntity {
 	public int getId() {
 		return id;
 	}
+	
+	@Override
+	public String toString() {
+		return String.format("{Card id %d in zone %s}", this.getId(), this.hasZone() ? getZone() : "/dev/null");
+	}
 }

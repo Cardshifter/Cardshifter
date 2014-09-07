@@ -30,4 +30,9 @@ public class UseableActionMessage extends Message {
 		return targetRequired;
 	}
 
+	@Override
+	public String toString() {
+		return "UseableActionMessage [id=" + id + ", action=" + action + ", targetRequired=" + targetRequired + "]";
+	}
+
 }
