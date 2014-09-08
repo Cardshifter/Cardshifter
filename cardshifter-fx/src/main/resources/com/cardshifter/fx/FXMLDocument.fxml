@@ -8,20 +8,50 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" maxHeight="600" maxWidth="1200" minHeight="600" minWidth="1200" prefHeight="600.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cardshifter.fx.FXMLGameController">
+<AnchorPane fx:id="anchorPane" maxHeight="600" maxWidth="1200" minHeight="600" minWidth="1200" prefHeight="600.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cardshifter.fx.FXMLGameController">
     <children>
+        
+        <!--  Buttons  -->
         <Button fx:id="button" layoutX="1098.0" layoutY="530.0" onAction="#startGameButtonAction" text="Start Game" />
         <Label fx:id="startGameLabel" layoutX="1098.0" layoutY="564.0" minHeight="16" minWidth="69" />
-        <Button layoutX="1093.0" layoutY="367.0" mnemonicParsing="false" onAction="#handleTurnButtonAction" text="Next Turn" />
-        <Label fx:id="turnLabel" layoutX="1091.0" layoutY="412.0" text="Turn Number" />
-      <Pane fx:id="player01Pane" layoutX="14.0" layoutY="393.0" prefHeight="200.0" prefWidth="1066.0">
-         <children>
-            <QuadCurve fx:id="handGuide" controlY="-100.0" endX="100.0" fill="DODGERBLUE" layoutX="480.0" layoutY="200.0" opacity="0.0" startX="-100.0" stroke="BLACK" strokeType="INSIDE" />
-         </children>
-      </Pane>
-      <Pane fx:id="player02Pane" layoutX="153.0" layoutY="6.0" prefHeight="61.0" prefWidth="895.0">
-      </Pane>
-      <Pane fx:id="player02Battlefield" layoutX="47.0" layoutY="112.0" prefHeight="98.0" prefWidth="1001.0" />
-      <Pane fx:id="player01Battlefield" layoutX="47.0" layoutY="237.0" prefHeight="98.0" prefWidth="1001.0" />
+        
+        <Button layoutX="1105.0" layoutY="467.0" mnemonicParsing="false" onAction="#handleTurnButtonAction" text="End Turn" />
+        <Label fx:id="turnLabel" layoutX="1091.0" layoutY="500.0" text="Turn Number" />
+        
+        <Button fx:id="newGameButton" layoutX="17.0" layoutY="24.0" mnemonicParsing="false" onAction="#newGameButtonAction" text="New Game" />
+        
+        <!--  Hands  -->
+        <Pane fx:id="playerHandPane" layoutX="14.0" layoutY="393.0" prefHeight="200.0" prefWidth="1066.0">
+            <children>
+                <QuadCurve fx:id="handGuide" controlY="-100.0" endX="100.0" fill="DODGERBLUE" layoutX="480.0" layoutY="200.0" opacity="0.0" startX="-100.0" stroke="BLACK" strokeType="INSIDE" />
+            </children>
+        </Pane>
+        
+        <Pane fx:id="opponentHandPane" layoutX="153.0" layoutY="6.0" prefHeight="61.0" prefWidth="895.0" />
+
+        <!--  Battlefields  -->
+        <Pane fx:id="playerBattlefieldPane" layoutX="47.0" layoutY="237.0" prefHeight="98.0" prefWidth="1001.0" />
+        <Pane fx:id="opponentBattlefieldPane" layoutX="47.0" layoutY="107.0" prefHeight="98.0" prefWidth="1001.0" />
+
+        <!--  Game State Labels  -->
+        <Label layoutX="1111.0" layoutY="29.0" text="Opponent" />
+        <Label layoutX="1133.0" layoutY="51.0" text="Life" />
+        <Label layoutX="1101.0" layoutY="91.0" text="Current Mana" />
+        <Label layoutX="1107.0" layoutY="131.0" text="Total Mana" />
+        <Label fx:id="opponentLife" layoutX="1133.0" layoutY="67.0" prefHeight="16.0" prefWidth="35.0" text="#" textAlignment="CENTER" />
+        <Label fx:id="opponentCurrentMana" layoutX="1140.0" layoutY="107.0" text="#" />
+        <Label fx:id="opponentTotalMana" layoutX="1140.0" layoutY="148.0" text="#" />
+        <Label layoutX="1126.0" layoutY="263.0" text="Player" />
+        <Label layoutX="1133.0" layoutY="292.0" text="Life" />
+        <Label fx:id="playerLife" layoutX="1138.0" layoutY="308.0" text="#" />
+        <Label layoutX="1103.0" layoutY="327.0" text="Current Mana" />
+        <Label fx:id="playerCurrentMana" layoutX="1140.0" layoutY="343.0" text="#" />
+        <Label layoutX="1111.0" layoutY="366.0" text="Total Mana" />
+        <Label fx:id="playerTotalMana" layoutX="1141.0" layoutY="385.0" text="#" />
+        <Label layoutX="1127.0" layoutY="171.0" text="Scrap" />
+        <Label layoutX="1129.0" layoutY="407.0" text="Scrap" />
+        <Label fx:id="playerScrap" layoutX="1141.0" layoutY="423.0" text="#" />
+        <Label fx:id="opponentScrap" layoutX="1140.0" layoutY="187.0" text="#" />
+      
     </children>
 </AnchorPane>

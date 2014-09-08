@@ -48,7 +48,7 @@ public class Game implements IdEntity {
 		this.players.add(new Player(this, "Player2", nextId()));
 		this.random = random;
 		this.listener = listener;
-		this.turnNumber = 0;
+		this.turnNumber = 1;
 	}
 	
 	public Game(InputStream file) {
@@ -115,7 +115,10 @@ public class Game implements IdEntity {
 				
 		this.events.callEvent(Events.TURN_START, CoerceJavaToLua.coerce(this.currentPlayer), null);
 
-		turnNumber++;
+                //Quick hack to only advance the turn number when control passes back to player
+		if (this.currentPlayer == this.getLastPlayer()) {
+                    turnNumber++;
+                }
 	}
 	
 	public int randomInt(int count) {

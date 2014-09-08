@@ -12,8 +12,15 @@ import javafx.event.ActionEvent;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+
+/* 
+   The purpose of this class is to take in certain values from the 
+   Game controller and create a Group that the controller can 
+   retrieve in order to render a Player card on the screen
+*/
 
 public class CardNode {
     
@@ -25,9 +32,15 @@ public class CardNode {
     
     private final Group cardGroup;
     
-    public CardNode(double sizeX, double sizeY, String name, Card card, FXMLGameController controller) {
-        this.sizeX = sizeX;
-        this.sizeY = sizeY;
+    public CardNode(Pane pane, int numCards, String name, Card card, FXMLGameController controller) {
+        //calculate card width based on pane size
+        double paneWidth = pane.getWidth();
+        //reduce card size if there are over a certain amount of them
+        int maxCards = Math.max(numCards, 8);
+        double cardWidth = paneWidth / maxCards;
+        
+        this.sizeX = cardWidth;
+        this.sizeY = pane.getHeight();
         this.name = name;
         this.card = card;
         this.controller = controller;
@@ -37,6 +50,10 @@ public class CardNode {
     
     public Group getCardGroup() {
         return this.cardGroup;
+    }
+    
+    public double getWidth() {
+        return this.sizeX;
     }
     
     private void createCard() {
@@ -69,6 +86,7 @@ public class CardNode {
     private void createCardIDLabel() {
         Label cardIdLabel = new Label();
         cardIdLabel.setText(String.format("CardID = %d", card.getId()));
+        cardIdLabel.relocate(this.sizeX*0.15,0); //moving this over so it is out of the way of the temporary button
         cardIdLabel.setTextFill(Color.WHITE);
         cardGroup.getChildren().add(cardIdLabel);
     }
@@ -78,15 +96,12 @@ public class CardNode {
         int stringIndex = 0;
         List<String> stringList = new ArrayList<>();
         LuaTools.processLuaTable(card.data.checktable(), (k, v) -> stringList.add(k + ": " + v));
-        for (String string : stringList) {
-            Group cardTextStrings = new Group();
-            cardTextStrings.setTranslateY(25 + (stringIndex * 25));
-            cardGroup.getChildren().add(cardTextStrings);
-            
+        for (String string : stringList) {           
             Label cardStringLabel = new Label();
             cardStringLabel.setText(string);
+            cardStringLabel.relocate(0, 25 + (stringIndex * 25));
             cardStringLabel.setTextFill(Color.WHITE);
-            cardTextStrings.getChildren().add(cardStringLabel);
+            cardGroup.getChildren().add(cardStringLabel);
             stringIndex++;
         }
     }
@@ -105,29 +120,35 @@ public class CardNode {
     private void buttonClick(ActionEvent event) {
         System.out.println("Trying to Perform Action");
         List<UsableAction> cardActions = card.getActions().values().stream().filter(UsableAction::isAllowed).collect(Collectors.toList());
-        for (UsableAction action : cardActions) {
-            if (action.isAllowed()) {
-                if (action instanceof TargetAction) {
-                    TargetAction targetAction = (TargetAction) action;
-                    List<Targetable> targets = targetAction.findTargets();
-                    if (targets.isEmpty()) {
-                        return;
-                    }
+        
+        //If there is more than one action, create the choice box
+        if(cardActions.size() > 1) {
+            this.controller.buildChoiceBoxPane(card, cardActions);
+        } else if (cardActions.size() == 1) {
+            for (UsableAction action : cardActions) {
+                if (action.isAllowed()) {
+                    if (action instanceof TargetAction) {
+                        TargetAction targetAction = (TargetAction) action;
+                        List<Targetable> targets = targetAction.findTargets();
+                        if (targets.isEmpty()) {
+                            return;
+                        }
 
-                    //int targetIndex = Integer.parseInt(input.nextLine());
-                    int targetIndex = 0;
-                    if (targetIndex < 0 || targetIndex >= cardActions.size()) {
-                        return;
-                    }
-                        
-                    //TODO: add a check to make sure the target is valid//
-                    Targetable target = targets.get(targetIndex);
-                    targetAction.setTarget(target);
-                    targetAction.perform();
+                        List<Card>targetCards = new ArrayList<>();
+                        for(Targetable target : targets) {
+                            if (target instanceof Card) {
+                                targetCards.add((Card)target);
+                            }
+                        }
+                        this.controller.markTargets(targetCards);
+                        this.controller.nextAction = targetAction;
+                    } else {
+                        action.perform();
+                        this.controller.createData();
+                    } 
                 }
-                else action.perform();
+                this.controller.render();
             }
-            this.controller.render();
         }
     }
     
