@@ -1,0 +1,12 @@
+language: java
+
+jdk:
+    - oraclejdk8
+
+notifications:
+    webhooks:
+        urls:
+            - secure: "SPXpxdUqqEMqGJK1WbNOo4RxS9Sx2CKvmIUaadwFsSg34qR0KSOhXMnWEo6s+uFLv8OB+Q/nYtWvD9Xg6n+QfgkgmyOLiYsN8cGTG4B8KFKn3Kbl6mfG8IzRP+nQYzXCqcuQ6gf+eurAX3LIvYWF+D2qcHedbZHQfVZ12ai2dTU="
+        on_success: always
+        on_failure: always
+        on_start: false
