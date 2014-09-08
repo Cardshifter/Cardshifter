@@ -1,17 +1,19 @@
 package com.cardshifter.fx;
 
-import com.cardshifter.core.Card;
-import com.cardshifter.core.TargetAction;
-import com.cardshifter.core.Targetable;
-import com.cardshifter.core.UsableAction;
 import java.util.ArrayList;
 import java.util.List;
+
 import javafx.event.ActionEvent;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+
+import com.cardshifter.core.Card;
+import com.cardshifter.core.Targetable;
+import com.cardshifter.core.actions.TargetAction;
+import com.cardshifter.core.actions.UsableAction;
 
 public class ChoiceBoxNode {
     

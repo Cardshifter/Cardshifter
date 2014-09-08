@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.luaj.vm2.Globals;
@@ -18,7 +19,7 @@ import org.luaj.vm2.lib.jse.JsePlatform;
 import org.luaj.vm2.luajc.LuaJC;
 
 public class Events {
-
+	//TODO refactor to enums
 	public static final String ACTION_USED = "actionUsed";
 
 	public static final String TURN_END = "turnEnd";
@@ -27,18 +28,19 @@ public class Events {
 	private final Globals globals = JsePlatform.standardGlobals();
 	private final Map<String, List<LuaFunction>> eventListeners = new ConcurrentHashMap<>();
 	
-	public Events(InputStream stream) {
-		InputStreamReader reader = new InputStreamReader(stream);
+	public Events(final InputStream inputStream) {
+		Objects.requireNonNull(inputStream, "inputStream");
+		InputStreamReader reader = new InputStreamReader(inputStream);
 		globals.load(reader, "mainScript").call();
 		LuaJC.install(globals);
 		try {
 			reader.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			e.printStackTrace();	//TODO logging?
 		}
 	}
 	
-	public Zone zoneMove(Card card, Zone source, Zone destination) {
+	public Zone zoneMove(final Card card, final Zone source, final Zone destination) {
 		// TODO: Execute some event for when cards get moved, should perhaps also be possible to cancel it
 		// To support things like: "Whenever a creature enters the battlefield, you gain 1 life"
 		// for now this only returns the new destination zone.
@@ -53,7 +55,7 @@ public class Events {
 	 * 
 	 * @param game Game to setup
 	 */
-	public void startGame(Game game) {
+	public void startGame(final Game game) {
 		globals.set("gadsame", CoerceJavaToLua.coerce(game));
 		
 //        globals.load(new StringReader(codeTextArea.getText()), "interopTest").call();
@@ -63,14 +65,15 @@ public class Events {
         game.setCurrentPlayer(game.getFirstPlayer());
 	}
 	
-	public void callEvent(String eventName, LuaValue source, LuaValue table) {
-		eventListeners.getOrDefault(eventName, Collections.emptyList()).forEach(func -> func.call(source, table));
+	public void callEvent(final String eventName, final LuaValue source, final LuaValue table) {
+		Objects.requireNonNull(eventName, "eventName");
+		Objects.requireNonNull(source, "source");
+		eventListeners.getOrDefault(eventName, Collections.emptyList())
+			.forEach(func -> func.call(source, table));
 	}
 	
-	public void registerListener(String eventName, LuaValue function) {
-		function.checkfunction();
+	public void registerListener(final String eventName, final LuaValue function) {
 		eventListeners.putIfAbsent(eventName, Collections.synchronizedList(new ArrayList<>()));
-		eventListeners.get(eventName).add((LuaFunction) function);
+		eventListeners.get(eventName).add(function.checkfunction());
 	}
-	
 }

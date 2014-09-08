@@ -11,10 +11,10 @@ import org.luaj.vm2.LuaValue;
 import com.cardshifter.core.Game;
 import com.cardshifter.core.LuaTools;
 import com.cardshifter.core.Player;
-import com.cardshifter.core.TargetAction;
 import com.cardshifter.core.Targetable;
-import com.cardshifter.core.UsableAction;
 import com.cardshifter.core.Zone;
+import com.cardshifter.core.actions.TargetAction;
+import com.cardshifter.core.actions.UsableAction;
 
 public class ConsoleController {
 	private final Game game;
@@ -76,7 +76,9 @@ public class ConsoleController {
 					targetAction.setTarget(target);
 					targetAction.perform();
 				}
-				else action.perform();
+				else {
+					action.perform();
+				}
 				print("Action performed");
 			}
 			else {

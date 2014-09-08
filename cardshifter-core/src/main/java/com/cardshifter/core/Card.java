@@ -9,9 +9,13 @@ import java.util.function.Consumer;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 
+import com.cardshifter.core.actions.CardAction;
+import com.cardshifter.core.actions.TargetAction;
+import com.cardshifter.core.actions.UsableAction;
+
 public class Card implements Targetable, IdEntity {
 	public final LuaTable data = new ExtLuaTable(this::onChange);
-	
+
 	private final Map<String, UsableAction> actions = new HashMap<>();
 	
 	private Optional<Zone> currentZone;

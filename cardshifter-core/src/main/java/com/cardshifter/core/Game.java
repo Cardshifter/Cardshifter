@@ -7,10 +7,13 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.luaj.vm2.LuaFunction;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
+
+import com.cardshifter.core.actions.UsableAction;
 
 public class Game implements IdEntity {
 
@@ -18,11 +21,13 @@ public class Game implements IdEntity {
 		void onChange(IdEntity what, Object key, Object value);
 	}
 	
-	private final List<Zone> zones;
-	private final List<Player> players;
+	public final LuaValue data = new ExtLuaTable((key, value) -> this.broadcastChange(this, key, value));
+	
+	private final List<Zone> zones = new ArrayList<>();
+	private final List<Player> players = new ArrayList<>();
 	private final Events events;
 	private final Random random;
-	public final LuaValue data = new ExtLuaTable((key, value) -> this.broadcastChange(this, key, value));
+	
 	private boolean gameOver = false;
 	private final AtomicInteger ids;
 	private int turnNumber;
@@ -36,22 +41,20 @@ public class Game implements IdEntity {
 	}
 	
 	public Game(InputStream file, Random random, StateChangeListener listener) {
-		Objects.requireNonNull(random);
-		Objects.requireNonNull(file);
+		Objects.requireNonNull(file, "file");
+		Objects.requireNonNull(random, "random");
 		this.ids = new AtomicInteger(0);
 		this.id = nextId();
-		this.zones = new ArrayList<>();
-		this.players = new ArrayList<>();
 		this.events = new Events(file);
+		this.random = random;
 		
 		this.players.add(new Player(this, "Player1", nextId()));
 		this.players.add(new Player(this, "Player2", nextId()));
-		this.random = random;
 		this.listener = listener;
 		this.turnNumber = 1;
 	}
 	
-	public Game(InputStream file) {
+	public Game(final InputStream file) {
 		this(file, new Random());
 	}
 
@@ -87,26 +90,29 @@ public class Game implements IdEntity {
 		return events;
 	}
 	
-	public Zone createZone(Player owner, String name) {
+	public Zone createZone(final Player owner, final String name) {
 		Zone zone = new Zone(owner, name, this.nextId());
 		this.zones.add(zone);
 		return zone;
 	}
 
 	public List<UsableAction> getAllActions() {
-		List<UsableAction> actions = new ArrayList<>();
-		actions.addAll(getPlayers().stream().flatMap(player -> player.getActions().values().stream()).collect(Collectors.toList()));
-		actions.addAll(getZones().stream().flatMap(zone -> zone.getCards().stream())
-			.flatMap(card -> card.getActions().values().stream())
-			.collect(Collectors.toList()));
-		return actions;
+		Stream<UsableAction> playerActions = getPlayers().stream()
+			.flatMap(player -> player.getActions().values().stream());
+		
+		Stream<UsableAction> cardActions = getZones().stream()
+			.flatMap(zone -> zone.getCards().stream())
+			.flatMap(card -> card.getActions().values().stream());
+		
+		return Stream.concat(playerActions, cardActions).collect(Collectors.toList());
 	}
 	
-	public void on(String eventName, LuaFunction function) {
+	public void on(final String eventName, final LuaFunction function) {
 		this.events.registerListener(eventName, function);
 	}
 	
 	public void nextTurn() {
+		//TODO is it not bad if currentPlayer == null?
 		if (this.currentPlayer != null) {
 			this.events.callEvent(Events.TURN_END, CoerceJavaToLua.coerce(this.currentPlayer), null);
 		}
@@ -121,7 +127,7 @@ public class Game implements IdEntity {
                 }
 	}
 	
-	public int randomInt(int count) {
+	public int randomInt(final int count) {
 		return this.random.nextInt(count);
 	}
 	
@@ -129,7 +135,7 @@ public class Game implements IdEntity {
 		return this.random;
 	}
 	
-	public void setCurrentPlayer(Player currentPlayer) {
+	public void setCurrentPlayer(final Player currentPlayer) {
 		this.currentPlayer = currentPlayer;
 	}
 	

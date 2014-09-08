@@ -6,9 +6,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.cardshifter.core.Player;
-import com.cardshifter.core.TargetAction;
 import com.cardshifter.core.Targetable;
-import com.cardshifter.core.UsableAction;
+import com.cardshifter.core.actions.TargetAction;
+import com.cardshifter.core.actions.UsableAction;
 
 public class CompleteIdiot implements CardshifterAI {
 

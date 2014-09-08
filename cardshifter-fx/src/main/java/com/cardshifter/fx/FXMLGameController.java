@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -11,6 +12,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -24,13 +26,11 @@ import com.cardshifter.ai.CompleteIdiot;
 import com.cardshifter.core.Card;
 import com.cardshifter.core.Game;
 import com.cardshifter.core.Player;
-import com.cardshifter.core.TargetAction;
 import com.cardshifter.core.Targetable;
-import com.cardshifter.core.UsableAction;
 import com.cardshifter.core.Zone;
+import com.cardshifter.core.actions.TargetAction;
+import com.cardshifter.core.actions.UsableAction;
 import com.cardshifter.core.console.CommandLineOptions;
-import java.util.ArrayList;
-import javafx.scene.Node;
 
 public class FXMLGameController implements Initializable {
    

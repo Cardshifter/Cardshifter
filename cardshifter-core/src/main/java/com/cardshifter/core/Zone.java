@@ -9,13 +9,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.luaj.vm2.LuaTable;
 
 public class Zone implements IdEntity {
+	public final LuaTable data = new ExtLuaTable(this::onChange);
 
-	private final LinkedList<Card> cards; // `LinkedList` is both a `Deque` and a `List`
+	private final LinkedList<Card> cards = new LinkedList<>(); // `LinkedList` is both a `Deque` and a `List`
 	private final Game game;
 	private final Player owner;
 	private final String name;
 	private final Map<Player, Boolean> knownToPlayers = new ConcurrentHashMap<>();
-	public final LuaTable data = new ExtLuaTable(this::onChange);
 	private boolean globallyKnown;
 	private final int id;
 	
@@ -24,29 +24,28 @@ public class Zone implements IdEntity {
 		getGame().broadcastChange(this, key, value);
 	}
 	
-	Zone(Player owner, String name, int id) {
-		Objects.requireNonNull(owner);
+	Zone(final Player owner, final String name, final int id) {
 		this.id = id;
-		this.owner = owner;
+		this.owner = Objects.requireNonNull(owner, "owner");
 		this.game = owner.getGame();
-		this.cards = new LinkedList<>();
-		this.name = name;
+		this.name = Objects.requireNonNull(name, "name");
 	}
 	
 	public LinkedList<Card> getCards() {
 		return cards;
 	}
 	
-	public boolean isKnownToPlayer(Player player) {
-		Objects.requireNonNull(player);
+	public boolean isKnownToPlayer(final Player player) {
+		Objects.requireNonNull(player, "player");
 		return knownToPlayers.getOrDefault(player, this.globallyKnown);
 	}
 	
-	public void setGloballyKnown(boolean globallyKnown) {
+	public void setGloballyKnown(final boolean globallyKnown) {
 		this.globallyKnown = globallyKnown;
 	}
 	
-	public void setKnown(Player player, boolean known) {
+	public void setKnown(final Player player, final boolean known) {
+		Objects.requireNonNull(player, "player");
 		this.knownToPlayers.put(player, known);
 	}
 	
@@ -82,11 +81,6 @@ public class Zone implements IdEntity {
 		return cards.getLast();
 	}
 	
-	@Override
-	public String toString() {
-		return "{Zone " + this.name + " (" + this.cards.size() + ") owned by " + this.owner + "}";
-	}
-	
 	public void shuffle() {
 		Collections.shuffle(this.cards, getGame().getRandom());
 	}
@@ -102,5 +96,9 @@ public class Zone implements IdEntity {
 
 	public int size() {
 		return cards.size();
+	}
+	
+	public String toString() {
+		return "{Zone " + this.name + " (" + this.cards.size() + ") owned by " + this.owner + "}";
 	}
 }

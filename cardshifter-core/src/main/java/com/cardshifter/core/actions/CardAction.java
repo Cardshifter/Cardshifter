@@ -1,26 +1,23 @@
-package com.cardshifter.core;
+package com.cardshifter.core.actions;
 
 import java.util.Objects;
 
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 
-public class CardAction extends UsableAction {
+import com.cardshifter.core.Card;
+import com.cardshifter.core.Game;
 
+public class CardAction extends UsableAction {
 	private final Card card;
 
-	public CardAction(final Card card, final String name, final LuaValue allowedFunction, final LuaValue actionFunction) {
-		super(name, allowedFunction, actionFunction);
+	public CardAction(final Card card, final String name, final LuaValue isAllowedFunction, final LuaValue performFunction) {
+		super(name, isAllowedFunction, performFunction);
 		this.card = Objects.requireNonNull(card, "card");
 	}
 	
 	public Card getCard() {
 		return card;
-	}
-	
-	@Override
-	public String toString() {
-		return "{Action " + getName() + " on card " + card + "}";
 	}
 
 	@Override
@@ -38,4 +35,8 @@ public class CardAction extends UsableAction {
 		return card.getId();
 	}
 	
+	@Override
+	public String toString() {
+		return "{Action " + getName() + " on card " + card + "}";
+	}
 }

@@ -5,7 +5,6 @@ import java.util.Random;
 import com.beust.jcommander.Parameter;
 
 public class CommandLineOptions {
-
 	@Parameter(names = { "--file", "-f" }, description = "Script file to run")
 	private String script;
 	
@@ -19,7 +18,7 @@ public class CommandLineOptions {
 	private int port = 4242;
 	
 	public Random getRandom() {
-		return seed == null ? new Random() : new Random(seed);
+		return (seed == null) ? new Random() : new Random(seed);
 	}
 	
 	public String getScript() {
