@@ -361,11 +361,11 @@ public class FXMLGameController implements Initializable {
     @FXML
     Label playerScrap;
     private void updateGameLabels() {
-        Player opponent = game.getLastPlayer();
-        opponentLife.setText(String.format("%d",opponent.data.get("life").toint()));
-        opponentCurrentMana.setText(String.format("%d",opponent.data.get("mana").toint()));
-        opponentTotalMana.setText(String.format("%d",opponent.data.get("manaMax").toint()));
-        opponentScrap.setText(String.format("%d",opponent.data.get("scrap").toint()));
+        Player localOpponent = game.getLastPlayer();
+        opponentLife.setText(String.format("%d",localOpponent.data.get("life").toint()));
+        opponentCurrentMana.setText(String.format("%d",localOpponent.data.get("mana").toint()));
+        opponentTotalMana.setText(String.format("%d",localOpponent.data.get("manaMax").toint()));
+        opponentScrap.setText(String.format("%d",localOpponent.data.get("scrap").toint()));
         
         Player player = game.getFirstPlayer();
         playerLife.setText(String.format("%d", player.data.get("life").toint()));
