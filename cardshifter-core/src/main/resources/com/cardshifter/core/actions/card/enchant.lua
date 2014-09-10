@@ -32,6 +32,12 @@ function enchant.isTargetAllowed(card, target, action)
 	if target.data.creatureType ~= 'Bio' then
 		return false
 	end
+	if target:getOwner() ~= card:getOwner() then
+	  return false
+	end
+	if target:getZone() ~= card:getOwner().data.battlefield then
+	  return false
+	end
 	return true
 end
 
