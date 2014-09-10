@@ -114,9 +114,6 @@ end
 
 function onTurnStart(player, event)
 	print("(This is Lua) Turn Start! " .. player:toString())
-	if player.data.deck:isEmpty() then
-		print("(This is Lua) Deck is empty!")
-	end
 	
 	local field = player.data.battlefield
 	local iterator = field:getCards():iterator()
@@ -129,12 +126,22 @@ function onTurnStart(player, event)
 		card.data.attacksAvailable = 1
 	end
 	
-	drawCard(player)
+	if not drawCard(player) then
+		player.data.life = player.data.life - 1
+		if player.data.life <= 0 then
+			player:getGame():gameOver()
+		end
+		print("(This is Lua) Deck is empty! One damage taken.")
+	end
 	player.data.manaMax = player.data.manaMax + 1
 	player.data.mana = player.data.manaMax
 end
 
 function drawCard(player)
+  if player.data.deck:isEmpty() then
+    return false
+  end
 	local card = player.data.deck:getTopCard()
 	card:moveToBottomOf(player.data.hand)
+	return true
 end
