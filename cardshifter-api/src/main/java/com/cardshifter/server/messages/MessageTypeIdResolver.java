@@ -5,13 +5,14 @@ import java.util.Map;
 
 import com.cardshifter.server.incoming.ChatMessage;
 import com.cardshifter.server.incoming.LoginMessage;
+import com.cardshifter.server.incoming.RequestTargetsMessage;
 import com.cardshifter.server.incoming.StartGameRequest;
 import com.cardshifter.server.incoming.UseAbilityMessage;
 import com.cardshifter.server.outgoing.CardInfoMessage;
-import com.cardshifter.server.outgoing.ResetAvailableActionsMessage;
 import com.cardshifter.server.outgoing.GameMessage;
 import com.cardshifter.server.outgoing.NewGameMessage;
 import com.cardshifter.server.outgoing.PlayerMessage;
+import com.cardshifter.server.outgoing.ResetAvailableActionsMessage;
 import com.cardshifter.server.outgoing.UpdateMessage;
 import com.cardshifter.server.outgoing.UseableActionMessage;
 import com.cardshifter.server.outgoing.WaitMessage;
@@ -31,6 +32,7 @@ public class MessageTypeIdResolver implements TypeIdResolver {
 		clazzes.put("login", LoginMessage.class);
 		clazzes.put("startgame", StartGameRequest.class);
 		clazzes.put("use", UseAbilityMessage.class);
+		clazzes.put("requestTargets", RequestTargetsMessage.class);
 		
 		clazzes.put("resetActions", ResetAvailableActionsMessage.class);
 		clazzes.put("game", GameMessage.class);

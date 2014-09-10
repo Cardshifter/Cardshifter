@@ -28,4 +28,9 @@ public class PlayerMessage extends Message {
 		return Collections.unmodifiableMap(properties);
 	}
 	
+	@Override
+	public String toString() {
+		return String.format("Player Info: %s - %s", this.name, this.properties);
+	}
+	
 }

@@ -33,4 +33,9 @@ public class CardInfoMessage extends Message {
 		return zone;
 	}
 	
+	@Override
+	public String toString() {
+		return String.format("CardInfo: %d in zone %d - %s", this.id, this.zone, this.properties);
+	}
+	
 }

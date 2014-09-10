@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 
 import com.cardshifter.server.clients.ClientIO;
 import com.cardshifter.server.incoming.LoginMessage;
+import com.cardshifter.server.incoming.RequestTargetsMessage;
 import com.cardshifter.server.incoming.StartGameRequest;
 import com.cardshifter.server.incoming.UseAbilityMessage;
 import com.cardshifter.server.messages.Message;
@@ -61,6 +62,7 @@ public class Server {
 //		incomings.addHandler("chat", ChatMessage.class);
 		incomings.addHandler("startgame", StartGameRequest.class, handlers::play);
 		incomings.addHandler("use", UseAbilityMessage.class, handlers::useAbility);
+		incomings.addHandler("requestTargets", RequestTargetsMessage.class, handlers::requestTargets);
 		
 		server.addGameFactory(VANILLA, (serv, id) -> new TCGGame(serv, id));
 		

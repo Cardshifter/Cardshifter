@@ -16,6 +16,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import com.cardshifter.server.incoming.LoginMessage;
+import com.cardshifter.server.incoming.RequestTargetsMessage;
 import com.cardshifter.server.incoming.StartGameRequest;
 import com.cardshifter.server.incoming.UseAbilityMessage;
 import com.cardshifter.server.messages.Message;
@@ -128,7 +129,12 @@ public class NetworkConsoleController {
 			try {
 				int actionIndex = Integer.parseInt(in);
 				UseableActionMessage action = actions.get(actionIndex);
-				this.send(new UseAbilityMessage(gameId, action.getId(), action.getAction()));
+				if (action.isTargetRequired()) {
+					this.send(new RequestTargetsMessage(gameId, action.getId(), action.getAction()));
+				}
+				else {
+					this.send(new UseAbilityMessage(gameId, action.getId(), action.getAction(), action.getTargetId()));
+				}
 			}
 			catch (NumberFormatException | IndexOutOfBoundsException ex) {
 				System.out.println("Not a valid action");

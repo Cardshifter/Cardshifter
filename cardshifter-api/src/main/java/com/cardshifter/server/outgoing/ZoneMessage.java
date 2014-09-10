@@ -41,5 +41,10 @@ public class ZoneMessage extends Message {
 	public boolean isKnown() {
 		return known;
 	}
+
+	@Override
+	public String toString() {
+		return "ZoneMessage [id=" + id + ", name=" + name + ", owner=" + owner + ", size=" + size + ", known=" + known + "]";
+	}
 	
 }

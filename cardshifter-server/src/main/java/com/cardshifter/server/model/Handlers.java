@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 
 import com.cardshifter.server.clients.ClientIO;
 import com.cardshifter.server.incoming.LoginMessage;
+import com.cardshifter.server.incoming.RequestTargetsMessage;
 import com.cardshifter.server.incoming.StartGameRequest;
 import com.cardshifter.server.incoming.UseAbilityMessage;
 import com.cardshifter.server.outgoing.WaitMessage;
@@ -46,6 +47,11 @@ public class Handlers {
 	public void useAbility(UseAbilityMessage message, ClientIO client) {
 		TCGGame game = (TCGGame) server.getGames().get(message.getGameId());
 		game.handleMove(message, client);
+	}
+
+	public void requestTargets(RequestTargetsMessage message, ClientIO client) {
+		TCGGame game = (TCGGame) server.getGames().get(message.getGameId());
+		game.informAboutTargets(message, client);
 	}
 
 }
