@@ -96,12 +96,15 @@ public class CardNode {
     private void createCardPropertyLabelsGroup() {
         //This gets the text from Lua and makes labels for each property
         int stringIndex = 0;
+        int labelSpacing = 20;
         List<String> stringList = new ArrayList<>();
         LuaTools.processLuaTable(card.data.checktable(), (k, v) -> stringList.add(k + ": " + v));
         for (String string : stringList) {           
             Label cardStringLabel = new Label();
             cardStringLabel.setText(string);
-            cardStringLabel.relocate(0, 25 + (stringIndex * 25));
+            cardStringLabel.setScaleY(0.90);
+            cardStringLabel.setScaleX(0.90);
+            cardStringLabel.relocate(0, labelSpacing + (stringIndex * labelSpacing));
             cardStringLabel.setTextFill(Color.WHITE);
             cardGroup.getChildren().add(cardStringLabel);
             stringIndex++;
@@ -115,6 +118,11 @@ public class CardNode {
         //button.minHeight(100);
         //button.prefWidth(100);
         //button.prefHeight(100);
+        
+        //these do not work (cannot find symbol)
+        //button.width(100);
+        //button.height(100);
+        
         button.setOnAction(this::buttonClick);
         cardGroup.getChildren().add(button);
     }
