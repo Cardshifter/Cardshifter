@@ -33,6 +33,8 @@ public class Events {
 		InputStreamReader reader = new InputStreamReader(inputStream);
 		globals.load(reader, "mainScript").call();
 		LuaJC.install(globals);
+		globals.set("luajava", "Access Denied");
+		
 		try {
 			reader.close();
 		} catch (IOException e) {
@@ -57,7 +59,6 @@ public class Events {
 	 */
 	public void startGame(final Game game) {
 		globals.set("gadsame", CoerceJavaToLua.coerce(game));
-		
 //        globals.load(new StringReader(codeTextArea.getText()), "interopTest").call();
         LuaValue applyFunction = globals.get("startGame");
         Varargs applyFunctionResult = applyFunction.invoke(CoerceJavaToLua.coerce(game));
