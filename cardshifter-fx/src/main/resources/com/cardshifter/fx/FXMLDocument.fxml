@@ -14,10 +14,8 @@
         <!--  Buttons  -->
         <Button fx:id="button" layoutX="1098.0" layoutY="530.0" onAction="#startGameButtonAction" text="Start Game" />
         <Label fx:id="startGameLabel" layoutX="1098.0" layoutY="564.0" minHeight="16" minWidth="69" />
-        
         <Button layoutX="1105.0" layoutY="467.0" mnemonicParsing="false" onAction="#handleTurnButtonAction" text="End Turn" />
         <Label fx:id="turnLabel" layoutX="1091.0" layoutY="500.0" text="Turn Number" />
-        
         <Button fx:id="newGameButton" layoutX="17.0" layoutY="24.0" mnemonicParsing="false" onAction="#newGameButtonAction" text="New Game" />
         
         <!--  Hands  -->
@@ -26,8 +24,7 @@
                 <QuadCurve fx:id="handGuide" controlY="-100.0" endX="100.0" fill="DODGERBLUE" layoutX="480.0" layoutY="200.0" opacity="0.0" startX="-100.0" stroke="BLACK" strokeType="INSIDE" />
             </children>
         </Pane>
-        
-        <Pane fx:id="opponentHandPane" layoutX="153.0" layoutY="6.0" prefHeight="61.0" prefWidth="895.0" />
+        <Pane fx:id="opponentHandPane" layoutX="116.0" layoutY="7.0" prefHeight="61.0" prefWidth="680.0" />
 
         <!--  Battlefields  -->
         <Pane fx:id="playerBattlefieldPane" layoutX="47.0" layoutY="237.0" prefHeight="98.0" prefWidth="1001.0" />
@@ -52,6 +49,20 @@
         <Label layoutX="1129.0" layoutY="407.0" text="Scrap" />
         <Label fx:id="playerScrap" layoutX="1141.0" layoutY="423.0" text="#" />
         <Label fx:id="opponentScrap" layoutX="1140.0" layoutY="187.0" text="#" />
+        
+        <!-- Legend -->
+        <Pane layoutX="859.0" layoutY="12.0" prefHeight="98.0" prefWidth="232.0">
+             <children>
+                <Label layoutX="14.0" layoutY="14.0" text="Active" />
+                <Label layoutX="71.0" layoutY="14.0" text="Can Attack" />
+                <Label layoutX="154.0" layoutY="14.0" text="Targetable" />
+                <Rectangle arcHeight="5.0" arcWidth="5.0" fill="YELLOW" height="35.0" layoutX="16.0" layoutY="30.0" stroke="BLACK" strokeType="INSIDE" width="35.0" />
+                <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#11a411" height="35.0" layoutX="88.0" layoutY="30.0" stroke="BLACK" strokeType="INSIDE" width="35.0" />
+                <Rectangle arcHeight="5.0" arcWidth="5.0" fill="BLUE" height="35.0" layoutX="170.0" layoutY="30.0" stroke="BLACK" strokeType="INSIDE" width="35.0" />
+                <Label layoutX="83.0" text="Legend" underline="true" />
+            <Label layoutX="51.0" layoutY="76.0" text="Strength / Health" />
+            </children>
+        </Pane>
       
     </children>
 </AnchorPane>
