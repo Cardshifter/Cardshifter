@@ -31,6 +31,10 @@ import com.cardshifter.core.Zone;
 import com.cardshifter.core.actions.TargetAction;
 import com.cardshifter.core.actions.UsableAction;
 import com.cardshifter.core.console.CommandLineOptions;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.layout.AnchorPane;
 
 public class FXMLGameController implements Initializable {
    
@@ -192,6 +196,14 @@ public class FXMLGameController implements Initializable {
 
         int cardIndex = 0;
         for (Card card : cardsInHand) {
+            
+            //uncomment these two lines and comment out all the lines below to enable this
+            //also change the playerHandData list to contain Pane
+            //CardHandDocumentController cardHand = new CardHandDocumentController(card, this);
+            //playerHandData.add(cardHand.getRootPane());
+            
+            
+            
             CardNode cardNode = new CardNode(playerHandPane, numCards, "testName", card, this);
             Group cardGroup = cardNode.getCardGroup();
             cardGroup.setAutoSizeChildren(true); //NEW
@@ -200,6 +212,7 @@ public class FXMLGameController implements Initializable {
             playerHandData.add(cardGroup);
             
             cardIndex++;
+            
         }
     }
     private List<Card> getCurrentPlayerHand() {
