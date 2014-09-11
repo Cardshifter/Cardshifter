@@ -8,13 +8,16 @@ public class Entity {
 	private Map<Class<? extends Component>, Object> components = new HashMap<>();
 	
 	private final int id;
+	private final ECSGame game;
 	
-	public Entity(int id) {
+	public Entity(ECSGame game, int id) {
+		this.game = game;
 		this.id = id;
 	}
 
-	public void addComponent(Component component) {
+	public Entity addComponent(Component component) {
 		components.put(component.getClass(), component);
+		return this;
 	}
 	
 	public boolean hasComponent(Class<? extends Component> clazz) {
@@ -27,6 +30,10 @@ public class Entity {
 	
 	public int getId() {
 		return id;
+	}
+	
+	public ECSGame getGame() {
+		return game;
 	}
 	
 }
