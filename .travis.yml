@@ -6,11 +6,10 @@ jdk:
 notifications:
     webhooks:
         urls:
-            - secure: "vS/3iuMRuwLYMjd8U6z3CUDGbQhjRC0+szQzUDNkeVBz01hzJnQ+OEXLuGoNfS0rKaBIoPW7pmN6Rp3Sn2W2JexrpqvpiUnet5eodZMpiwqOkNjuJPG4qywGed1tnZlpqtAPLgQ9cUvRfkAsVsDwUc+ZtYR7E2IIfDiUMJqLPZo="
+            - secure: "jcL0kEeOKlZ6vjhMIrtypq069gRFJhzP7NqDRPvxTesLtizHyTwu/Ngwi6Vwu/yVZI2t/QQifZxiaSSt8RATHfp+cNfPhfQkNn0Ip0cqYiTOJH9nj9UensZNMky/Hm9LFOA8znJtTDelTqaWzCyWhwrfAMsgX/XTHq+e15bwZpU="
         on_success: always
         on_failure: always
-        on_start: false        
-deploy:
+        on_start: falsedeploy:
   provider: releases
   api-key: 
     secure: "CJyVgIoL/G0a233WuqPi14eOAk8JlWdErxqbJZYawGmCt5CBJW9l5+4CO4mJqho+EKHmpr+OgGVFq5HV4zQVqVJNFhL86yEucY52v3uQqqT26UmyJwLEtNOpHzVw0pXKvE5LbBOQdl+/8nNhakd6VwGE3qs05F+0ZYyu9LXaal4="
