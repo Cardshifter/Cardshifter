@@ -1,6 +1,8 @@
 Cardshifter
 ===========
 
+[![Build Status](https://travis-ci.org/Zomis/Cardshifter.svg?branch=master)](https://travis-ci.org/Zomis/Cardshifter?branch=master)
+
 Cardshifter Game
 
 Developer guidelines
