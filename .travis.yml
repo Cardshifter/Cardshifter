@@ -6,7 +6,7 @@ jdk:
 notifications:
     webhooks:
         urls:
-            - secure: "SPXpxdUqqEMqGJK1WbNOo4RxS9Sx2CKvmIUaadwFsSg34qR0KSOhXMnWEo6s+uFLv8OB+Q/nYtWvD9Xg6n+QfgkgmyOLiYsN8cGTG4B8KFKn3Kbl6mfG8IzRP+nQYzXCqcuQ6gf+eurAX3LIvYWF+D2qcHedbZHQfVZ12ai2dTU="
+            - secure: "vS/3iuMRuwLYMjd8U6z3CUDGbQhjRC0+szQzUDNkeVBz01hzJnQ+OEXLuGoNfS0rKaBIoPW7pmN6Rp3Sn2W2JexrpqvpiUnet5eodZMpiwqOkNjuJPG4qywGed1tnZlpqtAPLgQ9cUvRfkAsVsDwUc+ZtYR7E2IIfDiUMJqLPZo="
         on_success: always
         on_failure: always
         on_start: false

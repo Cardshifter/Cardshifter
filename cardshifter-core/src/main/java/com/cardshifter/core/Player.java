@@ -1,6 +1,5 @@
 package com.cardshifter.core;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,19 +8,28 @@ import java.util.Objects;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 
-public class Player implements Targetable {
+import com.cardshifter.core.actions.PlayerAction;
+import com.cardshifter.core.actions.UsableAction;
 
+public class Player implements Targetable, IdEntity {
+
+	public final LuaTable data = new ExtLuaTable(this::onChange);
+	
 	private final Game game;
 	private final String name;
-	private final Map<String, UsableAction> actions;
-	public final LuaTable data;
+
+	private final Map<String, UsableAction> actions = new HashMap<>();
+	private final int id;
 	
-	public Player(Game game, String name) {
-		Objects.requireNonNull(game);
-		this.game = game;
-		this.name = name;
-		this.data = LuaValue.tableOf();
-		this.actions = new HashMap<>();
+	public Player(Game game, String name, int id) {
+		this.game = Objects.requireNonNull(game, "game");
+		this.name = Objects.requireNonNull(name, "name");;
+		this.id = id;
+	}
+	
+	private void onChange(Object key, Object value) {
+		System.out.println(this + ": " + key + " = " + value);
+		getGame().broadcastChange(this, key, value);
 	}
 	
 	public Player getNextPlayer() {
@@ -41,14 +49,13 @@ public class Player implements Targetable {
 	public List<Player> getOpponents() {
 		List<Player> players = game.getPlayers();
 		int index = players.indexOf(this);
+		
 		List<Player> before = players.subList(0, index);
 		List<Player> after = players.subList(index + 1, players.size());
-		
-		List<Player> result = new ArrayList<Player>(after.size() + before.size());
-		result.addAll(after);
-		result.addAll(before);
-		return result;
-	}	
+
+		after.addAll(before);
+		return after;
+	}
 	
 	public Game getGame() {
 		return game;
@@ -76,5 +83,17 @@ public class Player implements Targetable {
 	public LuaTable getData() {
 		return data;
 	}
+
+	public int getIndex() {
+		return getGame().getPlayers().indexOf(this);
+	}
 	
+	public String getName() {
+		return name;
+	}
+	
+	@Override
+	public int getId() {
+		return id;
+	}
 }

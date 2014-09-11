@@ -4,13 +4,13 @@
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>com.cardshifter</groupId>
+		<groupId>net.zomis</groupId>
 		<artifactId>cardshifter</artifactId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>cardshifter-server</artifactId>
 	<name>cardshifter-server</name>
-	<url>https://github.com/Cardshifter/Cardshifter</url>
+	<url>https://github.net.zomis/Cardshifter</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -31,7 +31,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>com.cardshifter.server.main.ServerMain</mainClass>
+							<mainClass>net.zomis.server.main.ServerMain</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
@@ -56,8 +56,13 @@
 	
 	<dependencies>
 		<dependency>
-			<groupId>com.cardshifter</groupId>
+			<groupId>net.zomis</groupId>
 			<artifactId>cardshifter-core</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>net.zomis</groupId>
+			<artifactId>cardshifter-api</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>

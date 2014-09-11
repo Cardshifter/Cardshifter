@@ -10,6 +10,8 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import com.cardshifter.server.clients.ClientIO;
+import com.cardshifter.server.messages.Message;
+import com.cardshifter.server.outgoing.NewGameMessage;
 
 public abstract class ServerGame {
 	private static final Logger logger = LogManager.getLogger(ServerGame.class);
@@ -64,7 +66,7 @@ public abstract class ServerGame {
 			throw new IllegalStateException("Game can only be started once");
 		}
 		this.players.addAll(players);
-		players.forEach(pl -> pl.sendToClient("NEWG " + this.id + " " + players.indexOf(pl)));
+		players.forEach(pl -> pl.sendToClient(new NewGameMessage(this.id, players.indexOf(pl))));
 		this.onStart();
 		this.active = Instant.now();
 		this.state = GameState.RUNNING;
@@ -73,6 +75,10 @@ public abstract class ServerGame {
 	protected abstract void onStart();
 	
 	public void send(String data) {
+		players.forEach(pl -> pl.sendToClient(data));
+	}
+	
+	public void send(Message data) {
 		players.forEach(pl -> pl.sendToClient(data));
 	}
 	
@@ -86,6 +92,10 @@ public abstract class ServerGame {
 	
 	public GameState getState() {
 		return state;
+	}
+	
+	public List<ClientIO> getPlayers() {
+		return Collections.unmodifiableList(players);
 	}
 	
 }

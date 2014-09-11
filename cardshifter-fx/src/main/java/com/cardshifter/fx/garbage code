@@ -1,0 +1,64 @@
+        /*
+            for (Zone zone : game.getZones()) {
+            if (zone.isKnownToPlayer(game.getCurrentPlayer())) {
+		zone.getCards().forEach(card -> {
+                    cardsInHand.add(card);
+                });
+            }
+	}
+        */
+
+    //game.getFirstPlayer().data.hand
+
+
+            /*
+            Group cardTextGroup = new Group();
+            cardTextGroup.setTranslateY(40);
+            cardGroup.getChildren().add(cardTextGroup);
+            
+            Label allCardLabel = new Label();
+            allCardLabel.setText(card.toString());
+            cardTextGroup.getChildren().add(allCardLabel);
+            */
+
+
+//used for layouts
+//button.setMaxSize(activeBackground.getWidth(), activeBackground.getHeight());
+
+
+///This did correctly print found
+    //TARGETING
+    public void markTargets(List<Targetable> targets) {
+        List<Card> cardsInPlayerBattlefield = this.getBattlefield(game.getFirstPlayer());
+        List<Card> cardsInOpponentBattlefield = this.getBattlefield(game.getLastPlayer());
+        for (Targetable target : targets) {
+            for (Card card : cardsInPlayerBattlefield) {
+                if (target == card) {
+                    System.out.println("found");
+                }
+            }
+            for (Card card : cardsInOpponentBattlefield) {
+                if (target == card) {
+                    System.out.println("found");
+                }
+            }
+        }        
+    }
+
+//this correctly prints also
+    public void markTargets(List<Card> targets) {
+        List<Node> cardsInPlayerBattlefield = player01Battlefield.getChildren();
+        List<Node> cardsInOpponentBattlefield = player02Battlefield.getChildren();
+        for (Card target : targets) {
+            for(Node node : cardsInPlayerBattlefield) {
+                if(node.getId().equals(String.format("card%d",target.getId())) == true) {
+                    System.out.println("found friendly");
+                }
+            }
+            for(Node node : cardsInOpponentBattlefield) {
+                if(node.getId().equals(String.format("card%d",target.getId())) == true) {
+                    System.out.println("found enemy");
+                }
+            }
+        }
+    }
