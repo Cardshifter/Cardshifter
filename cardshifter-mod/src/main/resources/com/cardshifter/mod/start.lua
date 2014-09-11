@@ -2,31 +2,31 @@
 function startGame(game)
   local endturnAction = require "com/cardshifter/mod/actions/player/endturn"
 
-  game:on('actionUsed', onActionUsed)
-  game:on('turnStart', onTurnStart)
+	game:on('actionUsed', onActionUsed)
+	game:on('turnStart', onTurnStart)
 
-  local numPlayers = game:getPlayers():size()
+	local numPlayers = game:getPlayers():size()
 	for i = 0, numPlayers - 1 do
 		local player = game:getPlayer(i)
 		print("Player: " .. player:toString())
 		
 		player:addAction("End Turn", endturnAction.isAllowed, endturnAction.perform)
 		
-    player.data.life = 10
-    player.data.mana = 0
-    player.data.manaMax = 0
-    player.data.scrap = 0
-    player.data.cardType = 'Player'
-    local field = game:createZone(player, "Battlefield")
-    field:setGloballyKnown(true)
-    player.data.battlefield = field
+	    player.data.life = 10
+	    player.data.mana = 0
+	    player.data.manaMax = 0
+	    player.data.scrap = 0
+	    player.data.cardType = 'Player'
+	    local field = game:createZone(player, "Battlefield")
+	    field:setGloballyKnown(true)
+	    player.data.battlefield = field
 
-    local deck = game:createZone(player, "Deck")
-    player.data.deck = deck
+	    local deck = game:createZone(player, "Deck")
+	    player.data.deck = deck
 
-    local hand = game:createZone(player, "Hand")
-    hand:setKnown(player, true)
-    player.data.hand = hand
+	    local hand = game:createZone(player, "Hand")
+	    hand:setKnown(player, true)
+	    player.data.hand = hand
 		
 		for i = 1, 4 do
 			local card
@@ -45,13 +45,13 @@ function startGame(game)
 			card = createEnchantment(deck, 3, 0, 3)
 			card = createEnchantment(deck, 0, 3, 3)
 			card = createSpecialEnchantment(deck, 2, 2, 5)
-	  end
+		end
 	    
-	  deck:shuffle()
+		deck:shuffle()
 	    
-	  for i=1,5 do
-      drawCard(player)
-	  end
+		for i=1,5 do
+			drawCard(player)
+		end
 	end
 	
 	-- Turn Start event is not called when starting game (player should not draw card), setup initial mana for first player
@@ -138,9 +138,9 @@ function onTurnStart(player, event)
 end
 
 function drawCard(player)
-  if player.data.deck:isEmpty() then
-    return false
-  end
+	if player.data.deck:isEmpty() then
+    	return false
+	end
 	local card = player.data.deck:getTopCard()
 	card:moveToBottomOf(player.data.hand)
 	return true
