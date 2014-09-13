@@ -3,6 +3,9 @@ package net.zomis.cardshifter.ecs.base;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import net.zomis.cardshifter.ecs.events.ActionAllowedCheckEvent;
+import net.zomis.cardshifter.ecs.events.ActionPerformEvent;
+
 public class ECSAction {
 
 	private final Entity owner;
@@ -32,11 +35,15 @@ public class ECSAction {
 
 	public void perform() {
 		if (this.isAllowed()) {
-			this.perform.accept(this);
+			this.owner.getGame().executeEvent(new ActionPerformEvent(owner, this), () -> this.perform.accept(this));
 		}
 	}
 
 	private boolean isAllowed() {
+		ActionAllowedCheckEvent event = new ActionAllowedCheckEvent(owner, this);
+		if (!owner.getGame().getEvents().executePostEvent(event).isAllowed()) {
+			return false;
+		}
 		return this.allowed.test(this);
 	}
 	
