@@ -28,4 +28,8 @@ public abstract class Component {
 		entity.getGame().executeEvent(event, runInBetween);
 	}
 	
+	protected final Entity getEntity() {
+		return entity;
+	}
+	
 }

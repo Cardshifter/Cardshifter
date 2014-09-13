@@ -31,7 +31,7 @@ public class ECSGame {
 	 * 
 	 * @param event Event to execute
 	 * @param runInBetween What to do between pre- and post- events.
-	 * @return
+	 * @return The event that was executed
 	 */
 	public <T extends IEvent> T executeEvent(T event, Runnable runInBetween) {
 		this.events.executePreEvent(event);
@@ -52,7 +52,7 @@ public class ECSGame {
 		return events;
 	}
 
-	public void addSystem(System  system) {
+	public void addSystem(System system) {
 		this.systems.add(system);
 	}
 	
