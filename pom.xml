@@ -14,16 +14,16 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-    
+	
 	<modules>
 		<module>cardshifter-fx</module>
 		<module>cardshifter-core</module>
 		<module>cardshifter-server</module>
 		<module>cardshifter-api</module>
-        <module>cardshifter-mod</module>
-        <module>cardshifter-console</module>
+		<module>cardshifter-mod</module>
+		<module>cardshifter-console</module>
 	</modules>
-    
+	
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>

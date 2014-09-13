@@ -66,7 +66,7 @@ public class TCGGame extends ServerGame {
 	
 	public Targetable findTargetable(int entityId) {
 		Optional<Player> player = game.getPlayers().stream().filter(pl -> pl.getId() == entityId).findFirst();
-		Optional<Card>   card   = game.getZones().stream().flatMap(z -> z.getCards().stream()).filter(c -> c.getId() == entityId).findFirst();
+		Optional<Card>	 card	= game.getZones().stream().flatMap(z -> z.getCards().stream()).filter(c -> c.getId() == entityId).findFirst();
 		
 		if (player.isPresent()) {
 			return player.get();
@@ -79,8 +79,8 @@ public class TCGGame extends ServerGame {
 	
 	public UsableAction findAction(int entityId, String actionId) {
 		Optional<Player> player = game.getPlayers().stream().filter(pl -> pl.getId() == entityId).findFirst();
-		Optional<Zone>   zone   = game.getZones().stream().filter(z -> z.getId() == entityId).findFirst();
-		Optional<Card>   card   = game.getZones().stream().flatMap(z -> z.getCards().stream()).filter(c -> c.getId() == entityId).findFirst();
+		Optional<Zone>	 zone	= game.getZones().stream().filter(z -> z.getId() == entityId).findFirst();
+		Optional<Card>	 card	= game.getZones().stream().flatMap(z -> z.getCards().stream()).filter(c -> c.getId() == entityId).findFirst();
 		
 		UsableAction action = null;
 		if (player.isPresent()) {

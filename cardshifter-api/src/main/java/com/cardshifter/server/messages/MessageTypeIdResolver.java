@@ -81,17 +81,17 @@ public class MessageTypeIdResolver implements TypeIdResolver {
 	}
 
 	@Override
-    public JavaType typeFromId(String type) {
-        Class<?> clazz = clazzes.get(type);
-//        String clazzName = COMMAND_PACKAGE + "." + type;
-//        try {
-//            clazz = ClassUtil.findClass(clazzName);
-//        } catch (ClassNotFoundException e) {
-//            throw new IllegalStateException("cannot find class '" + clazzName + "'");
-//        }
-        if (clazz == null) {
-        	throw new UnsupportedOperationException("No such defined type: " + type);
-        }
-        return TypeFactory.defaultInstance().constructSpecializedType(mBaseType, clazz);
-    }
+	public JavaType typeFromId(String type) {
+		Class<?> clazz = clazzes.get(type);
+//		  String clazzName = COMMAND_PACKAGE + "." + type;
+//		  try {
+//			  clazz = ClassUtil.findClass(clazzName);
+//		  } catch (ClassNotFoundException e) {
+//			  throw new IllegalStateException("cannot find class '" + clazzName + "'");
+//		  }
+		if (clazz == null) {
+			throw new UnsupportedOperationException("No such defined type: " + type);
+		}
+		return TypeFactory.defaultInstance().constructSpecializedType(mBaseType, clazz);
+	}
 }

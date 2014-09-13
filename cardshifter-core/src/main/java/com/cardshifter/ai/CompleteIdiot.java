@@ -25,25 +25,25 @@ public class CompleteIdiot implements CardshifterAI {
 				.filter(action -> setTargetIfPossible(action));
 		List<UsableAction> list = allActions.collect(Collectors.toList());
 		
-                //return nothing if no actions are available
+				//return nothing if no actions are available
 		if (list.isEmpty()) {
 			return null;
 		}
-                
-                //Do not scrap if it is the only thing you can do
-                if(list.size() == 1) {
-                    for(UsableAction action : list) {
-                        if(action.getName().equals("Scrap")) {
-                            return null;
-                        }
-                    }
-                }
-                
-                //parse the actions and return an appropriate one based on the actions available
-                //For example, if there are less than 3 creatures on the board, do not scrap any
-                //If any attacks are available, do those
-                
-                //return a random action from the list
+				
+				//Do not scrap if it is the only thing you can do
+				if(list.size() == 1) {
+					for(UsableAction action : list) {
+						if(action.getName().equals("Scrap")) {
+							return null;
+						}
+					}
+				}
+				
+				//parse the actions and return an appropriate one based on the actions available
+				//For example, if there are less than 3 creatures on the board, do not scrap any
+				//If any attacks are available, do those
+				
+				//return a random action from the list
 		return list.get(random.nextInt(list.size()));
 	}
 

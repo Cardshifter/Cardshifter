@@ -53,15 +53,15 @@ public class IncomingHandler {
 	 * @throws IOException If there was a problem parsing the JSON
 	 */
 	public <T extends Message> T parse(String json) throws IOException {
-	    ObjectMapper mapper = new ObjectMapper(); 
-	    TypeReference<HashMap<String, String>> typeRef = new TypeReference<HashMap<String, String>>() {};
-	    HashMap<String, String> o = mapper.readValue(json, typeRef);
+		ObjectMapper mapper = new ObjectMapper(); 
+		TypeReference<HashMap<String, String>> typeRef = new TypeReference<HashMap<String, String>>() {};
+		HashMap<String, String> o = mapper.readValue(json, typeRef);
 
-	    String command = o.get("command");
-	    if (command == null || !commandTypes.containsKey(command)) {
-	    	throw new UnsupportedOperationException("Command " + command + " is not supported. JSON: " + json);
-	    }
-	    ObjectReader reader = commandTypes.getOrDefault(command, null);
+		String command = o.get("command");
+		if (command == null || !commandTypes.containsKey(command)) {
+			throw new UnsupportedOperationException("Command " + command + " is not supported. JSON: " + json);
+		}
+		ObjectReader reader = commandTypes.getOrDefault(command, null);
 		return reader.readValue(json);
 	}
 
