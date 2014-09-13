@@ -11,13 +11,16 @@ import org.junit.Test;
 
 public class PhaseControllerTest {
 
-	private ECSGame game = new ECSGame();
+	private ECSGame game;
 	private PhaseController controller;
-	private Entity owner = game.newEntity();
+	private Entity owner;
 	
 	@Before
 	public void before() {
+		game = new ECSGame();
 		controller = new PhaseController();
+		owner = game.newEntity();
+		owner.addComponent(controller);
 	}
 	
 	@Test
@@ -90,8 +93,6 @@ public class PhaseControllerTest {
 	
 	@Test
 	public void addGetAdd() {
-		PhaseController controller = new PhaseController();
-		Entity owner = game.newEntity();
 		controller.addPhase(new Phase(owner, "a"));
 		assertEquals("a", controller.getCurrentPhase().getName());
 		controller.addPhase(new Phase(owner, "b"));
@@ -106,8 +107,6 @@ public class PhaseControllerTest {
 	
 	@Test
 	public void autoAdd() {
-		PhaseController controller = new PhaseController();
-		Entity owner = game.newEntity();
 		controller.addPhase(new Phase(owner, "a"));
 		controller.addPhase(new Phase(owner, "b"));
 		assertEquals("a", controller.getCurrentPhase().getName());
