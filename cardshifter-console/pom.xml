@@ -30,7 +30,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>com.cardshifter.core.console.Main</mainClass>
+							<mainClass>com.cardshifter.console.Main</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
