@@ -1,6 +1,7 @@
 package net.zomis.cardshifter.ecs;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,7 @@ public class EventTest {
 	}
 	
 	@Test
-	public void executeTestEvent() throws Exception {
+	public void executeTestEvent() {
 		assertEquals(42, value);
 		game.getEvents().registerHandlerBefore(TestEvent.class, event -> {
 			assertEquals(pre.size(), post.size());

@@ -7,7 +7,7 @@ import java.util.Set;
 import net.zomis.cardshifter.ecs.base.Component;
 import net.zomis.cardshifter.ecs.base.ECSAction;
 
-public class ActionComponent implements Component {
+public class ActionComponent extends Component {
 
 	private final Map<String, ECSAction> actions = new HashMap<>();
 

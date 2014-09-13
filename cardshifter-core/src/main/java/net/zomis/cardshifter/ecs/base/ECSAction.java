@@ -40,6 +40,4 @@ public class ECSAction {
 		return this.allowed.test(this);
 	}
 	
-	
-	
 }

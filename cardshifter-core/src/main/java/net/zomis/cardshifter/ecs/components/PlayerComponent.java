@@ -2,7 +2,7 @@ package net.zomis.cardshifter.ecs.components;
 
 import net.zomis.cardshifter.ecs.base.Component;
 
-public class PlayerComponent implements Component {
+public class PlayerComponent extends Component {
 
 	private final String name;
 

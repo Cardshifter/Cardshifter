@@ -1,16 +1,21 @@
 package net.zomis.cardshifter.ecs.base;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+
+import net.zomis.cardshifter.ecs.events.StartGameEvent;
 
 public class ECSGame {
 
 	private final AtomicInteger ids = new AtomicInteger();
 	private final Map<Integer, Entity> entities = new HashMap<>();
 	private final EventExecutor events = new EventExecutor();
+	private final List<System> systems = new ArrayList<>();
 	
 	public ECSGame() {
 	}
@@ -46,10 +51,20 @@ public class ECSGame {
 	public EventExecutor getEvents() {
 		return events;
 	}
+
+	public void addSystem(System  system) {
+		this.systems.add(system);
+	}
+	
+	public void startGame() {
+		systems.forEach(sys -> sys.startGame(this));
+		events.executePostEvent(new StartGameEvent(this));
+	}
 	
 	// TODO: Player component, Zone component for a zone, MyZoneSetupComponent? Hand+Deck+Battlefield-Component
 	// TODO: Actions ++ copy actions. List<Target(s)> ("deal 1 damage to up to three targets and then give up to three targets +1/+1 until end of turn"), Set<ActionOptions>. choose one, choose two
 	// TODO: Network inform when a component on an entity is changed (DataChangedEvent? Aspect-oriented? onChange method? ResMap?)
 	// TODO: Implement the standard Phrancis game
+	// TODO: Enchantments
 	
 }

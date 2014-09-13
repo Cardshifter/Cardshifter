@@ -1,5 +1,5 @@
 package net.zomis.cardshifter.ecs.base;
 
-public class System {
-
+public interface System {
+	void startGame(ECSGame game);
 }

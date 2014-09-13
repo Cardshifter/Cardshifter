@@ -6,8 +6,10 @@ import java.util.function.Predicate;
 
 import net.zomis.cardshifter.ecs.base.Component;
 import net.zomis.cardshifter.ecs.base.Phase;
+import net.zomis.cardshifter.ecs.events.PhaseEndEvent;
+import net.zomis.cardshifter.ecs.events.PhaseStartEvent;
 
-public class PhaseController implements Component {
+public class PhaseController extends Component {
 	
 	private final LinkedList<Phase> upcomingPhases = new LinkedList<>();
 	private final LinkedList<Phase> permanentPhases = new LinkedList<>();
@@ -79,7 +81,11 @@ public class PhaseController implements Component {
 	}
 
 	public Phase nextPhase() {
+		Phase oldPhase = getCurrentPhase();
+		executeEvent(new PhaseEndEvent(this, oldPhase));
 		upcomingPhases.removeFirst();
+		executeEvent(new PhaseStartEvent(this, oldPhase, getCurrentPhase()));
+		
 		return getCurrentPhase();
 	}
 	

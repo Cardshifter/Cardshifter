@@ -17,6 +17,7 @@ public class Entity {
 
 	public Entity addComponent(Component component) {
 		components.put(component.getClass(), component);
+		component.setEntity(this);
 		return this;
 	}
 	
