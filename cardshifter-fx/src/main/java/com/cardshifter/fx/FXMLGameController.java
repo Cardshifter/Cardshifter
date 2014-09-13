@@ -1,11 +1,9 @@
 package com.cardshifter.fx;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.ResourceBundle;
 
 import javafx.event.ActionEvent;
@@ -30,7 +28,6 @@ import com.cardshifter.core.Targetable;
 import com.cardshifter.core.Zone;
 import com.cardshifter.core.actions.TargetAction;
 import com.cardshifter.core.actions.UsableAction;
-import com.cardshifter.core.console.CommandLineOptions;
 
 public class FXMLGameController implements Initializable {
    
@@ -47,9 +44,7 @@ public class FXMLGameController implements Initializable {
         this.initializeGame();
     }
     private void initializeGame() throws Exception {
-        CommandLineOptions options = new CommandLineOptions();
-        InputStream file = options.getScript() == null ? Game.class.getResourceAsStream("start.lua") : new FileInputStream(new File(options.getScript()));
-        game = new Game(file, options.getRandom());
+		game = new Game(FXMLGameController.class.getResourceAsStream("/com/cardshifter/mod/start.lua"), new Random());
     }
     //GAME START and NEW GAME
     @FXML

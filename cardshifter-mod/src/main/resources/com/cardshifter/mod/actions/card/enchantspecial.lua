@@ -1,7 +1,7 @@
 local enchantspecial = {}
 
 function enchantspecial.isAllowed(card, action)
-  local playAction = require "src/main/resources/com/cardshifter/core/actions/card/play"
+  local playAction = require "com/cardshifter/mod/actions/card/play"
   
 	if not playAction.isAllowed(card) then
 		return false
@@ -29,9 +29,14 @@ function enchantspecial.isTargetAllowed(card, target, action)
 	if target.data.cardType ~= 'Creature' then
 		return false
 	end
---	if table.getn(target.data.enchantments) == 0 then
 	if target.data.enchantments <= 0 then
 		return false
+	end
+	if target:getOwner() ~= card:getOwner() then
+	  return false
+	end
+	if target:getZone() ~= card:getOwner().data.battlefield then
+	  return false
 	end
 	return true
 end

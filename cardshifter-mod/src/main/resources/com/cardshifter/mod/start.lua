@@ -1,6 +1,6 @@
 -- Always name this function "startGame"
 function startGame(game)
-  local endturnAction = require "src/main/resources/com/cardshifter/core/actions/player/endturn"
+  local endturnAction = require "com/cardshifter/mod/actions/player/endturn"
 
   game:on('actionUsed', onActionUsed)
   game:on('turnStart', onTurnStart)
@@ -61,7 +61,7 @@ function startGame(game)
 end
 
 function createSpecialEnchantment(deck, strength, health, cost)
-  local enchantspecialAction = require "src/main/resources/com/cardshifter/core/actions/card/enchantspecial"
+  local enchantspecialAction = require "com/cardshifter/mod/actions/card/enchantspecial"
   
     -- A special enchantment can only target a creature that has been enchanted already
 	local card = deck:createCardOnBottom()
@@ -75,7 +75,7 @@ function createSpecialEnchantment(deck, strength, health, cost)
 end
 
 function createEnchantment(deck, strength, health, cost)
-  local enchantAction = require "src/main/resources/com/cardshifter/core/actions/card/enchant"
+  local enchantAction = require "com/cardshifter/mod/actions/card/enchant"
   
     -- Can only target creatureType == 'Bio'
 	local card = deck:createCardOnBottom()
@@ -89,9 +89,9 @@ function createEnchantment(deck, strength, health, cost)
 end
 
 function createCreature(deck, cost, strength, health, creatureType)
-  local playAction = require "src/main/resources/com/cardshifter/core/actions/card/play"
-  local attackAction = require "src/main/resources/com/cardshifter/core/actions/card/attack"
-  local scrapAction = require "src/main/resources/com/cardshifter/core/actions/card/scrap"
+  local playAction = require "com/cardshifter/mod/actions/card/play"
+  local attackAction = require "com/cardshifter/mod/actions/card/attack"
+  local scrapAction = require "com/cardshifter/mod/actions/card/scrap"
   
 	local card = deck:createCardOnBottom()
 	card:addAction("Play", playAction.isAllowed, playAction.perform)

@@ -1,4 +1,4 @@
-package com.cardshifter.core.console;
+package com.cardshifter.console;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -121,13 +121,13 @@ public class NetworkConsoleController {
 				System.out.println("No available actions to perform right now.");
 			}
 			
-			String in = input.nextLine();
-			if (in.equals("exit")) {
+			String inputLine = input.nextLine();
+			if (inputLine.equals("exit")) {
 				break;
 			}
 			
 			try {
-				int actionIndex = Integer.parseInt(in);
+				int actionIndex = Integer.parseInt(inputLine);
 				UseableActionMessage action = actions.get(actionIndex);
 				if (action.isTargetRequired()) {
 					this.send(new RequestTargetsMessage(gameId, action.getId(), action.getAction()));

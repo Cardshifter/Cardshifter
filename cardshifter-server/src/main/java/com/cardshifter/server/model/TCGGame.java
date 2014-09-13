@@ -29,7 +29,7 @@ public class TCGGame extends ServerGame {
 	
 	public TCGGame(Server server, int id) {
 		super(server, id);
-		game = new Game(Game.class.getResourceAsStream("start.lua"), new Random(id), this::broadcast);
+		game = new Game(TCGGame.class.getResourceAsStream("/com/cardshifter/mod/start.lua"), new Random(id), this::broadcast);
 	}
 
 	private void broadcast(IdEntity what, Object key, Object value) {

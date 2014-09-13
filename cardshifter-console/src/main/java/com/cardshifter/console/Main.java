@@ -1,4 +1,4 @@
-package com.cardshifter.core.console;
+package com.cardshifter.console;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,7 +31,7 @@ public class Main {
 				networkController.play(input);
 			}
 			else {
-				InputStream file = options.getScript() == null ? Game.class.getResourceAsStream("start.lua") : new FileInputStream(new File(options.getScript()));
+				InputStream file = options.getScript() == null ? Main.class.getResourceAsStream("/com/cardshifter/mod/start.lua") : new FileInputStream(new File(options.getScript()));
 				Game game = new Game(file, options.getRandom());
 				game.getEvents().startGame(game);
 				new ConsoleController(game).play(input);

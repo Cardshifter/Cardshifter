@@ -1,7 +1,7 @@
-local enchantspecial = {}
+local enchant = {}
 
-function enchantspecial.isAllowed(card, action)
-  local playAction = require "src/main/resources/com/cardshifter/core/actions/card/play"
+function enchant.isAllowed(card, action)
+  local playAction = require "com/cardshifter/mod/actions/card/play"
   
 	if not playAction.isAllowed(card) then
 		return false
@@ -16,7 +16,7 @@ function enchantspecial.isAllowed(card, action)
 	return true
 end
 
-function enchantspecial.perform(card, target, action)
+function enchant.perform(card, target, action)
 	target.data.enchantments = target.data.enchantments + 1
 	target.data.health = target.data.health + card.data.enchHealth
 	target.data.strength = target.data.strength + card.data.enchStrength
@@ -25,11 +25,11 @@ function enchantspecial.perform(card, target, action)
 	card:destroy()
 end
 
-function enchantspecial.isTargetAllowed(card, target, action)
+function enchant.isTargetAllowed(card, target, action)
 	if target.data.cardType ~= 'Creature' then
 		return false
 	end
-	if target.data.enchantments <= 0 then
+	if target.data.creatureType ~= 'Bio' then
 		return false
 	end
 	if target:getOwner() ~= card:getOwner() then
@@ -41,4 +41,4 @@ function enchantspecial.isTargetAllowed(card, target, action)
 	return true
 end
 
-return enchantspecial
+return enchant
