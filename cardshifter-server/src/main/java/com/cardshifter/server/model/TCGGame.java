@@ -1,5 +1,6 @@
 package com.cardshifter.server.model;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
@@ -8,10 +9,12 @@ import com.cardshifter.core.Game;
 import com.cardshifter.core.IdEntity;
 import com.cardshifter.core.LuaTools;
 import com.cardshifter.core.Player;
+import com.cardshifter.core.Targetable;
 import com.cardshifter.core.Zone;
 import com.cardshifter.core.actions.TargetAction;
 import com.cardshifter.core.actions.UsableAction;
 import com.cardshifter.server.clients.ClientIO;
+import com.cardshifter.server.incoming.RequestTargetsMessage;
 import com.cardshifter.server.incoming.UseAbilityMessage;
 import com.cardshifter.server.outgoing.CardInfoMessage;
 import com.cardshifter.server.outgoing.PlayerMessage;
@@ -50,19 +53,35 @@ public class TCGGame extends ServerGame {
 		}
 	}
 	
-	public void handleMove(UseAbilityMessage message, ClientIO client) {
-		if (!this.getPlayers().contains(client)) {
-			throw new IllegalArgumentException("Client is not in this game: " + client);
+	public void informAboutTargets(RequestTargetsMessage message, ClientIO client) {
+		UsableAction action = findAction(message.getId(), message.getAction());
+		TargetAction targetAction = (TargetAction) action;
+		List<Targetable> targets = targetAction.findTargets();
+//		client.sendToClient(new ResetAvailableActionsMessage()); // not sure if this should be sent or not
+		for (Targetable target : targets) {
+			IdEntity entity = (IdEntity) target;
+			client.sendToClient(new UseableActionMessage(message.getId(), message.getAction(), false, entity.getId()));
 		}
-		if (this.game.getCurrentPlayer() != playerFor(client)) {
-			throw new IllegalArgumentException("It's not that players turn: " + client);
-		}
-		int entityId = message.getId();
+	}
+	
+	public Targetable findTargetable(int entityId) {
 		Optional<Player> player = game.getPlayers().stream().filter(pl -> pl.getId() == entityId).findFirst();
-		Optional<Zone>   zone  = game.getZones().stream().filter(z -> z.getId() == entityId).findFirst();
 		Optional<Card>   card   = game.getZones().stream().flatMap(z -> z.getCards().stream()).filter(c -> c.getId() == entityId).findFirst();
 		
-		String actionId = message.getAction();
+		if (player.isPresent()) {
+			return player.get();
+		}
+		if (card.isPresent()) {
+			return card.get();
+		}
+		return null;
+	}
+	
+	public UsableAction findAction(int entityId, String actionId) {
+		Optional<Player> player = game.getPlayers().stream().filter(pl -> pl.getId() == entityId).findFirst();
+		Optional<Zone>   zone   = game.getZones().stream().filter(z -> z.getId() == entityId).findFirst();
+		Optional<Card>   card   = game.getZones().stream().flatMap(z -> z.getCards().stream()).filter(c -> c.getId() == entityId).findFirst();
+		
 		UsableAction action = null;
 		if (player.isPresent()) {
 			action = player.get().getActions().get(actionId);
@@ -77,7 +96,24 @@ public class TCGGame extends ServerGame {
 		if (action == null) {
 			throw new IllegalArgumentException("No such action was found.");
 		}
+		return action;
+	}
+	
+	public void handleMove(UseAbilityMessage message, ClientIO client) {
+		if (!this.getPlayers().contains(client)) {
+			throw new IllegalArgumentException("Client is not in this game: " + client);
+		}
+		if (this.game.getCurrentPlayer() != playerFor(client)) {
+			throw new IllegalArgumentException("It's not that players turn: " + client);
+		}
+		
+		UsableAction action = findAction(message.getId(), message.getAction());
+		if (action instanceof TargetAction) {
+			TargetAction targetAction = (TargetAction) action;
+			targetAction.setTarget(findTargetable(message.getTarget()));
+		}
 		action.perform();
+		
 		// TODO: Add listener to game for ZoneMoves, inform players about card movements, and send CardInfoMessage when a card becomes known
 		sendAvailableActions();
 	}

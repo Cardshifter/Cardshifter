@@ -41,11 +41,6 @@ public class Card implements Targetable, IdEntity {
 		return currentZone.isPresent();
 	}
 	
-	// TODO: Add actions that need target(s)
-	// TODO: Client UI: Single target action - First click for using action - call script to verify it's OK at all
-	// TODO: Client UI: Single target action - show available targets - call script to verify target is OK
-	// TODO: Client UI: Single target action - then perform (or cancel)
-	// TODO: Client UI: Multi target action - 
 	public CardAction addAction(final String name, final LuaValue actionAllowed, final LuaValue actionPerformed) {
 		Objects.requireNonNull(name, "name");
 		Objects.requireNonNull(actionAllowed, "actionAllowed");
