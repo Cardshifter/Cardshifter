@@ -42,6 +42,10 @@ public class ECSResourceData {
 	public void setStrategy(ECSResourceStrategy strategy) {
 		this.strategy = strategy;
 	}
+
+	public boolean has(int want) {
+		return this.get() >= want;
+	}
 	
 	
 	

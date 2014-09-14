@@ -48,4 +48,8 @@ public class ZoneComponent extends Component {
 		this.known.put(owner, known);
 	}
 
+	public boolean isEmpty() {
+		return cards.isEmpty();
+	}
+
 }

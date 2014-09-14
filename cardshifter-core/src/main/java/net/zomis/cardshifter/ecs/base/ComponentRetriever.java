@@ -16,4 +16,8 @@ public class ComponentRetriever<T extends Component> {
 		return entity.getComponent(clazz);
 	}
 
+	public static <T extends Component> ComponentRetriever<T> retreiverFor(Class<T> clazz) {
+		return new ComponentRetriever<>(clazz);
+	}
+	
 }
