@@ -11,7 +11,7 @@ import com.cardshifter.server.incoming.UseAbilityMessage;
 import com.cardshifter.server.main.ServerMain;
 import com.cardshifter.server.model.Server;
 
-public class PlayCardMessageTest {
+public class ParseJSONMessagesTest {
 
 	@Test
 	public void parse() throws IOException {
