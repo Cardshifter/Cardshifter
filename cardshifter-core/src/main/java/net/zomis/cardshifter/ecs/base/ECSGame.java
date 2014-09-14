@@ -18,6 +18,7 @@ public class ECSGame {
 	private final EventExecutor events = new EventExecutor();
 	private final List<System> systems = new ArrayList<>();
 	private final Random random = new Random();
+	private ECSGameState gameState = ECSGameState.NOT_STARTED;
 	
 	public ECSGame() {
 	}
@@ -61,10 +62,19 @@ public class ECSGame {
 	public void startGame() {
 		systems.forEach(sys -> sys.startGame(this));
 		events.executePostEvent(new StartGameEvent(this));
+		gameState = ECSGameState.RUNNING;
 	}
 
 	public Random getRandom() {
 		return random;
+	}
+
+	public void endGame() {
+		gameState = ECSGameState.GAME_ENDED;
+	}
+	
+	public ECSGameState getGameState() {
+		return gameState;
 	}
 	
 	// TODO: Player component, Zone component for a zone, MyZoneSetupComponent? Hand+Deck+Battlefield-Component
