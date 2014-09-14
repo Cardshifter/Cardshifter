@@ -51,5 +51,21 @@ public class ZoneComponent extends Component {
 	public boolean isEmpty() {
 		return cards.isEmpty();
 	}
+	
+	public Entity getComponentEntity() {
+		return this.getEntity();
+	}
+	
+	void cardMoveFrom(Entity card) {
+		cards.remove(card);
+	}
+
+	void cardMoveAtTop(Entity card) {
+		cards.addFirst(card);
+	}
+
+	void cardMoveAtBottom(Entity card) {
+		cards.addLast(card);
+	}
 
 }
