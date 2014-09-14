@@ -1,6 +1,7 @@
 package net.zomis.cardshifter.ecs.base;
 
 import java.util.Objects;
+import java.util.Random;
 
 
 public abstract class Component {
@@ -30,6 +31,10 @@ public abstract class Component {
 	
 	protected final Entity getEntity() {
 		return entity;
+	}
+	
+	protected final Random getRandom() {
+		return getEntity().getGame().getRandom();
 	}
 	
 }

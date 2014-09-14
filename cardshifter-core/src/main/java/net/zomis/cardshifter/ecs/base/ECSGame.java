@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -16,6 +17,7 @@ public class ECSGame {
 	private final Map<Integer, Entity> entities = new HashMap<>();
 	private final EventExecutor events = new EventExecutor();
 	private final List<System> systems = new ArrayList<>();
+	private final Random random = new Random();
 	
 	public ECSGame() {
 	}
@@ -59,6 +61,10 @@ public class ECSGame {
 	public void startGame() {
 		systems.forEach(sys -> sys.startGame(this));
 		events.executePostEvent(new StartGameEvent(this));
+	}
+
+	public Random getRandom() {
+		return random;
 	}
 	
 	// TODO: Player component, Zone component for a zone, MyZoneSetupComponent? Hand+Deck+Battlefield-Component
