@@ -2,6 +2,7 @@ package net.zomis.cardshifter.ecs.components;
 
 import net.zomis.cardshifter.ecs.base.Component;
 import net.zomis.cardshifter.ecs.base.Entity;
+import net.zomis.cardshifter.ecs.events.ZoneChangeEvent;
 
 public class CardComponent extends Component {
 
