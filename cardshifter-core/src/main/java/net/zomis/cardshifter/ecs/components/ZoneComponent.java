@@ -12,7 +12,7 @@ public class ZoneComponent extends Component {
 
 	private final LinkedList<Entity> cards = new LinkedList<>();
 	private final Entity owner;
-	private final Map<PlayerComponent, Boolean> known = new HashMap<>();
+	private final Map<Entity, Boolean> known = new HashMap<>();
 	
 	private boolean publicKnown;
 	
@@ -28,7 +28,7 @@ public class ZoneComponent extends Component {
 		return cards.getFirst();
 	}
 	
-	public boolean isKnownTo(PlayerComponent player) {
+	public boolean isKnownTo(Entity player) {
 		return known.getOrDefault(player, publicKnown);
 	}
 
@@ -38,6 +38,14 @@ public class ZoneComponent extends Component {
 	
 	public void shuffle() {
 		Collections.shuffle(cards, getRandom());
+	}
+
+	public void setGloballyKnown(boolean publicKnown) {
+		this.publicKnown = publicKnown;
+	}
+	
+	protected void setKnown(Entity owner, boolean known) {
+		this.known.put(owner, known);
 	}
 
 }

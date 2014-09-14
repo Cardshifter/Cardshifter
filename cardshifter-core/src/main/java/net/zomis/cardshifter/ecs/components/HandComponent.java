@@ -6,6 +6,7 @@ public class HandComponent extends ZoneComponent {
 
 	public HandComponent(Entity owner) {
 		super(owner, "Hand");
+		this.setKnown(owner, true);
 	}
 
 }
