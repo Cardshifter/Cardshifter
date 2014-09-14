@@ -14,8 +14,9 @@ public class ActionComponent extends Component {
 	public ActionComponent() {
 	}
 	
-	public void addAction(ECSAction action) {
+	public ActionComponent addAction(ECSAction action) {
 		this.actions.put(action.getName(), action);
+		return this;
 	}
 
 	public Set<String> getActions() {
