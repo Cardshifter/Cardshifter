@@ -9,8 +9,6 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Group;
-import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -19,8 +17,6 @@ import javafx.scene.shape.Rectangle;
 public class CardHandDocumentController implements Initializable {
     
     //FXML Declarations
-    @FXML
-    private Pane anchorPane;
     @FXML
     private Label strength;
     @FXML
@@ -43,7 +39,7 @@ public class CardHandDocumentController implements Initializable {
     //Initialization
     private Pane root;
     private final Card card;
-    public CardHandDocumentController(Card card, FXMLGameController controller){
+    public CardHandDocumentController(Card card, FXMLGameController controller) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("CardHandDocument.fxml"));
             loader.setController(this);
