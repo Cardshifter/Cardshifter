@@ -36,5 +36,11 @@ public class Entity {
 	public ECSGame getGame() {
 		return game;
 	}
+
+	public void addComponents(Component... components) {
+		for (Component component : components) {
+			this.addComponent(component);
+		}
+	}
 	
 }
