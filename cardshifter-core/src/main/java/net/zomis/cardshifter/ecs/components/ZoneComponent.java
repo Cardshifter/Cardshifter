@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import net.zomis.cardshifter.ecs.base.Component;
 import net.zomis.cardshifter.ecs.base.Entity;
@@ -34,6 +35,7 @@ public class ZoneComponent extends Component {
 
 	public void addOnBottom(Entity entity) {
 		entity.addComponent(new CardComponent(this));
+		cardMoveAtBottom(entity);
 	}
 	
 	public void shuffle() {
@@ -66,6 +68,10 @@ public class ZoneComponent extends Component {
 
 	void cardMoveAtBottom(Entity card) {
 		cards.addLast(card);
+	}
+
+	public void forEach(Consumer<? super Entity> action) {
+		this.cards.forEach(action);
 	}
 
 }
