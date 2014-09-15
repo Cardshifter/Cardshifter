@@ -48,5 +48,7 @@
             <Label fx:id="errorMessage" alignment="CENTER" layoutX="138.0" layoutY="20.0" text="Welcome to Cardshifter" textAlignment="CENTER" wrapText="true" />
          </children>
       </AnchorPane>
+      <Label layoutX="14.0" layoutY="207.0" text="Default IP: 127.0.0.1" />
+      <Label layoutX="21.0" layoutY="260.0" text="Default Port: 4242" />
    </children>
 </AnchorPane>

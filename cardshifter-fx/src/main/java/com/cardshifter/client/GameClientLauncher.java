@@ -1,15 +1,15 @@
 package com.cardshifter.client;
 
-import com.cardshifter.console.NetworkConsoleController;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.Scanner;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 //This class just loads the FXML document which initializes its DocumentController
 
@@ -41,13 +41,21 @@ public class GameClientLauncher implements Initializable {
 		
 		//Attempt to make a connection
 		try {
-			NetworkConsoleController control = new NetworkConsoleController(ipAddressValue, portValue);
-			control.play(new Scanner(System.in));
+			//Send a test to the server, to make sure that it is valid
+			GameClientController controller = new GameClientController(ipAddressValue, portValue);
 			errorMessage.setText("Success!");
+			this.closeWithSuccess(event);
 		} catch (Exception e) {
 			String message = e.getMessage();
 			errorMessage.setText(message);
 		}
+	}
+	
+	//Does not currently close the window
+	private void closeWithSuccess(ActionEvent event) {
+		Node source = (Node)event.getSource();
+		Stage stage = (Stage)source.getScene().getWindow();
+		stage.close();
 	}
 	
 	 // @param args the command line arguments
