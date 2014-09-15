@@ -65,6 +65,7 @@ public class GameClientLauncherController implements Initializable {
 			
 			GameClientController controller = loader.<GameClientController>getController();
 			controller.acceptIPAndPort(ipAddress, port);
+			controller.connectToGame();
 		
 			Scene scene = new Scene(root);
 			
