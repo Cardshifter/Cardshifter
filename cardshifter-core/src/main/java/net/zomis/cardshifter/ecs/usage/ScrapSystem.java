@@ -1,15 +1,15 @@
 package net.zomis.cardshifter.ecs.usage;
 
+import net.zomis.cardshifter.ecs.actions.ActionAllowedCheckEvent;
+import net.zomis.cardshifter.ecs.actions.ActionPerformEvent;
+import net.zomis.cardshifter.ecs.actions.SpecificActionSystem;
 import net.zomis.cardshifter.ecs.base.ComponentRetriever;
 import net.zomis.cardshifter.ecs.base.Entity;
-import net.zomis.cardshifter.ecs.components.BattlefieldComponent;
-import net.zomis.cardshifter.ecs.components.CardComponent;
-import net.zomis.cardshifter.ecs.events.ActionAllowedCheckEvent;
-import net.zomis.cardshifter.ecs.events.ActionPerformEvent;
+import net.zomis.cardshifter.ecs.cards.BattlefieldComponent;
+import net.zomis.cardshifter.ecs.cards.CardComponent;
+import net.zomis.cardshifter.ecs.cards.Cards;
 import net.zomis.cardshifter.ecs.resources.ECSResource;
 import net.zomis.cardshifter.ecs.resources.ResourceRetreiver;
-import net.zomis.cardshifter.ecs.systems.Cards;
-import net.zomis.cardshifter.ecs.systems.SpecificActionSystem;
 
 public class ScrapSystem extends SpecificActionSystem {
 

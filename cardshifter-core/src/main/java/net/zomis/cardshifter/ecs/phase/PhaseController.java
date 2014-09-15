@@ -1,13 +1,10 @@
-package net.zomis.cardshifter.ecs.components;
+package net.zomis.cardshifter.ecs.phase;
 
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.function.Predicate;
 
 import net.zomis.cardshifter.ecs.base.Component;
-import net.zomis.cardshifter.ecs.base.Phase;
-import net.zomis.cardshifter.ecs.events.PhaseEndEvent;
-import net.zomis.cardshifter.ecs.events.PhaseStartEvent;
 
 public class PhaseController extends Component {
 	

@@ -1,4 +1,4 @@
-package net.zomis.cardshifter.ecs.events;
+package net.zomis.cardshifter.ecs.cards;
 
 import net.zomis.cardshifter.ecs.base.Entity;
 import net.zomis.cardshifter.ecs.base.IEvent;

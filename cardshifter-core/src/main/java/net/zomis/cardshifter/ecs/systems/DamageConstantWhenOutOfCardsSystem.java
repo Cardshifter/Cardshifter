@@ -2,7 +2,7 @@ package net.zomis.cardshifter.ecs.systems;
 
 import net.zomis.cardshifter.ecs.base.ECSGame;
 import net.zomis.cardshifter.ecs.base.ECSSystem;
-import net.zomis.cardshifter.ecs.events.DrawCardFailedEvent;
+import net.zomis.cardshifter.ecs.cards.DrawCardFailedEvent;
 import net.zomis.cardshifter.ecs.resources.ECSResource;
 import net.zomis.cardshifter.ecs.resources.ResourceRetreiver;
 

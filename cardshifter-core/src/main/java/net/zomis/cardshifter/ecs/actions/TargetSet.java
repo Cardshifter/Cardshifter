@@ -1,7 +1,9 @@
-package net.zomis.cardshifter.ecs.base;
+package net.zomis.cardshifter.ecs.actions;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import net.zomis.cardshifter.ecs.base.Entity;
 
 public class TargetSet {
 

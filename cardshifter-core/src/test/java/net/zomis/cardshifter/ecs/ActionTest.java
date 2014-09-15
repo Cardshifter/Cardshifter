@@ -4,14 +4,14 @@ import static org.junit.Assert.*;
 
 import java.util.Collections;
 
+import net.zomis.cardshifter.ecs.actions.ActionAllowedCheckEvent;
+import net.zomis.cardshifter.ecs.actions.ActionComponent;
+import net.zomis.cardshifter.ecs.actions.ActionPerformEvent;
+import net.zomis.cardshifter.ecs.actions.ECSAction;
+import net.zomis.cardshifter.ecs.actions.SpecificActionSystem;
 import net.zomis.cardshifter.ecs.base.ComponentRetriever;
-import net.zomis.cardshifter.ecs.base.ECSAction;
 import net.zomis.cardshifter.ecs.base.ECSGame;
 import net.zomis.cardshifter.ecs.base.Entity;
-import net.zomis.cardshifter.ecs.components.ActionComponent;
-import net.zomis.cardshifter.ecs.events.ActionAllowedCheckEvent;
-import net.zomis.cardshifter.ecs.events.ActionPerformEvent;
-import net.zomis.cardshifter.ecs.systems.SpecificActionSystem;
 
 import org.junit.Before;
 import org.junit.Test;

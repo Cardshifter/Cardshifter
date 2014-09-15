@@ -1,10 +1,7 @@
-package net.zomis.cardshifter.ecs.systems;
+package net.zomis.cardshifter.ecs.actions;
 
-import net.zomis.cardshifter.ecs.base.ECSAction;
 import net.zomis.cardshifter.ecs.base.ECSGame;
 import net.zomis.cardshifter.ecs.base.ECSSystem;
-import net.zomis.cardshifter.ecs.events.ActionAllowedCheckEvent;
-import net.zomis.cardshifter.ecs.events.ActionPerformEvent;
 
 public abstract class SpecificActionSystem implements ECSSystem {
 

@@ -1,10 +1,8 @@
-package net.zomis.cardshifter.ecs.systems;
+package net.zomis.cardshifter.ecs.cards;
 
 import net.zomis.cardshifter.ecs.base.ComponentRetriever;
 import net.zomis.cardshifter.ecs.base.Entity;
-import net.zomis.cardshifter.ecs.components.CardComponent;
-import net.zomis.cardshifter.ecs.components.PhaseController;
-import net.zomis.cardshifter.ecs.components.ZoneComponent;
+import net.zomis.cardshifter.ecs.phase.PhaseController;
 
 public class Cards {
 

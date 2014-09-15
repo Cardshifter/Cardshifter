@@ -1,4 +1,6 @@
-package net.zomis.cardshifter.ecs.base;
+package net.zomis.cardshifter.ecs.phase;
+
+import net.zomis.cardshifter.ecs.base.Entity;
 
 public class Phase {
 

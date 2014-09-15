@@ -6,15 +6,15 @@ import java.util.Objects;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
+import net.zomis.cardshifter.ecs.actions.ActionComponent;
+import net.zomis.cardshifter.ecs.actions.ECSAction;
+import net.zomis.cardshifter.ecs.actions.TargetSet;
 import net.zomis.cardshifter.ecs.base.Component;
-import net.zomis.cardshifter.ecs.base.ECSAction;
 import net.zomis.cardshifter.ecs.base.ECSGame;
 import net.zomis.cardshifter.ecs.base.Entity;
-import net.zomis.cardshifter.ecs.base.TargetSet;
-import net.zomis.cardshifter.ecs.components.ActionComponent;
-import net.zomis.cardshifter.ecs.components.PhaseController;
+import net.zomis.cardshifter.ecs.cards.ZoneComponent;
 import net.zomis.cardshifter.ecs.components.PlayerComponent;
-import net.zomis.cardshifter.ecs.components.ZoneComponent;
+import net.zomis.cardshifter.ecs.phase.PhaseController;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame;
 
 public class ConsoleControllerECS {

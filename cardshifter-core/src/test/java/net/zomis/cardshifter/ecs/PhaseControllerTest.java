@@ -3,8 +3,8 @@ package net.zomis.cardshifter.ecs;
 import static org.junit.Assert.*;
 import net.zomis.cardshifter.ecs.base.ECSGame;
 import net.zomis.cardshifter.ecs.base.Entity;
-import net.zomis.cardshifter.ecs.base.Phase;
-import net.zomis.cardshifter.ecs.components.PhaseController;
+import net.zomis.cardshifter.ecs.phase.Phase;
+import net.zomis.cardshifter.ecs.phase.PhaseController;
 
 import org.junit.Before;
 import org.junit.Test;

@@ -1,12 +1,11 @@
-package net.zomis.cardshifter.ecs.base;
+package net.zomis.cardshifter.ecs.actions;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import net.zomis.cardshifter.ecs.events.ActionAllowedCheckEvent;
-import net.zomis.cardshifter.ecs.events.ActionPerformEvent;
+import net.zomis.cardshifter.ecs.base.Entity;
 
 public class ECSAction {
 
