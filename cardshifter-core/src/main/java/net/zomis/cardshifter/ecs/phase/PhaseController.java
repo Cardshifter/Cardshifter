@@ -5,6 +5,7 @@ import java.util.ListIterator;
 import java.util.function.Predicate;
 
 import net.zomis.cardshifter.ecs.base.Component;
+import net.zomis.cardshifter.ecs.base.Entity;
 
 public class PhaseController extends Component {
 	
@@ -84,6 +85,10 @@ public class PhaseController extends Component {
 		executeEvent(new PhaseStartEvent(this, oldPhase, getCurrentPhase()));
 		
 		return getCurrentPhase();
+	}
+
+	public Entity getCurrentEntity() {
+		return getCurrentPhase().getOwner();
 	}
 	
 }
