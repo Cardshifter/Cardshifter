@@ -9,9 +9,11 @@ public class ResourceValueChange implements IEvent {
 	private final int previousValue;
 	private final int previousActualValue;
 	private final int newValue;
+	private final ECSResource resource;
 
-	public ResourceValueChange(Entity entity, int previousValue, int previousActualValue, int newValue) {
+	public ResourceValueChange(Entity entity, ECSResource resource, int previousValue, int previousActualValue, int newValue) {
 		this.entity = entity;
+		this.resource = resource;
 		this.previousValue = previousValue;
 		this.previousActualValue = previousActualValue;
 		this.newValue = newValue;
@@ -31,6 +33,10 @@ public class ResourceValueChange implements IEvent {
 	
 	public int getPreviousValue() {
 		return previousValue;
+	}
+	
+	public ECSResource getResource() {
+		return resource;
 	}
 	
 }

@@ -32,7 +32,7 @@ public class ECSResourceData {
 	public void set(int value) {
 		// Execute change event (for taking damage, gaining life, etc...).
 		if (this.current != value) {
-			entity.getGame().executeEvent(new ResourceValueChange(entity, get(), current, value),
+			entity.getGame().executeEvent(new ResourceValueChange(entity, resource, get(), current, value),
 					() -> this.current = value);
 		}
 	}
