@@ -31,7 +31,7 @@ import net.zomis.cardshifter.ecs.systems.RestoreResourcesSystem;
 
 public class PhrancisGame {
 
-	private enum PhrancisResources implements ECSResource {
+	public enum PhrancisResources implements ECSResource {
 		HEALTH, MANA, MANA_MAX, SCRAP, ATTACK, MANA_COST, SCRAP_COST, ENCHANTMENTS_ACTIVE, SICKNESS, ATTACK_AVAILABLE;
 	}
 
@@ -91,6 +91,10 @@ public class PhrancisGame {
 		}
 		
 		ResourceRetreiver manaMaxResource = ResourceRetreiver.forResource(PhrancisResources.MANA_MAX);
+		ResourceRetreiver manaResource = ResourceRetreiver.forResource(PhrancisResources.MANA);
+		manaMaxResource.resFor(phaseController.getCurrentEntity()).change(1);
+		manaResource.resFor(phaseController.getCurrentEntity()).change(1);
+		
 		ResourceRetreiver manaCostResource = ResourceRetreiver.forResource(PhrancisResources.MANA_COST);
 		UnaryOperator<Entity> owningPlayerPays = entity -> entity.getComponent(CardComponent.class).getOwner();
 		game.addSystem(new GainResourceSystem(PhrancisResources.MANA_MAX, entity -> Math.min(1, Math.abs(manaMaxResource.getFor(entity) - 10))));
