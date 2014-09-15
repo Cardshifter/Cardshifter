@@ -1,5 +1,7 @@
 package net.zomis.cardshifter.ecs.resources;
 
+import java.util.Objects;
+
 import net.zomis.cardshifter.ecs.base.Entity;
 
 
@@ -13,8 +15,8 @@ public class ECSResourceData {
 	private final ECSResource resource;
 	
 	public ECSResourceData(Entity entity, ECSResource resource) {
-		this.entity = entity;
-		this.resource = resource;
+		this.entity = Objects.requireNonNull(entity, "Entity cannot be null. Make sure that ResourceMap is added to an entity.");
+		this.resource = Objects.requireNonNull(resource, "Resource cannot be null.");
 	}
 	
 	public int get() {
@@ -47,6 +49,9 @@ public class ECSResourceData {
 		return this.get() >= want;
 	}
 	
-	
+	@Override
+	public String toString() {
+		return String.valueOf(current);
+	}
 	
 }

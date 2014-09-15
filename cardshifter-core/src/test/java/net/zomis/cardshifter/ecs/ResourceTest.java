@@ -31,8 +31,7 @@ public class ResourceTest {
 		game = new ECSGame();
 		entity = game.newEntity();
 		resMapper = game.componentRetreiver(ECSResourceMap.class);
-		ECSResourceMap res = new ECSResourceMap();
-		entity.addComponent(res);
+		ECSResourceMap res = ECSResourceMap.createFor(entity);
 		res.getResource(TestResource.TEST_A).set(10);
 		res.getResource(TestResource.TEST_B).set(5);
 		
@@ -61,7 +60,8 @@ public class ResourceTest {
 		ECSResourceData resA = resMapper.get(entity).getResource(TestResource.TEST_A);
 		resA.set(5);
 		
-		Entity enchanter = game.newEntity().addComponent(new ECSResourceMap());
+		Entity enchanter = game.newEntity();
+		ECSResourceMap.createFor(enchanter);
 		ECSResourceData bonusResource = resMapper.get(enchanter).getResource(TestResource.TEST_B);
 		resA.setStrategy((ent, value) -> value + bonusResource.get());
 		

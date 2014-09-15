@@ -4,12 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.zomis.cardshifter.ecs.base.Component;
+import net.zomis.cardshifter.ecs.base.Entity;
 
 public class ECSResourceMap extends Component {
 
 	private final Map<ECSResource, ECSResourceData> map = new HashMap<>();
 
-	public ECSResourceMap() {
+	private ECSResourceMap() {
 	}
 
 	public ECSResourceMap set(ECSResource res, int value) {
@@ -22,8 +23,16 @@ public class ECSResourceMap extends Component {
 		map.computeIfAbsent(res, r -> new ECSResourceData(getEntity(), r));
 		return map.get(res);
 	}
+
+	public static ECSResourceMap createFor(Entity entity) {
+		ECSResourceMap res = new ECSResourceMap();
+		entity.addComponent(res);
+		return res;
+	}
 	
-	
-	
+	@Override
+	public String toString() {
+		return map.toString();
+	}
 	
 }
