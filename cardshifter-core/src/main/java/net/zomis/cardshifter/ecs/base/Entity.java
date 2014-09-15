@@ -1,11 +1,13 @@
 package net.zomis.cardshifter.ecs.base;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Entity {
 
-	private Map<Class<? extends Component>, Object> components = new HashMap<>();
+	private Map<Class<? extends Component>, Component> components = new HashMap<>();
 	
 	private final int id;
 	private final ECSGame game;
@@ -41,6 +43,19 @@ public class Entity {
 		for (Component component : components) {
 			this.addComponent(component);
 		}
+	}
+
+	/**
+	 * Get all components that are subtypes of a specific class
+	 * 
+	 * @param compoentClass
+	 * @return
+	 */
+	public <T extends Component> Collection<T> getSuperComponents(Class<T> compoentClass) {
+		return this.components.entrySet().stream()
+				.filter(entry -> compoentClass.isAssignableFrom(entry.getKey()))
+				.map(entry -> compoentClass.cast(entry.getValue()))
+				.collect(Collectors.toList());
 	}
 	
 }
