@@ -41,7 +41,7 @@ public class DrawStartCards implements System {
 		else {
 			Entity cardToDraw = deck.getTopCard();
 			CardComponent topCard = card.get(deck.getTopCard());
-			entity.getGame().executeEvent(new DrawCardEvent(cardToDraw), () -> topCard.moveToBottom(hand));
+			entity.getGame().executeEvent(new DrawCardEvent(cardToDraw, entity), () -> topCard.moveToBottom(hand));
 			
 		}
 		
