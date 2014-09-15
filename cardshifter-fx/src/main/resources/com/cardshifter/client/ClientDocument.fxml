@@ -8,7 +8,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cardshifter.client.GameClientController">
+<AnchorPane fx:id="rootPane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="com.cardshifter.client.GameClientController">
         <children>
         
         <!--  Buttons  -->
@@ -63,6 +63,8 @@
             <Label layoutX="51.0" layoutY="76.0" text="Strength / Health" />
             </children>
         </Pane>
+      <Label layoutX="47.0" layoutY="343.0" text="Server Message:" />
+      <Label fx:id="serverMessage" layoutX="156.0" layoutY="343.0" text="Message" />
       
     </children>
 </AnchorPane>

@@ -1,6 +1,5 @@
 package com.cardshifter.client;
 
-import com.cardshifter.fx.ChoiceBoxNode;
 import com.cardshifter.server.incoming.LoginMessage;
 import com.cardshifter.server.incoming.RequestTargetsMessage;
 import com.cardshifter.server.incoming.StartGameRequest;
@@ -30,8 +29,19 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import javafx.application.Platform;
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.shape.Rectangle;
 
 public class GameClientController {
+	@FXML
+	Label serverMessage;
+	@FXML
+	AnchorPane rootPane;
+	
 	private Socket socket;
 	private InputStream in;
 	private OutputStream out;
@@ -87,11 +97,18 @@ public class GameClientController {
 		
 		try {
 			Message message = messages.take();
-			
-			
-			
 			if (message instanceof WaitMessage) {
 				System.out.println(((WaitMessage) message).getMessage());
+				
+				
+				Platform.runLater(() -> serverMessage.setText(((WaitMessage)message).getMessage()));
+				//this is the syntax for multiple things inside a lambda
+				/*
+				Platform.runLater(() -> {
+					serverMessage.setText(((WaitMessage)message).getMessage());
+				});
+				*/
+				
 				NewGameMessage game = (NewGameMessage) messages.take();
 				this.playLoop(game);
 			}
@@ -129,7 +146,7 @@ public class GameClientController {
 				break;
 			}
 			*/
-			String inputLine = "0";
+			String inputLine = "1";
 			
 			try {
 				int actionIndex = Integer.parseInt(inputLine);
@@ -186,11 +203,33 @@ public class GameClientController {
 
 	private void outputList(final List<?> actions) {
 		Objects.requireNonNull(actions, "actions");
+		
+		Pane choiceBoxPane = new Pane();
+		choiceBoxPane.setPrefHeight(367);
+		choiceBoxPane.setPrefWidth(550);
+		choiceBoxPane.setTranslateX(326);
+		choiceBoxPane.setTranslateY(150);
+		choiceBoxPane.setId("choiceBoxPane");
+		
+		int numChoices = actions.size();
+		double paneHeight = choiceBoxPane.getPrefHeight();
+		double paneWidth = choiceBoxPane.getPrefWidth();
+		double choiceBoxWidth = paneWidth / numChoices;
+		
+		
+		
 		//print("------------------");
-		ListIterator<?> it = actions.listIterator();
+		ListIterator<?> it = actions.listIterator();	
+		
+		int actionIndex = 0;
 		while (it.hasNext()) {
 			//print(it.nextIndex() + ": " + it.next());
-			//ChoiceBoxNode choiceBox = new ChoiceBoxNode();
+			Rectangle choiceBox = new Rectangle(choiceBoxWidth, paneHeight);
+			choiceBoxPane.getChildren().add(choiceBox);
+			
+			actionIndex++;
 		}
+		
+		Platform.runLater(() -> rootPane.getChildren().add(choiceBoxPane));
 	}
 }
