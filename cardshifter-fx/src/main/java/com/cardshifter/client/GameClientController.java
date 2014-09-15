@@ -1,5 +1,6 @@
 package com.cardshifter.client;
 
+import com.cardshifter.fx.ChoiceBoxNode;
 import com.cardshifter.server.incoming.LoginMessage;
 import com.cardshifter.server.incoming.RequestTargetsMessage;
 import com.cardshifter.server.incoming.StartGameRequest;
@@ -27,7 +28,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
 import java.util.Random;
-import java.util.Scanner;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -57,41 +57,53 @@ public class GameClientController {
 			mapper.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
 			new Thread(this::listen).start();
 		} catch (Exception e) {
-
+			e.printStackTrace();
 		}
 		
 		try {
-			this.play(new Scanner(System.in));
+			new Thread(this::play).start();
 		} catch (Exception e) {
-			
+			e.printStackTrace();
 		}
 	}
 	
-	public void play(Scanner input) throws IOException, InterruptedException {
+	public void play() {
 		System.out.println("Enter your name: ");
 //		String name = input.nextLine();
 		String name = "Player" + new Random().nextInt(100);
 		this.send(new LoginMessage(name));
 		
-		WelcomeMessage response = (WelcomeMessage) messages.take();
-		System.out.println(response.getMessage());
-		if (!response.isOK()) {
-			return;
+		try {
+			WelcomeMessage response = (WelcomeMessage) messages.take();
+			System.out.println(response.getMessage());
+			if (!response.isOK()) {
+				return;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		
 		this.send(new StartGameRequest());
-		Message message = messages.take();
-		if (message instanceof WaitMessage) {
-			System.out.println(((WaitMessage) message).getMessage());
-			NewGameMessage game = (NewGameMessage) messages.take();
-			this.playLoop(game, input);
-		}
-		else {
-			this.playLoop((NewGameMessage) message, input);
+		
+		try {
+			Message message = messages.take();
+			
+			
+			
+			if (message instanceof WaitMessage) {
+				System.out.println(((WaitMessage) message).getMessage());
+				NewGameMessage game = (NewGameMessage) messages.take();
+				this.playLoop(game);
+			}
+			else {
+				this.playLoop((NewGameMessage) message);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	
-	private void playLoop(NewGameMessage game, Scanner input) throws JsonParseException, JsonMappingException, IOException {
+	private void playLoop(NewGameMessage game) throws JsonParseException, JsonMappingException, IOException {
 		System.out.printf("Game id %d. You are player index %d.%n", game.getGameId(), game.getPlayerIndex());
 		this.gameId = game.getGameId();
 		while (true) {
@@ -111,10 +123,13 @@ public class GameClientController {
 				System.out.println("No available actions to perform right now.");
 			}
 			
+			/*
 			String inputLine = input.nextLine();
 			if (inputLine.equals("exit")) {
 				break;
 			}
+			*/
+			String inputLine = "0";
 			
 			try {
 				int actionIndex = Integer.parseInt(inputLine);
@@ -175,6 +190,7 @@ public class GameClientController {
 		ListIterator<?> it = actions.listIterator();
 		while (it.hasNext()) {
 			//print(it.nextIndex() + ": " + it.next());
+			//ChoiceBoxNode choiceBox = new ChoiceBoxNode();
 		}
 	}
 }

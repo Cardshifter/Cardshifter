@@ -48,13 +48,19 @@ public class GameClientLauncherController implements Initializable {
 			
 			//if it is valid
 			errorMessage.setText("Success!");
-			this.switchToMainGameWindow(ipAddressValue, portValue);
 			this.closeWithSuccess(event);
-			
+			this.switchToMainGameWindow(ipAddressValue, portValue);
 		} catch (Exception e) {
 			String message = e.getMessage();
 			errorMessage.setText(message);
 		}
+	}
+	
+	//Does not currently close the window
+	private void closeWithSuccess(ActionEvent event) {
+		Node source = (Node)event.getSource();
+		Stage stage = (Stage)source.getScene().getWindow();
+		stage.close();
 	}
 	
 	private void switchToMainGameWindow(String ipAddress, int port) {
@@ -80,12 +86,7 @@ public class GameClientLauncherController implements Initializable {
         }
 	}
 	
-	//Does not currently close the window
-	private void closeWithSuccess(ActionEvent event) {
-		Node source = (Node)event.getSource();
-		Stage stage = (Stage)source.getScene().getWindow();
-		stage.close();
-	}
+
 	
 	 // @param args the command line arguments
 	
