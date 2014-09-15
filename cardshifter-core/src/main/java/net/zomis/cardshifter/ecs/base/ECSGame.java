@@ -60,6 +60,9 @@ public class ECSGame {
 	}
 	
 	public void startGame() {
+		if (gameState != ECSGameState.NOT_STARTED) {
+			throw new IllegalStateException("Game is already started");
+		}
 		systems.forEach(sys -> sys.startGame(this));
 		events.executePostEvent(new StartGameEvent(this));
 		gameState = ECSGameState.RUNNING;
@@ -75,6 +78,10 @@ public class ECSGame {
 	
 	public ECSGameState getGameState() {
 		return gameState;
+	}
+
+	public boolean isGameOver() {
+		return gameState == ECSGameState.GAME_ENDED;
 	}
 	
 	// TODO: Player component, Zone component for a zone, MyZoneSetupComponent? Hand+Deck+Battlefield-Component
