@@ -4,8 +4,11 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -42,13 +45,38 @@ public class GameClientLauncherController implements Initializable {
 		//Attempt to make a connection
 		try {
 			//Send a test to the server, to make sure that it is valid
-			GameClientLauncher controller = new GameClientLauncher(ipAddressValue, portValue);
+			
+			//if it is valid
 			errorMessage.setText("Success!");
+			this.switchToMainGameWindow(ipAddressValue, portValue);
 			this.closeWithSuccess(event);
+			
 		} catch (Exception e) {
 			String message = e.getMessage();
 			errorMessage.setText(message);
 		}
+	}
+	
+	private void switchToMainGameWindow(String ipAddress, int port) {
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("ClientDocument.fxml"));
+			
+			Parent root = (Parent)loader.load();
+			
+			GameClientController controller = loader.<GameClientController>getController();
+			controller.acceptIPAndPort(ipAddress, port);
+		
+			Scene scene = new Scene(root);
+			
+			Stage gameStage = new Stage();
+		
+			gameStage.setScene(scene);
+			//stage.centerOnScreen();
+			gameStage.show();
+		}
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 	}
 	
 	//Does not currently close the window
