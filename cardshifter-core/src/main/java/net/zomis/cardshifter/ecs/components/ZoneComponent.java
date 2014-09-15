@@ -14,11 +14,13 @@ public class ZoneComponent extends Component {
 	private final LinkedList<Entity> cards = new LinkedList<>();
 	private final Entity owner;
 	private final Map<Entity, Boolean> known = new HashMap<>();
+	private final String name;
 	
 	private boolean publicKnown;
 	
 	public ZoneComponent(Entity owner, String name) {
 		this.owner = owner;
+		this.name = name;
 	}
 	
 	public Entity getOwner() {
@@ -74,4 +76,14 @@ public class ZoneComponent extends Component {
 		this.cards.forEach(action);
 	}
 
+	public int size() {
+		return cards.size();
+	}
+
+	@Override
+	public String toString() {
+		return "Zone '" + name + "' [size=" + size() + ", owner=" + owner
+				+ ", known=" + known + ", publicKnown=" + publicKnown + "]";
+	}
+	
 }
