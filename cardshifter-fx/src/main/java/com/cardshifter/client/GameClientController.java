@@ -146,10 +146,9 @@ public class GameClientController {
 				break;
 			}
 			*/
-			String inputLine = "1";
 			
 			try {
-				int actionIndex = Integer.parseInt(inputLine);
+				int actionIndex = 0;
 				UseableActionMessage action = actions.get(actionIndex);
 				if (action.isTargetRequired()) {
 					this.send(new RequestTargetsMessage(gameId, action.getId(), action.getAction()));
