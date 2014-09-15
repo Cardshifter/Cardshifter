@@ -1,5 +1,7 @@
 package net.zomis.cardshifter.ecs.components;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -25,6 +27,10 @@ public class ActionComponent extends Component {
 
 	public ECSAction getAction(String key) {
 		return this.actions.get(key);
+	}
+
+	public Collection<ECSAction> getECSActions() {
+		return new ArrayList<>(actions.values());
 	}
 	
 }
