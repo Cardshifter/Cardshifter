@@ -6,6 +6,11 @@ import java.util.function.Consumer;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import com.cardshifter.server.clients.ClientIO;
+import com.cardshifter.server.incoming.LoginMessage;
+import com.cardshifter.server.incoming.StartGameRequest;
+import com.cardshifter.server.main.FakeAIClientTCG;
+
 public class MainServer {
 	private static final Logger logger = LogManager.getLogger(MainServer.class);
 	
@@ -22,6 +27,12 @@ public class MainServer {
 			new Thread(console, "Console-Thread").start();
 			console.addHandler("threads", cmd -> showAllStackTraces(server, System.out::println));
 			logger.info("Started");
+			
+			// Setup an AI that automatically wants to play (for testing purposes)
+			ClientIO tcgAI = new FakeAIClientTCG(server);
+			server.newClient(tcgAI);
+			server.getIncomingHandler().perform(new LoginMessage("AI Simple"), tcgAI);
+			server.getIncomingHandler().perform(new StartGameRequest(), tcgAI);
 		}
 		catch (Exception e) {
 			logger.error("Initializing Error", e);
