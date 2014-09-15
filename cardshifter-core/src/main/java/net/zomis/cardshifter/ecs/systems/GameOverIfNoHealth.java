@@ -1,12 +1,12 @@
 package net.zomis.cardshifter.ecs.systems;
 
 import net.zomis.cardshifter.ecs.base.ECSGame;
-import net.zomis.cardshifter.ecs.base.System;
+import net.zomis.cardshifter.ecs.base.ECSSystem;
 import net.zomis.cardshifter.ecs.components.PlayerComponent;
 import net.zomis.cardshifter.ecs.resources.ECSResource;
 import net.zomis.cardshifter.ecs.resources.ResourceValueChange;
 
-public class GameOverIfNoHealth implements System {
+public class GameOverIfNoHealth implements ECSSystem {
 
 	private final ECSResource resource;
 

@@ -2,11 +2,11 @@ package net.zomis.cardshifter.ecs.systems;
 
 import net.zomis.cardshifter.ecs.base.ECSAction;
 import net.zomis.cardshifter.ecs.base.ECSGame;
-import net.zomis.cardshifter.ecs.base.System;
+import net.zomis.cardshifter.ecs.base.ECSSystem;
 import net.zomis.cardshifter.ecs.events.ActionAllowedCheckEvent;
 import net.zomis.cardshifter.ecs.events.ActionPerformEvent;
 
-public abstract class SpecificActionSystem implements System {
+public abstract class SpecificActionSystem implements ECSSystem {
 
 	private final String actionName;
 

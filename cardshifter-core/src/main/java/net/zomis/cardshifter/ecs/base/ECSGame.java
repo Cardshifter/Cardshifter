@@ -16,7 +16,7 @@ public class ECSGame {
 	private final AtomicInteger ids = new AtomicInteger();
 	private final Map<Integer, Entity> entities = new HashMap<>();
 	private final EventExecutor events = new EventExecutor();
-	private final List<System> systems = new ArrayList<>();
+	private final List<ECSSystem> systems = new ArrayList<>();
 	private final Random random = new Random();
 	private ECSGameState gameState = ECSGameState.NOT_STARTED;
 	
@@ -55,7 +55,7 @@ public class ECSGame {
 		return events;
 	}
 
-	public void addSystem(System system) {
+	public void addSystem(ECSSystem system) {
 		this.systems.add(system);
 	}
 	

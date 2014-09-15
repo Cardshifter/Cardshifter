@@ -4,12 +4,12 @@ import java.util.function.ToIntFunction;
 
 import net.zomis.cardshifter.ecs.base.ECSGame;
 import net.zomis.cardshifter.ecs.base.Entity;
-import net.zomis.cardshifter.ecs.base.System;
+import net.zomis.cardshifter.ecs.base.ECSSystem;
 import net.zomis.cardshifter.ecs.events.PhaseStartEvent;
 import net.zomis.cardshifter.ecs.resources.ECSResource;
 import net.zomis.cardshifter.ecs.resources.ECSResourceMap;
 
-public class GainResourceSystem implements System {
+public class GainResourceSystem implements ECSSystem {
 
 	private ECSResource resource;
 	private ToIntFunction<Entity> valueGet;

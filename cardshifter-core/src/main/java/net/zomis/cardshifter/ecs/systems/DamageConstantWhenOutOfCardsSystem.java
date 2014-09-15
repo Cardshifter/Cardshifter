@@ -1,12 +1,12 @@
 package net.zomis.cardshifter.ecs.systems;
 
 import net.zomis.cardshifter.ecs.base.ECSGame;
-import net.zomis.cardshifter.ecs.base.System;
+import net.zomis.cardshifter.ecs.base.ECSSystem;
 import net.zomis.cardshifter.ecs.events.DrawCardFailedEvent;
 import net.zomis.cardshifter.ecs.resources.ECSResource;
 import net.zomis.cardshifter.ecs.resources.ResourceRetreiver;
 
-public class DamageConstantWhenOutOfCardsSystem implements System {
+public class DamageConstantWhenOutOfCardsSystem implements ECSSystem {
 
 	private final int damage;
 	private final ResourceRetreiver resource;

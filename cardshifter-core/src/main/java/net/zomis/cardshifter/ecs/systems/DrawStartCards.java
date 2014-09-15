@@ -3,7 +3,7 @@ package net.zomis.cardshifter.ecs.systems;
 import net.zomis.cardshifter.ecs.base.ComponentRetriever;
 import net.zomis.cardshifter.ecs.base.ECSGame;
 import net.zomis.cardshifter.ecs.base.Entity;
-import net.zomis.cardshifter.ecs.base.System;
+import net.zomis.cardshifter.ecs.base.ECSSystem;
 import net.zomis.cardshifter.ecs.components.CardComponent;
 import net.zomis.cardshifter.ecs.components.DeckComponent;
 import net.zomis.cardshifter.ecs.components.HandComponent;
@@ -11,7 +11,7 @@ import net.zomis.cardshifter.ecs.components.PlayerComponent;
 import net.zomis.cardshifter.ecs.events.DrawCardEvent;
 import net.zomis.cardshifter.ecs.events.DrawCardFailedEvent;
 
-public class DrawStartCards implements System {
+public class DrawStartCards implements ECSSystem {
 
 	private final int count;
 

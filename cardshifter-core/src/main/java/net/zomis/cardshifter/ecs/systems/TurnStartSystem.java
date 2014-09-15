@@ -4,10 +4,10 @@ import java.util.function.Consumer;
 
 import net.zomis.cardshifter.ecs.base.ECSGame;
 import net.zomis.cardshifter.ecs.base.Phase;
-import net.zomis.cardshifter.ecs.base.System;
+import net.zomis.cardshifter.ecs.base.ECSSystem;
 import net.zomis.cardshifter.ecs.events.PhaseChangeEvent;
 
-public class TurnStartSystem implements System {
+public class TurnStartSystem implements ECSSystem {
 	
 	private final Consumer<Phase> onStart;
 

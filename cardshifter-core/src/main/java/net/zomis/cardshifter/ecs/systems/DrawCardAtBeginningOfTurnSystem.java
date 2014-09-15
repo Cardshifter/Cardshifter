@@ -1,10 +1,10 @@
 package net.zomis.cardshifter.ecs.systems;
 
 import net.zomis.cardshifter.ecs.base.ECSGame;
-import net.zomis.cardshifter.ecs.base.System;
+import net.zomis.cardshifter.ecs.base.ECSSystem;
 import net.zomis.cardshifter.ecs.events.PhaseStartEvent;
 
-public class DrawCardAtBeginningOfTurnSystem implements System {
+public class DrawCardAtBeginningOfTurnSystem implements ECSSystem {
 
 	@Override
 	public void startGame(ECSGame game) {
