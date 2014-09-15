@@ -13,7 +13,7 @@ public abstract class Component {
 			throw new IllegalStateException("Component " + this + " is already connected to another entity.");
 		}
 		this.entity = entity;
-		// TODO: Try to avoid having a Component know about it's entity, but it most importantly need the EventExecutor
+		// TODO: Is it possible to avoid having a Component know about its entity?
 	}
 	
 	protected final void executeEvent(IEvent event) {
