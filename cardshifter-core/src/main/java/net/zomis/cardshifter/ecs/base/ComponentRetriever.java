@@ -32,14 +32,18 @@ public class ComponentRetriever<T extends Component> {
 			
 			@Override
 			public T get(Entity entity) {
-				Set<Entity> all = entity.getGame().getEntitiesWithComponent(class1);
-				if (all.size() != 1) {
-					throw new IllegalStateException();
-				}
-				return all.iterator().next().getComponent(class1);
+				return singleton(entity.getGame(), class1);
 			}
 			
 		};
+	}
+
+	public static <T extends Component> T singleton(ECSGame game, Class<T> class1) {
+		Set<Entity> all = game.getEntitiesWithComponent(class1);
+		if (all.size() != 1) {
+			throw new IllegalStateException();
+		}
+		return all.iterator().next().getComponent(class1);
 	}
 	
 }
