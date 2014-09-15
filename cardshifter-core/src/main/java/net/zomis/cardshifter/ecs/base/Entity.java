@@ -62,5 +62,10 @@ public class Entity {
 	public String toString() {
 		return "Entity #" + id;
 	}
+
+	public void destroy() {
+		components.clear();
+		game.removeEntity(this);
+	}
 	
 }

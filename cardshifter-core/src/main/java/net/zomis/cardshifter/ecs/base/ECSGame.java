@@ -83,6 +83,10 @@ public class ECSGame {
 	public boolean isGameOver() {
 		return gameState == ECSGameState.GAME_ENDED;
 	}
+
+	void removeEntity(Entity entity) {
+		entities.remove(entity.getId());
+	}
 	
 	// TODO: Player component, Zone component for a zone, MyZoneSetupComponent? Hand+Deck+Battlefield-Component
 	// TODO: Actions ++ copy actions. List<Target(s)> ("deal 1 damage to up to three targets and then give up to three targets +1/+1 until end of turn"), Set<ActionOptions>. choose one, choose two
