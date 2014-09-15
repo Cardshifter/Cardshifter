@@ -3,7 +3,15 @@ package com.cardshifter.server.model;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
+import com.cardshifter.ai.CardshifterAI;
+import com.cardshifter.ai.CompleteIdiot;
 import com.cardshifter.core.Card;
 import com.cardshifter.core.Game;
 import com.cardshifter.core.IdEntity;
@@ -16,6 +24,7 @@ import com.cardshifter.core.actions.UsableAction;
 import com.cardshifter.server.clients.ClientIO;
 import com.cardshifter.server.incoming.RequestTargetsMessage;
 import com.cardshifter.server.incoming.UseAbilityMessage;
+import com.cardshifter.server.main.FakeAIClientTCG;
 import com.cardshifter.server.outgoing.CardInfoMessage;
 import com.cardshifter.server.outgoing.PlayerMessage;
 import com.cardshifter.server.outgoing.ResetAvailableActionsMessage;
@@ -24,12 +33,16 @@ import com.cardshifter.server.outgoing.UseableActionMessage;
 import com.cardshifter.server.outgoing.ZoneMessage;
 
 public class TCGGame extends ServerGame {
-
+	
+	private static final Logger logger = LogManager.getLogger(TCGGame.class);
+	private static final long AI_DELAY_SECONDS = 5;
 	private final Game game;
+	private final ScheduledExecutorService aiPerform = Executors.newScheduledThreadPool(1);
 	
 	public TCGGame(Server server, int id) {
 		super(server, id);
 		game = new Game(TCGGame.class.getResourceAsStream("/com/cardshifter/mod/start.lua"), new Random(id), this::broadcast);
+		aiPerform.scheduleWithFixedDelay(this::aiPerform, 0, AI_DELAY_SECONDS, TimeUnit.SECONDS);
 	}
 
 	private void broadcast(IdEntity what, Object key, Object value) {
@@ -116,6 +129,27 @@ public class TCGGame extends ServerGame {
 		
 		// TODO: Add listener to game for ZoneMoves, inform players about card movements, and send CardInfoMessage when a card becomes known
 		sendAvailableActions();
+	}
+
+	private final CardshifterAI ai = new CompleteIdiot();
+	
+	private void aiPerform() {
+		if (this.getState() != GameState.RUNNING) {
+			return;
+		}
+		
+		for (ClientIO io : this.getPlayers()) {
+			if (io instanceof FakeAIClientTCG) {
+				Player player = playerFor(io);
+				UsableAction action = ai.getAction(player);
+				if (action != null) {
+					logger.info("AI Performs action: " + action);
+					action.perform();
+					sendAvailableActions();
+					return;
+				}
+			}
+		}
 	}
 
 	@Override
