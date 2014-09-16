@@ -61,4 +61,8 @@ public class TargetSet {
 		return new ArrayList<>(chosenTargets);
 	}
 
+	void clearTargets() {
+		chosenTargets.clear();
+	}
+	
 }

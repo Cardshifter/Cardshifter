@@ -39,9 +39,12 @@ public class ECSAction {
 		if (!this.isAllowed()) {
 			return false;
 		}
-		this.targetSets.stream().allMatch(targets -> targets.hasEnoughTargets());
+		if (!this.targetSets.stream().allMatch(targets -> targets.hasEnoughTargets())) {
+			return false;
+		}
 		
 		this.owner.getGame().executeEvent(new ActionPerformEvent(owner, this), () -> this.perform.accept(this));
+		this.targetSets.forEach(TargetSet::clearTargets);
 		return true;
 	}
 
