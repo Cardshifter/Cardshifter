@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	
 	<parent>
-		<groupId>net.zomis</groupId>
+		<groupId>com.cardshifter</groupId>
 		<artifactId>cardshifter</artifactId>
 		<version>0.1</version>
 	</parent>
@@ -31,7 +31,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>net.zomis.fx.JavaFXGame</mainClass>
+							<mainClass>com.cardshifter.fx.JavaFXGame</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
@@ -80,7 +80,7 @@
 	
 	<dependencies>
 		<dependency>
-			<groupId>net.zomis</groupId>
+			<groupId>com.cardshifter</groupId>
 			<artifactId>cardshifter-mod</artifactId>
 			<version>0.1</version>
 		</dependency>
@@ -91,7 +91,7 @@
 			<scope>test</scope>
 		</dependency>
         <dependency>
-            <groupId>net.zomis</groupId>
+            <groupId>com.cardshifter</groupId>
             <artifactId>cardshifter-core</artifactId>
             <version>0.1</version>
         </dependency>

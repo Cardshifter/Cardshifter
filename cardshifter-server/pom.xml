@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	
 	<parent>
-		<groupId>net.zomis</groupId>
+		<groupId>com.cardshifter</groupId>
 		<artifactId>cardshifter</artifactId>
 		<version>0.1</version>
 	</parent>
@@ -31,7 +31,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>net.zomis.server.main.ServerMain</mainClass>
+							<mainClass>com.cardshifter.server.main.ServerMain</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
@@ -56,17 +56,17 @@
 	
 	<dependencies>
 		<dependency>
-			<groupId>net.zomis</groupId>
+			<groupId>com.cardshifter</groupId>
 			<artifactId>cardshifter-core</artifactId>
 			<version>0.1</version>
 		</dependency>
 		<dependency>
-			<groupId>net.zomis</groupId>
+			<groupId>com.cardshifter</groupId>
 			<artifactId>cardshifter-mod</artifactId>
 			<version>0.1</version>
 		</dependency>
 		<dependency>
-			<groupId>net.zomis</groupId>
+			<groupId>com.cardshifter</groupId>
 			<artifactId>cardshifter-api</artifactId>
 			<version>0.1</version>
 		</dependency>
