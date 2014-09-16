@@ -100,15 +100,8 @@ public class GameClientController {
 			if (message instanceof WaitMessage) {
 				System.out.println(((WaitMessage) message).getMessage());
 				
-				
 				Platform.runLater(() -> serverMessage.setText(((WaitMessage)message).getMessage()));
-				//this is the syntax for multiple things inside a lambda
-				/*
-				Platform.runLater(() -> {
-					serverMessage.setText(((WaitMessage)message).getMessage());
-				});
-				*/
-				
+
 				NewGameMessage game = (NewGameMessage) messages.take();
 				this.playLoop(game);
 			}
@@ -232,3 +225,33 @@ public class GameClientController {
 		Platform.runLater(() -> rootPane.getChildren().add(choiceBoxPane));
 	}
 }
+
+
+//this is the syntax for multiple things inside a lambda
+/*
+Platform.runLater(() -> {
+	serverMessage.setText(((WaitMessage)message).getMessage());
+});
+*/
+/*
+Yes, right...
+the thing is that as this is multi-threaded, the listen method plays a big part here
+The playLoop only asks the console for input about what to do next
+I don't think you need the while-loop in the playLoop method. A GUI doesn't need that kind of loop.
+  
+The input should come from the GUI, not from a loop
+And then in the listen method, you'll have to filter out interesting messages and handle them (i.e. make the GUI show something)
+
+
+The while loop in listen holds the key
+Currently, its most useful feature is this line: System.out.println("iterator: " + mess);
+i.e. it prints all the messages it receives from the server to System.out
+i.e. user experience = horrible
+
+if you add some more mess instanceof checks in the while loop, for ZoneMessage, CardMessage and some others, and paint stuff in the GUI when your 
+receive those messages, then you will probably have better progress.
+Don't focus on parsing the text, Jackson takes care of that. All messages gets instantiated as a **Message class
+
+
+In cardshifter-api/com.cardshifter.server.outgoing you can see the possible messages that the server can send to the clients
+*/
