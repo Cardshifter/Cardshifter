@@ -121,37 +121,21 @@ public class GameClientController {
 		}
 	}
 	
-	///////////UPDATE LOOP////////////////
+	////////COMMUNICATE WITH SERVER///////////
 	//this runs continuously once it starts, gets messages from the server
 	private void listen() {
 		while (true) {
 			try {
 				MappingIterator<Message> values = mapper.readValues(new JsonFactory().createParser(this.in), Message.class);
 				if (values.hasNextValue()) {
-					this.collectMessagesFromServer(values);
+					this.processMessageFromServer(values.next());
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
-			this.update();
 		}
 	}
-	private void collectMessagesFromServer(MappingIterator<Message> values) {
-		while(values.hasNext()) {
-			messages.offer(values.next());
-		}
-	}
-	
-	private void update() {
-		try {
-			this.playLoop();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		this.sortMessagesFromServer();
-		this.render();
-	}
+	//also runs continuously
 	private void playLoop() throws JsonParseException, JsonMappingException, IOException {
 		if (actionsForServer.isEmpty()) {
 			return;
@@ -171,38 +155,7 @@ public class GameClientController {
 		//print("--------------------------------------------");
 		//print("Game over!");
 	}
-	private void sortMessagesFromServer() {
-		while(!messages.isEmpty()) {
-			Message message = messages.remove();
-			if (message instanceof UseableActionMessage) {
-				actions.add((UseableActionMessage)message);
-			} else if (message instanceof CardInfoMessage) {
-				cards.add((CardInfoMessage)message);
-			} else {
-				genericMessages.add(message);
-			}
-		}
-	}
-	private void render() {
-		for (UseableActionMessage message : actions) {
-			//create a box for each usable action
-		}
-		actions.clear();
-		
-		for (CardInfoMessage message : cards) {
-			//render cards to their zones
-		}
-		cards.clear();
-		
-		List<String> listViewContent = new ArrayList<>();
-		for (Message message : genericMessages) {
-			listViewContent.add(message.toString());
-		}
-		serverMessages.getItems().setAll(listViewContent);
-		genericMessages.clear();
-	}
 	
-	/////////COMMUNICATE WITH SERVER////////////
 	private void send(Message message) {
 		try {
 			System.out.println("Sending: " + this.mapper.writeValueAsString(message));
@@ -213,12 +166,31 @@ public class GameClientController {
 		}
 	}
 	
+	//////////RENDER INFORMATION////////////
+	private void processMessageFromServer(Message message) {
+		if (message instanceof UseableActionMessage) {
+			actions.add((UseableActionMessage)message);
+		} else if (message instanceof CardInfoMessage) {
+			cards.add((CardInfoMessage)message);
+		} else {
+			serverMessages.getItems().add(message.toString());
+		}
+	}
+	
+	//need to find the right place to call this (probably multiple)
+	//such as when the player has received all available usable actions
+	//and after they send a message to the server
+	private void render() {
+		for (UseableActionMessage message : actions) {
+			//create a box for each usable action
+		}
+		actions.clear();
+		
+		for (CardInfoMessage message : cards) {
+			//render cards to their zones
+		}
+		cards.clear();
+	}
+	
 }
 
-//this is the syntax for multiple things inside a lambda
-/*
-Platform.runLater(() -> {
-	serverMessage.setText(((WaitMessage)message).getMessage());
-});
-*/
-//In cardshifter-api/com.cardshifter.server.outgoing you can see the possible messages that the server can send to the clients

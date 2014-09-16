@@ -65,7 +65,7 @@
         </Pane>
 		
 		<!-- Initial Server Message -->
-		<Label layoutX="47.0" layoutY="343.0" text="Server Message:" />
+		<Label layoutX="47.0" layoutY="343.0" text="Login Message:" />
 		<Label fx:id="serverMessage" layoutX="156.0" layoutY="343.0" text="Message" />
 	  
 		<!-- Continuing Server Messages -->
