@@ -5,9 +5,9 @@ import net.zomis.cardshifter.ecs.base.IEvent;
 
 public class ActionAllowedCheckEvent implements IEvent {
 
-	private boolean allowed = true;
 	private final Entity entity;
 	private final ECSAction action;
+	private boolean allowed = true;
 	
 	public ActionAllowedCheckEvent(Entity owner, ECSAction action) {
 		this.entity = owner;
@@ -30,6 +30,4 @@ public class ActionAllowedCheckEvent implements IEvent {
 		this.allowed = allowed;
 	}
 	
-	
-
 }

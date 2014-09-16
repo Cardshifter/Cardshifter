@@ -20,4 +20,9 @@ public class Phase {
 		return owner;
 	}
 	
+	@Override
+	public String toString() {
+		return "Phase " + name + " for " + owner;
+	}
+	
 }

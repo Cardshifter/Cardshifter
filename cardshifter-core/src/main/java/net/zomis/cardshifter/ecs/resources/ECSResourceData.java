@@ -4,9 +4,15 @@ import java.util.Objects;
 
 import net.zomis.cardshifter.ecs.base.Entity;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
+
 
 public class ECSResourceData {
 
+	private static final Logger logger = LogManager.getLogger(ECSResourceData.class);
+	
 	private int previousGet;
 	private int current;
 	private ECSResourceStrategy strategy;
@@ -33,7 +39,10 @@ public class ECSResourceData {
 		// Execute change event (for taking damage, gaining life, etc...).
 		if (this.current != value) {
 			entity.getGame().executeEvent(new ResourceValueChange(entity, resource, get(), current, value),
-					() -> this.current = value);
+					() -> {
+						this.current = value;
+						logger.info("Modified resource " + resource + " for " + entity + " to " + value);
+					});
 		}
 	}
 	
