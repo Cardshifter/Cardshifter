@@ -31,6 +31,8 @@ public class GameClientLauncherController implements Initializable {
 	
 	private void setUpButton() {
 		connectButton.setOnAction(this::buttonClick);
+		ipAddressBox.setText("127.0.0.1");
+		portBox.setText("4242");
 	}
 	
 	private String getCharactersFromTextField(TextField textField) {

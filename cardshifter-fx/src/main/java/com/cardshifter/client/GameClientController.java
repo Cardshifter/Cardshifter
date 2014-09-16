@@ -123,6 +123,7 @@ public class GameClientController {
 	//this runs continuously once it starts, gets messages from the server
 	private void listen() {
 		while (true) {
+			System.out.println("while true start");
 			try {
 				MappingIterator<Message> values = mapper.readValues(new JsonFactory().createParser(this.in), Message.class);
 				while (values.hasNextValue()) {
