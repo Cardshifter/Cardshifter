@@ -1,5 +1,7 @@
 package net.zomis.cardshifter.ecs.resources;
 
+import java.util.Objects;
+
 import net.zomis.cardshifter.ecs.base.Entity;
 
 public class ResourceRetreiver {
@@ -15,11 +17,16 @@ public class ResourceRetreiver {
 	}
 
 	public int getFor(Entity entity) {
-		return entity.getComponent(ECSResourceMap.class).getResource(resource).get();
+		return resMap(entity).getResource(resource).get();
+	}
+
+	private ECSResourceMap resMap(Entity entity) {
+		ECSResourceMap map = entity.getComponent(ECSResourceMap.class);
+		return Objects.requireNonNull(map, entity + " does not have a resource component");
 	}
 
 	public ECSResourceData resFor(Entity entity) {
-		return entity.getComponent(ECSResourceMap.class).getResource(resource);
+		return resMap(entity).getResource(resource);
 	}
 
 }
