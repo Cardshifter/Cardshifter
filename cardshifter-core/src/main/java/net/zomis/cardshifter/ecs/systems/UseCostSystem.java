@@ -11,13 +11,13 @@ import net.zomis.cardshifter.ecs.resources.ECSResource;
 import net.zomis.cardshifter.ecs.resources.ECSResourceData;
 import net.zomis.cardshifter.ecs.resources.ResourceRetreiver;
 
-public class PlayCostSystem extends SpecificActionSystem {
+public class UseCostSystem extends SpecificActionSystem {
 
 	private final ToIntFunction<Entity> cost;
 	private final UnaryOperator<Entity> whoPays;
 	private final ResourceRetreiver useResource;
 
-	public PlayCostSystem(String action, ECSResource useResource, ToIntFunction<Entity> cost, UnaryOperator<Entity> whoPays) {
+	public UseCostSystem(String action, ECSResource useResource, ToIntFunction<Entity> cost, UnaryOperator<Entity> whoPays) {
 		super(action);
 		this.useResource = ResourceRetreiver.forResource(useResource);
 		this.cost = cost;
@@ -35,6 +35,9 @@ public class PlayCostSystem extends SpecificActionSystem {
 	
 	@Override
 	protected void onPerform(ActionPerformEvent event) {
+		if (event.getEntity().isRemoved()) {
+			return;
+		}
 		ECSResourceData have = useResource.resFor(whoPays.apply(event.getEntity()));
 		int want = cost.applyAsInt(event.getEntity());
 		have.change(-want);

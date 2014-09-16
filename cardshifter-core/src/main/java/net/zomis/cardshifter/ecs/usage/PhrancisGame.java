@@ -29,7 +29,7 @@ import net.zomis.cardshifter.ecs.systems.DamageConstantWhenOutOfCardsSystem;
 import net.zomis.cardshifter.ecs.systems.DrawCardAtBeginningOfTurnSystem;
 import net.zomis.cardshifter.ecs.systems.GainResourceSystem;
 import net.zomis.cardshifter.ecs.systems.GameOverIfNoHealth;
-import net.zomis.cardshifter.ecs.systems.PlayCostSystem;
+import net.zomis.cardshifter.ecs.systems.UseCostSystem;
 import net.zomis.cardshifter.ecs.systems.PlayEntersBattlefieldSystem;
 import net.zomis.cardshifter.ecs.systems.PlayFromHandSystem;
 import net.zomis.cardshifter.ecs.systems.RestoreResourcesSystem;
@@ -109,7 +109,7 @@ public class PhrancisGame {
 		// Actions - Play
 		game.addSystem(new PlayFromHandSystem(PLAY_ACTION));
 		game.addSystem(new PlayEntersBattlefieldSystem(PLAY_ACTION));
-		game.addSystem(new PlayCostSystem(PLAY_ACTION, PhrancisResources.MANA, manaCostResource::getFor, owningPlayerPays));
+		game.addSystem(new UseCostSystem(PLAY_ACTION, PhrancisResources.MANA, manaCostResource::getFor, owningPlayerPays));
 		
 		// Actions - Scrap
 		ResourceRetreiver scrapCostResource = ResourceRetreiver.forResource(PhrancisResources.SCRAP_COST);
@@ -120,7 +120,7 @@ public class PhrancisGame {
 		game.addSystem(new AttackSickness(PhrancisResources.SICKNESS));
 		game.addSystem(new AttackTargetMinionsFirstThenPlayer());
 		game.addSystem(new AttackDamageYGO(PhrancisResources.ATTACK, PhrancisResources.HEALTH));
-		game.addSystem(new PlayCostSystem(ATTACK_ACTION, PhrancisResources.ATTACK_AVAILABLE, entity -> 1, entity -> entity));
+		game.addSystem(new UseCostSystem(ATTACK_ACTION, PhrancisResources.ATTACK_AVAILABLE, entity -> 1, entity -> entity));
 		game.addSystem(new RestoreResourcesToSystem(entity -> entity.hasComponent(CreatureTypeComponent.class) 
 				&& Cards.isOnZone(entity, BattlefieldComponent.class), PhrancisResources.ATTACK_AVAILABLE, entity -> 1));
 		game.addSystem(new RestoreResourcesToSystem(entity -> entity.hasComponent(CreatureTypeComponent.class)
@@ -128,7 +128,9 @@ public class PhrancisGame {
 		
 		// Actions - Enchant
 		game.addSystem(new PlayFromHandSystem(ENCHANT_ACTION));
-		game.addSystem(new PlayCostSystem(ENCHANT_ACTION, PhrancisResources.SCRAP, scrapCostResource::getFor, owningPlayerPays));
+		game.addSystem(new UseCostSystem(ENCHANT_ACTION, PhrancisResources.SCRAP, scrapCostResource::getFor, owningPlayerPays));
+		game.addSystem(new EnchantTargetCreatureTypes(new String[]{ "Bio" }));
+		game.addSystem(new EnchantPerform(PhrancisResources.ATTACK, PhrancisResources.HEALTH));
 		
 //		game.addSystem(new ConsumeCardSystem());
 //		game.addSystem(new LimitedPlaysPerTurnSystem(2));
