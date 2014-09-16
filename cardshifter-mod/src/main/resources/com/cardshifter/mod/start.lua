@@ -33,7 +33,7 @@ function startGame(game)
 			for strength = 1, 5 do
 				card = createCreature(deck, strength, strength, strength, 'B0T')
 				if strength == 2 then
-					card.data.strength = card.data.strength + 1
+					card.data.health = card.data.health - 1
 				end
 			end
 			card = createCreature(deck, 5, 4, 4, 'Bio')
