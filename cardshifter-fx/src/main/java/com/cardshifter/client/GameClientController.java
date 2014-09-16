@@ -128,7 +128,8 @@ public class GameClientController {
 			try {
 				MappingIterator<Message> values = mapper.readValues(new JsonFactory().createParser(this.in), Message.class);
 				if (values.hasNextValue()) {
-					this.processMessageFromServer(values.next());
+					Message message = values.next();
+					this.processMessageFromServer(message);
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -168,6 +169,9 @@ public class GameClientController {
 	
 	//////////RENDER INFORMATION////////////
 	private void processMessageFromServer(Message message) {
+		serverMessages.getItems().add(message.toString());
+		
+		/*
 		if (message instanceof UseableActionMessage) {
 			actions.add((UseableActionMessage)message);
 		} else if (message instanceof CardInfoMessage) {
@@ -175,6 +179,7 @@ public class GameClientController {
 		} else {
 			serverMessages.getItems().add(message.toString());
 		}
+		*/
 	}
 	
 	//need to find the right place to call this (probably multiple)
