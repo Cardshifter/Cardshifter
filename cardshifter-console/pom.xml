@@ -3,9 +3,9 @@
 	<modelVersion>4.0.0</modelVersion>
 	
 	<parent>
-		<groupId>com.cardshifter</groupId>
+		<groupId>net.zomis</groupId>
 		<artifactId>cardshifter</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<version>0.1</version>
 	</parent>
 	
 	<artifactId>cardshifter-console</artifactId>
@@ -79,14 +79,14 @@
 	
 	<dependencies>
 		<dependency>
-			<groupId>com.cardshifter</groupId>
+			<groupId>net.zomis</groupId>
 			<artifactId>cardshifter-core</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>0.1</version>
 		</dependency>
 		<dependency>
-			<groupId>com.cardshifter</groupId>
+			<groupId>net.zomis</groupId>
 			<artifactId>cardshifter-mod</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.beust</groupId>

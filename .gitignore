@@ -5,6 +5,7 @@
 dependency-reduced-pom.xml
 .classpath
 .project
+/target/
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
@@ -20,4 +21,3 @@ hs_err_pid*
 ### Ignore Netbeans workspace
 nb-configuration.xml
 nbactions.xml
-/target/

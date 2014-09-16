@@ -144,12 +144,12 @@ public class NetworkConsoleController {
 		print("Game over!");
 	}
 
-	@Deprecated
-	private <T> T receive(Class<T> class1) throws JsonParseException, JsonMappingException, IOException {
-		T mapp = mapper.readValue(in, class1);
-		System.out.println("Received: " + mapper.writeValueAsString(mapp));
-		return mapp;
-	}
+//	@Deprecated
+//	private <T> T receive(Class<T> class1) throws JsonParseException, JsonMappingException, IOException {
+//		T mapp = mapper.readValue(in, class1);
+//		System.out.println("Received: " + mapper.writeValueAsString(mapp));
+//		return mapp;
+//	}
 
 	private void send(Message message) {
 		try {
