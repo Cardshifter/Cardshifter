@@ -10,6 +10,7 @@ import net.zomis.cardshifter.ecs.base.ECSGame;
 import net.zomis.cardshifter.ecs.base.Entity;
 import net.zomis.cardshifter.ecs.cards.BattlefieldComponent;
 import net.zomis.cardshifter.ecs.cards.CardComponent;
+import net.zomis.cardshifter.ecs.cards.Cards;
 import net.zomis.cardshifter.ecs.cards.DeckComponent;
 import net.zomis.cardshifter.ecs.cards.DrawStartCards;
 import net.zomis.cardshifter.ecs.cards.HandComponent;
@@ -21,7 +22,9 @@ import net.zomis.cardshifter.ecs.phase.PhaseController;
 import net.zomis.cardshifter.ecs.resources.ECSResource;
 import net.zomis.cardshifter.ecs.resources.ECSResourceMap;
 import net.zomis.cardshifter.ecs.resources.ResourceRetreiver;
+import net.zomis.cardshifter.ecs.resources.RestoreResourcesToSystem;
 import net.zomis.cardshifter.ecs.systems.AttackOnBattlefield;
+import net.zomis.cardshifter.ecs.systems.AttackSickness;
 import net.zomis.cardshifter.ecs.systems.DamageConstantWhenOutOfCardsSystem;
 import net.zomis.cardshifter.ecs.systems.DrawCardAtBeginningOfTurnSystem;
 import net.zomis.cardshifter.ecs.systems.GainResourceSystem;
@@ -77,7 +80,7 @@ public class PhrancisGame {
 				for (int strength = 1; strength <= BOT_CARDS; strength++) {
 					Entity cardEntity = createCreature(deck, strength, strength, strength, "B0T");
 					if (strength == 2) {
-						cardEntity.getComponent(ECSResourceMap.class).getResource(PhrancisResources.ATTACK).change(1);
+						cardEntity.getComponent(ECSResourceMap.class).getResource(PhrancisResources.HEALTH).change(-1);
 					}
 				}
 				createCreature(deck, 5, 4, 4, "Bio");
@@ -114,9 +117,14 @@ public class PhrancisGame {
 		
 		// Actions - Attack
 		game.addSystem(new AttackOnBattlefield());
+		game.addSystem(new AttackSickness(PhrancisResources.SICKNESS));
 		game.addSystem(new AttackTargetMinionsFirstThenPlayer());
 		game.addSystem(new AttackDamageYGO(PhrancisResources.ATTACK, PhrancisResources.HEALTH));
 		game.addSystem(new PlayCostSystem(ATTACK_ACTION, PhrancisResources.ATTACK_AVAILABLE, entity -> 1, entity -> entity));
+		game.addSystem(new RestoreResourcesToSystem(entity -> entity.hasComponent(CreatureTypeComponent.class) 
+				&& Cards.isOnZone(entity, BattlefieldComponent.class), PhrancisResources.ATTACK_AVAILABLE, entity -> 1));
+		game.addSystem(new RestoreResourcesToSystem(entity -> entity.hasComponent(CreatureTypeComponent.class)
+				&& Cards.isOnZone(entity, BattlefieldComponent.class), PhrancisResources.SICKNESS, entity -> 0));
 		
 		// Actions - Enchant
 		game.addSystem(new PlayFromHandSystem(ENCHANT_ACTION));

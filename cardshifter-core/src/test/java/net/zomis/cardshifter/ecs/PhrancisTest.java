@@ -20,15 +20,22 @@ import net.zomis.cardshifter.ecs.cards.DeckComponent;
 import net.zomis.cardshifter.ecs.cards.HandComponent;
 import net.zomis.cardshifter.ecs.components.CreatureTypeComponent;
 import net.zomis.cardshifter.ecs.phase.PhaseController;
+import net.zomis.cardshifter.ecs.resources.ECSResource;
+import net.zomis.cardshifter.ecs.resources.ECSResourceData;
 import net.zomis.cardshifter.ecs.resources.ResourceRetreiver;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame.PhrancisResources;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import org.junit.Before;
 import org.junit.Test;
 
 public class PhrancisTest {
 
+	private static final Logger logger = LogManager.getLogger(PhrancisTest.class);
+	
 	private ECSGame game;
 	private PhaseController phase;
 	private final ResourceRetreiver mana = ResourceRetreiver.forResource(PhrancisResources.MANA);
@@ -45,6 +52,7 @@ public class PhrancisTest {
 			
 	@Before
 	public void before() {
+		PropertyConfigurator.configure(PhrancisTest.class.getResourceAsStream("log4j.properties"));
 		game = PhrancisGame.createGame();
 		game.startGame();
 		phase = ComponentRetriever.singleton(game, PhaseController.class);
@@ -67,6 +75,9 @@ public class PhrancisTest {
 		Entity attacker = cardToHand(isCreature.and(manaCost(1)));
 		useAction(attacker, PhrancisGame.PLAY_ACTION);
 		assertEquals(1, phase.getCurrentEntity().get(field).size());
+		assertResource(attacker, PhrancisResources.SICKNESS, 1);
+		assertResource(attacker, PhrancisResources.ATTACK_AVAILABLE, 1);
+		useFail(attacker, PhrancisGame.ATTACK_ACTION);
 		
 		nextPhase();
 		Entity opponent = phase.getCurrentEntity();
@@ -75,9 +86,36 @@ public class PhrancisTest {
 		List<Entity> possibleTargets = findPossibleTargets(attacker, PhrancisGame.ATTACK_ACTION);
 		assertEquals(1, possibleTargets.size());
 		assertEquals(1, attackPoints.getFor(attacker));
+		assertResource(attacker, PhrancisResources.SICKNESS, 0);
+		assertResource(attacker, PhrancisResources.ATTACK_AVAILABLE, 1);
 		useActionWithTarget(attacker, PhrancisGame.ATTACK_ACTION, opponent);
 		assertEquals(9, health.getFor(opponent));
 		assertEquals(0, attackPoints.getFor(attacker));
+		
+		nextPhase();
+		Entity defender = cardToHand(isCreature.and(manaCost(3)));
+		useAction(defender, PhrancisGame.PLAY_ACTION);
+		assertEquals(3, health.getFor(defender));
+		
+		nextPhase();
+		assertResource(attacker, PhrancisResources.SICKNESS, 0);
+		assertResource(attacker, PhrancisResources.ATTACK_AVAILABLE, 1);
+		useActionWithFailedTarget(attacker, PhrancisGame.ATTACK_ACTION, opponent);
+	}
+
+	private void assertResource(Entity entity, ECSResource resource, int expected) {
+		ResourceRetreiver retriever = ResourceRetreiver.forResource(resource);
+		ECSResourceData res = retriever.resFor(entity);
+		assertEquals("Unexpected resource " + resource + " for " + entity, expected, res.get());
+	}
+
+	private void useActionWithFailedTarget(Entity source, String actionName, Entity target) {
+		ECSAction action = getAction(source, actionName);
+		assertTrue(action.isAllowed());
+		assertEquals(1, action.getTargetSets().size());
+		TargetSet targets = action.getTargetSets().get(0);
+		assertFalse("Did not expect target to be allowed", targets.addTarget(target));
+		assertFalse("Did not expect action to be performed", action.perform());
 	}
 
 	private List<Entity> findPossibleTargets(Entity entity, String actionName) {
@@ -98,7 +136,8 @@ public class PhrancisTest {
 	}
 
 	private void useFail(Entity entity, String actionName) {
-		assertFalse(getAction(entity, actionName).isAllowed());
+		ECSAction action = getAction(entity, actionName);
+		assertFalse("Did not expect action " + actionName + " to be allowed on " + entity, action.isAllowed());
 	}
 
 	private Entity findCardInDeck(Predicate<Entity> condition) {
@@ -127,6 +166,7 @@ public class PhrancisTest {
 
 	private void nextPhase() {
 		useAction(phase.getCurrentEntity(), PhrancisGame.END_TURN_ACTION);
+		logger.info("Next phase, current entity is now " + phase.getCurrentEntity() + " phase is " + phase.getCurrentPhase());
 	}
 
 	private void useAction(Entity entity, String actionName) {
