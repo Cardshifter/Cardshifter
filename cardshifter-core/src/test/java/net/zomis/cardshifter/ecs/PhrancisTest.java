@@ -3,7 +3,6 @@ package net.zomis.cardshifter.ecs;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -32,6 +31,8 @@ public class PhrancisTest {
 	private PhaseController phase;
 	private final ResourceRetreiver mana = ResourceRetreiver.forResource(PhrancisResources.MANA);
 	private final ResourceRetreiver manaCost = ResourceRetreiver.forResource(PhrancisResources.MANA_COST);
+	private final ResourceRetreiver health = ResourceRetreiver.forResource(PhrancisResources.HEALTH);
+	
 	private final ComponentRetriever<ActionComponent> actions = ComponentRetriever.retreiverFor(ActionComponent.class);
 	private final ComponentRetriever<DeckComponent> deck = ComponentRetriever.retreiverFor(DeckComponent.class);
 	private final ComponentRetriever<HandComponent> hand = ComponentRetriever.retreiverFor(HandComponent.class);
@@ -68,7 +69,8 @@ public class PhrancisTest {
 		Entity opponent = phase.getCurrentEntity();
 		nextPhase();
 		
-		useActionWithTarget(attacker, PhrancisGame.PLAY_ACTION, opponent);
+		useActionWithTarget(attacker, PhrancisGame.ATTACK_ACTION, opponent);
+//		assertEquals(9, health.getFor(opponent));
 	}
 
 	private void useActionWithTarget(Entity entity, String actionName, Entity opponent) {
