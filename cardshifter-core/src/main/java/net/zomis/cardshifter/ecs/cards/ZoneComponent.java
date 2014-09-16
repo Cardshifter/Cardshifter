@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import net.zomis.cardshifter.ecs.base.Component;
 import net.zomis.cardshifter.ecs.base.Entity;
@@ -86,4 +87,8 @@ public class ZoneComponent extends Component {
 				+ ", known=" + known + ", publicKnown=" + publicKnown + "]";
 	}
 	
+	public Stream<Entity> stream() {
+		return cards.stream();
+	}
+
 }

@@ -54,6 +54,7 @@ public class ECSAction {
 	}
 	
 	public ECSAction addTargetSet(int min, int max) {
+		// TODO: Consider using an ECSAction builder and put `addTargetSet` there
 		this.targetSets.add(new TargetSet(min, max));
 		return this;
 	}
