@@ -167,6 +167,7 @@ public class GameClientController {
 	
 	//////////RENDER INFORMATION////////////
 	private void processMessageFromServer(Message message) {
+		messages.offer(message);
 		serverMessages.getItems().add(message.toString());
 		
 		/*
@@ -183,6 +184,7 @@ public class GameClientController {
 	//need to find the right place to call this (probably multiple)
 	//such as when the player has received all available usable actions
 	//and after they send a message to the server
+	/*
 	private void render() {
 		for (UseableActionMessage message : actions) {
 			//create a box for each usable action
@@ -194,6 +196,7 @@ public class GameClientController {
 		}
 		cards.clear();
 	}
+	*/
 	
 }
 
