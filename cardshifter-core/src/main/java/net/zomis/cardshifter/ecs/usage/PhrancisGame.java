@@ -4,6 +4,8 @@ import java.util.function.UnaryOperator;
 
 import net.zomis.cardshifter.ecs.actions.ActionComponent;
 import net.zomis.cardshifter.ecs.actions.ECSAction;
+import net.zomis.cardshifter.ecs.actions.attack.AttackDamageYGO;
+import net.zomis.cardshifter.ecs.actions.attack.AttackTargetMinionsFirstThenPlayer;
 import net.zomis.cardshifter.ecs.base.ECSGame;
 import net.zomis.cardshifter.ecs.base.Entity;
 import net.zomis.cardshifter.ecs.cards.BattlefieldComponent;
@@ -112,6 +114,9 @@ public class PhrancisGame {
 		
 		// Actions - Attack
 		game.addSystem(new AttackOnBattlefield());
+		game.addSystem(new AttackTargetMinionsFirstThenPlayer());
+		game.addSystem(new AttackDamageYGO(PhrancisResources.ATTACK, PhrancisResources.HEALTH));
+		game.addSystem(new PlayCostSystem(ATTACK_ACTION, PhrancisResources.ATTACK_AVAILABLE, entity -> 1, entity -> entity));
 		
 		// Actions - Enchant
 		game.addSystem(new PlayFromHandSystem(ENCHANT_ACTION));

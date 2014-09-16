@@ -4,11 +4,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
 import net.zomis.cardshifter.ecs.actions.ActionComponent;
 import net.zomis.cardshifter.ecs.actions.ECSAction;
+import net.zomis.cardshifter.ecs.actions.TargetSet;
 import net.zomis.cardshifter.ecs.base.ComponentRetriever;
 import net.zomis.cardshifter.ecs.base.ECSGame;
 import net.zomis.cardshifter.ecs.base.Entity;
@@ -32,6 +34,7 @@ public class PhrancisTest {
 	private final ResourceRetreiver mana = ResourceRetreiver.forResource(PhrancisResources.MANA);
 	private final ResourceRetreiver manaCost = ResourceRetreiver.forResource(PhrancisResources.MANA_COST);
 	private final ResourceRetreiver health = ResourceRetreiver.forResource(PhrancisResources.HEALTH);
+	private final ResourceRetreiver attackPoints = ResourceRetreiver.forResource(PhrancisResources.ATTACK_AVAILABLE);
 	
 	private final ComponentRetriever<ActionComponent> actions = ComponentRetriever.retreiverFor(ActionComponent.class);
 	private final ComponentRetriever<DeckComponent> deck = ComponentRetriever.retreiverFor(DeckComponent.class);
@@ -69,15 +72,29 @@ public class PhrancisTest {
 		Entity opponent = phase.getCurrentEntity();
 		nextPhase();
 		
+		List<Entity> possibleTargets = findPossibleTargets(attacker, PhrancisGame.ATTACK_ACTION);
+		assertEquals(1, possibleTargets.size());
+		assertEquals(1, attackPoints.getFor(attacker));
 		useActionWithTarget(attacker, PhrancisGame.ATTACK_ACTION, opponent);
-//		assertEquals(9, health.getFor(opponent));
+		assertEquals(9, health.getFor(opponent));
+		assertEquals(0, attackPoints.getFor(attacker));
 	}
 
-	private void useActionWithTarget(Entity entity, String actionName, Entity opponent) {
+	private List<Entity> findPossibleTargets(Entity entity, String actionName) {
 		ECSAction action = getAction(entity, actionName);
 		assertTrue(action.isAllowed());
-	//	fail("To be implemented");
-//		assertTrue(action.getTargetSets());
+		assertEquals(1, action.getTargetSets().size());
+		TargetSet targets = action.getTargetSets().get(0);
+		return targets.findPossibleTargets();
+	}
+
+	private void useActionWithTarget(Entity entity, String actionName, Entity target) {
+		ECSAction action = getAction(entity, actionName);
+		assertTrue(action.isAllowed());
+		assertEquals(1, action.getTargetSets().size());
+		TargetSet targets = action.getTargetSets().get(0);
+		assertTrue(targets.addTarget(target));
+		action.perform();
 	}
 
 	private void useFail(Entity entity, String actionName) {

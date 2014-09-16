@@ -35,10 +35,14 @@ public class ECSAction {
 		return new ECSAction(this.owner, this.name, this.allowed, this.perform);
 	}
 
-	public void perform() {
-		if (this.isAllowed()) {
-			this.owner.getGame().executeEvent(new ActionPerformEvent(owner, this), () -> this.perform.accept(this));
+	public boolean perform() {
+		if (!this.isAllowed()) {
+			return false;
 		}
+		this.targetSets.stream().allMatch(targets -> targets.hasEnoughTargets());
+		
+		this.owner.getGame().executeEvent(new ActionPerformEvent(owner, this), () -> this.perform.accept(this));
+		return true;
 	}
 
 	public boolean isAllowed() {
@@ -55,7 +59,7 @@ public class ECSAction {
 	
 	public ECSAction addTargetSet(int min, int max) {
 		// TODO: Consider using an ECSAction builder and put `addTargetSet` there
-		this.targetSets.add(new TargetSet(min, max));
+		this.targetSets.add(new TargetSet(this, min, max));
 		return this;
 	}
 	

@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import net.zomis.cardshifter.ecs.events.StartGameEvent;
@@ -87,8 +88,12 @@ public class ECSGame {
 	void removeEntity(Entity entity) {
 		entities.remove(entity.getId());
 	}
+
+	public List<Entity> findEntities(Predicate<Entity> condition) {
+		return entities.values().stream().filter(condition).collect(Collectors.toList());
+	}
 	
-	// TODO: Player component, Zone component for a zone, MyZoneSetupComponent? Hand+Deck+Battlefield-Component
+	// TODO: Player component, Zone component for a zone
 	// TODO: Actions ++ copy actions. List<Target(s)> ("deal 1 damage to up to three targets and then give up to three targets +1/+1 until end of turn"), Set<ActionOptions>. choose one, choose two
 	// TODO: Network inform when a component on an entity is changed (DataChangedEvent? Aspect-oriented? onChange method? ResMap?)
 	// TODO: Implement the standard Phrancis game

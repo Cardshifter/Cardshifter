@@ -1,5 +1,6 @@
 package net.zomis.cardshifter.ecs.main;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
@@ -67,7 +68,7 @@ public class ConsoleControllerECS {
 			print("Action " + action);
 			if (action.isAllowed()) {
 				for (TargetSet actionOption : action.getTargetSets()) {
-					List<Entity> targets = actionOption.findTargets();
+					List<Entity> targets = new ArrayList<>(actionOption.findPossibleTargets());
 					if (targets.isEmpty()) {
 						print("No available targets for action");
 						return;
