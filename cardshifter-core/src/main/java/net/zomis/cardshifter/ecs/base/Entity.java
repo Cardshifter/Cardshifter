@@ -27,8 +27,12 @@ public class Entity {
 		return components.containsKey(clazz);
 	}
 	
-	public <T> T getComponent(Class<T> clazz) {
+	public <T extends Component> T getComponent(Class<T> clazz) {
 		return clazz.cast(components.get(clazz));
+	}
+	
+	public <T extends Component> T get(ComponentRetriever<T> retriever) {
+		return retriever.get(this);
 	}
 	
 	public int getId() {
