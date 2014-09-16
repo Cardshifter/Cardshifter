@@ -1,14 +1,14 @@
 package com.cardshifter.client;
 
 import javafx.application.Application;
-import static javafx.application.Application.launch;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-//This class just loads the FXML document which initializes its DocumentController
-
+/**
+ * This class just loads the FXML document which initializes its DocumentController
+ */
 public class GameClient extends Application {
 	
 	@Override

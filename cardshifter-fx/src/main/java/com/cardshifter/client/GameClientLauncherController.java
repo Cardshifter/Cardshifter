@@ -17,24 +17,19 @@ import javafx.stage.Stage;
 //This class just loads the FXML document which initializes its DocumentController
 
 public class GameClientLauncherController implements Initializable {
+	
 	@FXML
 	private TextField ipAddressBox;
+	
 	@FXML
 	private TextField portBox;
+	
 	@FXML
 	private Button connectButton;
+	
 	@FXML
 	private Label errorMessage;
 
-	public GameClientLauncherController() throws Exception {
-	}
-	
-	private void setUpButton() {
-		connectButton.setOnAction(this::buttonClick);
-		ipAddressBox.setText("127.0.0.1");
-		portBox.setText("4242");
-	}
-	
 	private String getCharactersFromTextField(TextField textField) {
 		return textField.getCharacters().toString();
 	}
@@ -58,7 +53,6 @@ public class GameClientLauncherController implements Initializable {
 		}
 	}
 	
-	//Does not currently close the window
 	private void closeWithSuccess(ActionEvent event) {
 		Node source = (Node)event.getSource();
 		Stage stage = (Stage)source.getScene().getWindow();
@@ -88,15 +82,12 @@ public class GameClientLauncherController implements Initializable {
         }
 	}
 	
-
-	
-	 // @param args the command line arguments
-	
-	//BOILERPLATE
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
 		// TODO
-		this.setUpButton();
+		connectButton.setOnAction(this::buttonClick);
+		ipAddressBox.setText("127.0.0.1");
+		portBox.setText("4242");
 	}		
 	
 }

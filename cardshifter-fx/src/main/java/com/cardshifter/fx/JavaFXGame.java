@@ -6,14 +6,14 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-//This class just loads the FXML document which initializes its DocumentController
-
+/**
+ * This class just loads the FXML document which initializes its DocumentController
+ */
 public class JavaFXGame extends Application {
 	
 	@Override
 	public void start(Stage stage) throws Exception {	  
-		
-		//stage.setTitle("title");
+		stage.setTitle("Cardshifter");
 		
 		Parent root = FXMLLoader.load(getClass().getResource("FXMLDocument.fxml"));
 		
@@ -24,8 +24,10 @@ public class JavaFXGame extends Application {
 		stage.show();
 	}
 	
-	 // @param args the command line arguments
-
+	/**
+	 * Main method
+	 * @param args the command line arguments
+	 */
 	public static void main(String[] args) {
 		launch(args);
 	}

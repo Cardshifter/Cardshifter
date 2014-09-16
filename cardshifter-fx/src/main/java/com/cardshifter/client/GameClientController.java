@@ -37,10 +37,12 @@ public class GameClientController {
 	
 	@FXML
 	Label serverMessage;
+	
 	@FXML
 	AnchorPane rootPane;
+	
 	@FXML
-	ListView serverMessages;
+	ListView<String> serverMessages;
 	
 	private Socket socket;
 	private InputStream in;
@@ -58,13 +60,14 @@ public class GameClientController {
 	private int port;
 	
 	/////////INITIALIZATION///////////////
-	//this is passed into the object after it is created by the FXML document
 	public void acceptIPAndPort(String ipAddress, int port) {
+		// this is passed into the object after it is created by the FXML document
 		this.ipAddress = ipAddress;
 		this.port = port;
 	}
-	//this is called on the object from the Game launcher before the scene is displayed
+	
 	public void connectToGame() {
+		// this is called on the object from the Game launcher before the scene is displayed
 		try {
 			this.socket = new Socket(this.ipAddress, this.port);
 			this.out = socket.getOutputStream();
@@ -82,8 +85,9 @@ public class GameClientController {
 			e.printStackTrace();
 		}
 	}
-	//this method only runs once at the start
+	
 	public void play() {
+		// this method only runs once at the start
 		String name = "Player" + new Random().nextInt(100);
 		this.send(new LoginMessage(name));
 		
@@ -134,7 +138,7 @@ public class GameClientController {
 			}
 		}
 	}
-	//also runs continuously
+	
 	private void playLoop() throws JsonParseException, JsonMappingException, IOException {
 		if (actionsForServer.isEmpty()) {
 			return;
@@ -151,8 +155,6 @@ public class GameClientController {
 				System.out.println("Not a valid action");
 			}
 		}
-		//print("--------------------------------------------");
-		//print("Game over!");
 	}
 	
 	private void send(Message message) {
