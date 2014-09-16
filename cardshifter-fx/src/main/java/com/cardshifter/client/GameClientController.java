@@ -126,8 +126,7 @@ public class GameClientController {
 			try {
 				MappingIterator<Message> values = mapper.readValues(new JsonFactory().createParser(this.in), Message.class);
 				while (values.hasNextValue()) {
-					Message message = values.next();
-					this.processMessageFromServer(message);
+					this.processMessageFromServer(values.next());
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
