@@ -5,12 +5,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class Entity {
+public final class Entity {
 
 	private Map<Class<? extends Component>, Component> components = new HashMap<>();
 	
 	private final int id;
 	private final ECSGame game;
+
+	private boolean removed;
 	
 	public Entity(ECSGame game, int id) {
 		this.game = game;
@@ -70,6 +72,16 @@ public class Entity {
 	public void destroy() {
 		components.clear();
 		game.removeEntity(this);
+		removed = true;
+	}
+
+	/**
+	 * Checks if this entity is removed
+	 * 
+	 * @return True if entity has been removed from the game, false if it still exists
+	 */
+	public boolean isRemoved() {
+		return removed;
 	}
 	
 }
