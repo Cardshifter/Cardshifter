@@ -107,15 +107,13 @@ public class GameClientController {
 			if (message instanceof WaitMessage) {	
 				
 				//display the wait message on the screen
-				Platform.runLater(() -> serverMessage.setText(((WaitMessage)message).getMessage()));
-
-				NewGameMessage game = (NewGameMessage) messages.take();
-				this.playLoop();
+				String displayMessage = ((WaitMessage)message).getMessage();
+				Platform.runLater(() -> serverMessage.setText(displayMessage));
+				
+				message = messages.take();
 			}
-			else {
-				this.playLoop();
-			}
-			this.gameId = ((NewGameMessage)message).getGameId();
+			this.gameId = ((NewGameMessage) message).getGameId();
+			this.playLoop();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -127,7 +125,7 @@ public class GameClientController {
 		while (true) {
 			try {
 				MappingIterator<Message> values = mapper.readValues(new JsonFactory().createParser(this.in), Message.class);
-				if (values.hasNextValue()) {
+				while (values.hasNextValue()) {
 					Message message = values.next();
 					this.processMessageFromServer(message);
 				}
