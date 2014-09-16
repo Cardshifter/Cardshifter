@@ -2,8 +2,6 @@ package net.zomis.cardshifter.ecs.actions.attack;
 
 import net.zomis.cardshifter.ecs.actions.TargetableCheckEvent;
 import net.zomis.cardshifter.ecs.base.ComponentRetriever;
-import net.zomis.cardshifter.ecs.base.ECSGame;
-import net.zomis.cardshifter.ecs.base.ECSSystem;
 import net.zomis.cardshifter.ecs.base.Entity;
 import net.zomis.cardshifter.ecs.cards.BattlefieldComponent;
 import net.zomis.cardshifter.ecs.cards.CardComponent;
@@ -11,14 +9,13 @@ import net.zomis.cardshifter.ecs.cards.Cards;
 import net.zomis.cardshifter.ecs.components.PlayerComponent;
 import net.zomis.cardshifter.ecs.phase.PhaseController;
 
-public class AttackTargetMinionsFirstThenPlayer implements ECSSystem {
+public class AttackTargetMinionsFirstThenPlayer extends SpecificActionTargetSystem {
 
-	@Override
-	public void startGame(ECSGame game) {
-		game.getEvents().registerHandlerAfter(TargetableCheckEvent.class, this::targetableCheck);
+	public AttackTargetMinionsFirstThenPlayer() {
+		super("Attack");
 	}
 	
-	private void targetableCheck(TargetableCheckEvent event) {
+	protected void checkTargetable(TargetableCheckEvent event) {
 		Entity target = event.getTarget();
 		if (target.hasComponent(CardComponent.class)) {
 			if (Cards.isOwnedByCurrentPlayer(target)) {
