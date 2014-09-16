@@ -26,20 +26,21 @@ function attack.perform(card, target, action)
 		end
 		return true
 	end
-	target.data.health = target.data.health - card.data.strength
-	card.data.health = card.data.health - target.data.strength
 	
-	if target.data.health <= 0 then
+	if target.data.health <= card.data.strength then
 		local opp = target:getOwner()
 		-- All units have trample
 		-- Target health is negative so add that to opponent life
-		opp.data.life = opp.data.life + target.data.health
+		local additionalDamage = card.data.strength - target.data.health
+		
+		opp.data.life = opp.data.life - additionalDamage
 		if opp.data.life <= 0 then
 			card:getGame():gameOver()
 		end
 		target:destroy()
 	end
-	if card.data.health <= 0 then
+	
+	if card.data.health <= target.data.strength then
 		card:destroy()
 	end
 
