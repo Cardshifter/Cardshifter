@@ -35,13 +35,14 @@ public class PhrancisGame {
 		HEALTH, MANA, MANA_MAX, SCRAP, ATTACK, MANA_COST, SCRAP_COST, ENCHANTMENTS_ACTIVE, SICKNESS, ATTACK_AVAILABLE;
 	}
 
-	private static final String PLAY_ACTION = "Play";
-	private static final String ENCHANT_ACTION = "Enchant";
-	private static final String ATTACK_ACTION = "Attack";
-	private static final String SCRAP_ACTION = "Scrap";
+	public static final String PLAY_ACTION = "Play";
+	public static final String ENCHANT_ACTION = "Enchant";
+	public static final String ATTACK_ACTION = "Attack";
+	public static final String SCRAP_ACTION = "Scrap";
+	public static final String END_TURN_ACTION = "End Turn";
 	
-	private static final int CARDS_OF_EACH_TYPE = 1;
-	private static final int BOT_CARDS = 3;
+	private static final int CARDS_OF_EACH_TYPE = 3;
+	private static final int BOT_CARDS = 5;
 	
 	public static ECSGame createGame() {
 		ECSGame game = new ECSGame();
@@ -57,7 +58,7 @@ public class PhrancisGame {
 			
 			ActionComponent actions = new ActionComponent();
 			player.addComponent(actions);
-			actions.addAction(new ECSAction(player, "End Turn", act -> phaseController.getCurrentPhase() == playerPhase, act -> phaseController.nextPhase()));
+			actions.addAction(new ECSAction(player, END_TURN_ACTION, act -> phaseController.getCurrentPhase() == playerPhase, act -> phaseController.nextPhase()));
 			
 			ECSResourceMap.createFor(player)
 				.set(PhrancisResources.HEALTH, 10)
@@ -78,13 +79,13 @@ public class PhrancisGame {
 					}
 				}
 				createCreature(deck, 5, 4, 4, "Bio");
-//				createCreature(deck, 5, 5, 3, "Bio");
-//				createCreature(deck, 5, 3, 5, "Bio");
+				createCreature(deck, 5, 5, 3, "Bio");
+				createCreature(deck, 5, 3, 5, "Bio");
 				
 				createEnchantment(deck, 1, 0, 1);
-//				createEnchantment(deck, 0, 1, 1);
-//				createEnchantment(deck, 3, 0, 3);
-//				createEnchantment(deck, 0, 3, 3);
+				createEnchantment(deck, 0, 1, 1);
+				createEnchantment(deck, 3, 0, 3);
+				createEnchantment(deck, 0, 3, 3);
 				createEnchantment(deck, 2, 2, 5);
 
 			}
