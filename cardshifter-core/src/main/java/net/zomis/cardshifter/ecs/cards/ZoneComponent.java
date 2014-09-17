@@ -1,8 +1,10 @@
 package net.zomis.cardshifter.ecs.cards;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
@@ -89,6 +91,10 @@ public class ZoneComponent extends Component {
 	
 	public Stream<Entity> stream() {
 		return cards.stream();
+	}
+
+	public List<Entity> getCards() {
+		return new ArrayList<>(cards);
 	}
 
 }
