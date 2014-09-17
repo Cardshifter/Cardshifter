@@ -56,7 +56,7 @@ public class PhrancisGame {
 		game.newEntity().addComponent(phaseController);
 		
 		for (int i = 1; i <= 2; i++) {
-			PlayerComponent playerComponent = new PlayerComponent("Player" + i);
+			PlayerComponent playerComponent = new PlayerComponent(i - 1, "Player" + i);
 			Entity player = game.newEntity().addComponent(playerComponent);
 			Phase playerPhase = new Phase(player, "Main");
 			phaseController.addPhase(playerPhase);
