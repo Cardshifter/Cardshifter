@@ -9,6 +9,7 @@ import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 import com.cardshifter.core.Events;
 import com.cardshifter.core.Game;
 
+@Deprecated
 public abstract class UsableAction implements Action {
 	private final String name;
 	private final LuaFunction isAllowedFunction;

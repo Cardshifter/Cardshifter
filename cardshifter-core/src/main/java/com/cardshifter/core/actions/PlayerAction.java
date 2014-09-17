@@ -6,6 +6,7 @@ import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 import com.cardshifter.core.Game;
 import com.cardshifter.core.Player;
 
+@Deprecated
 public class PlayerAction extends UsableAction {
 	private final Player player;
 

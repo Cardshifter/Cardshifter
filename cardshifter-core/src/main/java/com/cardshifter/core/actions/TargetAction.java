@@ -13,6 +13,7 @@ import com.cardshifter.core.Events;
 import com.cardshifter.core.Game;
 import com.cardshifter.core.Targetable;
 
+@Deprecated
 public class TargetAction extends UsableAction {
 	private final Card card;
 	private final LuaFunction isTargetAllowedFunction;
