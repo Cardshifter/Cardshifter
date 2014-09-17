@@ -1,5 +1,7 @@
 package com.cardshifter.fx;
 
+import org.apache.log4j.PropertyConfigurator;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,7 +14,8 @@ import javafx.stage.Stage;
 public class JavaFXGame extends Application {
 	
 	@Override
-	public void start(Stage stage) throws Exception {	  
+	public void start(Stage stage) throws Exception {
+		PropertyConfigurator.configure(JavaFXGame.class.getResourceAsStream("log4j.properties"));
 		stage.setTitle("Cardshifter");
 		
 		Parent root = FXMLLoader.load(getClass().getResource("FXMLDocument.fxml"));

@@ -11,12 +11,12 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-
-import com.cardshifter.core.Card;
-import com.cardshifter.core.LuaTools;
-import com.cardshifter.core.Targetable;
-import com.cardshifter.core.actions.TargetAction;
-import com.cardshifter.core.actions.UsableAction;
+import net.zomis.cardshifter.ecs.actions.ActionComponent;
+import net.zomis.cardshifter.ecs.actions.ECSAction;
+import net.zomis.cardshifter.ecs.actions.TargetSet;
+import net.zomis.cardshifter.ecs.base.Entity;
+import net.zomis.cardshifter.ecs.cards.CardComponent;
+import net.zomis.cardshifter.ecs.resources.Resources;
 
 /* 
    The purpose of this class is to take in certain values from the 
@@ -29,12 +29,12 @@ public class CardNode {
 	private final double sizeX;
 	private final double sizeY;
 	private final String name;
-	private final Card card;
+	private final Entity card;
 	private final FXMLGameController controller;
 	
 	private final Group cardGroup;
 	
-	public CardNode(Pane pane, int numCards, String name, Card card, FXMLGameController controller) {
+	public CardNode(Pane pane, int numCards, String name, Entity card, FXMLGameController controller) {
 		//calculate card width based on pane size
 		double paneWidth = pane.getWidth();
 		//reduce card size if there are over a certain amount of them
@@ -97,7 +97,7 @@ public class CardNode {
 		//This gets the text from Lua and makes labels for each property
 		int stringIndex = 0;
 		List<String> stringList = new ArrayList<>();
-		LuaTools.processLuaTable(card.data.checktable(), (k, v) -> stringList.add(k + ": " + v));
+		Resources.processResources(card, data -> stringList.add(data.getResource() + ": " + data.get()));
 		for (String string : stringList) {			 
 			Label cardStringLabel = new Label();
 			cardStringLabel.setText(string);
@@ -121,29 +121,29 @@ public class CardNode {
 	
 	private void buttonClick(ActionEvent event) {
 		System.out.println("Trying to Perform Action");
-		List<UsableAction> cardActions = card.getActions().values().stream().filter(UsableAction::isAllowed).collect(Collectors.toList());
+		List<ECSAction> cardActions = getPossibleActions();
 		
 		//If there is more than one action, create the choice box
 		if(cardActions.size() > 1) {
 			this.controller.buildChoiceBoxPane(card, cardActions);
 		} else if (cardActions.size() == 1) {
-			for (UsableAction action : cardActions) {
+			for (ECSAction action : cardActions) {
 				if (action.isAllowed()) {
-					if (action instanceof TargetAction) {
-						TargetAction targetAction = (TargetAction) action;
-						List<Targetable> targets = targetAction.findTargets();
+					if (!action.getTargetSets().isEmpty()) {
+						TargetSet targetAction = action.getTargetSets().get(0);
+						List<Entity> targets = targetAction.findPossibleTargets();
 						if (targets.isEmpty()) {
 							return;
 						}
 
-						List<Card>targetCards = new ArrayList<>();
-						for(Targetable target : targets) {
-							if (target instanceof Card) {
-								targetCards.add((Card)target);
+						List<Entity> targetCards = new ArrayList<>();
+						for (Entity target : targets) {
+							if (target.hasComponent(CardComponent.class)) {
+								targetCards.add(target);
 							}
 						}
 						this.controller.markTargets(targetCards);
-						this.controller.nextAction = targetAction;
+						this.controller.nextAction = action;
 					} else {
 						action.perform();
 						this.controller.createData();
@@ -154,8 +154,12 @@ public class CardNode {
 		}
 	}
 	
+	private List<ECSAction> getPossibleActions() {
+		return card.getComponent(ActionComponent.class).getECSActions().stream().filter(ECSAction::isAllowed).collect(Collectors.toList());
+	}
+
 	private boolean isCardActive() {
-		List<UsableAction> cardActions = card.getActions().values().stream().filter(UsableAction::isAllowed).collect(Collectors.toList());
-		return cardActions.size() > 0;
+		List<ECSAction> cardActions = getPossibleActions();
+		return !cardActions.isEmpty();
 	}
 }

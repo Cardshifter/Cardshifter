@@ -1,6 +1,5 @@
 package com.cardshifter.fx;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,23 +10,29 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-
-import com.cardshifter.core.Card;
-import com.cardshifter.core.LuaTools;
-import com.cardshifter.core.Targetable;
-import com.cardshifter.core.actions.TargetAction;
-import com.cardshifter.core.actions.UsableAction;
+import net.zomis.cardshifter.ecs.actions.ActionComponent;
+import net.zomis.cardshifter.ecs.actions.ECSAction;
+import net.zomis.cardshifter.ecs.actions.TargetSet;
+import net.zomis.cardshifter.ecs.base.ComponentRetriever;
+import net.zomis.cardshifter.ecs.base.Entity;
+import net.zomis.cardshifter.ecs.resources.ResourceRetreiver;
+import net.zomis.cardshifter.ecs.usage.PhrancisGame.PhrancisResources;
 
 public class CardNodeBattlefield extends Group {
 	
 	private final double sizeX;
 	private final double sizeY;
 	private final String name;
-	private final Card card;
+	private final Entity card;
 	private final FXMLGameController controller;
 	private final boolean isPlayer;
 	
-	public CardNodeBattlefield (Pane pane, int numCards, String name, Card card, FXMLGameController controller, boolean isPlayer) {
+	private static final ResourceRetreiver resHealth = ResourceRetreiver.forResource(PhrancisResources.HEALTH);
+	private static final ResourceRetreiver resAttack = ResourceRetreiver.forResource(PhrancisResources.ATTACK);
+	private static final ResourceRetreiver resManaCost = ResourceRetreiver.forResource(PhrancisResources.MANA_COST);
+	private static final ComponentRetriever<ActionComponent> actions = ComponentRetriever.retreiverFor(ActionComponent.class);
+	
+	public CardNodeBattlefield (Pane pane, int numCards, String name, Entity card, FXMLGameController controller, boolean isPlayer) {
 		//calculate card width based on pane size
 		double paneWidth = pane.getWidth();
 		//reduce card size if there are over a certain amount of them
@@ -51,7 +56,7 @@ public class CardNodeBattlefield extends Group {
 		return this.sizeX;
 	}
 	
-	public Card getCard() {
+	public Entity getCard() {
 		return this.card;
 	}
 	
@@ -89,12 +94,11 @@ public class CardNodeBattlefield extends Group {
 		this.getChildren().add(activeBackground);
 	}
 	private boolean isCardActive() {
-		List<UsableAction> cardActions = card.getActions().values().stream().filter(UsableAction::isAllowed).collect(Collectors.toList());
-		return cardActions.size() > 0;
+		return !getPossibleActions().isEmpty();
 	}
 	private boolean canCardAttack() {
-		List<UsableAction> cardActions = card.getActions().values().stream().filter(UsableAction::isAllowed).collect(Collectors.toList());
-		for (UsableAction action : cardActions) {
+		List<ECSAction> cardActions = getPossibleActions();
+		for (ECSAction action : cardActions) {
 			if (action.getName().equals("Attack")) {
 				return true;
 			}
@@ -118,21 +122,9 @@ public class CardNodeBattlefield extends Group {
 	
 	private void createCardPropertyLabelsGroup() {
 		//Only these values will be loaded from Lua, and only if they are contained in the data
-		int health = 0;
-		int strength = 0;
-		int manaCost = 0;
-		
-		List<String> keyList = new ArrayList<>();
-		LuaTools.processLuaTable(card.data.checktable(), (k, v) -> keyList.add(k + ""));
-		for (String string : keyList) {
-			if(string.equals("health")) {
-				health = card.data.get("health").toint();
-			} else if (string.equals("strength")) {
-				strength = card.data.get("strength").toint();
-			} else if (string.equals("manaCost")) {
-				manaCost = card.data.get("manaCost").toint();
-			}
-		}
+		int health = resHealth.getFor(card);
+		int strength = resAttack.getFor(card);
+		int manaCost = resManaCost.getFor(card);
 		
 		//Need separate code for each label because they are in arbitrary locations
 		Label strengthLabel = new Label();
@@ -166,18 +158,19 @@ public class CardNodeBattlefield extends Group {
 	}
 	private void buttonClick(ActionEvent event) {
 		System.out.println("Trying to Perform Action");
-		List<UsableAction> cardActions = card.getActions().values().stream().filter(UsableAction::isAllowed).collect(Collectors.toList());
+		List<ECSAction> cardActions = getPossibleActions();
 		
 		//If there is more than one action, create the choice box
 		//Otherwise, the action will be automaticcally performed if there is only one
-		if(cardActions.size() > 1) {
+		if (cardActions.size() > 1) {
 			this.controller.buildChoiceBoxPane(card, cardActions);
 		} else if (cardActions.size() == 1) {
-			for (UsableAction action : cardActions) {
+			for (ECSAction action : cardActions) {
 				if (action.isAllowed()) {
-					if (action instanceof TargetAction) {
-						TargetAction targetAction = (TargetAction) action;
-						List<Targetable> targets = targetAction.findTargets();
+					if (!action.getTargetSets().isEmpty()) {
+						TargetSet targetAction = action.getTargetSets().get(0);
+						targetAction.clearTargets();
+						List<Entity> targets = targetAction.findPossibleTargets();
 						if (targets.isEmpty()) {
 							return;
 						}
@@ -189,9 +182,9 @@ public class CardNodeBattlefield extends Group {
 						}
 						
 						//TODO: add a check to make sure the target is valid//
-						Targetable target = targets.get(targetIndex);
-						targetAction.setTarget(target);
-						targetAction.perform();
+						Entity target = targets.get(targetIndex);
+						targetAction.addTarget(target);
+						action.perform();
 					} else {
 						action.perform();
 						this.controller.createData();
@@ -218,5 +211,8 @@ public class CardNodeBattlefield extends Group {
 	}
 	private void targetButtonClick(ActionEvent event) {
 		this.controller.performNextAction(this.card);
+	}
+	private List<ECSAction> getPossibleActions() {
+		return actions.required(card).getECSActions().stream().filter(ECSAction::isAllowed).collect(Collectors.toList());
 	}
 }
