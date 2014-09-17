@@ -25,20 +25,25 @@ public class MainServer {
 			logger.info("Starting Console...");
 			CommandHandler commandHandler = new CommandHandler();
 			commandHandler.addHandler("exit", command -> System.exit(0));
+			commandHandler.addHandler("ai", command -> newAI(server));
 			ServerConsole console = new ServerConsole(server, commandHandler);
 			new Thread(console, "Console-Thread").start();
 			console.addHandler("threads", cmd -> showAllStackTraces(server, System.out::println));
 			logger.info("Started");
 			
-			// Setup an AI that automatically wants to play (for testing purposes)
-			ClientIO tcgAI = new FakeAIClientTCG(server);
-			server.newClient(tcgAI);
-			server.getIncomingHandler().perform(new LoginMessage("AI Simple"), tcgAI);
-			server.getIncomingHandler().perform(new StartGameRequest(), tcgAI);
+			newAI(server);
 		}
 		catch (Exception e) {
 			logger.error("Initializing Error", e);
 		}
+	}
+	
+	private void newAI(Server server) {
+		// Setup an AI that automatically wants to play (for testing purposes)
+		ClientIO tcgAI = new FakeAIClientTCG(server);
+		server.newClient(tcgAI);
+		server.getIncomingHandler().perform(new LoginMessage("AI Simple"), tcgAI);
+		server.getIncomingHandler().perform(new StartGameRequest(), tcgAI);
 	}
 	
 	private void showAllStackTraces(Server server, Consumer<String> output) {
