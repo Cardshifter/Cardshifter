@@ -11,6 +11,8 @@ public class PhaseController extends Component {
 	
 	private final LinkedList<Phase> upcomingPhases = new LinkedList<>();
 	private final LinkedList<Phase> permanentPhases = new LinkedList<>();
+	private int phaseNumber;
+	private int recreateCount;
 	
 	public PhaseController() {
 	}
@@ -81,14 +83,35 @@ public class PhaseController extends Component {
 	public Phase nextPhase() {
 		Phase oldPhase = getCurrentPhase();
 		executeEvent(new PhaseEndEvent(this, oldPhase));
+		phaseNumber++;
 		upcomingPhases.removeFirst();
-		executeEvent(new PhaseStartEvent(this, oldPhase, getCurrentPhase()));
+		Phase currentPhase = getCurrentPhase();
+		if (currentPhase == permanentPhases.peekFirst()) {
+			recreateCount++;
+		}
+		executeEvent(new PhaseStartEvent(this, oldPhase, currentPhase));
 		
-		return getCurrentPhase();
+		return currentPhase;
 	}
 
 	public Entity getCurrentEntity() {
 		return getCurrentPhase().getOwner();
+	}
+	
+	/**
+	 * Get the individual phase number. Increased with each call to {@link #nextPhase()}
+	 * @return
+	 */
+	public int getPhaseNumber() {
+		return phaseNumber;
+	}
+	
+	/**
+	 * Return the number of loops that has been made. Increased whenever {@link #nextPhase()} starts on the first permanent phase.
+	 * @return
+	 */
+	public int getRecreateCount() {
+		return recreateCount;
 	}
 	
 }

@@ -62,7 +62,7 @@ public class FXMLGameController {
 		startGameLabel.setText("Starting Game");
 		game.startGame();
 		gameHasStarted = true;
-//		turnLabel.setText(String.format("Turn Number %d", game.getTurnNumber())); // TODO: TurnNumber value in PhaseController
+		turnLabel.setText(String.format("Turn Number %d", phases.getRecreateCount()));
 			
 		this.playerBattlefieldData = new ArrayList<>();
 		this.opponentBattlefieldData = new ArrayList<>();
@@ -80,7 +80,7 @@ public class FXMLGameController {
 		startGameLabel.setText("Starting Game");
 		game.startGame();
 		gameHasStarted = true;
-//		turnLabel.setText(String.format("Turn Number %d", game.getTurnNumber()));
+		turnLabel.setText(String.format("Turn Number %d", phases.getRecreateCount()));
 			
 		this.playerBattlefieldData = new ArrayList<>();
 		this.opponentBattlefieldData = new ArrayList<>();
@@ -303,7 +303,7 @@ public class FXMLGameController {
 			action.perform();
 		}
 
-//		turnLabel.setText(String.format("Turn Number %d", game.getTurnNumber()));
+		turnLabel.setText(String.format("Turn Number %d", phases.getRecreateCount()));
 
 		//reload data at the start of a new turn
 		this.createData();
