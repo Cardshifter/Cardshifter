@@ -62,5 +62,9 @@ public class ECSResourceData {
 	public String toString() {
 		return String.valueOf(current);
 	}
+
+	public ECSResource getResource() {
+		return this.resource;
+	}
 	
 }

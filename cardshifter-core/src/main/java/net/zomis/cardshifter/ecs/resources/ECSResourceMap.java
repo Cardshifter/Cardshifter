@@ -2,6 +2,7 @@ package net.zomis.cardshifter.ecs.resources;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import net.zomis.cardshifter.ecs.base.Component;
 import net.zomis.cardshifter.ecs.base.Entity;
@@ -33,6 +34,10 @@ public class ECSResourceMap extends Component {
 	@Override
 	public String toString() {
 		return map.toString();
+	}
+
+	public Stream<ECSResourceData> getResources() {
+		return map.values().stream();
 	}
 	
 }
