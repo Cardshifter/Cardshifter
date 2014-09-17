@@ -11,11 +11,17 @@ public class PlayerMessage extends Message {
 //	SERVER: command: player, name: 'Bubu', properties: { hp: 23 }
 
 	private final String name;
-	private final Map<String, String> properties;
+	private final Map<String, Integer> properties;
+	private final int index;
+	private final int id;
 
 	@JsonCreator
-	public PlayerMessage(@JsonProperty("name") String name, @JsonProperty("properties") Map<String, String> properties) {
+	public PlayerMessage(@JsonProperty("id") int id, @JsonProperty("index") int index,
+			@JsonProperty("name") String name, 
+			@JsonProperty("properties") Map<String, Integer> properties) {
 		super("player");
+		this.index = index;
+		this.id = id;
 		this.name = name;
 		this.properties = properties;
 	}
@@ -24,7 +30,7 @@ public class PlayerMessage extends Message {
 		return name;
 	}
 	
-	public Map<String, String> getProperties() {
+	public Map<String, Integer> getProperties() {
 		return Collections.unmodifiableMap(properties);
 	}
 	
@@ -33,4 +39,11 @@ public class PlayerMessage extends Message {
 		return String.format("Player Info: %s - %s", this.name, this.properties);
 	}
 	
+	public int getIndex() {
+		return index;
+	}
+	
+	public int getId() {
+		return id;
+	}
 }

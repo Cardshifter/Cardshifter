@@ -2,25 +2,30 @@ package com.cardshifter.server.model;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
+
+import net.zomis.cardshifter.ecs.actions.ActionComponent;
+import net.zomis.cardshifter.ecs.actions.ECSAction;
+import net.zomis.cardshifter.ecs.actions.TargetSet;
+import net.zomis.cardshifter.ecs.base.ComponentRetriever;
+import net.zomis.cardshifter.ecs.base.ECSGame;
+import net.zomis.cardshifter.ecs.base.Entity;
+import net.zomis.cardshifter.ecs.cards.CardComponent;
+import net.zomis.cardshifter.ecs.cards.ZoneComponent;
+import net.zomis.cardshifter.ecs.components.PlayerComponent;
+import net.zomis.cardshifter.ecs.phase.PhaseController;
+import net.zomis.cardshifter.ecs.resources.ResourceValueChange;
+import net.zomis.cardshifter.ecs.resources.Resources;
+import net.zomis.cardshifter.ecs.usage.PhrancisGame;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import com.cardshifter.ai.CardshifterAI;
 import com.cardshifter.ai.CompleteIdiot;
-import com.cardshifter.core.Card;
-import com.cardshifter.core.Game;
-import com.cardshifter.core.IdEntity;
-import com.cardshifter.core.LuaTools;
-import com.cardshifter.core.Player;
-import com.cardshifter.core.Targetable;
-import com.cardshifter.core.Zone;
-import com.cardshifter.core.actions.TargetAction;
-import com.cardshifter.core.actions.UsableAction;
 import com.cardshifter.server.clients.ClientIO;
 import com.cardshifter.server.incoming.RequestTargetsMessage;
 import com.cardshifter.server.incoming.UseAbilityMessage;
@@ -36,102 +41,97 @@ public class TCGGame extends ServerGame {
 	
 	private static final Logger logger = LogManager.getLogger(TCGGame.class);
 	private static final long AI_DELAY_SECONDS = 5;
-	private final Game game;
+	private final ECSGame game;
 	private final ScheduledExecutorService aiPerform = Executors.newScheduledThreadPool(1);
+	private final ComponentRetriever<CardComponent> card = ComponentRetriever.retreiverFor(CardComponent.class);
+	private final PhaseController phases;
+
+	private final CardshifterAI ai = new CompleteIdiot();
+	private ComponentRetriever<PlayerComponent> playerData = ComponentRetriever.retreiverFor(PlayerComponent.class);
 	
 	public TCGGame(Server server, int id) {
 		super(server, id);
-		game = new Game(TCGGame.class.getResourceAsStream("/com/cardshifter/mod/start.lua"), new Random(id), this::broadcast);
+		game = PhrancisGame.createGame();
+		game.getEvents().registerHandlerAfter(ResourceValueChange.class, this::broadcast);
 		aiPerform.scheduleWithFixedDelay(this::aiPerform, 0, AI_DELAY_SECONDS, TimeUnit.SECONDS);
+		phases = ComponentRetriever.singleton(game, PhaseController.class);
 	}
 
-	private void broadcast(IdEntity what, Object key, Object value) {
+	private void broadcast(ResourceValueChange event) {
 		if (getState() == GameState.NOT_STARTED) {
 			// let the most information be sent when actually starting the game
 			return;
 		}
 		
-		if (what instanceof Card) {
-			Card card = (Card) what;
+		Entity entity = event.getEntity();
+		UpdateMessage updateEvent = new UpdateMessage(entity.getId(), event.getResource().toString(), event.getNewValue());
+		
+		if (card.has(entity)) {
+			CardComponent cardData = card.get(entity);
 			for (ClientIO io : this.getPlayers()) {
-				Player player = playerFor(io);
-				if (card.getZone().isKnownToPlayer(player)) {
-					io.sendToClient(new UpdateMessage(card.getId(), key, value));
+				Entity player = playerFor(io);
+				if (cardData.getCurrentZone().isKnownTo(player)) {
+					io.sendToClient(updateEvent);
 				}
 			}
 		}
 		else {
 			// Player, Zone, or Game
-			this.send(new UpdateMessage(what.getId(), key, value));
+			this.send(updateEvent);
 		}
 	}
 	
 	public void informAboutTargets(RequestTargetsMessage message, ClientIO client) {
-		UsableAction action = findAction(message.getId(), message.getAction());
-		TargetAction targetAction = (TargetAction) action;
-		List<Targetable> targets = targetAction.findTargets();
+		ECSAction action = findAction(message.getId(), message.getAction());
+		TargetSet targetAction = action.getTargetSets().get(0);
+		List<Entity> targets = targetAction.findPossibleTargets();
 //		client.sendToClient(new ResetAvailableActionsMessage()); // not sure if this should be sent or not
-		for (Targetable target : targets) {
-			IdEntity entity = (IdEntity) target;
-			client.sendToClient(new UseableActionMessage(message.getId(), message.getAction(), false, entity.getId()));
+		for (Entity target : targets) {
+			client.sendToClient(new UseableActionMessage(message.getId(), message.getAction(), false, target.getId()));
 		}
 	}
 	
-	public Targetable findTargetable(int entityId) {
-		Optional<Player> player = game.getPlayers().stream().filter(pl -> pl.getId() == entityId).findFirst();
-		Optional<Card>	 card	= game.getZones().stream().flatMap(z -> z.getCards().stream()).filter(c -> c.getId() == entityId).findFirst();
-		
-		if (player.isPresent()) {
-			return player.get();
-		}
-		if (card.isPresent()) {
-			return card.get();
-		}
-		return null;
+	public Entity findTargetable(int entityId) {
+		Optional<Entity> entity = game.findEntities(e -> e.getId() == entityId).stream().findFirst();
+		return entity.orElse(null);
 	}
 	
-	public UsableAction findAction(int entityId, String actionId) {
-		Optional<Player> player = game.getPlayers().stream().filter(pl -> pl.getId() == entityId).findFirst();
-		Optional<Zone>	 zone	= game.getZones().stream().filter(z -> z.getId() == entityId).findFirst();
-		Optional<Card>	 card	= game.getZones().stream().flatMap(z -> z.getCards().stream()).filter(c -> c.getId() == entityId).findFirst();
+	public ECSAction findAction(int entityId, String actionId) {
+		Optional<Entity> entity = game.findEntities(e -> e.getId() == entityId).stream().findFirst();
 		
-		UsableAction action = null;
-		if (player.isPresent()) {
-			action = player.get().getActions().get(actionId);
+		if (!entity.isPresent()) {
+			throw new IllegalArgumentException("No such entity found");
 		}
-		if (zone.isPresent()) {
-			throw new IllegalArgumentException("Id is zone " + zone.get() + " but does not have any actions.");
-		}
-		if (card.isPresent()) {
-			action = card.get().getActions().get(actionId);
-		}
-		
-		if (action == null) {
+		Entity e = entity.get();
+		if (e.hasComponent(ActionComponent.class)) {
+			ActionComponent comp = e.getComponent(ActionComponent.class);
+			if (comp.getActions().contains(actionId)) {
+				return comp.getAction(actionId);
+			}
 			throw new IllegalArgumentException("No such action was found.");
 		}
-		return action;
+		throw new IllegalArgumentException(e + " does not have an action component");
 	}
 	
 	public void handleMove(UseAbilityMessage message, ClientIO client) {
 		if (!this.getPlayers().contains(client)) {
 			throw new IllegalArgumentException("Client is not in this game: " + client);
 		}
-		if (this.game.getCurrentPlayer() != playerFor(client)) {
+		if (phases.getCurrentEntity() != playerFor(client)) {
 			throw new IllegalArgumentException("It's not that players turn: " + client);
 		}
 		
-		UsableAction action = findAction(message.getId(), message.getAction());
-		if (action instanceof TargetAction) {
-			TargetAction targetAction = (TargetAction) action;
-			targetAction.setTarget(findTargetable(message.getTarget()));
+		ECSAction action = findAction(message.getId(), message.getAction());
+		if (!action.getTargetSets().isEmpty()) {
+			TargetSet targetAction = action.getTargetSets().get(0);
+			targetAction.clearTargets();
+			targetAction.addTarget(findTargetable(message.getTarget()));
 		}
 		action.perform();
 		
 		// TODO: Add listener to game for ZoneMoves, inform players about card movements, and send CardInfoMessage when a card becomes known
 		sendAvailableActions();
 	}
-
-	private final CardshifterAI ai = new CompleteIdiot();
 	
 	private void aiPerform() {
 		if (this.getState() != GameState.RUNNING) {
@@ -140,8 +140,11 @@ public class TCGGame extends ServerGame {
 		
 		for (ClientIO io : this.getPlayers()) {
 			if (io instanceof FakeAIClientTCG) {
-				Player player = playerFor(io);
-				UsableAction action = null; // ai.getOldAction(player);
+				Entity player = playerFor(io);
+				if (phases.getCurrentEntity() != player) {
+					continue;
+				}
+				ECSAction action = ai.getAction(player);
 				if (action != null) {
 					logger.info("AI Performs action: " + action);
 					action.perform();
@@ -162,50 +165,66 @@ public class TCGGame extends ServerGame {
 		
 	}
 
-	public Player playerFor(ClientIO io) {
+	public Entity playerFor(ClientIO io) {
 		int index = this.getPlayers().indexOf(io);
 		if (index < 0) {
 			throw new IllegalArgumentException(io + " is not a valid player in this game");
 		}
-		return this.game.getPlayers().get(index);
+		return getPlayer(index);
+	}
+	
+	private Entity getPlayer(int index) {
+		return game.findEntities(entity -> entity.hasComponent(PlayerComponent.class) && entity.getComponent(PlayerComponent.class).getIndex() == index).get(0);
 	}
 	
 	@Override
 	protected void onStart() {
-		game.getEvents().startGame(game);
-		this.getPlayers().stream().forEach(pl -> this.send(new PlayerMessage(playerFor(pl).getName(), LuaTools.tableToJava(playerFor(pl).data))));
-		this.game.getZones().stream().forEach(this::sendZone);
+		game.startGame();
+		this.getPlayers().stream().forEach(pl -> {
+			Entity playerEntity = playerFor(pl);
+			PlayerComponent plData = playerEntity.get(playerData);
+			this.send(new PlayerMessage(playerEntity.getId(), plData.getIndex(), plData.getName(), Resources.map(playerEntity)));
+		});
+		this.game.findEntities(e -> true).stream().flatMap(e -> e.getSuperComponents(ZoneComponent.class).stream()).forEach(this::sendZone);
 		this.sendAvailableActions();
 	}
 	
 	private void sendAvailableActions() {
 		for (ClientIO io : this.getPlayers()) {
-			Player player = playerFor(io);
+			Entity player = playerFor(io);
 			io.sendToClient(new ResetAvailableActionsMessage());
-			if (game.getCurrentPlayer() == player) {
-				game.getAllActions().stream().filter(action -> action.isAllowed())
-						.forEach(action -> io.sendToClient(new UseableActionMessage(action.getEntityId(), action.getName(), action instanceof TargetAction)));
+			if (phases.getCurrentEntity() == player) {
+				getAllActions(game).filter(action -> action.isAllowed())
+						.forEach(action -> io.sendToClient(new UseableActionMessage(action.getOwner().getId(), action.getName(), !action.getTargetSets().isEmpty())));
 				
 			}
 		}
 	}
 
-	private void sendZone(Zone zone) {
+	private static Stream<ECSAction> getAllActions(ECSGame game) {
+		return game.getEntitiesWithComponent(ActionComponent.class)
+			.stream()
+			.flatMap(entity -> entity.getComponent(ActionComponent.class)
+					.getECSActions().stream());
+	}
+	
+	private void sendZone(ZoneComponent zone) {
 		for (ClientIO io : this.getPlayers()) {
-			Player player = playerFor(io);
+			Entity player = playerFor(io);
 			io.sendToClient(constructZoneMessage(zone, player));
-			if (zone.isKnownToPlayer(player)) {
-				zone.getCards().forEach(card -> this.sendCard(io, card));
+			if (zone.isKnownTo(player)) {
+				zone.forEach(card -> this.sendCard(io, card));
 			}
 		}
 	}
 	
-	private ZoneMessage constructZoneMessage(Zone zone, Player player) {
-		return new ZoneMessage(zone.getId(), zone.getName(), zone.getOwner().getIndex(), zone.size(), zone.isKnownToPlayer(player));
+	private ZoneMessage constructZoneMessage(ZoneComponent zone, Entity player) {
+		return new ZoneMessage(zone.getZoneId(), zone.getName(), zone.getOwner().getId(), zone.size(), zone.isKnownTo(player));
 	}
 	
-	private void sendCard(ClientIO io, Card card) {
-		io.sendToClient(new CardInfoMessage(card.getZone().getId(), card.getId(), LuaTools.tableToJava(card.data)));
+	private void sendCard(ClientIO io, Entity card) {
+		CardComponent cardData = card.getComponent(CardComponent.class);
+		io.sendToClient(new CardInfoMessage(cardData.getCurrentZone().getZoneId(), card.getId(), Resources.map(card)));
 	}
 
 }
