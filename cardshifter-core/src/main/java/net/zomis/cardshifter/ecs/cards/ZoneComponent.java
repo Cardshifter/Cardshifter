@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -18,12 +19,14 @@ public class ZoneComponent extends Component {
 	private final Entity owner;
 	private final Map<Entity, Boolean> known = new HashMap<>();
 	private final String name;
+	private final Entity zoneEntity;
 	
 	private boolean publicKnown;
 	
 	public ZoneComponent(Entity owner, String name) {
-		this.owner = owner;
-		this.name = name;
+		this.owner = Objects.requireNonNull(owner, "Zone Owner cannot be null");
+		this.name = Objects.requireNonNull(name, "Zone Name cannot be null");
+		this.zoneEntity = owner.getGame().newEntity();
 	}
 	
 	public Entity getOwner() {
@@ -97,4 +100,12 @@ public class ZoneComponent extends Component {
 		return new ArrayList<>(cards);
 	}
 
+	public String getName() {
+		return name;
+	}
+
+	public int getZoneId() {
+		return zoneEntity.getId();
+	}
+	
 }
