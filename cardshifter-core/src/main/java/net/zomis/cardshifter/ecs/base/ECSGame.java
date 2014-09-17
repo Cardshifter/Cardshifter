@@ -92,6 +92,15 @@ public class ECSGame {
 	public List<Entity> findEntities(Predicate<Entity> condition) {
 		return entities.values().stream().filter(condition).collect(Collectors.toList());
 	}
+
+	public <T extends CancellableEvent> T executeCancellableEvent(T event, Runnable runInBetween) {
+		this.events.executePreEvent(event);
+		if (!event.isCancelled()) {
+			runInBetween.run();
+			this.events.executePostEvent(event);
+		}
+		return event;
+	}
 	
 	// TODO: Player component, Zone component for a zone
 	// TODO: Actions ++ copy actions. List<Target(s)> ("deal 1 damage to up to three targets and then give up to three targets +1/+1 until end of turn"), Set<ActionOptions>. choose one, choose two
