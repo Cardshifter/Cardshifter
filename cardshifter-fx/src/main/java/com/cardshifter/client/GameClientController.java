@@ -26,6 +26,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -36,6 +37,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
@@ -46,10 +48,10 @@ public class GameClientController {
 	@FXML private ListView<String> serverMessages;
 	@FXML private VBox opponentStatBox;
 	@FXML private VBox playerStatBox;
-	@FXML private Pane opponentHandPane;
-	@FXML private Pane opponentBattlefieldPane;
-	@FXML private Pane playerHandPane;
-	@FXML private Pane playerBattlefieldPane;
+	@FXML private HBox opponentHandPane;
+	@FXML private HBox opponentBattlefieldPane;
+	@FXML private HBox playerHandPane;
+	@FXML private HBox playerBattlefieldPane;
 
 	private final ObjectMapper mapper = new ObjectMapper();
 	private final BlockingQueue<Message> messages = new LinkedBlockingQueue<>();
@@ -72,7 +74,7 @@ public class GameClientController {
 	private int opponentBattlefieldId;
 	private int playerHandId;
 	private int playerBattlefieldId;
-	private Map<Integer, Pane> idMap;
+	private Map<Integer, Pane> idMap = new HashMap<>();
 	
 	/////////INITIALIZATION///////////////
 	public void acceptIPAndPort(String ipAddress, int port) {
@@ -228,6 +230,7 @@ com.cardshifter.server.outgoing.ResetAvailableActionsMessage@2d326c35
 	
 	private void processNewGameMessage(NewGameMessage message) {
 		this.playerIndex = message.getPlayerIndex();
+		
 		System.out.println(String.format("You are player: %d", this.playerIndex));
 	}
 	
@@ -263,11 +266,10 @@ com.cardshifter.server.outgoing.ResetAvailableActionsMessage@2d326c35
 	
 	//////////ZONE MESSAGES//////////////
 	private void processZoneMessage(ZoneMessage message) {
-		//this may be redundant now that I am doing containsKey at the start of the assignment anyway
 		if (!this.allZonesAssigned()) {
-			assignZoneIdForZoneMessage(message);
-		}		
-		
+			this.assignZoneIdForZoneMessage(message);
+		}
+
 		Pane targetPane = this.idMap.get(message.getId());
 		this.processZoneMessageForPane(targetPane, message);
 	}
@@ -303,7 +305,32 @@ com.cardshifter.server.outgoing.ResetAvailableActionsMessage@2d326c35
 
 	
 	private void processCardInfoMessage(CardInfoMessage message) {
-		Pane targetPane = idMap.get(message.getId());
+		if (idMap.containsKey(message.getZone())) {
+			Pane targetPane = idMap.get(message.getZone());
+		
+			if (targetPane == opponentBattlefieldPane) {
+				this.addCardToOpponentBattlefieldPane(message);
+			} else if (targetPane == opponentHandPane) {
+				this.addCardToOpponentHandPane(message);
+			} else if (targetPane == playerBattlefieldPane) {
+				this.addCardToPlayerBattlefieldPane(message);
+			} else if (targetPane == playerHandPane) {
+				this.addCardToPlayerHandPane(message);
+			}
+		}
 	}	
+	private void addCardToOpponentBattlefieldPane(CardInfoMessage message) {
+		
+	}
+	private void addCardToOpponentHandPane(CardInfoMessage message) {
+		
+	}
+	private void addCardToPlayerBattlefieldPane(CardInfoMessage message) {
+		
+	}
+	private void addCardToPlayerHandPane(CardInfoMessage message) {
+		CardHandDocumentController card = new CardHandDocumentController(message, this);
+		playerHandPane.getChildren().add(card.getRootPane());
+	}
 }
 

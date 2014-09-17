@@ -19,16 +19,16 @@
         <!-- <Button fx:id="newGameButton" layoutX="17.0" layoutY="24.0" mnemonicParsing="false" onAction="#newGameButtonAction" text="New Game" /> -->
         
         <!--  Hands  -->
-        <Pane fx:id="playerHandPane" layoutX="14.0" layoutY="393.0" prefHeight="200.0" prefWidth="1066.0">
+        <HBox fx:id="playerHandPane" layoutX="14.0" layoutY="393.0" prefHeight="200.0" prefWidth="1000.0">
             <children>
                 <QuadCurve fx:id="handGuide" controlY="-100.0" endX="100.0" fill="DODGERBLUE" layoutX="480.0" layoutY="200.0" opacity="0.0" startX="-100.0" stroke="BLACK" strokeType="INSIDE" />
             </children>
-        </Pane>
-        <Pane fx:id="opponentHandPane" layoutX="222.0" layoutY="7.0" prefHeight="61.0" prefWidth="574.0" />
+        </HBox>
+        <HBox fx:id="opponentHandPane" layoutX="222.0" layoutY="7.0" prefHeight="61.0" prefWidth="574.0" />
 
         <!--  Battlefields  -->
-        <Pane fx:id="playerBattlefieldPane" layoutX="218.0" layoutY="237.0" prefHeight="98.0" prefWidth="830.0" />
-        <Pane fx:id="opponentBattlefieldPane" layoutX="218.0" layoutY="107.0" prefHeight="98.0" prefWidth="830.0" />
+        <HBox fx:id="playerBattlefieldPane" layoutX="218.0" layoutY="237.0" prefHeight="98.0" prefWidth="830.0" />
+        <HBox fx:id="opponentBattlefieldPane" layoutX="218.0" layoutY="107.0" prefHeight="98.0" prefWidth="830.0" />
         
         <!-- Legend -->
         <Pane layoutX="844.0" layoutY="7.0" prefHeight="98.0" prefWidth="232.0">
