@@ -17,6 +17,9 @@ public class CommandLineOptions {
 	@Parameter(names = { "--port" }, description = "Port for use with network playing")
 	private int port = 4242;
 	
+	@Parameter(names = { "--lua" }, description = "Use old-style Lua scripts to play")
+	private boolean lua;
+	
 	public Random getRandom() {
 		return (seed == null) ? new Random() : new Random(seed);
 	}
@@ -31,6 +34,10 @@ public class CommandLineOptions {
 	
 	public int getPort() {
 		return port;
+	}
+
+	public boolean isLua() {
+		return lua;
 	}
 	
 }
