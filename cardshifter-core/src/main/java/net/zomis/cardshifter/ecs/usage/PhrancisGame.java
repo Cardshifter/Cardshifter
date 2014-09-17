@@ -136,13 +136,9 @@ public class PhrancisGame {
 //		game.addSystem(new ConsumeCardSystem());
 //		game.addSystem(new LimitedPlaysPerTurnSystem(2));
 		
-		// TODO: game.addSystem(new BattlefieldAttackYGO()); // treat all minions as they have taunt and trample
-		// TODO: game.addSystem(new SimpleEnchantSystem());
-		// TODO: game.addSystem(new ComplicatedEnchantSystem());
-
 		// Resources
 		// TODO: ManaOverloadSystem -- Uses an `OverloadComponent` for both cards and players. Checks for turn start and afterCardPlayed
-
+		
 		// Draw cards
 		game.addSystem(new DrawStartCards(5));
 		game.addSystem(new DrawCardAtBeginningOfTurnSystem());
@@ -150,17 +146,16 @@ public class PhrancisGame {
 //		game.addSystem(new DamageIncreasingWhenOutOfCardsSystem());
 		// TODO: game.addSystem(new LimitedHandSizeSystem(10, card -> card.destroy()));
 //		game.addSystem(new RecreateDeckSystem());
-		  
+		
 		// Initial setup
-//		game.addSystem(new SkipPlayerIfNoHealthSystem());
 		// TODO: ??? Card models aren't being used the same way now... game.addSystem(new DeckFromEachCardSystem(4, null));
 //		game.addSystem(new CreateDeckOnceFromSourceSystem());
 		// TODO: game.addSystem(new GiveStartCard(game.getPlayers().get(1), "The Coin"));
-
+		
 		// General setup
 		game.addSystem(new GameOverIfNoHealth(PhrancisResources.HEALTH));
 		game.addSystem(new RemoveDeadEntityFromZoneSystem());
-
+		
 		return game;
 	}
 
@@ -211,28 +206,6 @@ public class PhrancisGame {
 
 	private static ECSAction playAction(Entity entity) {
 		return new ECSAction(entity, PLAY_ACTION, act -> true, act -> {});
-/*		
-		function play.isAllowed(card)
-		local currentPlayer = card:getGame():getCurrentPlayer()
-		if card:getOwner() ~= currentPlayer then
-			return false
-		end
-		if card:getZone() ~= currentPlayer.data.hand then
-			return false
-		end
-		if card.data.manaCost > currentPlayer.data.mana then
-			return false
-		end
-		return true
-	end
-
-	function play.perform(card)
-	  local owner = card:getOwner()
-	  card:moveToBottomOf(owner.data.battlefield)
-		
-	  owner.data.mana = owner.data.mana - card.data.manaCost
-	end
-	*/	
 	}
 	
 }
