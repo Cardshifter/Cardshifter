@@ -141,7 +141,7 @@ public class TCGGame extends ServerGame {
 		for (ClientIO io : this.getPlayers()) {
 			if (io instanceof FakeAIClientTCG) {
 				Player player = playerFor(io);
-				UsableAction action = ai.getAction(player);
+				UsableAction action = null; // ai.getOldAction(player);
 				if (action != null) {
 					logger.info("AI Performs action: " + action);
 					action.perform();

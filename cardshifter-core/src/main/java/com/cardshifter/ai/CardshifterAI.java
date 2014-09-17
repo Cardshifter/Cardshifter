@@ -1,8 +1,8 @@
 package com.cardshifter.ai;
 
-import com.cardshifter.core.Player;
-import com.cardshifter.core.actions.UsableAction;
+import net.zomis.cardshifter.ecs.actions.ECSAction;
+import net.zomis.cardshifter.ecs.base.Entity;
 
 public interface CardshifterAI {
-	UsableAction getAction(Player player);
+	ECSAction getAction(Entity player);
 }

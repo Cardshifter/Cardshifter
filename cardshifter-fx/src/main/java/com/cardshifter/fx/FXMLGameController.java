@@ -283,7 +283,7 @@ public class FXMLGameController {
 
 		//This is the AI doing the turn action
 		while (game.getCurrentPlayer() == game.getLastPlayer()) {
-			UsableAction action = opponent.getAction(game.getCurrentPlayer());
+			UsableAction action = null; // opponent.getAction(game.getCurrentPlayer());
 			if (action == null) {
 				System.out.println("Warning: Opponent did not properly end turn");
 				break;
