@@ -70,9 +70,11 @@ public final class Entity {
 	}
 
 	public void destroy() {
-		components.clear();
-		game.removeEntity(this);
-		removed = true;
+		getGame().executeEvent(new EntityRemoveEvent(this), () -> {
+			components.clear();
+			game.removeEntity(this);
+			removed = true;
+		});
 	}
 
 	/**
