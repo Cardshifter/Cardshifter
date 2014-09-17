@@ -36,7 +36,7 @@ public class DrawStartCards implements ECSSystem {
 		else {
 			Entity cardToDraw = deck.getTopCard();
 			CardComponent topCard = card.get(deck.getTopCard());
-			entity.getGame().executeEvent(new DrawCardEvent(cardToDraw, entity), () -> topCard.moveToBottom(hand));
+			entity.getGame().executeCancellableEvent(new DrawCardEvent(cardToDraw, entity, deck, hand), () -> topCard.moveToBottom(hand));
 			
 		}
 		
