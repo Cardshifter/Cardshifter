@@ -1,5 +1,6 @@
 package net.zomis.cardshifter.ecs.base;
 
+import java.util.Objects;
 import java.util.Set;
 
 public class ComponentRetriever<T extends Component> {
@@ -18,6 +19,12 @@ public class ComponentRetriever<T extends Component> {
 		return entity.getComponent(clazz);
 	}
 
+	public T required(Entity entity) {
+		String removed = entity.isRemoved() ? " Entity has been removed!" : "";
+		return Objects.requireNonNull(get(entity), clazz.getName() + " not found on entity: " + entity +
+				" available components is: " + entity.getSuperComponents(Component.class) + removed);
+	}
+	
 	public static <T extends Component> ComponentRetriever<T> retreiverFor(Class<T> clazz) {
 		return new ComponentRetriever<>(clazz);
 	}
@@ -45,5 +52,5 @@ public class ComponentRetriever<T extends Component> {
 		}
 		return all.iterator().next().getComponent(class1);
 	}
-	
+
 }
