@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.shape.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane fx:id="rootPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cardshifter.client.GameClientController">
+        <children>
+        
+        <!--  Buttons  -->
+        <!-- <Button fx:id="button" layoutX="1098.0" layoutY="530.0" onAction="#startGameButtonAction" text="Start Game" /> -->
+        <Label fx:id="startGameLabel" layoutX="1098.0" layoutY="564.0" minHeight="16" minWidth="69" />
+        <!-- <Button layoutX="1105.0" layoutY="467.0" mnemonicParsing="false" onAction="#handleTurnButtonAction" text="End Turn" /> -->
+        <Label fx:id="turnLabel" layoutX="1091.0" layoutY="500.0" text="Turn Number" />
+        <!-- <Button fx:id="newGameButton" layoutX="17.0" layoutY="24.0" mnemonicParsing="false" onAction="#newGameButtonAction" text="New Game" /> -->
+        
+        <!--  Hands  -->
+        <Pane fx:id="playerHandPane" layoutX="14.0" layoutY="393.0" prefHeight="200.0" prefWidth="1066.0">
+            <children>
+                <QuadCurve fx:id="handGuide" controlY="-100.0" endX="100.0" fill="DODGERBLUE" layoutX="480.0" layoutY="200.0" opacity="0.0" startX="-100.0" stroke="BLACK" strokeType="INSIDE" />
+            </children>
+        </Pane>
+        <Pane fx:id="opponentHandPane" layoutX="222.0" layoutY="7.0" prefHeight="61.0" prefWidth="574.0" />
+
+        <!--  Battlefields  -->
+        <Pane fx:id="playerBattlefieldPane" layoutX="218.0" layoutY="237.0" prefHeight="98.0" prefWidth="830.0" />
+        <Pane fx:id="opponentBattlefieldPane" layoutX="218.0" layoutY="107.0" prefHeight="98.0" prefWidth="830.0" />
+
+        <!--  Game State Labels  -->
+        <Label layoutX="1111.0" layoutY="29.0" text="Opponent" />
+        <Label layoutX="1133.0" layoutY="51.0" text="Life" />
+        <Label layoutX="1101.0" layoutY="91.0" text="Current Mana" />
+        <Label layoutX="1107.0" layoutY="131.0" text="Total Mana" />
+        <Label fx:id="opponentLife" layoutX="1133.0" layoutY="67.0" prefHeight="16.0" prefWidth="35.0" text="#" textAlignment="CENTER" />
+        <Label fx:id="opponentCurrentMana" layoutX="1140.0" layoutY="107.0" text="#" />
+        <Label fx:id="opponentTotalMana" layoutX="1140.0" layoutY="148.0" text="#" />
+        <Label layoutX="1126.0" layoutY="263.0" text="Player" />
+        <Label layoutX="1133.0" layoutY="292.0" text="Life" />
+        <Label fx:id="playerLife" layoutX="1138.0" layoutY="308.0" text="#" />
+        <Label layoutX="1103.0" layoutY="327.0" text="Current Mana" />
+        <Label fx:id="playerCurrentMana" layoutX="1140.0" layoutY="343.0" text="#" />
+        <Label layoutX="1111.0" layoutY="366.0" text="Total Mana" />
+        <Label fx:id="playerTotalMana" layoutX="1141.0" layoutY="385.0" text="#" />
+        <Label layoutX="1127.0" layoutY="171.0" text="Scrap" />
+        <Label layoutX="1129.0" layoutY="407.0" text="Scrap" />
+        <Label fx:id="playerScrap" layoutX="1141.0" layoutY="423.0" text="#" />
+        <Label fx:id="opponentScrap" layoutX="1140.0" layoutY="187.0" text="#" />
+        
+        <!-- Legend -->
+        <Pane layoutX="859.0" layoutY="12.0" prefHeight="98.0" prefWidth="232.0">
+             <children>
+                <Label layoutX="14.0" layoutY="14.0" text="Active" />
+                <Label layoutX="71.0" layoutY="14.0" text="Can Attack" />
+                <Label layoutX="154.0" layoutY="14.0" text="Targetable" />
+                <Rectangle arcHeight="5.0" arcWidth="5.0" fill="YELLOW" height="35.0" layoutX="16.0" layoutY="30.0" stroke="BLACK" strokeType="INSIDE" width="35.0" />
+                <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#11a411" height="35.0" layoutX="88.0" layoutY="30.0" stroke="BLACK" strokeType="INSIDE" width="35.0" />
+                <Rectangle arcHeight="5.0" arcWidth="5.0" fill="BLUE" height="35.0" layoutX="170.0" layoutY="30.0" stroke="BLACK" strokeType="INSIDE" width="35.0" />
+                <Label layoutX="83.0" text="Legend" underline="true" />
+            <Label layoutX="51.0" layoutY="76.0" text="Strength / Health" />
+            </children>
+        </Pane>
+		
+		<!-- Initial Server Message -->
+		<Label layoutX="47.0" layoutY="343.0" text="Login Message:" />
+		<Label fx:id="serverMessage" layoutX="156.0" layoutY="343.0" text="Message" />
+	  
+		<!-- Continuing Server Messages -->
+		 <AnchorPane layoutX="14.0" layoutY="15.0" prefHeight="314.0" prefWidth="190.0">
+			 <children>
+				<Label layoutX="44.0" layoutY="14.0" text="Server Messages" textAlignment="CENTER" underline="true" />
+				<ListView fx:id="serverMessages" layoutY="38.0" prefHeight="276.0" prefWidth="190.0" />
+			</children>
+		</AnchorPane>
+      
+    </children>
+</AnchorPane>

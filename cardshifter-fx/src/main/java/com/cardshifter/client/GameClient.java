@@ -1,4 +1,4 @@
-package com.cardshifter.fx;
+package com.cardshifter.client;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -9,13 +9,12 @@ import javafx.stage.Stage;
 /**
  * This class just loads the FXML document which initializes its DocumentController
  */
-public class JavaFXGame extends Application {
+public class GameClient extends Application {
 	
 	@Override
 	public void start(Stage stage) throws Exception {	  
-		stage.setTitle("Cardshifter");
-		
-		Parent root = FXMLLoader.load(getClass().getResource("FXMLDocument.fxml"));
+
+		Parent root = FXMLLoader.load(getClass().getResource("LauncherDocument.fxml"));
 		
 		Scene scene = new Scene(root);
 		
@@ -24,10 +23,8 @@ public class JavaFXGame extends Application {
 		stage.show();
 	}
 	
-	/**
-	 * Main method
-	 * @param args the command line arguments
-	 */
+	 // @param args the command line arguments
+
 	public static void main(String[] args) {
 		launch(args);
 	}

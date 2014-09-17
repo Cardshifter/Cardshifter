@@ -1,14 +1,11 @@
 package com.cardshifter.fx;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.ResourceBundle;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -29,43 +26,45 @@ import com.cardshifter.core.Zone;
 import com.cardshifter.core.actions.TargetAction;
 import com.cardshifter.core.actions.UsableAction;
 
-public class FXMLGameController implements Initializable {
+public class FXMLGameController {
    
-	//INITIAL GAME SETUP
 	private final CardshifterAI opponent = new CompleteIdiot();
-	//need a forward declaration so that this is  global to the class
 	private Game game;
-	//hack to make the buttons work properly
-	private boolean gameHasStarted = false;
-	//I think this is a public constructor, this code initializes the Game
+	private boolean gameHasStarted = false; // hack to make the buttons work properly
+	
 	@FXML
 	Pane anchorPane;
+	
 	public FXMLGameController() throws Exception {
 		this.initializeGame();
 	}
+	
 	private void initializeGame() throws Exception {
 		game = new Game(FXMLGameController.class.getResourceAsStream("/com/cardshifter/mod/start.lua"), new Random());
 	}
-	//GAME START and NEW GAME
+	
 	@FXML
 	private Label startGameLabel;
+	
 	@FXML
 	private void startGameButtonAction(ActionEvent event) {
-		if (gameHasStarted == false) {
-			startGameLabel.setText("Starting Game");
-			game.getEvents().startGame(game);
-			gameHasStarted = true;
-			turnLabel.setText(String.format("Turn Number %d", game.getTurnNumber()));
-			
-			this.playerBattlefieldData = new ArrayList<>();
-			this.opponentBattlefieldData = new ArrayList<>();
-			this.playerHandData = new ArrayList<>();
-			this.opponentHandData = new ArrayList<>();
-			
-			this.createData();
-			this.render();
+		if (gameHasStarted) {
+			return;
 		}
+		startGameLabel.setText("Starting Game");
+		game.getEvents().startGame(game);
+		gameHasStarted = true;
+		turnLabel.setText(String.format("Turn Number %d", game.getTurnNumber()));
+			
+		this.playerBattlefieldData = new ArrayList<>();
+		this.opponentBattlefieldData = new ArrayList<>();
+		this.playerHandData = new ArrayList<>();
+		this.opponentHandData = new ArrayList<>();
+			
+		this.createData();
+		this.render();
 	}
+	
 	@FXML
 	private void newGameButtonAction(ActionEvent event) throws Exception {
 		this.initializeGame();
@@ -84,9 +83,11 @@ public class FXMLGameController implements Initializable {
 		this.render();
 	}
 
-	//TODO: Create a fixed time step and render in that
-	//RENDER - eventually change this to an Update method
+	/**
+	 * RENDER - eventually change this to an Update method
+	 */
 	public void render() {
+		// TODO: Create a fixed time step and render in that
 		//this is a hack to make the buttons disappear when the choice is made
 		//will not work with a fixed time step
 		Node choiceBoxPane = anchorPane.lookup("#choiceBoxPane");
@@ -98,55 +99,64 @@ public class FXMLGameController implements Initializable {
 		this.updateGameLabels();
 	}
 	
-	//RENDER HANDS
 	@FXML
 	private Pane opponentHandPane;
+	
 	@FXML
 	private Pane playerHandPane;
+	
 	private void renderHands() {
 		this.renderOpponentHand();
 		this.renderPlayerHand();
 	}
+	
 	private void renderOpponentHand() {
 		opponentHandPane.getChildren().clear();
 		opponentHandPane.getChildren().addAll(opponentHandData);
 	}
+	
 	private void renderPlayerHand() {
 		playerHandPane.getChildren().clear();
 		playerHandPane.getChildren().addAll(playerHandData);
 	}
 	
-	//RENDER BATTLEFIELDS
 	@FXML
 	Pane opponentBattlefieldPane;
+	
 	@FXML
 	Pane playerBattlefieldPane;
+	
 	private void renderBattlefields() {
 		this.renderOpponentBattlefield();
 		this.renderPlayerBattlefield();
 	}
+	
 	private void renderOpponentBattlefield() {
 		opponentBattlefieldPane.getChildren().clear();
 		opponentBattlefieldPane.getChildren().addAll(opponentBattlefieldData);
 	}
+	
 	private void renderPlayerBattlefield() {
 		playerBattlefieldPane.getChildren().clear();
 		playerBattlefieldPane.getChildren().addAll(playerBattlefieldData);
 	}
 	
-	//Called at the end of turn, and when a card is played
+	/**
+	 * Called at the end of turn, and when a card is played
+	 */
 	public void createData() {
 		this.createHands();
 		this.createBattlefields();
 	}
 	
-	//CREATE HANDS
 	private void createHands() {
 		this.createOpponentHand();
 		this.createPlayerHand();
 	}
+	
 	//CREATE OPPONENT CARD BACKS
 	private List<Group> opponentHandData;
+	
 	private void createOpponentHand() {
 		opponentHandData.clear();
 		
@@ -159,7 +169,7 @@ public class FXMLGameController implements Initializable {
 		double cardWidth = paneWidth / maxCards;
 		
 		int currentCard = 0;
-		while(currentCard < numCards) {
+		while (currentCard < numCards) {
 			Group cardGroup = new Group();
 			cardGroup.setTranslateX(currentCard * (cardWidth*1.05)); //1.05 so there is space between cards
 			opponentHandData.add(cardGroup);
@@ -171,12 +181,14 @@ public class FXMLGameController implements Initializable {
 			currentCard++;
 		}
 	}
+	
 	private int getOpponentCardCount() {
 		Player player = game.getLastPlayer(); 
 		Zone hand = (Zone)CoerceLuaToJava.coerce(player.data.get("hand"), Zone.class);
 		List<Card> cardsInHand = hand.getCards();
 		return cardsInHand.size();
 	}
+	
 	//CREATE PLAYER HAND
 	private List<Group> playerHandData;
 	private void createPlayerHand() {
@@ -197,19 +209,20 @@ public class FXMLGameController implements Initializable {
 			cardIndex++;
 		}
 	}
+	
 	private List<Card> getCurrentPlayerHand() {
 		Player player = game.getFirstPlayer(); 
 		Zone hand = (Zone)CoerceLuaToJava.coerce(player.data.get("hand"), Zone.class);
 		return hand.getCards();
 	}
 	
-	//CREATE BATTLEFIELDS
 	private void createBattlefields() {
 		this.createOpponentBattlefield();
 		this.createPlayerBattlefield();
 	}
-	//CREATE OPPONENT BATTLEFIELD
+	
 	private List<Group> opponentBattlefieldData;
+	
 	private void createOpponentBattlefield() {
 		opponentBattlefieldData.clear();
 		
@@ -228,8 +241,9 @@ public class FXMLGameController implements Initializable {
 			cardIndex++;
 		} 
 	}
-	//CREATE PLAYER BATTLEFIELD
+	
 	private List<Group> playerBattlefieldData;
+	
 	private void createPlayerBattlefield() {
 		playerBattlefieldData.clear();
 		
@@ -248,6 +262,7 @@ public class FXMLGameController implements Initializable {
 			cardIndex++;
 		} 
 	}
+	
 	private List<Card> getBattlefield(Player player) {
 		Zone battlefield = (Zone)CoerceLuaToJava.coerce(player.data.get("battlefield"), Zone.class);
 		return battlefield.getCards();
@@ -255,31 +270,32 @@ public class FXMLGameController implements Initializable {
 	
 	//TODO: Convert this to mana totals for players
 	//TODO: Play rotation needs to be changed so that it does not revolve around player 1
-	//END TURN LABEL
+	
 	@FXML
 	private Label turnLabel;
-	//ADVANCE TURNS
+	
 	@FXML
 	private void handleTurnButtonAction(ActionEvent event) {
-		if (gameHasStarted == true) {
-			game.nextTurn();
-			
-			//This is the AI doing the turn action
-			while (game.getCurrentPlayer() == game.getLastPlayer()) {
-				UsableAction action = opponent.getAction(game.getCurrentPlayer());
-				if (action == null) {
-					System.out.println("Warning: Opponent did not properly end turn");
-					break;
-				}
-				action.perform();
-			}
-			
-			turnLabel.setText(String.format("Turn Number %d", game.getTurnNumber()));
-			
-			//reload data at the start of a new turn
-			this.createData();
-			this.render();
+		if (!gameHasStarted) {
+			return;
 		}
+		game.nextTurn();
+
+		//This is the AI doing the turn action
+		while (game.getCurrentPlayer() == game.getLastPlayer()) {
+			UsableAction action = opponent.getAction(game.getCurrentPlayer());
+			if (action == null) {
+				System.out.println("Warning: Opponent did not properly end turn");
+				break;
+			}
+			action.perform();
+		}
+
+		turnLabel.setText(String.format("Turn Number %d", game.getTurnNumber()));
+
+		//reload data at the start of a new turn
+		this.createData();
+		this.render();
 	}
 	
 	//CHOICE BOX PANE
@@ -299,7 +315,7 @@ public class FXMLGameController implements Initializable {
 		double choiceBoxWidth = paneWidth / numChoices;
 		
 		int actionIndex = 0;
-		for(UsableAction action : actionList) {
+		for (UsableAction action : actionList) {
 			ChoiceBoxNode choiceBox = new ChoiceBoxNode(choiceBoxWidth, paneHeight, "testName", action, this);
 			Group choiceBoxGroup = choiceBox.getChoiceBoxGroup();
 			choiceBoxGroup.setTranslateX(actionIndex * choiceBoxWidth);
@@ -311,26 +327,28 @@ public class FXMLGameController implements Initializable {
 		anchorPane.getChildren().add(choiceBoxPane);
 	}
    
-	//TARGETING
+	// TARGETING
 	public TargetAction nextAction;
+	
 	public void performNextAction(Targetable target) {
 		nextAction.setTarget(target);
 		nextAction.perform();
 		this.createData();
 		this.render();
 	}
+	
 	public void markTargets(List<Card> targets) {
 		List<Node> cardsInPlayerBattlefield = playerBattlefieldPane.getChildren();
 		List<Node> cardsInOpponentBattlefield = opponentBattlefieldPane.getChildren();
 		for (Card target : targets) {
-			for(Node node : cardsInPlayerBattlefield) {
-				if(node.getId().equals(String.format("card%d",target.getId())) == true) {
+			for (Node node : cardsInPlayerBattlefield) {
+				if (node.getId().equals(String.format("card%d", target.getId()))) {
 					CardNodeBattlefield actionNode = (CardNodeBattlefield)node;
 					actionNode.createTargetButton();
 				}
 			}
-			for(Node node : cardsInOpponentBattlefield) {
-				if(node.getId().equals(String.format("card%d",target.getId())) == true) {
+			for (Node node : cardsInOpponentBattlefield) {
+				if (node.getId().equals(String.format("card%d", target.getId()))) {
 					CardNodeBattlefield actionNode = (CardNodeBattlefield)node;
 					actionNode.createTargetButton();
 				}
@@ -341,41 +359,45 @@ public class FXMLGameController implements Initializable {
 	//GAME STATE LABELS
 	@FXML
 	Label opponentLife;
+	
 	@FXML
 	Label opponentCurrentMana;
+	
 	@FXML
 	Label opponentTotalMana;
+	
 	@FXML
 	Label opponentScrap;
+	
 	@FXML
 	Label playerLife;
+	
 	@FXML
 	Label playerCurrentMana;
+	
 	@FXML
 	Label playerTotalMana;
+	
 	@FXML
 	Label playerScrap;
+	
 	private void updateGameLabels() {
 		Player localOpponent = game.getLastPlayer();
-		opponentLife.setText(String.format("%d",localOpponent.data.get("life").toint()));
-		opponentCurrentMana.setText(String.format("%d",localOpponent.data.get("mana").toint()));
-		opponentTotalMana.setText(String.format("%d",localOpponent.data.get("manaMax").toint()));
-		opponentScrap.setText(String.format("%d",localOpponent.data.get("scrap").toint()));
+		opponentLife.setText(String.valueOf(localOpponent.data.get("life").toint()));
+		opponentCurrentMana.setText(String.valueOf(localOpponent.data.get("mana").toint()));
+		opponentTotalMana.setText(String.valueOf(localOpponent.data.get("manaMax").toint()));
+		opponentScrap.setText(String.valueOf(localOpponent.data.get("scrap").toint()));
 		
 		Player player = game.getFirstPlayer();
-		playerLife.setText(String.format("%d", player.data.get("life").toint()));
-		playerCurrentMana.setText(String.format("%d", player.data.get("mana").toint()));
-		playerTotalMana.setText(String.format("%d", player.data.get("manaMax").toint()));
-		playerScrap.setText(String.format("%d", player.data.get("scrap").toint()));
+		playerLife.setText(String.valueOf(player.data.get("life").toint()));
+		playerCurrentMana.setText(String.valueOf(player.data.get("mana").toint()));
+		playerTotalMana.setText(String.valueOf(player.data.get("manaMax").toint()));
+		playerScrap.setText(String.valueOf(player.data.get("scrap").toint()));
 	}
 	
-	//BOILERPLATE
-	@Override
-	public void initialize(URL url, ResourceBundle rb) {
-		// TODO
-	}		
-	
-	//NOT YET USED
+	/**
+	 * NOT YET USED
+	 */
 	@FXML
 	private QuadCurve handGuide;
 }

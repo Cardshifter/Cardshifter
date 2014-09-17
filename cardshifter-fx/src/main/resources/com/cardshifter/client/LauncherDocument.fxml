@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cardshifter.client.GameClientLauncherController">
+   <children>
+      <AnchorPane layoutX="182.0" layoutY="25.0" prefHeight="102.0" prefWidth="200.0">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#09dd2d" height="123.0" layoutX="-3.0" layoutY="-2.0" stroke="BLACK" strokeType="INSIDE" width="258.0" />
+            <Label layoutX="19.0" layoutY="14.0" prefHeight="45.0" prefWidth="239.0" text="Cardshifter" textAlignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="37.0" />
+               </font>
+            </Label>
+            <Label layoutX="94.0" layoutY="59.0" text="Client" textAlignment="CENTER">
+               <font>
+                  <Font size="25.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="152.0" layoutY="168.0" prefHeight="123.0" prefWidth="318.0">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="153.0" layoutY="14.0" stroke="BLACK" strokeType="INSIDE" width="318.0" />
+            <TextField fx:id="ipAddressBox" layoutX="133.0" layoutY="34.0" />
+            <TextField fx:id="portBox" layoutX="133.0" layoutY="84.0" />
+            <Button fx:id="connectButton" layoutX="124.0" layoutY="127.0" mnemonicParsing="false" text="Connect" />
+            <Label layoutX="44.0" layoutY="39.0" text="IP Address:">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Label>
+            <Label layoutX="64.0" layoutY="89.0" text="Port:">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="100.0" layoutY="347.0" prefHeight="55.0" prefWidth="423.0">
+         <children>
+            <Label fx:id="errorMessage" alignment="CENTER" layoutX="138.0" layoutY="20.0" text="Welcome to Cardshifter" textAlignment="CENTER" wrapText="true" />
+         </children>
+      </AnchorPane>
+      <Label layoutX="14.0" layoutY="207.0" text="Default IP: 127.0.0.1" />
+      <Label layoutX="21.0" layoutY="260.0" text="Default Port: 4242" />
+   </children>
+</AnchorPane>
