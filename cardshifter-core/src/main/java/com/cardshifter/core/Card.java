@@ -13,6 +13,7 @@ import com.cardshifter.core.actions.CardAction;
 import com.cardshifter.core.actions.TargetAction;
 import com.cardshifter.core.actions.UsableAction;
 
+@Deprecated
 public class Card implements Targetable, IdEntity {
 	public final LuaTable data = new ExtLuaTable(this::onChange);
 

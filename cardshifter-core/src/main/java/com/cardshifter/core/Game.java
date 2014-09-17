@@ -15,6 +15,7 @@ import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 
 import com.cardshifter.core.actions.UsableAction;
 
+@Deprecated
 public class Game implements IdEntity {
 
 	public static interface StateChangeListener {

@@ -18,6 +18,7 @@ import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 import org.luaj.vm2.lib.jse.JsePlatform;
 import org.luaj.vm2.luajc.LuaJC;
 
+@Deprecated
 public class Events {
 	//TODO refactor to enums
 	public static final String ACTION_USED = "actionUsed";

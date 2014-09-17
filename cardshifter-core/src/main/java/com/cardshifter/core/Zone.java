@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.luaj.vm2.LuaTable;
 
+@Deprecated
 public class Zone implements IdEntity {
 	public final LuaTable data = new ExtLuaTable(this::onChange);
 

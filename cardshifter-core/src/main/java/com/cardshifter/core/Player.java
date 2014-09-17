@@ -11,6 +11,7 @@ import org.luaj.vm2.LuaValue;
 import com.cardshifter.core.actions.PlayerAction;
 import com.cardshifter.core.actions.UsableAction;
 
+@Deprecated
 public class Player implements Targetable, IdEntity {
 
 	public final LuaTable data = new ExtLuaTable(this::onChange);
