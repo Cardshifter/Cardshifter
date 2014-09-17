@@ -27,27 +27,29 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.TreeMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 
 public class GameClientController {
 	
 	//@FXML private AnchorPane rootPane;
 	@FXML private Label serverMessage;
 	@FXML private ListView<String> serverMessages;
-	@FXML private Label opponentLife;
-	@FXML private Label opponentCurrentMana;
-	@FXML private Label opponentTotalMana;
-	@FXML private Label opponentScrap;
-	@FXML private Label playerLife;
-	@FXML private Label playerCurrentMana;
-	@FXML private Label playerTotalMana;
-	@FXML private Label playerScrap;
+	@FXML private VBox opponentStatBox;
+	@FXML private VBox playerStatBox;
+	@FXML private Pane opponentHandPane;
+	@FXML private Pane opponentBattlefieldPane;
+	@FXML private Pane playerHandPane;
+	@FXML private Pane playerBattlefieldPane;
 
 	private final ObjectMapper mapper = new ObjectMapper();
 	private final BlockingQueue<Message> messages = new LinkedBlockingQueue<>();
@@ -61,7 +63,16 @@ public class GameClientController {
 	private OutputStream out;
 	private String ipAddress;
 	private int port;
+	
 	private int gameId;
+	private int playerId;
+	private int playerIndex;
+	private int opponentId;
+	private int opponentHandId;
+	private int opponentBattlefieldId;
+	private int playerHandId;
+	private int playerBattlefieldId;
+	private Map<Integer, Pane> idMap;
 	
 	/////////INITIALIZATION///////////////
 	public void acceptIPAndPort(String ipAddress, int port) {
@@ -176,7 +187,6 @@ public class GameClientController {
 	private void processMessageFromServer(Message message) {
 		
 		serverMessages.getItems().add(message.toString());
-	
 		//do a check a prune server messages if it is too large - not in this method?
 		
 		System.out.println(message.toString());
@@ -189,95 +199,111 @@ public class GameClientController {
 			this.processZoneMessage((ZoneMessage)message);
 		} else if (message instanceof CardInfoMessage) {
 			this.processCardInfoMessage((CardInfoMessage)message);
+		} else if (message instanceof NewGameMessage) {
+			this.processNewGameMessage((NewGameMessage)message);
 		}
-		
-		/*
-		if (message instanceof UseableActionMessage) {
-			actions.add((UseableActionMessage)message);
-		} else if (message instanceof CardInfoMessage) {
-			cards.add((CardInfoMessage)message);
-		} else {
-			serverMessages.getItems().add(message.toString());
-		}
-		*/
 	}
 	
 	/*
-	Player Info: Player1 - {scrap=0, mana=1, manaMax=1, battlefield={Zone Battlefield (0) owned by {Player 'Player1'}}, deck={Zone Deck (47) owned by {Player 'Player1'}}, cardType=Player, life=10, hand={Zone Hand (5) owned by {Player 'Player1'}}}
-Player Info: Player2 - {scrap=0, mana=0, manaMax=0, battlefield={Zone Battlefield (0) owned by {Player 'Player2'}}, deck={Zone Deck (47) owned by {Player 'Player2'}}, cardType=Player, life=10, hand={Zone Hand (5) owned by {Player 'Player2'}}}
-ZoneMessage [id=3, name=Battlefield, owner=0, size=0, known=true]
-ZoneMessage [id=4, name=Deck, owner=0, size=47, known=false]
-ZoneMessage [id=5, name=Hand, owner=0, size=5, known=false]
-ZoneMessage [id=58, name=Battlefield, owner=1, size=0, known=true]
-ZoneMessage [id=59, name=Deck, owner=1, size=47, known=false]
-ZoneMessage [id=60, name=Hand, owner=1, size=5, known=true]
-CardInfo: 62 in zone 60 - {strength=3, cardType=Creature, health=2, sickness=1, creatureType=B0T, enchantments=0, manaCost=2, attacksAvailable=1}
-CardInfo: 92 in zone 60 - {strength=4, cardType=Creature, health=4, sickness=1, creatureType=Bio, enchantments=0, manaCost=5, attacksAvailable=1}
-CardInfo: 85 in zone 60 - {enchStrength=0, scrapCost=3, cardType=Enchantment, manaCost=0, enchHealth=3}
-CardInfo: 73 in zone 60 - {enchStrength=2, scrapCost=5, cardType=Enchantment, manaCost=0, enchHealth=2}
-CardInfo: 93 in zone 60 - {strength=5, cardType=Creature, health=3, sickness=1, creatureType=Bio, enchantments=0, manaCost=5, attacksAvailable=1}
-com.cardshifter.server.outgoing.ResetAvailableActionsMessage@772c7ecd
-UpdateMessage [id=2, key=manaMax, value=1]
-UpdateMessage [id=2, key=mana, value=1]
-com.cardshifter.server.outgoing.ResetAvailableActionsMessage@4ef494aa
-UseableActionMessage [id=2, action=End Turn, targetRequired=false, targetId=0]
+Sending: {"command":"login","username":"Player26"}
+Sending: {"command":"startgame"}
+com.cardshifter.server.outgoing.WelcomeMessage@33c7b4f6
+com.cardshifter.server.outgoing.NewGameMessage@2ff58dec
+You are player: 1
+Player Info: Player1 - {SCRAP=0, MANA=1, MANA_MAX=1, HEALTH=10}
+Player Info: Player2 - {SCRAP=0, MANA=0, HEALTH=10}
+ZoneMessage [id=4, name=Battlefield, owner=1, size=0, known=true]
+ZoneMessage [id=3, name=Hand, owner=1, size=5, known=false]
+ZoneMessage [id=2, name=Deck, owner=1, size=34, known=false]
+ZoneMessage [id=47, name=Battlefield, owner=44, size=0, known=true]
+ZoneMessage [id=46, name=Hand, owner=44, size=5, known=true]
+CardInfo: 48 in zone 46 - {SICKNESS=1, MANA_COST=1, ATTACK=1, HEALTH=1, ATTACK_AVAILABLE=1}
+CardInfo: 49 in zone 46 - {SICKNESS=1, MANA_COST=2, ATTACK=2, HEALTH=1, ATTACK_AVAILABLE=1}
+CardInfo: 50 in zone 46 - {SICKNESS=1, MANA_COST=3, ATTACK=3, HEALTH=3, ATTACK_AVAILABLE=1}
+CardInfo: 51 in zone 46 - {SICKNESS=1, MANA_COST=4, ATTACK=4, HEALTH=4, ATTACK_AVAILABLE=1}
+CardInfo: 52 in zone 46 - {SICKNESS=1, MANA_COST=5, ATTACK=5, HEALTH=5, ATTACK_AVAILABLE=1}
+ZoneMessage [id=45, name=Deck, owner=44, size=34, known=false]
+com.cardshifter.server.outgoing.ResetAvailableActionsMessage@2d326c35
 	*/
+	
+	private void processNewGameMessage(NewGameMessage message) {
+		this.playerIndex = message.getPlayerIndex();
+		System.out.println(String.format("You are player: %d", this.playerIndex));
+	}
 	
 	private void processPlayerMessage(PlayerMessage message) {
-		if (message.getName().equals("Player1")) {
-			for (String string : message.getProperties().keySet()) {
-				if (string.equals("SCRAP")) {
-					opponentScrap.setText(message.getProperties().get("SCRAP").toString());
-				} else if (string.equals("MANA")) {
-					opponentCurrentMana.setText(message.getProperties().get("MANA").toString());
-				} else if (string.equals("MANA_MAX")) {
-					opponentTotalMana.setText(message.getProperties().get("MANA_MAX").toString());
-				} else if (string.equals("HEALTH")) {
-					opponentLife.setText(message.getProperties().get("HEALTH").toString());
-				}
-			}
-		} else if (message.getName().equals("Player2")) {
-			for (String string : message.getProperties().keySet()) {
-				if (string.equals("SCRAP")) {
-					playerScrap.setText(message.getProperties().get("SCRAP").toString());
-				} else if (string.equals("MANA")) {
-					playerCurrentMana.setText(message.getProperties().get("MANA").toString());
-				} else if (string.equals("MANA_MAX")) {
-					playerTotalMana.setText(message.getProperties().get("MANA_MAX").toString());
-				} else if (string.equals("HEALTH")) {
-					playerLife.setText(message.getProperties().get("HEALTH").toString());
-				}
-			}
+		if (message.getIndex() == this.playerIndex) {
+			this.playerId = message.getId();
+			this.processPlayerMessageForPlayer(message, playerStatBox);
+		} else {
+			this.opponentId = message.getId();
+			this.processPlayerMessageForPlayer(message, opponentStatBox);
 		}
 	}
+	private void processPlayerMessageForPlayer(PlayerMessage message, Pane statBox) {
+		statBox.getChildren().clear();
+		Map<String, Integer> sortedMap = new TreeMap<>(message.getProperties());
+		for(Map.Entry<String, Integer> entry : sortedMap.entrySet()) {
+			String key = entry.getKey();
+			statBox.getChildren().add(new Label(key));
+			int value = entry.getValue();
+			statBox.getChildren().add(new Label(String.format("%d",value)));
+		}
+	}
+	
 	private void processUpdateMessage(UpdateMessage message) {
-		if (message.getKey().equals("test")) {
-			
+		if (message.getId() == this.playerId) {
+			this.processUpdateMessageForPlayer(playerStatBox, message);
+		} else if (message.getId() == this.opponentId) {
+			this.processUpdateMessageForPlayer(opponentStatBox, message);
 		}
 	}
+	private void processUpdateMessageForPlayer(Pane statBox, UpdateMessage message) {
+	}
+	
+	//////////ZONE MESSAGES//////////////
 	private void processZoneMessage(ZoneMessage message) {
+		//this may be redundant now that I am doing containsKey at the start of the assignment anyway
+		if (!this.allZonesAssigned()) {
+			assignZoneIdForZoneMessage(message);
+		}		
 		
+		Pane targetPane = this.idMap.get(message.getId());
+		this.processZoneMessageForPane(targetPane, message);
 	}
+	private boolean allZonesAssigned() {
+		return (this.idMap.containsValue(playerBattlefieldPane) 
+				&& this.idMap.containsValue(playerHandPane)
+				&& this.idMap.containsValue(opponentBattlefieldPane)
+				&& this.idMap.containsValue(opponentHandPane));
+	} 
+	private void assignZoneIdForZoneMessage(ZoneMessage message) {
+		if (!this.idMap.containsKey(message.getId())) {
+			if (message.getName().equals("Battlefield")) {
+				if(message.getOwner() == this.playerId) {
+					this.playerBattlefieldId = message.getId();
+					this.idMap.put(this.playerBattlefieldId, playerBattlefieldPane);
+				} else {
+					this.opponentBattlefieldId = message.getId();
+					this.idMap.put(this.opponentBattlefieldId, opponentBattlefieldPane);
+				}
+			} else if (message.getName().equals("Hand")) {
+				if(message.getOwner() == this.playerId) {
+					this.playerHandId = message.getId();
+					this.idMap.put(this.playerHandId, playerHandPane);
+				} else {
+					this.opponentHandId = message.getId();
+					this.idMap.put(this.opponentHandId, opponentHandPane);
+				}
+			}
+		}
+	}
+	private void processZoneMessageForPane(Pane pane, ZoneMessage message) {
+	}
+
+	
 	private void processCardInfoMessage(CardInfoMessage message) {
-		
-	}
-	
-	//need to find the right place to call this (probably multiple)
-	//such as when the player has received all available usable actions
-	//and after they send a message to the server
-	/*
-	private void render() {
-		for (UseableActionMessage message : actions) {
-			//create a box for each usable action
-		}
-		actions.clear();
-		
-		for (CardInfoMessage message : cards) {
-			//render cards to their zones
-		}
-		cards.clear();
-	}
-	*/
-	
+		Pane targetPane = idMap.get(message.getId());
+	}	
 }
 

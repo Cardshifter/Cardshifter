@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.*?>
 
 <AnchorPane fx:id="rootPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cardshifter.client.GameClientController">
-        <children>
+    <children>
         
         <!--  Buttons  -->
         <!-- <Button fx:id="button" layoutX="1098.0" layoutY="530.0" onAction="#startGameButtonAction" text="Start Game" /> -->
@@ -29,29 +29,9 @@
         <!--  Battlefields  -->
         <Pane fx:id="playerBattlefieldPane" layoutX="218.0" layoutY="237.0" prefHeight="98.0" prefWidth="830.0" />
         <Pane fx:id="opponentBattlefieldPane" layoutX="218.0" layoutY="107.0" prefHeight="98.0" prefWidth="830.0" />
-
-        <!--  Game State Labels  -->
-        <Label layoutX="1111.0" layoutY="29.0" text="Opponent" />
-        <Label layoutX="1133.0" layoutY="51.0" text="Life" />
-        <Label layoutX="1101.0" layoutY="91.0" text="Current Mana" />
-        <Label layoutX="1107.0" layoutY="131.0" text="Total Mana" />
-        <Label fx:id="opponentLife" layoutX="1133.0" layoutY="67.0" prefHeight="16.0" prefWidth="35.0" text="#" textAlignment="CENTER" />
-        <Label fx:id="opponentCurrentMana" layoutX="1140.0" layoutY="107.0" text="#" />
-        <Label fx:id="opponentTotalMana" layoutX="1140.0" layoutY="148.0" text="#" />
-        <Label layoutX="1126.0" layoutY="263.0" text="Player" />
-        <Label layoutX="1133.0" layoutY="292.0" text="Life" />
-        <Label fx:id="playerLife" layoutX="1138.0" layoutY="308.0" text="#" />
-        <Label layoutX="1103.0" layoutY="327.0" text="Current Mana" />
-        <Label fx:id="playerCurrentMana" layoutX="1140.0" layoutY="343.0" text="#" />
-        <Label layoutX="1111.0" layoutY="366.0" text="Total Mana" />
-        <Label fx:id="playerTotalMana" layoutX="1141.0" layoutY="385.0" text="#" />
-        <Label layoutX="1127.0" layoutY="171.0" text="Scrap" />
-        <Label layoutX="1129.0" layoutY="407.0" text="Scrap" />
-        <Label fx:id="playerScrap" layoutX="1141.0" layoutY="423.0" text="#" />
-        <Label fx:id="opponentScrap" layoutX="1140.0" layoutY="187.0" text="#" />
         
         <!-- Legend -->
-        <Pane layoutX="859.0" layoutY="12.0" prefHeight="98.0" prefWidth="232.0">
+        <Pane layoutX="844.0" layoutY="7.0" prefHeight="98.0" prefWidth="232.0">
              <children>
                 <Label layoutX="14.0" layoutY="14.0" text="Active" />
                 <Label layoutX="71.0" layoutY="14.0" text="Can Attack" />
@@ -75,6 +55,22 @@
 				<ListView fx:id="serverMessages" layoutY="38.0" prefHeight="276.0" prefWidth="190.0" />
 			</children>
 		</AnchorPane>
+		
+		<!-- Opponent Stat Box -->
+		 <VBox fx:id="opponentStatBox" alignment="TOP_CENTER" layoutX="1067.0" layoutY="37.0" prefHeight="200.0" prefWidth="100.0" />
+	  
+	  <!-- Player Stat Box -->
+      <VBox fx:id="playerStatBox" alignment="TOP_CENTER" layoutX="1067.0" layoutY="273.0" prefHeight="200.0" prefWidth="100.0" />
+				<Label layoutX="1069.0" layoutY="14.0" text="Opponent" textAlignment="CENTER" underline="true">
+					<font>
+						<Font size="20.0" />
+					</font>
+				</Label>
+				<Label layoutX="1088.0" layoutY="248.0" text="Player" textAlignment="CENTER" underline="true">
+					<font>
+						<Font size="20.0" />
+					</font>
+				</Label>
       
     </children>
 </AnchorPane>
