@@ -70,6 +70,8 @@ public class GameClientController {
 	private int playerHandId;
 	private int playerBattlefieldId;
 	private final Map<Integer, Pane> idMap = new HashMap<>();
+	private final Map<String, Integer> playerStatBoxMap = new HashMap<>();
+	private final Map<String, Integer> opponentStatBoxMap = new HashMap<>();
 	
 	private int opponentHandSize;
 	
@@ -205,16 +207,17 @@ public class GameClientController {
 	private void processPlayerMessage(PlayerMessage message) {
 		if (message.getIndex() == this.playerIndex) {
 			this.playerId = message.getId();
-			this.processPlayerMessageForPlayer(message, playerStatBox);
+			this.processPlayerMessageForPlayer(message, playerStatBox, playerStatBoxMap);
 		} else {
 			this.opponentId = message.getId();
-			this.processPlayerMessageForPlayer(message, opponentStatBox);
+			this.processPlayerMessageForPlayer(message, opponentStatBox, opponentStatBoxMap);
 		}
 	}
-	private void processPlayerMessageForPlayer(PlayerMessage message, Pane statBox) {
+	private void processPlayerMessageForPlayer(PlayerMessage message, Pane statBox, Map playerMap) {
 		statBox.getChildren().clear();
 		Map<String, Integer> sortedMap = new TreeMap<>(message.getProperties());
-		for(Map.Entry<String, Integer> entry : sortedMap.entrySet()) {
+		playerMap = sortedMap;
+		for (Map.Entry<String, Integer> entry : sortedMap.entrySet()) {
 			String key = entry.getKey();
 			statBox.getChildren().add(new Label(key));
 			int value = entry.getValue();
@@ -302,12 +305,29 @@ public class GameClientController {
 	
 	private void processUpdateMessage(UpdateMessage message) {
 		if (message.getId() == this.playerId) {
-			this.processUpdateMessageForPlayer(playerStatBox, message);
+			this.processUpdateMessageForPlayer(playerStatBox, message, playerStatBoxMap);
 		} else if (message.getId() == this.opponentId) {
-			this.processUpdateMessageForPlayer(opponentStatBox, message);
+			this.processUpdateMessageForPlayer(opponentStatBox, message, opponentStatBoxMap);
 		}
 	}
-	private void processUpdateMessageForPlayer(Pane statBox, UpdateMessage message) {
+	private void processUpdateMessageForPlayer(Pane statBox, UpdateMessage message, Map playerMap) {
+		String key = (String)message.getKey();
+		System.out.println(String.format("The old value = %d", playerMap.get(key)));
+		Integer value = (Integer)message.getValue();
+		playerMap.put(key, value);
+		System.out.println(String.format("new map value = %d", playerMap.get(key)));
+	
+		this.repaintStatBox(statBox, playerMap);
+	}
+	
+	private void repaintStatBox(Pane statBox, Map<String, Integer> playerMap) {
+		statBox.getChildren().clear();
+		for (Map.Entry<String, Integer> entry : playerMap.entrySet()) {
+			String key = entry.getKey();
+			statBox.getChildren().add(new Label(key));
+			int value = entry.getValue();
+			statBox.getChildren().add(new Label(String.format("%d",value)));
+		}
 	}
 	
 	private void renderOpponentHand() {
@@ -348,5 +368,7 @@ public class GameClientController {
 	CardInfo: 52 in zone 46 - {SICKNESS=1, MANA_COST=5, ATTACK=5, HEALTH=5, ATTACK_AVAILABLE=1}
 	ZoneMessage [id=45, name=Deck, owner=44, size=34, known=false]
 	com.cardshifter.server.outgoing.ResetAvailableActionsMessage@2d326c35
+	UpdateMessage [id=44, key=MANA_MAX, value=2]
+	UpdateMessage [id=44, key=MANA, value=2]
 	*/
 
