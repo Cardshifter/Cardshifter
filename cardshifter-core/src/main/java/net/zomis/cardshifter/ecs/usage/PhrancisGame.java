@@ -102,10 +102,6 @@ public class PhrancisGame {
 		}
 		
 		ResourceRetriever manaMaxResource = ResourceRetriever.forResource(PhrancisResources.MANA_MAX);
-		ResourceRetriever manaResource = ResourceRetriever.forResource(PhrancisResources.MANA);
-		manaMaxResource.resFor(phaseController.getCurrentEntity()).change(1);
-		manaResource.resFor(phaseController.getCurrentEntity()).change(1);
-		
 		ResourceRetriever manaCostResource = ResourceRetriever.forResource(PhrancisResources.MANA_COST);
 		UnaryOperator<Entity> owningPlayerPays = entity -> entity.getComponent(CardComponent.class).getOwner();
 		game.addSystem(new GainResourceSystem(PhrancisResources.MANA_MAX, entity -> Math.min(1, Math.abs(manaMaxResource.getFor(entity) - 10))));
@@ -145,6 +141,7 @@ public class PhrancisGame {
 		
 		// Draw cards
 		game.addSystem(new DrawStartCards(5));
+		game.addSystem(new MulliganSingleCards(game));
 		game.addSystem(new DrawCardAtBeginningOfTurnSystem());
 		game.addSystem(new DamageConstantWhenOutOfCardsSystem(PhrancisResources.HEALTH, 1));
 //		game.addSystem(new DamageIncreasingWhenOutOfCardsSystem());

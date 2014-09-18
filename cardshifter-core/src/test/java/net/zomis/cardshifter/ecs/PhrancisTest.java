@@ -64,6 +64,11 @@ public class PhrancisTest {
 	
 	@Test
 	public void integration() {
+		for (Entity entity : game.getEntitiesWithComponent(PlayerComponent.class)) {
+			ECSAction action = getAction(entity, "Mulligan");
+			action.perform(entity);
+		}
+		
 		assertEquals(1, mana.getFor(phase.getCurrentEntity()));
 		nextPhase();
 		
@@ -253,7 +258,7 @@ public class PhrancisTest {
 
 	private void useAction(Entity entity, String actionName) {
 		ECSAction action = getAction(entity, actionName);
-		assertTrue(action.isAllowed(phase.getCurrentEntity()));
+		assertTrue("Action " + actionName + " is not allowed for " + entity, action.isAllowed(phase.getCurrentEntity()));
 		action.perform(phase.getCurrentEntity());
 	}
 
