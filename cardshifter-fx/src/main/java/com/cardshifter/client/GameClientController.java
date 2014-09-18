@@ -15,19 +15,14 @@ import com.cardshifter.server.outgoing.WelcomeMessage;
 import com.cardshifter.server.outgoing.ZoneMessage;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
@@ -38,7 +33,6 @@ import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -60,10 +54,6 @@ public class GameClientController {
 
 	private final ObjectMapper mapper = new ObjectMapper();
 	private final BlockingQueue<Message> messages = new LinkedBlockingQueue<>();
-	private final List<UseableActionMessage> actions = Collections.synchronizedList(new ArrayList<>());
-	private final List<CardInfoMessage> cards = Collections.synchronizedList(new ArrayList<>());
-	private final List<Message> genericMessages = Collections.synchronizedList(new ArrayList<>());
-	private final List<UseableActionMessage> actionsForServer = Collections.synchronizedList(new ArrayList<>());
 	
 	private Socket socket;
 	private InputStream in;
@@ -79,11 +69,10 @@ public class GameClientController {
 	private int opponentBattlefieldId;
 	private int playerHandId;
 	private int playerBattlefieldId;
-	private Map<Integer, Pane> idMap = new HashMap<>();
+	private final Map<Integer, Pane> idMap = new HashMap<>();
 	
 	private int opponentHandSize;
 	
-	/////////INITIALIZATION///////////////
 	public void acceptIPAndPort(String ipAddress, int port) {
 		// this is passed into the object after it is automatically created by the FXML document
 		this.ipAddress = ipAddress;
@@ -101,14 +90,14 @@ public class GameClientController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+	
 		try {
 			new Thread(this::play).start();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	public void play() {
+	private void play() {
 		// this method only runs once at the start
 		String name = "Player" + new Random().nextInt(100);
 		this.send(new LoginMessage(name));
@@ -118,7 +107,7 @@ public class GameClientController {
 			if (!response.isOK()) {
 				return;
 			}
-			
+	
 			//display the welcome message on the screen
 			Platform.runLater(() -> serverMessage.setText(response.getMessage()));
 			
@@ -143,9 +132,7 @@ public class GameClientController {
 			e.printStackTrace();
 		}
 	}
-	
-	////////COMMUNICATE WITH SERVER///////////
-	//this runs continuously once it starts, gets messages from the server
+
 	private void listen() {
 		while (true) {
 			try {
@@ -161,27 +148,15 @@ public class GameClientController {
 		}
 	}
 	
-	/*
-	private void playLoop() throws JsonParseException, JsonMappingException, IOException {
-		while (true) {
-			if (actionsForServer.isEmpty()) {
-				return;
-			} else {
-				try {
-					UseableActionMessage action = actionsForServer.get(0);
-					if (action.isTargetRequired()) {
-						this.send(new RequestTargetsMessage(gameId, action.getId(), action.getAction()));
-					}
-					else {
-						this.send(new UseAbilityMessage(gameId, action.getId(), action.getAction(), action.getTargetId()));
-					}
-				} catch (NumberFormatException | IndexOutOfBoundsException ex) {
-					System.out.println("Not a valid action");
-				}
-			}
+	private void send(Message message) {
+		try {
+			System.out.println("Sending: " + this.mapper.writeValueAsString(message));
+			this.mapper.writeValue(out, message);
+		} catch (IOException e) {
+			System.out.println("Error sending message: " + message);
+			throw new RuntimeException(e);
 		}
 	}
-	*/
 	
 	public void createAndSendMessage(Message message) {
 		try {
@@ -199,48 +174,26 @@ public class GameClientController {
 		this.actionBox.getChildren().clear();
 	}
 	
-	private void send(Message message) {
-		try {
-			System.out.println("Sending: " + this.mapper.writeValueAsString(message));
-			this.mapper.writeValue(out, message);
-		} catch (IOException e) {
-			System.out.println("Error sending message: " + message);
-			throw new RuntimeException(e);
-		}
-	}
-	
-	//////////RENDER INFORMATION////////////
 	private void processMessageFromServer(Message message) {
 		
 		serverMessages.getItems().add(message.toString());
-		//do a check a prune server messages if it is too large - not in this method?
 		
+		//this is for diagnostics so I can copy paste the messages to know their format
 		System.out.println(message.toString());
 		
-		if (message instanceof PlayerMessage) {
+		if (message instanceof NewGameMessage) {
+			this.processNewGameMessage((NewGameMessage) message);
+		} else if (message instanceof PlayerMessage) {
 			this.processPlayerMessage((PlayerMessage)message);
-		} else if (message instanceof UpdateMessage) {
-			this.processUpdateMessage((UpdateMessage)message);
 		} else if (message instanceof ZoneMessage) {
 			this.processZoneMessage((ZoneMessage)message);
 		} else if (message instanceof CardInfoMessage) {
 			this.processCardInfoMessage((CardInfoMessage)message);
-		} else if (message instanceof NewGameMessage) {
-			this.processNewGameMessage((NewGameMessage)message);
 		} else if (message instanceof UseableActionMessage) {
 			this.processUseableActionMessage((UseableActionMessage)message);
-		}
-	}
-	
-	private void processUseableActionMessage(UseableActionMessage message) {
-		double paneHeight = actionBox.getHeight();
-		double paneWidth = actionBox.getWidth();
-		
-		int maxActions = 5;
-		double actionWidth = paneWidth / maxActions;
-		
-		ActionButton actionButton = new ActionButton(message, this, actionWidth, paneHeight);
-		actionBox.getChildren().add(actionButton);
+		} else if (message instanceof UpdateMessage) {
+			this.processUpdateMessage((UpdateMessage)message);
+		} 
 	}
 	
 	private void processNewGameMessage(NewGameMessage message) {
@@ -269,17 +222,6 @@ public class GameClientController {
 		}
 	}
 	
-	private void processUpdateMessage(UpdateMessage message) {
-		if (message.getId() == this.playerId) {
-			this.processUpdateMessageForPlayer(playerStatBox, message);
-		} else if (message.getId() == this.opponentId) {
-			this.processUpdateMessageForPlayer(opponentStatBox, message);
-		}
-	}
-	private void processUpdateMessageForPlayer(Pane statBox, UpdateMessage message) {
-	}
-	
-	//////////ZONE MESSAGES//////////////
 	private void processZoneMessage(ZoneMessage message) {
 		if (!this.allZonesAssigned()) {
 			this.assignZoneIdForZoneMessage(message);
@@ -320,7 +262,6 @@ public class GameClientController {
 	}
 	private void processZoneMessageForPane(Pane pane, ZoneMessage message) {
 	}
-
 	
 	private void processCardInfoMessage(CardInfoMessage message) {
 		if (idMap.containsKey(message.getZone())) {
@@ -338,16 +279,35 @@ public class GameClientController {
 		}
 	}	
 	private void addCardToOpponentBattlefieldPane(CardInfoMessage message) {
-		
 	}
 	private void addCardToOpponentHandPane(CardInfoMessage message) {
 	}
 	private void addCardToPlayerBattlefieldPane(CardInfoMessage message) {
-		
 	}
 	private void addCardToPlayerHandPane(CardInfoMessage message) {
 		CardHandDocumentController card = new CardHandDocumentController(message, this);
 		playerHandPane.getChildren().add(card.getRootPane());
+	}
+	
+	private void processUseableActionMessage(UseableActionMessage message) {
+		double paneHeight = actionBox.getHeight();
+		double paneWidth = actionBox.getWidth();
+		
+		int maxActions = 5;
+		double actionWidth = paneWidth / maxActions;
+		
+		ActionButton actionButton = new ActionButton(message, this, actionWidth, paneHeight);
+		actionBox.getChildren().add(actionButton);
+	}
+	
+	private void processUpdateMessage(UpdateMessage message) {
+		if (message.getId() == this.playerId) {
+			this.processUpdateMessageForPlayer(playerStatBox, message);
+		} else if (message.getId() == this.opponentId) {
+			this.processUpdateMessageForPlayer(opponentStatBox, message);
+		}
+	}
+	private void processUpdateMessageForPlayer(Pane statBox, UpdateMessage message) {
 	}
 	
 	private void renderOpponentHand() {
