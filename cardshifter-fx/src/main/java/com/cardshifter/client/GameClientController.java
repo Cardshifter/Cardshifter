@@ -220,7 +220,7 @@ public class GameClientController {
 	private void processPlayerMessageForPlayer(PlayerMessage message, Pane statBox, Map playerMap) {
 		statBox.getChildren().clear();
 		Map<String, Integer> sortedMap = new TreeMap<>(message.getProperties());
-		playerMap = sortedMap;
+		playerMap.putAll(sortedMap);
 		for (Map.Entry<String, Integer> entry : sortedMap.entrySet()) {
 			String key = entry.getKey();
 			statBox.getChildren().add(new Label(key));
