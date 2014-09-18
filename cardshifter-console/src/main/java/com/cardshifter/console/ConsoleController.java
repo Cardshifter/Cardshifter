@@ -16,6 +16,7 @@ import com.cardshifter.core.Zone;
 import com.cardshifter.core.actions.TargetAction;
 import com.cardshifter.core.actions.UsableAction;
 
+@Deprecated
 public class ConsoleController {
 	private final Game game;
 

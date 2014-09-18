@@ -1,6 +1,7 @@
 package com.cardshifter.core;
 
 import static org.junit.Assert.*;
+
 import org.junit.Test;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.jse.CoerceLuaToJava;
@@ -9,6 +10,7 @@ import com.cardshifter.core.actions.UsableAction;
 
 public class StartupTest {
 	@Test
+	@Deprecated
 	public void createGameWithDecks() {
 		Game game = new Game(Game.class.getResourceAsStream("start.lua"));
 		game.getEvents().startGame(game);

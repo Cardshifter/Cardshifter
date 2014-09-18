@@ -8,6 +8,7 @@ import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 import com.cardshifter.core.Card;
 import com.cardshifter.core.Game;
 
+@Deprecated
 public class CardAction extends UsableAction {
 	private final Card card;
 
