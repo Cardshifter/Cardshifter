@@ -138,6 +138,8 @@ public class PhrancisTest {
 		useActionWithFailedTarget(enchantment, PhrancisGame.ENCHANT_ACTION, attackerPlayer);
 		assertResource(attacker, PhrancisResources.ATTACK, 4);
 		assertResource(attacker, PhrancisResources.HEALTH, 4);
+		List<Entity> targets = enchantment.get(actions).getAction(PhrancisGame.ENCHANT_ACTION).getTargetSets().get(0).findPossibleTargets();
+		assertEquals(1, targets.size());
 		useActionWithTarget(enchantment, PhrancisGame.ENCHANT_ACTION, attacker);
 		assertResource(attacker, PhrancisResources.ATTACK, 4);
 		assertResource(attacker, PhrancisResources.HEALTH, 5);
