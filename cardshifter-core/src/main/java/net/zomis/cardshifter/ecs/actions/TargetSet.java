@@ -15,7 +15,7 @@ public class TargetSet {
 	private final ECSAction action;
 	
 	public TargetSet(ECSAction action, int min, int max) {
-		this.chosenTargets = new ArrayList<>(max);
+		this.chosenTargets = new ArrayList<>(min);
 		this.action = action;
 		this.min = min;
 		this.max = max;
