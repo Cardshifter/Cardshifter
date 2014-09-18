@@ -38,6 +38,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -55,6 +56,7 @@ public class GameClientController {
 	@FXML private HBox opponentBattlefieldPane;
 	@FXML private HBox playerHandPane;
 	@FXML private HBox playerBattlefieldPane;
+	@FXML private HBox actionBox;
 
 	private final ObjectMapper mapper = new ObjectMapper();
 	private final BlockingQueue<Message> messages = new LinkedBlockingQueue<>();
@@ -137,7 +139,6 @@ public class GameClientController {
 				message = messages.take();
 			}
 			this.gameId = ((NewGameMessage) message).getGameId();
-			this.playLoop();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -160,6 +161,7 @@ public class GameClientController {
 		}
 	}
 	
+	/*
 	private void playLoop() throws JsonParseException, JsonMappingException, IOException {
 		while (true) {
 			if (actionsForServer.isEmpty()) {
@@ -178,6 +180,23 @@ public class GameClientController {
 				}
 			}
 		}
+	}
+	*/
+	
+	public void createAndSendMessage(Message message) {
+		try {
+			UseableActionMessage action = (UseableActionMessage)message;
+			
+			if (action.isTargetRequired()) {
+				this.send(new RequestTargetsMessage(gameId, action.getId(), action.getAction()));
+			} else {
+				this.send(new UseAbilityMessage(gameId, action.getId(), action.getAction(), action.getTargetId()));
+			}
+		} catch (NumberFormatException | IndexOutOfBoundsException ex) {
+			System.out.println("Not a valid action");
+		}
+		
+		this.actionBox.getChildren().clear();
 	}
 	
 	private void send(Message message) {
@@ -208,7 +227,20 @@ public class GameClientController {
 			this.processCardInfoMessage((CardInfoMessage)message);
 		} else if (message instanceof NewGameMessage) {
 			this.processNewGameMessage((NewGameMessage)message);
+		} else if (message instanceof UseableActionMessage) {
+			this.processUseableActionMessage((UseableActionMessage)message);
 		}
+	}
+	
+	private void processUseableActionMessage(UseableActionMessage message) {
+		double paneHeight = actionBox.getHeight();
+		double paneWidth = actionBox.getWidth();
+		
+		int maxActions = 5;
+		double actionWidth = paneWidth / maxActions;
+		
+		ActionButton actionButton = new ActionButton(message, this, actionWidth, paneHeight);
+		actionBox.getChildren().add(actionButton);
 	}
 	
 	private void processNewGameMessage(NewGameMessage message) {

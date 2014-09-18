@@ -8,8 +8,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -43,7 +43,15 @@ public class CardHandDocumentController implements Initializable {
         this.card = message;
         this.setCardId();
         this.setCardLabels();
+		this.setActionForRootPane();
     }
+	
+	private void setActionForRootPane() {
+		this.anchorPane.setOnMouseClicked(this::actionOnClick);
+	}
+	private void actionOnClick(MouseEvent event) {
+		System.out.println("Action detected on card" + this.cardId.textProperty());
+	}
     
     public AnchorPane getRootPane() {
 		return this.anchorPane;
