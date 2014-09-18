@@ -18,16 +18,19 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
@@ -142,6 +145,9 @@ public class GameClientController {
 					messages.offer(message);
 					Platform.runLater(() -> this.processMessageFromServer(message));
 				}
+			} catch (SocketException e) {
+				e.printStackTrace();
+				return;
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
