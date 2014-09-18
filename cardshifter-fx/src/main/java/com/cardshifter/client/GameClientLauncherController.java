@@ -12,49 +12,29 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-
-//This class just loads the FXML document which initializes its DocumentController
 
 public class GameClientLauncherController implements Initializable {
 	
-	@FXML
-	private TextField ipAddressBox;
-	
-	@FXML
-	private TextField portBox;
-	
-	@FXML
-	private Button connectButton;
-	
-	@FXML
-	private Label errorMessage;
+	@FXML private TextField ipAddressBox;
+	@FXML private TextField portBox;
+	@FXML private Button connectButton;
+	@FXML private Label errorMessage;
+	@FXML private AnchorPane anchorPane;
 
 	private String getCharactersFromTextField(TextField textField) {
 		return textField.getCharacters().toString();
 	}
 	
 	private void buttonClick(ActionEvent event) {
-		//Get values from the TextFields
 		String ipAddressValue = this.getCharactersFromTextField(ipAddressBox);
 		int portValue = Integer.parseInt(this.getCharactersFromTextField(portBox));
-		
-		//Attempt to make a connection
-		try {
-			//Send a test to the server, to make sure that it is valid
-			
-			//if it is valid
-			errorMessage.setText("Success!");
-			this.closeWithSuccess(event);
-			this.switchToMainGameWindow(ipAddressValue, portValue);
-		} catch (Exception e) {
-			String message = e.getMessage();
-			errorMessage.setText(message);
-		}
+		this.switchToMainGameWindow(ipAddressValue, portValue);
 	}
 	
-	private void closeWithSuccess(ActionEvent event) {
-		Node source = (Node)event.getSource();
+	private void closeWithSuccess() {
+		Node source = anchorPane;
 		Stage stage = (Stage)source.getScene().getWindow();
 		stage.close();
 	}
@@ -62,20 +42,22 @@ public class GameClientLauncherController implements Initializable {
 	private void switchToMainGameWindow(String ipAddress, int port) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("ClientDocument.fxml"));
-			
 			Parent root = (Parent)loader.load();
 			
 			GameClientController controller = loader.<GameClientController>getController();
 			controller.acceptIPAndPort(ipAddress, port);
-			controller.connectToGame();
-		
-			Scene scene = new Scene(root);
 			
-			Stage gameStage = new Stage();
-		
-			gameStage.setScene(scene);
-			//stage.centerOnScreen();
-			gameStage.show();
+			if (controller.connectToGame()) {
+				errorMessage.setText("Success!");
+				this.closeWithSuccess();
+				
+				Scene scene = new Scene(root);
+				Stage gameStage = new Stage();
+				gameStage.setScene(scene);
+				gameStage.show();
+			} else {
+				errorMessage.setText("Connection Failed!");
+			}
 		}
         catch (Exception e) {
             throw new RuntimeException(e);
@@ -84,7 +66,6 @@ public class GameClientLauncherController implements Initializable {
 	
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
-		// TODO
 		connectButton.setOnAction(this::buttonClick);
 		ipAddressBox.setText("127.0.0.1");
 		portBox.setText("4242");

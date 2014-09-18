@@ -80,7 +80,7 @@ public class GameClientController {
 		this.ipAddress = ipAddress;
 		this.port = port;
 	}
-	public void connectToGame() {
+	public boolean connectToGame() {
 		// this is called on the object from the Game launcher before the scene is displayed
 		try {
 			this.socket = new Socket(this.ipAddress, this.port);
@@ -90,14 +90,12 @@ public class GameClientController {
 			mapper.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
 			new Thread(this::listen).start();
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println("Connection Failed");
+			return false;
 		}
-	
-		try {
-			new Thread(this::play).start();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		
+		new Thread(this::play).start();
+		return true;
 	}
 	private void play() {
 		// this method only runs once at the start
@@ -296,7 +294,7 @@ public class GameClientController {
 		double paneHeight = actionBox.getHeight();
 		double paneWidth = actionBox.getWidth();
 		
-		int maxActions = 5;
+		int maxActions = 8;
 		double actionWidth = paneWidth / maxActions;
 		
 		ActionButton actionButton = new ActionButton(message, this, actionWidth, paneHeight);
