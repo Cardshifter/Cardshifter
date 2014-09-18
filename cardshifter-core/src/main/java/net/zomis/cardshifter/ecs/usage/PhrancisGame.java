@@ -14,6 +14,7 @@ import net.zomis.cardshifter.ecs.cards.Cards;
 import net.zomis.cardshifter.ecs.cards.DeckComponent;
 import net.zomis.cardshifter.ecs.cards.DrawStartCards;
 import net.zomis.cardshifter.ecs.cards.HandComponent;
+import net.zomis.cardshifter.ecs.cards.LimitedHandSizeSystem;
 import net.zomis.cardshifter.ecs.cards.RemoveDeadEntityFromZoneSystem;
 import net.zomis.cardshifter.ecs.cards.ZoneComponent;
 import net.zomis.cardshifter.ecs.components.CreatureTypeComponent;
@@ -144,7 +145,7 @@ public class PhrancisGame {
 		game.addSystem(new DrawCardAtBeginningOfTurnSystem());
 		game.addSystem(new DamageConstantWhenOutOfCardsSystem(PhrancisResources.HEALTH, 1));
 //		game.addSystem(new DamageIncreasingWhenOutOfCardsSystem());
-		// TODO: game.addSystem(new LimitedHandSizeSystem(10, card -> card.destroy()));
+		game.addSystem(new LimitedHandSizeSystem(10, card -> card.getCardToDraw().destroy()));
 //		game.addSystem(new RecreateDeckSystem());
 		
 		// Initial setup
