@@ -33,10 +33,12 @@ import com.cardshifter.server.incoming.RequestTargetsMessage;
 import com.cardshifter.server.incoming.UseAbilityMessage;
 import com.cardshifter.server.main.FakeAIClientTCG;
 import com.cardshifter.server.outgoing.CardInfoMessage;
+import com.cardshifter.server.outgoing.EntityRemoveMessage;
 import com.cardshifter.server.outgoing.PlayerMessage;
 import com.cardshifter.server.outgoing.ResetAvailableActionsMessage;
 import com.cardshifter.server.outgoing.UpdateMessage;
 import com.cardshifter.server.outgoing.UseableActionMessage;
+import com.cardshifter.server.outgoing.ZoneChangeMessage;
 import com.cardshifter.server.outgoing.ZoneMessage;
 
 public class TCGGame extends ServerGame {
@@ -62,11 +64,17 @@ public class TCGGame extends ServerGame {
 	}
 
 	private void zoneChange(ZoneChangeEvent event) {
-		
+		for (ClientIO io : this.getPlayers()) {
+			Entity player = playerFor(io);
+			io.sendToClient(new ZoneChangeMessage(event.getCard().getId(), event.getSource().getZoneId(), event.getDestination().getZoneId()));
+			if (event.getDestination().isKnownTo(player) && event.getSource().isKnownTo(player)) {
+				sendCard(io, event.getCard());
+			}
+		}
 	}
 	
 	private void remove(EntityRemoveEvent event) {
-		
+		this.send(new EntityRemoveMessage(event.getEntity().getId()));
 	}
 	
 	private void broadcast(ResourceValueChange event) {
