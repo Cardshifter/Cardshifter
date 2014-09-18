@@ -21,6 +21,7 @@ public class ResourceRetreiver {
 	}
 
 	private ECSResourceMap resMap(Entity entity) {
+		Objects.requireNonNull(entity, "Cannot retrieve resource map for null entity");
 		ECSResourceMap map = entity.getComponent(ECSResourceMap.class);
 		return Objects.requireNonNull(map, entity + " does not have a resource component");
 	}
