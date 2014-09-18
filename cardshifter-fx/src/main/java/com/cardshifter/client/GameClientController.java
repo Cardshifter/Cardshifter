@@ -18,16 +18,19 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
@@ -80,7 +83,7 @@ public class GameClientController {
 		this.ipAddress = ipAddress;
 		this.port = port;
 	}
-	public void connectToGame() {
+	public boolean connectToGame() {
 		// this is called on the object from the Game launcher before the scene is displayed
 		try {
 			this.socket = new Socket(this.ipAddress, this.port);
@@ -90,14 +93,12 @@ public class GameClientController {
 			mapper.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
 			new Thread(this::listen).start();
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println("Connection Failed");
+			return false;
 		}
-	
-		try {
-			new Thread(this::play).start();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		
+		new Thread(this::play).start();
+		return true;
 	}
 	private void play() {
 		// this method only runs once at the start
@@ -144,6 +145,9 @@ public class GameClientController {
 					messages.offer(message);
 					Platform.runLater(() -> this.processMessageFromServer(message));
 				}
+			} catch (SocketException e) {
+				e.printStackTrace();
+				return;
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -216,7 +220,7 @@ public class GameClientController {
 	private void processPlayerMessageForPlayer(PlayerMessage message, Pane statBox, Map playerMap) {
 		statBox.getChildren().clear();
 		Map<String, Integer> sortedMap = new TreeMap<>(message.getProperties());
-		playerMap = sortedMap;
+		playerMap.putAll(sortedMap);
 		for (Map.Entry<String, Integer> entry : sortedMap.entrySet()) {
 			String key = entry.getKey();
 			statBox.getChildren().add(new Label(key));
@@ -296,7 +300,7 @@ public class GameClientController {
 		double paneHeight = actionBox.getHeight();
 		double paneWidth = actionBox.getWidth();
 		
-		int maxActions = 5;
+		int maxActions = 8;
 		double actionWidth = paneWidth / maxActions;
 		
 		ActionButton actionButton = new ActionButton(message, this, actionWidth, paneHeight);
@@ -312,10 +316,8 @@ public class GameClientController {
 	}
 	private void processUpdateMessageForPlayer(Pane statBox, UpdateMessage message, Map playerMap) {
 		String key = (String)message.getKey();
-		System.out.println(String.format("The old value = %d", playerMap.get(key)));
 		Integer value = (Integer)message.getValue();
 		playerMap.put(key, value);
-		System.out.println(String.format("new map value = %d", playerMap.get(key)));
 	
 		this.repaintStatBox(statBox, playerMap);
 	}
