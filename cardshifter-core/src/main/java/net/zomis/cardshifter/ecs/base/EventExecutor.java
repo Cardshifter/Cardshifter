@@ -9,8 +9,13 @@ import java.util.Map.Entry;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 public class EventExecutor {
 
+	private static final Logger logger = LogManager.getLogger(EventExecutor.class);
+	
 	protected final Map<Class<? extends IEvent>, Collection<EventHandler<?>>> bindings;
 	
 	public EventExecutor() {
@@ -26,10 +31,12 @@ public class EventExecutor {
 	}
 	
 	public <T extends IEvent> T executePostEvent(T event) {
+		logger.debug("Execute pre event " + event);
 		return executeEvent(event, eh -> eh.isAfter());
 	}
 
 	public <T extends IEvent> T executePreEvent(T event) {
+		logger.debug("Execute post event " + event);
 		return executeEvent(event, eh -> !eh.isAfter());
 	}
 
