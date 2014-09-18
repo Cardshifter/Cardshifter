@@ -316,10 +316,8 @@ public class GameClientController {
 	}
 	private void processUpdateMessageForPlayer(Pane statBox, UpdateMessage message, Map playerMap) {
 		String key = (String)message.getKey();
-		System.out.println(String.format("The old value = %d", playerMap.get(key)));
 		Integer value = (Integer)message.getValue();
 		playerMap.put(key, value);
-		System.out.println(String.format("new map value = %d", playerMap.get(key)));
 	
 		this.repaintStatBox(statBox, playerMap);
 	}

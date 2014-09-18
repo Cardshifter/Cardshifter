@@ -13,7 +13,9 @@ import net.zomis.cardshifter.ecs.actions.TargetSet;
 import net.zomis.cardshifter.ecs.base.ComponentRetriever;
 import net.zomis.cardshifter.ecs.base.ECSGame;
 import net.zomis.cardshifter.ecs.base.Entity;
+import net.zomis.cardshifter.ecs.base.EntityRemoveEvent;
 import net.zomis.cardshifter.ecs.cards.CardComponent;
+import net.zomis.cardshifter.ecs.cards.ZoneChangeEvent;
 import net.zomis.cardshifter.ecs.cards.ZoneComponent;
 import net.zomis.cardshifter.ecs.components.PlayerComponent;
 import net.zomis.cardshifter.ecs.phase.PhaseController;
@@ -31,10 +33,12 @@ import com.cardshifter.server.incoming.RequestTargetsMessage;
 import com.cardshifter.server.incoming.UseAbilityMessage;
 import com.cardshifter.server.main.FakeAIClientTCG;
 import com.cardshifter.server.outgoing.CardInfoMessage;
+import com.cardshifter.server.outgoing.EntityRemoveMessage;
 import com.cardshifter.server.outgoing.PlayerMessage;
 import com.cardshifter.server.outgoing.ResetAvailableActionsMessage;
 import com.cardshifter.server.outgoing.UpdateMessage;
 import com.cardshifter.server.outgoing.UseableActionMessage;
+import com.cardshifter.server.outgoing.ZoneChangeMessage;
 import com.cardshifter.server.outgoing.ZoneMessage;
 
 public class TCGGame extends ServerGame {
@@ -53,10 +57,26 @@ public class TCGGame extends ServerGame {
 		super(server, id);
 		game = PhrancisGame.createGame();
 		game.getEvents().registerHandlerAfter(ResourceValueChange.class, this::broadcast);
+		game.getEvents().registerHandlerAfter(ZoneChangeEvent.class, this::zoneChange);
+		game.getEvents().registerHandlerAfter(EntityRemoveEvent.class, this::remove);
 		aiPerform.scheduleWithFixedDelay(this::aiPerform, 0, AI_DELAY_SECONDS, TimeUnit.SECONDS);
 		phases = ComponentRetriever.singleton(game, PhaseController.class);
 	}
 
+	private void zoneChange(ZoneChangeEvent event) {
+		for (ClientIO io : this.getPlayers()) {
+			Entity player = playerFor(io);
+			io.sendToClient(new ZoneChangeMessage(event.getCard().getId(), event.getSource().getZoneId(), event.getDestination().getZoneId()));
+			if (event.getDestination().isKnownTo(player) && event.getSource().isKnownTo(player)) {
+				sendCard(io, event.getCard());
+			}
+		}
+	}
+	
+	private void remove(EntityRemoveEvent event) {
+		this.send(new EntityRemoveMessage(event.getEntity().getId()));
+	}
+	
 	private void broadcast(ResourceValueChange event) {
 		if (getState() == GameState.NOT_STARTED) {
 			// let the most information be sent when actually starting the game
