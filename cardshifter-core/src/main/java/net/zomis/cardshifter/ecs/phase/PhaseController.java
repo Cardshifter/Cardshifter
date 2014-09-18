@@ -17,9 +17,10 @@ public class PhaseController extends Component {
 	public PhaseController() {
 	}
 
-	public void addPhase(Phase phase) {
+	public PhaseController addPhase(Phase phase) {
 		permanentPhases.add(phase);
 		upcomingPhases.add(phase);
+		return this;
 	}
 	
 	public void insertTemporaryPhaseNext(Phase phase) {
@@ -112,6 +113,10 @@ public class PhaseController extends Component {
 	 */
 	public int getRecreateCount() {
 		return recreateCount;
+	}
+
+	public void insertTemporaryPhaseBeforeCurrent(Phase phase) {
+		this.upcomingPhases.addFirst(phase);
 	}
 	
 }
