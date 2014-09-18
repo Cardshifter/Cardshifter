@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -24,9 +25,10 @@ public class CardHandDocumentController implements Initializable {
     @FXML private Label enchStrength;
     @FXML private Label enchHealth;
 	@FXML private Rectangle background;
+	@FXML private AnchorPane anchorPane;
     
     //Initialization
-    private Pane root;
+    private AnchorPane root;
     private final CardInfoMessage card;
     public CardHandDocumentController(CardInfoMessage message, GameClientController controller) {
         try {
@@ -43,8 +45,8 @@ public class CardHandDocumentController implements Initializable {
         this.setCardLabels();
     }
     
-    public Pane getRootPane() {
-        return this.root;
+    public AnchorPane getRootPane() {
+		return this.anchorPane;
     }
 
     public void setRectangleColorActive() {
@@ -58,16 +60,18 @@ public class CardHandDocumentController implements Initializable {
 	
     private void setCardLabels() {
 		for(String key : this.card.getProperties().keySet()) {
-			System.out.println(key);
+			if (key.equals("SICKNESS")) {
+				
+			} else if (key.equals("MANA_COST")) {
+				manaCost.setText(String.format("Mana Cost = %d", this.card.getProperties().get(key)));
+			} else if (key.equals("ATTACK")) {
+				strength.setText(this.card.getProperties().get(key).toString());
+			} else if (key.equals("HEALTH")) {
+				health.setText(this.card.getProperties().get(key).toString());
+			} else if (key.equals("ATTACK_AVAILABLE")) {
+				
+			}
 		}
-		
-		/*
-		SICKNESS
-		MANA_COST
-		ATTACK
-		HEALTH
-		ATTACK_AVAILABLE
-		*/
 		
 		/*
         List<ECSResourceData> keyList = new ArrayList<>();

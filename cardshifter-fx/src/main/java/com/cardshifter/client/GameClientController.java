@@ -35,11 +35,14 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 public class GameClientController {
 	
@@ -75,6 +78,8 @@ public class GameClientController {
 	private int playerHandId;
 	private int playerBattlefieldId;
 	private Map<Integer, Pane> idMap = new HashMap<>();
+	
+	private int opponentHandSize;
 	
 	/////////INITIALIZATION///////////////
 	public void acceptIPAndPort(String ipAddress, int port) {
@@ -206,28 +211,6 @@ public class GameClientController {
 		}
 	}
 	
-	/*
-Sending: {"command":"login","username":"Player26"}
-Sending: {"command":"startgame"}
-com.cardshifter.server.outgoing.WelcomeMessage@33c7b4f6
-com.cardshifter.server.outgoing.NewGameMessage@2ff58dec
-You are player: 1
-Player Info: Player1 - {SCRAP=0, MANA=1, MANA_MAX=1, HEALTH=10}
-Player Info: Player2 - {SCRAP=0, MANA=0, HEALTH=10}
-ZoneMessage [id=4, name=Battlefield, owner=1, size=0, known=true]
-ZoneMessage [id=3, name=Hand, owner=1, size=5, known=false]
-ZoneMessage [id=2, name=Deck, owner=1, size=34, known=false]
-ZoneMessage [id=47, name=Battlefield, owner=44, size=0, known=true]
-ZoneMessage [id=46, name=Hand, owner=44, size=5, known=true]
-CardInfo: 48 in zone 46 - {SICKNESS=1, MANA_COST=1, ATTACK=1, HEALTH=1, ATTACK_AVAILABLE=1}
-CardInfo: 49 in zone 46 - {SICKNESS=1, MANA_COST=2, ATTACK=2, HEALTH=1, ATTACK_AVAILABLE=1}
-CardInfo: 50 in zone 46 - {SICKNESS=1, MANA_COST=3, ATTACK=3, HEALTH=3, ATTACK_AVAILABLE=1}
-CardInfo: 51 in zone 46 - {SICKNESS=1, MANA_COST=4, ATTACK=4, HEALTH=4, ATTACK_AVAILABLE=1}
-CardInfo: 52 in zone 46 - {SICKNESS=1, MANA_COST=5, ATTACK=5, HEALTH=5, ATTACK_AVAILABLE=1}
-ZoneMessage [id=45, name=Deck, owner=44, size=34, known=false]
-com.cardshifter.server.outgoing.ResetAvailableActionsMessage@2d326c35
-	*/
-	
 	private void processNewGameMessage(NewGameMessage message) {
 		this.playerIndex = message.getPlayerIndex();
 		
@@ -295,7 +278,10 @@ com.cardshifter.server.outgoing.ResetAvailableActionsMessage@2d326c35
 					this.idMap.put(this.playerHandId, playerHandPane);
 				} else {
 					this.opponentHandId = message.getId();
+					this.opponentHandSize = message.getSize();
 					this.idMap.put(this.opponentHandId, opponentHandPane);
+					
+					this.renderOpponentHand();
 				}
 			}
 		}
@@ -323,7 +309,6 @@ com.cardshifter.server.outgoing.ResetAvailableActionsMessage@2d326c35
 		
 	}
 	private void addCardToOpponentHandPane(CardInfoMessage message) {
-		
 	}
 	private void addCardToPlayerBattlefieldPane(CardInfoMessage message) {
 		
@@ -332,5 +317,44 @@ com.cardshifter.server.outgoing.ResetAvailableActionsMessage@2d326c35
 		CardHandDocumentController card = new CardHandDocumentController(message, this);
 		playerHandPane.getChildren().add(card.getRootPane());
 	}
+	
+	private void renderOpponentHand() {
+		//Opponent cards are rendered differently because the faces are not visible
+		double paneHeight = opponentHandPane.getHeight();
+		double paneWidth = opponentHandPane.getWidth();
+		
+		int maxCards = 10;
+		double cardWidth = paneWidth / maxCards;
+
+		for (int currentCard = 0; currentCard < this.opponentHandSize; currentCard++) {
+			Group cardGroup = new Group();
+			Rectangle cardBack = new Rectangle(0,0,cardWidth,paneHeight);
+			cardBack.setFill(Color.AQUAMARINE);
+			cardGroup.getChildren().add(cardBack);
+			opponentHandPane.getChildren().add(cardGroup);
+		}
+	}
 }
+	//Sample server message strings
+	/*
+	Sending: {"command":"login","username":"Player26"}
+	Sending: {"command":"startgame"}
+	com.cardshifter.server.outgoing.WelcomeMessage@33c7b4f6
+	com.cardshifter.server.outgoing.NewGameMessage@2ff58dec
+	You are player: 1
+	Player Info: Player1 - {SCRAP=0, MANA=1, MANA_MAX=1, HEALTH=10}
+	Player Info: Player2 - {SCRAP=0, MANA=0, HEALTH=10}
+	ZoneMessage [id=4, name=Battlefield, owner=1, size=0, known=true]
+	ZoneMessage [id=3, name=Hand, owner=1, size=5, known=false]
+	ZoneMessage [id=2, name=Deck, owner=1, size=34, known=false]
+	ZoneMessage [id=47, name=Battlefield, owner=44, size=0, known=true]
+	ZoneMessage [id=46, name=Hand, owner=44, size=5, known=true]
+	CardInfo: 48 in zone 46 - {SICKNESS=1, MANA_COST=1, ATTACK=1, HEALTH=1, ATTACK_AVAILABLE=1}
+	CardInfo: 49 in zone 46 - {SICKNESS=1, MANA_COST=2, ATTACK=2, HEALTH=1, ATTACK_AVAILABLE=1}
+	CardInfo: 50 in zone 46 - {SICKNESS=1, MANA_COST=3, ATTACK=3, HEALTH=3, ATTACK_AVAILABLE=1}
+	CardInfo: 51 in zone 46 - {SICKNESS=1, MANA_COST=4, ATTACK=4, HEALTH=4, ATTACK_AVAILABLE=1}
+	CardInfo: 52 in zone 46 - {SICKNESS=1, MANA_COST=5, ATTACK=5, HEALTH=5, ATTACK_AVAILABLE=1}
+	ZoneMessage [id=45, name=Deck, owner=44, size=34, known=false]
+	com.cardshifter.server.outgoing.ResetAvailableActionsMessage@2d326c35
+	*/
 
