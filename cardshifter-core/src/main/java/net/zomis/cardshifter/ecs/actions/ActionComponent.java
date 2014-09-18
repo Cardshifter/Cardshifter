@@ -32,4 +32,8 @@ public class ActionComponent extends Component {
 		return new ArrayList<>(actions.values());
 	}
 	
+	public boolean removeAction(String actionName) {
+		return actions.remove(actionName) != null;
+	}
+	
 }
