@@ -21,10 +21,12 @@ public class ChoiceBoxNode {
 	private final String name;
 	private final ECSAction action;
 	private final FXMLGameController controller;
+	private final Entity performer;
 	
 	private final Group choiceBoxGroup;
 	
 	public ChoiceBoxNode(double sizeX, double sizeY, String name, ECSAction action, FXMLGameController controller) {
+		this.performer = controller.getPlayerPerspective();
 		this.sizeX = sizeX;
 		this.sizeY = sizeY;
 		this.name = name;
@@ -79,7 +81,7 @@ public class ChoiceBoxNode {
 	
 	private void buttonClick(ActionEvent event) {
 		System.out.println("Trying to Perform Choice");
-		if (this.action.isAllowed()) {
+		if (this.action.isAllowed(performer)) {
 			if (!this.action.getTargetSets().isEmpty()) {
 				TargetSet targetAction = this.action.getTargetSets().get(0);
 				List<Entity> targets = targetAction.findPossibleTargets();
@@ -94,14 +96,14 @@ public class ChoiceBoxNode {
 					} else {
 						//attacking the other player here
 						targetAction.addTarget(target);
-						action.perform();
+						action.perform(performer);
 						this.controller.createData();
 					}
 				}
 				this.controller.markTargets(targetCards);
 				this.controller.nextAction = action;
 			} else {
-				this.action.perform();
+				this.action.perform(performer);
 				this.controller.createData();
 			}
 		}

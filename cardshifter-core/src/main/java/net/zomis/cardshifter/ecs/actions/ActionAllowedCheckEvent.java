@@ -7,11 +7,13 @@ public class ActionAllowedCheckEvent implements IEvent {
 
 	private final Entity entity;
 	private final ECSAction action;
+	private final Entity performer;
 	private boolean allowed = true;
 	
-	public ActionAllowedCheckEvent(Entity owner, ECSAction action) {
+	public ActionAllowedCheckEvent(Entity owner, ECSAction action, Entity performer) {
 		this.entity = owner;
 		this.action = action;
+		this.performer = performer;
 	}
 	
 	public ECSAction getAction() {
@@ -20,6 +22,10 @@ public class ActionAllowedCheckEvent implements IEvent {
 	
 	public Entity getEntity() {
 		return entity;
+	}
+	
+	public Entity getPerformer() {
+		return performer;
 	}
 	
 	public boolean isAllowed() {

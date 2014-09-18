@@ -16,6 +16,7 @@ public class ComponentRetriever<T extends Component> {
 	}
 
 	public T get(Entity entity) {
+		Objects.requireNonNull(entity, "Cannot retrieve component " + clazz.getSimpleName() + " on a null entity");
 		return entity.getComponent(clazz);
 	}
 
@@ -48,7 +49,7 @@ public class ComponentRetriever<T extends Component> {
 	public static <T extends Component> T singleton(ECSGame game, Class<T> class1) {
 		Set<Entity> all = game.getEntitiesWithComponent(class1);
 		if (all.size() != 1) {
-			throw new IllegalStateException();
+			throw new IllegalStateException("Expected to find exactly one " + class1.getSimpleName() + ", found " + all.size());
 		}
 		return all.iterator().next().getComponent(class1);
 	}

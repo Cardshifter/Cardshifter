@@ -7,10 +7,11 @@ import java.util.Objects;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
-import net.zomis.cardshifter.ecs.actions.ActionComponent;
+import net.zomis.cardshifter.ecs.actions.Actions;
 import net.zomis.cardshifter.ecs.actions.ECSAction;
 import net.zomis.cardshifter.ecs.actions.TargetSet;
 import net.zomis.cardshifter.ecs.base.Component;
+import net.zomis.cardshifter.ecs.base.ComponentRetriever;
 import net.zomis.cardshifter.ecs.base.ECSGame;
 import net.zomis.cardshifter.ecs.base.Entity;
 import net.zomis.cardshifter.ecs.cards.ZoneComponent;
@@ -20,24 +21,19 @@ import net.zomis.cardshifter.ecs.usage.PhrancisGame;
 
 public class ConsoleControllerECS {
 	private final ECSGame game;
+	private final PhaseController phase;
 
 	public ConsoleControllerECS(final ECSGame game) {
 		this.game = Objects.requireNonNull(game, "game");;
+		this.phase = ComponentRetriever.singleton(game, PhaseController.class);
 	}
 
-	private static List<ECSAction> getAllActions(ECSGame game) {
-		return game.getEntitiesWithComponent(ActionComponent.class)
-			.stream()
-			.flatMap(entity -> entity.getComponent(ActionComponent.class)
-					.getECSActions().stream())
-			.collect(Collectors.toList());
-	}
-	
 	public void play(Scanner input) {
 		game.startGame();
 		while (!game.isGameOver()) {
 			outputGameState();
-			List<ECSAction> actions = getAllActions(game).stream().filter(action -> action.isAllowed()).collect(Collectors.toList());
+			final Entity performer = phase.getCurrentEntity();
+			List<ECSAction> actions = Actions.getAllActions(game).stream().filter(action -> action.isAllowed(performer)).collect(Collectors.toList());
 			outputList(actions);
 			
 			String in = input.nextLine();
@@ -45,14 +41,14 @@ public class ConsoleControllerECS {
 				break;
 			}
 			
-			handleActionInput(actions, in, input);
+			handleActionInput(actions, in, input, performer);
 		}
 		print("--------------------------------------------");
 		outputGameState();
 		print("Game over!");
 	}
 
-	private void handleActionInput(final List<ECSAction> actions, final String in, Scanner input) {
+	private void handleActionInput(final List<ECSAction> actions, final String in, Scanner input, Entity performer) {
 		Objects.requireNonNull(actions, "actions");
 		Objects.requireNonNull(in, "in");
 		print("Choose an action:");
@@ -66,7 +62,7 @@ public class ConsoleControllerECS {
 			
 			ECSAction action = actions.get(value);
 			print("Action " + action);
-			if (action.isAllowed()) {
+			if (action.isAllowed(performer)) {
 				for (TargetSet actionOption : action.getTargetSets()) {
 					List<Entity> targets = new ArrayList<>(actionOption.findPossibleTargets());
 					if (targets.isEmpty()) {
@@ -85,7 +81,7 @@ public class ConsoleControllerECS {
 					actionOption.addTarget(target);
 				}
 				
-				action.perform();
+				action.perform(performer);
 				print("Action performed");
 			}
 			else {

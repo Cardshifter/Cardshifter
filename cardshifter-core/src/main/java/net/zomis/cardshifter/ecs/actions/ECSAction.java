@@ -35,21 +35,21 @@ public class ECSAction {
 		return new ECSAction(this.owner, this.name, this.allowed, this.perform);
 	}
 
-	public boolean perform() {
-		if (!this.isAllowed()) {
+	public boolean perform(Entity performer) {
+		if (!this.isAllowed(performer)) {
 			return false;
 		}
 		if (!this.targetSets.stream().allMatch(targets -> targets.hasEnoughTargets())) {
 			return false;
 		}
 		
-		this.owner.getGame().executeEvent(new ActionPerformEvent(owner, this), () -> this.perform.accept(this));
+		this.owner.getGame().executeEvent(new ActionPerformEvent(owner, this, performer), () -> this.perform.accept(this));
 		this.targetSets.forEach(TargetSet::clearTargets);
 		return true;
 	}
 
-	public boolean isAllowed() {
-		ActionAllowedCheckEvent event = new ActionAllowedCheckEvent(owner, this);
+	public boolean isAllowed(Entity performer) {
+		ActionAllowedCheckEvent event = new ActionAllowedCheckEvent(owner, this, performer);
 		if (!owner.getGame().getEvents().executePostEvent(event).isAllowed()) {
 			return false;
 		}

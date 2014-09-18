@@ -1,7 +1,6 @@
 package com.cardshifter.fx;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javafx.event.ActionEvent;
 import javafx.scene.Group;
@@ -11,6 +10,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import net.zomis.cardshifter.ecs.actions.ActionComponent;
+import net.zomis.cardshifter.ecs.actions.Actions;
 import net.zomis.cardshifter.ecs.actions.ECSAction;
 import net.zomis.cardshifter.ecs.actions.TargetSet;
 import net.zomis.cardshifter.ecs.base.ComponentRetriever;
@@ -26,6 +26,7 @@ public class CardNodeBattlefield extends Group {
 	private final Entity card;
 	private final FXMLGameController controller;
 	private final boolean isPlayer;
+	private final Entity performer;
 	
 	private static final ResourceRetreiver resHealth = ResourceRetreiver.forResource(PhrancisResources.HEALTH);
 	private static final ResourceRetreiver resAttack = ResourceRetreiver.forResource(PhrancisResources.ATTACK);
@@ -33,6 +34,7 @@ public class CardNodeBattlefield extends Group {
 	private static final ComponentRetriever<ActionComponent> actions = ComponentRetriever.retreiverFor(ActionComponent.class);
 	
 	public CardNodeBattlefield (Pane pane, int numCards, String name, Entity card, FXMLGameController controller, boolean isPlayer) {
+		this.performer = controller.getPlayerPerspective();
 		//calculate card width based on pane size
 		double paneWidth = pane.getWidth();
 		//reduce card size if there are over a certain amount of them
@@ -94,16 +96,11 @@ public class CardNodeBattlefield extends Group {
 		this.getChildren().add(activeBackground);
 	}
 	private boolean isCardActive() {
-		return !getPossibleActions().isEmpty();
+		return !Actions.getPossibleActionsOn(card, performer).isEmpty();
 	}
 	private boolean canCardAttack() {
-		List<ECSAction> cardActions = getPossibleActions();
-		for (ECSAction action : cardActions) {
-			if (action.getName().equals("Attack")) {
-				return true;
-			}
-		}
-		return false;
+		List<ECSAction> cardActions = Actions.getPossibleActionsOn(card, performer);
+		return cardActions.stream().anyMatch(act -> act.getName().equals("Attack"));
 	}
 	
 	private void createCardArt() {
@@ -158,7 +155,7 @@ public class CardNodeBattlefield extends Group {
 	}
 	private void buttonClick(ActionEvent event) {
 		System.out.println("Trying to Perform Action");
-		List<ECSAction> cardActions = getPossibleActions();
+		List<ECSAction> cardActions = Actions.getPossibleActionsOn(card, performer);
 		
 		//If there is more than one action, create the choice box
 		//Otherwise, the action will be automaticcally performed if there is only one
@@ -166,7 +163,7 @@ public class CardNodeBattlefield extends Group {
 			this.controller.buildChoiceBoxPane(card, cardActions);
 		} else if (cardActions.size() == 1) {
 			for (ECSAction action : cardActions) {
-				if (action.isAllowed()) {
+				if (action.isAllowed(performer)) {
 					if (!action.getTargetSets().isEmpty()) {
 						TargetSet targetAction = action.getTargetSets().get(0);
 						targetAction.clearTargets();
@@ -184,9 +181,9 @@ public class CardNodeBattlefield extends Group {
 						//TODO: add a check to make sure the target is valid//
 						Entity target = targets.get(targetIndex);
 						targetAction.addTarget(target);
-						action.perform();
+						action.perform(performer);
 					} else {
-						action.perform();
+						action.perform(performer);
 						this.controller.createData();
 						this.controller.render();
 					}
@@ -211,8 +208,5 @@ public class CardNodeBattlefield extends Group {
 	}
 	private void targetButtonClick(ActionEvent event) {
 		this.controller.performNextAction(this.card);
-	}
-	private List<ECSAction> getPossibleActions() {
-		return actions.required(card).getECSActions().stream().filter(ECSAction::isAllowed).collect(Collectors.toList());
 	}
 }

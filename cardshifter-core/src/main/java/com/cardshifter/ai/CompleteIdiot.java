@@ -27,7 +27,7 @@ public class CompleteIdiot implements CardshifterAI {
 		
 		Stream<ECSAction> actions = getAllActions(player.getGame());
 		
-		Stream<ECSAction> allActions = actions.filter(action -> action.isAllowed())
+		Stream<ECSAction> allActions = actions.filter(action -> action.isAllowed(player))
 				.filter(action -> setTargetIfPossible(action));
 		List<ECSAction> list = allActions.collect(Collectors.toList());
 		

@@ -37,7 +37,7 @@ public class ActionTest {
 		
 		actions.addAction(new ECSAction(entity, "Use", action -> true, action -> this.used++));
 		assertEquals(0, used);
-		actions.getAction("Use").copy().perform();
+		actions.getAction("Use").copy().perform(entity);
 		assertEquals(1, used);
 	}
 	
@@ -58,7 +58,7 @@ public class ActionTest {
 		
 		actions.addAction(new ECSAction(entity, "Use", action -> true, action -> this.used++));
 		assertEquals(0, used);
-		assertFalse(actions.getAction("Use").isAllowed());
+		assertFalse(actions.getAction("Use").isAllowed(entity));
 		assertEquals(0, used);
 	}
 	
