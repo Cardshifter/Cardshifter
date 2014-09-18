@@ -9,6 +9,7 @@ import com.cardshifter.server.incoming.RequestTargetsMessage;
 import com.cardshifter.server.incoming.StartGameRequest;
 import com.cardshifter.server.incoming.UseAbilityMessage;
 import com.cardshifter.server.outgoing.CardInfoMessage;
+import com.cardshifter.server.outgoing.EntityRemoveMessage;
 import com.cardshifter.server.outgoing.GameMessage;
 import com.cardshifter.server.outgoing.NewGameMessage;
 import com.cardshifter.server.outgoing.PlayerMessage;
@@ -17,6 +18,7 @@ import com.cardshifter.server.outgoing.UpdateMessage;
 import com.cardshifter.server.outgoing.UseableActionMessage;
 import com.cardshifter.server.outgoing.WaitMessage;
 import com.cardshifter.server.outgoing.WelcomeMessage;
+import com.cardshifter.server.outgoing.ZoneChangeMessage;
 import com.cardshifter.server.outgoing.ZoneMessage;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.fasterxml.jackson.databind.JavaType;
@@ -33,6 +35,8 @@ public class MessageTypeIdResolver implements TypeIdResolver {
 		clazzes.put("startgame", StartGameRequest.class);
 		clazzes.put("use", UseAbilityMessage.class);
 		clazzes.put("requestTargets", RequestTargetsMessage.class);
+		clazzes.put("zoneChange", ZoneChangeMessage.class);
+		clazzes.put("entityRemoved", EntityRemoveMessage.class);
 		
 		clazzes.put("resetActions", ResetAvailableActionsMessage.class);
 		clazzes.put("game", GameMessage.class);
