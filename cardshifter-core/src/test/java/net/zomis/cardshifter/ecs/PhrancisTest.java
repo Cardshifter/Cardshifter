@@ -168,16 +168,16 @@ public class PhrancisTest {
 	private void useActionWithFailedTarget(Entity source, String actionName, Entity target) {
 		ECSAction action = getAction(source, actionName);
 		Objects.requireNonNull(action, source + " does not have action " + actionName);
-		assertTrue(action.isAllowed());
+		assertTrue(action.isAllowed(phase.getCurrentEntity()));
 		assertEquals(1, action.getTargetSets().size());
 		TargetSet targets = action.getTargetSets().get(0);
 		assertFalse("Did not expect target to be allowed", targets.addTarget(target));
-		assertFalse("Did not expect action to be performed", action.perform());
+		assertFalse("Did not expect action to be performed", action.perform(phase.getCurrentEntity()));
 	}
 
 	private List<Entity> findPossibleTargets(Entity entity, String actionName) {
 		ECSAction action = getAction(entity, actionName);
-		assertTrue(action.isAllowed());
+		assertTrue(action.isAllowed(phase.getCurrentEntity()));
 		assertEquals(1, action.getTargetSets().size());
 		TargetSet targets = action.getTargetSets().get(0);
 		return targets.findPossibleTargets();
@@ -185,16 +185,16 @@ public class PhrancisTest {
 
 	private void useActionWithTarget(Entity entity, String actionName, Entity target) {
 		ECSAction action = getAction(entity, actionName);
-		assertTrue(action.isAllowed());
+		assertTrue(action.isAllowed(phase.getCurrentEntity()));
 		assertEquals(1, action.getTargetSets().size());
 		TargetSet targets = action.getTargetSets().get(0);
 		assertTrue("Target could not be added: " + target + " to action " + action, targets.addTarget(target));
-		assertTrue(action + " could not be performed", action.perform());
+		assertTrue(action + " could not be performed", action.perform(phase.getCurrentEntity()));
 	}
 
 	private void useFail(Entity entity, String actionName) {
 		ECSAction action = getAction(entity, actionName);
-		assertFalse("Did not expect action " + actionName + " to be allowed on " + entity, action.isAllowed());
+		assertFalse("Did not expect action " + actionName + " to be allowed on " + entity, action.isAllowed(phase.getCurrentEntity()));
 	}
 
 	private Entity findCardInDeck(Predicate<Entity> condition) {
@@ -228,8 +228,8 @@ public class PhrancisTest {
 
 	private void useAction(Entity entity, String actionName) {
 		ECSAction action = getAction(entity, actionName);
-		assertTrue(action.isAllowed());
-		action.perform();
+		assertTrue(action.isAllowed(phase.getCurrentEntity()));
+		action.perform(phase.getCurrentEntity());
 	}
 
 	private ECSAction getAction(Entity entity, String actionName) {

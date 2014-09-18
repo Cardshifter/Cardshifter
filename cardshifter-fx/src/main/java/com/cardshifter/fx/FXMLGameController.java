@@ -294,13 +294,14 @@ public class FXMLGameController {
 		phases.nextPhase();
 
 		//This is the AI doing the turn action
-		while (phases.getCurrentEntity() == getPlayer(1)) {
-			ECSAction action = opponent.getAction(phases.getCurrentEntity());
+		final Entity aiPlayer = getPlayer(1);
+		while (phases.getCurrentEntity() == aiPlayer) {
+			ECSAction action = opponent.getAction(aiPlayer);
 			if (action == null) {
 				System.out.println("Warning: Opponent did not properly end turn");
 				break;
 			}
-			action.perform();
+			action.perform(aiPlayer);
 		}
 
 		turnLabel.setText(String.format("Turn Number %d", phases.getRecreateCount()));
@@ -344,7 +345,7 @@ public class FXMLGameController {
 	
 	public void performNextAction(Entity target) {
 		nextAction.getTargetSets().get(0).addTarget(target);
-		nextAction.perform();
+		nextAction.perform(getPlayer(0));
 		this.createData();
 		this.render();
 	}
@@ -412,4 +413,8 @@ public class FXMLGameController {
 	 */
 	@FXML
 	private QuadCurve handGuide;
+	
+	public Entity getPlayerPerspective() {
+		return getPlayer(0);
+	}
 }

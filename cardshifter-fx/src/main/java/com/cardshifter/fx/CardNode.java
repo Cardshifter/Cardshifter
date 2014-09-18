@@ -2,7 +2,6 @@ package com.cardshifter.fx;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javafx.event.ActionEvent;
 import javafx.scene.Group;
@@ -11,7 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import net.zomis.cardshifter.ecs.actions.ActionComponent;
+import net.zomis.cardshifter.ecs.actions.Actions;
 import net.zomis.cardshifter.ecs.actions.ECSAction;
 import net.zomis.cardshifter.ecs.actions.TargetSet;
 import net.zomis.cardshifter.ecs.base.Entity;
@@ -31,10 +30,13 @@ public class CardNode {
 	private final String name;
 	private final Entity card;
 	private final FXMLGameController controller;
+	private final Entity performer;
 	
 	private final Group cardGroup;
 	
 	public CardNode(Pane pane, int numCards, String name, Entity card, FXMLGameController controller) {
+		this.performer = controller.getPlayerPerspective();
+		
 		//calculate card width based on pane size
 		double paneWidth = pane.getWidth();
 		//reduce card size if there are over a certain amount of them
@@ -121,14 +123,14 @@ public class CardNode {
 	
 	private void buttonClick(ActionEvent event) {
 		System.out.println("Trying to Perform Action");
-		List<ECSAction> cardActions = getPossibleActions();
+		List<ECSAction> cardActions = Actions.getPossibleActionsOn(card, performer);
 		
 		//If there is more than one action, create the choice box
 		if(cardActions.size() > 1) {
 			this.controller.buildChoiceBoxPane(card, cardActions);
 		} else if (cardActions.size() == 1) {
 			for (ECSAction action : cardActions) {
-				if (action.isAllowed()) {
+				if (action.isAllowed(performer)) {
 					if (!action.getTargetSets().isEmpty()) {
 						TargetSet targetAction = action.getTargetSets().get(0);
 						List<Entity> targets = targetAction.findPossibleTargets();
@@ -145,7 +147,7 @@ public class CardNode {
 						this.controller.markTargets(targetCards);
 						this.controller.nextAction = action;
 					} else {
-						action.perform();
+						action.perform(performer);
 						this.controller.createData();
 					} 
 				}
@@ -154,12 +156,8 @@ public class CardNode {
 		}
 	}
 	
-	private List<ECSAction> getPossibleActions() {
-		return card.getComponent(ActionComponent.class).getECSActions().stream().filter(ECSAction::isAllowed).collect(Collectors.toList());
-	}
-
 	private boolean isCardActive() {
-		List<ECSAction> cardActions = getPossibleActions();
+		List<ECSAction> cardActions = Actions.getPossibleActionsOn(card, performer);
 		return !cardActions.isEmpty();
 	}
 }

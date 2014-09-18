@@ -127,7 +127,7 @@ public class TCGGame extends ServerGame {
 			targetAction.clearTargets();
 			targetAction.addTarget(findTargetable(message.getTarget()));
 		}
-		action.perform();
+		action.perform(playerFor(client));
 		
 		// TODO: Add listener to game for ZoneMoves, inform players about card movements, and send CardInfoMessage when a card becomes known
 		sendAvailableActions();
@@ -147,7 +147,7 @@ public class TCGGame extends ServerGame {
 				ECSAction action = ai.getAction(player);
 				if (action != null) {
 					logger.info("AI Performs action: " + action);
-					action.perform();
+					action.perform(player);
 					sendAvailableActions();
 					return;
 				}
@@ -194,7 +194,7 @@ public class TCGGame extends ServerGame {
 			Entity player = playerFor(io);
 			io.sendToClient(new ResetAvailableActionsMessage());
 			if (phases.getCurrentEntity() == player) {
-				getAllActions(game).filter(action -> action.isAllowed())
+				getAllActions(game).filter(action -> action.isAllowed(player))
 						.forEach(action -> io.sendToClient(new UseableActionMessage(action.getOwner().getId(), action.getName(), !action.getTargetSets().isEmpty())));
 				
 			}
