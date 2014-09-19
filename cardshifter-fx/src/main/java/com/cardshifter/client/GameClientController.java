@@ -6,6 +6,7 @@ import com.cardshifter.server.incoming.StartGameRequest;
 import com.cardshifter.server.incoming.UseAbilityMessage;
 import com.cardshifter.server.messages.Message;
 import com.cardshifter.server.outgoing.CardInfoMessage;
+import com.cardshifter.server.outgoing.EntityRemoveMessage;
 import com.cardshifter.server.outgoing.NewGameMessage;
 import com.cardshifter.server.outgoing.PlayerMessage;
 import com.cardshifter.server.outgoing.UpdateMessage;
@@ -205,6 +206,8 @@ public class GameClientController {
 			this.processUpdateMessage((UpdateMessage)message);
 		} else if (message instanceof ZoneChangeMessage) {
 			this.processZoneChangeMessage((ZoneChangeMessage)message);
+		} else if (message instanceof EntityRemoveMessage) {
+			this.processEntityRemoveMessage((EntityRemoveMessage)message);
 		}
 	}
 	
@@ -302,7 +305,7 @@ public class GameClientController {
 		int maxActions = 8;
 		double actionWidth = paneWidth / maxActions;
 		
-		if (message.getAction().equals("End Turn")) {
+		if (!message.getAction().equals("Play")) {
 			ActionButton actionButton = new ActionButton(message, this, actionWidth, paneHeight);
 			actionBox.getChildren().add(actionButton);
 		}
@@ -353,6 +356,14 @@ public class GameClientController {
 			
 				sourceZone.removeCardHandDocumentController(cardId);
 			} 
+		}
+	}
+	
+	private void processEntityRemoveMessage(EntityRemoveMessage message) {
+		for (ZoneView zoneView : this.zoneViewMap.values()) {
+			if (zoneView.getAllIds().contains(message.getEntity())) {
+				zoneView.removePane(message.getEntity());
+			}
 		}
 	}
 	
