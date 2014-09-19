@@ -58,6 +58,7 @@ public class ECSGame {
 
 	public void addSystem(ECSSystem system) {
 		this.systems.add(system);
+		Retrievers.inject(system, this);
 	}
 	
 	public void startGame() {

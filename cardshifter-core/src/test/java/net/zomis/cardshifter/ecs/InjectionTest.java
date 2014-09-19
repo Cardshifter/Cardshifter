@@ -3,6 +3,7 @@ package net.zomis.cardshifter.ecs;
 import static org.junit.Assert.*;
 import net.zomis.cardshifter.ecs.base.ComponentRetriever;
 import net.zomis.cardshifter.ecs.base.ECSGame;
+import net.zomis.cardshifter.ecs.base.ECSSystem;
 import net.zomis.cardshifter.ecs.base.Entity;
 import net.zomis.cardshifter.ecs.base.Retriever;
 import net.zomis.cardshifter.ecs.base.RetrieverSingleton;
@@ -20,6 +21,26 @@ public class InjectionTest {
 	
 	@Retriever
 	private ComponentRetriever<PlayerComponent> playerData;
+	
+	private int test;
+	
+	@Test
+	public void injectOnAdd() {
+		ECSGame game = new ECSGame();
+		game.newEntity().addComponent(new PlayerComponent(21, "Test"));
+		game.addSystem(new ECSSystem() {
+			@RetrieverSingleton
+			private PlayerComponent player;
+			
+			@Override
+			public void startGame(ECSGame game) {
+				assertEquals(21, player.getIndex());
+				test++;
+			}
+		});
+		game.startGame();
+		assertEquals(1, test);
+	}
 	
 	@Test
 	public void inject() {
