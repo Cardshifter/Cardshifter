@@ -22,3 +22,5 @@ deploy:
   on:
     tags: true
     all_branches: true
+    #must remain on all_branches: true together with tags: true due to the following bug: https://github.com/travis-ci/travis-ci/issues/1675
+    #ideal situation would be to change it such that it only builds a release on the master branch on tag push
