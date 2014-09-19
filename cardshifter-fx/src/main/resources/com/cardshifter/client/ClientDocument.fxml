@@ -12,13 +12,13 @@
     <children>
 		
 		<!-- temporary action box -->
-		<HBox fx:id="actionBox" alignment="CENTER" spacing="10" layoutX="239.0" layoutY="343.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="44.0" prefWidth="810.0" scaleShape="false" />
+		<HBox fx:id="actionBox" alignment="CENTER" layoutX="239.0" layoutY="343.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="44.0" prefWidth="810.0" scaleShape="false" spacing="10" />
         
         <!--  Buttons  -->
         <!-- <Button fx:id="button" layoutX="1098.0" layoutY="530.0" onAction="#startGameButtonAction" text="Start Game" /> -->
         <Label fx:id="startGameLabel" layoutX="1098.0" layoutY="564.0" minHeight="16" minWidth="69" />
         <!-- <Button layoutX="1105.0" layoutY="467.0" mnemonicParsing="false" onAction="#handleTurnButtonAction" text="End Turn" /> -->
-        <Label fx:id="turnLabel" layoutX="1075.0" layoutY="485.0" text="Turn Number" />
+        <Label fx:id="turnLabel" layoutX="1034.0" layoutY="556.0" text="Turn Number" />
         <!-- <Button fx:id="newGameButton" layoutX="17.0" layoutY="24.0" mnemonicParsing="false" onAction="#newGameButtonAction" text="New Game" /> -->
         
         <!--  Hands  -->
@@ -38,6 +38,18 @@
          <children>
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f59782" height="99.0" stroke="BLACK" strokeType="INSIDE" width="810.0" />
          </children></HBox>
+		 
+		<!-- Decks -->
+		<Pane fx:id="opponentDeckPane" layoutX="796.0" layoutY="15.0" prefHeight="61.0" prefWidth="46.0">
+			 <children>
+				<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1aa9cc" height="61.0" stroke="BLACK" strokeType="INSIDE" width="46.0" />
+			</children>
+		</Pane>
+		<Pane fx:id="playerDeckPane" layoutX="1021.0" layoutY="473.0" prefHeight="61.0" prefWidth="46.0">
+			 <children>
+				<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1aa9cc" height="61.0" stroke="BLACK" strokeType="INSIDE" width="46.0" />
+			</children>
+		</Pane>
         
         <!-- Legend -->
         <Pane layoutX="844.0" layoutY="7.0" prefHeight="98.0" prefWidth="232.0">

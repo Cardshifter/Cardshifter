@@ -51,8 +51,10 @@ public class GameClientController {
 	@FXML private VBox playerStatBox;
 	@FXML private HBox opponentHandPane;
 	@FXML private HBox opponentBattlefieldPane;
+	@FXML private Pane opponentDeckPane;
 	@FXML private HBox playerHandPane;
 	@FXML private HBox playerBattlefieldPane;
+	@FXML private Pane playerDeckPane;
 	@FXML private HBox actionBox;
 
 	private final ObjectMapper mapper = new ObjectMapper();
@@ -70,8 +72,10 @@ public class GameClientController {
 	private int opponentId;
 	private int opponentHandId;
 	private int opponentBattlefieldId;
+	private int opponentDeckId;
 	private int playerHandId;
 	private int playerBattlefieldId;
+	private int playerDeckId;
 	private final Map<Integer, Pane> idMap = new HashMap<>();
 	private final Map<String, Integer> playerStatBoxMap = new HashMap<>();
 	private final Map<String, Integer> opponentStatBoxMap = new HashMap<>();
@@ -177,6 +181,7 @@ public class GameClientController {
 			System.out.println("Not a valid action");
 		}
 		
+		//A new list of actions will be sent back from the server, so it is okay to clear them
 		this.actionBox.getChildren().clear();
 	}
 	
@@ -234,6 +239,7 @@ public class GameClientController {
 			this.assignZoneIdForZoneMessage(message);
 		}
 
+		//Right now zone messages only come at the start, so these lines don't do anything
 		Pane targetPane = this.idMap.get(message.getId());
 		this.processZoneMessageForPane(targetPane, message);
 	}
@@ -241,7 +247,9 @@ public class GameClientController {
 		return (this.idMap.containsValue(playerBattlefieldPane) 
 				&& this.idMap.containsValue(playerHandPane)
 				&& this.idMap.containsValue(opponentBattlefieldPane)
-				&& this.idMap.containsValue(opponentHandPane));
+				&& this.idMap.containsValue(opponentHandPane)
+				&& this.idMap.containsValue(playerDeckPane)
+				&& this.idMap.containsValue(opponentDeckPane));
 	} 
 	private void assignZoneIdForZoneMessage(ZoneMessage message) {
 		if (!this.idMap.containsKey(message.getId())) {
@@ -254,7 +262,7 @@ public class GameClientController {
 					this.idMap.put(this.opponentBattlefieldId, opponentBattlefieldPane);
 				}
 			} else if (message.getName().equals("Hand")) {
-				if(message.getOwner() == this.playerId) {
+				if (message.getOwner() == this.playerId) {
 					this.playerHandId = message.getId();
 					this.idMap.put(this.playerHandId, playerHandPane);
 				} else {
@@ -263,6 +271,14 @@ public class GameClientController {
 					this.idMap.put(this.opponentHandId, opponentHandPane);
 					
 					this.renderOpponentHand();
+				}
+			} else if (message.getName().equals("Deck")) {
+				if (message.getOwner() == this.playerId) {
+					this.playerDeckId = message.getId();
+					this.idMap.put(this.playerHandId, playerDeckPane);
+				} else {
+					this.opponentDeckId = message.getId();
+					this.idMap.put(this.opponentHandId, opponentDeckPane);
 				}
 			}
 		}
@@ -372,5 +388,11 @@ public class GameClientController {
 	com.cardshifter.server.outgoing.ResetAvailableActionsMessage@2d326c35
 	UpdateMessage [id=44, key=MANA_MAX, value=2]
 	UpdateMessage [id=44, key=MANA, value=2]
+	ZoneChangeMessage [entity=9, sourceZone=2, destinationZone=3]
+	ZoneChangeMessage [entity=48, sourceZone=45, destinationZone=46]
+	ZoneChangeMessage [entity=49, sourceZone=45, destinationZone=46]
+	ZoneChangeMessage [entity=50, sourceZone=45, destinationZone=46]
+	ZoneChangeMessage [entity=51, sourceZone=45, destinationZone=46]
+	ZoneChangeMessage [entity=52, sourceZone=45, destinationZone=46]
 	*/
 
