@@ -251,7 +251,7 @@ public class GameClientController {
 			} else if (message.getName().equals("Hand")) {
 				if (message.getOwner() == this.playerId) {
 					this.playerHandId = message.getId();
-					this.zoneViewMap.put(message.getId(), new ZoneView(message.getId(), playerHandPane));
+					this.zoneViewMap.put(message.getId(), new PlayerHandZoneView(message.getId(), playerHandPane));
 				} else {
 					this.opponentHandId = message.getId();
 					this.zoneViewMap.put(this.opponentHandId, new ZoneView(message.getId(), opponentHandPane));
@@ -290,9 +290,9 @@ public class GameClientController {
 	private void addCardToPlayerBattlefieldPane(CardInfoMessage message) {
 	}
 	private void addCardToPlayerHandPane(CardInfoMessage message) {
-		ZoneView playerHand = this.zoneViewMap.get(playerHandId);
+		PlayerHandZoneView playerHand = (PlayerHandZoneView)this.zoneViewMap.get(playerHandId);
 		CardHandDocumentController card = new CardHandDocumentController(message, this);
-		playerHand.addPane(message.getId(), card.getRootPane());
+		playerHand.addCardHandController(message.getId(), card);
 	}
 	
 	private void processUseableActionMessage(UseableActionMessage message) {
@@ -302,13 +302,17 @@ public class GameClientController {
 		int maxActions = 8;
 		double actionWidth = paneWidth / maxActions;
 		
-		ActionButton actionButton = new ActionButton(message, this, actionWidth, paneHeight);
-		actionBox.getChildren().add(actionButton);
+		if (message.getAction().equals("End Turn")) {
+			ActionButton actionButton = new ActionButton(message, this, actionWidth, paneHeight);
+			actionBox.getChildren().add(actionButton);
+		}
 		
 		//testing highlighting cards
 		for (ZoneView zoneView : this.zoneViewMap.values()) {
 			if (zoneView.getAllIds().contains(message.getId())) {
-				zoneView.highlightCard(message.getId());
+				if (zoneView instanceof PlayerHandZoneView) {
+					((PlayerHandZoneView)zoneView).highlightCard(message.getId(), message);
+				}
 			}
 		}
 	}
@@ -341,13 +345,13 @@ public class GameClientController {
 			if (sourceZoneId == opponentHandId) {
 				
 			} else if (sourceZoneId == playerHandId) {
-				ZoneView sourceZone = this.zoneViewMap.get(sourceZoneId);
-				Pane cardPane = sourceZone.getPane(cardId);
+				PlayerHandZoneView sourceZone = (PlayerHandZoneView)this.zoneViewMap.get(sourceZoneId);
+				CardHandDocumentController card = sourceZone.getCardHandController(cardId);
 			
 				ZoneView destinationZone = this.zoneViewMap.get(destinationZoneId);
-				destinationZone.addPane(cardId, cardPane);
+				destinationZone.addPane(cardId, card.getRootPane());
 			
-				sourceZone.removePane(cardId);
+				sourceZone.removeCardHandDocumentController(cardId);
 			} 
 		}
 	}

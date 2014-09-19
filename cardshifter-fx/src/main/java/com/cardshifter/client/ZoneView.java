@@ -13,7 +13,7 @@ public class ZoneView {
 	
 	private final int zoneId;
 	private final Pane rootPane;
-	private final Map<Integer, Pane> zoneMap = new HashMap<>();
+	public final Map<Integer, Pane> zoneMap = new HashMap<>();
 	
 	public ZoneView(int zoneId, Pane pane) {
 		this.zoneId = zoneId;
@@ -51,6 +51,7 @@ public class ZoneView {
 		return this.zoneMap.keySet();
 	}
 	
+	//This causes a Null Pointer Exception, don't know why
 	public void highlightCard(int cardId) {
 		Pane pane = this.getPane(cardId);
 		List<Node> children = pane.getChildren();

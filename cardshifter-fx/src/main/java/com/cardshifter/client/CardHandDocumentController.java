@@ -1,6 +1,7 @@
 package com.cardshifter.client;
 
 import com.cardshifter.server.outgoing.CardInfoMessage;
+import com.cardshifter.server.outgoing.UseableActionMessage;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -27,9 +28,11 @@ public class CardHandDocumentController implements Initializable {
 	@FXML private Rectangle background;
 	@FXML private AnchorPane anchorPane;
     
-    //Initialization
     private AnchorPane root;
     private final CardInfoMessage card;
+	private final GameClientController controller;
+	private UseableActionMessage message;
+	
     public CardHandDocumentController(CardInfoMessage message, GameClientController controller) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("CardHandDocument.fxml"));
@@ -41,25 +44,25 @@ public class CardHandDocumentController implements Initializable {
         }
                 
         this.card = message;
+		this.controller = controller;
         this.setCardId();
         this.setCardLabels();
-		this.setActionForRootPane();
     }
-	
-	private void setActionForRootPane() {
-		this.anchorPane.setOnMouseClicked(this::actionOnClick);
-	}
-	private void actionOnClick(MouseEvent event) {
-		System.out.println("Action detected on card" + this.cardId.textProperty());
-	}
     
     public AnchorPane getRootPane() {
 		return this.anchorPane;
     }
 
-    public void setRectangleColorActive() {
+    public void setCardActive(UseableActionMessage message) {
+		this.message = message;
+		this.anchorPane.setOnMouseClicked(this::actionOnClick);
         background.setFill(Color.YELLOW);
     }
+	
+	private void actionOnClick(MouseEvent event) {
+		System.out.println("Action detected on card" + this.cardId.textProperty());
+		this.controller.createAndSendMessage(this.message);
+	}
 
     private void setCardId() {
         int newId = card.getId();
@@ -80,38 +83,6 @@ public class CardHandDocumentController implements Initializable {
 				
 			}
 		}
-		
-		/*
-        List<ECSResourceData> keyList = new ArrayList<>();
-        Resources.processResources(card, data -> keyList.add(data));
-        for (ECSResourceData string : keyList) {
-        	ECSResource resource = string.getResource();
-        	int value = string.get();
-        	
-            if (resource == PhrancisResources.HEALTH) {
-                health.setText(String.valueOf(string.get()));
-            } else if (resource == PhrancisResources.ATTACK) {
-                strength.setText(String.valueOf(string.get()));
-            } else if (resource == PhrancisResources.MANA_COST) {
-                manaCost.setText(String.format("Mana Cost = %d", string.get()));
-            } else if (resource == PhrancisResources.SCRAP_COST) {
-                scrapCost.setText(String.format("Scrap Cost = %d", value));
-            }
-//            } else if (resource == PhrancisResources.st string.equals("enchStrength")) {
-//                enchStrength.setText(String.format("Enchantment Strength = %d", card.data.get("enchStrength").toint()));
-//            } else if (string.equals("enchHealth")) {
-//                enchHealth.setText(String.format("Enchantment Health = %d", card.data.get("enchHealth").toint()));
-//            }
-        }
-        
-        if (card.hasComponent(CreatureTypeComponent.class)) {
-        	creatureType.setText(card.getComponent(CreatureTypeComponent.class).getCreatureType());
-        }
-        
-//      } else if (string.equals("cardType")) {
-//      cardType.setText(String.format(card.data.get("cardType").tojstring()));
-				
-		*/
     }
 
     //Boilerplate code
