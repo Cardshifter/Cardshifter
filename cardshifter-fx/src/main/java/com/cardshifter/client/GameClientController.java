@@ -49,14 +49,15 @@ public class GameClientController {
 	@FXML private ListView<String> serverMessages;
 	@FXML private VBox opponentStatBox;
 	@FXML private VBox playerStatBox;
+	@FXML private HBox actionBox;
+	
 	@FXML private HBox opponentHandPane;
 	@FXML private HBox opponentBattlefieldPane;
 	@FXML private Pane opponentDeckPane;
 	@FXML private HBox playerHandPane;
 	@FXML private HBox playerBattlefieldPane;
 	@FXML private Pane playerDeckPane;
-	@FXML private HBox actionBox;
-
+	
 	private final ObjectMapper mapper = new ObjectMapper();
 	private final BlockingQueue<Message> messages = new LinkedBlockingQueue<>();
 	
@@ -67,9 +68,13 @@ public class GameClientController {
 	private int port;
 	
 	private int gameId;
-	private int playerId;
 	private int playerIndex;
+	
+	private int playerId;
 	private int opponentId;
+	private final Map<String, Integer> playerStatBoxMap = new HashMap<>();
+	private final Map<String, Integer> opponentStatBoxMap = new HashMap<>();
+	
 	private int opponentHandId;
 	private int opponentBattlefieldId;
 	private int opponentDeckId;
@@ -77,8 +82,8 @@ public class GameClientController {
 	private int playerBattlefieldId;
 	private int playerDeckId;
 	private final Map<Integer, Pane> idMap = new HashMap<>();
-	private final Map<String, Integer> playerStatBoxMap = new HashMap<>();
-	private final Map<String, Integer> opponentStatBoxMap = new HashMap<>();
+	private final Map<Integer, ZoneView> zoneViewMap = new HashMap<>();
+	
 	
 	private int opponentHandSize;
 	
@@ -209,7 +214,6 @@ public class GameClientController {
 	
 	private void processNewGameMessage(NewGameMessage message) {
 		this.playerIndex = message.getPlayerIndex();
-		
 		System.out.println(String.format("You are player: %d", this.playerIndex));
 	}
 	
@@ -257,28 +261,34 @@ public class GameClientController {
 				if(message.getOwner() == this.playerId) {
 					this.playerBattlefieldId = message.getId();
 					this.idMap.put(this.playerBattlefieldId, playerBattlefieldPane);
+					this.zoneViewMap.put(message.getId(), new ZoneView(message.getId(), playerBattlefieldPane));
+					
 				} else {
 					this.opponentBattlefieldId = message.getId();
 					this.idMap.put(this.opponentBattlefieldId, opponentBattlefieldPane);
+					this.zoneViewMap.put(message.getId(), new ZoneView(message.getId(), opponentBattlefieldPane));
 				}
 			} else if (message.getName().equals("Hand")) {
 				if (message.getOwner() == this.playerId) {
 					this.playerHandId = message.getId();
 					this.idMap.put(this.playerHandId, playerHandPane);
+					this.zoneViewMap.put(message.getId(), new ZoneView(message.getId(), playerHandPane));
 				} else {
 					this.opponentHandId = message.getId();
-					this.opponentHandSize = message.getSize();
-					this.idMap.put(this.opponentHandId, opponentHandPane);
+					this.idMap.put(this.opponentHandId, opponentHandPane); //TO REMOVE
 					
-					this.renderOpponentHand();
+					this.zoneViewMap.put(this.opponentHandId, new ZoneView(message.getId(), opponentHandPane));
+					this.createOpponentHand(message.getSize());
 				}
 			} else if (message.getName().equals("Deck")) {
 				if (message.getOwner() == this.playerId) {
 					this.playerDeckId = message.getId();
 					this.idMap.put(this.playerHandId, playerDeckPane);
+					this.zoneViewMap.put(message.getId(), new ZoneView(message.getId(), playerDeckPane));
 				} else {
 					this.opponentDeckId = message.getId();
 					this.idMap.put(this.opponentHandId, opponentDeckPane);
+					this.zoneViewMap.put(message.getId(), new ZoneView(message.getId(), opponentDeckPane));
 				}
 			}
 		}
@@ -348,20 +358,20 @@ public class GameClientController {
 		}
 	}
 	
-	private void renderOpponentHand() {
-		//Opponent cards are rendered differently because the faces are not visible
+	private void createOpponentHand(int size) {
 		double paneHeight = opponentHandPane.getHeight();
 		double paneWidth = opponentHandPane.getWidth();
 		
 		int maxCards = 10;
 		double cardWidth = paneWidth / maxCards;
-
-		for (int currentCard = 0; currentCard < this.opponentHandSize; currentCard++) {
-			Group cardGroup = new Group();
+		
+		ZoneView opponentHand = this.zoneViewMap.get(this.opponentHandId);
+		for(int i = 0; i < size; i++) {
+			Pane card = new Pane();
 			Rectangle cardBack = new Rectangle(0,0,cardWidth,paneHeight);
 			cardBack.setFill(Color.AQUAMARINE);
-			cardGroup.getChildren().add(cardBack);
-			opponentHandPane.getChildren().add(cardGroup);
+			card.getChildren().add(cardBack);
+			opponentHand.addPane(i, card);
 		}
 	}
 }
