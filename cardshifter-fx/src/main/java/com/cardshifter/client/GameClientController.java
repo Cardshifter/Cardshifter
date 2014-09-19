@@ -33,7 +33,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
@@ -44,7 +43,6 @@ import javafx.scene.shape.Rectangle;
 
 public class GameClientController {
 	
-	//@FXML private AnchorPane rootPane;
 	@FXML private Label serverMessage;
 	@FXML private ListView<String> serverMessages;
 	@FXML private VBox opponentStatBox;
@@ -69,7 +67,6 @@ public class GameClientController {
 	
 	private int gameId;
 	private int playerIndex;
-	
 	private int playerId;
 	private int opponentId;
 	private final Map<String, Integer> playerStatBoxMap = new HashMap<>();
@@ -81,11 +78,7 @@ public class GameClientController {
 	private int playerHandId;
 	private int playerBattlefieldId;
 	private int playerDeckId;
-	private final Map<Integer, Pane> idMap = new HashMap<>();
 	private final Map<Integer, ZoneView> zoneViewMap = new HashMap<>();
-	
-	
-	private int opponentHandSize;
 	
 	public void acceptIPAndPort(String ipAddress, int port) {
 		// this is passed into the object after it is automatically created by the FXML document
@@ -239,76 +232,52 @@ public class GameClientController {
 	}
 	
 	private void processZoneMessage(ZoneMessage message) {
-		if (!this.allZonesAssigned()) {
-			this.assignZoneIdForZoneMessage(message);
-		}
-
-		//Right now zone messages only come at the start, so these lines don't do anything
-		Pane targetPane = this.idMap.get(message.getId());
-		this.processZoneMessageForPane(targetPane, message);
+		this.assignZoneIdForZoneMessage(message);
 	}
-	private boolean allZonesAssigned() {
-		return (this.idMap.containsValue(playerBattlefieldPane) 
-				&& this.idMap.containsValue(playerHandPane)
-				&& this.idMap.containsValue(opponentBattlefieldPane)
-				&& this.idMap.containsValue(opponentHandPane)
-				&& this.idMap.containsValue(playerDeckPane)
-				&& this.idMap.containsValue(opponentDeckPane));
-	} 
 	private void assignZoneIdForZoneMessage(ZoneMessage message) {
-		if (!this.idMap.containsKey(message.getId())) {
+		if (!this.zoneViewMap.containsKey(message.getId())) {
 			if (message.getName().equals("Battlefield")) {
 				if(message.getOwner() == this.playerId) {
 					this.playerBattlefieldId = message.getId();
-					this.idMap.put(this.playerBattlefieldId, playerBattlefieldPane);
 					this.zoneViewMap.put(message.getId(), new ZoneView(message.getId(), playerBattlefieldPane));
 					
 				} else {
 					this.opponentBattlefieldId = message.getId();
-					this.idMap.put(this.opponentBattlefieldId, opponentBattlefieldPane);
 					this.zoneViewMap.put(message.getId(), new ZoneView(message.getId(), opponentBattlefieldPane));
 				}
 			} else if (message.getName().equals("Hand")) {
 				if (message.getOwner() == this.playerId) {
 					this.playerHandId = message.getId();
-					this.idMap.put(this.playerHandId, playerHandPane);
 					this.zoneViewMap.put(message.getId(), new ZoneView(message.getId(), playerHandPane));
 				} else {
 					this.opponentHandId = message.getId();
-					this.idMap.put(this.opponentHandId, opponentHandPane); //TO REMOVE
-					
 					this.zoneViewMap.put(this.opponentHandId, new ZoneView(message.getId(), opponentHandPane));
+					
 					this.createOpponentHand(message.getSize());
 				}
 			} else if (message.getName().equals("Deck")) {
 				if (message.getOwner() == this.playerId) {
 					this.playerDeckId = message.getId();
-					this.idMap.put(this.playerHandId, playerDeckPane);
 					this.zoneViewMap.put(message.getId(), new ZoneView(message.getId(), playerDeckPane));
 				} else {
 					this.opponentDeckId = message.getId();
-					this.idMap.put(this.opponentHandId, opponentDeckPane);
 					this.zoneViewMap.put(message.getId(), new ZoneView(message.getId(), opponentDeckPane));
 				}
 			}
 		}
 	}
-	private void processZoneMessageForPane(Pane pane, ZoneMessage message) {
-	}
-	
+
 	private void processCardInfoMessage(CardInfoMessage message) {
-		if (idMap.containsKey(message.getZone())) {
-			Pane targetPane = idMap.get(message.getZone());
+		int targetZone = message.getZone();
 		
-			if (targetPane == opponentBattlefieldPane) {
-				this.addCardToOpponentBattlefieldPane(message);
-			} else if (targetPane == opponentHandPane) {
-				this.addCardToOpponentHandPane(message);
-			} else if (targetPane == playerBattlefieldPane) {
-				this.addCardToPlayerBattlefieldPane(message);
-			} else if (targetPane == playerHandPane) {
-				this.addCardToPlayerHandPane(message);
-			}
+		if (targetZone == opponentBattlefieldId) {
+			this.addCardToOpponentBattlefieldPane(message);
+		} else if (targetZone == opponentHandId) {
+			this.addCardToOpponentHandPane(message);
+		} else if (targetZone == playerBattlefieldId) {
+			this.addCardToPlayerBattlefieldPane(message);
+		} else if (targetZone == playerHandId) {
+			this.addCardToPlayerHandPane(message);
 		}
 	}	
 	private void addCardToOpponentBattlefieldPane(CardInfoMessage message) {
@@ -318,8 +287,9 @@ public class GameClientController {
 	private void addCardToPlayerBattlefieldPane(CardInfoMessage message) {
 	}
 	private void addCardToPlayerHandPane(CardInfoMessage message) {
+		ZoneView playerHand = this.zoneViewMap.get(playerHandId);
 		CardHandDocumentController card = new CardHandDocumentController(message, this);
-		playerHandPane.getChildren().add(card.getRootPane());
+		playerHand.addPane(message.getId(), card.getRootPane());
 	}
 	
 	private void processUseableActionMessage(UseableActionMessage message) {
@@ -338,6 +308,9 @@ public class GameClientController {
 			this.processUpdateMessageForPlayer(playerStatBox, message, playerStatBoxMap);
 		} else if (message.getId() == this.opponentId) {
 			this.processUpdateMessageForPlayer(opponentStatBox, message, opponentStatBoxMap);
+		} else {
+			//process update message for card
+			//search through zones to find it
 		}
 	}
 	private void processUpdateMessageForPlayer(Pane statBox, UpdateMessage message, Map playerMap) {
