@@ -67,7 +67,7 @@ public class TCGGame extends ServerGame {
 		for (ClientIO io : this.getPlayers()) {
 			Entity player = playerFor(io);
 			io.sendToClient(new ZoneChangeMessage(event.getCard().getId(), event.getSource().getZoneId(), event.getDestination().getZoneId()));
-			if (event.getDestination().isKnownTo(player) && event.getSource().isKnownTo(player)) {
+			if (event.getDestination().isKnownTo(player) && !event.getSource().isKnownTo(player)) {
 				sendCard(io, event.getCard());
 			}
 		}
