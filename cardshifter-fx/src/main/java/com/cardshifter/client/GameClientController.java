@@ -318,6 +318,8 @@ public class GameClientController {
 			if (zoneView.getAllIds().contains(message.getId())) {
 				if (zoneView instanceof PlayerHandZoneView) {
 					((PlayerHandZoneView)zoneView).highlightCard(message.getId(), message);
+				} else if (zoneView instanceof BattlefieldZoneView) {
+					((BattlefieldZoneView)zoneView).highlightCard(message.getId(), message);
 				}
 			}
 		}
@@ -329,8 +331,7 @@ public class GameClientController {
 		} else if (message.getId() == this.opponentId) {
 			this.processUpdateMessageForPlayer(opponentStatBox, message, opponentStatBoxMap);
 		} else {
-			//process update message for card
-			//search through zones to find it
+			this.processUpdateMessageForCard(message);
 		}
 	}
 	private void processUpdateMessageForPlayer(Pane statBox, UpdateMessage message, Map playerMap) {
@@ -339,6 +340,16 @@ public class GameClientController {
 		playerMap.put(key, value);
 	
 		this.repaintStatBox(statBox, playerMap);
+	}
+	private void processUpdateMessageForCard(UpdateMessage message) {
+		for (ZoneView zoneView : this.zoneViewMap.values()) {
+			if (zoneView.getAllIds().contains(message.getId())) {
+				if (zoneView instanceof BattlefieldZoneView) {
+					//((BattlefieldZoneView)zoneView).highlightCard(message.getId(), message);
+					System.out.println("Found card for update message");
+				}
+			}
+		}
 	}
 	
 	private void processZoneChangeMessage(ZoneChangeMessage message) {
