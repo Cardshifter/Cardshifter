@@ -4,16 +4,16 @@ import java.util.Objects;
 
 import net.zomis.cardshifter.ecs.base.Entity;
 
-public class ResourceRetreiver {
+public class ResourceRetriever {
 
 	private final ECSResource resource;
 
-	private ResourceRetreiver(ECSResource resource) {
+	ResourceRetriever(ECSResource resource) {
 		this.resource = resource;
 	}
 	
-	public static ResourceRetreiver forResource(ECSResource resource) {
-		return new ResourceRetreiver(resource);
+	public static ResourceRetriever forResource(ECSResource resource) {
+		return new ResourceRetriever(resource);
 	}
 
 	public int getFor(Entity entity) {

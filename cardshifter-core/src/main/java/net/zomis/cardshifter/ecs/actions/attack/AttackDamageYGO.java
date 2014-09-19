@@ -6,17 +6,17 @@ import net.zomis.cardshifter.ecs.base.Entity;
 import net.zomis.cardshifter.ecs.cards.CardComponent;
 import net.zomis.cardshifter.ecs.components.PlayerComponent;
 import net.zomis.cardshifter.ecs.resources.ECSResource;
-import net.zomis.cardshifter.ecs.resources.ResourceRetreiver;
+import net.zomis.cardshifter.ecs.resources.ResourceRetriever;
 
 public class AttackDamageYGO extends SpecificActionSystem {
 
-	private final ResourceRetreiver attack;
-	private final ResourceRetreiver health;
+	private final ResourceRetriever attack;
+	private final ResourceRetriever health;
 	
 	public AttackDamageYGO(ECSResource attack, ECSResource health) {
 		super("Attack");
-		this.attack = ResourceRetreiver.forResource(attack);
-		this.health = ResourceRetreiver.forResource(health);
+		this.attack = ResourceRetriever.forResource(attack);
+		this.health = ResourceRetriever.forResource(health);
 	}
 
 	@Override

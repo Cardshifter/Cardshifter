@@ -4,16 +4,16 @@ import net.zomis.cardshifter.ecs.base.ECSGame;
 import net.zomis.cardshifter.ecs.base.ECSSystem;
 import net.zomis.cardshifter.ecs.cards.DrawCardFailedEvent;
 import net.zomis.cardshifter.ecs.resources.ECSResource;
-import net.zomis.cardshifter.ecs.resources.ResourceRetreiver;
+import net.zomis.cardshifter.ecs.resources.ResourceRetriever;
 
 public class DamageConstantWhenOutOfCardsSystem implements ECSSystem {
 
 	private final int damage;
-	private final ResourceRetreiver resource;
+	private final ResourceRetriever resource;
 
 	public DamageConstantWhenOutOfCardsSystem(ECSResource resource, int damage) {
 		this.damage = damage;
-		this.resource = ResourceRetreiver.forResource(resource);
+		this.resource = ResourceRetriever.forResource(resource);
 	}
 	
 	@Override

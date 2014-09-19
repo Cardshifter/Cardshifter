@@ -9,15 +9,15 @@ import net.zomis.cardshifter.ecs.cards.BattlefieldComponent;
 import net.zomis.cardshifter.ecs.cards.CardComponent;
 import net.zomis.cardshifter.ecs.cards.Cards;
 import net.zomis.cardshifter.ecs.resources.ECSResource;
-import net.zomis.cardshifter.ecs.resources.ResourceRetreiver;
+import net.zomis.cardshifter.ecs.resources.ResourceRetriever;
 
 public class ScrapSystem extends SpecificActionSystem {
 
-	private final ResourceRetreiver resource;
+	private final ResourceRetriever resource;
 
 	public ScrapSystem(ECSResource resource) {
 		super("Scrap");
-		this.resource = ResourceRetreiver.forResource(resource);
+		this.resource = ResourceRetriever.forResource(resource);
 	}
 
 	private final ComponentRetriever<CardComponent> card = ComponentRetriever.retreiverFor(CardComponent.class);

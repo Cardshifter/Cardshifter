@@ -9,17 +9,17 @@ import net.zomis.cardshifter.ecs.actions.SpecificActionSystem;
 import net.zomis.cardshifter.ecs.base.Entity;
 import net.zomis.cardshifter.ecs.resources.ECSResource;
 import net.zomis.cardshifter.ecs.resources.ECSResourceData;
-import net.zomis.cardshifter.ecs.resources.ResourceRetreiver;
+import net.zomis.cardshifter.ecs.resources.ResourceRetriever;
 
 public class UseCostSystem extends SpecificActionSystem {
 
 	private final ToIntFunction<Entity> cost;
 	private final UnaryOperator<Entity> whoPays;
-	private final ResourceRetreiver useResource;
+	private final ResourceRetriever useResource;
 
 	public UseCostSystem(String action, ECSResource useResource, ToIntFunction<Entity> cost, UnaryOperator<Entity> whoPays) {
 		super(action);
-		this.useResource = ResourceRetreiver.forResource(useResource);
+		this.useResource = ResourceRetriever.forResource(useResource);
 		this.cost = cost;
 		this.whoPays = whoPays;
 	}

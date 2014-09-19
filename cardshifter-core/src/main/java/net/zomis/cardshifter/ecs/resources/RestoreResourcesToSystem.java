@@ -12,12 +12,12 @@ import net.zomis.cardshifter.ecs.phase.PhaseStartEvent;
 public class RestoreResourcesToSystem implements ECSSystem {
 
 	private final Predicate<Entity> entityPredicate;
-	private final ResourceRetreiver resource;
+	private final ResourceRetriever resource;
 	private final ToIntFunction<Entity> valueGetter;
 
 	public RestoreResourcesToSystem(Predicate<Entity> entities, ECSResource resource, ToIntFunction<Entity> valueGetter) {
 		this.entityPredicate = entities;
-		this.resource = ResourceRetreiver.forResource(resource);
+		this.resource = ResourceRetriever.forResource(resource);
 		this.valueGetter = valueGetter;
 	}
 

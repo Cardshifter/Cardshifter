@@ -15,7 +15,7 @@ import net.zomis.cardshifter.ecs.actions.ECSAction;
 import net.zomis.cardshifter.ecs.actions.TargetSet;
 import net.zomis.cardshifter.ecs.base.ComponentRetriever;
 import net.zomis.cardshifter.ecs.base.Entity;
-import net.zomis.cardshifter.ecs.resources.ResourceRetreiver;
+import net.zomis.cardshifter.ecs.resources.ResourceRetriever;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame.PhrancisResources;
 
 public class CardNodeBattlefield extends Group {
@@ -28,9 +28,9 @@ public class CardNodeBattlefield extends Group {
 	private final boolean isPlayer;
 	private final Entity performer;
 	
-	private static final ResourceRetreiver resHealth = ResourceRetreiver.forResource(PhrancisResources.HEALTH);
-	private static final ResourceRetreiver resAttack = ResourceRetreiver.forResource(PhrancisResources.ATTACK);
-	private static final ResourceRetreiver resManaCost = ResourceRetreiver.forResource(PhrancisResources.MANA_COST);
+	private static final ResourceRetriever resHealth = ResourceRetriever.forResource(PhrancisResources.HEALTH);
+	private static final ResourceRetriever resAttack = ResourceRetriever.forResource(PhrancisResources.ATTACK);
+	private static final ResourceRetriever resManaCost = ResourceRetriever.forResource(PhrancisResources.MANA_COST);
 	private static final ComponentRetriever<ActionComponent> actions = ComponentRetriever.retreiverFor(ActionComponent.class);
 	
 	public CardNodeBattlefield (Pane pane, int numCards, String name, Entity card, FXMLGameController controller, boolean isPlayer) {

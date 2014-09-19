@@ -21,7 +21,7 @@ import net.zomis.cardshifter.ecs.cards.HandComponent;
 import net.zomis.cardshifter.ecs.cards.ZoneComponent;
 import net.zomis.cardshifter.ecs.components.PlayerComponent;
 import net.zomis.cardshifter.ecs.phase.PhaseController;
-import net.zomis.cardshifter.ecs.resources.ResourceRetreiver;
+import net.zomis.cardshifter.ecs.resources.ResourceRetriever;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame.PhrancisResources;
 
@@ -34,10 +34,10 @@ public class FXMLGameController {
 	private ECSGame game;
 	private boolean gameHasStarted = false; // hack to make the buttons work properly
 	private PhaseController phases;
-	private final ResourceRetreiver health = ResourceRetreiver.forResource(PhrancisResources.HEALTH);
-	private final ResourceRetreiver mana = ResourceRetreiver.forResource(PhrancisResources.MANA);
-	private final ResourceRetreiver manaMax = ResourceRetreiver.forResource(PhrancisResources.MANA_MAX);
-	private final ResourceRetreiver scrap = ResourceRetreiver.forResource(PhrancisResources.SCRAP);
+	private final ResourceRetriever health = ResourceRetriever.forResource(PhrancisResources.HEALTH);
+	private final ResourceRetriever mana = ResourceRetriever.forResource(PhrancisResources.MANA);
+	private final ResourceRetriever manaMax = ResourceRetriever.forResource(PhrancisResources.MANA_MAX);
+	private final ResourceRetriever scrap = ResourceRetriever.forResource(PhrancisResources.SCRAP);
 	
 	@FXML
 	Pane anchorPane;

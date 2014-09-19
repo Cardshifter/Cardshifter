@@ -23,7 +23,7 @@ import net.zomis.cardshifter.ecs.components.CreatureTypeComponent;
 import net.zomis.cardshifter.ecs.phase.PhaseController;
 import net.zomis.cardshifter.ecs.resources.ECSResource;
 import net.zomis.cardshifter.ecs.resources.ECSResourceData;
-import net.zomis.cardshifter.ecs.resources.ResourceRetreiver;
+import net.zomis.cardshifter.ecs.resources.ResourceRetriever;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame.PhrancisResources;
 
@@ -39,11 +39,11 @@ public class PhrancisTest {
 	
 	private ECSGame game;
 	private PhaseController phase;
-	private final ResourceRetreiver mana = ResourceRetreiver.forResource(PhrancisResources.MANA);
-	private final ResourceRetreiver manaCost = ResourceRetreiver.forResource(PhrancisResources.MANA_COST);
-	private final ResourceRetreiver health = ResourceRetreiver.forResource(PhrancisResources.HEALTH);
-	private final ResourceRetreiver attackPoints = ResourceRetreiver.forResource(PhrancisResources.ATTACK_AVAILABLE);
-	private final ResourceRetreiver scrapCost = ResourceRetreiver.forResource(PhrancisResources.SCRAP_COST);
+	private final ResourceRetriever mana = ResourceRetriever.forResource(PhrancisResources.MANA);
+	private final ResourceRetriever manaCost = ResourceRetriever.forResource(PhrancisResources.MANA_COST);
+	private final ResourceRetriever health = ResourceRetriever.forResource(PhrancisResources.HEALTH);
+	private final ResourceRetriever attackPoints = ResourceRetriever.forResource(PhrancisResources.ATTACK_AVAILABLE);
+	private final ResourceRetriever scrapCost = ResourceRetriever.forResource(PhrancisResources.SCRAP_COST);
 	
 	private final ComponentRetriever<ActionComponent> actions = ComponentRetriever.retreiverFor(ActionComponent.class);
 	private final ComponentRetriever<DeckComponent> deck = ComponentRetriever.retreiverFor(DeckComponent.class);
@@ -162,7 +162,7 @@ public class PhrancisTest {
 	}
 
 	private void assertResource(Entity entity, ECSResource resource, int expected) {
-		ResourceRetreiver retriever = ResourceRetreiver.forResource(resource);
+		ResourceRetriever retriever = ResourceRetriever.forResource(resource);
 		ECSResourceData res = retriever.resFor(entity);
 		assertEquals("Unexpected resource " + resource + " for " + entity, expected, res.get());
 	}

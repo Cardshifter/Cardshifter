@@ -18,4 +18,8 @@ public class Resources {
 		return result;
 	}
 
+	public static ResourceRetriever retriever(ECSResource resource) {
+		return new ResourceRetriever(resource);
+	}
+
 }

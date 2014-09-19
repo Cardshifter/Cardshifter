@@ -23,7 +23,7 @@ import net.zomis.cardshifter.ecs.phase.Phase;
 import net.zomis.cardshifter.ecs.phase.PhaseController;
 import net.zomis.cardshifter.ecs.resources.ECSResource;
 import net.zomis.cardshifter.ecs.resources.ECSResourceMap;
-import net.zomis.cardshifter.ecs.resources.ResourceRetreiver;
+import net.zomis.cardshifter.ecs.resources.ResourceRetriever;
 import net.zomis.cardshifter.ecs.resources.RestoreResourcesToSystem;
 import net.zomis.cardshifter.ecs.systems.AttackOnBattlefield;
 import net.zomis.cardshifter.ecs.systems.AttackSickness;
@@ -98,12 +98,12 @@ public class PhrancisGame {
 			}
 		}
 		
-		ResourceRetreiver manaMaxResource = ResourceRetreiver.forResource(PhrancisResources.MANA_MAX);
-		ResourceRetreiver manaResource = ResourceRetreiver.forResource(PhrancisResources.MANA);
+		ResourceRetriever manaMaxResource = ResourceRetriever.forResource(PhrancisResources.MANA_MAX);
+		ResourceRetriever manaResource = ResourceRetriever.forResource(PhrancisResources.MANA);
 		manaMaxResource.resFor(phaseController.getCurrentEntity()).change(1);
 		manaResource.resFor(phaseController.getCurrentEntity()).change(1);
 		
-		ResourceRetreiver manaCostResource = ResourceRetreiver.forResource(PhrancisResources.MANA_COST);
+		ResourceRetriever manaCostResource = ResourceRetriever.forResource(PhrancisResources.MANA_COST);
 		UnaryOperator<Entity> owningPlayerPays = entity -> entity.getComponent(CardComponent.class).getOwner();
 		game.addSystem(new GainResourceSystem(PhrancisResources.MANA_MAX, entity -> Math.min(1, Math.abs(manaMaxResource.getFor(entity) - 10))));
 		game.addSystem(new RestoreResourcesSystem(PhrancisResources.MANA, entity -> manaMaxResource.getFor(entity)));
@@ -114,7 +114,7 @@ public class PhrancisGame {
 		game.addSystem(new UseCostSystem(PLAY_ACTION, PhrancisResources.MANA, manaCostResource::getFor, owningPlayerPays));
 		
 		// Actions - Scrap
-		ResourceRetreiver scrapCostResource = ResourceRetreiver.forResource(PhrancisResources.SCRAP_COST);
+		ResourceRetriever scrapCostResource = ResourceRetriever.forResource(PhrancisResources.SCRAP_COST);
 		game.addSystem(new ScrapSystem(PhrancisResources.SCRAP));
 		
 		// Actions - Attack

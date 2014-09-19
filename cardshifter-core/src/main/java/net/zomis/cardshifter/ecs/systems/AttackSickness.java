@@ -4,15 +4,15 @@ import net.zomis.cardshifter.ecs.actions.ActionAllowedCheckEvent;
 import net.zomis.cardshifter.ecs.actions.ActionPerformEvent;
 import net.zomis.cardshifter.ecs.actions.SpecificActionSystem;
 import net.zomis.cardshifter.ecs.resources.ECSResource;
-import net.zomis.cardshifter.ecs.resources.ResourceRetreiver;
+import net.zomis.cardshifter.ecs.resources.ResourceRetriever;
 
 public class AttackSickness extends SpecificActionSystem {
 
-	private final ResourceRetreiver resource;
+	private final ResourceRetriever resource;
 	
 	public AttackSickness(ECSResource resource) {
 		super("Attack");
-		this.resource = ResourceRetreiver.forResource(resource);
+		this.resource = ResourceRetriever.forResource(resource);
 	}
 
 	@Override
