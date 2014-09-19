@@ -296,12 +296,6 @@ public class GameClientController {
 	}
 	
 	private void processUseableActionMessage(UseableActionMessage message) {
-		for (ZoneView zoneView : this.zoneViewMap.values()) {
-			if (zoneView.getAllIds().contains(message.getId())) {
-				zoneView.highlightCard(message.getId());
-			}
-		}
-		
 		double paneHeight = actionBox.getHeight();
 		double paneWidth = actionBox.getWidth();
 		
@@ -310,6 +304,13 @@ public class GameClientController {
 		
 		ActionButton actionButton = new ActionButton(message, this, actionWidth, paneHeight);
 		actionBox.getChildren().add(actionButton);
+		
+		//testing highlighting cards
+		for (ZoneView zoneView : this.zoneViewMap.values()) {
+			if (zoneView.getAllIds().contains(message.getId())) {
+				zoneView.highlightCard(message.getId());
+			}
+		}
 	}
 	
 	private void processUpdateMessage(UpdateMessage message) {

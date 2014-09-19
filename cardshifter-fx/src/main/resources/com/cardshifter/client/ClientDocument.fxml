@@ -15,15 +15,11 @@
         <!-- <Button fx:id="button" layoutX="1098.0" layoutY="530.0" onAction="#startGameButtonAction" text="Start Game" /> -->
         <Label fx:id="startGameLabel" layoutX="1098.0" layoutY="564.0" minHeight="16" minWidth="69" />
         <!-- <Button layoutX="1105.0" layoutY="467.0" mnemonicParsing="false" onAction="#handleTurnButtonAction" text="End Turn" /> -->
-        <Label fx:id="turnLabel" layoutX="1034.0" layoutY="556.0" text="Turn Number" />
+        <Label fx:id="turnLabel" layoutX="1021.0" layoutY="556.0" text="Turn Number" />
         <!-- <Button fx:id="newGameButton" layoutX="17.0" layoutY="24.0" mnemonicParsing="false" onAction="#newGameButtonAction" text="New Game" /> -->
         
         <!--  Hands  -->
-        <HBox fx:id="playerHandPane" alignment="BASELINE_LEFT" layoutX="14.0" layoutY="393.0" maxHeight="200.0" maxWidth="1000.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="200.0" prefWidth="1000.0" scaleShape="false" spacing="10.0">
-            <children>
-                <QuadCurve fx:id="handGuide" controlY="-100.0" endX="100.0" fill="DODGERBLUE" layoutX="480.0" layoutY="200.0" opacity="0.0" startX="-100.0" stroke="BLACK" strokeType="INSIDE" />
-            </children>
-        </HBox>
+        <HBox fx:id="playerHandPane" alignment="CENTER" layoutX="14.0" layoutY="393.0" maxHeight="200.0" maxWidth="1000.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="169.0" prefWidth="1000.0" scaleShape="false" spacing="10.0" />
         <HBox fx:id="opponentHandPane" alignment="CENTER" layoutX="232.0" layoutY="15.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="61.0" prefWidth="564.0" scaleShape="false" spacing="10.0" />
 		 
 		<!-- Decks -->
@@ -81,7 +77,7 @@
 				</Label>
 		
             		<!-- temporary action box -->
-		<HBox fx:id="actionBox" alignment="CENTER" layoutX="14.0" layoutY="599.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="16.0" prefWidth="1107.0" scaleShape="false" spacing="10" />
+		<HBox fx:id="actionBox" alignment="CENTER" layoutX="14.0" layoutY="580.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="25.0" prefWidth="1107.0" scaleShape="false" spacing="10" />
       <AnchorPane layoutX="239.0" layoutY="211.0" prefHeight="98.0" prefWidth="810.0">
          <children>
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#b0d9ff" height="99.0" stroke="BLACK" strokeType="INSIDE" width="810.0" />
