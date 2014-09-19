@@ -1,8 +1,13 @@
 package com.cardshifter.client;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import javafx.scene.Node;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 public class ZoneView {
 	
@@ -40,6 +45,21 @@ public class ZoneView {
 	
 	public Pane getRootPane() {
 		return this.rootPane;
+	}
+	
+	public Set getAllIds() {
+		return this.zoneMap.keySet();
+	}
+	
+	public void highlightCard(int cardId) {
+		Pane pane = this.getPane(cardId);
+		List<Node> children = pane.getChildren();
+		for (Node node : children) {
+			if (node.getId().equals("backgroundRectangle")) {
+				Rectangle rectangle = (Rectangle)node;
+				rectangle.setFill(Color.YELLOW);
+			}
+		}
 	}
 	
 }

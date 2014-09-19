@@ -296,6 +296,12 @@ public class GameClientController {
 	}
 	
 	private void processUseableActionMessage(UseableActionMessage message) {
+		for (ZoneView zoneView : this.zoneViewMap.values()) {
+			if (zoneView.getAllIds().contains(message.getId())) {
+				zoneView.highlightCard(message.getId());
+			}
+		}
+		
 		double paneHeight = actionBox.getHeight();
 		double paneWidth = actionBox.getWidth();
 		
@@ -401,5 +407,8 @@ public class GameClientController {
 	ZoneChangeMessage [entity=50, sourceZone=45, destinationZone=46]
 	ZoneChangeMessage [entity=51, sourceZone=45, destinationZone=46]
 	ZoneChangeMessage [entity=52, sourceZone=45, destinationZone=46]
+	UseableActionMessage [id=5, action=Play, targetRequired=false, targetId=0]
+	UseableActionMessage [id=1, action=End Turn, targetRequired=false, targetId=0]
+	ZoneChangeMessage [entity=54, sourceZone=45, destinationZone=46]
 	*/
 
