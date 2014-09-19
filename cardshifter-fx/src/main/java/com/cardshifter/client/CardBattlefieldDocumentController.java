@@ -4,7 +4,6 @@ import com.cardshifter.server.outgoing.CardInfoMessage;
 import com.cardshifter.server.outgoing.UseableActionMessage;
 import java.net.URL;
 import java.util.ResourceBundle;
-
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -14,17 +13,13 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-public class CardHandDocumentController implements Initializable {
+public class CardBattlefieldDocumentController implements Initializable {
     
     @FXML private Label strength;
     @FXML private Label health;
     @FXML private Label cardId;
-    @FXML private Label manaCost;
-    @FXML private Label scrapCost;
     @FXML private Label cardType;
     @FXML private Label creatureType;
-    @FXML private Label enchStrength;
-    @FXML private Label enchHealth;
 	@FXML private Rectangle background;
 	@FXML private AnchorPane anchorPane;
     
@@ -33,9 +28,9 @@ public class CardHandDocumentController implements Initializable {
 	private final GameClientController controller;
 	private UseableActionMessage message;
 	
-    public CardHandDocumentController(CardInfoMessage message, GameClientController controller) {
+    public CardBattlefieldDocumentController(CardInfoMessage message, GameClientController controller) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("CardHandDocument.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("CardBattlefieldDocument.fxml"));
             loader.setController(this);
             root = loader.load();
         }
@@ -48,10 +43,6 @@ public class CardHandDocumentController implements Initializable {
         this.setCardId();
         this.setCardLabels();
     }
-	
-	public CardInfoMessage getCard() {
-		return this.card;
-	}
     
     public AnchorPane getRootPane() {
 		return this.anchorPane;
@@ -78,8 +69,6 @@ public class CardHandDocumentController implements Initializable {
 		for(String key : this.card.getProperties().keySet()) {
 			if (key.equals("SICKNESS")) {
 				
-			} else if (key.equals("MANA_COST")) {
-				manaCost.setText(String.format("Mana Cost = %d", this.card.getProperties().get(key)));
 			} else if (key.equals("ATTACK")) {
 				strength.setText(this.card.getProperties().get(key).toString());
 			} else if (key.equals("HEALTH")) {

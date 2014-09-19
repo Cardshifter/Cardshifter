@@ -245,11 +245,11 @@ public class GameClientController {
 			if (message.getName().equals("Battlefield")) {
 				if(message.getOwner() == this.playerId) {
 					this.playerBattlefieldId = message.getId();
-					this.zoneViewMap.put(message.getId(), new ZoneView(message.getId(), playerBattlefieldPane));
+					this.zoneViewMap.put(message.getId(), new BattlefieldZoneView(message.getId(), playerBattlefieldPane));
 					
 				} else {
 					this.opponentBattlefieldId = message.getId();
-					this.zoneViewMap.put(message.getId(), new ZoneView(message.getId(), opponentBattlefieldPane));
+					this.zoneViewMap.put(message.getId(), new BattlefieldZoneView(message.getId(), opponentBattlefieldPane));
 				}
 			} else if (message.getName().equals("Hand")) {
 				if (message.getOwner() == this.playerId) {
@@ -287,6 +287,9 @@ public class GameClientController {
 		}
 	}	
 	private void addCardToOpponentBattlefieldPane(CardInfoMessage message) {
+		BattlefieldZoneView opponentBattlefield = (BattlefieldZoneView)this.zoneViewMap.get(opponentBattlefieldId);
+		CardBattlefieldDocumentController card = new CardBattlefieldDocumentController(message, this);
+		opponentBattlefield.addCardHandController(message.getId(), card);
 	}
 	private void addCardToOpponentHandPane(CardInfoMessage message) {
 	}
@@ -346,13 +349,14 @@ public class GameClientController {
 		if (this.zoneViewMap.containsKey(sourceZoneId) && this.zoneViewMap.containsKey(destinationZoneId)) {
 			
 			if (sourceZoneId == opponentHandId) {
-				
+			
 			} else if (sourceZoneId == playerHandId) {
 				PlayerHandZoneView sourceZone = (PlayerHandZoneView)this.zoneViewMap.get(sourceZoneId);
 				CardHandDocumentController card = sourceZone.getCardHandController(cardId);
+				CardBattlefieldDocumentController newCard = new CardBattlefieldDocumentController(card.getCard(), this);
 			
-				ZoneView destinationZone = this.zoneViewMap.get(destinationZoneId);
-				destinationZone.addPane(cardId, card.getRootPane());
+				BattlefieldZoneView destinationZone = (BattlefieldZoneView)this.zoneViewMap.get(destinationZoneId);
+				destinationZone.addCardHandController(cardId, newCard);
 			
 				sourceZone.removeCardHandDocumentController(cardId);
 			} 
