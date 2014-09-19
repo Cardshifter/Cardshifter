@@ -20,6 +20,10 @@ public class ZoneView {
 		this.rootPane.getChildren().add(pane);
 	}
 	
+	public Pane getPane(int paneId) {
+		return this.zoneMap.get(paneId);
+	}
+	
 	public void removePane(int paneId) {
 		Pane paneToRemove = this.zoneMap.get(paneId);
 		this.rootPane.getChildren().remove(paneToRemove);

@@ -10,9 +10,6 @@
 
 <AnchorPane fx:id="rootPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cardshifter.client.GameClientController">
     <children>
-		
-		<!-- temporary action box -->
-		<HBox fx:id="actionBox" alignment="CENTER" layoutX="239.0" layoutY="343.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="44.0" prefWidth="810.0" scaleShape="false" spacing="10" />
         
         <!--  Buttons  -->
         <!-- <Button fx:id="button" layoutX="1098.0" layoutY="530.0" onAction="#startGameButtonAction" text="Start Game" /> -->
@@ -28,16 +25,6 @@
             </children>
         </HBox>
         <HBox fx:id="opponentHandPane" alignment="CENTER" layoutX="232.0" layoutY="15.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="61.0" prefWidth="564.0" scaleShape="false" spacing="10.0" />
-
-        <!--  Battlefields  -->
-        <HBox fx:id="playerBattlefieldPane" layoutX="239.0" layoutY="237.0" prefHeight="98.0" prefWidth="809.0" spacing="10.0">
-         <children>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#b0d9ff" height="99.0" stroke="BLACK" strokeType="INSIDE" width="810.0" />
-         </children></HBox>
-        <HBox fx:id="opponentBattlefieldPane" layoutX="239.0" layoutY="105.0" prefHeight="98.0" prefWidth="809.0" spacing="10.0">
-         <children>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f59782" height="99.0" stroke="BLACK" strokeType="INSIDE" width="810.0" />
-         </children></HBox>
 		 
 		<!-- Decks -->
 		<Pane fx:id="opponentDeckPane" layoutX="796.0" layoutY="15.0" prefHeight="61.0" prefWidth="46.0">
@@ -92,6 +79,23 @@
 						<Font size="20.0" />
 					</font>
 				</Label>
+		
+            		<!-- temporary action box -->
+		<HBox fx:id="actionBox" alignment="CENTER" layoutX="14.0" layoutY="599.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="16.0" prefWidth="1107.0" scaleShape="false" spacing="10" />
+      <AnchorPane layoutX="239.0" layoutY="211.0" prefHeight="98.0" prefWidth="810.0">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#b0d9ff" height="99.0" stroke="BLACK" strokeType="INSIDE" width="810.0" />
+      
+              <!--  Battlefields  -->
+              <HBox fx:id="playerBattlefieldPane" prefHeight="98.0" prefWidth="809.0" spacing="10.0" />
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="239.0" layoutY="105.0" prefHeight="98.0" prefWidth="809.0">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f59782" height="99.0" stroke="BLACK" strokeType="INSIDE" width="810.0" />
+              <HBox fx:id="opponentBattlefieldPane" layoutX="1.0" layoutY="1.0" prefHeight="98.0" prefWidth="809.0" spacing="10.0" />
+         </children>
+      </AnchorPane>
       
     </children>
 </AnchorPane>

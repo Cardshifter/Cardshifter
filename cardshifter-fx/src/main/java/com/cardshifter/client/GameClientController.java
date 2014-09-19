@@ -12,6 +12,7 @@ import com.cardshifter.server.outgoing.UpdateMessage;
 import com.cardshifter.server.outgoing.UseableActionMessage;
 import com.cardshifter.server.outgoing.WaitMessage;
 import com.cardshifter.server.outgoing.WelcomeMessage;
+import com.cardshifter.server.outgoing.ZoneChangeMessage;
 import com.cardshifter.server.outgoing.ZoneMessage;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -202,7 +203,9 @@ public class GameClientController {
 			this.processUseableActionMessage((UseableActionMessage)message);
 		} else if (message instanceof UpdateMessage) {
 			this.processUpdateMessage((UpdateMessage)message);
-		} 
+		} else if (message instanceof ZoneChangeMessage) {
+			this.processZoneChangeMessage((ZoneChangeMessage)message);
+		}
 	}
 	
 	private void processNewGameMessage(NewGameMessage message) {
@@ -319,6 +322,27 @@ public class GameClientController {
 		playerMap.put(key, value);
 	
 		this.repaintStatBox(statBox, playerMap);
+	}
+	
+	private void processZoneChangeMessage(ZoneChangeMessage message) {
+		int sourceZoneId = message.getSourceZone();
+		int destinationZoneId = message.getDestinationZone();
+		int cardId = message.getEntity();
+		
+		if (this.zoneViewMap.containsKey(sourceZoneId) && this.zoneViewMap.containsKey(destinationZoneId)) {
+			
+			if (sourceZoneId == opponentHandId) {
+				
+			} else if (sourceZoneId == playerHandId) {
+				ZoneView sourceZone = this.zoneViewMap.get(sourceZoneId);
+				Pane cardPane = sourceZone.getPane(cardId);
+			
+				ZoneView destinationZone = this.zoneViewMap.get(destinationZoneId);
+				destinationZone.addPane(cardId, cardPane);
+			
+				sourceZone.removePane(cardId);
+			} 
+		}
 	}
 	
 	private void repaintStatBox(Pane statBox, Map<String, Integer> playerMap) {
