@@ -50,6 +50,21 @@ public class BattlefieldZoneView extends ZoneView {
 		super.addPane(cardId, card.getRootPane());
 	}
 	
+	private void removeCardActive(int cardId) {
+		CardBattlefieldDocumentController card = this.cardMap.get(cardId);
+		if (card.isCardActive()) {
+			card.removeCardActive();
+			super.removePane(cardId);
+			super.addPane(cardId, card.getRootPane());
+		}
+	}
+	
+	public void removeActiveAllCards() {
+		for (Object cardId : this.getAllIds()) {
+			this.removeCardActive((int)cardId);
+		}
+	}
+	
 	public void setCardTargetable(int cardId, UseableActionMessage message) {
 		CardBattlefieldDocumentController card = this.cardMap.get(cardId);
 		card.setCardTargetable(message);

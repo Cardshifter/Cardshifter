@@ -38,11 +38,25 @@ public class PlayerHandZoneView extends ZoneView {
 		return this.cardMap.keySet();
 	}
 	
-	public void highlightCard(int cardId, UseableActionMessage message) {
+	public void setCardActive(int cardId, UseableActionMessage message) {
 		CardHandDocumentController card = this.cardMap.get(cardId);
 		card.setCardActive(message);
 		super.removePane(cardId);
 		super.addPane(cardId, card.getRootPane());
 	}
 	
+	private void removeCardActive(int cardId) {
+		CardHandDocumentController card = this.cardMap.get(cardId);
+		if (card.isCardActive()) {
+			card.removeCardActive();
+			super.removePane(cardId);
+			super.addPane(cardId, card.getRootPane());
+		}
+	}
+	
+	public void removeActiveAllCards() {
+		for (Object cardId : this.getAllIds()) {
+			this.removeCardActive((int)cardId);
+		}
+	}
 }

@@ -183,6 +183,17 @@ public class GameClientController {
 		
 		//A new list of actions will be sent back from the server, so it is okay to clear them
 		this.actionBox.getChildren().clear();
+		this.clearActiveFromAllCards();
+	}
+	
+	private void clearActiveFromAllCards() {
+		for (ZoneView zoneView : this.zoneViewMap.values()) {
+			if (zoneView instanceof BattlefieldZoneView) {
+				((BattlefieldZoneView)zoneView).removeActiveAllCards();
+			} else if (zoneView instanceof PlayerHandZoneView) {
+				((PlayerHandZoneView)zoneView).removeActiveAllCards();
+			}
+		}
 	}
 	
 	private void processMessageFromServer(Message message) {
@@ -325,7 +336,7 @@ public class GameClientController {
 		for (ZoneView zoneView : this.zoneViewMap.values()) {
 			if (zoneView.getAllIds().contains(message.getId())) {
 				if (zoneView instanceof PlayerHandZoneView) {
-					((PlayerHandZoneView)zoneView).highlightCard(message.getId(), message);
+					((PlayerHandZoneView)zoneView).setCardActive(message.getId(), message);
 				} else if (zoneView instanceof BattlefieldZoneView) {
 					((BattlefieldZoneView)zoneView).setCardActive(message.getId(), message);
 				}
@@ -386,7 +397,15 @@ public class GameClientController {
 	
 	private void processEntityRemoveMessage(EntityRemoveMessage message) {
 		for (ZoneView zoneView : this.zoneViewMap.values()) {
-			if (zoneView.getAllIds().contains(message.getEntity())) {
+			if (zoneView instanceof BattlefieldZoneView) {
+				if (zoneView.getAllIds().contains(message.getEntity())) {
+					((BattlefieldZoneView)zoneView).removeCardHandDocumentController(message.getEntity());
+				}
+			} else if (zoneView instanceof PlayerHandZoneView) {
+				if (zoneView.getAllIds().contains(message.getEntity())) {
+					((PlayerHandZoneView)zoneView).removeCardHandDocumentController(message.getEntity());
+				}
+			} else if (zoneView.getAllIds().contains(message.getEntity())) {
 				zoneView.removePane(message.getEntity());
 			}
 		}
