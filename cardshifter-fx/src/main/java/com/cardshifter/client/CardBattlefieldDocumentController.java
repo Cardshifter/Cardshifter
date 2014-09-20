@@ -11,6 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
 public class CardBattlefieldDocumentController implements Initializable {
@@ -21,6 +22,7 @@ public class CardBattlefieldDocumentController implements Initializable {
     @FXML private Label cardType;
     @FXML private Label creatureType;
 	@FXML private Rectangle background;
+	@FXML private Circle sicknessCircle;
 	@FXML private AnchorPane anchorPane;
     
     private AnchorPane root;
@@ -54,6 +56,14 @@ public class CardBattlefieldDocumentController implements Initializable {
         background.setFill(Color.YELLOW);
     }
 	
+	private void setSickness() {
+		sicknessCircle.setVisible(true);
+	}
+	
+	public void removeSickness() {
+		sicknessCircle.setVisible(false);
+	}
+	
 	private void actionOnClick(MouseEvent event) {
 		System.out.println("Action detected on card" + this.cardId.textProperty());
 		this.controller.createAndSendMessage(this.message);
@@ -68,7 +78,9 @@ public class CardBattlefieldDocumentController implements Initializable {
     private void setCardLabels() {
 		for(String key : this.card.getProperties().keySet()) {
 			if (key.equals("SICKNESS")) {
-				
+				if (this.card.getProperties().get(key) == 1) {
+					this.setSickness();
+				}
 			} else if (key.equals("ATTACK")) {
 				strength.setText(this.card.getProperties().get(key).toString());
 			} else if (key.equals("HEALTH")) {

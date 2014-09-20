@@ -345,8 +345,13 @@ public class GameClientController {
 		for (ZoneView zoneView : this.zoneViewMap.values()) {
 			if (zoneView.getAllIds().contains(message.getId())) {
 				if (zoneView instanceof BattlefieldZoneView) {
+					if (message.getKey().equals("SICKNESS")) {
+						if ((int)message.getValue() == 0) {
+							((BattlefieldZoneView)zoneView).removeSicknessForCard(message.getId());
+						}
+					}
 					//((BattlefieldZoneView)zoneView).highlightCard(message.getId(), message);
-					System.out.println("Found card for update message");
+					//System.out.println("Found card for update message");
 				}
 			}
 		}
@@ -358,10 +363,7 @@ public class GameClientController {
 		int cardId = message.getEntity();
 		
 		if (this.zoneViewMap.containsKey(sourceZoneId) && this.zoneViewMap.containsKey(destinationZoneId)) {
-			
-			if (sourceZoneId == opponentHandId) {
-			
-			} else if (sourceZoneId == playerHandId) {
+			if (sourceZoneId == playerHandId) {
 				PlayerHandZoneView sourceZone = (PlayerHandZoneView)this.zoneViewMap.get(sourceZoneId);
 				CardHandDocumentController card = sourceZone.getCardHandController(cardId);
 				CardBattlefieldDocumentController newCard = new CardBattlefieldDocumentController(card.getCard(), this);

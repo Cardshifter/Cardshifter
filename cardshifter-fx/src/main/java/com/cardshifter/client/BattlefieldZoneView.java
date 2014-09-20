@@ -24,6 +24,11 @@ public class BattlefieldZoneView extends ZoneView {
 		this.cardMap.remove(cardId);
 	}
 	
+	public void removeSicknessForCard(int cardId) {
+		CardBattlefieldDocumentController card = this.cardMap.get(cardId);
+		card.removeSickness();
+	}
+	
 	public CardBattlefieldDocumentController getCardHandController(int cardId) {
 		return this.cardMap.get(cardId);
 	}
