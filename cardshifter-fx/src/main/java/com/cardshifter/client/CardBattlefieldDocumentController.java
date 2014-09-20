@@ -56,6 +56,12 @@ public class CardBattlefieldDocumentController implements Initializable {
         background.setFill(Color.YELLOW);
     }
 	
+	public void setCardTargetable(UseableActionMessage message) {
+		this.message = message;
+		this.anchorPane.setOnMouseClicked(this::actionOnClick);
+		background.setFill(Color.DARKGREEN);
+	}
+	
 	private void setSickness() {
 		sicknessCircle.setVisible(true);
 	}

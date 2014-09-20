@@ -313,13 +313,21 @@ public class GameClientController {
 			actionBox.getChildren().add(actionButton);
 		}
 		
+		if ((message.getAction().equals("Attack") || message.getAction().equals("Enchant")) && message.getTargetId() != 0) {
+			for (ZoneView zoneView : this.zoneViewMap.values()) {
+				if (zoneView.getAllIds().contains(message.getTargetId())) {
+					((BattlefieldZoneView)zoneView).setCardTargetable(message.getTargetId(), message);
+				}
+			}
+		}
+		
 		//testing highlighting cards
 		for (ZoneView zoneView : this.zoneViewMap.values()) {
 			if (zoneView.getAllIds().contains(message.getId())) {
 				if (zoneView instanceof PlayerHandZoneView) {
 					((PlayerHandZoneView)zoneView).highlightCard(message.getId(), message);
 				} else if (zoneView instanceof BattlefieldZoneView) {
-					((BattlefieldZoneView)zoneView).highlightCard(message.getId(), message);
+					((BattlefieldZoneView)zoneView).setCardActive(message.getId(), message);
 				}
 			}
 		}

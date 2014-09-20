@@ -43,9 +43,16 @@ public class BattlefieldZoneView extends ZoneView {
 		return this.cardMap.keySet();
 	}
 	
-	public void highlightCard(int cardId, UseableActionMessage message) {
+	public void setCardActive(int cardId, UseableActionMessage message) {
 		CardBattlefieldDocumentController card = this.cardMap.get(cardId);
 		card.setCardActive(message);
+		super.removePane(cardId);
+		super.addPane(cardId, card.getRootPane());
+	}
+	
+	public void setCardTargetable(int cardId, UseableActionMessage message) {
+		CardBattlefieldDocumentController card = this.cardMap.get(cardId);
+		card.setCardTargetable(message);
 		super.removePane(cardId);
 		super.addPane(cardId, card.getRootPane());
 	}
