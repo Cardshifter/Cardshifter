@@ -85,6 +85,7 @@ public class CW2Game {
 		// General setup
 		game.addSystem(new GameOverIfNoHealth(CWars2Res.CASTLE));
 		game.addSystem(new RemoveDeadEntityFromZoneSystem());
+		game.addSystem(new CannotUseUnknownCards());
 		
 		return game;
 	}
