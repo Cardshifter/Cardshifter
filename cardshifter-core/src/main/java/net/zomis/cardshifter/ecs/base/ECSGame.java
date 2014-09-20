@@ -30,18 +30,8 @@ public class ECSGame {
 		return entity;
 	}
 	
-	/**
-	 * Execute a pre-event, perform something, then execute a post-event.
-	 * 
-	 * @param event Event to execute
-	 * @param runInBetween What to do between pre- and post- events.
-	 * @return The event that was executed
-	 */
 	public <T extends IEvent> T executeEvent(T event, Runnable runInBetween) {
-		this.events.executePreEvent(event);
-		runInBetween.run();
-		this.events.executePostEvent(event);
-		return event;
+		return events.executeEvent(event, runInBetween);
 	}
 
 	public <T extends Component> ComponentRetriever<T> componentRetreiver(Class<T> class1) {
@@ -95,12 +85,7 @@ public class ECSGame {
 	}
 
 	public <T extends CancellableEvent> T executeCancellableEvent(T event, Runnable runInBetween) {
-		this.events.executePreEvent(event);
-		if (!event.isCancelled()) {
-			runInBetween.run();
-			this.events.executePostEvent(event);
-		}
-		return event;
+		return events.executeCancellableEvent(event, runInBetween);
 	}
 	
 	// TODO: Player component, Zone component for a zone
