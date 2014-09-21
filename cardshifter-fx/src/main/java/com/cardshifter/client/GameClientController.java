@@ -322,10 +322,20 @@ public class GameClientController {
 			actionBox.getChildren().add(actionButton);
 		}
 		
-		if ((message.getAction().equals("Attack") || message.getAction().equals("Enchant")) && message.getTargetId() != 0) {
+		if (message.getAction().equals("Attack") && message.getTargetId() != 0 && message.getTargetId() != this.opponentId) {
 			for (ZoneView zoneView : this.zoneViewMap.values()) {
 				if (zoneView.getAllIds().contains(message.getTargetId())) {
 					((BattlefieldZoneView)zoneView).setCardTargetable(message.getTargetId(), message);
+				}
+			}
+		}
+		
+		if ((message.getAction().equals("Enchant"))) {
+			for (ZoneView zoneView : this.zoneViewMap.values()) {
+				if (zoneView instanceof BattlefieldZoneView) {
+					if (zoneView.getAllIds().contains(message.getTargetId())) {
+						((BattlefieldZoneView)zoneView).setCardTargetable(message.getTargetId(), message);
+					}
 				}
 			}
 		}
