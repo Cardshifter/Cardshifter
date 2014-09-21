@@ -45,7 +45,7 @@ import javafx.scene.shape.Rectangle;
 
 public class GameClientController {
 	
-	@FXML private Label serverMessage;
+	@FXML private Label loginMessage;
 	@FXML private ListView<String> serverMessages;
 	@FXML private VBox opponentStatBox;
 	@FXML private VBox playerStatBox;
@@ -60,7 +60,6 @@ public class GameClientController {
 	
 	private final ObjectMapper mapper = new ObjectMapper();
 	private final BlockingQueue<Message> messages = new LinkedBlockingQueue<>();
-	
 	private Socket socket;
 	private InputStream in;
 	private OutputStream out;
@@ -69,21 +68,21 @@ public class GameClientController {
 	
 	private int gameId;
 	private int playerIndex;
-	private int playerId;
 	private int opponentId;
-	private final Map<String, Integer> playerStatBoxMap = new HashMap<>();
-	private final Map<String, Integer> opponentStatBoxMap = new HashMap<>();
-	
 	private int opponentHandId;
 	private int opponentBattlefieldId;
 	private int opponentDeckId;
+	private int playerId;
 	private int playerHandId;
 	private int playerBattlefieldId;
 	private int playerDeckId;
+	
+	private final Map<String, Integer> playerStatBoxMap = new HashMap<>();
+	private final Map<String, Integer> opponentStatBoxMap = new HashMap<>();
 	private final Map<Integer, ZoneView> zoneViewMap = new HashMap<>();
 	
 	public void acceptIPAndPort(String ipAddress, int port) {
-		// this is passed into the object after it is automatically created by the FXML document
+		// this is passed into this object after it is automatically created by the FXML document
 		this.ipAddress = ipAddress;
 		this.port = port;
 	}
@@ -114,11 +113,10 @@ public class GameClientController {
 			if (!response.isOK()) {
 				return;
 			}
-	
 			//display the welcome message on the screen
-			Platform.runLater(() -> serverMessage.setText(response.getMessage()));
-			
+			Platform.runLater(() -> loginMessage.setText(response.getMessage()));
 		} catch (Exception e) {
+			System.out.println("Server message not OK");
 			e.printStackTrace();
 		}
 		
@@ -127,15 +125,14 @@ public class GameClientController {
 		try {
 			Message message = messages.take();
 			if (message instanceof WaitMessage) {	
-				
 				//display the wait message on the screen
 				String displayMessage = ((WaitMessage)message).getMessage();
-				Platform.runLater(() -> serverMessage.setText(displayMessage));
-				
+				Platform.runLater(() -> loginMessage.setText(displayMessage));
 				message = messages.take();
 			}
 			this.gameId = ((NewGameMessage) message).getGameId();
 		} catch (Exception e) {
+			System.out.println("Invalid response from opponent");
 			e.printStackTrace();
 		}
 	}
@@ -147,6 +144,7 @@ public class GameClientController {
 				while (values.hasNextValue()) {
 					Message message = values.next();
 					messages.offer(message);
+					//This is where all the magic happens for message handling
 					Platform.runLater(() -> this.processMessageFromServer(message));
 				}
 			} catch (SocketException e) {
@@ -155,16 +153,6 @@ public class GameClientController {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}
-	}
-	
-	private void send(Message message) {
-		try {
-			System.out.println("Sending: " + this.mapper.writeValueAsString(message));
-			this.mapper.writeValue(out, message);
-		} catch (IOException e) {
-			System.out.println("Error sending message: " + message);
-			throw new RuntimeException(e);
 		}
 	}
 	
@@ -184,6 +172,16 @@ public class GameClientController {
 		//A new list of actions will be sent back from the server, so it is okay to clear them
 		this.actionBox.getChildren().clear();
 		this.clearActiveFromAllCards();
+	}
+	
+	private void send(Message message) {
+		try {
+			System.out.println("Sending: " + this.mapper.writeValueAsString(message));
+			this.mapper.writeValue(out, message);
+		} catch (IOException e) {
+			System.out.println("Error sending message: " + message);
+			throw new RuntimeException(e);
+		}
 	}
 	
 	private void clearActiveFromAllCards() {
