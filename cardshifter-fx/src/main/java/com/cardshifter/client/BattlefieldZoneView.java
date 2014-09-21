@@ -1,5 +1,6 @@
 package com.cardshifter.client;
 
+import com.cardshifter.server.outgoing.UpdateMessage;
 import com.cardshifter.server.outgoing.UseableActionMessage;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,12 +15,12 @@ public class BattlefieldZoneView extends ZoneView {
 		super(cardId, pane);
 	}
 	
-	public void addCardHandController(int cardId, CardBattlefieldDocumentController controller) {
-		this.cardMap.put(cardId, controller);
+	public void addCardController(int cardId, CardBattlefieldDocumentController controller) {
 		super.addPane(cardId, controller.getRootPane());
+		this.cardMap.put(cardId, controller);
 	}
 	
-	public void removeCardHandDocumentController(int cardId) {
+	public void removeCardController(int cardId) {
 		super.removePane(cardId);
 		this.cardMap.remove(cardId);
 	}
@@ -29,25 +30,17 @@ public class BattlefieldZoneView extends ZoneView {
 		card.removeSickness();
 	}
 	
-	public CardBattlefieldDocumentController getCardHandController(int cardId) {
-		return this.cardMap.get(cardId);
-	}
-	
-	@Override
-	public int getSize() {
-		return this.cardMap.size();
-	}
-	
-	@Override
-	public Set getAllIds() {
-		return this.cardMap.keySet();
-	}
-	
 	public void setCardActive(int cardId, UseableActionMessage message) {
 		CardBattlefieldDocumentController card = this.cardMap.get(cardId);
 		card.setCardActive(message);
 		super.removePane(cardId);
 		super.addPane(cardId, card.getRootPane());
+	}
+	
+	public void removeActiveAllCards() {
+		for (Object cardId : this.getAllIds()) {
+			this.removeCardActive((int)cardId);
+		}
 	}
 	
 	private void removeCardActive(int cardId) {
@@ -58,18 +51,26 @@ public class BattlefieldZoneView extends ZoneView {
 			super.addPane(cardId, card.getRootPane());
 		}
 	}
-	
-	public void removeActiveAllCards() {
-		for (Object cardId : this.getAllIds()) {
-			this.removeCardActive((int)cardId);
-		}
-	}
-	
+
 	public void setCardTargetable(int cardId, UseableActionMessage message) {
 		CardBattlefieldDocumentController card = this.cardMap.get(cardId);
 		card.setCardTargetable(message);
 		super.removePane(cardId);
 		super.addPane(cardId, card.getRootPane());
+	}
+	
+	public void updateCard(int cardId, UpdateMessage message) {
+		
+	}
+	
+	@Override
+	public int getSize() {
+		return this.cardMap.size();
+	}
+	
+	@Override
+	public Set getAllIds() {
+		return this.cardMap.keySet();
 	}
 	
 }

@@ -298,7 +298,7 @@ public class GameClientController {
 	private void addCardToOpponentBattlefieldPane(CardInfoMessage message) {
 		BattlefieldZoneView opponentBattlefield = (BattlefieldZoneView)this.zoneViewMap.get(opponentBattlefieldId);
 		CardBattlefieldDocumentController card = new CardBattlefieldDocumentController(message, this);
-		opponentBattlefield.addCardHandController(message.getId(), card);
+		opponentBattlefield.addCardController(message.getId(), card);
 	}
 	private void addCardToOpponentHandPane(CardInfoMessage message) {
 	}
@@ -307,7 +307,7 @@ public class GameClientController {
 	private void addCardToPlayerHandPane(CardInfoMessage message) {
 		PlayerHandZoneView playerHand = (PlayerHandZoneView)this.zoneViewMap.get(playerHandId);
 		CardHandDocumentController card = new CardHandDocumentController(message, this);
-		playerHand.addCardHandController(message.getId(), card);
+		playerHand.addCardController(message.getId(), card);
 	}
 	
 	private void processUseableActionMessage(UseableActionMessage message) {
@@ -376,9 +376,10 @@ public class GameClientController {
 						if ((int)message.getValue() == 0) {
 							((BattlefieldZoneView)zoneView).removeSicknessForCard(message.getId());
 						}
+					} else {
+						((BattlefieldZoneView)zoneView).updateCard(message.getId(), message);
+						System.out.println("Found battlefield card to update");
 					}
-					//((BattlefieldZoneView)zoneView).highlightCard(message.getId(), message);
-					//System.out.println("Found card for update message");
 				}
 			}
 		}
@@ -396,9 +397,9 @@ public class GameClientController {
 				CardBattlefieldDocumentController newCard = new CardBattlefieldDocumentController(card.getCard(), this);
 			
 				BattlefieldZoneView destinationZone = (BattlefieldZoneView)this.zoneViewMap.get(destinationZoneId);
-				destinationZone.addCardHandController(cardId, newCard);
+				destinationZone.addCardController(cardId, newCard);
 			
-				sourceZone.removeCardHandDocumentController(cardId);
+				sourceZone.removeCardController(cardId);
 			} 
 		}
 	}
@@ -407,11 +408,11 @@ public class GameClientController {
 		for (ZoneView zoneView : this.zoneViewMap.values()) {
 			if (zoneView instanceof BattlefieldZoneView) {
 				if (zoneView.getAllIds().contains(message.getEntity())) {
-					((BattlefieldZoneView)zoneView).removeCardHandDocumentController(message.getEntity());
+					((BattlefieldZoneView)zoneView).removeCardController(message.getEntity());
 				}
 			} else if (zoneView instanceof PlayerHandZoneView) {
 				if (zoneView.getAllIds().contains(message.getEntity())) {
-					((PlayerHandZoneView)zoneView).removeCardHandDocumentController(message.getEntity());
+					((PlayerHandZoneView)zoneView).removeCardController(message.getEntity());
 				}
 			} else if (zoneView.getAllIds().contains(message.getEntity())) {
 				zoneView.removePane(message.getEntity());
