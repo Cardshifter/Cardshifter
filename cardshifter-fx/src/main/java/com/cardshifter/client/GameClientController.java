@@ -27,9 +27,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
@@ -57,9 +55,11 @@ public class GameClientController {
 	@FXML private HBox opponentHandPane;
 	@FXML private HBox opponentBattlefieldPane;
 	@FXML private Pane opponentDeckPane;
+	@FXML private Label opponentDeckLabel;
 	@FXML private HBox playerHandPane;
 	@FXML private HBox playerBattlefieldPane;
 	@FXML private Pane playerDeckPane;
+	@FXML private Label playerDeckLabel;
 	
 	private final ObjectMapper mapper = new ObjectMapper();
 	private final BlockingQueue<Message> messages = new LinkedBlockingQueue<>();
@@ -75,13 +75,12 @@ public class GameClientController {
 	private int opponentHandId;
 	private int opponentBattlefieldId;
 	private int opponentDeckId;
+	private int opponentDeckSize;
 	private int playerId;
 	private int playerHandId;
 	private int playerBattlefieldId;
 	private int playerDeckId;
-	
-	private int selectedCardId;
-	private String selectedAction;
+	private int playerDeckSize;
 	
 	private final Map<String, Integer> playerStatBoxMap = new HashMap<>();
 	private final Map<String, Integer> opponentStatBoxMap = new HashMap<>();
@@ -141,6 +140,10 @@ public class GameClientController {
 			System.out.println("Invalid response from opponent");
 			e.printStackTrace();
 		}
+		
+		this.playerDeckSize = 52;
+		this.opponentDeckSize = 52;
+		Platform.runLater(() -> this.repaintDeckLabels());
 	}
 
 	private void listen() {
@@ -167,8 +170,6 @@ public class GameClientController {
 			UseableActionMessage action = (UseableActionMessage)message;
 			
 			if (action.isTargetRequired()) {
-				this.selectedCardId = action.getId();
-				this.selectedAction = action.getAction();
 				this.send(new RequestTargetsMessage(gameId, action.getId(), action.getAction()));
 			} else {
 				this.send(new UseAbilityMessage(gameId, action.getId(), action.getAction(), action.getTargetId()));
@@ -321,15 +322,9 @@ public class GameClientController {
 	}
 	
 	private void processUseableActionMessage(UseableActionMessage message) {
-		double paneHeight = actionBox.getHeight();
-		double paneWidth = actionBox.getWidth();
 		
-		int maxActions = 8;
-		double actionWidth = paneWidth / maxActions;
-		
-		if (!message.getAction().equals("Play")) {
-			ActionButton actionButton = new ActionButton(message, this, actionWidth, paneHeight);
-			actionBox.getChildren().add(actionButton);
+		if (message.getAction().equals("End Turn")) {
+			this.createEndTurnButton(message);
 		}
 		
 		for (ZoneView zoneView : this.zoneViewMap.values()) {
@@ -339,7 +334,7 @@ public class GameClientController {
 				} else if (zoneView instanceof BattlefieldZoneView) {
 					if (message.getAction().equals("Attack")) {
 						((BattlefieldZoneView)zoneView).setCardCanAttack(message.getId(),message);
-					} else {
+					} else if (message.getAction().equals("Scrap")){
 						((BattlefieldZoneView)zoneView).setCardActive(message.getId(), message);
 					}
 				}
@@ -385,6 +380,15 @@ public class GameClientController {
 		int destinationZoneId = message.getDestinationZone();
 		int cardId = message.getEntity();
 		
+		if (sourceZoneId == opponentDeckId && destinationZoneId == opponentHandId) {
+			this.opponentDeckSize--;
+			this.addCardToOpponentHand();
+			this.repaintDeckLabels();
+		} else if (sourceZoneId == playerDeckId && destinationZoneId == playerHandId) {
+			this.playerDeckSize--;
+			this.repaintDeckLabels();
+		}
+		
 		if (this.zoneViewMap.containsKey(sourceZoneId) && this.zoneViewMap.containsKey(destinationZoneId)) {
 			if (sourceZoneId == playerHandId) {
 				PlayerHandZoneView sourceZone = (PlayerHandZoneView)this.zoneViewMap.get(sourceZoneId);
@@ -395,7 +399,9 @@ public class GameClientController {
 				destinationZone.addCardController(cardId, newCard);
 			
 				sourceZone.removeCardController(cardId);
-			} 
+			} else if (sourceZoneId == opponentHandId) {
+				this.removeCardFromOpponentHand();
+			}
 		}
 	}
 	
@@ -423,13 +429,15 @@ public class GameClientController {
 		for (int i = 0; i < message.getTargets().length; i++) {
 			if (message.getTargets()[i] != this.opponentId) {
 				for (ZoneView zoneView : this.zoneViewMap.values()) {
-					if (zoneView.getAllIds().contains(message.getTargets()[i])) {
-						UseableActionMessage newMessage = new UseableActionMessage(this.selectedCardId, this.selectedAction, false, message.getTargets()[i]);
-						((BattlefieldZoneView)zoneView).setCardTargetable(message.getTargets()[i], newMessage);
+					if (zoneView instanceof BattlefieldZoneView) {
+						if (zoneView.getAllIds().contains(message.getTargets()[i])) {
+							UseableActionMessage newMessage = new UseableActionMessage(message.getEntity(), message.getAction(), false, message.getTargets()[i]);
+							((BattlefieldZoneView)zoneView).setCardTargetable(message.getTargets()[i], newMessage);
+						}
 					}
 				}
 			} else {
-				UseableActionMessage newMessage = new UseableActionMessage(this.selectedCardId, this.selectedAction, false, message.getTargets()[i]);
+				UseableActionMessage newMessage = new UseableActionMessage(message.getEntity(), message.getAction(), false, message.getTargets()[i]);
 				this.createAndSendMessage(newMessage);
 			}
 		}
@@ -456,21 +464,42 @@ public class GameClientController {
 		}
 	}
 	
+	private void repaintDeckLabels() {
+		this.opponentDeckLabel.setText(String.format("%d", this.opponentDeckSize));
+		this.playerDeckLabel.setText(String.format("%d", this.playerDeckSize));
+	}
+	
 	private void createOpponentHand(int size) {
+		for(int i = 0; i < size; i++) {
+			this.addCardToOpponentHand();
+		}
+	}
+	
+	private void addCardToOpponentHand() {
+		ZoneView opponentHand = this.zoneViewMap.get(this.opponentHandId);
+		int handSize = opponentHand.getSize();
+		opponentHand.addPane(handSize, this.cardForOpponentHand());
+	}
+	
+	private void removeCardFromOpponentHand() {
+		ZoneView opponentHand = this.zoneViewMap.get(this.opponentHandId);
+		int handSize = opponentHand.getSize();
+		opponentHand.removePane(handSize - 1);
+	}
+	
+	private Pane cardForOpponentHand() {
 		double paneHeight = opponentHandPane.getHeight();
 		double paneWidth = opponentHandPane.getWidth();
 		
 		int maxCards = 10;
 		double cardWidth = paneWidth / maxCards;
 		
-		ZoneView opponentHand = this.zoneViewMap.get(this.opponentHandId);
-		for(int i = 0; i < size; i++) {
-			Pane card = new Pane();
-			Rectangle cardBack = new Rectangle(0,0,cardWidth,paneHeight);
-			cardBack.setFill(Color.AQUAMARINE);
-			card.getChildren().add(cardBack);
-			opponentHand.addPane(i, card);
-		}
+		Pane card = new Pane();
+		Rectangle cardBack = new Rectangle(0,0,cardWidth,paneHeight);
+		cardBack.setFill(Color.AQUAMARINE);
+		card.getChildren().add(cardBack);
+		
+		return card;
 	}
 }
 	//Sample server message strings
