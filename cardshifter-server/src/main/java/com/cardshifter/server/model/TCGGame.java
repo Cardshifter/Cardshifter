@@ -109,7 +109,7 @@ public class TCGGame extends ServerGame {
 		List<Entity> targets = targetAction.findPossibleTargets();
 		int[] targetIds = targets.stream().mapToInt(e -> e.getId()).toArray();
 		
-		client.sendToClient(new AvailableTargetsMessage(targetIds, targetAction.getMin(), targetAction.getMax()));
+		client.sendToClient(new AvailableTargetsMessage(message.getId(), message.getAction(), targetIds, targetAction.getMin(), targetAction.getMax()));
 	}
 	
 	public Entity findTargetable(int entityId) {

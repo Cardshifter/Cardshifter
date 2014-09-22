@@ -8,14 +8,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class AvailableTargetsMessage extends Message {
 
+	private final int entity;
+	private final String action;
 	private final int min;
 	private final int max;
 	private final int[] targets;
 
 	@JsonCreator
-	public AvailableTargetsMessage(@JsonProperty("targets") int[] targets, 
+	public AvailableTargetsMessage(@JsonProperty("entity") int entity, @JsonProperty("action") String action,
+			@JsonProperty("targets") int[] targets, 
 			@JsonProperty("min") int min, @JsonProperty("max") int max) {
 		super("targets");
+		this.entity = entity;
+		this.action = action;
 		this.min = min;
 		this.max = max;
 		this.targets = Arrays.copyOf(targets, targets.length);
@@ -33,4 +38,12 @@ public class AvailableTargetsMessage extends Message {
 		return targets;
 	}
 
+	public String getAction() {
+		return action;
+	}
+	
+	public int getEntity() {
+		return entity;
+	}
+	
 }
