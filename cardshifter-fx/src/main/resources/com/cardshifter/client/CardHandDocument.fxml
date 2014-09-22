@@ -13,7 +13,7 @@
    <children>
        
       <!-- Card Background -->
-      <Rectangle fx:id="background" arcHeight="5.0" arcWidth="5.0" height="188.0" stroke="BLACK" strokeType="INSIDE" width="129.0" />
+      <Rectangle id="backgroundRectangle" fx:id="background" arcHeight="5.0" arcWidth="5.0" height="188.0" stroke="BLACK" strokeType="INSIDE" width="129.0" />
      
       <!-- Non Functional Card Layout Pieces -->
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#b90707" height="164.0" layoutX="12.0" layoutY="12.0" stroke="BLACK" strokeType="INSIDE" width="106.0" />

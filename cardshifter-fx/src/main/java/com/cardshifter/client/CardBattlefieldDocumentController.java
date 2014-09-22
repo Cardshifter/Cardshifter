@@ -1,10 +1,10 @@
 package com.cardshifter.client;
 
 import com.cardshifter.server.outgoing.CardInfoMessage;
+import com.cardshifter.server.outgoing.UpdateMessage;
 import com.cardshifter.server.outgoing.UseableActionMessage;
 import java.net.URL;
 import java.util.ResourceBundle;
-
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -12,20 +12,18 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
-public class CardHandDocumentController implements Initializable {
+public class CardBattlefieldDocumentController implements Initializable {
     
     @FXML private Label strength;
     @FXML private Label health;
     @FXML private Label cardId;
-    @FXML private Label manaCost;
-    @FXML private Label scrapCost;
     @FXML private Label cardType;
     @FXML private Label creatureType;
-    @FXML private Label enchStrength;
-    @FXML private Label enchHealth;
 	@FXML private Rectangle background;
+	@FXML private Circle sicknessCircle;
 	@FXML private AnchorPane anchorPane;
     
     private AnchorPane root;
@@ -34,9 +32,9 @@ public class CardHandDocumentController implements Initializable {
 	private final GameClientController controller;
 	private UseableActionMessage message;
 	
-    public CardHandDocumentController(CardInfoMessage message, GameClientController controller) {
+    public CardBattlefieldDocumentController(CardInfoMessage message, GameClientController controller) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("CardHandDocument.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("CardBattlefieldDocument.fxml"));
             loader.setController(this);
             root = loader.load();
         }
@@ -49,17 +47,16 @@ public class CardHandDocumentController implements Initializable {
         this.setCardId();
         this.setCardLabels();
     }
-	
-	public CardInfoMessage getCard() {
-		return this.card;
-	}
     
     public AnchorPane getRootPane() {
 		return this.anchorPane;
     }
 	
-	public boolean isCardActive() {
-		return this.isActive;
+	public void setCardAttackActive(UseableActionMessage message) {
+		this.isActive = true;
+		this.message = message;
+		this.anchorPane.setOnMouseClicked(this::actionOnClick);
+        background.setFill(Color.DARKGREEN);
 	}
 
     public void setCardActive(UseableActionMessage message) {
@@ -76,10 +73,26 @@ public class CardHandDocumentController implements Initializable {
 		background.setFill(Color.BLACK);
 	}
 	
+	public boolean isCardActive() {
+		return this.isActive;
+	}
+	
+	public void setCardTargetable(UseableActionMessage message) {
+		this.message = message;
+		this.anchorPane.setOnMouseClicked(this::actionOnClick);
+		background.setFill(Color.BLUE);
+	}
+	
+	private void setSickness() {
+		sicknessCircle.setVisible(true);
+	}
+	
+	public void removeSickness() {
+		sicknessCircle.setVisible(false);
+	}
+	
 	private void actionOnClick(MouseEvent event) {
-		System.out.println("Action detected on card" + this.cardId.textProperty());
 		this.controller.createAndSendMessage(this.message);
-		background.setFill(Color.BLACK);
 	}
 
     private void setCardId() {
@@ -89,17 +102,27 @@ public class CardHandDocumentController implements Initializable {
 	
     private void setCardLabels() {
 		for(String key : this.card.getProperties().keySet()) {
-			if (key.equals("MANA_COST")) {
-				manaCost.setText(String.format("Mana Cost = %d", this.card.getProperties().get(key)));
+			if (key.equals("SICKNESS")) {
+				if (this.card.getProperties().get(key) == 1) {
+					this.setSickness();
+				}
 			} else if (key.equals("ATTACK")) {
 				strength.setText(this.card.getProperties().get(key).toString());
 			} else if (key.equals("HEALTH")) {
 				health.setText(this.card.getProperties().get(key).toString());
-			} else if (key.equals("SCRAP")) {
-				scrapCost.setText(this.card.getProperties().get(key).toString());
+			} else if (key.equals("ATTACK_AVAILABLE")) {
+				
 			}
 		}
     }
+	
+	public void updateFields(UpdateMessage message) {
+		if (message.getKey().equals("ATTACK")) {
+			strength.setText(String.format("%d", message.getValue()));
+		} else if (message.getKey().equals("HEALTH")) {
+			health.setText(String.format("%d", message.getValue()));
+		}
+	}
 
     //Boilerplate code
     @Override

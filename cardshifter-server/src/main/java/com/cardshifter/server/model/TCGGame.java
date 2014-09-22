@@ -32,6 +32,7 @@ import com.cardshifter.server.clients.ClientIO;
 import com.cardshifter.server.incoming.RequestTargetsMessage;
 import com.cardshifter.server.incoming.UseAbilityMessage;
 import com.cardshifter.server.main.FakeAIClientTCG;
+import com.cardshifter.server.outgoing.AvailableTargetsMessage;
 import com.cardshifter.server.outgoing.CardInfoMessage;
 import com.cardshifter.server.outgoing.EntityRemoveMessage;
 import com.cardshifter.server.outgoing.PlayerMessage;
@@ -64,11 +65,12 @@ public class TCGGame extends ServerGame {
 	}
 
 	private void zoneChange(ZoneChangeEvent event) {
+		Entity cardEntity = event.getCard();
 		for (ClientIO io : this.getPlayers()) {
 			Entity player = playerFor(io);
 			io.sendToClient(new ZoneChangeMessage(event.getCard().getId(), event.getSource().getZoneId(), event.getDestination().getZoneId()));
-			if (event.getDestination().isKnownTo(player) && event.getSource().isKnownTo(player)) {
-				sendCard(io, event.getCard());
+			if (event.getDestination().isKnownTo(player) && !event.getSource().isKnownTo(player)) {
+				io.sendToClient(new CardInfoMessage(event.getDestination().getZoneId(), cardEntity.getId(), Resources.map(cardEntity)));
 			}
 		}
 	}
@@ -105,10 +107,9 @@ public class TCGGame extends ServerGame {
 		ECSAction action = findAction(message.getId(), message.getAction());
 		TargetSet targetAction = action.getTargetSets().get(0);
 		List<Entity> targets = targetAction.findPossibleTargets();
-//		client.sendToClient(new ResetAvailableActionsMessage()); // not sure if this should be sent or not
-		for (Entity target : targets) {
-			client.sendToClient(new UseableActionMessage(message.getId(), message.getAction(), false, target.getId()));
-		}
+		int[] targetIds = targets.stream().mapToInt(e -> e.getId()).toArray();
+		
+		client.sendToClient(new AvailableTargetsMessage(message.getId(), message.getAction(), targetIds, targetAction.getMin(), targetAction.getMax()));
 	}
 	
 	public Entity findTargetable(int entityId) {

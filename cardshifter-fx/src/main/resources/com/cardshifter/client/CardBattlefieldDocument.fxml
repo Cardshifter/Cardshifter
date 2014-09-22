@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.shape.*?>
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane fx:id="anchorPane" prefHeight="112.0" prefWidth="85.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+       
+      <!-- Card Background -->
+      <Rectangle fx:id="background" arcHeight="5.0" arcWidth="5.0" height="116.0" layoutY="-3.0" stroke="BLACK" strokeType="INSIDE" width="89.0" />
+     
+      <!-- Non Functional Card Layout Pieces -->
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#b90707" height="105.0" layoutX="5.0" layoutY="2.0" stroke="BLACK" strokeType="INSIDE" width="79.0" />
+      <Label layoutX="53.0" layoutY="73.0" text="/" textFill="WHITE">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+     
+      <!-- Card Labels -->
+      <Label fx:id="strength" layoutX="40.0" layoutY="76.0" text="#" textFill="WHITE" />
+      <Label fx:id="health" layoutX="69.0" layoutY="77.0" text="#" textFill="WHITE" />
+      <Label fx:id="cardId" layoutX="12.0" layoutY="4.0" text="Card Id =" />
+      <Label fx:id="cardType" layoutX="12.0" layoutY="20.0" text="Type" />
+      <Label fx:id="creatureType" layoutX="12.0" layoutY="36.0" text="Type" textFill="WHITE" />
+      <Circle fx:id="sicknessCircle" fill="#bfc6cd" layoutX="45.0" layoutY="52.0" radius="23.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
+      
+   </children>
+</AnchorPane>
