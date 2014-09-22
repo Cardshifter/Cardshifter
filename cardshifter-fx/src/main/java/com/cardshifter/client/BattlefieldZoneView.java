@@ -33,15 +33,11 @@ public class BattlefieldZoneView extends ZoneView {
 	public void setCardCanAttack(int cardId, UseableActionMessage message) {
 		CardBattlefieldDocumentController card = this.cardMap.get(cardId);
 		card.setCardAttackActive(message);
-		super.removePane(cardId);
-		super.addPane(cardId, card.getRootPane());
 	}
 	
 	public void setCardActive(int cardId, UseableActionMessage message) {
 		CardBattlefieldDocumentController card = this.cardMap.get(cardId);
 		card.setCardActive(message);
-		super.removePane(cardId);
-		super.addPane(cardId, card.getRootPane());
 	}
 	
 	public void removeActiveAllCards() {
@@ -54,23 +50,17 @@ public class BattlefieldZoneView extends ZoneView {
 		CardBattlefieldDocumentController card = this.cardMap.get(cardId);
 		if (card.isCardActive()) {
 			card.removeCardActive();
-			super.removePane(cardId);
-			super.addPane(cardId, card.getRootPane());
 		}
 	}
 
 	public void setCardTargetable(int cardId, UseableActionMessage message) {
 		CardBattlefieldDocumentController card = this.cardMap.get(cardId);
 		card.setCardTargetable(message);
-		super.removePane(cardId);
-		super.addPane(cardId, card.getRootPane());
 	}
 	
 	public void updateCard(int cardId, UpdateMessage message) {
 		CardBattlefieldDocumentController card = this.cardMap.get(cardId);
 		card.updateFields(message);
-		super.removePane(cardId);
-		super.addPane(cardId,card.getRootPane());
 	}
 	
 	@Override
