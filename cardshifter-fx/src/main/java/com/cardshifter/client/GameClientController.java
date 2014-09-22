@@ -368,7 +368,6 @@ public class GameClientController {
 						}
 					} else {
 						((BattlefieldZoneView)zoneView).updateCard(message.getId(), message);
-						System.out.println("Found battlefield card to update");
 					}
 				}
 			}

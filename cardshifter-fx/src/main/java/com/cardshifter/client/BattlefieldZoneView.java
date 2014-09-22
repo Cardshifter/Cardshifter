@@ -67,7 +67,10 @@ public class BattlefieldZoneView extends ZoneView {
 	}
 	
 	public void updateCard(int cardId, UpdateMessage message) {
-		
+		CardBattlefieldDocumentController card = this.cardMap.get(cardId);
+		card.updateFields(message);
+		super.removePane(cardId);
+		super.addPane(cardId,card.getRootPane());
 	}
 	
 	@Override

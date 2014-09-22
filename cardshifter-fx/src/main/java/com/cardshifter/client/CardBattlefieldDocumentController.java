@@ -1,6 +1,7 @@
 package com.cardshifter.client;
 
 import com.cardshifter.server.outgoing.CardInfoMessage;
+import com.cardshifter.server.outgoing.UpdateMessage;
 import com.cardshifter.server.outgoing.UseableActionMessage;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -114,6 +115,14 @@ public class CardBattlefieldDocumentController implements Initializable {
 			}
 		}
     }
+	
+	public void updateFields(UpdateMessage message) {
+		if (message.getKey().equals("ATTACK")) {
+			strength.setText(String.format("%d", message.getValue()));
+		} else if (message.getKey().equals("HEALTH")) {
+			health.setText(String.format("%d", message.getValue()));
+		}
+	}
 
     //Boilerplate code
     @Override
