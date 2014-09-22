@@ -29,6 +29,7 @@ public class CardHandDocumentController implements Initializable {
 	@FXML private AnchorPane anchorPane;
     
     private AnchorPane root;
+	private boolean isActive;
     private final CardInfoMessage card;
 	private final GameClientController controller;
 	private UseableActionMessage message;
@@ -56,12 +57,24 @@ public class CardHandDocumentController implements Initializable {
     public AnchorPane getRootPane() {
 		return this.anchorPane;
     }
+	
+	public boolean isCardActive() {
+		return this.isActive;
+	}
 
     public void setCardActive(UseableActionMessage message) {
+		this.isActive = true;
 		this.message = message;
 		this.anchorPane.setOnMouseClicked(this::actionOnClick);
         background.setFill(Color.YELLOW);
     }
+	
+	public void removeCardActive() {
+		this.isActive = false;
+		this.message = null;
+		this.anchorPane.setOnMouseClicked(e -> {});
+		background.setFill(Color.BLACK);
+	}
 	
 	private void actionOnClick(MouseEvent event) {
 		System.out.println("Action detected on card" + this.cardId.textProperty());
@@ -76,16 +89,14 @@ public class CardHandDocumentController implements Initializable {
 	
     private void setCardLabels() {
 		for(String key : this.card.getProperties().keySet()) {
-			if (key.equals("SICKNESS")) {
-				
-			} else if (key.equals("MANA_COST")) {
+			if (key.equals("MANA_COST")) {
 				manaCost.setText(String.format("Mana Cost = %d", this.card.getProperties().get(key)));
 			} else if (key.equals("ATTACK")) {
 				strength.setText(this.card.getProperties().get(key).toString());
 			} else if (key.equals("HEALTH")) {
 				health.setText(this.card.getProperties().get(key).toString());
-			} else if (key.equals("ATTACK_AVAILABLE")) {
-				
+			} else if (key.equals("SCRAP")) {
+				scrapCost.setText(this.card.getProperties().get(key).toString());
 			}
 		}
     }

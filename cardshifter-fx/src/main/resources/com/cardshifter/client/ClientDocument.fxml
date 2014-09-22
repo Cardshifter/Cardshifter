@@ -50,7 +50,7 @@
 		
 		<!-- Initial Server Message -->
 		<Label layoutX="14.0" layoutY="373.0" text="Login Message:" />
-		<Label fx:id="serverMessage" layoutX="111.0" layoutY="373.0" text="Message" />
+		<Label fx:id="loginMessage" layoutX="111.0" layoutY="373.0" text="No Message" />
 	  
 		<!-- Continuing Server Messages -->
 		 <AnchorPane layoutX="14.0" layoutY="10.0" prefHeight="336.0" prefWidth="207.0">
@@ -61,37 +61,38 @@
 		</AnchorPane>
 		
 		<!-- Opponent Stat Box -->
-		 <VBox fx:id="opponentStatBox" alignment="TOP_CENTER" layoutX="1067.0" layoutY="37.0" prefHeight="200.0" prefWidth="100.0" />
-	  
-	  <!-- Player Stat Box -->
-      <VBox fx:id="playerStatBox" alignment="TOP_CENTER" layoutX="1067.0" layoutY="273.0" prefHeight="200.0" prefWidth="100.0" />
-				<Label layoutX="1069.0" layoutY="14.0" text="Opponent" textAlignment="CENTER" underline="true">
-					<font>
-						<Font size="20.0" />
-					</font>
-				</Label>
-				<Label layoutX="1088.0" layoutY="248.0" text="Player" textAlignment="CENTER" underline="true">
-					<font>
-						<Font size="20.0" />
-					</font>
-				</Label>
+		<VBox fx:id="opponentStatBox" alignment="TOP_CENTER" layoutX="1067.0" layoutY="37.0" prefHeight="200.0" prefWidth="100.0" />
+	  		<Label layoutX="1069.0" layoutY="14.0" text="Opponent" textAlignment="CENTER" underline="true">
+				<font>
+					<Font size="20.0" />
+				</font>
+			</Label>
+			
+		<!-- Player Stat Box -->
+		<VBox fx:id="playerStatBox" alignment="TOP_CENTER" layoutX="1067.0" layoutY="273.0" prefHeight="200.0" prefWidth="100.0" />
+			<Label layoutX="1088.0" layoutY="248.0" text="Player" textAlignment="CENTER" underline="true">
+				<font>
+					<Font size="20.0" />
+				</font>
+			</Label>
 		
-            		<!-- temporary action box -->
+        <!-- temporary action box -->
 		<HBox fx:id="actionBox" alignment="CENTER" layoutX="14.0" layoutY="580.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="25.0" prefWidth="1107.0" scaleShape="false" spacing="10" />
-      <AnchorPane layoutX="239.0" layoutY="237.0" prefHeight="132.0" prefWidth="810.0">
-         <children>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#b0d9ff" height="132.0" stroke="BLACK" strokeType="INSIDE" width="810.0" />
       
-              <!--  Battlefields  -->
-              <HBox fx:id="playerBattlefieldPane" layoutX="19.0" layoutY="11.0" prefHeight="110.0" prefWidth="772.0" spacing="10.0" />
-         </children>
-      </AnchorPane>
-      <AnchorPane layoutX="239.0" layoutY="105.0" prefHeight="98.0" prefWidth="809.0">
-         <children>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f59782" height="127.0" stroke="BLACK" strokeType="INSIDE" width="810.0" />
-              <HBox fx:id="opponentBattlefieldPane" layoutX="19.0" layoutY="9.0" prefHeight="110.0" prefWidth="772.0" spacing="10.0" />
-         </children>
-      </AnchorPane>
+		
+		<!--  Battlefields  -->
+		<AnchorPane layoutX="239.0" layoutY="237.0" prefHeight="132.0" prefWidth="810.0">
+			<children>
+				<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#b0d9ff" height="132.0" stroke="BLACK" strokeType="INSIDE" width="810.0" />
+				<HBox fx:id="playerBattlefieldPane" layoutX="19.0" layoutY="11.0" prefHeight="110.0" prefWidth="772.0" spacing="10.0" />
+			</children>
+		</AnchorPane>
+		<AnchorPane layoutX="239.0" layoutY="105.0" prefHeight="98.0" prefWidth="809.0">
+			<children>
+				<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f59782" height="127.0" stroke="BLACK" strokeType="INSIDE" width="810.0" />
+				<HBox fx:id="opponentBattlefieldPane" layoutX="19.0" layoutY="9.0" prefHeight="110.0" prefWidth="772.0" spacing="10.0" />
+			</children>
+		</AnchorPane>
       
     </children>
 </AnchorPane>

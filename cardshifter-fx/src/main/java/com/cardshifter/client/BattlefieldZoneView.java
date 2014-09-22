@@ -1,5 +1,6 @@
 package com.cardshifter.client;
 
+import com.cardshifter.server.outgoing.UpdateMessage;
 import com.cardshifter.server.outgoing.UseableActionMessage;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,12 +15,12 @@ public class BattlefieldZoneView extends ZoneView {
 		super(cardId, pane);
 	}
 	
-	public void addCardHandController(int cardId, CardBattlefieldDocumentController controller) {
-		this.cardMap.put(cardId, controller);
+	public void addCardController(int cardId, CardBattlefieldDocumentController controller) {
 		super.addPane(cardId, controller.getRootPane());
+		this.cardMap.put(cardId, controller);
 	}
 	
-	public void removeCardHandDocumentController(int cardId) {
+	public void removeCardController(int cardId) {
 		super.removePane(cardId);
 		this.cardMap.remove(cardId);
 	}
@@ -29,8 +30,44 @@ public class BattlefieldZoneView extends ZoneView {
 		card.removeSickness();
 	}
 	
-	public CardBattlefieldDocumentController getCardHandController(int cardId) {
-		return this.cardMap.get(cardId);
+	public void setCardCanAttack(int cardId, UseableActionMessage message) {
+		CardBattlefieldDocumentController card = this.cardMap.get(cardId);
+		card.setCardAttackActive(message);
+		super.removePane(cardId);
+		super.addPane(cardId, card.getRootPane());
+	}
+	
+	public void setCardActive(int cardId, UseableActionMessage message) {
+		CardBattlefieldDocumentController card = this.cardMap.get(cardId);
+		card.setCardActive(message);
+		super.removePane(cardId);
+		super.addPane(cardId, card.getRootPane());
+	}
+	
+	public void removeActiveAllCards() {
+		for (Object cardId : this.getAllIds()) {
+			this.removeCardActive((int)cardId);
+		}
+	}
+	
+	private void removeCardActive(int cardId) {
+		CardBattlefieldDocumentController card = this.cardMap.get(cardId);
+		if (card.isCardActive()) {
+			card.removeCardActive();
+			super.removePane(cardId);
+			super.addPane(cardId, card.getRootPane());
+		}
+	}
+
+	public void setCardTargetable(int cardId, UseableActionMessage message) {
+		CardBattlefieldDocumentController card = this.cardMap.get(cardId);
+		card.setCardTargetable(message);
+		super.removePane(cardId);
+		super.addPane(cardId, card.getRootPane());
+	}
+	
+	public void updateCard(int cardId, UpdateMessage message) {
+		
 	}
 	
 	@Override
@@ -41,13 +78,6 @@ public class BattlefieldZoneView extends ZoneView {
 	@Override
 	public Set getAllIds() {
 		return this.cardMap.keySet();
-	}
-	
-	public void highlightCard(int cardId, UseableActionMessage message) {
-		CardBattlefieldDocumentController card = this.cardMap.get(cardId);
-		card.setCardActive(message);
-		super.removePane(cardId);
-		super.addPane(cardId, card.getRootPane());
 	}
 	
 }

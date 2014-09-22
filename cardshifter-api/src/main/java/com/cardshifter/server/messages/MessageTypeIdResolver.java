@@ -8,6 +8,7 @@ import com.cardshifter.server.incoming.LoginMessage;
 import com.cardshifter.server.incoming.RequestTargetsMessage;
 import com.cardshifter.server.incoming.StartGameRequest;
 import com.cardshifter.server.incoming.UseAbilityMessage;
+import com.cardshifter.server.outgoing.AvailableTargetsMessage;
 import com.cardshifter.server.outgoing.CardInfoMessage;
 import com.cardshifter.server.outgoing.EntityRemoveMessage;
 import com.cardshifter.server.outgoing.GameMessage;
@@ -48,6 +49,7 @@ public class MessageTypeIdResolver implements TypeIdResolver {
 		clazzes.put("zone", ZoneMessage.class);
 		clazzes.put("update", UpdateMessage.class);
 		clazzes.put("useable", UseableActionMessage.class);
+		clazzes.put("targets", AvailableTargetsMessage.class);
 	}
 	
 	private JavaType mBaseType;

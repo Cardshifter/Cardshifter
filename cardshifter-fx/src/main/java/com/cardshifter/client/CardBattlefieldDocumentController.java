@@ -26,6 +26,7 @@ public class CardBattlefieldDocumentController implements Initializable {
 	@FXML private AnchorPane anchorPane;
     
     private AnchorPane root;
+	private boolean isActive;
     private final CardInfoMessage card;
 	private final GameClientController controller;
 	private UseableActionMessage message;
@@ -49,12 +50,37 @@ public class CardBattlefieldDocumentController implements Initializable {
     public AnchorPane getRootPane() {
 		return this.anchorPane;
     }
+	
+	public void setCardAttackActive(UseableActionMessage message) {
+		this.isActive = true;
+		this.message = message;
+		this.anchorPane.setOnMouseClicked(this::actionOnClick);
+        background.setFill(Color.DARKGREEN);
+	}
 
     public void setCardActive(UseableActionMessage message) {
+		this.isActive = true;
 		this.message = message;
 		this.anchorPane.setOnMouseClicked(this::actionOnClick);
         background.setFill(Color.YELLOW);
     }
+	
+	public void removeCardActive() {
+		this.isActive = false;
+		this.message = null;
+		this.anchorPane.setOnMouseClicked(e -> {});
+		background.setFill(Color.BLACK);
+	}
+	
+	public boolean isCardActive() {
+		return this.isActive;
+	}
+	
+	public void setCardTargetable(UseableActionMessage message) {
+		this.message = message;
+		this.anchorPane.setOnMouseClicked(this::actionOnClick);
+		background.setFill(Color.BLUE);
+	}
 	
 	private void setSickness() {
 		sicknessCircle.setVisible(true);
@@ -65,9 +91,7 @@ public class CardBattlefieldDocumentController implements Initializable {
 	}
 	
 	private void actionOnClick(MouseEvent event) {
-		System.out.println("Action detected on card" + this.cardId.textProperty());
 		this.controller.createAndSendMessage(this.message);
-		background.setFill(Color.BLACK);
 	}
 
     private void setCardId() {
