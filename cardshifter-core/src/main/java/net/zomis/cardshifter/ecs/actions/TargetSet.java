@@ -65,4 +65,12 @@ public class TargetSet {
 		chosenTargets.clear();
 	}
 	
+	public int getMin() {
+		return min;
+	}
+	
+	public int getMax() {
+		return max;
+	}
+	
 }
