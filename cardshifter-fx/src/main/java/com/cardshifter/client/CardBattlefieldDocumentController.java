@@ -50,6 +50,13 @@ public class CardBattlefieldDocumentController implements Initializable {
     public AnchorPane getRootPane() {
 		return this.anchorPane;
     }
+	
+	public void setCardAttackActive(UseableActionMessage message) {
+		this.isActive = true;
+		this.message = message;
+		this.anchorPane.setOnMouseClicked(this::actionOnClick);
+        background.setFill(Color.DARKGREEN);
+	}
 
     public void setCardActive(UseableActionMessage message) {
 		this.isActive = true;
@@ -72,7 +79,7 @@ public class CardBattlefieldDocumentController implements Initializable {
 	public void setCardTargetable(UseableActionMessage message) {
 		this.message = message;
 		this.anchorPane.setOnMouseClicked(this::actionOnClick);
-		background.setFill(Color.DARKGREEN);
+		background.setFill(Color.BLUE);
 	}
 	
 	private void setSickness() {

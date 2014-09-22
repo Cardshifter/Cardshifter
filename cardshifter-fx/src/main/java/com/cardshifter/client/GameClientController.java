@@ -5,6 +5,7 @@ import com.cardshifter.server.incoming.RequestTargetsMessage;
 import com.cardshifter.server.incoming.StartGameRequest;
 import com.cardshifter.server.incoming.UseAbilityMessage;
 import com.cardshifter.server.messages.Message;
+import com.cardshifter.server.outgoing.AvailableTargetsMessage;
 import com.cardshifter.server.outgoing.CardInfoMessage;
 import com.cardshifter.server.outgoing.EntityRemoveMessage;
 import com.cardshifter.server.outgoing.NewGameMessage;
@@ -26,7 +27,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
@@ -76,6 +79,9 @@ public class GameClientController {
 	private int playerHandId;
 	private int playerBattlefieldId;
 	private int playerDeckId;
+	
+	private int selectedCardId;
+	private String selectedAction;
 	
 	private final Map<String, Integer> playerStatBoxMap = new HashMap<>();
 	private final Map<String, Integer> opponentStatBoxMap = new HashMap<>();
@@ -161,6 +167,8 @@ public class GameClientController {
 			UseableActionMessage action = (UseableActionMessage)message;
 			
 			if (action.isTargetRequired()) {
+				this.selectedCardId = action.getId();
+				this.selectedAction = action.getAction();
 				this.send(new RequestTargetsMessage(gameId, action.getId(), action.getAction()));
 			} else {
 				this.send(new UseAbilityMessage(gameId, action.getId(), action.getAction(), action.getTargetId()));
@@ -217,6 +225,8 @@ public class GameClientController {
 			this.processZoneChangeMessage((ZoneChangeMessage)message);
 		} else if (message instanceof EntityRemoveMessage) {
 			this.processEntityRemoveMessage((EntityRemoveMessage)message);
+		} else if (message instanceof AvailableTargetsMessage) {
+			this.processAvailableTargetsMessage((AvailableTargetsMessage)message);
 		}
 	}
 	
@@ -322,31 +332,16 @@ public class GameClientController {
 			actionBox.getChildren().add(actionButton);
 		}
 		
-		if (message.getAction().equals("Attack") && message.getTargetId() != 0 && message.getTargetId() != this.opponentId) {
-			for (ZoneView zoneView : this.zoneViewMap.values()) {
-				if (zoneView.getAllIds().contains(message.getTargetId())) {
-					((BattlefieldZoneView)zoneView).setCardTargetable(message.getTargetId(), message);
-				}
-			}
-		}
-		
-		if ((message.getAction().equals("Enchant"))) {
-			for (ZoneView zoneView : this.zoneViewMap.values()) {
-				if (zoneView instanceof BattlefieldZoneView) {
-					if (zoneView.getAllIds().contains(message.getTargetId())) {
-						((BattlefieldZoneView)zoneView).setCardTargetable(message.getTargetId(), message);
-					}
-				}
-			}
-		}
-		
-		//testing highlighting cards
 		for (ZoneView zoneView : this.zoneViewMap.values()) {
 			if (zoneView.getAllIds().contains(message.getId())) {
 				if (zoneView instanceof PlayerHandZoneView) {
 					((PlayerHandZoneView)zoneView).setCardActive(message.getId(), message);
 				} else if (zoneView instanceof BattlefieldZoneView) {
-					((BattlefieldZoneView)zoneView).setCardActive(message.getId(), message);
+					if (message.getAction().equals("Attack")) {
+						((BattlefieldZoneView)zoneView).setCardCanAttack(message.getId(),message);
+					} else {
+						((BattlefieldZoneView)zoneView).setCardActive(message.getId(), message);
+					}
 				}
 			}
 		}
@@ -418,6 +413,37 @@ public class GameClientController {
 				zoneView.removePane(message.getEntity());
 			}
 		}
+	}
+	
+	private void processAvailableTargetsMessage(AvailableTargetsMessage message) {
+		if (message.getTargets().length == 0) {
+			UseableActionMessage newMessage = new UseableActionMessage(this.playerId, "End Turn", false, 0);
+			this.createEndTurnButton(newMessage);
+		}
+		for (int i = 0; i < message.getTargets().length; i++) {
+			if (message.getTargets()[i] != this.opponentId) {
+				for (ZoneView zoneView : this.zoneViewMap.values()) {
+					if (zoneView.getAllIds().contains(message.getTargets()[i])) {
+						UseableActionMessage newMessage = new UseableActionMessage(this.selectedCardId, this.selectedAction, false, message.getTargets()[i]);
+						((BattlefieldZoneView)zoneView).setCardTargetable(message.getTargets()[i], newMessage);
+					}
+				}
+			} else {
+				UseableActionMessage newMessage = new UseableActionMessage(this.selectedCardId, this.selectedAction, false, message.getTargets()[i]);
+				this.createAndSendMessage(newMessage);
+			}
+		}
+	}
+	
+	private void createEndTurnButton(UseableActionMessage message) {
+		double paneHeight = actionBox.getHeight();
+		double paneWidth = actionBox.getWidth();
+		
+		int maxActions = 8;
+		double actionWidth = paneWidth / maxActions;
+		
+		ActionButton actionButton = new ActionButton(message, this, actionWidth, paneHeight);
+		actionBox.getChildren().add(actionButton);
 	}
 	
 	private void repaintStatBox(Pane statBox, Map<String, Integer> playerMap) {

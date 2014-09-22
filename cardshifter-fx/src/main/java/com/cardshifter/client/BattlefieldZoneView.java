@@ -30,6 +30,13 @@ public class BattlefieldZoneView extends ZoneView {
 		card.removeSickness();
 	}
 	
+	public void setCardCanAttack(int cardId, UseableActionMessage message) {
+		CardBattlefieldDocumentController card = this.cardMap.get(cardId);
+		card.setCardAttackActive(message);
+		super.removePane(cardId);
+		super.addPane(cardId, card.getRootPane());
+	}
+	
 	public void setCardActive(int cardId, UseableActionMessage message) {
 		CardBattlefieldDocumentController card = this.cardMap.get(cardId);
 		card.setCardActive(message);
