@@ -52,6 +52,17 @@ public class BattlefieldZoneView extends ZoneView {
 			card.removeCardActive();
 		}
 	}
+	
+	public void removeTargetableAllCards() {
+		for (Object cardId : this.getAllIds()) {
+			this.removeCardTargetable((int)cardId);
+		}
+	}
+	
+	public void removeCardTargetable(int cardId) {
+		CardBattlefieldDocumentController card = this.cardMap.get(cardId);
+		card.removeCardActive();
+	}
 
 	public void setCardTargetable(int cardId, UseableActionMessage message) {
 		CardBattlefieldDocumentController card = this.cardMap.get(cardId);

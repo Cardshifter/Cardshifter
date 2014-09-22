@@ -173,6 +173,7 @@ public class GameClientController {
 				this.send(new RequestTargetsMessage(gameId, action.getId(), action.getAction()));
 			} else {
 				this.send(new UseAbilityMessage(gameId, action.getId(), action.getAction(), action.getTargetId()));
+				this.clearTargetableFromAllCards();
 			}
 		} catch (NumberFormatException | IndexOutOfBoundsException ex) {
 			System.out.println("Not a valid action");
@@ -199,6 +200,14 @@ public class GameClientController {
 				((BattlefieldZoneView)zoneView).removeActiveAllCards();
 			} else if (zoneView instanceof PlayerHandZoneView) {
 				((PlayerHandZoneView)zoneView).removeActiveAllCards();
+			}
+		}
+	}
+	
+	private void clearTargetableFromAllCards() {
+		for (ZoneView zoneView : this.zoneViewMap.values()) {
+			if (zoneView instanceof BattlefieldZoneView) {
+				((BattlefieldZoneView)zoneView).removeTargetableAllCards();
 			}
 		}
 	}
