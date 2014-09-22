@@ -14,18 +14,40 @@ public class PlayerHandZoneView extends ZoneView {
 		super(cardId, pane);
 	}
 	
-	public void addCardHandController(int cardId, CardHandDocumentController controller) {
+	public void addCardController(int cardId, CardHandDocumentController controller) {
 		this.cardMap.put(cardId, controller);
 		super.addPane(cardId, controller.getRootPane());
 	}
 	
-	public void removeCardHandDocumentController(int cardId) {
+	public void removeCardController(int cardId) {
 		super.removePane(cardId);
 		this.cardMap.remove(cardId);
 	}
 	
 	public CardHandDocumentController getCardHandController(int cardId) {
 		return this.cardMap.get(cardId);
+	}
+	
+	public void setCardActive(int cardId, UseableActionMessage message) {
+		CardHandDocumentController card = this.cardMap.get(cardId);
+		card.setCardActive(message);
+		super.removePane(cardId);
+		super.addPane(cardId, card.getRootPane());
+	}
+	
+	public void removeActiveAllCards() {
+		for (Object cardId : this.getAllIds()) {
+			this.removeCardActive((int)cardId);
+		}
+	}
+	
+	private void removeCardActive(int cardId) {
+		CardHandDocumentController card = this.cardMap.get(cardId);
+		if (card.isCardActive()) {
+			card.removeCardActive();
+			super.removePane(cardId);
+			super.addPane(cardId, card.getRootPane());
+		}
 	}
 	
 	@Override
@@ -36,13 +58,6 @@ public class PlayerHandZoneView extends ZoneView {
 	@Override
 	public Set getAllIds() {
 		return this.cardMap.keySet();
-	}
-	
-	public void highlightCard(int cardId, UseableActionMessage message) {
-		CardHandDocumentController card = this.cardMap.get(cardId);
-		card.setCardActive(message);
-		super.removePane(cardId);
-		super.addPane(cardId, card.getRootPane());
 	}
 	
 }
