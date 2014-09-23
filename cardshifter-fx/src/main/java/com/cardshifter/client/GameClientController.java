@@ -177,6 +177,7 @@ public class GameClientController {
 				this.send(new RequestTargetsMessage(gameId, action.getId(), action.getAction()));
 			} else {
 				this.send(new UseAbilityMessage(gameId, action.getId(), action.getAction(), action.getTargetId()));
+				
 				this.clearTargetableFromAllCards();
 			}
 		} catch (NumberFormatException | IndexOutOfBoundsException ex) {
@@ -198,24 +199,6 @@ public class GameClientController {
 		}
 	}
 	
-	private void clearActiveFromAllCards() {
-		for (ZoneView zoneView : this.zoneViewMap.values()) {
-			if (zoneView instanceof BattlefieldZoneView) {
-				((BattlefieldZoneView)zoneView).removeActiveAllCards();
-			} else if (zoneView instanceof PlayerHandZoneView) {
-				((PlayerHandZoneView)zoneView).removeActiveAllCards();
-			}
-		}
-	}
-	
-	private void clearTargetableFromAllCards() {
-		for (ZoneView zoneView : this.zoneViewMap.values()) {
-			if (zoneView instanceof BattlefieldZoneView) {
-				((BattlefieldZoneView)zoneView).removeTargetableAllCards();
-			}
-		}
-	}
-	
 	private void processMessageFromServer(Message message) {
 		
 		serverMessages.getItems().add(message.toString());
@@ -232,6 +215,7 @@ public class GameClientController {
 		} else if (message instanceof CardInfoMessage) {
 			this.processCardInfoMessage((CardInfoMessage)message);
 		} else if (message instanceof UseableActionMessage) {
+			this.savedMessages.add((UseableActionMessage)message);
 			this.processUseableActionMessage((UseableActionMessage)message);
 		} else if (message instanceof UpdateMessage) {
 			this.processUpdateMessage((UpdateMessage)message);
@@ -338,7 +322,6 @@ public class GameClientController {
 	}
 	
 	private void processUseableActionMessage(UseableActionMessage message) {
-		
 		if (message.getAction().equals("End Turn")) {
 			this.createEndTurnButton(message);
 		}
@@ -440,6 +423,7 @@ public class GameClientController {
 		if (message.getTargets().length == 0) {
 			UseableActionMessage newMessage = new UseableActionMessage(this.playerId, "End Turn", false, 0);
 			this.createEndTurnButton(newMessage);
+			this.createCancelActionsButton();
 		}
 		for (int i = 0; i < message.getTargets().length; i++) {
 			if (message.getTargets()[i] != this.opponentId) {
@@ -451,6 +435,7 @@ public class GameClientController {
 						}
 					}
 				}
+				this.createCancelActionsButton();
 			} else {
 				UseableActionMessage newMessage = new UseableActionMessage(message.getEntity(), message.getAction(), false, message.getTargets()[i]);
 				this.createAndSendMessage(newMessage);
@@ -469,8 +454,46 @@ public class GameClientController {
 		actionBox.getChildren().add(actionButton);
 	}
 	
-	private void clearSavedActions() {
+	private void createCancelActionsButton() {
+		double paneHeight = actionBox.getHeight();
+		double paneWidth = actionBox.getWidth();
 		
+		int maxActions = 8;
+		double actionWidth = paneWidth / maxActions;
+		ActionButton actionButton = new ActionButton(this, actionWidth, paneHeight);
+		actionBox.getChildren().add(actionButton);
+	}
+	
+	private void clearSavedActions() {
+		this.savedMessages.clear();
+	}
+	
+	public void cancelAction() {
+		this.clearActiveFromAllCards();
+		this.clearTargetableFromAllCards();
+		this.actionBox.getChildren().clear();
+		
+		for (UseableActionMessage message : this.savedMessages) {
+			Platform.runLater(() -> this.processUseableActionMessage(message));
+		}
+	}
+	
+	private void clearActiveFromAllCards() {
+		for (ZoneView zoneView : this.zoneViewMap.values()) {
+			if (zoneView instanceof BattlefieldZoneView) {
+				((BattlefieldZoneView)zoneView).removeActiveAllCards();
+			} else if (zoneView instanceof PlayerHandZoneView) {
+				((PlayerHandZoneView)zoneView).removeActiveAllCards();
+			}
+		}
+	}
+	
+	private void clearTargetableFromAllCards() {
+		for (ZoneView zoneView : this.zoneViewMap.values()) {
+			if (zoneView instanceof BattlefieldZoneView) {
+				((BattlefieldZoneView)zoneView).removeTargetableAllCards();
+			}
+		}
 	}
 	
 	private void repaintStatBox(Pane statBox, Map<String, Integer> playerMap) {

@@ -15,7 +15,7 @@ public class ActionButton extends Group {
 	private final double sizeX;
 	private final double sizeY;
 	
-	public ActionButton(UseableActionMessage message, GameClientController controller, double sizeX, double sizeY) {
+	public ActionButton (UseableActionMessage message, GameClientController controller, double sizeX, double sizeY) {
 		this.message = message;
 		this.controller = controller;
 		this.sizeX = sizeX;
@@ -24,11 +24,23 @@ public class ActionButton extends Group {
 		this.setUpLabel();
 		this.setOnMouseClicked(this::actionButtonClicked);
 	}
+	
+	public ActionButton (GameClientController controller, double sizeX, double sizeY) {
+		this.message = null;
+		this.controller = controller;
+		this.sizeX = sizeX;
+		this.sizeY = sizeY;
+		this.setUpRectangle();
+		this.setUpCancelLabel();
+		this.setOnMouseClicked(this::cancelButtonClicked);
+	}
+	
 	private void setUpRectangle() {
 		Rectangle actionBack = new Rectangle(0, 0, this.sizeX, this.sizeY);
 		actionBack.setFill(Color.BLUEVIOLET);
 		this.getChildren().add(actionBack);
 	}
+	
 	private void setUpLabel() {
 		Label actionLabel = new Label();
 		actionLabel.setText(this.message.getAction());
@@ -36,8 +48,19 @@ public class ActionButton extends Group {
 		this.getChildren().add(actionLabel);
 	}
 	
+	private void setUpCancelLabel() {
+		Label actionLabel = new Label();
+		actionLabel.setText("Cancel");
+		actionLabel.relocate(this.sizeX/2.5, 0);
+		this.getChildren().add(actionLabel);
+	}
+	
 	private void actionButtonClicked(MouseEvent event) {
 		this.controller.createAndSendMessage(this.message);
+	}
+	
+	private void cancelButtonClicked(MouseEvent event) {
+		this.controller.cancelAction();
 	}
 	
 }
