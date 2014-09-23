@@ -96,7 +96,7 @@ public class CardHandDocumentController implements Initializable {
 			} else if (key.equals("HEALTH")) {
 				health.setText(this.card.getProperties().get(key).toString());
 			} else if (key.equals("SCRAP_COST")) {
-				scrapCost.setText(this.card.getProperties().get(key).toString());
+				scrapCost.setText(String.format("Scrap Cost = %d", this.card.getProperties().get(key)));
 			}
 		}
     }

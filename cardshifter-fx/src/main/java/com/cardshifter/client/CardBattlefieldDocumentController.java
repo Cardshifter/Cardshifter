@@ -8,6 +8,7 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -25,6 +26,7 @@ public class CardBattlefieldDocumentController implements Initializable {
 	@FXML private Rectangle background;
 	@FXML private Circle sicknessCircle;
 	@FXML private AnchorPane anchorPane;
+	@FXML private Button scrapButton;
     
     private AnchorPane root;
 	private boolean isActive;
@@ -40,62 +42,14 @@ public class CardBattlefieldDocumentController implements Initializable {
         }
         catch (Exception e) {
             throw new RuntimeException(e);
-        }
-                
+        } 
         this.card = message;
 		this.controller = controller;
         this.setCardId();
         this.setCardLabels();
     }
-    
-    public AnchorPane getRootPane() {
-		return this.anchorPane;
-    }
 	
-	public void setCardAttackActive(UseableActionMessage message) {
-		this.isActive = true;
-		this.message = message;
-		this.anchorPane.setOnMouseClicked(this::actionOnClick);
-        background.setFill(Color.DARKGREEN);
-	}
-
-    public void setCardActive(UseableActionMessage message) {
-		this.isActive = true;
-		this.message = message;
-		this.anchorPane.setOnMouseClicked(this::actionOnClick);
-        background.setFill(Color.YELLOW);
-    }
-	
-	public void removeCardActive() {
-		this.isActive = false;
-		this.message = null;
-		this.anchorPane.setOnMouseClicked(e -> {});
-		background.setFill(Color.BLACK);
-	}
-	
-	public boolean isCardActive() {
-		return this.isActive;
-	}
-	
-	public void setCardTargetable(UseableActionMessage message) {
-		this.message = message;
-		this.anchorPane.setOnMouseClicked(this::actionOnClick);
-		background.setFill(Color.BLUE);
-	}
-	
-	private void setSickness() {
-		sicknessCircle.setVisible(true);
-	}
-	
-	public void removeSickness() {
-		sicknessCircle.setVisible(false);
-	}
-	
-	private void actionOnClick(MouseEvent event) {
-		this.controller.createAndSendMessage(this.message);
-	}
-
-    private void setCardId() {
+	private void setCardId() {
         int newId = card.getId();
         cardId.setText(String.format("CardId = %d", newId));
     }
@@ -115,7 +69,68 @@ public class CardBattlefieldDocumentController implements Initializable {
 			}
 		}
     }
+    
+    public AnchorPane getRootPane() {
+		return this.anchorPane;
+    }
 	
+	public boolean isCardActive() {
+		return this.isActive;
+	}
+	
+	public void setCardAttackActive(UseableActionMessage message) {
+		this.isActive = true;
+		this.message = message;
+		this.anchorPane.setOnMouseClicked(this::actionOnClick);
+        background.setFill(Color.DARKGREEN);
+		
+		this.setUpScrapButton();
+	}
+
+    public void setCardActive(UseableActionMessage message) {
+		this.isActive = true;
+		this.message = message;
+		this.anchorPane.setOnMouseClicked(this::actionOnClick);
+        background.setFill(Color.YELLOW);
+    }
+	
+	public void removeCardActive() {
+		this.isActive = false;
+		this.message = null;
+		this.anchorPane.setOnMouseClicked(e -> {});
+		background.setFill(Color.BLACK);
+		this.scrapButton.setVisible(false);
+	}
+	
+	public void setCardTargetable(UseableActionMessage message) {
+		this.message = message;
+		this.anchorPane.setOnMouseClicked(this::actionOnClick);
+		background.setFill(Color.BLUE);
+	}
+	
+	private void setSickness() {
+		sicknessCircle.setVisible(true);
+	}
+	
+	public void removeSickness() {
+		sicknessCircle.setVisible(false);
+	}
+	
+	private void setUpScrapButton() {
+		scrapButton.setVisible(true);
+		scrapButton.setOnMouseClicked(this::scrapButtonAction);
+	}
+	
+	private void scrapButtonAction(MouseEvent event) {
+		scrapButton.setVisible(false);
+		UseableActionMessage scrapMessage = new UseableActionMessage(this.message.getId(), "Scrap", false, 0);
+		this.controller.createAndSendMessage(scrapMessage);
+	}
+	
+	private void actionOnClick(MouseEvent event) {
+		this.controller.createAndSendMessage(this.message);
+	}
+
 	public void updateFields(UpdateMessage message) {
 		if (message.getKey().equals("ATTACK")) {
 			strength.setText(String.format("%d", message.getValue()));
