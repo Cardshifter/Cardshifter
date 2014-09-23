@@ -10,6 +10,7 @@ import com.cardshifter.server.outgoing.CardInfoMessage;
 import com.cardshifter.server.outgoing.EntityRemoveMessage;
 import com.cardshifter.server.outgoing.NewGameMessage;
 import com.cardshifter.server.outgoing.PlayerMessage;
+import com.cardshifter.server.outgoing.ResetAvailableActionsMessage;
 import com.cardshifter.server.outgoing.UpdateMessage;
 import com.cardshifter.server.outgoing.UseableActionMessage;
 import com.cardshifter.server.outgoing.WaitMessage;
@@ -27,7 +28,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
@@ -85,6 +88,7 @@ public class GameClientController {
 	private final Map<String, Integer> playerStatBoxMap = new HashMap<>();
 	private final Map<String, Integer> opponentStatBoxMap = new HashMap<>();
 	private final Map<Integer, ZoneView> zoneViewMap = new HashMap<>();
+	private List<UseableActionMessage> savedMessages = new ArrayList<>();
 	
 	public void acceptIPAndPort(String ipAddress, int port) {
 		// this is passed into this object after it is automatically created by the FXML document
@@ -237,6 +241,9 @@ public class GameClientController {
 			this.processEntityRemoveMessage((EntityRemoveMessage)message);
 		} else if (message instanceof AvailableTargetsMessage) {
 			this.processAvailableTargetsMessage((AvailableTargetsMessage)message);
+		} else if (message instanceof ResetAvailableActionsMessage) {
+			//this.processResetAvailableActionsMessage((ResetAvailableActionsMessage)message);
+			this.clearSavedActions();
 		}
 	}
 	
@@ -460,6 +467,10 @@ public class GameClientController {
 		
 		ActionButton actionButton = new ActionButton(message, this, actionWidth, paneHeight);
 		actionBox.getChildren().add(actionButton);
+	}
+	
+	private void clearSavedActions() {
+		
 	}
 	
 	private void repaintStatBox(Pane statBox, Map<String, Integer> playerMap) {
