@@ -27,6 +27,7 @@ public class EnchantPerform extends SpecificActionSystem {
 			int enchantmentValue = res.getFor(enchantment);
 			res.resFor(target).change(enchantmentValue);
 		}
+		enchantment.destroy();
 	}
 
 }

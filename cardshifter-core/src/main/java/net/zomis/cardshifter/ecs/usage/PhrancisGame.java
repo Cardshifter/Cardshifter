@@ -96,6 +96,7 @@ public class PhrancisGame {
 				createEnchantment(deck, 2, 2, 5);
 
 			}
+			deck.shuffle();
 		}
 		
 		ResourceRetriever manaMaxResource = ResourceRetriever.forResource(PhrancisResources.MANA_MAX);
