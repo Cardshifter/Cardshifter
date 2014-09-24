@@ -31,7 +31,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>com.cardshifter.fx.JavaFXGame</mainClass>
+							<mainClass>com.cardshifter.client.GameClient</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
