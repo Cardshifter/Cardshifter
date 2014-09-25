@@ -131,7 +131,7 @@ public class PhrancisTest {
 		attacker = cardToHand(isCreature.and(manaCost(1)));
 		useAction(attacker, PhrancisGame.PLAY_ACTION);
 		
-		attacker = cardToHand(isCreatureType("Bio").and(manaCost(5)));
+		attacker = cardToHand(isCreatureType("Bio").and(health(4)));
 		useAction(attacker, PhrancisGame.PLAY_ACTION);
 		
 		enchantment = cardToHand(e -> scrapCost.getFor(e) == 1 && health.getFor(e) == 1);
@@ -156,7 +156,11 @@ public class PhrancisTest {
 		assertTrue(defender.isRemoved());
 	}
 
-	private Predicate<Entity> isCreatureType(String creatureType) {
+    private Predicate<Entity> health(int value) {
+        return entity -> health.getFor(entity) == value;
+    }
+
+    private Predicate<Entity> isCreatureType(String creatureType) {
 		return entity -> entity.hasComponent(CreatureTypeComponent.class) &&
 				entity.getComponent(CreatureTypeComponent.class).getCreatureType().equals(creatureType);
 	}
