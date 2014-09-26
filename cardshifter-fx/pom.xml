@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>com.cardshifter</groupId>
 		<artifactId>cardshifter</artifactId>
-		<version>0.2</version>
+		<version>0.3-SNAPSHOT</version>
 	</parent>
 	
 	<artifactId>cardshifter-fx</artifactId>
@@ -82,7 +82,7 @@
 		<dependency>
 			<groupId>com.cardshifter</groupId>
 			<artifactId>cardshifter-mod</artifactId>
-			<version>0.2</version>
+			<version>0.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.loadui</groupId>
@@ -93,7 +93,7 @@
 		<dependency>
 			<groupId>com.cardshifter</groupId>
 			<artifactId>cardshifter-console</artifactId>
-			<version>0.2</version>
+			<version>0.3-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>
