@@ -1,7 +1,8 @@
 Cardshifter
 ===========
 
-[![Build Status](https://travis-ci.org/Zomis/Cardshifter.svg?branch=master)](https://travis-ci.org/Zomis/Cardshifter?branch=master)
+Master branch: [![Build Status](https://travis-ci.org/Cardshifter/Cardshifter.svg?branch=master)](https://travis-ci.org/Cardshifter/Cardshifter?branch=master)  
+Develop branch: [![Build Status](https://travis-ci.org/Cardshifter/Cardshifter.svg?branch=develop)](https://travis-ci.org/Cardshifter/Cardshifter?branch=develop)
 
 Cardshifter Game
 
