@@ -43,7 +43,7 @@ public class ServerSock implements ConnectionHandler {
 					break;
 				}
 				this.server.newClient(clientHandler);
-				executor.submit(clientHandler).get();	//cascades exceptions
+				Future<?> future = executor.submit(clientHandler);
 			}
 		}
 		catch (Exception e) {
