@@ -38,6 +38,7 @@ public final class CardBattlefieldDocumentController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("CardBattlefieldDocument.fxml"));
             loader.setController(this);
+			loader.load();
 //            root = loader.load();
         }
         catch (Exception e) {

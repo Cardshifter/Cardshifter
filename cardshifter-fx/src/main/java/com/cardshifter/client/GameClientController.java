@@ -249,7 +249,7 @@ public class GameClientController {
 			this.processPlayerMessageForPlayer(message, opponentStatBox, opponentStatBoxMap);
 		}
 	}
-	private void processPlayerMessageForPlayer(PlayerMessage message, Pane statBox, Map playerMap) {
+	private void processPlayerMessageForPlayer(PlayerMessage message, Pane statBox, Map<String, Integer> playerMap) {
 		statBox.getChildren().clear();
 		Map<String, Integer> sortedMap = new TreeMap<>(message.getProperties());
 		playerMap.putAll(sortedMap);

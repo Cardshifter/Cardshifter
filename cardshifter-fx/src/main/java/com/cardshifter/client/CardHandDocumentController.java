@@ -38,6 +38,7 @@ public final class CardHandDocumentController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("CardHandDocument.fxml"));
             loader.setController(this);
+			loader.load();
 //            root = loader.load();
         }
         catch (Exception e) {
