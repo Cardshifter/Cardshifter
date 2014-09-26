@@ -73,7 +73,7 @@ public class MessageTypeIdResolver implements TypeIdResolver {
 	public String idFromBaseType() {
 		// FindBugs: NullPointerException guaranteed when you pass in null
 //		return idFromValueAndType(null, mBaseType.getRawClass());
-		return null;
+		throw new AssertionError("this should never happen");
 	}
 
 	@Override
