@@ -14,7 +14,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-public class CardHandDocumentController implements Initializable {
+public final class CardHandDocumentController implements Initializable {
     
     @FXML private Label strength;
     @FXML private Label health;
@@ -28,7 +28,7 @@ public class CardHandDocumentController implements Initializable {
 	@FXML private Rectangle background;
 	@FXML private AnchorPane anchorPane;
     
-    private AnchorPane root;
+//    private AnchorPane root;
 	private boolean isActive;
     private final CardInfoMessage card;
 	private final GameClientController controller;
@@ -38,7 +38,7 @@ public class CardHandDocumentController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("CardHandDocument.fxml"));
             loader.setController(this);
-            root = loader.load();
+//            root = loader.load();
         }
         catch (Exception e) {
             throw new RuntimeException(e);

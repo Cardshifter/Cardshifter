@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 import org.apache.log4j.PropertyConfigurator;
@@ -21,7 +22,7 @@ public class Main {
 
 	public static void main(String[] args) throws UnknownHostException, IOException, InterruptedException {
 		PropertyConfigurator.configure(Main.class.getResourceAsStream("log4j.properties"));
-		try (Scanner input = new Scanner(System.in)) {
+		try (Scanner input = new Scanner(System.in, StandardCharsets.UTF_8.name())) {
 			CommandLineOptions options = new CommandLineOptions();
 			JCommander jcommander = new JCommander(options);
 			try {
@@ -51,7 +52,7 @@ public class Main {
 		InputStream file = options.getScript() == null ? Main.class.getResourceAsStream("/com/cardshifter/mod/start.lua") : new FileInputStream(new File(options.getScript()));
 		Game game = new Game(file, options.getRandom());
 		game.getEvents().startGame(game);
-		new ConsoleController(game).play(new Scanner(System.in));
+		new ConsoleController(game).play(new Scanner(System.in, StandardCharsets.UTF_8.name()));
 	}
 	
 }

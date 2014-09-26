@@ -135,10 +135,11 @@ public class Server {
 			case "INVT":
 				String target = cmd.getParameter(2);
 				ServerGame game = createGame(cmd.getParameter(1));
-				if (game == null) {
-					cmd.getSender().sendToClient("FAIL Game creation failed");
-					return false;
-				}
+				// FindBugs tells this is redundant
+//				if (game == null) {
+//					cmd.getSender().sendToClient("FAIL Game creation failed");
+//					return false;
+//				}
 				invite = new GameInvite(this, inviteId.getAndIncrement(), cmd, game);
 				this.invites.put(invite.getId(), invite);
 				
@@ -147,7 +148,9 @@ public class Server {
 				if (result.isPresent()) {
 					invite.sendInvite(result.get());
 				}
-				else cmd.getSender().sendToClient("FAIL No such user");
+				else {
+					cmd.getSender().sendToClient("FAIL No such user");
+				}
 				return result.isPresent();
 			case "INVY":
 				invite = invites.get(cmd.getParameterInt(1));
@@ -171,10 +174,13 @@ public class Server {
 	public void incomingGameCommand(Command cmd) {
 		ServerGame game = games.get(cmd.getParameterInt(1));
 		if (game != null) {
-			if (!game.handleMove(cmd))
+			if (!game.handleMove(cmd)) {
 				cmd.getSender().sendToClient("FAIL Invalid move");
+			}
 		}
-		else cmd.getSender().sendToClient("FAIL Invalid gameid");
+		else {
+			cmd.getSender().sendToClient("FAIL Invalid gameid");
+		}
 	}
 
 	private ServerGame createGame(String parameter) {
@@ -184,7 +190,7 @@ public class Server {
 		}
 		ServerGame game = suppl.newGame(this, gameId.getAndIncrement());
 		this.games.put(game.getId(), game);
-		return suppl != null ? game : null;
+		return game;
 	}
 	
 	public Map<Integer, ChatArea> getChats() {

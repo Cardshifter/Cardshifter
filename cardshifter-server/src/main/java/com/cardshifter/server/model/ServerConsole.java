@@ -1,5 +1,6 @@
 package com.cardshifter.server.model;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 import java.util.function.Consumer;
 
@@ -22,7 +23,7 @@ public class ServerConsole extends ClientIO implements Runnable {
 	
 	@Override
 	public void run() {
-		Scanner scanner = new Scanner(System.in);
+		Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8.name());
 		
 		while (!Thread.interrupted()) {
 			String input = scanner.nextLine();

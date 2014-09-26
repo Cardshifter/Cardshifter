@@ -16,7 +16,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
-public class CardBattlefieldDocumentController implements Initializable {
+public final class CardBattlefieldDocumentController implements Initializable {
     
     @FXML private Label strength;
     @FXML private Label health;
@@ -28,7 +28,7 @@ public class CardBattlefieldDocumentController implements Initializable {
 	@FXML private AnchorPane anchorPane;
 	@FXML private Button scrapButton;
     
-    private AnchorPane root;
+//    private AnchorPane root;
 	private boolean isActive;
     private final CardInfoMessage card;
 	private final GameClientController controller;
@@ -38,7 +38,7 @@ public class CardBattlefieldDocumentController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("CardBattlefieldDocument.fxml"));
             loader.setController(this);
-            root = loader.load();
+//            root = loader.load();
         }
         catch (Exception e) {
             throw new RuntimeException(e);
@@ -56,16 +56,20 @@ public class CardBattlefieldDocumentController implements Initializable {
 	
     private void setCardLabels() {
 		for(String key : this.card.getProperties().keySet()) {
-			if (key.equals("SICKNESS")) {
-				if (this.card.getProperties().get(key) == 1) {
-					this.setSickness();
-				}
-			} else if (key.equals("ATTACK")) {
-				strength.setText(this.card.getProperties().get(key).toString());
-			} else if (key.equals("HEALTH")) {
-				health.setText(this.card.getProperties().get(key).toString());
-			} else if (key.equals("ATTACK_AVAILABLE")) {
-				
+			switch (key) {
+				case "SICKNESS":
+					if (this.card.getProperties().get(key) == 1) {
+						this.setSickness();
+					}	
+					break;
+				case "ATTACK":
+					strength.setText(this.card.getProperties().get(key).toString());
+					break;
+				case "HEALTH":
+					health.setText(this.card.getProperties().get(key).toString());
+					break;
+				case "ATTACK_AVAILABLE":
+					break;
 			}
 		}
     }

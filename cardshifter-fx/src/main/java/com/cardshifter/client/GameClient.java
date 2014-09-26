@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 /**
  * This class just loads the FXML document which initializes its DocumentController
  */
-public class GameClient extends Application {
+public final class GameClient extends Application {
 	
 	@Override
 	public void start(Stage stage) throws Exception {	  

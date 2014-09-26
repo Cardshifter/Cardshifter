@@ -104,7 +104,7 @@ public class GameClientController {
 			mapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, false);
 			mapper.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
 			new Thread(this::listen).start();
-		} catch (Exception e) {
+		} catch (IOException ex) {
 			System.out.println("Connection Failed");
 			return false;
 		}
@@ -156,7 +156,11 @@ public class GameClientController {
 				MappingIterator<Message> values = mapper.readValues(new JsonFactory().createParser(this.in), Message.class);
 				while (values.hasNextValue()) {
 					Message message = values.next();
-					messages.offer(message);
+					try {
+						messages.put(message);
+					} catch (InterruptedException ex) {
+						Thread.currentThread().interrupt();
+					}
 					//This is where all the magic happens for message handling
 					Platform.runLater(() -> this.processMessageFromServer(message));
 				}

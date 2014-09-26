@@ -27,7 +27,7 @@ public class CardNode {
 	
 	private final double sizeX;
 	private final double sizeY;
-	private final String name;
+//	private final String name;
 	private final Entity card;
 	private final FXMLGameController controller;
 	private final Entity performer;
@@ -45,7 +45,7 @@ public class CardNode {
 		
 		this.sizeX = cardWidth;
 		this.sizeY = pane.getHeight();
-		this.name = name;
+//		this.name = name;
 		this.card = card;
 		this.controller = controller;
 		this.cardGroup = new Group();

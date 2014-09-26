@@ -3,6 +3,7 @@ package com.cardshifter.core;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -31,7 +32,7 @@ public class Events {
 	
 	public Events(final InputStream inputStream) {
 		Objects.requireNonNull(inputStream, "inputStream");
-		InputStreamReader reader = new InputStreamReader(inputStream);
+		InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
 		globals.load(reader, "mainScript").call();
 		LuaJC.install(globals);
 		globals.set("luajava", "Access Denied");

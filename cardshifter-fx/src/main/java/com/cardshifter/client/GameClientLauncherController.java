@@ -15,7 +15,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
-public class GameClientLauncherController implements Initializable {
+public final class GameClientLauncherController implements Initializable {
 	
 	@FXML private TextField ipAddressBox;
 	@FXML private TextField portBox;

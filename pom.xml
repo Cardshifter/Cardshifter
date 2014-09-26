@@ -28,6 +28,12 @@
 	
 	<dependencies>
 		<dependency>
+			<groupId>findbugs</groupId>
+			<artifactId>findbugs</artifactId>
+			<version>1.0.0</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.11</version>

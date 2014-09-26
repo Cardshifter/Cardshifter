@@ -22,7 +22,7 @@ public class CardNodeBattlefield extends Group {
 	
 	private final double sizeX;
 	private final double sizeY;
-	private final String name;
+//	private final String name;
 	private final Entity card;
 	private final FXMLGameController controller;
 	private final boolean isPlayer;
@@ -43,7 +43,7 @@ public class CardNodeBattlefield extends Group {
 		
 		this.sizeX = cardWidth;
 		this.sizeY = pane.getHeight();
-		this.name = name;
+//		this.name = name;
 		this.card = card;
 		this.controller = controller;
 		this.isPlayer = isPlayer;

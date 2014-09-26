@@ -19,7 +19,7 @@ import net.zomis.cardshifter.ecs.resources.ECSResourceData;
 import net.zomis.cardshifter.ecs.resources.Resources;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame.PhrancisResources;
 
-public class CardHandDocumentController implements Initializable {
+public final class CardHandDocumentController implements Initializable {
     
     //FXML Declarations
     @FXML

@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -14,6 +15,8 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.cardshifter.server.incoming.LoginMessage;
 import com.cardshifter.server.incoming.RequestTargetsMessage;
@@ -48,9 +51,12 @@ public class NetworkConsoleController {
 		in = socket.getInputStream();
 		mapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, false);
 		mapper.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
-		new Thread(this::listen).start();
+		initThreads();
 	}
 	
+	private void initThreads() {
+		new Thread(this::listen).start();
+	}
 	
 	public void play(Scanner input) throws IOException, InterruptedException {
 		System.out.println("Enter your name: ");
@@ -85,7 +91,11 @@ public class NetworkConsoleController {
 				while (values.hasNext()) {
 					mess = values.next();
 					System.out.println("iterator: " + mess);
-					messages.offer(mess);
+					try {
+						messages.put(mess);
+					} catch (InterruptedException ex) {
+						Thread.currentThread().interrupt();
+					}
 					if (mess instanceof ResetAvailableActionsMessage) {
 						actions.clear();
 					}
@@ -191,7 +201,7 @@ public class NetworkConsoleController {
 	
 	public static void main(String[] args) throws UnknownHostException, IOException, InterruptedException {
 		NetworkConsoleController control = new NetworkConsoleController("127.0.0.1", 4242);
-		control.play(new Scanner(System.in));
+		control.play(new Scanner(System.in, StandardCharsets.UTF_8.name()));
 	}
 	
 }

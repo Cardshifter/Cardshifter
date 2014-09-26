@@ -3,8 +3,10 @@ package com.cardshifter.server.clients;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -24,8 +26,8 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 		super(server);
 		this.socket = socket;
 		
-		in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-		out = new PrintWriter(socket.getOutputStream(), true);
+		in = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
+		out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true);
 		
 	}
 	

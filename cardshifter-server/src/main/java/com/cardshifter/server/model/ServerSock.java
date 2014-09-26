@@ -5,6 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.LogManager;
@@ -42,7 +43,7 @@ public class ServerSock implements ConnectionHandler {
 					break;
 				}
 				this.server.newClient(clientHandler);
-				executor.submit(clientHandler);
+				executor.submit(clientHandler).get();	//cascades exceptions
 			}
 		}
 		catch (Exception e) {
