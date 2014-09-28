@@ -7,8 +7,8 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import com.cardshifter.server.clients.ClientIO;
-import com.cardshifter.server.incoming.LoginMessage;
-import com.cardshifter.server.incoming.StartGameRequest;
+import com.cardshifter.api.incoming.LoginMessage;
+import com.cardshifter.api.incoming.StartGameRequest;
 import com.cardshifter.server.main.FakeAIClientTCG;
 
 public class MainServer {

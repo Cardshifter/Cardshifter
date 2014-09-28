@@ -1,6 +1,6 @@
-package com.cardshifter.server.incoming;
+package com.cardshifter.api.incoming;
 
-import com.cardshifter.server.abstr.CardMessage;
+import com.cardshifter.api.abstr.CardMessage;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 

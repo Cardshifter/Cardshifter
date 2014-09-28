@@ -1,9 +1,9 @@
-package com.cardshifter.server.outgoing;
+package com.cardshifter.api.outgoing;
 
 import java.util.Collections;
 import java.util.Map;
 
-import com.cardshifter.server.messages.Message;
+import com.cardshifter.api.messages.Message;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 

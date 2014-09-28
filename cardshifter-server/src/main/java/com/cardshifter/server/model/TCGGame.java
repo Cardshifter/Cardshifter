@@ -29,18 +29,18 @@ import org.apache.log4j.Logger;
 import com.cardshifter.ai.CardshifterAI;
 import com.cardshifter.ai.CompleteIdiot;
 import com.cardshifter.server.clients.ClientIO;
-import com.cardshifter.server.incoming.RequestTargetsMessage;
-import com.cardshifter.server.incoming.UseAbilityMessage;
+import com.cardshifter.api.incoming.RequestTargetsMessage;
+import com.cardshifter.api.incoming.UseAbilityMessage;
 import com.cardshifter.server.main.FakeAIClientTCG;
-import com.cardshifter.server.outgoing.AvailableTargetsMessage;
-import com.cardshifter.server.outgoing.CardInfoMessage;
-import com.cardshifter.server.outgoing.EntityRemoveMessage;
-import com.cardshifter.server.outgoing.PlayerMessage;
-import com.cardshifter.server.outgoing.ResetAvailableActionsMessage;
-import com.cardshifter.server.outgoing.UpdateMessage;
-import com.cardshifter.server.outgoing.UseableActionMessage;
-import com.cardshifter.server.outgoing.ZoneChangeMessage;
-import com.cardshifter.server.outgoing.ZoneMessage;
+import com.cardshifter.api.outgoing.AvailableTargetsMessage;
+import com.cardshifter.api.outgoing.CardInfoMessage;
+import com.cardshifter.api.outgoing.EntityRemoveMessage;
+import com.cardshifter.api.outgoing.PlayerMessage;
+import com.cardshifter.api.outgoing.ResetAvailableActionsMessage;
+import com.cardshifter.api.outgoing.UpdateMessage;
+import com.cardshifter.api.outgoing.UseableActionMessage;
+import com.cardshifter.api.outgoing.ZoneChangeMessage;
+import com.cardshifter.api.outgoing.ZoneMessage;
 
 public class TCGGame extends ServerGame {
 	

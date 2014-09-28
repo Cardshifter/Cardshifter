@@ -21,11 +21,11 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import com.cardshifter.server.clients.ClientIO;
-import com.cardshifter.server.incoming.LoginMessage;
-import com.cardshifter.server.incoming.RequestTargetsMessage;
-import com.cardshifter.server.incoming.StartGameRequest;
-import com.cardshifter.server.incoming.UseAbilityMessage;
-import com.cardshifter.server.messages.Message;
+import com.cardshifter.api.incoming.LoginMessage;
+import com.cardshifter.api.incoming.RequestTargetsMessage;
+import com.cardshifter.api.incoming.StartGameRequest;
+import com.cardshifter.api.incoming.UseAbilityMessage;
+import com.cardshifter.api.messages.Message;
 
 public class Server {
 	private static final Logger	logger = LogManager.getLogger(Server.class);

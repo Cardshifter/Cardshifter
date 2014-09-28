@@ -1,6 +1,6 @@
-package com.cardshifter.server.abstr;
+package com.cardshifter.api.abstr;
 
-import com.cardshifter.server.messages.Message;
+import com.cardshifter.api.messages.Message;
 
 
 public abstract class RequestMessage extends Message {

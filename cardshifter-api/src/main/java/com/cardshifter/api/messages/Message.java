@@ -1,4 +1,4 @@
-package com.cardshifter.server.messages;
+package com.cardshifter.api.messages;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
