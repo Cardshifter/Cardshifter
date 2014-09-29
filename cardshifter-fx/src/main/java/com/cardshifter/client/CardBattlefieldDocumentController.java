@@ -1,8 +1,8 @@
 package com.cardshifter.client;
 
-import com.cardshifter.server.outgoing.CardInfoMessage;
-import com.cardshifter.server.outgoing.UpdateMessage;
-import com.cardshifter.server.outgoing.UseableActionMessage;
+import com.cardshifter.api.outgoing.CardInfoMessage;
+import com.cardshifter.api.outgoing.UpdateMessage;
+import com.cardshifter.api.outgoing.UseableActionMessage;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;

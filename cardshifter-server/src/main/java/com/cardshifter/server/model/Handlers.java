@@ -6,12 +6,12 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import com.cardshifter.server.clients.ClientIO;
-import com.cardshifter.server.incoming.LoginMessage;
-import com.cardshifter.server.incoming.RequestTargetsMessage;
-import com.cardshifter.server.incoming.StartGameRequest;
-import com.cardshifter.server.incoming.UseAbilityMessage;
-import com.cardshifter.server.outgoing.WaitMessage;
-import com.cardshifter.server.outgoing.WelcomeMessage;
+import com.cardshifter.api.incoming.LoginMessage;
+import com.cardshifter.api.incoming.RequestTargetsMessage;
+import com.cardshifter.api.incoming.StartGameRequest;
+import com.cardshifter.api.incoming.UseAbilityMessage;
+import com.cardshifter.api.outgoing.WaitMessage;
+import com.cardshifter.api.outgoing.WelcomeMessage;
 
 public class Handlers {
 

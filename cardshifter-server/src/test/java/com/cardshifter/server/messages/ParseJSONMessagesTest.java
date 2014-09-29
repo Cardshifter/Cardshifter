@@ -7,7 +7,7 @@ import java.io.IOException;
 import org.apache.log4j.PropertyConfigurator;
 import org.junit.Test;
 
-import com.cardshifter.server.incoming.UseAbilityMessage;
+import com.cardshifter.api.incoming.UseAbilityMessage;
 import com.cardshifter.server.main.ServerMain;
 import com.cardshifter.server.model.Server;
 

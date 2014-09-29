@@ -1,6 +1,6 @@
-package com.cardshifter.server.incoming;
+package com.cardshifter.api.incoming;
 
-import com.cardshifter.server.messages.Message;
+import com.cardshifter.api.messages.Message;
 
 public class LoginMessage extends Message {
 

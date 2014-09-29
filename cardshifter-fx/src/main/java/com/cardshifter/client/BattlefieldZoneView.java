@@ -1,7 +1,7 @@
 package com.cardshifter.client;
 
-import com.cardshifter.server.outgoing.UpdateMessage;
-import com.cardshifter.server.outgoing.UseableActionMessage;
+import com.cardshifter.api.outgoing.UpdateMessage;
+import com.cardshifter.api.outgoing.UseableActionMessage;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;

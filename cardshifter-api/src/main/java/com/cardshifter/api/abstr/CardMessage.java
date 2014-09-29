@@ -1,4 +1,4 @@
-package com.cardshifter.server.abstr;
+package com.cardshifter.api.abstr;
 
 
 

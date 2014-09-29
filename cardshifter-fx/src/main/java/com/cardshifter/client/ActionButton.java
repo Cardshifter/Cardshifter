@@ -1,7 +1,7 @@
 
 package com.cardshifter.client;
 
-import com.cardshifter.server.outgoing.UseableActionMessage;
+import com.cardshifter.api.outgoing.UseableActionMessage;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;

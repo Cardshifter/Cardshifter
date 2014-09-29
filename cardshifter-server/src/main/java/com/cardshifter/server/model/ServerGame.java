@@ -10,8 +10,8 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import com.cardshifter.server.clients.ClientIO;
-import com.cardshifter.server.messages.Message;
-import com.cardshifter.server.outgoing.NewGameMessage;
+import com.cardshifter.api.messages.Message;
+import com.cardshifter.api.outgoing.NewGameMessage;
 
 public abstract class ServerGame {
 	private static final Logger logger = LogManager.getLogger(ServerGame.class);
