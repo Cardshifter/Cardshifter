@@ -145,8 +145,6 @@ public class GameClientController {
 			e.printStackTrace();
 		}
 		
-		this.playerDeckSize = 52;
-		this.opponentDeckSize = 52;
 		Platform.runLater(() -> this.repaintDeckLabels());
 	}
 
@@ -288,9 +286,11 @@ public class GameClientController {
 			} else if (message.getName().equals("Deck")) {
 				if (message.getOwner() == this.playerId) {
 					this.playerDeckId = message.getId();
+					this.playerDeckSize = message.getSize();
 					this.zoneViewMap.put(message.getId(), new ZoneView(message.getId(), playerDeckPane));
 				} else {
 					this.opponentDeckId = message.getId();
+					this.opponentDeckSize = message.getSize();
 					this.zoneViewMap.put(message.getId(), new ZoneView(message.getId(), opponentDeckPane));
 				}
 			}
