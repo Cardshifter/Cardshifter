@@ -11,8 +11,13 @@ import net.zomis.cardshifter.ecs.actions.TargetSet;
 import net.zomis.cardshifter.ecs.base.ECSGame;
 import net.zomis.cardshifter.ecs.base.Entity;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 public class CompleteIdiot implements CardshifterAI {
 
+	private static final Logger logger = LogManager.getLogger(CompleteIdiot.class);
+	
 	private final Random random = new Random();
 	
 	private static Stream<ECSAction> getAllActions(ECSGame game) {
@@ -30,6 +35,7 @@ public class CompleteIdiot implements CardshifterAI {
 		Stream<ECSAction> allActions = actions.filter(action -> action.isAllowed(player))
 				.filter(action -> setTargetIfPossible(action));
 		List<ECSAction> list = allActions.collect(Collectors.toList());
+		logger.info(player + " allowed actions: " + list);
 		
 		//return nothing if no actions are available
 		if (list.isEmpty()) {
