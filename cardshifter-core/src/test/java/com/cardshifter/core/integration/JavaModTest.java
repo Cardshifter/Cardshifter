@@ -22,5 +22,6 @@ public class JavaModTest {
 		Path tempFile = Files.createTempFile("javamodtest-load", ".jar");
 		Mod javaMod = Mods.open(tempFile);
 		assertEquals(JavaMod.class, javaMod.getClass());
+		Files.delete(tempFile);
 	}
 }

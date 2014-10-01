@@ -22,5 +22,6 @@ public class LuaModTest {
 		Path tempFile = Files.createTempFile("luamodtest-load", ".zip");
 		Mod luaMod = Mods.open(tempFile);
 		assertEquals(LuaMod.class, luaMod.getClass());
+		Files.delete(tempFile);
 	}
 }
