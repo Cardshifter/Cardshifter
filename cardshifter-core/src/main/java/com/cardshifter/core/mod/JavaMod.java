@@ -15,7 +15,7 @@ public class JavaMod extends BaseMod {
 	}
 	
 	@Override
-	public ECSGame startGame() {
+	public ECSGame createGame() {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
 }
