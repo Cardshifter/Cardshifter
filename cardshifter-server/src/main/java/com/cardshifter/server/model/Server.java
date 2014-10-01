@@ -13,6 +13,8 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
@@ -27,6 +29,7 @@ import com.cardshifter.api.incoming.UseAbilityMessage;
 import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.outgoing.ClientDisconnectedMessage;
 import com.cardshifter.server.clients.ClientIO;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 public class Server {
 	private static final Logger	logger = LogManager.getLogger(Server.class);
@@ -50,8 +53,11 @@ public class Server {
 	private final AtomicReference<ClientIO> playAny = new AtomicReference<>();
 	private final Random random = new Random();
 
+	private final ScheduledExecutorService scheduler;
+
 	public Server() {
 		this.incomingHandler = new IncomingHandler(this);
+		this.scheduler = Executors.newScheduledThreadPool(2, new ThreadFactoryBuilder().setNameFormat("ai-thread-%d").build());
 		this.newChatRoom("Main");
 		
 		Server server = this;
@@ -224,6 +230,10 @@ public class Server {
 		
 		this.games.put(game.getId(), game);
 		game.start(players);
+	}
+
+	public ScheduledExecutorService getScheduler() {
+		return scheduler;
 	}
 	
 }
