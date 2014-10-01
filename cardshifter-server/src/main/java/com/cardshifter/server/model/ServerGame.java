@@ -97,5 +97,9 @@ public abstract class ServerGame {
 	public List<ClientIO> getPlayers() {
 		return Collections.unmodifiableList(players);
 	}
+
+	public boolean hasPlayer(ClientIO client) {
+		return players.contains(client);
+	}
 	
 }

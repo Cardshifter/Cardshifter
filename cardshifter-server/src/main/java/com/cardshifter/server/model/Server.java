@@ -20,12 +20,13 @@ import java.util.stream.Stream;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import com.cardshifter.server.clients.ClientIO;
 import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.incoming.RequestTargetsMessage;
 import com.cardshifter.api.incoming.StartGameRequest;
 import com.cardshifter.api.incoming.UseAbilityMessage;
 import com.cardshifter.api.messages.Message;
+import com.cardshifter.api.outgoing.ClientDisconnectedMessage;
+import com.cardshifter.server.clients.ClientIO;
 
 public class Server {
 	private static final Logger	logger = LogManager.getLogger(Server.class);
@@ -108,6 +109,8 @@ public class Server {
 	}
 	
 	public void onDisconnected(ClientIO client) {
+		games.values().stream().filter(game -> game.hasPlayer(client))
+			.forEach(game -> game.send(new ClientDisconnectedMessage(client.getName(), game.getPlayers().indexOf(client))));
 		clients.remove(client);
 		getMainChat().remove(client);
 	}
