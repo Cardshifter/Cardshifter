@@ -63,6 +63,13 @@ public abstract class ClientIO {
 	}
 	
 	/**
+	 * Inform the server that this client has disconnected
+	 */
+	protected void disconnected() {
+		server.onDisconnected(this);
+	}
+	
+	/**
 	 * Disconnect this client
 	 */
 	public abstract void close();

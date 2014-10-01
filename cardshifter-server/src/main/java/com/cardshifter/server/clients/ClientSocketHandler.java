@@ -26,6 +26,7 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 		super(server);
 		this.socket = socket;
 		
+		
 		in = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
 		out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true);
 		
@@ -67,6 +68,7 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 				socket = null;
 			} catch (IOException ioe) {
 				logger.warn("Socket " + this + " exception: " + ioe.getMessage());
+				this.disconnected();
 				try {
 					if (this.socket != null) {
 						this.socket.close();
@@ -88,5 +90,6 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 		catch (IOException e) {
 			logger.warn("Error closing", e);
 		}
+		this.disconnected();
 	}
 }
