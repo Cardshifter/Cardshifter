@@ -240,7 +240,8 @@ public class TCGGame extends ServerGame {
 	}
 	
 	private ZoneMessage constructZoneMessage(ZoneComponent zone, Entity player) {
-		return new ZoneMessage(zone.getZoneId(), zone.getName(), zone.getOwner().getId(), zone.size(), zone.isKnownTo(player));
+		return new ZoneMessage(zone.getZoneId(), zone.getName(), 
+				zone.getOwner().getId(), zone.size(), zone.isKnownTo(player), zone.stream().mapToInt(e -> e.getId()).toArray());
 	}
 	
 	private void sendCard(ClientIO io, Entity card) {
