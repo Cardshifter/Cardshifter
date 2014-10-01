@@ -60,8 +60,8 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 						this.sentToServer(mess);
 					}
 				}
-
 				logger.info("Socket Communication no more bytes to read for " + this);
+				this.disconnected();
 				if (socket != null) {
 					socket.close();
 				}
