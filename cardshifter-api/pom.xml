@@ -24,6 +24,7 @@
 	</properties>
 	
 	<build>
+	<pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -40,6 +41,7 @@
 				</executions>
 			</plugin>
 		</plugins>
+	</pluginManagement>
 	</build>
 	
 	<dependencies>
