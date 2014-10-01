@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 import net.zomis.cardshifter.ecs.events.StartGameEvent;
 
-public class ECSGame {
+public final class ECSGame {
 
 	private final AtomicInteger ids = new AtomicInteger();
 	private final Map<Integer, Entity> entities = new HashMap<>();
