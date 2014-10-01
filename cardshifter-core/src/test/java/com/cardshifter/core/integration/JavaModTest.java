@@ -20,7 +20,7 @@ public class JavaModTest {
 	@Test
 	public void testLoadMod() throws IOException {
 		Path tempFile = Files.createTempFile("javamodtest-load", ".jar");
-		Mod javaMod = Mods.open(tempFile);
+		Mod javaMod = Mods.open(tempFile, "java");
 		assertEquals(JavaMod.class, javaMod.getClass());
 		Files.delete(tempFile);
 	}

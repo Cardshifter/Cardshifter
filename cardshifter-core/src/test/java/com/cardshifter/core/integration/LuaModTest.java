@@ -20,7 +20,7 @@ public class LuaModTest {
 	@Test
 	public void testLoadMod() throws IOException {
 		Path tempFile = Files.createTempFile("luamodtest-load", ".zip");
-		Mod luaMod = Mods.open(tempFile);
+		Mod luaMod = Mods.open(tempFile, "lua");
 		assertEquals(LuaMod.class, luaMod.getClass());
 		Files.delete(tempFile);
 	}
