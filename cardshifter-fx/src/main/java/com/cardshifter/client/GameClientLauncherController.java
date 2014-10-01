@@ -54,6 +54,7 @@ public final class GameClientLauncherController implements Initializable {
 				Scene scene = new Scene(root);
 				Stage gameStage = new Stage();
 				gameStage.setScene(scene);
+				gameStage.setOnCloseRequest(windowEvent -> controller.closeGame());
 				gameStage.show();
 			} else {
 				errorMessage.setText("Connection Failed!");

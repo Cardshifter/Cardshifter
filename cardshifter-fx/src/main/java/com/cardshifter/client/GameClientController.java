@@ -39,16 +39,20 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.Stage;
 
 public class GameClientController {
 	
+	@FXML private AnchorPane rootPane;
 	@FXML private Label loginMessage;
 	@FXML private ListView<String> serverMessages;
 	@FXML private VBox opponentStatBox;
@@ -74,6 +78,9 @@ public class GameClientController {
 	
 	private int gameId;
 	private int playerIndex;
+	private Thread listenThread;
+	private Thread playThread;
+	
 	private int opponentId;
 	private int opponentHandId;
 	private int opponentBattlefieldId;
@@ -103,13 +110,14 @@ public class GameClientController {
 			this.in = socket.getInputStream();
 			mapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, false);
 			mapper.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
-			new Thread(this::listen).start();
+			this.listenThread = new Thread(this::listen);
+			this.listenThread.start();
 		} catch (IOException ex) {
 			System.out.println("Connection Failed");
 			return false;
 		}
-		
-		new Thread(this::play).start();
+		this.playThread = new Thread(this::play);
+		this.playThread.start();	
 		return true;
 	}
 	private void play() {
@@ -573,38 +581,22 @@ public class GameClientController {
 		
 		return card;
 	}
+	
+	public void closeGame() {
+		this.listenThread.interrupt();
+		this.playThread.interrupt();
+		
+		//Uncomment these lines to cure the exception
+		//this.listenThread.stop();
+		//this.playThread.stop();
+		
+		try {
+			this.in.close();
+			this.out.close();
+		} catch (Exception e) {
+			System.out.println("Failed to break connection");
+		}
+	}
+	
 }
-	//Sample server message strings
-	/*
-	Sending: {"command":"login","username":"Player26"}
-	Sending: {"command":"startgame"}
-	com.cardshifter.server.outgoing.WelcomeMessage@33c7b4f6
-	com.cardshifter.server.outgoing.NewGameMessage@2ff58dec
-	You are player: 1
-	Player Info: Player1 - {SCRAP=0, MANA=1, MANA_MAX=1, HEALTH=10}
-	Player Info: Player2 - {SCRAP=0, MANA=0, HEALTH=10}
-	ZoneMessage [id=4, name=Battlefield, owner=1, size=0, known=true]
-	ZoneMessage [id=3, name=Hand, owner=1, size=5, known=false]
-	ZoneMessage [id=2, name=Deck, owner=1, size=34, known=false]
-	ZoneMessage [id=47, name=Battlefield, owner=44, size=0, known=true]
-	ZoneMessage [id=46, name=Hand, owner=44, size=5, known=true]
-	CardInfo: 48 in zone 46 - {SICKNESS=1, MANA_COST=1, ATTACK=1, HEALTH=1, ATTACK_AVAILABLE=1}
-	CardInfo: 49 in zone 46 - {SICKNESS=1, MANA_COST=2, ATTACK=2, HEALTH=1, ATTACK_AVAILABLE=1}
-	CardInfo: 50 in zone 46 - {SICKNESS=1, MANA_COST=3, ATTACK=3, HEALTH=3, ATTACK_AVAILABLE=1}
-	CardInfo: 51 in zone 46 - {SICKNESS=1, MANA_COST=4, ATTACK=4, HEALTH=4, ATTACK_AVAILABLE=1}
-	CardInfo: 52 in zone 46 - {SICKNESS=1, MANA_COST=5, ATTACK=5, HEALTH=5, ATTACK_AVAILABLE=1}
-	ZoneMessage [id=45, name=Deck, owner=44, size=34, known=false]
-	com.cardshifter.server.outgoing.ResetAvailableActionsMessage@2d326c35
-	UpdateMessage [id=44, key=MANA_MAX, value=2]
-	UpdateMessage [id=44, key=MANA, value=2]
-	ZoneChangeMessage [entity=9, sourceZone=2, destinationZone=3]
-	ZoneChangeMessage [entity=48, sourceZone=45, destinationZone=46]
-	ZoneChangeMessage [entity=49, sourceZone=45, destinationZone=46]
-	ZoneChangeMessage [entity=50, sourceZone=45, destinationZone=46]
-	ZoneChangeMessage [entity=51, sourceZone=45, destinationZone=46]
-	ZoneChangeMessage [entity=52, sourceZone=45, destinationZone=46]
-	UseableActionMessage [id=5, action=Play, targetRequired=false, targetId=0]
-	UseableActionMessage [id=1, action=End Turn, targetRequired=false, targetId=0]
-	ZoneChangeMessage [entity=54, sourceZone=45, destinationZone=46]
-	*/
 
