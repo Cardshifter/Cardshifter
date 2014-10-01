@@ -49,7 +49,9 @@ public class TCGGame extends ServerGame {
 	private final ECSGame game;
 	private final ScheduledExecutorService aiPerform = Executors.newScheduledThreadPool(1);
 	private final ComponentRetriever<CardComponent> card = ComponentRetriever.retreiverFor(CardComponent.class);
-	private final PhaseController phases;
+	
+	@Deprecated
+	private final PhaseController phases; // this is not necessary anymore as Actions require a 'player' method to perform.
 
 	private final CardshifterAI ai = new CompleteIdiot();
 	private ComponentRetriever<PlayerComponent> playerData = ComponentRetriever.retreiverFor(PlayerComponent.class);
