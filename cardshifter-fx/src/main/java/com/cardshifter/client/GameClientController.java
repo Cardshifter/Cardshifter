@@ -7,6 +7,7 @@ import com.cardshifter.api.incoming.UseAbilityMessage;
 import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.outgoing.AvailableTargetsMessage;
 import com.cardshifter.api.outgoing.CardInfoMessage;
+import com.cardshifter.api.outgoing.ClientDisconnectedMessage;
 import com.cardshifter.api.outgoing.EntityRemoveMessage;
 import com.cardshifter.api.outgoing.GameOverMessage;
 import com.cardshifter.api.outgoing.NewGameMessage;
@@ -43,7 +44,6 @@ import javax.swing.JOptionPane;
 import net.zomis.cardshifter.ecs.base.GameOverEvent;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.AnchorPane;
@@ -52,7 +52,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.stage.Stage;
 
 public class GameClientController {
 	
@@ -244,6 +243,8 @@ public class GameClientController {
 		} else if (message instanceof ResetAvailableActionsMessage) {
 			//this.processResetAvailableActionsMessage((ResetAvailableActionsMessage)message);
 			this.clearSavedActions();
+		} else if (message instanceof ClientDisconnectedMessage) {
+			this.processClientDisconnectedMessage((ClientDisconnectedMessage)message);
 		}
 	}
 	
@@ -259,6 +260,7 @@ public class GameClientController {
 		} else {
 			this.opponentId = message.getId();
 			this.processPlayerMessageForPlayer(message, opponentStatBox, opponentStatBoxMap);
+			Platform.runLater(() -> this.loginMessage.setText("Opponent Connected"));
 		}
 	}
 	private void processPlayerMessageForPlayer(PlayerMessage message, Pane statBox, Map<String, Integer> playerMap) {
@@ -472,6 +474,12 @@ public class GameClientController {
 				this.createAndSendMessage(newMessage);
 			}
 		}
+	}
+	
+	private void processClientDisconnectedMessage(ClientDisconnectedMessage message) {
+		//if (this.playerIndex != message.getPlayerIndex()) {
+			Platform.runLater(() -> this.loginMessage.setText("Opponent Left"));
+		//}
 	}
 	
 	private void removeCardFromDeck(int zoneId, int cardId) {
