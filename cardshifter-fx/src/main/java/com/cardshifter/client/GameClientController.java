@@ -78,12 +78,12 @@ public class GameClientController {
 	private int opponentHandId;
 	private int opponentBattlefieldId;
 	private int opponentDeckId;
-	private int opponentDeckSize;
+	private Map<Integer, Integer> opponentDeckEntityIds = new HashMap<>();
 	private int playerId;
 	private int playerHandId;
 	private int playerBattlefieldId;
 	private int playerDeckId;
-	private int playerDeckSize;
+	private Map<Integer, Integer> playerDeckEntityIds = new HashMap<>();
 	
 	private final Map<String, Integer> playerStatBoxMap = new HashMap<>();
 	private final Map<String, Integer> opponentStatBoxMap = new HashMap<>();
@@ -286,11 +286,17 @@ public class GameClientController {
 			} else if (message.getName().equals("Deck")) {
 				if (message.getOwner() == this.playerId) {
 					this.playerDeckId = message.getId();
-					this.playerDeckSize = message.getSize();
+					for (int i = 0; i < message.getEntities().length; i++) {
+						this.playerDeckEntityIds.put(i, message.getEntities()[i]);
+					}
+					this.repaintDeckLabels();
 					this.zoneViewMap.put(message.getId(), new ZoneView(message.getId(), playerDeckPane));
 				} else {
 					this.opponentDeckId = message.getId();
-					this.opponentDeckSize = message.getSize();
+					for (int i = 0; i < message.getEntities().length; i++) {
+						this.opponentDeckEntityIds.put(i, message.getEntities()[i]);
+					}
+					this.repaintDeckLabels();
 					this.zoneViewMap.put(message.getId(), new ZoneView(message.getId(), opponentDeckPane));
 				}
 			}
@@ -382,13 +388,13 @@ public class GameClientController {
 		int destinationZoneId = message.getDestinationZone();
 		int cardId = message.getEntity();
 		
-		if (sourceZoneId == opponentDeckId && destinationZoneId == opponentHandId) {
-			this.opponentDeckSize--;
-			this.addCardToOpponentHand();
-			this.repaintDeckLabels();
-		} else if (sourceZoneId == playerDeckId && destinationZoneId == playerHandId) {
-			this.playerDeckSize--;
-			this.repaintDeckLabels();
+		if (sourceZoneId == opponentDeckId) {
+			this.removeCardFromDeck(sourceZoneId, cardId);
+			if (destinationZoneId == opponentHandId) {
+				this.addCardToOpponentHand();
+			}
+		} else if (sourceZoneId == playerDeckId) {
+			this.removeCardFromDeck(sourceZoneId, cardId);
 		}
 		
 		if (this.zoneViewMap.containsKey(sourceZoneId) && this.zoneViewMap.containsKey(destinationZoneId)) {
@@ -408,6 +414,13 @@ public class GameClientController {
 	}
 	
 	private void processEntityRemoveMessage(EntityRemoveMessage message) {
+	
+		if (this.opponentDeckEntityIds.values().contains(message.getEntity())) {
+			this.removeCardFromDeck(this.opponentDeckId, message.getEntity());
+		} else if (this.playerDeckEntityIds.values().contains(message.getEntity())) {
+			this.removeCardFromDeck(this.playerDeckId, message.getEntity());
+		}
+		
 		for (ZoneView zoneView : this.zoneViewMap.values()) {
 			if (zoneView instanceof BattlefieldZoneView) {
 				if (zoneView.getAllIds().contains(message.getEntity())) {
@@ -445,6 +458,19 @@ public class GameClientController {
 				this.createAndSendMessage(newMessage);
 			}
 		}
+	}
+	
+	private void removeCardFromDeck(int zoneId, int cardId) {
+		if (this.opponentDeckId == zoneId) {
+				if (this.opponentDeckEntityIds.values().contains(cardId)) {
+				this.opponentDeckEntityIds.values().remove(cardId);
+			}
+ 		} else if (this.playerDeckId == zoneId) {
+				if (this.playerDeckEntityIds.values().contains(cardId)) {
+				this.playerDeckEntityIds.values().remove(cardId);
+			}
+		}
+		this.repaintDeckLabels();
 	}
 	
 	private void createEndTurnButton(UseableActionMessage message) {
@@ -511,8 +537,8 @@ public class GameClientController {
 	}
 	
 	private void repaintDeckLabels() {
-		this.opponentDeckLabel.setText(String.format("%d", this.opponentDeckSize));
-		this.playerDeckLabel.setText(String.format("%d", this.playerDeckSize));
+		this.opponentDeckLabel.setText(String.format("%d", this.opponentDeckEntityIds.values().size()));
+		this.playerDeckLabel.setText(String.format("%d", this.playerDeckEntityIds.values().size()));
 	}
 	
 	private void createOpponentHand(int size) {
