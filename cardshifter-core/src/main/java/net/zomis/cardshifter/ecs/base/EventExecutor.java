@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -25,7 +28,14 @@ public class EventExecutor implements EventExecution {
 	private <T extends IEvent> T executeEvent(T event, Predicate<EventHandler<?>> predicate) {
 		Collection<EventHandler<?>> handlers = this.bindings.get(event.getClass());
 		if (handlers != null) {
-			handlers.stream().filter(predicate).forEachOrdered(e -> e.execute(event));
+			List<EventHandler<?>> interestedHandlers = handlers.stream().filter(predicate).collect(Collectors.toList());
+			ListIterator<EventHandler<?>> iterator = interestedHandlers.listIterator();
+			while (iterator.hasNext()) {
+				int index = iterator.nextIndex();
+				EventHandler<?> performer = iterator.next();
+				logger.info("Handling event listener " + index + " / " + interestedHandlers.size() + ": " + performer);
+				performer.execute(event);
+			}
 		}
 		return event;
 	}
@@ -95,14 +105,14 @@ public class EventExecutor implements EventExecution {
 		}
 	}
 	
-	public <T extends IEvent> EventHandler<T> registerHandlerAfter(Class<T> realParam, Consumer<T> handler) {
-		EventHandler<T> listener = new EventHandler<T>(handler, true);
+	public <T extends IEvent> EventHandler<T> registerHandlerAfter(Object identifier, Class<T> realParam, Consumer<T> handler) {
+		EventHandler<T> listener = new EventHandler<T>(identifier, handler, true);
 		registerHandler(realParam, listener);
 		return listener;
 	}
 
-	public <T extends IEvent> EventHandler<T> registerHandlerBefore(Class<T> realParam, Consumer<T> handler) {
-		EventHandler<T> listener = new EventHandler<T>(handler, false);
+	public <T extends IEvent> EventHandler<T> registerHandlerBefore(Object identifier, Class<T> realParam, Consumer<T> handler) {
+		EventHandler<T> listener = new EventHandler<T>(identifier, handler, false);
 		registerHandler(realParam, listener);
 		return listener;
 	}

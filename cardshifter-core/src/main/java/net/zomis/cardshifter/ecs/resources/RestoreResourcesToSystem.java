@@ -23,7 +23,7 @@ public class RestoreResourcesToSystem implements ECSSystem {
 
 	@Override
 	public void startGame(ECSGame game) {
-		game.getEvents().registerHandlerAfter(PhaseStartEvent.class, this::restoreResources);
+		game.getEvents().registerHandlerAfter(this, PhaseStartEvent.class, this::restoreResources);
 	}
 	
 	private void restoreResources(PhaseStartEvent event) {
@@ -35,6 +35,13 @@ public class RestoreResourcesToSystem implements ECSSystem {
 	private void restoreResource(Entity entity) {
 		int value = valueGetter.applyAsInt(entity);
 		resource.resFor(entity).set(value);
+	}
+
+	@Override
+	public String toString() {
+		return "RestoreResourcesToSystem [entityPredicate=" + entityPredicate
+				+ ", resource=" + resource + ", valueGetter=" + valueGetter
+				+ "]";
 	}
 
 }

@@ -9,7 +9,7 @@ public class DrawCardAtBeginningOfTurnSystem implements ECSSystem {
 
 	@Override
 	public void startGame(ECSGame game) {
-		game.getEvents().registerHandlerAfter(PhaseStartEvent.class, this::drawCard);
+		game.getEvents().registerHandlerAfter(this, PhaseStartEvent.class, this::drawCard);
 	}
 	
 	private void drawCard(PhaseStartEvent event) {

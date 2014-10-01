@@ -17,7 +17,7 @@ public class TurnStartSystem implements ECSSystem {
 
 	@Override
 	public void startGame(ECSGame game) {
-		game.getEvents().registerHandlerAfter(PhaseChangeEvent.class, event -> onStart.accept(event.getNewPhase()));
+		game.getEvents().registerHandlerAfter(this, PhaseChangeEvent.class, event -> onStart.accept(event.getNewPhase()));
 	}
 
 }

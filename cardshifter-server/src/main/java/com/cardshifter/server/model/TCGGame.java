@@ -28,10 +28,8 @@ import org.apache.log4j.Logger;
 
 import com.cardshifter.ai.CardshifterAI;
 import com.cardshifter.ai.CompleteIdiot;
-import com.cardshifter.server.clients.ClientIO;
 import com.cardshifter.api.incoming.RequestTargetsMessage;
 import com.cardshifter.api.incoming.UseAbilityMessage;
-import com.cardshifter.server.main.FakeAIClientTCG;
 import com.cardshifter.api.outgoing.AvailableTargetsMessage;
 import com.cardshifter.api.outgoing.CardInfoMessage;
 import com.cardshifter.api.outgoing.EntityRemoveMessage;
@@ -41,6 +39,8 @@ import com.cardshifter.api.outgoing.UpdateMessage;
 import com.cardshifter.api.outgoing.UseableActionMessage;
 import com.cardshifter.api.outgoing.ZoneChangeMessage;
 import com.cardshifter.api.outgoing.ZoneMessage;
+import com.cardshifter.server.clients.ClientIO;
+import com.cardshifter.server.main.FakeAIClientTCG;
 
 public class TCGGame extends ServerGame {
 	
@@ -59,9 +59,9 @@ public class TCGGame extends ServerGame {
 	public TCGGame(Server server, int id) {
 		super(server, id);
 		game = PhrancisGame.createGame();
-		game.getEvents().registerHandlerAfter(ResourceValueChange.class, this::broadcast);
-		game.getEvents().registerHandlerAfter(ZoneChangeEvent.class, this::zoneChange);
-		game.getEvents().registerHandlerAfter(EntityRemoveEvent.class, this::remove);
+		game.getEvents().registerHandlerAfter(this, ResourceValueChange.class, this::broadcast);
+		game.getEvents().registerHandlerAfter(this, ZoneChangeEvent.class, this::zoneChange);
+		game.getEvents().registerHandlerAfter(this, EntityRemoveEvent.class, this::remove);
 		aiPerform.scheduleWithFixedDelay(this::aiPerform, 0, AI_DELAY_SECONDS, TimeUnit.SECONDS);
 		phases = ComponentRetriever.singleton(game, PhaseController.class);
 	}
@@ -160,7 +160,7 @@ public class TCGGame extends ServerGame {
 		if (this.getState() != GameState.RUNNING) {
 			return;
 		}
-		
+
 		for (ClientIO io : this.getPlayers()) {
 			if (io instanceof FakeAIClientTCG) {
 				Entity player = playerFor(io);
@@ -177,7 +177,7 @@ public class TCGGame extends ServerGame {
 			}
 		}
 	}
-
+	
 	@Override
 	protected boolean makeMove(Command command, int player) {
 		throw new UnsupportedOperationException();
@@ -202,6 +202,8 @@ public class TCGGame extends ServerGame {
 	
 	@Override
 	protected void onStart() {
+//		this.setupAIPlayers();
+		
 		game.startGame();
 		this.getPlayers().stream().forEach(pl -> {
 			Entity playerEntity = playerFor(pl);
@@ -212,6 +214,16 @@ public class TCGGame extends ServerGame {
 		this.sendAvailableActions();
 	}
 	
+//	private void setupAIPlayers() {
+//		for (ClientIO io : this.getPlayers()) {
+//			if (io instanceof FakeAIClientTCG) {
+//				Entity player = playerFor(io);
+//				player.addComponent(new AIComponent(new CompleteIdiot()));
+//				logger.info("AI is configured for " + player);
+//			}
+//		}
+//	}
+
 	private void sendAvailableActions() {
 		for (ClientIO io : this.getPlayers()) {
 			Entity player = playerFor(io);

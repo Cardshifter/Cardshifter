@@ -43,7 +43,7 @@ public class ResourceTest {
 	
 	@Test
 	public void resourceEvents() {
-		game.getEvents().registerHandlerAfter(ResourceValueChange.class, event -> this.resourceChange++);
+		game.getEvents().registerHandlerAfter(this, ResourceValueChange.class, event -> this.resourceChange++);
 		
 		assertEquals(0, this.resourceChange);
 		ECSResourceData resA = resMapper.get(entity).getResource(TestResource.TEST_A);
@@ -73,7 +73,7 @@ public class ResourceTest {
 	
 	@Test
 	public void addResourceEachTurn() {
-		game.addSystem(g -> g.getEvents().registerHandlerAfter(PhaseStartEvent.class, this::addResources));
+		game.addSystem(g -> g.getEvents().registerHandlerAfter(this, PhaseStartEvent.class, this::addResources));
 		game.startGame();
 		
 		ECSResourceData resA = resMapper.get(entity).getResource(TestResource.TEST_A);

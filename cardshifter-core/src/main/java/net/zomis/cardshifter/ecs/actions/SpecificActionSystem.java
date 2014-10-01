@@ -13,8 +13,8 @@ public abstract class SpecificActionSystem implements ECSSystem {
 
 	@Override
 	public final void startGame(ECSGame game) {
-		game.getEvents().registerHandlerAfter(ActionAllowedCheckEvent.class, this::canAfford);
-		game.getEvents().registerHandlerAfter(ActionPerformEvent.class, this::perform);
+		game.getEvents().registerHandlerAfter(this, ActionAllowedCheckEvent.class, this::canAfford);
+		game.getEvents().registerHandlerAfter(this, ActionPerformEvent.class, this::perform);
 	}
 	
 	private void canAfford(ActionAllowedCheckEvent event) {
