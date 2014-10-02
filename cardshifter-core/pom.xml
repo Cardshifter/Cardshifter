@@ -21,8 +21,16 @@
 		<maven.compiler.showDeprecation>true</maven.compiler.showDeprecation>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
+
+	<repositories>
+		<repository>
+			<id>zomisnet</id>
+			<name>Zomis' Maven Repository</name>
+			<url>http://www.zomis.net/maven</url>
+		</repository>
+	</repositories>
 	
-	<build>
+  	<build>
 	<pluginManagement>
 		<plugins>
 			<plugin>
@@ -63,6 +71,11 @@
 			<groupId>org.apache.bcel</groupId>
 			<artifactId>bcel</artifactId>
 			<version>5.2</version>
+		</dependency>
+		<dependency>
+			<groupId>net.zomis</groupId>
+			<artifactId>scorers</artifactId>
+			<version>0.2-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>
