@@ -26,8 +26,10 @@ import net.zomis.cardshifter.ecs.usage.PhrancisGame;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import com.cardshifter.ai.AIs;
 import com.cardshifter.ai.CardshifterAI;
 import com.cardshifter.ai.CompleteIdiot;
+import com.cardshifter.ai.ScoringAI;
 import com.cardshifter.api.incoming.RequestTargetsMessage;
 import com.cardshifter.api.incoming.UseAbilityMessage;
 import com.cardshifter.api.outgoing.AvailableTargetsMessage;
@@ -217,7 +219,7 @@ public class TCGGame extends ServerGame {
 		for (ClientIO io : this.getPlayers()) {
 			if (io instanceof FakeAIClientTCG) {
 				Entity player = playerFor(io);
-				player.addComponent(new AIComponent(new CompleteIdiot()));
+				player.addComponent(new AIComponent(new ScoringAI(AIs.loser())));
 				logger.info("AI is configured for " + player);
 			}
 		}
