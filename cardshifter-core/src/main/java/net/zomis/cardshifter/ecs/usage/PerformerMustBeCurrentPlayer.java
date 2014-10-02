@@ -17,6 +17,10 @@ public class PerformerMustBeCurrentPlayer implements ECSSystem {
 	}
 	
 	private void actionPerformerIsCurrentPlayer(ActionAllowedCheckEvent event) {
+		if (phases.getCurrentEntity() == null) {
+			// If current player is null, avoid preventing *all* actions
+			return;
+		}
 		if (event.getPerformer() != phases.getCurrentEntity()) {
 			event.setAllowed(false);
 		}

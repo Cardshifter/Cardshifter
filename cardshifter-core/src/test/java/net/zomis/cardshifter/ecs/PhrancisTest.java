@@ -2,8 +2,10 @@ package net.zomis.cardshifter.ecs;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -64,9 +66,20 @@ public class PhrancisTest {
 	
 	@Test
 	public void integration() {
+		assertNull(phase.getCurrentEntity());
+		List<Entity> list = new ArrayList<>(game.getEntitiesWithComponent(PlayerComponent.class));
+		assertEquals(2, list.size());
+		for (int i = 0; i < list.size(); i++) {
+			Entity current = list.get(i);
+			Entity other = list.get((i + 1) % list.size());
+			
+			ECSAction action = getAction(current, "Mulligan");
+			assertFalse(action + "is allowed for " + other, action.perform(other));
+		}
+		
 		for (Entity entity : game.getEntitiesWithComponent(PlayerComponent.class)) {
 			ECSAction action = getAction(entity, "Mulligan");
-			action.perform(entity);
+			assertTrue(action + " not allowed for " + entity, action.perform(entity));
 		}
 		
 		assertEquals(1, mana.getFor(phase.getCurrentEntity()));
