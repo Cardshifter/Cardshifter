@@ -31,9 +31,9 @@ public class EventExecutor implements EventExecution {
 			List<EventHandler<?>> interestedHandlers = handlers.stream().filter(predicate).collect(Collectors.toList());
 			ListIterator<EventHandler<?>> iterator = interestedHandlers.listIterator();
 			while (iterator.hasNext()) {
-				int index = iterator.nextIndex();
 				EventHandler<?> performer = iterator.next();
-				logger.info("Handling event listener " + index + " / " + interestedHandlers.size() + ": " + performer);
+//				int index = iterator.nextIndex();
+//				logger.info("Handling " + event + " " + index + " / " + interestedHandlers.size() + ": " + performer);
 				performer.execute(event);
 			}
 		}
