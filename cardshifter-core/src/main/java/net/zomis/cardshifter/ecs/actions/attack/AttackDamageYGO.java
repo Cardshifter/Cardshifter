@@ -22,7 +22,7 @@ public class AttackDamageYGO extends SpecificActionSystem {
 	@Override
 	protected void onPerform(ActionPerformEvent event) {
 		Entity source = event.getEntity();
-		Entity target = event.getAction().getTargetSets().get(0).getTargets().get(0);
+		Entity target = event.getAction().getTargetSets().get(0).getChosenTargets().get(0);
 		
 		int attackDamage = attack.getFor(source);
 		int defenseDamage = attack.getFor(target);

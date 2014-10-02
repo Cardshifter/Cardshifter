@@ -19,7 +19,7 @@ public class EnchantPerform extends SpecificActionSystem {
 
 	@Override
 	protected void onPerform(ActionPerformEvent event) {
-		Entity target = event.getAction().getTargetSets().get(0).getTargets().get(0);
+		Entity target = event.getAction().getTargetSets().get(0).getChosenTargets().get(0);
 		Entity enchantment = event.getEntity();
 		
 		for (ECSResource resource : resources) {
