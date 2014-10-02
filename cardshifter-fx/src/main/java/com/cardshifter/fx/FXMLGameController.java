@@ -3,6 +3,8 @@ package com.cardshifter.fx;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
@@ -18,6 +20,7 @@ import net.zomis.cardshifter.ecs.ai.AIComponent;
 import net.zomis.cardshifter.ecs.base.ComponentRetriever;
 import net.zomis.cardshifter.ecs.base.ECSGame;
 import net.zomis.cardshifter.ecs.base.Entity;
+import net.zomis.cardshifter.ecs.base.GameOverEvent;
 import net.zomis.cardshifter.ecs.cards.BattlefieldComponent;
 import net.zomis.cardshifter.ecs.cards.HandComponent;
 import net.zomis.cardshifter.ecs.cards.ZoneComponent;
@@ -69,6 +72,7 @@ public class FXMLGameController {
 		}
 		startGameLabel.setText("Starting Game");
 		game.startGame();
+		game.getEvents().registerHandlerAfter(this, GameOverEvent.class, e -> JOptionPane.showMessageDialog(null, "Game Over!"));
 		gameHasStarted = true;
 		turnLabel.setText(String.format("Turn Number %d", phases.getRecreateCount()));
 			

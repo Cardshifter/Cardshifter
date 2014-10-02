@@ -65,7 +65,7 @@ public final class ECSGame {
 	}
 
 	public void endGame() {
-		gameState = ECSGameState.GAME_ENDED;
+		this.executeCancellableEvent(new GameOverEvent(this), () -> gameState = ECSGameState.GAME_ENDED);
 	}
 	
 	public ECSGameState getGameState() {

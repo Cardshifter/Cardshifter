@@ -13,6 +13,7 @@ import com.cardshifter.api.outgoing.CardInfoMessage;
 import com.cardshifter.api.outgoing.ClientDisconnectedMessage;
 import com.cardshifter.api.outgoing.EntityRemoveMessage;
 import com.cardshifter.api.outgoing.GameMessage;
+import com.cardshifter.api.outgoing.GameOverMessage;
 import com.cardshifter.api.outgoing.NewGameMessage;
 import com.cardshifter.api.outgoing.PlayerMessage;
 import com.cardshifter.api.outgoing.ResetAvailableActionsMessage;
@@ -43,6 +44,7 @@ public class MessageTypeIdResolver implements TypeIdResolver {
 		
 		clazzes.put("resetActions", ResetAvailableActionsMessage.class);
 		clazzes.put("game", GameMessage.class);
+		clazzes.put("gameover", GameOverMessage.class);
 		clazzes.put("wait", WaitMessage.class);
 		clazzes.put("loginresponse", WelcomeMessage.class);
 		clazzes.put("newgame", NewGameMessage.class);

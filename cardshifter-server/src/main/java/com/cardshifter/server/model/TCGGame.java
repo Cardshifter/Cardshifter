@@ -14,6 +14,7 @@ import net.zomis.cardshifter.ecs.base.ComponentRetriever;
 import net.zomis.cardshifter.ecs.base.ECSGame;
 import net.zomis.cardshifter.ecs.base.Entity;
 import net.zomis.cardshifter.ecs.base.EntityRemoveEvent;
+import net.zomis.cardshifter.ecs.base.GameOverEvent;
 import net.zomis.cardshifter.ecs.cards.CardComponent;
 import net.zomis.cardshifter.ecs.cards.ZoneChangeEvent;
 import net.zomis.cardshifter.ecs.cards.ZoneComponent;
@@ -57,6 +58,7 @@ public class TCGGame extends ServerGame {
 		game.getEvents().registerHandlerAfter(this, ResourceValueChange.class, this::broadcast);
 		game.getEvents().registerHandlerAfter(this, ZoneChangeEvent.class, this::zoneChange);
 		game.getEvents().registerHandlerAfter(this, EntityRemoveEvent.class, this::remove);
+		game.getEvents().registerHandlerAfter(this, GameOverEvent.class, event -> this.endGame());
 		AISystem.setup(game, server.getScheduler());
 		game.addSystem(game -> game.getEvents().registerHandlerAfter(this, ActionPerformEvent.class, event -> this.sendAvailableActions()));
 		phases = ComponentRetriever.singleton(game, PhaseController.class);
@@ -133,6 +135,11 @@ public class TCGGame extends ServerGame {
 	}
 	
 	public void handleMove(UseAbilityMessage message, ClientIO client) {
+		if (this.isGameOver()) {
+			logger.info("Ignoring move because game has ended: " + message + " from " + client);
+			return;
+		}
+		
 		if (!this.getPlayers().contains(client)) {
 			throw new IllegalArgumentException("Client is not in this game: " + client);
 		}

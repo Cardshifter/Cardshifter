@@ -8,6 +8,7 @@ import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.outgoing.AvailableTargetsMessage;
 import com.cardshifter.api.outgoing.CardInfoMessage;
 import com.cardshifter.api.outgoing.EntityRemoveMessage;
+import com.cardshifter.api.outgoing.GameOverMessage;
 import com.cardshifter.api.outgoing.NewGameMessage;
 import com.cardshifter.api.outgoing.PlayerMessage;
 import com.cardshifter.api.outgoing.ResetAvailableActionsMessage;
@@ -37,6 +38,9 @@ import java.util.TreeMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import javax.swing.JOptionPane;
+
+import net.zomis.cardshifter.ecs.base.GameOverEvent;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -218,6 +222,8 @@ public class GameClientController {
 		
 		if (message instanceof NewGameMessage) {
 			this.processNewGameMessage((NewGameMessage) message);
+		} else if (message instanceof GameOverMessage) {
+			JOptionPane.showMessageDialog(null, "Game Over!");
 		} else if (message instanceof PlayerMessage) {
 			this.processPlayerMessage((PlayerMessage)message);
 		} else if (message instanceof ZoneMessage) {

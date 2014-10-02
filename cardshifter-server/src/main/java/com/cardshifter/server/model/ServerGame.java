@@ -9,9 +9,10 @@ import java.util.List;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import com.cardshifter.server.clients.ClientIO;
 import com.cardshifter.api.messages.Message;
+import com.cardshifter.api.outgoing.GameOverMessage;
 import com.cardshifter.api.outgoing.NewGameMessage;
+import com.cardshifter.server.clients.ClientIO;
 
 public abstract class ServerGame {
 	private static final Logger logger = LogManager.getLogger(ServerGame.class);
@@ -52,7 +53,7 @@ public abstract class ServerGame {
 			throw new IllegalStateException("Game can only be ended once");
 		}
 		logger.info("Game Ended: " + this + " with players " + players);
-		this.send("GEND " + this.id);
+		this.send(new GameOverMessage());
 		this.active = Instant.now();
 		this.state = GameState.ENDED;
 	}
