@@ -39,5 +39,14 @@ public abstract class SpecificActionSystem implements ECSSystem {
 	}
 
 	protected abstract void onPerform(ActionPerformEvent event);
+
+	@Override
+	public String toString() {
+		return getClass().getName() + " [actionName=" + actionName + "]";
+	}
+	
+	public String getActionName() {
+		return actionName;
+	}
 	
 }
