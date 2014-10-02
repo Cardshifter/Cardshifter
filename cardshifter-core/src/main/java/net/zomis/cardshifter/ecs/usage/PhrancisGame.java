@@ -65,7 +65,9 @@ public class PhrancisGame {
 			
 			ActionComponent actions = new ActionComponent();
 			player.addComponent(actions);
-			actions.addAction(new ECSAction(player, END_TURN_ACTION, act -> phaseController.getCurrentPhase() == playerPhase, act -> phaseController.nextPhase()));
+			
+			ECSAction endTurnAction = new ECSAction(player, END_TURN_ACTION, act -> phaseController.getCurrentPhase() == playerPhase, act -> phaseController.nextPhase());
+			actions.addAction(endTurnAction);
 			
 			ECSResourceMap.createFor(player)
 				.set(PhrancisResources.HEALTH, 10)
@@ -157,6 +159,7 @@ public class PhrancisGame {
 		// General setup
 		game.addSystem(new GameOverIfNoHealth(PhrancisResources.HEALTH));
 		game.addSystem(new RemoveDeadEntityFromZoneSystem());
+		game.addSystem(new PerformerMustBeCurrentPlayer());
 		
 		return game;
 	}
