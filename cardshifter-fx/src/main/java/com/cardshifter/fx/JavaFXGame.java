@@ -18,7 +18,10 @@ public final class JavaFXGame extends Application {
 		PropertyConfigurator.configure(JavaFXGame.class.getResourceAsStream("log4j.properties"));
 		stage.setTitle("Cardshifter");
 		
-		Parent root = FXMLLoader.load(getClass().getResource("FXMLDocument.fxml"));
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLDocument.fxml"));
+		Parent root = loader.load();
+		FXMLGameController controller = loader.getController();
+		stage.setOnCloseRequest(e -> controller.shutdown());
 		
 		Scene scene = new Scene(root);
 		

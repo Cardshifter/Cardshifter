@@ -12,7 +12,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.QuadCurve;
 import javafx.scene.shape.Rectangle;
+import net.zomis.cardshifter.ecs.actions.ActionComponent;
 import net.zomis.cardshifter.ecs.actions.ECSAction;
+import net.zomis.cardshifter.ecs.ai.AIComponent;
 import net.zomis.cardshifter.ecs.base.ComponentRetriever;
 import net.zomis.cardshifter.ecs.base.ECSGame;
 import net.zomis.cardshifter.ecs.base.Entity;
@@ -42,6 +44,8 @@ public class FXMLGameController {
 	@FXML
 	Pane anchorPane;
 	
+//	private ScheduledExecutorService aiExecutor = Executors.newSingleThreadScheduledExecutor();
+	
 	public FXMLGameController() throws Exception {
 		this.initializeGame();
 	}
@@ -49,6 +53,8 @@ public class FXMLGameController {
 	private void initializeGame() throws Exception {
 		game = PhrancisGame.createGame();
 		phases = ComponentRetriever.singleton(game, PhaseController.class);
+		getPlayer(1).addComponent(new AIComponent(new CompleteIdiot()));
+//		AISystem.setup(game, aiExecutor);
 	}
 	
 	@FXML
@@ -291,7 +297,10 @@ public class FXMLGameController {
 		if (!gameHasStarted) {
 			return;
 		}
-		phases.nextPhase();
+		
+		Entity player = phases.getCurrentEntity();
+		ECSAction endturnAction = player.getComponent(ActionComponent.class).getAction("End Turn");
+		endturnAction.perform(player);
 
 		//This is the AI doing the turn action
 		final Entity aiPlayer = getPlayer(1);
@@ -417,4 +426,9 @@ public class FXMLGameController {
 	public Entity getPlayerPerspective() {
 		return getPlayer(0);
 	}
+
+	void shutdown() {
+//		aiExecutor.shutdownNow();
+	}
+
 }
