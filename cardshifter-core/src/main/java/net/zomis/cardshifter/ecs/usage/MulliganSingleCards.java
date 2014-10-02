@@ -37,8 +37,8 @@ public class MulliganSingleCards implements ECSSystem {
 	@Override
 	public void startGame(ECSGame game) {
 		ComponentRetriever<ActionComponent> actions = ComponentRetriever.retreiverFor(ActionComponent.class);
-		game.getEvents().registerHandlerAfter(TargetableCheckEvent.class, this::targetAllowed);
-		game.getEvents().registerHandlerAfter(ActionAllowedCheckEvent.class, this::actionAllowed);
+		game.getEvents().registerHandlerAfter(this, TargetableCheckEvent.class, this::targetAllowed);
+		game.getEvents().registerHandlerAfter(this, ActionAllowedCheckEvent.class, this::actionAllowed);
 		
 		Set<Entity> players = game.getEntitiesWithComponent(PlayerComponent.class);
 		remainingPerforms.set(players.size());
@@ -81,7 +81,7 @@ public class MulliganSingleCards implements ECSSystem {
 	}
 	
 	private void performAction(ECSAction mulliganAction) {
-		List<Entity> chosenTargets = mulliganAction.getTargetSets().get(0).getTargets();
+		List<Entity> chosenTargets = mulliganAction.getTargetSets().get(0).getChosenTargets();
 		chosenTargets.forEach(this::switchCard);
 		mulliganAction.getOwner().getComponent(ActionComponent.class).removeAction(ACTION_NAME);
 		
