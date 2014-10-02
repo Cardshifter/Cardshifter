@@ -2,14 +2,14 @@ package com.cardshifter.server.model;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 import net.zomis.cardshifter.ecs.actions.ActionComponent;
+import net.zomis.cardshifter.ecs.actions.ActionPerformEvent;
 import net.zomis.cardshifter.ecs.actions.ECSAction;
 import net.zomis.cardshifter.ecs.actions.TargetSet;
+import net.zomis.cardshifter.ecs.ai.AIComponent;
+import net.zomis.cardshifter.ecs.ai.AISystem;
 import net.zomis.cardshifter.ecs.base.ComponentRetriever;
 import net.zomis.cardshifter.ecs.base.ECSGame;
 import net.zomis.cardshifter.ecs.base.Entity;
@@ -45,9 +45,7 @@ import com.cardshifter.server.main.FakeAIClientTCG;
 public class TCGGame extends ServerGame {
 	
 	private static final Logger logger = LogManager.getLogger(TCGGame.class);
-	private static final long AI_DELAY_SECONDS = 5;
 	private final ECSGame game;
-	private final ScheduledExecutorService aiPerform = Executors.newScheduledThreadPool(1);
 	private final ComponentRetriever<CardComponent> card = ComponentRetriever.retreiverFor(CardComponent.class);
 	
 	@Deprecated
@@ -62,7 +60,8 @@ public class TCGGame extends ServerGame {
 		game.getEvents().registerHandlerAfter(this, ResourceValueChange.class, this::broadcast);
 		game.getEvents().registerHandlerAfter(this, ZoneChangeEvent.class, this::zoneChange);
 		game.getEvents().registerHandlerAfter(this, EntityRemoveEvent.class, this::remove);
-		aiPerform.scheduleWithFixedDelay(this::aiPerform, 0, AI_DELAY_SECONDS, TimeUnit.SECONDS);
+		AISystem.setup(game, server.getScheduler());
+		game.addSystem(game -> game.getEvents().registerHandlerAfter(this, ActionPerformEvent.class, event -> this.sendAvailableActions()));
 		phases = ComponentRetriever.singleton(game, PhaseController.class);
 	}
 
@@ -202,7 +201,7 @@ public class TCGGame extends ServerGame {
 	
 	@Override
 	protected void onStart() {
-//		this.setupAIPlayers();
+		this.setupAIPlayers();
 		
 		game.startGame();
 		this.getPlayers().stream().forEach(pl -> {
@@ -214,15 +213,15 @@ public class TCGGame extends ServerGame {
 		this.sendAvailableActions();
 	}
 	
-//	private void setupAIPlayers() {
-//		for (ClientIO io : this.getPlayers()) {
-//			if (io instanceof FakeAIClientTCG) {
-//				Entity player = playerFor(io);
-//				player.addComponent(new AIComponent(new CompleteIdiot()));
-//				logger.info("AI is configured for " + player);
-//			}
-//		}
-//	}
+	private void setupAIPlayers() {
+		for (ClientIO io : this.getPlayers()) {
+			if (io instanceof FakeAIClientTCG) {
+				Entity player = playerFor(io);
+				player.addComponent(new AIComponent(new CompleteIdiot()));
+				logger.info("AI is configured for " + player);
+			}
+		}
+	}
 
 	private void sendAvailableActions() {
 		for (ClientIO io : this.getPlayers()) {
