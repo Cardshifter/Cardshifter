@@ -26,7 +26,6 @@ public class ScoringAI implements CardshifterAI, ScoreStrategy<Entity, ECSAction
 		this.config = config.build();
 	}
 	
-	
 	@Override
 	public ECSAction getAction(Entity player) {
 		FieldScoreProducer<Entity, ECSAction> prod = new FieldScoreProducer<Entity, ECSAction>(config, this);

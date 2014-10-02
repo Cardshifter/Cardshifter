@@ -44,16 +44,18 @@ public class FXMLGameController {
 	@FXML
 	Pane anchorPane;
 	
+	private final AIComponent aiComponent = new AIComponent(new CompleteIdiot());
+	
 //	private ScheduledExecutorService aiExecutor = Executors.newSingleThreadScheduledExecutor();
 	
-	public FXMLGameController() throws Exception {
+	public FXMLGameController() {
 		this.initializeGame();
 	}
 	
-	private void initializeGame() throws Exception {
+	private void initializeGame() {
 		game = PhrancisGame.createGame();
 		phases = ComponentRetriever.singleton(game, PhaseController.class);
-		getPlayer(1).addComponent(new AIComponent(new CompleteIdiot()));
+		getPlayer(1).addComponent(aiComponent);
 //		AISystem.setup(game, aiExecutor);
 	}
 	
@@ -80,7 +82,7 @@ public class FXMLGameController {
 	}
 	
 	@FXML
-	private void newGameButtonAction(ActionEvent event) throws Exception {
+	private void newGameButtonAction(ActionEvent event) {
 		this.initializeGame();
 		
 		startGameLabel.setText("Starting Game");

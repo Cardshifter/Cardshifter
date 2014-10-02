@@ -26,10 +26,6 @@ import net.zomis.cardshifter.ecs.usage.PhrancisGame;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import com.cardshifter.ai.AIs;
-import com.cardshifter.ai.CardshifterAI;
-import com.cardshifter.ai.CompleteIdiot;
-import com.cardshifter.ai.ScoringAI;
 import com.cardshifter.api.incoming.RequestTargetsMessage;
 import com.cardshifter.api.incoming.UseAbilityMessage;
 import com.cardshifter.api.outgoing.AvailableTargetsMessage;
@@ -53,7 +49,6 @@ public class TCGGame extends ServerGame {
 	@Deprecated
 	private final PhaseController phases; // this is not necessary anymore as Actions require a 'player' method to perform.
 
-	private final CardshifterAI ai = new CompleteIdiot();
 	private ComponentRetriever<PlayerComponent> playerData = ComponentRetriever.retreiverFor(PlayerComponent.class);
 	
 	public TCGGame(Server server, int id) {
@@ -157,28 +152,6 @@ public class TCGGame extends ServerGame {
 		sendAvailableActions();
 	}
 	
-	private void aiPerform() {
-		if (this.getState() != GameState.RUNNING) {
-			return;
-		}
-
-		for (ClientIO io : this.getPlayers()) {
-			if (io instanceof FakeAIClientTCG) {
-				Entity player = playerFor(io);
-				if (phases.getCurrentEntity() != player) {
-					continue;
-				}
-				ECSAction action = ai.getAction(player);
-				if (action != null) {
-					logger.info("AI Performs action: " + action);
-					action.perform(player);
-					sendAvailableActions();
-					return;
-				}
-			}
-		}
-	}
-	
 	@Override
 	protected boolean makeMove(Command command, int player) {
 		throw new UnsupportedOperationException();
@@ -218,8 +191,9 @@ public class TCGGame extends ServerGame {
 	private void setupAIPlayers() {
 		for (ClientIO io : this.getPlayers()) {
 			if (io instanceof FakeAIClientTCG) {
+				FakeAIClientTCG aiClient = (FakeAIClientTCG) io;
 				Entity player = playerFor(io);
-				player.addComponent(new AIComponent(new ScoringAI(AIs.loser())));
+				player.addComponent(new AIComponent(aiClient.getAI()));
 				logger.info("AI is configured for " + player);
 			}
 		}
