@@ -8,8 +8,12 @@ import org.apache.log4j.Logger;
 import com.cardshifter.api.both.InviteResponse;
 import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.incoming.RequestTargetsMessage;
+import com.cardshifter.api.incoming.ServerQueryMessage;
 import com.cardshifter.api.incoming.StartGameRequest;
 import com.cardshifter.api.incoming.UseAbilityMessage;
+import com.cardshifter.api.outgoing.ServerErrorMessage;
+import com.cardshifter.api.outgoing.UserStatusMessage;
+import com.cardshifter.api.outgoing.UserStatusMessage.Status;
 import com.cardshifter.api.outgoing.WaitMessage;
 import com.cardshifter.api.outgoing.WelcomeMessage;
 
@@ -22,6 +26,20 @@ public class Handlers {
 		this.server = server;
 	}
 
+	public void query(ServerQueryMessage message, ClientIO client) {
+		switch (message.getRequest()) {
+			case USERS:
+				for (ClientIO cl : server.getClients().values()) {
+					client.sendToClient(new UserStatusMessage(cl.getId(), cl.getName(), Status.ONLINE));
+				}
+				break;
+			default:
+				client.sendToClient(new ServerErrorMessage("No such query request"));
+				break;
+		}
+		
+	}
+	
 	public void loginMessage(LoginMessage message, ClientIO client) {
 		logger.info("Login request: " + message.getUsername() + " for client " + client);
 		if (message.getUsername().startsWith("x")) {
@@ -31,6 +49,10 @@ public class Handlers {
 		logger.info("Client is welcome!");
 		client.setName(message.getUsername());
 		client.sendToClient(new WelcomeMessage(client.getId(), true));
+		UserStatusMessage statusMessage = new UserStatusMessage(client.getId(), client.getName(), Status.ONLINE);
+		server.getClients().values().stream()
+			.filter(cl -> cl != client)
+			.forEach(cl -> cl.sendToClient(statusMessage));
 	}
 
 	public void play(StartGameRequest message, ClientIO client) {

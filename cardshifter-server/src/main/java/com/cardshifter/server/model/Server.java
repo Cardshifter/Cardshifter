@@ -20,11 +20,14 @@ import org.apache.log4j.Logger;
 import com.cardshifter.api.both.InviteResponse;
 import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.incoming.RequestTargetsMessage;
+import com.cardshifter.api.incoming.ServerQueryMessage;
 import com.cardshifter.api.incoming.StartGameRequest;
 import com.cardshifter.api.incoming.UseAbilityMessage;
 import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.outgoing.ClientDisconnectedMessage;
 import com.cardshifter.api.outgoing.ServerErrorMessage;
+import com.cardshifter.api.outgoing.UserStatusMessage;
+import com.cardshifter.api.outgoing.UserStatusMessage.Status;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 public class Server {
@@ -66,6 +69,7 @@ public class Server {
 		incomings.addHandler("use", UseAbilityMessage.class, handlers::useAbility);
 		incomings.addHandler("requestTargets", RequestTargetsMessage.class, handlers::requestTargets);
 		incomings.addHandler("inviteResponse", InviteResponse.class, handlers::inviteResponse);
+		incomings.addHandler("query", ServerQueryMessage.class, handlers::query);
 		
 		server.addGameFactory(VANILLA, (serv, id) -> new TCGGame(serv, id));
 		
@@ -117,9 +121,10 @@ public class Server {
 			.forEach(game -> game.send(new ClientDisconnectedMessage(client.getName(), game.getPlayers().indexOf(client))));
 		clients.remove(client);
 		getMainChat().remove(client);
+		broadcast(new UserStatusMessage(client.getId(), client.getName(), Status.OFFLINE));
 	}
 
-	void broadcast(String data) {
+	void broadcast(Message data) {
 		clients.values().forEach(cl -> cl.sendToClient(data));
 	}
 

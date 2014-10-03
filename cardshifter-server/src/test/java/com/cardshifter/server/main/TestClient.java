@@ -46,4 +46,8 @@ public class TestClient {
 		return class1.cast(message);
 	}
 
+	public void disconnect() throws IOException {
+		socket.close();
+	}
+
 }
