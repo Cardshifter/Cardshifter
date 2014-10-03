@@ -8,7 +8,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="anchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cardshifter.client.GameClientLauncherController">
+<AnchorPane fx:id="anchorPane" prefHeight="483.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cardshifter.client.GameClientLauncherController">
    <children>
       <AnchorPane layoutX="182.0" layoutY="25.0" prefHeight="102.0" prefWidth="200.0">
          <children>
@@ -43,12 +43,22 @@
             </Label>
          </children>
       </AnchorPane>
-      <AnchorPane layoutX="100.0" layoutY="347.0" prefHeight="55.0" prefWidth="423.0">
+      <AnchorPane layoutX="173.0" layoutY="335.0" prefHeight="30.0" prefWidth="276.0">
          <children>
-            <Label fx:id="errorMessage" alignment="CENTER" layoutX="138.0" layoutY="20.0" text="Welcome to Cardshifter" textAlignment="CENTER" wrapText="true" />
+            <Label fx:id="errorMessage" alignment="CENTER" layoutX="59.0" layoutY="8.0" text="Welcome to Cardshifter" textAlignment="CENTER" wrapText="true">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font></Label>
          </children>
       </AnchorPane>
       <Label layoutX="14.0" layoutY="207.0" text="Default IP: 127.0.0.1" />
       <Label layoutX="21.0" layoutY="260.0" text="Default Port: 4242" />
+      
+	  
+	  <!-- Local Game Stuff -->
+	  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="8.0" layoutX="41.0" layoutY="361.0" stroke="BLACK" strokeType="INSIDE" width="540.0" />
+	  <HBox fx:id="aiChoiceBox" layoutX="100.0" layoutY="417.0" prefHeight="65.0" prefWidth="400.0" />
+      <Button fx:id="localGameButton" layoutX="238.0" layoutY="383.0" mnemonicParsing="false" text="Start Local Game" />
+      
    </children>
 </AnchorPane>

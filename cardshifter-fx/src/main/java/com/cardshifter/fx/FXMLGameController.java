@@ -47,18 +47,24 @@ public class FXMLGameController {
 	@FXML
 	Pane anchorPane;
 	
-	private final AIComponent aiComponent = new AIComponent(new CompleteIdiot());
+	private AIComponent aiComponent;
+	private boolean aiIsLoaded;
 	
 //	private ScheduledExecutorService aiExecutor = Executors.newSingleThreadScheduledExecutor();
 	
-	public FXMLGameController() {
-		this.initializeGame();
+	public void acceptAIChoice(AIComponent aiChoice) {
+		this.aiComponent = aiChoice;
+		this.aiIsLoaded = false;
 	}
 	
-	private void initializeGame() {
+	public void initializeGame() {
 		game = PhrancisGame.createGame();
 		phases = ComponentRetriever.singleton(game, PhaseController.class);
-		getPlayer(1).addComponent(aiComponent);
+		
+		if (!aiIsLoaded) {
+			getPlayer(1).addComponent(this.aiComponent);
+			this.aiIsLoaded = true;
+		}
 //		AISystem.setup(game, aiExecutor);
 	}
 	
