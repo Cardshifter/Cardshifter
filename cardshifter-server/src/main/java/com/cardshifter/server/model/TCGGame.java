@@ -244,4 +244,8 @@ public class TCGGame extends ServerGame {
 		io.sendToClient(new CardInfoMessage(cardData.getCurrentZone().getZoneId(), card.getId(), Resources.map(card)));
 	}
 
+	public ECSGame getGameModel() {
+		return game;
+	}
+	
 }

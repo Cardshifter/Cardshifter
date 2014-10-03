@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
@@ -180,6 +179,7 @@ public class Server {
 		}
 	}
 	
+	@Deprecated
 	public void incomingGameCommand(Command cmd) {
 		ServerGame game = games.get(cmd.getParameterInt(1));
 		if (game != null) {

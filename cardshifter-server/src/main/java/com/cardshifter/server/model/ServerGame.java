@@ -32,6 +32,7 @@ public abstract class ServerGame {
 //		this.chat = server.newChatRoom(this.toString());
 	}
 	
+	@Deprecated
 	public boolean handleMove(Command command) {
 		if (!players.contains(command.getSender())) {
 			logger.warn("Game did not contain player " + command.getSender());

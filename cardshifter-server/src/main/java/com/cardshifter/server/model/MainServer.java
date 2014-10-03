@@ -1,6 +1,6 @@
 package com.cardshifter.server.model;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -18,7 +18,7 @@ public class MainServer {
 	private static final Logger logger = LogManager.getLogger(MainServer.class);
 	
 	private final Server server = new Server();
-	private final Map<String, CardshifterAI> ais = new HashMap<>();
+	private final Map<String, CardshifterAI> ais = new LinkedHashMap<>();
 
 	private Thread consoleThread;
 	
