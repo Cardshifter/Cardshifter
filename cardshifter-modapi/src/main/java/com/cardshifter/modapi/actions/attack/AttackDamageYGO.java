@@ -32,9 +32,9 @@ public class AttackDamageYGO extends SpecificActionSystem {
 			destroyOrNothing(defenseDamage, source);
 		}
 		else {
+			Entity player = target.getComponent(CardComponent.class).getOwner();
 			int overflowDamage = destroyOrNothing(attackDamage, target);
-			if (overflowDamage > 0 && target.hasComponent(CardComponent.class)) {
-				Entity player = target.getComponent(CardComponent.class).getOwner();
+			if (overflowDamage > 0) {
 				damage(overflowDamage, player);
 			}
 			destroyOrNothing(defenseDamage, source);
