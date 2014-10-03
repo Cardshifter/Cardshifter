@@ -3,8 +3,6 @@ package com.cardshifter.fx;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JOptionPane;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
@@ -12,7 +10,6 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.QuadCurve;
 import javafx.scene.shape.Rectangle;
 import net.zomis.cardshifter.ecs.actions.ActionComponent;
 import net.zomis.cardshifter.ecs.actions.ECSAction;
@@ -34,23 +31,43 @@ import com.cardshifter.ai.CardshifterAI;
 import com.cardshifter.ai.CompleteIdiot;
 
 public class FXMLGameController {
+	
+	@FXML Pane anchorPane;
+	@FXML private Label startGameLabel;
+	@FXML private Pane opponentHandPane;
+	@FXML private Pane playerHandPane;
+	@FXML Pane opponentBattlefieldPane;
+	@FXML Pane playerBattlefieldPane;
+	@FXML private Label turnLabel;
+	@FXML Label opponentLife;
+	@FXML Label opponentCurrentMana;
+	@FXML Label opponentTotalMana;
+	@FXML Label opponentScrap;
+	@FXML Label playerLife;
+	@FXML Label playerCurrentMana;
+	@FXML Label playerTotalMana;
+	@FXML Label playerScrap;
+	
+	private List<Group> opponentHandData;
+	private List<Group> playerHandData;
+	private List<Group> opponentBattlefieldData;
+	private List<Group> playerBattlefieldData;
+	
+	public ECSAction nextAction;
    
 	private final CardshifterAI opponent = new CompleteIdiot();
 	private ECSGame game;
-	private boolean gameHasStarted = false; // hack to make the buttons work properly
+
 	private PhaseController phases;
 	private final ResourceRetriever health = ResourceRetriever.forResource(PhrancisResources.HEALTH);
 	private final ResourceRetriever mana = ResourceRetriever.forResource(PhrancisResources.MANA);
 	private final ResourceRetriever manaMax = ResourceRetriever.forResource(PhrancisResources.MANA_MAX);
 	private final ResourceRetriever scrap = ResourceRetriever.forResource(PhrancisResources.SCRAP);
 	
-	@FXML
-	Pane anchorPane;
-	
+	private boolean gameHasStarted = false; // hack to make the buttons work properly
+
 	private AIComponent aiComponent;
 	private boolean aiIsLoaded;
-	
-//	private ScheduledExecutorService aiExecutor = Executors.newSingleThreadScheduledExecutor();
 	
 	public void acceptAIChoice(AIComponent aiChoice) {
 		this.aiComponent = aiChoice;
@@ -65,20 +82,15 @@ public class FXMLGameController {
 			getPlayer(1).addComponent(this.aiComponent);
 			this.aiIsLoaded = true;
 		}
-//		AISystem.setup(game, aiExecutor);
 	}
 	
-	@FXML
-	private Label startGameLabel;
-	
-	@FXML
-	private void startGameButtonAction(ActionEvent event) {
+	@FXML private void startGameButtonAction(ActionEvent event) {
 		if (gameHasStarted) {
 			return;
 		}
 		startGameLabel.setText("Starting Game");
 		game.startGame();
-		game.getEvents().registerHandlerAfter(this, GameOverEvent.class, e -> JOptionPane.showMessageDialog(null, "Game Over!"));
+		//game.getEvents().registerHandlerAfter(this, GameOverEvent.class, e -> JOptionPane.showMessageDialog(null, "Game Over!"));
 		gameHasStarted = true;
 		turnLabel.setText(String.format("Turn Number %d", phases.getRecreateCount()));
 			
@@ -91,8 +103,7 @@ public class FXMLGameController {
 		this.render();
 	}
 	
-	@FXML
-	private void newGameButtonAction(ActionEvent event) {
+	@FXML private void newGameButtonAction(ActionEvent event) {
 		this.initializeGame();
 		
 		startGameLabel.setText("Starting Game");
@@ -105,6 +116,33 @@ public class FXMLGameController {
 		this.playerHandData = new ArrayList<>();
 		this.opponentHandData = new ArrayList<>();
 			
+		this.createData();
+		this.render();
+	}
+	
+	@FXML private void handleTurnButtonAction(ActionEvent event) {
+		if (!gameHasStarted) {
+			return;
+		}
+		
+		Entity player = phases.getCurrentEntity();
+		ECSAction endturnAction = player.getComponent(ActionComponent.class).getAction("End Turn");
+		endturnAction.perform(player);
+
+		//This is the AI doing the turn action
+		final Entity aiPlayer = getPlayer(1);
+		while (phases.getCurrentEntity() == aiPlayer) {
+			ECSAction action = opponent.getAction(aiPlayer);
+			if (action == null) {
+				System.out.println("Warning: Opponent did not properly end turn");
+				break;
+			}
+			action.perform(aiPlayer);
+		}
+
+		turnLabel.setText(String.format("Turn Number %d", phases.getRecreateCount()));
+
+		//reload data at the start of a new turn
 		this.createData();
 		this.render();
 	}
@@ -125,12 +163,6 @@ public class FXMLGameController {
 		this.updateGameLabels();
 	}
 	
-	@FXML
-	private Pane opponentHandPane;
-	
-	@FXML
-	private Pane playerHandPane;
-	
 	private void renderHands() {
 		this.renderOpponentHand();
 		this.renderPlayerHand();
@@ -145,12 +177,6 @@ public class FXMLGameController {
 		playerHandPane.getChildren().clear();
 		playerHandPane.getChildren().addAll(playerHandData);
 	}
-	
-	@FXML
-	Pane opponentBattlefieldPane;
-	
-	@FXML
-	Pane playerBattlefieldPane;
 	
 	private void renderBattlefields() {
 		this.renderOpponentBattlefield();
@@ -181,8 +207,6 @@ public class FXMLGameController {
 	}
 	
 	//CREATE OPPONENT CARD BACKS
-	private List<Group> opponentHandData;
-	
 	private void createOpponentHand() {
 		opponentHandData.clear();
 		
@@ -220,7 +244,6 @@ public class FXMLGameController {
 	}
 
 	//CREATE PLAYER HAND
-	private List<Group> playerHandData;
 	private void createPlayerHand() {
 		playerHandData.clear();
 		
@@ -251,8 +274,6 @@ public class FXMLGameController {
 		this.createPlayerBattlefield();
 	}
 	
-	private List<Group> opponentBattlefieldData;
-	
 	private void createOpponentBattlefield() {
 		opponentBattlefieldData.clear();
 		
@@ -271,8 +292,6 @@ public class FXMLGameController {
 			cardIndex++;
 		} 
 	}
-	
-	private List<Group> playerBattlefieldData;
 	
 	private void createPlayerBattlefield() {
 		playerBattlefieldData.clear();
@@ -296,40 +315,6 @@ public class FXMLGameController {
 	private List<Entity> getBattlefield(Entity player) {
 		ZoneComponent battlefield = player.getComponent(BattlefieldComponent.class);
 		return battlefield.getCards();
-	}
-	
-	//TODO: Convert this to mana totals for players
-	//TODO: Play rotation needs to be changed so that it does not revolve around player 1
-	
-	@FXML
-	private Label turnLabel;
-	
-	@FXML
-	private void handleTurnButtonAction(ActionEvent event) {
-		if (!gameHasStarted) {
-			return;
-		}
-		
-		Entity player = phases.getCurrentEntity();
-		ECSAction endturnAction = player.getComponent(ActionComponent.class).getAction("End Turn");
-		endturnAction.perform(player);
-
-		//This is the AI doing the turn action
-		final Entity aiPlayer = getPlayer(1);
-		while (phases.getCurrentEntity() == aiPlayer) {
-			ECSAction action = opponent.getAction(aiPlayer);
-			if (action == null) {
-				System.out.println("Warning: Opponent did not properly end turn");
-				break;
-			}
-			action.perform(aiPlayer);
-		}
-
-		turnLabel.setText(String.format("Turn Number %d", phases.getRecreateCount()));
-
-		//reload data at the start of a new turn
-		this.createData();
-		this.render();
 	}
 	
 	//CHOICE BOX PANE
@@ -362,8 +347,6 @@ public class FXMLGameController {
 	}
    
 	// TARGETING
-	public ECSAction nextAction;
-	
 	public void performNextAction(Entity target) {
 		nextAction.getTargetSets().get(0).addTarget(target);
 		nextAction.perform(getPlayer(0));
@@ -391,30 +374,6 @@ public class FXMLGameController {
 	}
 	
 	//GAME STATE LABELS
-	@FXML
-	Label opponentLife;
-	
-	@FXML
-	Label opponentCurrentMana;
-	
-	@FXML
-	Label opponentTotalMana;
-	
-	@FXML
-	Label opponentScrap;
-	
-	@FXML
-	Label playerLife;
-	
-	@FXML
-	Label playerCurrentMana;
-	
-	@FXML
-	Label playerTotalMana;
-	
-	@FXML
-	Label playerScrap;
-	
 	private void updateGameLabels() {
 		Entity localOpponent = getPlayer(1);
 		opponentLife.setText(String.valueOf(health.getFor(localOpponent)));
@@ -428,12 +387,6 @@ public class FXMLGameController {
 		playerTotalMana.setText(String.valueOf(manaMax.getFor(player)));
 		playerScrap.setText(String.valueOf(scrap.getFor(player)));
 	}
-	
-	/**
-	 * NOT YET USED
-	 */
-	@FXML
-	private QuadCurve handGuide;
 	
 	public Entity getPlayerPerspective() {
 		return getPlayer(0);
