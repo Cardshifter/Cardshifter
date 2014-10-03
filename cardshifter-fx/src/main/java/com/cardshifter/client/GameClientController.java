@@ -39,9 +39,6 @@ import java.util.TreeMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import javax.swing.JOptionPane;
-
-import net.zomis.cardshifter.ecs.base.GameOverEvent;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -221,8 +218,6 @@ public class GameClientController {
 		
 		if (message instanceof NewGameMessage) {
 			this.processNewGameMessage((NewGameMessage) message);
-		} else if (message instanceof GameOverMessage) {
-			JOptionPane.showMessageDialog(null, "Game Over!");
 		} else if (message instanceof PlayerMessage) {
 			this.processPlayerMessage((PlayerMessage)message);
 		} else if (message instanceof ZoneMessage) {
@@ -245,6 +240,8 @@ public class GameClientController {
 			this.clearSavedActions();
 		} else if (message instanceof ClientDisconnectedMessage) {
 			this.processClientDisconnectedMessage((ClientDisconnectedMessage)message);
+		} else if (message instanceof GameOverMessage) {
+			this.processGameOverMessage((GameOverMessage)message);
 		}
 	}
 	
@@ -482,6 +479,11 @@ public class GameClientController {
 		//}
 	}
 	
+	private void processGameOverMessage(GameOverMessage message) {
+		Platform.runLater(() -> this.loginMessage.setText("Game Over!"));
+		this.stopThreads();
+	}
+	
 	private void removeCardFromDeck(int zoneId, int cardId) {
 		if (this.opponentDeckId == zoneId) {
 				if (this.opponentDeckEntityIds.values().contains(cardId)) {
@@ -597,20 +599,27 @@ public class GameClientController {
 		return card;
 	}
 	
-	public void closeGame() {
+	private void stopThreads() {
 		this.listenThread.interrupt();
 		this.playThread.interrupt();
 		
 		//Uncomment these lines to cure the exception
 		//this.listenThread.stop();
 		//this.playThread.stop();
-		
+	}
+	
+	private void breakConnection() {
 		try {
 			this.in.close();
 			this.out.close();
 		} catch (Exception e) {
 			System.out.println("Failed to break connection");
 		}
+	}
+	
+	public void closeGame() {
+		this.stopThreads();
+		this.breakConnection();
 	}
 	
 }
