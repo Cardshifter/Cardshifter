@@ -5,13 +5,14 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import com.cardshifter.server.clients.ClientIO;
+import com.cardshifter.api.both.InviteResponse;
 import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.incoming.RequestTargetsMessage;
 import com.cardshifter.api.incoming.StartGameRequest;
 import com.cardshifter.api.incoming.UseAbilityMessage;
 import com.cardshifter.api.outgoing.WaitMessage;
 import com.cardshifter.api.outgoing.WelcomeMessage;
+import com.cardshifter.server.clients.ClientIO;
 
 public class Handlers {
 
@@ -34,6 +35,41 @@ public class Handlers {
 	}
 
 	public void play(StartGameRequest message, ClientIO client) {
+		if (message.getOpponent() < 0) {
+			this.playAny(message, client);
+		}
+		else {
+			ClientIO target = server.getClients().get(message.getOpponent());
+			if (target == null) {
+				logger.warn("Invite sent to unknown user: " + message);
+				client.sendToClient(new InviteResponse(0, false));
+				return;
+			}
+			
+			ServerGame game = server.createGame(message.getGameType());
+			// FindBugs tells this is redundant
+//			if (game == null) {
+//				cmd.getSender().sendToClient("FAIL Game creation failed");
+//				return false;
+//			}
+			ServerHandler<GameInvite> invites = server.getInvites();
+			GameInvite invite = new GameInvite(server, invites.newId(), client, game);
+			invites.add(invite);
+			invite.sendInvite(target);
+		}
+	}
+	
+	public void inviteResponse(InviteResponse message, ClientIO client) {
+		GameInvite invite = server.getInvites().get(message.getInviteId());
+		if (invite != null) {
+			invite.handleResponse(client, message.isAccepted());
+		}
+		else {
+			logger.warn("No such invite: " + message.getInviteId());
+		}
+	}
+
+	private void playAny(StartGameRequest message, ClientIO client) {
 		AtomicReference<ClientIO> playAny = server.getPlayAny();
 		if (playAny.compareAndSet(null, client)) {
 			client.sendToClient(new WaitMessage());

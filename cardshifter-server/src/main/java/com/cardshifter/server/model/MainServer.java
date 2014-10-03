@@ -1,10 +1,7 @@
 package com.cardshifter.server.model;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.function.Consumer;
 
 import org.apache.log4j.LogManager;
@@ -15,7 +12,6 @@ import com.cardshifter.ai.CardshifterAI;
 import com.cardshifter.ai.CompleteIdiot;
 import com.cardshifter.ai.ScoringAI;
 import com.cardshifter.api.incoming.LoginMessage;
-import com.cardshifter.api.incoming.StartGameRequest;
 import com.cardshifter.server.clients.ClientIO;
 import com.cardshifter.server.main.FakeAIClientTCG;
 
@@ -24,9 +20,8 @@ public class MainServer {
 	
 	private final Server server = new Server();
 	private final Map<String, CardshifterAI> ais = new HashMap<>();
-	private final Random random = new Random();
 	
-	public void start() {
+	public Server start() {
 		ais.put("loser", new ScoringAI(AIs.loser()));
 		ais.put("idiot", new ScoringAI(AIs.idiot()));
 		ais.put("old", new CompleteIdiot());
@@ -41,29 +36,22 @@ public class MainServer {
 			logger.info("Starting Console...");
 			CommandHandler commandHandler = new CommandHandler();
 			commandHandler.addHandler("exit", command -> System.exit(0));
-			commandHandler.addHandler("ai", this::createAI);
 			ServerConsole console = new ServerConsole(server, commandHandler);
 			new Thread(console, "Console-Thread").start();
 			console.addHandler("threads", cmd -> showAllStackTraces(server, System.out::println));
+			
+			ais.entrySet().forEach(entry -> {
+				ClientIO tcgAI = new FakeAIClientTCG(server, entry.getValue());
+				server.newClient(tcgAI);
+				server.getIncomingHandler().perform(new LoginMessage("AI " + entry.getKey()), tcgAI);
+			});
+			
 			logger.info("Started");
 		}
 		catch (Exception e) {
 			logger.error("Initializing Error", e);
 		}
-	}
-	
-	private void createAI(Command command) {
-		String key = command.getParameter(1);
-		if (!ais.containsKey(key)) {
-			List<String> list = new ArrayList<>(ais.keySet());
-			key = list.get(random.nextInt(list.size()));
-		}
-		
-		CardshifterAI ai = ais.get(key);
-		ClientIO tcgAI = new FakeAIClientTCG(server, ai);
-		server.newClient(tcgAI);
-		server.getIncomingHandler().perform(new LoginMessage("AI " + key), tcgAI);
-		server.getIncomingHandler().perform(new StartGameRequest(), tcgAI);
+		return server;
 	}
 	
 	private void showAllStackTraces(Server server, Consumer<String> output) {

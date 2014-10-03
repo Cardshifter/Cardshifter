@@ -1,8 +1,6 @@
 package com.cardshifter.server.model;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,6 +20,7 @@ import java.util.stream.Stream;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import com.cardshifter.api.both.InviteResponse;
 import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.incoming.RequestTargetsMessage;
 import com.cardshifter.api.incoming.StartGameRequest;
@@ -37,16 +36,16 @@ public class Server {
 	private static final String VANILLA = "vanilla";
 
 	// Counters for various things
+	private final AtomicInteger clientId = new AtomicInteger(0);
 	private final AtomicInteger roomCounter = new AtomicInteger(0);
-	private final AtomicInteger inviteId = new AtomicInteger(0);
 	private final AtomicInteger gameId = new AtomicInteger(0);
 	
 	private final IncomingHandler incomingHandler;
 	
-	private final Set<ClientIO> clients = Collections.synchronizedSet(new HashSet<>());
+	private final Map<Integer, ClientIO> clients = new ConcurrentHashMap<>();
 	private final Map<Integer, ChatArea> chats = new ConcurrentHashMap<>();
 	private final Map<Integer, ServerGame> games = new ConcurrentHashMap<>();
-	private final Map<Integer, GameInvite> invites = new ConcurrentHashMap<>();
+	private final ServerHandler<GameInvite> invites = new ServerHandler<>();
 	private final Map<String, GameFactory> gameFactories = new ConcurrentHashMap<>();
 
 	private final Set<ConnectionHandler> handlers = Collections.synchronizedSet(new HashSet<>());
@@ -70,6 +69,7 @@ public class Server {
 		incomings.addHandler("startgame", StartGameRequest.class, handlers::play);
 		incomings.addHandler("use", UseAbilityMessage.class, handlers::useAbility);
 		incomings.addHandler("requestTargets", RequestTargetsMessage.class, handlers::requestTargets);
+		incomings.addHandler("inviteResponse", InviteResponse.class, handlers::inviteResponse);
 		
 		server.addGameFactory(VANILLA, (serv, id) -> new TCGGame(serv, id));
 		
@@ -87,8 +87,8 @@ public class Server {
 		return room;
 	}
 	
-	public Collection<ClientIO> getClients() {
-		return new ArrayList<>(clients);
+	public Map<Integer, ClientIO> getClients() {
+		return Collections.unmodifiableMap(clients);
 	}
 	
 	public IncomingHandler getIncomingHandler() {
@@ -110,7 +110,7 @@ public class Server {
 
 	public void newClient(ClientIO cl) {
 		logger.info("New client: " + cl);
-		clients.add(cl);
+		clients.put(clientId.incrementAndGet(), cl);
 		getMainChat().add(cl);
 	}
 	
@@ -122,7 +122,7 @@ public class Server {
 	}
 
 	void broadcast(String data) {
-		clients.forEach(cl -> cl.sendToClient(data));
+		clients.values().forEach(cl -> cl.sendToClient(data));
 	}
 
 	public void incomingChatMessage(Command cmd) {
@@ -138,6 +138,7 @@ public class Server {
 		this.gameFactories.put(gameType, factory);
 	}
 
+	@Deprecated
 	public boolean inviteRequest(Command cmd) {
 		final GameInvite invite;
 		switch (cmd.getCommand()) {
@@ -149,10 +150,10 @@ public class Server {
 //					cmd.getSender().sendToClient("FAIL Game creation failed");
 //					return false;
 //				}
-				invite = new GameInvite(this, inviteId.getAndIncrement(), cmd, game);
-				this.invites.put(invite.getId(), invite);
+				invite = new GameInvite(this, invites.newId(), cmd.getSender(), game);
+				this.invites.add(invite);
 				
-				Stream<ClientIO> targetStream = clients.stream().filter(cl -> cl.getName().equals(target));
+				Stream<ClientIO> targetStream = clients.values().stream().filter(cl -> cl.getName().equals(target));
 				Optional<ClientIO> result = targetStream.findFirst();
 				if (result.isPresent()) {
 					invite.sendInvite(result.get());
@@ -192,7 +193,7 @@ public class Server {
 		}
 	}
 
-	private ServerGame createGame(String parameter) {
+	ServerGame createGame(String parameter) {
 		GameFactory suppl = gameFactories.get(parameter);
 		if (suppl == null) {
 			throw new IllegalArgumentException("No such game factory: " + parameter);
@@ -210,8 +211,8 @@ public class Server {
 		return new HashMap<>(games);
 	}
 	
-	public Map<Integer, GameInvite> getInvites() {
-		return new HashMap<>(invites);
+	public ServerHandler<GameInvite> getInvites() {
+		return invites;
 	}
 
 	public void addConnections(ConnectionHandler handler) {
@@ -234,6 +235,16 @@ public class Server {
 
 	public ScheduledExecutorService getScheduler() {
 		return scheduler;
+	}
+	
+	public void stop() {
+		for (ConnectionHandler handler : handlers) {
+			try {
+				handler.shutdown();
+			} catch (Exception e) {
+				logger.error("Error shutting down " + handler, e);
+			}
+		}
 	}
 	
 }

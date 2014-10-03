@@ -3,7 +3,9 @@ package com.cardshifter.api.messages;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.cardshifter.api.incoming.ChatMessage;
+import com.cardshifter.api.both.ChatMessage;
+import com.cardshifter.api.both.InviteRequest;
+import com.cardshifter.api.both.InviteResponse;
 import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.incoming.RequestTargetsMessage;
 import com.cardshifter.api.incoming.StartGameRequest;
@@ -54,6 +56,10 @@ public class MessageTypeIdResolver implements TypeIdResolver {
 		clazzes.put("update", UpdateMessage.class);
 		clazzes.put("useable", UseableActionMessage.class);
 		clazzes.put("targets", AvailableTargetsMessage.class);
+		
+		clazzes.put("inviteRequest", InviteRequest.class);
+		clazzes.put("inviteResponse", InviteResponse.class);
+		
 	}
 	
 	private JavaType mBaseType;

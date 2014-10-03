@@ -141,7 +141,7 @@ public class GameClientController {
 			e.printStackTrace();
 		}
 		
-		this.send(new StartGameRequest());
+		this.send(new StartGameRequest(-1, "VANILLA"));
 		
 		try {
 			Message message = messages.take();
