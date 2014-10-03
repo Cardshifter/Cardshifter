@@ -12,7 +12,6 @@ import com.cardshifter.ai.CardshifterAI;
 import com.cardshifter.ai.CompleteIdiot;
 import com.cardshifter.ai.ScoringAI;
 import com.cardshifter.api.incoming.LoginMessage;
-import com.cardshifter.server.clients.ClientIO;
 import com.cardshifter.server.main.FakeAIClientTCG;
 
 public class MainServer {
@@ -61,10 +60,9 @@ public class MainServer {
 		server.stop();
 		
 		try {
-			Thread.sleep(5000);
+			Thread.sleep(3000);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Interrupted when shutting down");
 		}
 		
 		showAllStackTraces(server, System.out::println);

@@ -12,7 +12,6 @@ import com.cardshifter.api.incoming.StartGameRequest;
 import com.cardshifter.api.incoming.UseAbilityMessage;
 import com.cardshifter.api.outgoing.WaitMessage;
 import com.cardshifter.api.outgoing.WelcomeMessage;
-import com.cardshifter.server.clients.ClientIO;
 
 public class Handlers {
 
@@ -26,12 +25,12 @@ public class Handlers {
 	public void loginMessage(LoginMessage message, ClientIO client) {
 		logger.info("Login request: " + message.getUsername() + " for client " + client);
 		if (message.getUsername().startsWith("x")) {
-			client.sendToClient(new WelcomeMessage(false));
+			client.sendToClient(new WelcomeMessage(0, false));
 			return;
 		}
 		logger.info("Client is welcome!");
 		client.setName(message.getUsername());
-		client.sendToClient(new WelcomeMessage(true));
+		client.sendToClient(new WelcomeMessage(client.getId(), true));
 	}
 
 	public void play(StartGameRequest message, ClientIO client) {
@@ -47,14 +46,11 @@ public class Handlers {
 			}
 			
 			ServerGame game = server.createGame(message.getGameType());
-			// FindBugs tells this is redundant
-//			if (game == null) {
-//				cmd.getSender().sendToClient("FAIL Game creation failed");
-//				return false;
-//			}
 			ServerHandler<GameInvite> invites = server.getInvites();
 			GameInvite invite = new GameInvite(server, invites.newId(), client, game);
 			invites.add(invite);
+			client.sendToClient(new WaitMessage());
+			
 			invite.sendInvite(target);
 		}
 	}
@@ -76,7 +72,13 @@ public class Handlers {
 		}
 		else {
 			ClientIO opponent = playAny.getAndSet(null);
-			server.newGame(client, opponent);
+			
+			ServerGame game = server.createGame(message.getGameType());
+			ServerHandler<GameInvite> invites = server.getInvites();
+			GameInvite invite = new GameInvite(server, invites.newId(), client, game);
+			invites.add(invite);
+			invite.addPlayer(opponent);
+			invite.start();
 		}
 	}
 

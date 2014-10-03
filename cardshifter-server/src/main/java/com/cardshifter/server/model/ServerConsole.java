@@ -6,8 +6,6 @@ import java.util.function.Consumer;
 
 import org.apache.log4j.LogManager;
 
-import com.cardshifter.server.clients.ClientIO;
-
 public class ServerConsole extends ClientIO implements Runnable {
 
 	public ServerConsole(Server server, CommandHandler commands) {

@@ -6,7 +6,10 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import org.junit.Assert;
+
 import com.cardshifter.api.messages.Message;
+import com.cardshifter.api.outgoing.ServerErrorMessage;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -36,7 +39,11 @@ public class TestClient {
 	}
 
 	public <T> T await(Class<T> class1) throws JsonParseException, JsonProcessingException, IOException {
-		return mapper.readValue(in, class1);
+		Message message = mapper.readValue(in, Message.class);
+		if (message instanceof ServerErrorMessage) {
+			Assert.fail(message.toString());
+		}
+		return class1.cast(message);
 	}
 
 }

@@ -3,15 +3,17 @@ package com.cardshifter.server.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import com.cardshifter.api.both.InviteRequest;
-import com.cardshifter.server.clients.ClientIO;
+import com.cardshifter.server.main.FakeAIClientTCG;
 
 public class GameInvite implements IdObject {
 	private static final Logger logger = LogManager.getLogger(GameInvite.class);
+	private static final Random random = new Random();
 	
 	private final int	id;
 	private final ClientIO	host;
@@ -36,6 +38,9 @@ public class GameInvite implements IdObject {
 	public void sendInvite(ClientIO to) {
 		to.sendToClient(new InviteRequest(this.id, this.host.getName()));
 		this.invited.add(to);
+		if (to instanceof FakeAIClientTCG) {
+			inviteAccept(to);
+		}
 	}
 
 	public boolean inviteAccept(ClientIO who) {
@@ -58,6 +63,7 @@ public class GameInvite implements IdObject {
 	
 	public boolean start() {
 		logger.info(this + " Game Start! " + players);
+		Collections.shuffle(players, random);
 		game.start(players);
 		return true;
 	}
@@ -69,6 +75,10 @@ public class GameInvite implements IdObject {
 		else {
 			this.inviteDecline(client);
 		}
+	}
+
+	public void addPlayer(ClientIO player) {
+		this.players.add(player);
 	}
 	
 }

@@ -4,7 +4,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import com.cardshifter.ai.CardshifterAI;
-import com.cardshifter.server.clients.ClientIO;
+import com.cardshifter.server.model.ClientIO;
 import com.cardshifter.server.model.Server;
 
 public class FakeAIClientTCG extends ClientIO {

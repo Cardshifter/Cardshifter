@@ -12,7 +12,6 @@ import org.apache.log4j.Logger;
 import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.outgoing.GameOverMessage;
 import com.cardshifter.api.outgoing.NewGameMessage;
-import com.cardshifter.server.clients.ClientIO;
 
 public abstract class ServerGame {
 	private static final Logger logger = LogManager.getLogger(ServerGame.class);

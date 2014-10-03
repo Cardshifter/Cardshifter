@@ -2,6 +2,7 @@ package com.cardshifter.server.clients;
 
 import java.util.function.Consumer;
 
+import com.cardshifter.server.model.ClientIO;
 import com.cardshifter.server.model.Server;
 
 public class FakeClient extends ClientIO {

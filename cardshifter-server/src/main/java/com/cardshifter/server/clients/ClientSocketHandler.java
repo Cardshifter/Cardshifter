@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import com.cardshifter.server.model.ClientIO;
 import com.cardshifter.server.model.Server;
 
 public class ClientSocketHandler extends ClientIO implements Runnable {
@@ -52,8 +53,9 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 					
 					String[] datas = data.split("" + (char) 0);
 					for (String mess : datas) {
-						if (mess.trim().isEmpty())
+						if (mess.trim().isEmpty()) {
 							continue;
+						}
 						
 						logger.info("[Event #" + ++eventNr + "]");
 						logger.info("Received from " + this + ": " + mess);

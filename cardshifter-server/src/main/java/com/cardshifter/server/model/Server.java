@@ -1,10 +1,8 @@
 package com.cardshifter.server.model;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -27,13 +25,13 @@ import com.cardshifter.api.incoming.StartGameRequest;
 import com.cardshifter.api.incoming.UseAbilityMessage;
 import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.outgoing.ClientDisconnectedMessage;
-import com.cardshifter.server.clients.ClientIO;
+import com.cardshifter.api.outgoing.ServerErrorMessage;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 public class Server {
 	private static final Logger	logger = LogManager.getLogger(Server.class);
 
-	private static final String VANILLA = "vanilla";
+	private static final String VANILLA = "VANILLA";
 
 	// Counters for various things
 	private final AtomicInteger clientId = new AtomicInteger(0);
@@ -50,7 +48,6 @@ public class Server {
 
 	private final Set<ConnectionHandler> handlers = Collections.synchronizedSet(new HashSet<>());
 	private final AtomicReference<ClientIO> playAny = new AtomicReference<>();
-	private final Random random = new Random();
 
 	private final ScheduledExecutorService scheduler;
 
@@ -105,12 +102,14 @@ public class Server {
 			incomingHandler.perform(message, client);
 		} catch (Exception e) {
 			logger.error("Unable to parse incoming json: " + json, e);
+			client.sendToClient(new ServerErrorMessage(e.getMessage()));
 		}
 	}
 
 	public void newClient(ClientIO cl) {
 		logger.info("New client: " + cl);
-		clients.put(clientId.incrementAndGet(), cl);
+		cl.setId(clientId.incrementAndGet());
+		clients.put(cl.getId(), cl);
 		getMainChat().add(cl);
 	}
 	
@@ -198,7 +197,7 @@ public class Server {
 		if (suppl == null) {
 			throw new IllegalArgumentException("No such game factory: " + parameter);
 		}
-		ServerGame game = suppl.newGame(this, gameId.getAndIncrement());
+		ServerGame game = suppl.newGame(this, gameId.incrementAndGet());
 		this.games.put(game.getId(), game);
 		return game;
 	}
@@ -222,15 +221,6 @@ public class Server {
 
 	public AtomicReference<ClientIO> getPlayAny() {
 		return playAny;
-	}
-
-	public void newGame(ClientIO client, ClientIO opponent) {
-		ServerGame game = this.gameFactories.get(VANILLA).newGame(this, this.gameId.getAndIncrement());
-		List<ClientIO> players = Arrays.asList(client, opponent);
-		Collections.shuffle(players, random);
-		
-		this.games.put(game.getId(), game);
-		game.start(players);
 	}
 
 	public ScheduledExecutorService getScheduler() {

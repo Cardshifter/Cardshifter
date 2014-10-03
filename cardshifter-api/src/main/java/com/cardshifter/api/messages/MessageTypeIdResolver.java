@@ -19,6 +19,7 @@ import com.cardshifter.api.outgoing.GameOverMessage;
 import com.cardshifter.api.outgoing.NewGameMessage;
 import com.cardshifter.api.outgoing.PlayerMessage;
 import com.cardshifter.api.outgoing.ResetAvailableActionsMessage;
+import com.cardshifter.api.outgoing.ServerErrorMessage;
 import com.cardshifter.api.outgoing.UpdateMessage;
 import com.cardshifter.api.outgoing.UseableActionMessage;
 import com.cardshifter.api.outgoing.WaitMessage;
@@ -59,6 +60,7 @@ public class MessageTypeIdResolver implements TypeIdResolver {
 		
 		clazzes.put("inviteRequest", InviteRequest.class);
 		clazzes.put("inviteResponse", InviteResponse.class);
+		clazzes.put("error", ServerErrorMessage.class);
 		
 	}
 	

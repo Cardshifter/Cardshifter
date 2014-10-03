@@ -1,6 +1,5 @@
 package com.cardshifter.server.model;
 
-import com.cardshifter.server.clients.ClientIO;
 
 public class Command {
 
