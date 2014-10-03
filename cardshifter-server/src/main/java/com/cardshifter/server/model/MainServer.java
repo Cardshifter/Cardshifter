@@ -20,6 +20,8 @@ public class MainServer {
 	
 	private final Server server = new Server();
 	private final Map<String, CardshifterAI> ais = new HashMap<>();
+
+	private Thread consoleThread;
 	
 	public Server start() {
 		ais.put("loser", new ScoringAI(AIs.loser()));
@@ -35,9 +37,10 @@ public class MainServer {
 			
 			logger.info("Starting Console...");
 			CommandHandler commandHandler = new CommandHandler();
-			commandHandler.addHandler("exit", command -> System.exit(0));
+			commandHandler.addHandler("exit", command -> this.shutdown());
 			ServerConsole console = new ServerConsole(server, commandHandler);
-			new Thread(console, "Console-Thread").start();
+			consoleThread = new Thread(console, "Console-Thread");
+			consoleThread.start();
 			console.addHandler("threads", cmd -> showAllStackTraces(server, System.out::println));
 			
 			ais.entrySet().forEach(entry -> {
@@ -54,6 +57,20 @@ public class MainServer {
 		return server;
 	}
 	
+	private void shutdown() {
+		server.stop();
+		
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		showAllStackTraces(server, System.out::println);
+		consoleThread.interrupt();
+	}
+
 	private void showAllStackTraces(Server server, Consumer<String> output) {
 		output.accept("All stack traces:");
 		Map<Thread, StackTraceElement[]> allTraces = Thread.getAllStackTraces();

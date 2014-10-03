@@ -19,7 +19,7 @@ public class ServerSock implements ConnectionHandler {
 	private final AtomicInteger activeConnections = new AtomicInteger(0);
 	private final AtomicInteger threadCounter = new AtomicInteger(0);
 	private final ExecutorService executor;
-	private final Server	server;
+	private final Server server;
 	private final Thread thread;
 	private final ServerSocket serverSocket;
 	
@@ -62,6 +62,7 @@ public class ServerSock implements ConnectionHandler {
 	@Override
 	public void shutdown() throws Exception {
 		thread.interrupt();
+		serverSocket.close();
 	}
 
 }

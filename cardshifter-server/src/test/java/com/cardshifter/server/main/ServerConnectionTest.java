@@ -28,9 +28,11 @@ public class ServerConnectionTest {
 		WelcomeMessage welcome = client1.await(WelcomeMessage.class);
 		assertEquals(200, welcome.getStatus());
 		
-		server.stop();
 		
-		assertEquals(0, 0);
+		
+		
+		
+		server.stop();
 	}
 	
 }

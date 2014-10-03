@@ -245,6 +245,7 @@ public class Server {
 				logger.error("Error shutting down " + handler, e);
 			}
 		}
+		this.scheduler.shutdown();
 	}
 	
 }
