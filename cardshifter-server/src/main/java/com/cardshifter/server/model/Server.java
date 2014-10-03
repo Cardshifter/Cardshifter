@@ -192,7 +192,7 @@ public class Server {
 		}
 	}
 
-	ServerGame createGame(String parameter) {
+	public ServerGame createGame(String parameter) {
 		GameFactory suppl = gameFactories.get(parameter);
 		if (suppl == null) {
 			throw new IllegalArgumentException("No such game factory: " + parameter);

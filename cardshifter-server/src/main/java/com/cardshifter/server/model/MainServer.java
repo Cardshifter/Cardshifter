@@ -13,6 +13,7 @@ import com.cardshifter.ai.CompleteIdiot;
 import com.cardshifter.ai.ScoringAI;
 import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.server.main.FakeAIClientTCG;
+import com.cardshifter.server.utils.export.DataExporter;
 
 public class MainServer {
 	private static final Logger logger = LogManager.getLogger(MainServer.class);
@@ -37,6 +38,7 @@ public class MainServer {
 			logger.info("Starting Console...");
 			CommandHandler commandHandler = new CommandHandler();
 			commandHandler.addHandler("exit", command -> this.shutdown());
+			commandHandler.addHandler("export", this::export);
 			ServerConsole console = new ServerConsole(server, commandHandler);
 			consoleThread = new Thread(console, "Console-Thread");
 			consoleThread.start();
@@ -68,7 +70,13 @@ public class MainServer {
 		showAllStackTraces(server, System.out::println);
 		consoleThread.interrupt();
 	}
-
+	
+	private void export(Command command) {
+		server.createGame("VANILLA");
+		DataExporter exporter = new DataExporter();
+		exporter.export(server, command.getAllParameters());
+	}
+	
 	private void showAllStackTraces(Server server, Consumer<String> output) {
 		output.accept("All stack traces:");
 		Map<Thread, StackTraceElement[]> allTraces = Thread.getAllStackTraces();
