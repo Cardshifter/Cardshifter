@@ -17,7 +17,6 @@ import net.zomis.cardshifter.ecs.ai.AIComponent;
 import net.zomis.cardshifter.ecs.base.ComponentRetriever;
 import net.zomis.cardshifter.ecs.base.ECSGame;
 import net.zomis.cardshifter.ecs.base.Entity;
-import net.zomis.cardshifter.ecs.base.GameOverEvent;
 import net.zomis.cardshifter.ecs.cards.BattlefieldComponent;
 import net.zomis.cardshifter.ecs.cards.HandComponent;
 import net.zomis.cardshifter.ecs.cards.ZoneComponent;
@@ -29,24 +28,26 @@ import net.zomis.cardshifter.ecs.usage.PhrancisGame.PhrancisResources;
 
 import com.cardshifter.ai.CardshifterAI;
 import com.cardshifter.ai.CompleteIdiot;
+import javafx.scene.layout.HBox;
+import net.zomis.cardshifter.ecs.base.GameOverEvent;
 
 public class FXMLGameController {
 	
-	@FXML Pane anchorPane;
-	@FXML private Label startGameLabel;
-	@FXML private Pane opponentHandPane;
-	@FXML private Pane playerHandPane;
-	@FXML Pane opponentBattlefieldPane;
-	@FXML Pane playerBattlefieldPane;
+	@FXML private Pane anchorPane;
+	@FXML private HBox opponentHandPane;
+	@FXML private HBox playerHandPane;
+	@FXML private HBox opponentBattlefieldPane;
+	@FXML private HBox playerBattlefieldPane;
 	@FXML private Label turnLabel;
-	@FXML Label opponentLife;
-	@FXML Label opponentCurrentMana;
-	@FXML Label opponentTotalMana;
-	@FXML Label opponentScrap;
-	@FXML Label playerLife;
-	@FXML Label playerCurrentMana;
-	@FXML Label playerTotalMana;
-	@FXML Label playerScrap;
+	@FXML private Label gameOverLabel;
+	@FXML private Label opponentLife;
+	@FXML private Label opponentCurrentMana;
+	@FXML private Label opponentTotalMana;
+	@FXML private Label opponentScrap;
+	@FXML private Label playerLife;
+	@FXML private Label playerCurrentMana;
+	@FXML private Label playerTotalMana;
+	@FXML private Label playerScrap;
 	
 	private List<Group> opponentHandData;
 	private List<Group> playerHandData;
@@ -88,11 +89,11 @@ public class FXMLGameController {
 		if (gameHasStarted) {
 			return;
 		}
-		startGameLabel.setText("Starting Game");
+		
 		game.startGame();
-		//game.getEvents().registerHandlerAfter(this, GameOverEvent.class, e -> JOptionPane.showMessageDialog(null, "Game Over!"));
+		game.getEvents().registerHandlerAfter(this, GameOverEvent.class, e -> gameOverLabel.setVisible(true));
 		gameHasStarted = true;
-		turnLabel.setText(String.format("Turn Number %d", phases.getRecreateCount()));
+		turnLabel.setText(String.format("%d", phases.getRecreateCount()));
 			
 		this.playerBattlefieldData = new ArrayList<>();
 		this.opponentBattlefieldData = new ArrayList<>();
@@ -106,10 +107,11 @@ public class FXMLGameController {
 	@FXML private void newGameButtonAction(ActionEvent event) {
 		this.initializeGame();
 		
-		startGameLabel.setText("Starting Game");
+		gameOverLabel.setVisible(false);
+		
 		game.startGame();
 		gameHasStarted = true;
-		turnLabel.setText(String.format("Turn Number %d", phases.getRecreateCount()));
+		turnLabel.setText(String.format("%d", phases.getRecreateCount()));
 			
 		this.playerBattlefieldData = new ArrayList<>();
 		this.opponentBattlefieldData = new ArrayList<>();
@@ -140,7 +142,7 @@ public class FXMLGameController {
 			action.perform(aiPlayer);
 		}
 
-		turnLabel.setText(String.format("Turn Number %d", phases.getRecreateCount()));
+		turnLabel.setText(String.format("%d", phases.getRecreateCount()));
 
 		//reload data at the start of a new turn
 		this.createData();
@@ -215,13 +217,12 @@ public class FXMLGameController {
 		double paneWidth = opponentHandPane.getWidth();
 		
 		int numCards = this.getOpponentCardCount();
-		int maxCards = Math.max(numCards, 8);
+		int maxCards = Math.max(numCards, 10);
 		double cardWidth = paneWidth / maxCards;
 		
 		int currentCard = 0;
 		while (currentCard < numCards) {
 			Group cardGroup = new Group();
-			cardGroup.setTranslateX(currentCard * (cardWidth*1.05)); //1.05 so there is space between cards
 			opponentHandData.add(cardGroup);
 			
 			Rectangle cardBack = new Rectangle(0,0,cardWidth,paneHeight);
@@ -254,9 +255,7 @@ public class FXMLGameController {
 		for (Entity card : cardsInHand) {
 			CardNode cardNode = new CardNode(playerHandPane, numCards, "testName", card, this);
 			Group cardGroup = cardNode.getCardGroup();
-			cardGroup.setAutoSizeChildren(true); //NEW
 			cardGroup.setId(String.format("card%d", card.getId()));
-			cardGroup.setTranslateX(cardIndex * cardNode.getWidth());
 			playerHandData.add(cardGroup);
 			
 			cardIndex++;
@@ -284,9 +283,7 @@ public class FXMLGameController {
 		for (Entity card : cardsInBattlefield) {
 			CardNodeBattlefield cardNode = new CardNodeBattlefield(opponentBattlefieldPane, numCards, "testName", card, this, false);
 			Group cardGroup = cardNode.getCardGroup();
-			cardGroup.setAutoSizeChildren(true); //NEW
 			cardGroup.setId(String.format("card%d", card.getId()));
-			cardGroup.setTranslateX(cardIndex * cardNode.getWidth());
 			opponentBattlefieldData.add(cardGroup);
 			
 			cardIndex++;
@@ -305,7 +302,7 @@ public class FXMLGameController {
 			Group cardGroup = cardNode.getCardGroup();
 			cardGroup.setAutoSizeChildren(true); //NEW
 			cardGroup.setId(String.format("card%d", card.getId()));
-			cardGroup.setTranslateX(cardIndex * cardNode.getWidth());
+			//cardGroup.setTranslateX(cardIndex * cardNode.getWidth());
 			playerBattlefieldData.add(cardGroup);
 			
 			cardIndex++;

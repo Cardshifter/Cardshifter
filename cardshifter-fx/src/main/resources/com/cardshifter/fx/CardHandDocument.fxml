@@ -9,32 +9,32 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="anchorPane" prefHeight="120.0" prefWidth="80.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="anchorPane" prefHeight="187.0" prefWidth="126.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
        
       <!-- Card Background -->
-      <Rectangle fx:id="background" arcHeight="5.0" arcWidth="5.0" height="240.0" stroke="BLACK" strokeType="INSIDE" width="200.0" />
+      <Rectangle id="backgroundRectangle" fx:id="background" arcHeight="5.0" arcWidth="5.0" height="188.0" stroke="BLACK" strokeType="INSIDE" width="129.0" />
      
       <!-- Non Functional Card Layout Pieces -->
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#b90707" height="217.0" layoutX="13.0" layoutY="12.0" stroke="BLACK" strokeType="INSIDE" width="174.0" />
-      <Rectangle arcHeight="5.0" arcWidth="5.0" height="23.0" layoutX="13.0" layoutY="128.0" stroke="BLACK" strokeType="INSIDE" width="174.0" />
-      <Label layoutX="148.0" layoutY="200.0" text="/">
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#b90707" height="164.0" layoutX="12.0" layoutY="12.0" stroke="BLACK" strokeType="INSIDE" width="106.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" height="16.0" layoutX="12.0" layoutY="127.0" stroke="BLACK" strokeType="INSIDE" width="106.0" />
+      <Label layoutX="93.0" layoutY="105.0" text="/" textFill="WHITE">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="27.0" layoutY="88.0" text="Card Type =" />
+      <Label layoutX="18.0" layoutY="86.0" text="Card Type =" textFill="WHITE" />
      
       <!-- Card Labels -->
-      <Label fx:id="strength" layoutX="139.0" layoutY="203.0" text="#" />
-      <Label fx:id="health" layoutX="158.0" layoutY="203.0" text="#" />
-      <Label fx:id="cardId" layoutX="42.0" layoutY="22.0" text="Card Id =" />
-      <Label fx:id="manaCost" layoutX="72.0" layoutY="45.0" text="Mana Cost =" />
-      <Label fx:id="scrapCost" layoutX="72.0" layoutY="61.0" text="Scrap Cost =" />
-      <Label fx:id="cardType" layoutX="27.0" layoutY="104.0" text="Type" />
-      <Label fx:id="enchStrength" layoutX="16.0" layoutY="158.0" text="Enchant Strength =" />
-      <Label fx:id="enchHealth" layoutX="16.0" layoutY="174.0" text="Enchantment Health =" />
-      <Label fx:id="creatureType" layoutX="16.0" layoutY="132.0" textFill="WHITE" />
+      <Label fx:id="strength" layoutX="78.0" layoutY="108.0" text="#" textFill="WHITE" />
+      <Label fx:id="health" layoutX="108.0" layoutY="108.0" text="#" textFill="WHITE" />
+      <Label fx:id="cardId" layoutX="34.0" layoutY="14.0" text="Card Id ="  textFill="WHITE" />
+      <Label fx:id="manaCost" layoutX="17.0" layoutY="45.0" text="Mana Cost =" textFill="WHITE" />
+      <Label fx:id="scrapCost" layoutX="17.0" layoutY="61.0" text="Scrap Cost =" textFill="WHITE" />
+      <Label fx:id="cardType" layoutX="19.0" layoutY="108.0" text="Type" textFill="WHITE" />
+      <Label fx:id="enchStrength" layoutX="16.0" layoutY="140.0" text="Ench Str =" textFill="WHITE" />
+      <Label fx:id="enchHealth" layoutX="17.0" layoutY="156.0" prefHeight="16.0" prefWidth="95.0" text="Ench Hth =" textFill="WHITE" />
+      <Label fx:id="creatureType" layoutX="19.0" layoutY="127.0" text="Type" textFill="WHITE" />
       
    </children>
 </AnchorPane>

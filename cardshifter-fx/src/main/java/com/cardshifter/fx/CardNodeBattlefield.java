@@ -36,13 +36,13 @@ public class CardNodeBattlefield extends Group {
 	public CardNodeBattlefield (Pane pane, int numCards, String name, Entity card, FXMLGameController controller, boolean isPlayer) {
 		this.performer = controller.getPlayerPerspective();
 		//calculate card width based on pane size
-		double paneWidth = pane.getWidth();
+		double paneWidth = pane.getPrefWidth();
 		//reduce card size if there are over a certain amount of them
-		int maxCards = Math.max(numCards, 8);
+		int maxCards = Math.max(numCards, 10);
 		double cardWidth = paneWidth / maxCards;
 		
 		this.sizeX = cardWidth;
-		this.sizeY = pane.getHeight();
+		this.sizeY = pane.getPrefHeight();
 //		this.name = name;
 		this.card = card;
 		this.controller = controller;
