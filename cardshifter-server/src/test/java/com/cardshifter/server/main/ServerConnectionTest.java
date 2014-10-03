@@ -88,6 +88,7 @@ public class ServerConnectionTest {
 			ECSAction action = humanActions.getAction(human);
 			if (action != null) {
 				int target = 0;
+				System.out.println("Chosen action: " + action);
 				if (!action.getTargetSets().isEmpty()) {
 					target = action.getTargetSets().get(0).getChosenTargets().get(0).getId();
 				}
