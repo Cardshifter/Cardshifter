@@ -518,6 +518,7 @@ public class GameClientController {
 	
 	private void clearSavedActions() {
 		this.savedMessages.clear();
+		this.actionBox.getChildren().clear();
 	}
 	
 	public void cancelAction() {
