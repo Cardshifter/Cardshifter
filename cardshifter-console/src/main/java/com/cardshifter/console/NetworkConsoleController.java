@@ -15,8 +15,6 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.incoming.RequestTargetsMessage;
@@ -70,7 +68,7 @@ public class NetworkConsoleController {
 			return;
 		}
 		
-		this.send(new StartGameRequest());
+		this.send(new StartGameRequest(-1, "VANILLA"));
 		Message message = messages.take();
 		if (message instanceof WaitMessage) {
 			System.out.println(((WaitMessage) message).getMessage());

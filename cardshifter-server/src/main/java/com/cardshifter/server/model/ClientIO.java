@@ -1,22 +1,22 @@
-package com.cardshifter.server.clients;
+package com.cardshifter.server.model;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import com.cardshifter.api.messages.Message;
-import com.cardshifter.server.model.Server;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
 
-public abstract class ClientIO {
+public abstract class ClientIO implements IdObject {
 
 	private static final Logger logger = LogManager.getLogger(ClientIO.class);
 	
 	private String name = "";
 	private final Server server;
 	private final ObjectWriter writer = new ObjectMapper().writer();
+	private int id;
 	
 	public ClientIO(Server server) {
 		this.server = server;
@@ -84,6 +84,15 @@ public abstract class ClientIO {
 	
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	@Override
+	public int getId() {
+		return id;
+	}
+	
+	void setId(int id) {
+		this.id = id;
 	}
 	
 }

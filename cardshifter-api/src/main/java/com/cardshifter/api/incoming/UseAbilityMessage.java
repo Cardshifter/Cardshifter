@@ -38,4 +38,10 @@ public class UseAbilityMessage extends CardMessage {
 		return target;
 	}
 
+	@Override
+	public String toString() {
+		return "UseAbilityMessage [id=" + id + ", action=" + action
+				+ ", gameId=" + gameId + ", target=" + target + "]";
+	}
+
 }

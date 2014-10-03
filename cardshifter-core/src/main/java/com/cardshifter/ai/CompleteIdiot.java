@@ -5,10 +5,9 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import net.zomis.cardshifter.ecs.actions.ActionComponent;
+import net.zomis.cardshifter.ecs.actions.Actions;
 import net.zomis.cardshifter.ecs.actions.ECSAction;
 import net.zomis.cardshifter.ecs.actions.TargetSet;
-import net.zomis.cardshifter.ecs.base.ECSGame;
 import net.zomis.cardshifter.ecs.base.Entity;
 
 import org.apache.log4j.LogManager;
@@ -20,19 +19,12 @@ public class CompleteIdiot implements CardshifterAI {
 	
 	private final Random random = new Random();
 	
-	private static Stream<ECSAction> getAllActions(ECSGame game) {
-		return game.getEntitiesWithComponent(ActionComponent.class)
-			.stream()
-			.flatMap(entity -> entity.getComponent(ActionComponent.class)
-					.getECSActions().stream());
-	}
-	
 	@Override
 	public ECSAction getAction(Entity player) {
 		
-		Stream<ECSAction> actions = getAllActions(player.getGame());
+		Stream<ECSAction> actions = Actions.getPossibleActionsFor(player).stream();
 		
-		Stream<ECSAction> allActions = actions.filter(action -> action.isAllowed(player))
+		Stream<ECSAction> allActions = actions
 				.filter(action -> setTargetIfPossible(action));
 		List<ECSAction> list = allActions.collect(Collectors.toList());
 		logger.info(player + " allowed actions: " + list);

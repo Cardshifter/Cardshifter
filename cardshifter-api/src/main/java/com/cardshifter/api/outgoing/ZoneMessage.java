@@ -24,7 +24,7 @@ public class ZoneMessage extends Message {
 		this.owner = owner;
 		this.size = size;
 		this.known = known;
-		this.entities = entities;
+		this.entities = Arrays.copyOf(entities, entities.length);
 	}
 	
 	public int getId() {

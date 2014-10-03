@@ -38,7 +38,6 @@ import com.cardshifter.api.outgoing.UpdateMessage;
 import com.cardshifter.api.outgoing.UseableActionMessage;
 import com.cardshifter.api.outgoing.ZoneChangeMessage;
 import com.cardshifter.api.outgoing.ZoneMessage;
-import com.cardshifter.server.clients.ClientIO;
 import com.cardshifter.server.main.FakeAIClientTCG;
 
 public class TCGGame extends ServerGame {
@@ -245,4 +244,8 @@ public class TCGGame extends ServerGame {
 		io.sendToClient(new CardInfoMessage(cardData.getCurrentZone().getZoneId(), card.getId(), Resources.map(card)));
 	}
 
+	public ECSGame getGameModel() {
+		return game;
+	}
+	
 }

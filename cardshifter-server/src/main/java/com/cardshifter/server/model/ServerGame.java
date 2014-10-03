@@ -12,7 +12,6 @@ import org.apache.log4j.Logger;
 import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.outgoing.GameOverMessage;
 import com.cardshifter.api.outgoing.NewGameMessage;
-import com.cardshifter.server.clients.ClientIO;
 
 public abstract class ServerGame {
 	private static final Logger logger = LogManager.getLogger(ServerGame.class);
@@ -33,6 +32,7 @@ public abstract class ServerGame {
 //		this.chat = server.newChatRoom(this.toString());
 	}
 	
+	@Deprecated
 	public boolean handleMove(Command command) {
 		if (!players.contains(command.getSender())) {
 			logger.warn("Game did not contain player " + command.getSender());

@@ -45,10 +45,11 @@ public class AISystem implements ECSSystem {
 		logger.info("AI entities " + ais);
 		for (Entity entity : ais) {
 			AIComponent aiComp = ai.get(entity);
+			long delay = aiComp.getDelay();
 			ECSAction action = aiComp.getAI().getAction(entity);
 			if (action != null) {
-				logger.info(entity + " will perform in 4 seconds " + action);
-				executor.schedule(() -> this.perform(entity, action), 4, TimeUnit.SECONDS);
+				logger.info(entity + " will perform in " + delay + " milliseconds " + action);
+				executor.schedule(() -> this.perform(entity, action), delay, TimeUnit.MILLISECONDS);
 				return;
 			}
 			else {

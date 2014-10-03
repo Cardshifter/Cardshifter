@@ -9,6 +9,7 @@ import net.zomis.cardshifter.ecs.base.Component;
 public class AIComponent extends Component {
 	
 	private CardshifterAI ai;
+	private long delay = 4000;
 
 	public AIComponent(CardshifterAI ai) {
 		setAI(ai);
@@ -20,6 +21,14 @@ public class AIComponent extends Component {
 	
 	public CardshifterAI getAI() {
 		return ai;
+	}
+
+	public long getDelay() {
+		return delay;
+	}
+	
+	public void setDelay(long delay) {
+		this.delay = delay;
 	}
 	
 }

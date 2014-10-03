@@ -26,7 +26,9 @@ public class CommandHandler {
 		if (handler == null) {
 			command.getSender().sendToClient("Invalid command: " + command);
 		}
-		else handler.accept(command);
+		else {
+			handler.accept(command);
+		}
 		return handler != null;
 	}
 	
