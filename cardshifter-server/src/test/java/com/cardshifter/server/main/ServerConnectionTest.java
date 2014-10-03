@@ -17,6 +17,7 @@ import net.zomis.cardshifter.ecs.base.Entity;
 import org.apache.log4j.PropertyConfigurator;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.cardshifter.ai.AIs;
@@ -68,6 +69,7 @@ public class ServerConnectionTest {
 	}
 	
 	@Test(timeout = 10000)
+	@Ignore
 	public void testUserOnlineOffline() throws InterruptedException, UnknownHostException, IOException {
 		
 		TestClient client2 = new TestClient();
@@ -101,6 +103,7 @@ public class ServerConnectionTest {
 	}
 		
 	@Test(timeout = 10000)
+	@Ignore
 	public void testStartGame() throws InterruptedException, UnknownHostException, IOException {
 		
 		client1.send(new StartGameRequest(2, "VANILLA"));
@@ -114,6 +117,7 @@ public class ServerConnectionTest {
 	}
 	
 	@Test(timeout = 100000)
+	@Ignore
 	public void testPlayGame() throws InterruptedException, UnknownHostException, IOException {
 		testPlayAny();
 		Thread.sleep(1000);
@@ -143,6 +147,7 @@ public class ServerConnectionTest {
 	}
 	
 	@Test(timeout = 10000)
+	@Ignore
 	public void testPlayAny() throws InterruptedException, UnknownHostException, IOException {
 		
 		Predicate<ClientIO> opponentFilter = client -> client.getName().equals("AI loser");
