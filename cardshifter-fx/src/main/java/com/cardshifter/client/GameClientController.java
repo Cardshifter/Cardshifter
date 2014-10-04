@@ -428,12 +428,6 @@ public class GameClientController {
 	}
 	
 	private void processAvailableTargetsMessage(AvailableTargetsMessage message) {
-		if (message.getTargets().length == 0) {
-			// there are no targets to choose from, so cancel the action
-			UseableActionMessage newMessage = new UseableActionMessage(this.playerId, "End Turn", false, 0);
-			this.createActionButton(newMessage);
-			this.createCancelActionsButton();
-		}
 		for (int i = 0; i < message.getTargets().length; i++) {
 			int target = message.getTargets()[i];
 			if (target != this.opponentId) {
@@ -445,13 +439,13 @@ public class GameClientController {
 						}
 					}
 				}
-				this.createCancelActionsButton();
 			} else {
 				// automatically target opponent
 				UseableActionMessage newMessage = new UseableActionMessage(message.getEntity(), message.getAction(), false, target);
 				this.createAndSendMessage(newMessage);
 			}
 		}
+		this.createCancelActionsButton();
 	}
 	
 	private void processClientDisconnectedMessage(ClientDisconnectedMessage message) {
