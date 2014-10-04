@@ -77,6 +77,8 @@ public class GameClientController {
 	private OutputStream out;
 	private String ipAddress;
 	private int port;
+	private String userName;
+	private StartGameRequest startGameRequest;
 	
 	private int gameId;
 	private int playerIndex;
@@ -99,10 +101,13 @@ public class GameClientController {
 	private final Map<Integer, ZoneView<?>> zoneViewMap = new HashMap<>();
 	private List<UseableActionMessage> savedMessages = new ArrayList<>();
 	
-	public void acceptIPAndPort(String ipAddress, int port) {
+	
+	public void acceptConnectionSettings(String ipAddress, int port, String userName, StartGameRequest startGameRequest) {
 		// this is passed into this object after it is automatically created by the FXML document
 		this.ipAddress = ipAddress;
 		this.port = port;
+		this.userName = userName;
+		this.startGameRequest = startGameRequest;
 	}
 	public boolean connectToGame() {
 		// this is called on the object from the Game launcher before the scene is displayed
@@ -124,9 +129,10 @@ public class GameClientController {
 	}
 	private void play() {
 		// this method only runs once at the start
-		String name = "Player" + new Random().nextInt(100);
-		this.send(new LoginMessage(name));
+		//String name = "Player" + new Random().nextInt(100);
+		this.send(new LoginMessage(this.userName));
 		
+		/*
 		try {
 			WelcomeMessage response = (WelcomeMessage) messages.take();
 			if (!response.isOK()) {
@@ -138,9 +144,11 @@ public class GameClientController {
 			System.out.println("Server message not OK");
 			e.printStackTrace();
 		}
+		*/
 		
-		this.send(new StartGameRequest(-1, CardshifterConstants.VANILLA));
+		this.send(this.startGameRequest);
 		
+		/*
 		try {
 			Message message = messages.take();
 			if (message instanceof WaitMessage) {	
@@ -154,8 +162,9 @@ public class GameClientController {
 			System.out.println("Invalid response from opponent");
 			e.printStackTrace();
 		}
+		*/
 		
-		Platform.runLater(() -> this.repaintDeckLabels());
+		//Platform.runLater(() -> this.repaintDeckLabels());
 	}
 
 	private void listen() {
@@ -218,6 +227,11 @@ public class GameClientController {
 		
 		if (message instanceof NewGameMessage) {
 			this.processNewGameMessage((NewGameMessage) message);
+			this.gameId = ((NewGameMessage) message).getGameId();
+		} else if (message instanceof WelcomeMessage) {
+			Platform.runLater(() -> loginMessage.setText(message.toString()));
+		} else if (message instanceof WaitMessage) {
+			Platform.runLater(() -> loginMessage.setText(message.toString()));
 		} else if (message instanceof PlayerMessage) {
 			this.processPlayerMessage((PlayerMessage)message);
 		} else if (message instanceof ZoneMessage) {
