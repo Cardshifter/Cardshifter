@@ -221,7 +221,7 @@ public class GameClientController {
 		} else if (message instanceof PlayerMessage) {
 			this.processPlayerMessage((PlayerMessage)message);
 		} else if (message instanceof ZoneMessage) {
-			this.processZoneMessage((ZoneMessage)message);
+			this.assignZoneIdForZoneMessage((ZoneMessage)message);
 		} else if (message instanceof CardInfoMessage) {
 			this.processCardInfoMessage((CardInfoMessage)message);
 		} else if (message instanceof UseableActionMessage) {
@@ -272,9 +272,6 @@ public class GameClientController {
 		}
 	}
 	
-	private void processZoneMessage(ZoneMessage message) {
-		this.assignZoneIdForZoneMessage(message);
-	}
 	private void assignZoneIdForZoneMessage(ZoneMessage message) {
 		if (!this.zoneViewMap.containsKey(message.getId())) {
 			if (message.getName().equals("Battlefield")) {
@@ -330,16 +327,18 @@ public class GameClientController {
 		}
 	}	
 	private void addCardToOpponentBattlefieldPane(CardInfoMessage message) {
-		BattlefieldZoneView opponentBattlefield = (BattlefieldZoneView)this.zoneViewMap.get(opponentBattlefieldId);
+		BattlefieldZoneView opponentBattlefield = getZoneView(opponentBattlefieldId);
 		CardBattlefieldDocumentController card = new CardBattlefieldDocumentController(message, this);
 		opponentBattlefield.addPane(message.getId(), card);
 	}
 	private void addCardToOpponentHandPane(CardInfoMessage message) {
+		// this is unused because *KNOWN* cards don't pop up in opponent hand without reason (at least not now)
 	}
 	private void addCardToPlayerBattlefieldPane(CardInfoMessage message) {
+		// this is unused because cards don't pop up in the battlefield magically, they are *moved* there (at least for now)
 	}
 	private void addCardToPlayerHandPane(CardInfoMessage message) {
-		PlayerHandZoneView playerHand = (PlayerHandZoneView)this.zoneViewMap.get(playerHandId);
+		PlayerHandZoneView playerHand = getZoneView(playerHandId);
 		CardHandDocumentController card = new CardHandDocumentController(message, this);
 		playerHand.addPane(message.getId(), card);
 	}
@@ -606,6 +605,11 @@ public class GameClientController {
 	public void closeGame() {
 		this.stopThreads();
 		this.breakConnection();
+	}
+	
+	@SuppressWarnings("unchecked")
+	private <T extends ZoneView<?>> T getZoneView(int id) {
+		return (T) this.zoneViewMap.get(id);
 	}
 	
 }
