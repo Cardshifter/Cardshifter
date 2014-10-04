@@ -380,10 +380,9 @@ public class GameClientController {
 	}
 	
 	private void processUpdateMessageForCard(UpdateMessage message) {
-		for (ZoneView<?> zoneView : this.zoneViewMap.values()) {
-			if (zoneView.getAllIds().contains(message.getId())) {
-				zoneView.updateCard(message.getId(), message);
-			}
+		ZoneView<?> zoneView = getZoneViewForCard(message.getId());
+		if (zoneView != null) {
+			zoneView.updateCard(message.getId(), message);
 		}
 	}
 	
@@ -399,20 +398,20 @@ public class GameClientController {
 			}
 		} else if (sourceZoneId == playerDeckId) {
 			this.removeCardFromDeck(sourceZoneId, cardId);
+		} else if (sourceZoneId == opponentHandId) {
+			this.removeCardFromOpponentHand();
 		}
 		
 		if (this.zoneViewMap.containsKey(sourceZoneId) && this.zoneViewMap.containsKey(destinationZoneId)) {
 			if (sourceZoneId == playerHandId) {
-				PlayerHandZoneView sourceZone = (PlayerHandZoneView)this.zoneViewMap.get(sourceZoneId);
+				PlayerHandZoneView sourceZone = getZoneView(sourceZoneId);
 				CardHandDocumentController card = sourceZone.getCard(cardId);
+				
 				CardBattlefieldDocumentController newCard = new CardBattlefieldDocumentController(card.getCard(), this);
-			
-				BattlefieldZoneView destinationZone = (BattlefieldZoneView)this.zoneViewMap.get(destinationZoneId);
+				BattlefieldZoneView destinationZone = getZoneView(destinationZoneId);
 				destinationZone.addPane(cardId, newCard);
 			
 				sourceZone.removePane(cardId);
-			} else if (sourceZoneId == opponentHandId) {
-				this.removeCardFromOpponentHand();
 			}
 		}
 	}
@@ -425,41 +424,41 @@ public class GameClientController {
 			this.removeCardFromDeck(this.playerDeckId, message.getEntity());
 		}
 		
-		for (ZoneView<?> zoneView : this.zoneViewMap.values()) {
-			if (zoneView.getAllIds().contains(message.getEntity())) {
-				zoneView.removePane(message.getEntity());
-			}
+		ZoneView<?> zoneView = getZoneViewForCard(message.getEntity());
+		if (zoneView != null) {
+			zoneView.removePane(message.getEntity());
 		}
 	}
 	
 	private void processAvailableTargetsMessage(AvailableTargetsMessage message) {
 		if (message.getTargets().length == 0) {
+			// there are no targets to choose from, so cancel the action
 			UseableActionMessage newMessage = new UseableActionMessage(this.playerId, "End Turn", false, 0);
 			this.createEndTurnButton(newMessage);
 			this.createCancelActionsButton();
 		}
 		for (int i = 0; i < message.getTargets().length; i++) {
-			if (message.getTargets()[i] != this.opponentId) {
+			int target = message.getTargets()[i];
+			if (target != this.opponentId) {
 				for (ZoneView<?> zoneView : this.zoneViewMap.values()) {
 					if (zoneView instanceof BattlefieldZoneView) {
-						if (zoneView.getAllIds().contains(message.getTargets()[i])) {
-							UseableActionMessage newMessage = new UseableActionMessage(message.getEntity(), message.getAction(), false, message.getTargets()[i]);
-							((BattlefieldZoneView)zoneView).setCardTargetable(message.getTargets()[i], newMessage);
+						if (zoneView.getAllIds().contains(target)) {
+							UseableActionMessage newMessage = new UseableActionMessage(message.getEntity(), message.getAction(), false, target);
+							((BattlefieldZoneView)zoneView).setCardTargetable(target, newMessage);
 						}
 					}
 				}
 				this.createCancelActionsButton();
 			} else {
-				UseableActionMessage newMessage = new UseableActionMessage(message.getEntity(), message.getAction(), false, message.getTargets()[i]);
+				// automatically target opponent
+				UseableActionMessage newMessage = new UseableActionMessage(message.getEntity(), message.getAction(), false, target);
 				this.createAndSendMessage(newMessage);
 			}
 		}
 	}
 	
 	private void processClientDisconnectedMessage(ClientDisconnectedMessage message) {
-		//if (this.playerIndex != message.getPlayerIndex()) {
-			Platform.runLater(() -> this.loginMessage.setText("Opponent Left"));
-		//}
+		Platform.runLater(() -> this.loginMessage.setText("Opponent Left"));
 	}
 	
 	private void processGameOverMessage(GameOverMessage message) {
@@ -469,11 +468,11 @@ public class GameClientController {
 	
 	private void removeCardFromDeck(int zoneId, int cardId) {
 		if (this.opponentDeckId == zoneId) {
-				if (this.opponentDeckEntityIds.values().contains(cardId)) {
+			if (this.opponentDeckEntityIds.values().contains(cardId)) {
 				this.opponentDeckEntityIds.values().remove(cardId);
 			}
  		} else if (this.playerDeckId == zoneId) {
-				if (this.playerDeckEntityIds.values().contains(cardId)) {
+			if (this.playerDeckEntityIds.values().contains(cardId)) {
 				this.playerDeckEntityIds.values().remove(cardId);
 			}
 		}
