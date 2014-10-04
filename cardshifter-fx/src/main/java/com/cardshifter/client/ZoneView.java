@@ -10,6 +10,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+import com.cardshifter.api.outgoing.UpdateMessage;
 import com.cardshifter.client.views.CardView;
 
 public class ZoneView<T extends CardView> {
@@ -68,6 +69,11 @@ public class ZoneView<T extends CardView> {
 	
 	public Set<Integer> getAllIds() {
 		return this.zoneMap.keySet();
+	}
+	
+	public void updateCard(int cardId, UpdateMessage message) {
+		T card = getCard(cardId);
+		card.updateFields(message);
 	}
 	
 	//This causes a Null Pointer Exception, don't know why

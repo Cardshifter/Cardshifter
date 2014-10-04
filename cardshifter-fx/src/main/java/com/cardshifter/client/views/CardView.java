@@ -1,5 +1,7 @@
 package com.cardshifter.client.views;
 
+import com.cardshifter.api.outgoing.UpdateMessage;
+
 import javafx.scene.layout.Pane;
 
 public abstract class CardView {
@@ -9,5 +11,7 @@ public abstract class CardView {
 	}
 	
 	public abstract Pane getRootPane();
+	
+	public abstract void updateFields(UpdateMessage message);
 
 }

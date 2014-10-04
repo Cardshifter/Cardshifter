@@ -387,15 +387,7 @@ public class GameClientController {
 	private void processUpdateMessageForCard(UpdateMessage message) {
 		for (ZoneView<?> zoneView : this.zoneViewMap.values()) {
 			if (zoneView.getAllIds().contains(message.getId())) {
-				if (zoneView instanceof BattlefieldZoneView) {
-					if (message.getKey().equals("SICKNESS")) {
-						if ((int)message.getValue() == 0) {
-							((BattlefieldZoneView)zoneView).removeSicknessForCard(message.getId());
-						}
-					} else {
-						((BattlefieldZoneView)zoneView).updateCard(message.getId(), message);
-					}
-				}
+				zoneView.updateCard(message.getId(), message);
 			}
 		}
 	}

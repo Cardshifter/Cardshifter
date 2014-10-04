@@ -2,18 +2,12 @@ package com.cardshifter.client;
 
 import javafx.scene.layout.Pane;
 
-import com.cardshifter.api.outgoing.UpdateMessage;
 import com.cardshifter.api.outgoing.UseableActionMessage;
 
 public class BattlefieldZoneView extends ZoneView<CardBattlefieldDocumentController> {
 	
 	public BattlefieldZoneView(int cardId, Pane pane) {
 		super(cardId, pane);
-	}
-	
-	public void removeSicknessForCard(int cardId) {
-		CardBattlefieldDocumentController card = super.getCard(cardId);
-		card.removeSickness();
 	}
 	
 	public void setCardCanAttack(int cardId, UseableActionMessage message) {
@@ -53,11 +47,6 @@ public class BattlefieldZoneView extends ZoneView<CardBattlefieldDocumentControl
 	public void setCardTargetable(int cardId, UseableActionMessage message) {
 		CardBattlefieldDocumentController card = getCard(cardId);
 		card.setCardTargetable(message);
-	}
-	
-	public void updateCard(int cardId, UpdateMessage message) {
-		CardBattlefieldDocumentController card = getCard(cardId);
-		card.updateFields(message);
 	}
 	
 }

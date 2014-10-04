@@ -148,6 +148,7 @@ public final class CardBattlefieldDocumentController extends CardView implements
 		this.controller.createAndSendMessage(this.message);
 	}
 
+	@Override
 	public void updateFields(UpdateMessage message) {
 		if (message.getKey().equals("ATTACK")) {
 			strength.setText(String.format("%d", message.getValue()));
@@ -155,7 +156,12 @@ public final class CardBattlefieldDocumentController extends CardView implements
 			health.setText(String.format("%d", message.getValue()));
 		} else if (message.getKey().equals("creatureType")) {
 			creatureType.setText(String.valueOf(message.getValue()));
+		} else if (message.getKey().equals("SICKNESS")) {
+			if ((int)message.getValue() == 0) {
+				this.removeSickness();
+			}
 		}
+
 	}
 
     //Boilerplate code

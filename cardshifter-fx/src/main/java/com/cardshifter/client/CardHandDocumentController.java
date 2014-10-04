@@ -14,6 +14,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 import com.cardshifter.api.outgoing.CardInfoMessage;
+import com.cardshifter.api.outgoing.UpdateMessage;
 import com.cardshifter.api.outgoing.UseableActionMessage;
 import com.cardshifter.client.views.CardView;
 
@@ -114,5 +115,9 @@ public final class CardHandDocumentController extends CardView implements Initia
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
     }
+
+	@Override
+	public void updateFields(UpdateMessage message) {
+	}
 
 }
