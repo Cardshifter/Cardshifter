@@ -64,7 +64,8 @@ public final class CardBattlefieldDocumentController implements Initializable {
 			String stringValue = String.valueOf(entry.getValue());
 			switch (entry.getKey()) {
 				case "SICKNESS":
-					if (value == (Integer) 1) {
+					int sicknessValue = (Integer) value;
+					if (sicknessValue == 1) {
 						this.setSickness();
 					}	
 					break;
@@ -78,6 +79,8 @@ public final class CardBattlefieldDocumentController implements Initializable {
 					break;
 				case "creatureType":
 					creatureType.setText(stringValue);
+					break;
+				default:
 					break;
 			}
 		}
