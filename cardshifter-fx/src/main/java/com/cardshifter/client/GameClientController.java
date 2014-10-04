@@ -344,13 +344,10 @@ public class GameClientController {
 	}
 	
 	private void processUseableActionMessage(UseableActionMessage message) {
-		if (message.getAction().equals("End Turn")) {
-			this.createEndTurnButton(message);
-		}
-		
 		ZoneView<?> zoneView = getZoneViewForCard(message.getId());
 		System.out.println("Usable message: " + message + " inform zone " + zoneView);
 		if (zoneView == null) {
+			this.createActionButton(message);
 			return;
 		}
 		if (message.getAction().equals("Attack")) {
@@ -434,7 +431,7 @@ public class GameClientController {
 		if (message.getTargets().length == 0) {
 			// there are no targets to choose from, so cancel the action
 			UseableActionMessage newMessage = new UseableActionMessage(this.playerId, "End Turn", false, 0);
-			this.createEndTurnButton(newMessage);
+			this.createActionButton(newMessage);
 			this.createCancelActionsButton();
 		}
 		for (int i = 0; i < message.getTargets().length; i++) {
@@ -479,7 +476,7 @@ public class GameClientController {
 		this.repaintDeckLabels();
 	}
 	
-	private void createEndTurnButton(UseableActionMessage message) {
+	private void createActionButton(UseableActionMessage message) {
 		createActionButton(message.getAction(), () -> createAndSendMessage(message));
 	}
 	
