@@ -1,30 +1,5 @@
 package com.cardshifter.client;
 
-import com.cardshifter.api.incoming.LoginMessage;
-import com.cardshifter.api.incoming.RequestTargetsMessage;
-import com.cardshifter.api.incoming.StartGameRequest;
-import com.cardshifter.api.incoming.UseAbilityMessage;
-import com.cardshifter.api.messages.Message;
-import com.cardshifter.api.outgoing.AvailableTargetsMessage;
-import com.cardshifter.api.outgoing.CardInfoMessage;
-import com.cardshifter.api.outgoing.ClientDisconnectedMessage;
-import com.cardshifter.api.outgoing.EntityRemoveMessage;
-import com.cardshifter.api.outgoing.GameOverMessage;
-import com.cardshifter.api.outgoing.NewGameMessage;
-import com.cardshifter.api.outgoing.PlayerMessage;
-import com.cardshifter.api.outgoing.ResetAvailableActionsMessage;
-import com.cardshifter.api.outgoing.UpdateMessage;
-import com.cardshifter.api.outgoing.UseableActionMessage;
-import com.cardshifter.api.outgoing.WaitMessage;
-import com.cardshifter.api.outgoing.WelcomeMessage;
-import com.cardshifter.api.outgoing.ZoneChangeMessage;
-import com.cardshifter.api.outgoing.ZoneMessage;
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.MappingIterator;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -49,6 +24,32 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+
+import com.cardshifter.api.CardshifterConstants;
+import com.cardshifter.api.incoming.LoginMessage;
+import com.cardshifter.api.incoming.RequestTargetsMessage;
+import com.cardshifter.api.incoming.StartGameRequest;
+import com.cardshifter.api.incoming.UseAbilityMessage;
+import com.cardshifter.api.messages.Message;
+import com.cardshifter.api.outgoing.AvailableTargetsMessage;
+import com.cardshifter.api.outgoing.CardInfoMessage;
+import com.cardshifter.api.outgoing.ClientDisconnectedMessage;
+import com.cardshifter.api.outgoing.EntityRemoveMessage;
+import com.cardshifter.api.outgoing.GameOverMessage;
+import com.cardshifter.api.outgoing.NewGameMessage;
+import com.cardshifter.api.outgoing.PlayerMessage;
+import com.cardshifter.api.outgoing.ResetAvailableActionsMessage;
+import com.cardshifter.api.outgoing.UpdateMessage;
+import com.cardshifter.api.outgoing.UseableActionMessage;
+import com.cardshifter.api.outgoing.WaitMessage;
+import com.cardshifter.api.outgoing.WelcomeMessage;
+import com.cardshifter.api.outgoing.ZoneChangeMessage;
+import com.cardshifter.api.outgoing.ZoneMessage;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.MappingIterator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class GameClientController {
 	
@@ -137,7 +138,7 @@ public class GameClientController {
 			e.printStackTrace();
 		}
 		
-		this.send(new StartGameRequest(-1, "VANILLA"));
+		this.send(new StartGameRequest(-1, CardshifterConstants.VANILLA));
 		
 		try {
 			Message message = messages.take();
@@ -171,7 +172,7 @@ public class GameClientController {
 					Platform.runLater(() -> this.processMessageFromServer(message));
 				}
 			} catch (SocketException e) {
-				e.printStackTrace();
+				Platform.runLater(() -> loginMessage.setText(e.getMessage()));
 				return;
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -373,13 +374,15 @@ public class GameClientController {
 			this.processUpdateMessageForCard(message);
 		}
 	}
-	private void processUpdateMessageForPlayer(Pane statBox, UpdateMessage message, Map playerMap) {
+	
+	private void processUpdateMessageForPlayer(Pane statBox, UpdateMessage message, Map<String, Integer> playerMap) {
 		String key = (String)message.getKey();
 		Integer value = (Integer)message.getValue();
 		playerMap.put(key, value);
 	
 		this.repaintStatBox(statBox, playerMap);
 	}
+	
 	private void processUpdateMessageForCard(UpdateMessage message) {
 		for (ZoneView zoneView : this.zoneViewMap.values()) {
 			if (zoneView.getAllIds().contains(message.getId())) {

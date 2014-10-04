@@ -5,7 +5,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -17,12 +16,12 @@ import net.zomis.cardshifter.ecs.base.Entity;
 import org.apache.log4j.PropertyConfigurator;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.cardshifter.ai.AIs;
 import com.cardshifter.ai.CardshifterAI;
 import com.cardshifter.ai.ScoringAI;
+import com.cardshifter.api.CardshifterConstants;
 import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.incoming.ServerQueryMessage;
 import com.cardshifter.api.incoming.ServerQueryMessage.Request;
@@ -48,7 +47,7 @@ public class ServerConnectionTest {
 	private int userId;
 
 	@Before
-	public void setup() throws UnknownHostException, IOException {
+	public void setup() throws UnknownHostException, IOException, InterruptedException {
 		PropertyConfigurator.configure(getClass().getResourceAsStream("log4j.properties"));
 		main = new MainServer();
 		server = main.start();
@@ -60,7 +59,7 @@ public class ServerConnectionTest {
 		assertEquals(200, welcome.getStatus());
 		assertEquals(server.getClients().size(), welcome.getUserId());
 		userId = welcome.getUserId();
-		
+		Thread.sleep(500);
 	}
 	
 	@After
@@ -69,7 +68,6 @@ public class ServerConnectionTest {
 	}
 	
 	@Test(timeout = 10000)
-	@Ignore
 	public void testUserOnlineOffline() throws InterruptedException, UnknownHostException, IOException {
 		
 		TestClient client2 = new TestClient();
@@ -83,11 +81,14 @@ public class ServerConnectionTest {
 		assertEquals("Test2", statusMessage.getName());
 		
 		client2.send(new ServerQueryMessage(Request.USERS));
-		List<UserStatusMessage> users = new ArrayList<>();
-		users.add(client2.await(UserStatusMessage.class));
-		users.add(client2.await(UserStatusMessage.class));
-		users.add(client2.await(UserStatusMessage.class));
-		users.add(client2.await(UserStatusMessage.class));
+		List<UserStatusMessage> users = client2.awaitMany(6, UserStatusMessage.class);
+		System.out.println("Online users: " + users);
+		assertTrue(users.stream().filter(mess -> mess.getName().equals("Tester")).findAny().isPresent());
+		assertTrue(users.stream().filter(mess -> mess.getName().equals("Test2")).findAny().isPresent());
+		assertTrue(users.stream().filter(mess -> mess.getName().equals("AI old")).findAny().isPresent());
+		assertTrue(users.stream().filter(mess -> mess.getName().equals("AI loser")).findAny().isPresent());
+		assertTrue(users.stream().filter(mess -> mess.getName().equals("AI medium")).findAny().isPresent());
+		assertTrue(users.stream().filter(mess -> mess.getName().equals("AI idiot")).findAny().isPresent());
 		// There is currently no determined order in which the received messages occur, so it is harder to make any assertions.
 //		UserStatusMessage status = 
 //		assertEquals("Tester", status.getName());
@@ -101,12 +102,11 @@ public class ServerConnectionTest {
 		assertEquals(client2id, statusMessage.getUserId());
 		assertEquals("Test2", statusMessage.getName());
 	}
-		
+	
 	@Test(timeout = 10000)
-	@Ignore
 	public void testStartGame() throws InterruptedException, UnknownHostException, IOException {
 		
-		client1.send(new StartGameRequest(2, "VANILLA"));
+		client1.send(new StartGameRequest(2, CardshifterConstants.VANILLA));
 		client1.await(WaitMessage.class);
 		NewGameMessage gameMessage = client1.await(NewGameMessage.class);
 		assertEquals(1, gameMessage.getGameId());
@@ -117,7 +117,6 @@ public class ServerConnectionTest {
 	}
 	
 	@Test(timeout = 100000)
-	@Ignore
 	public void testPlayGame() throws InterruptedException, UnknownHostException, IOException {
 		testPlayAny();
 		Thread.sleep(1000);
@@ -126,7 +125,7 @@ public class ServerConnectionTest {
 		ClientIO io = server.getClients().get(server.getClients().size());
 		Entity human = game.playerFor(io);
 		Entity ai = game.getGameModel().getEntitiesWithComponent(AIComponent.class).stream().findFirst().get();
-		ai.getComponent(AIComponent.class).setDelay(10);
+		ai.getComponent(AIComponent.class).setDelay(0);
 		
 		CardshifterAI humanActions = new ScoringAI(AIs.medium());
 		while (!game.isGameOver()) {
@@ -142,18 +141,17 @@ public class ServerConnectionTest {
 				System.out.println("Sending message: " + message);
 				client1.send(message);
 			}
-			Thread.sleep(200);
+			Thread.sleep(1000);
 		}
 	}
 	
 	@Test(timeout = 10000)
-	@Ignore
 	public void testPlayAny() throws InterruptedException, UnknownHostException, IOException {
 		
 		Predicate<ClientIO> opponentFilter = client -> client.getName().equals("AI loser");
-		server.getIncomingHandler().perform(new StartGameRequest(-1, "VANILLA"), server.getClients().values().stream().filter(opponentFilter).findAny().get());
+		server.getIncomingHandler().perform(new StartGameRequest(-1, CardshifterConstants.VANILLA), server.getClients().values().stream().filter(opponentFilter).findAny().get());
 		
-		client1.send(new StartGameRequest(-1, "VANILLA"));
+		client1.send(new StartGameRequest(-1, CardshifterConstants.VANILLA));
 		NewGameMessage gameMessage = client1.await(NewGameMessage.class);
 		assertEquals(1, gameMessage.getGameId());
 		ServerGame game = server.getGames().get(1);

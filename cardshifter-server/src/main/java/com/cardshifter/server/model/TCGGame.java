@@ -18,8 +18,8 @@ import net.zomis.cardshifter.ecs.base.GameOverEvent;
 import net.zomis.cardshifter.ecs.cards.CardComponent;
 import net.zomis.cardshifter.ecs.cards.ZoneChangeEvent;
 import net.zomis.cardshifter.ecs.cards.ZoneComponent;
+import net.zomis.cardshifter.ecs.components.CreatureTypeComponent;
 import net.zomis.cardshifter.ecs.components.PlayerComponent;
-import net.zomis.cardshifter.ecs.phase.PhaseController;
 import net.zomis.cardshifter.ecs.resources.ResourceValueChange;
 import net.zomis.cardshifter.ecs.resources.Resources;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame;
@@ -34,6 +34,7 @@ import com.cardshifter.api.outgoing.CardInfoMessage;
 import com.cardshifter.api.outgoing.EntityRemoveMessage;
 import com.cardshifter.api.outgoing.PlayerMessage;
 import com.cardshifter.api.outgoing.ResetAvailableActionsMessage;
+import com.cardshifter.api.outgoing.ServerErrorMessage;
 import com.cardshifter.api.outgoing.UpdateMessage;
 import com.cardshifter.api.outgoing.UseableActionMessage;
 import com.cardshifter.api.outgoing.ZoneChangeMessage;
@@ -45,10 +46,8 @@ public class TCGGame extends ServerGame {
 	private static final Logger logger = LogManager.getLogger(TCGGame.class);
 	private final ECSGame game;
 	private final ComponentRetriever<CardComponent> card = ComponentRetriever.retreiverFor(CardComponent.class);
+	private final ComponentRetriever<CreatureTypeComponent> creatureType = ComponentRetriever.retreiverFor(CreatureTypeComponent.class);
 	
-	@Deprecated
-	private final PhaseController phases; // this is not necessary anymore as Actions require a 'player' method to perform.
-
 	private ComponentRetriever<PlayerComponent> playerData = ComponentRetriever.retreiverFor(PlayerComponent.class);
 	
 	public TCGGame(Server server, int id) {
@@ -60,7 +59,6 @@ public class TCGGame extends ServerGame {
 		game.getEvents().registerHandlerAfter(this, GameOverEvent.class, event -> this.endGame());
 		AISystem.setup(game, server.getScheduler());
 		game.addSystem(game -> game.getEvents().registerHandlerAfter(this, ActionPerformEvent.class, event -> this.sendAvailableActions()));
-		phases = ComponentRetriever.singleton(game, PhaseController.class);
 	}
 
 	private void zoneChange(ZoneChangeEvent event) {
@@ -69,11 +67,18 @@ public class TCGGame extends ServerGame {
 			Entity player = playerFor(io);
 			io.sendToClient(new ZoneChangeMessage(event.getCard().getId(), event.getSource().getZoneId(), event.getDestination().getZoneId()));
 			if (event.getDestination().isKnownTo(player) && !event.getSource().isKnownTo(player)) {
-				io.sendToClient(new CardInfoMessage(event.getDestination().getZoneId(), cardEntity.getId(), Resources.map(cardEntity)));
+				sendRealCardData(io, event.getDestination().getZoneId(), cardEntity);
 			}
 		}
 	}
 	
+	private void sendRealCardData(ClientIO io, int zoneId, Entity cardEntity) {
+		io.sendToClient(new CardInfoMessage(zoneId, cardEntity.getId(), Resources.map(cardEntity)));
+		if (creatureType.has(cardEntity)) {
+			io.sendToClient(new UpdateMessage(cardEntity.getId(), "creatureType", creatureType.get(cardEntity).getCreatureType()));
+		}
+	}
+
 	private void remove(EntityRemoveEvent event) {
 		this.send(new EntityRemoveMessage(event.getEntity().getId()));
 	}
@@ -142,9 +147,6 @@ public class TCGGame extends ServerGame {
 		if (!this.getPlayers().contains(client)) {
 			throw new IllegalArgumentException("Client is not in this game: " + client);
 		}
-		if (phases.getCurrentEntity() != playerFor(client)) {
-			throw new IllegalArgumentException("It's not that players turn: " + client);
-		}
 		
 		ECSAction action = findAction(message.getId(), message.getAction());
 		if (!action.getTargetSets().isEmpty()) {
@@ -152,7 +154,10 @@ public class TCGGame extends ServerGame {
 			targetAction.clearTargets();
 			targetAction.addTarget(findTargetable(message.getTarget()));
 		}
-		action.perform(playerFor(client));
+		boolean allowed = action.perform(playerFor(client));
+		if (!allowed) {
+			client.sendToClient(new ServerErrorMessage("Action not allowed: " + action));
+		}
 		
 		// TODO: Add listener to game for ZoneMoves, inform players about card movements, and send CardInfoMessage when a card becomes known
 		sendAvailableActions();
@@ -209,11 +214,8 @@ public class TCGGame extends ServerGame {
 		for (ClientIO io : this.getPlayers()) {
 			Entity player = playerFor(io);
 			io.sendToClient(new ResetAvailableActionsMessage());
-			if (phases.getCurrentEntity() == player) {
-				getAllActions(game).filter(action -> action.isAllowed(player))
-						.forEach(action -> io.sendToClient(new UseableActionMessage(action.getOwner().getId(), action.getName(), !action.getTargetSets().isEmpty())));
-				
-			}
+			getAllActions(game).filter(action -> action.isAllowed(player))
+				.forEach(action -> io.sendToClient(new UseableActionMessage(action.getOwner().getId(), action.getName(), !action.getTargetSets().isEmpty())));
 		}
 	}
 

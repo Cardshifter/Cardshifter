@@ -33,7 +33,7 @@ public class ActionTest {
 	public void test() {
 		game.startGame();
 		ActionComponent actions = retriever.get(entity);
-		assertEquals(Collections.emptySet(), actions.getActions());
+		assertEquals(Collections.<String>emptySet(), actions.getActions());
 		
 		actions.addAction(new ECSAction(entity, "Use", action -> true, action -> this.used++));
 		assertEquals(0, used);
@@ -54,7 +54,7 @@ public class ActionTest {
 		game.startGame();
 		
 		ActionComponent actions = retriever.get(entity);
-		assertEquals(Collections.emptySet(), actions.getActions());
+		assertEquals(Collections.<String>emptySet(), actions.getActions());
 		
 		actions.addAction(new ECSAction(entity, "Use", action -> true, action -> this.used++));
 		assertEquals(0, used);
