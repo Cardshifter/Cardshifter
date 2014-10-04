@@ -143,7 +143,9 @@ public class TCGGame extends ServerGame {
 		if (!action.getTargetSets().isEmpty()) {
 			TargetSet targetAction = action.getTargetSets().get(0);
 			targetAction.clearTargets();
-			targetAction.addTarget(findTargetable(message.getTarget()));
+			for (int target : message.getTargets()) {
+				targetAction.addTarget(findTargetable(target));
+			}
 		}
 		boolean allowed = action.perform(playerFor(client));
 		if (!allowed) {

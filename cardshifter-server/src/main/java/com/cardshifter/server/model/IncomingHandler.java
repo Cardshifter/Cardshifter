@@ -53,10 +53,10 @@ public class IncomingHandler {
 	 */
 	public <T extends Message> T parse(String json) throws IOException {
 		ObjectMapper mapper = new ObjectMapper(); 
-		TypeReference<HashMap<String, String>> typeRef = new TypeReference<HashMap<String, String>>() {};
-		HashMap<String, String> o = mapper.readValue(json, typeRef);
+		TypeReference<HashMap<String, Object>> typeRef = new TypeReference<HashMap<String, Object>>() {};
+		HashMap<String, Object> o = mapper.readValue(json, typeRef);
 
-		String command = o.get("command");
+		Object command = o.get("command");
 		if (command == null || !commandTypes.containsKey(command)) {
 			throw new UnsupportedOperationException("Command " + command + " is not supported. JSON: " + json);
 		}
