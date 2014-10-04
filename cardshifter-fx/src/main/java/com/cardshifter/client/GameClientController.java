@@ -439,15 +439,7 @@ public class GameClientController {
 		}
 		
 		for (ZoneView<?> zoneView : this.zoneViewMap.values()) {
-			if (zoneView instanceof BattlefieldZoneView) {
-				if (zoneView.getAllIds().contains(message.getEntity())) {
-					((BattlefieldZoneView)zoneView).removePane(message.getEntity());
-				}
-			} else if (zoneView instanceof PlayerHandZoneView) {
-				if (zoneView.getAllIds().contains(message.getEntity())) {
-					((PlayerHandZoneView)zoneView).removePane(message.getEntity());
-				}
-			} else if (zoneView.getAllIds().contains(message.getEntity())) {
+			if (zoneView.getAllIds().contains(message.getEntity())) {
 				zoneView.removePane(message.getEntity());
 			}
 		}
