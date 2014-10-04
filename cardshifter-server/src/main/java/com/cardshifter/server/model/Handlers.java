@@ -5,6 +5,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.both.InviteResponse;
 import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.incoming.RequestTargetsMessage;
@@ -53,6 +54,7 @@ public class Handlers {
 		server.getClients().values().stream()
 			.filter(cl -> cl != client)
 			.forEach(cl -> cl.sendToClient(statusMessage));
+		server.getMainChat().add(client);
 	}
 
 	public void play(StartGameRequest message, ClientIO client) {
@@ -114,4 +116,9 @@ public class Handlers {
 		game.informAboutTargets(message, client);
 	}
 
+	public void chat(ChatMessage message, ClientIO client) {
+		ChatArea chat = server.getChats().get(message.getChatId());
+		chat.incomingMessage(message, client);
+	}
+	
 }

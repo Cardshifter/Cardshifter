@@ -12,6 +12,7 @@ import com.cardshifter.ai.CardshifterAI;
 import com.cardshifter.ai.CompleteIdiot;
 import com.cardshifter.ai.ScoringAI;
 import com.cardshifter.api.CardshifterConstants;
+import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.incoming.StartGameRequest;
 import com.cardshifter.server.main.FakeAIClientTCG;
@@ -44,6 +45,8 @@ public class MainServer {
 			commandHandler.addHandler("export", this::export);
 			commandHandler.addHandler("users", this::users);
 			commandHandler.addHandler("play", this::play);
+			commandHandler.addHandler("say", this::say);
+			commandHandler.addHandler("chat", this::chatInfo);
 			ServerConsole console = new ServerConsole(server, commandHandler);
 			consoleThread = new Thread(console, "Console-Thread");
 			consoleThread.start();
@@ -61,6 +64,22 @@ public class MainServer {
 			logger.error("Initializing Error", e);
 		}
 		return server;
+	}
+	
+	private void say(Command command) {
+		ChatArea chat = server.getMainChat();
+		chat.broadcast(new ChatMessage(chat.getId(), "Server", command.getFullCommand(1)));
+	}
+	
+	private void chatInfo(Command command) {
+		int chatId = command.getParameterInt(1);
+		if (chatId == 0) {
+			System.out.println(server.getChats().keySet());
+		}
+		else {
+			ChatArea chat = server.getMainChat();
+			System.out.println(chat.getUsers());
+		}
 	}
 	
 	private void shutdown() {

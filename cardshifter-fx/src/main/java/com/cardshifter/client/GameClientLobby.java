@@ -1,11 +1,13 @@
 package com.cardshifter.client;
 
 import com.cardshifter.api.CardshifterConstants;
+import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.incoming.ServerQueryMessage;
 import com.cardshifter.api.incoming.ServerQueryMessage.Request;
 import com.cardshifter.api.incoming.StartGameRequest;
 import com.cardshifter.api.messages.Message;
+import com.cardshifter.api.outgoing.ServerErrorMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage.Status;
 import com.fasterxml.jackson.core.JsonFactory;
@@ -13,18 +15,23 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -34,10 +41,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
-public class GameClientLobby {
+public class GameClientLobby implements Initializable {
 	
-	@FXML private ListView usersOnline;
-	@FXML private ListView chatMessages;
+	@FXML private ListView<String> usersOnline;
+	@FXML private ListView<String> chatMessages;
 	@FXML private TextField messageBox;
 	@FXML private Button sendMessageButton;
 	@FXML private AnchorPane inviteButton;
@@ -100,7 +107,7 @@ public class GameClientLobby {
 					Platform.runLater(() -> this.processMessageFromServer(message));
 				}
 			} catch (SocketException e) {
-				System.out.println("Error receiving message");
+				System.out.println("Error receiving message: " + e.getMessage());
 				return;
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -135,8 +142,20 @@ public class GameClientLobby {
 		if (message instanceof UserStatusMessage) {
 			this.processUserStatusMessage((UserStatusMessage)message);
 		}
+		if (message instanceof ChatMessage) {
+			ChatMessage msg = (ChatMessage) message;
+			chatOutput(msg.getFrom() + ": " + msg.getMessage());
+		}
+		if (message instanceof ServerErrorMessage) {
+			ServerErrorMessage msg = (ServerErrorMessage) message;
+			chatOutput("SERVER ERROR: " + msg.getMessage());
+		}
 	}
 	
+	private void chatOutput(String string) {
+		Platform.runLater(() -> this.chatMessages.getItems().add(string));
+		
+	}
 	private void processUserStatusMessage(UserStatusMessage message) {
 		if (message.getStatus() == Status.ONLINE) {
 			this.usersOnlineList.put(message.getName(), message.getUserId());
@@ -149,7 +168,13 @@ public class GameClientLobby {
 	}
 	
 	private void selectUserForGameInvite(MouseEvent event) {
-		this.userForGameInvite = this.usersOnline.getSelectionModel().getSelectedItem().toString();
+		String selected = this.usersOnline.getSelectionModel().getSelectedItem();
+		if (selected != null) {
+			this.userForGameInvite = selected.toString();
+		} else {
+			this.usersOnline.getItems().clear();
+			this.sendServerQueryMessage();
+		}
 	}
 	
 	private void startGameWithUser(MouseEvent event) {
@@ -208,6 +233,18 @@ public class GameClientLobby {
 	public void closeLobby() {
 		this.stopThreads();
 		this.breakConnection();
+	}
+	
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		this.sendMessageButton.setOnAction(e -> this.sendMessage());
+		this.messageBox.setOnAction(e -> this.sendMessage());
+	}
+	
+	private void sendMessage() {
+		String message = this.messageBox.getText();
+		this.send(new ChatMessage(1, "unused", message));
+		this.messageBox.clear();
 	}
 	
 }
