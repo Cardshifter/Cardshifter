@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.shape.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane id="AnchorPane" prefHeight="499.0" prefWidth="900.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8">
+   <children>
+      <AnchorPane layoutX="-1.0" layoutY="-3.0" prefHeight="50.0" prefWidth="900.0">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="50.0" layoutX="1.0" stroke="BLACK" strokeType="INSIDE" width="900.0" />
+            <Label layoutX="310.0" layoutY="7.0" text="Cardshifter Lobby">
+               <font>
+                  <Font name="System Bold" size="30.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutY="47.0" prefHeight="400.0" prefWidth="700.0">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="400.0" stroke="BLACK" strokeType="INSIDE" width="700.0" />
+            <ListView layoutX="13.0" layoutY="13.0" prefHeight="375.0" prefWidth="675.0" />
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutY="447.0" prefHeight="50.0" prefWidth="700.0">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="36.0" layoutY="7.0" stroke="BLACK" strokeType="INSIDE" width="700.0" />
+            <TextField layoutX="3.0" layoutY="12.0" prefHeight="26.0" prefWidth="626.0" />
+            <Button layoutX="637.0" layoutY="12.0" mnemonicParsing="false" text="Send" />
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="700.0" layoutY="45.0" prefHeight="403.0" prefWidth="200.0">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#9cb8d3" height="365.0" layoutY="35.0" stroke="BLACK" strokeType="INSIDE" width="200.0" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#6db3f5" height="36.0" layoutY="1.0" stroke="BLACK" strokeType="INSIDE" width="200.0" />
+            <Label layoutX="33.0" layoutY="7.0" text="Users Online">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+            </Label>
+            <ListView layoutX="30.0" layoutY="37.0" prefHeight="359.0" prefWidth="166.0" />
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="704.0" layoutY="445.0" prefHeight="50.0" prefWidth="200.0">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#48285e" height="47.0" layoutX="-3.0" layoutY="3.0" stroke="BLACK" strokeType="INSIDE" width="201.0" />
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>
