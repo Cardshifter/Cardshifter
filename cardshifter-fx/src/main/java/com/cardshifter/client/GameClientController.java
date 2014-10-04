@@ -480,23 +480,21 @@ public class GameClientController {
 	}
 	
 	private void createEndTurnButton(UseableActionMessage message) {
-		double paneHeight = actionBox.getHeight();
-		double paneWidth = actionBox.getWidth();
-		
-		int maxActions = 8;
-		double actionWidth = paneWidth / maxActions;
-		
-		ActionButton actionButton = new ActionButton(message, this, actionWidth, paneHeight);
-		actionBox.getChildren().add(actionButton);
+		createActionButton(message.getAction(), () -> createAndSendMessage(message));
 	}
 	
 	private void createCancelActionsButton() {
+		createActionButton("Cancel", () -> cancelAction());
+	}
+	
+	private void createActionButton(String label, Runnable action) {
 		double paneHeight = actionBox.getHeight();
 		double paneWidth = actionBox.getWidth();
 		
 		int maxActions = 8;
 		double actionWidth = paneWidth / maxActions;
-		ActionButton actionButton = new ActionButton(this, actionWidth, paneHeight);
+		
+		ActionButton actionButton = new ActionButton(label, actionWidth, paneHeight, action);
 		actionBox.getChildren().add(actionButton);
 	}
 	
