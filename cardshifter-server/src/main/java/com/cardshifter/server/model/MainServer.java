@@ -11,11 +11,14 @@ import com.cardshifter.ai.AIs;
 import com.cardshifter.ai.CardshifterAI;
 import com.cardshifter.ai.CompleteIdiot;
 import com.cardshifter.ai.ScoringAI;
+import com.cardshifter.api.CardshifterConstants;
 import com.cardshifter.api.incoming.LoginMessage;
+import com.cardshifter.api.incoming.StartGameRequest;
 import com.cardshifter.server.main.FakeAIClientTCG;
 import com.cardshifter.server.utils.export.DataExporter;
 
 public class MainServer {
+	
 	private static final Logger logger = LogManager.getLogger(MainServer.class);
 	
 	private final Server server = new Server();
@@ -39,6 +42,8 @@ public class MainServer {
 			CommandHandler commandHandler = new CommandHandler();
 			commandHandler.addHandler("exit", command -> this.shutdown());
 			commandHandler.addHandler("export", this::export);
+			commandHandler.addHandler("users", this::users);
+			commandHandler.addHandler("play", this::play);
 			ServerConsole console = new ServerConsole(server, commandHandler);
 			consoleThread = new Thread(console, "Console-Thread");
 			consoleThread.start();
@@ -71,8 +76,18 @@ public class MainServer {
 		consoleThread.interrupt();
 	}
 	
+	private void users(Command command) {
+		server.getClients().values().forEach(cl -> System.out.println(cl.getId() + ": " + cl.getName()));
+	}
+	
+	private void play(Command command) {
+		int userId = command.getParameterInt(1);
+		ClientIO client = server.getClients().get(userId);
+		server.getIncomingHandler().perform(new StartGameRequest(-1, CardshifterConstants.VANILLA), client);
+	}
+	
 	private void export(Command command) {
-		server.createGame("VANILLA");
+		server.createGame(CardshifterConstants.VANILLA);
 		DataExporter exporter = new DataExporter();
 		exporter.export(server, command.getAllParameters());
 	}
