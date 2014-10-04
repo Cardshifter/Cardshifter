@@ -181,10 +181,8 @@ public class GameClientController {
 		}
 	}
 	
-	public void createAndSendMessage(Message message) {
+	public void createAndSendMessage(UseableActionMessage action) {
 		try {
-			UseableActionMessage action = (UseableActionMessage)message;
-			
 			if (action.isTargetRequired()) {
 				this.send(new RequestTargetsMessage(gameId, action.getId(), action.getAction()));
 			} else {
