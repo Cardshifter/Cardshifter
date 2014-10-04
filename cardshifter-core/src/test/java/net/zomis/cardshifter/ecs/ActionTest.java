@@ -15,13 +15,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 public class ActionTest {
 
 	private ECSGame game;
 	private Entity entity;
 	private ComponentRetriever<ActionComponent> retriever = ComponentRetriever.retreiverFor(ActionComponent.class);
-	private int used;
 
 	@Before
 	public void das() {
@@ -61,10 +61,15 @@ public class ActionTest {
 		ActionComponent actions = retriever.get(entity);
 		assertEquals(Collections.<String>emptySet(), actions.getActions());
 
-		actions.addAction(new ECSAction(entity, "Use", action -> true, action -> this.used++));
-		assertEquals(0, used);
-		assertFalse(actions.getAction("Use").isAllowed(entity));
-		assertEquals(0, used);
+		@SuppressWarnings("unchecked")
+		Consumer<ECSAction> perform = (Consumer<ECSAction>) mock(Consumer.class);
+
+		String name = "Use";
+		actions.addAction(new ECSAction(entity, name, action -> true, perform));
+		actions.getAction(name).copy().perform(entity);
+		verifyNoMoreInteractions(perform);
+
+		assertFalse(actions.getAction(name).isAllowed(entity));
 	}
 
 }
