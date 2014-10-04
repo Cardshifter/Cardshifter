@@ -17,6 +17,7 @@ import java.util.stream.Stream;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import com.cardshifter.api.CardshifterConstants;
 import com.cardshifter.api.both.InviteResponse;
 import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.incoming.RequestTargetsMessage;
@@ -32,8 +33,6 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 public class Server {
 	private static final Logger	logger = LogManager.getLogger(Server.class);
-
-	private static final String VANILLA = "VANILLA";
 
 	// Counters for various things
 	private final AtomicInteger clientId = new AtomicInteger(0);
@@ -71,7 +70,7 @@ public class Server {
 		incomings.addHandler("inviteResponse", InviteResponse.class, handlers::inviteResponse);
 		incomings.addHandler("query", ServerQueryMessage.class, handlers::query);
 		
-		server.addGameFactory(VANILLA, (serv, id) -> new TCGGame(serv, id));
+		server.addGameFactory(CardshifterConstants.VANILLA, (serv, id) -> new TCGGame(serv, id));
 		
 	}
 	

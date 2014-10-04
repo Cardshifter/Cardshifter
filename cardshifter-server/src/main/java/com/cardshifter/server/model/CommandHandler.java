@@ -4,6 +4,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 /**
  * Handles chat style commands such as '/example 1 2 something'
  * @author Simon Forsberg
@@ -11,6 +14,7 @@ import java.util.function.Consumer;
  */
 public class CommandHandler {
 
+	private static final Logger logger = LogManager.getLogger(CommandHandler.class);
 	private final Map<String, Consumer<Command>> commands;
 	
 	public CommandHandler() {
@@ -22,14 +26,20 @@ public class CommandHandler {
 	}
 	
 	public boolean handle(Command command) {
-		Consumer<Command> handler = commands.get(command.getCommand());
-		if (handler == null) {
-			command.getSender().sendToClient("Invalid command: " + command);
+		try {
+			Consumer<Command> handler = commands.get(command.getCommand());
+			if (handler == null) {
+				command.getSender().sendToClient("Invalid command: " + command);
+			}
+			else {
+				handler.accept(command);
+			}
+			return handler != null;
 		}
-		else {
-			handler.accept(command);
+		catch (RuntimeException ex) {
+			logger.error(ex.getMessage(), ex);
+			return false;
 		}
-		return handler != null;
 	}
 	
 }

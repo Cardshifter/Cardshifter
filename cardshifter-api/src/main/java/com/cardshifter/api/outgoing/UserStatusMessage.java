@@ -34,5 +34,11 @@ public class UserStatusMessage extends Message {
 	public String getName() {
 		return name;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "UserStatusMessage [userId=" + userId + ", status=" + status
+				+ ", name=" + name + "]";
+	}
+
 }
