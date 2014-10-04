@@ -37,4 +37,11 @@ public class WelcomeMessage extends Message {
 	public int getUserId() {
 		return userId;
 	}
+	
+	@Override
+	public String toString() {
+		return "WelcomeMessage [status=" + status + ", userId=" + userId
+				+ ", message=" + message + "]";
+	}
+	
 }

@@ -5,7 +5,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -47,7 +46,7 @@ public class ServerConnectionTest {
 	private int userId;
 
 	@Before
-	public void setup() throws UnknownHostException, IOException {
+	public void setup() throws UnknownHostException, IOException, InterruptedException {
 		PropertyConfigurator.configure(getClass().getResourceAsStream("log4j.properties"));
 		main = new MainServer();
 		server = main.start();
@@ -59,7 +58,7 @@ public class ServerConnectionTest {
 		assertEquals(200, welcome.getStatus());
 		assertEquals(server.getClients().size(), welcome.getUserId());
 		userId = welcome.getUserId();
-		
+		Thread.sleep(500);
 	}
 	
 	@After
@@ -81,11 +80,14 @@ public class ServerConnectionTest {
 		assertEquals("Test2", statusMessage.getName());
 		
 		client2.send(new ServerQueryMessage(Request.USERS));
-		List<UserStatusMessage> users = new ArrayList<>();
-		users.add(client2.await(UserStatusMessage.class));
-		users.add(client2.await(UserStatusMessage.class));
-		users.add(client2.await(UserStatusMessage.class));
-		users.add(client2.await(UserStatusMessage.class));
+		List<UserStatusMessage> users = client2.awaitMany(6, UserStatusMessage.class);
+		System.out.println("Online users: " + users);
+		assertTrue(users.stream().filter(mess -> mess.getName().equals("Tester")).findAny().isPresent());
+		assertTrue(users.stream().filter(mess -> mess.getName().equals("Test2")).findAny().isPresent());
+		assertTrue(users.stream().filter(mess -> mess.getName().equals("AI old")).findAny().isPresent());
+		assertTrue(users.stream().filter(mess -> mess.getName().equals("AI loser")).findAny().isPresent());
+		assertTrue(users.stream().filter(mess -> mess.getName().equals("AI medium")).findAny().isPresent());
+		assertTrue(users.stream().filter(mess -> mess.getName().equals("AI idiot")).findAny().isPresent());
 		// There is currently no determined order in which the received messages occur, so it is harder to make any assertions.
 //		UserStatusMessage status = 
 //		assertEquals("Tester", status.getName());
@@ -99,7 +101,7 @@ public class ServerConnectionTest {
 		assertEquals(client2id, statusMessage.getUserId());
 		assertEquals("Test2", statusMessage.getName());
 	}
-		
+	
 	@Test(timeout = 10000)
 	public void testStartGame() throws InterruptedException, UnknownHostException, IOException {
 		
@@ -122,7 +124,7 @@ public class ServerConnectionTest {
 		ClientIO io = server.getClients().get(server.getClients().size());
 		Entity human = game.playerFor(io);
 		Entity ai = game.getGameModel().getEntitiesWithComponent(AIComponent.class).stream().findFirst().get();
-		ai.getComponent(AIComponent.class).setDelay(10);
+		ai.getComponent(AIComponent.class).setDelay(0);
 		
 		CardshifterAI humanActions = new ScoringAI(AIs.medium());
 		while (!game.isGameOver()) {
@@ -138,7 +140,7 @@ public class ServerConnectionTest {
 				System.out.println("Sending message: " + message);
 				client1.send(message);
 			}
-			Thread.sleep(200);
+			Thread.sleep(1000);
 		}
 	}
 	
