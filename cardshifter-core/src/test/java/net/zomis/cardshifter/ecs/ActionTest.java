@@ -46,7 +46,8 @@ public class ActionTest {
 
 	@Test
 	public void deniedActionWithSystem() {
-		game.addSystem(new SpecificActionSystem("Use") {
+		String name = "Use";
+		game.addSystem(new SpecificActionSystem(name) {
 			@Override
 			protected void isAllowed(ActionAllowedCheckEvent event) {
 				event.setAllowed(false);
@@ -64,7 +65,6 @@ public class ActionTest {
 		@SuppressWarnings("unchecked")
 		Consumer<ECSAction> perform = (Consumer<ECSAction>) mock(Consumer.class);
 
-		String name = "Use";
 		actions.addAction(new ECSAction(entity, name, action -> true, perform));
 		actions.getAction(name).copy().perform(entity);
 		verifyNoMoreInteractions(perform);
