@@ -1,11 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.cardshifter.client;
 
+import com.cardshifter.api.CardshifterConstants;
+import com.cardshifter.api.incoming.LoginMessage;
+import com.cardshifter.api.incoming.ServerQueryMessage;
+import com.cardshifter.api.incoming.ServerQueryMessage.Request;
+import com.cardshifter.api.incoming.StartGameRequest;
 import com.cardshifter.api.messages.Message;
+import com.cardshifter.api.outgoing.UserStatusMessage;
+import com.cardshifter.api.outgoing.UserStatusMessage.Status;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
@@ -16,15 +18,29 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import javafx.application.Platform;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 
-/**
- *
- * @author baz
- */
 public class GameClientLobby {
+	
+	@FXML private ListView usersOnline;
+	@FXML private ListView chatMessages;
+	@FXML private TextField messageBox;
+	@FXML private Button sendMessageButton;
+	@FXML private AnchorPane inviteButton;
 	
 	private final ObjectMapper mapper = new ObjectMapper();
 	private final BlockingQueue<Message> messages = new LinkedBlockingQueue<>();
@@ -33,17 +49,20 @@ public class GameClientLobby {
 	private OutputStream out;
 	private String ipAddress;
 	private int port;
+	private String userName;
 	
 	private Thread listenThread;
-	private Thread playThread;
+	private Map<String, Integer> usersOnlineList = new HashMap<>();
+	private String userForGameInvite;
 	
-	public void acceptIPAndPort(String ipAddress, int port) {
+	public void acceptConnectionSettings(String ipAddress, int port, String userName) {
 		// this is passed into this object after it is automatically created by the FXML document
 		this.ipAddress = ipAddress;
 		this.port = port;
+		this.userName = userName;
 	}
-	public boolean connectToGame() {
-		// this is called on the object from the Game launcher before the scene is displayed
+	public boolean connectToLobby() {
+		// this is called on the object before the scene is displayed
 		try {
 			this.socket = new Socket(this.ipAddress, this.port);
 			this.out = socket.getOutputStream();
@@ -56,8 +75,13 @@ public class GameClientLobby {
 			System.out.println("Connection Failed");
 			return false;
 		}
-		//this.playThread = new Thread(this::play);
-		//this.playThread.start();	
+		
+		this.sendLoginMessage();
+		this.sendServerQueryMessage();
+		
+		this.usersOnline.setOnMouseClicked(this::selectUserForGameInvite);
+		this.inviteButton.setOnMouseClicked(this::startGameWithUser);
+		
 		return true;
 	}
 	
@@ -76,7 +100,7 @@ public class GameClientLobby {
 					Platform.runLater(() -> this.processMessageFromServer(message));
 				}
 			} catch (SocketException e) {
-				//Platform.runLater(() -> loginMessage.setText(e.getMessage()));
+				System.out.println("Error receiving message");
 				return;
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -84,9 +108,106 @@ public class GameClientLobby {
 		}
 	}
 	
+	private void send(Message message) {
+		try {
+			System.out.println("Sending: " + this.mapper.writeValueAsString(message));
+			this.mapper.writeValue(out, message);
+		} catch (IOException e) {
+			System.out.println("Error sending message: " + message);
+			throw new RuntimeException(e);
+		}
+	}
+	
+	private void sendLoginMessage() {
+		LoginMessage loginMessage = new LoginMessage(this.userName);
+		this.send(loginMessage);
+	}
+	
+	private void sendServerQueryMessage() {
+		ServerQueryMessage initialMessage = new ServerQueryMessage(Request.USERS);
+		this.send(initialMessage);
+	}
+	
 	private void processMessageFromServer(Message message) {	
 		//this is for diagnostics so I can copy paste the messages to know their format
 		System.out.println(message.toString());
+		
+		if (message instanceof UserStatusMessage) {
+			this.processUserStatusMessage((UserStatusMessage)message);
+		}
+	}
+	
+	private void processUserStatusMessage(UserStatusMessage message) {
+		if (message.getStatus() == Status.ONLINE) {
+			this.usersOnlineList.put(message.getName(), message.getUserId());
+		} else if (message.getStatus() == Status.OFFLINE) {
+			this.usersOnlineList.remove(message.getName());
+		}
+		
+		this.usersOnline.getItems().clear();
+		this.usersOnline.getItems().addAll(this.usersOnlineList.keySet());
+	}
+	
+	private void selectUserForGameInvite(MouseEvent event) {
+		this.userForGameInvite = this.usersOnline.getSelectionModel().getSelectedItem().toString();
+	}
+	
+	private void startGameWithUser(MouseEvent event) {
+		if (this.userForGameInvite != null) {
+			int userIdToInvite = this.usersOnlineList.get(this.userForGameInvite);
+			StartGameRequest startGameRequest = new StartGameRequest(userIdToInvite, CardshifterConstants.VANILLA);
+			this.switchToMainGameWindow(startGameRequest);
+		}
+	}
+	
+	private void switchToMainGameWindow(StartGameRequest startGameRequest) {
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("ClientDocument.fxml"));
+			Parent root = (Parent)loader.load();
+			
+			GameClientController controller = loader.<GameClientController>getController();
+			controller.acceptConnectionSettings(this.ipAddress, this.port, this.userName, startGameRequest);
+			
+			if (controller.connectToGame()) {
+				//errorMessage.setText("Success!");
+				this.closeLobby();
+				
+				Scene scene = new Scene(root);
+				Stage gameStage = new Stage();
+				gameStage.setScene(scene);
+				gameStage.setOnCloseRequest(windowEvent -> controller.closeGame());
+				gameStage.show();
+			} else {
+				//errorMessage.setText("Connection Failed!");
+				System.out.println("Conneciton failed!");
+			}
+		}
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+	}
+	
+	private void stopThreads() {
+		this.listenThread.interrupt();
+		//this.playThread.interrupt();
+		
+		//Uncomment these lines to cure the exception
+		//this.listenThread.stop();
+		//this.playThread.stop();
+	}
+	
+	private void breakConnection() {
+		try {
+			this.in.close();
+			this.out.close();
+		} catch (Exception e) {
+			System.out.println("Failed to break connection");
+		}
+	}
+	
+	public void closeLobby() {
+		this.stopThreads();
+		this.breakConnection();
 	}
 	
 }
