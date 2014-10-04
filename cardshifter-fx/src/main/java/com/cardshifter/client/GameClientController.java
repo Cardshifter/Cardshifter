@@ -348,19 +348,17 @@ public class GameClientController {
 			this.createEndTurnButton(message);
 		}
 		
-		for (ZoneView<?> zoneView : this.zoneViewMap.values()) {
-			if (zoneView.getAllIds().contains(message.getId())) {
-				if (zoneView instanceof PlayerHandZoneView) {
-					((PlayerHandZoneView)zoneView).setCardActive(message.getId(), message);
-				} else if (zoneView instanceof BattlefieldZoneView) {
-					if (message.getAction().equals("Attack")) {
-						((BattlefieldZoneView)zoneView).setCardCanAttack(message.getId(),message);
-					} else if (message.getAction().equals("Scrap")){
-						((BattlefieldZoneView)zoneView).setCardActive(message.getId(), message);
-					}
-				}
-			}
+		ZoneView<?> zoneView = getZoneViewForCard(message.getId());
+		System.out.println("Usable message: " + message + " inform zone " + zoneView);
+		if (zoneView == null) {
+			return;
 		}
+		if (message.getAction().equals("Attack")) {
+			((BattlefieldZoneView)zoneView).setCardCanAttack(message.getId(),message);
+		} else {
+			zoneView.setCardActive(message.getId(), message);
+		}
+		
 	}
 	
 	private void processUpdateMessage(UpdateMessage message) {
@@ -612,5 +610,13 @@ public class GameClientController {
 		return (T) this.zoneViewMap.get(id);
 	}
 	
+	private ZoneView<?> getZoneViewForCard(int id) {
+		for (ZoneView<?> zoneView : this.zoneViewMap.values()) {
+			if (zoneView.getAllIds().contains(id)) {
+				return zoneView;
+			}
+		}
+		return null;
+	}
 }
 

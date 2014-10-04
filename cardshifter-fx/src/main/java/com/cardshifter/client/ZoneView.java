@@ -11,6 +11,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 import com.cardshifter.api.outgoing.UpdateMessage;
+import com.cardshifter.api.outgoing.UseableActionMessage;
 import com.cardshifter.client.views.CardView;
 
 public class ZoneView<T extends CardView> {
@@ -86,6 +87,11 @@ public class ZoneView<T extends CardView> {
 				rectangle.setFill(Color.YELLOW);
 			}
 		}
+	}
+
+	public void setCardActive(int id, UseableActionMessage message) {
+		T card = getCard(id);
+		card.setCardActive(message);
 	}
 
 }

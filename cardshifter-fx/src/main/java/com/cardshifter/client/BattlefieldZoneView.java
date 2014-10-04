@@ -15,11 +15,6 @@ public class BattlefieldZoneView extends ZoneView<CardBattlefieldDocumentControl
 		card.setCardAttackActive(message);
 	}
 	
-	public void setCardActive(int cardId, UseableActionMessage message) {
-		CardBattlefieldDocumentController card = super.getCard(cardId);
-		card.setCardActive(message);
-	}
-	
 	public void removeActiveAllCards() {
 		for (Object cardId : this.getAllIds()) {
 			this.removeCardActive((int)cardId);
