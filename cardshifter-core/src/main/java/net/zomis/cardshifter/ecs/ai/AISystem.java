@@ -47,7 +47,7 @@ public class AISystem implements ECSSystem {
 			AIComponent aiComp = ai.get(entity);
 			long delay = aiComp.getDelay();
 			ECSAction action = aiComp.getAI().getAction(entity);
-			if (action != null) {
+			if (action != null && !game.isGameOver()) {
 				logger.info(entity + " will perform " + action + " in " + delay + " milliseconds");
 				Runnable runnable = () -> this.perform(entity, action);
 				if (delay <= 0) {
