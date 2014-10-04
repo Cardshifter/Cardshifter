@@ -52,7 +52,7 @@ public class GameClientLobby {
 	private String userName;
 	
 	private Thread listenThread;
-	private Map<String, Integer> usersOnlineList = new HashMap<>();
+	private final Map<String, Integer> usersOnlineList = new HashMap<>();
 	private String userForGameInvite;
 	
 	public void acceptConnectionSettings(String ipAddress, int port, String userName) {

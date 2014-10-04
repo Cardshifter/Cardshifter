@@ -109,7 +109,7 @@ public final class GameClientLauncherController implements Initializable {
 	*/
 	
 	private void createAIChoices() {
-		this.aiChoices.put("Idiot", new AIComponent(new ScoringAI(AIs.loser())));
+		this.aiChoices.put("Idiot", new AIComponent(new ScoringAI(AIs.idiot())));
 		this.aiChoices.put("Loser", new AIComponent(new ScoringAI(AIs.loser())));
 		this.aiChoices.put("Medium", new AIComponent(new ScoringAI(AIs.medium())));
 		localGameButton.setOnAction(this::localGameStart);
