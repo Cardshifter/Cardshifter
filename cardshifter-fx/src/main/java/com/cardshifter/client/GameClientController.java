@@ -172,7 +172,7 @@ public class GameClientController {
 					Platform.runLater(() -> this.processMessageFromServer(message));
 				}
 			} catch (SocketException e) {
-				e.printStackTrace();
+				Platform.runLater(() -> loginMessage.setText(e.getMessage()));
 				return;
 			} catch (IOException e) {
 				e.printStackTrace();
