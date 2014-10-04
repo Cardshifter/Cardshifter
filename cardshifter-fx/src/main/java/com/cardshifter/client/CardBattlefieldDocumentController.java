@@ -3,8 +3,11 @@ package com.cardshifter.client;
 import com.cardshifter.api.outgoing.CardInfoMessage;
 import com.cardshifter.api.outgoing.UpdateMessage;
 import com.cardshifter.api.outgoing.UseableActionMessage;
+
 import java.net.URL;
+import java.util.Map.Entry;
 import java.util.ResourceBundle;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -56,20 +59,25 @@ public final class CardBattlefieldDocumentController implements Initializable {
     }
 	
     private void setCardLabels() {
-		for(String key : this.card.getProperties().keySet()) {
-			switch (key) {
+		for (Entry<String, Object> entry : this.card.getProperties().entrySet()) {
+			Object value = entry.getValue();
+			String stringValue = String.valueOf(entry.getValue());
+			switch (entry.getKey()) {
 				case "SICKNESS":
-					if (this.card.getProperties().get(key) == 1) {
+					if (value == (Integer) 1) {
 						this.setSickness();
 					}	
 					break;
 				case "ATTACK":
-					strength.setText(this.card.getProperties().get(key).toString());
+					strength.setText(stringValue);
 					break;
 				case "HEALTH":
-					health.setText(this.card.getProperties().get(key).toString());
+					health.setText(stringValue);
 					break;
 				case "ATTACK_AVAILABLE":
+					break;
+				case "creatureType":
+					creatureType.setText(stringValue);
 					break;
 			}
 		}
@@ -141,6 +149,8 @@ public final class CardBattlefieldDocumentController implements Initializable {
 			strength.setText(String.format("%d", message.getValue()));
 		} else if (message.getKey().equals("HEALTH")) {
 			health.setText(String.format("%d", message.getValue()));
+		} else if (message.getKey().equals("creatureType")) {
+			creatureType.setText(String.valueOf(message.getValue()));
 		}
 	}
 

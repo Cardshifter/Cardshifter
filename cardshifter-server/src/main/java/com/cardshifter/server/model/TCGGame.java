@@ -1,6 +1,8 @@
 package com.cardshifter.server.model;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -73,10 +75,7 @@ public class TCGGame extends ServerGame {
 	}
 	
 	private void sendRealCardData(ClientIO io, int zoneId, Entity cardEntity) {
-		io.sendToClient(new CardInfoMessage(zoneId, cardEntity.getId(), Resources.map(cardEntity)));
-		if (creatureType.has(cardEntity)) {
-			io.sendToClient(new UpdateMessage(cardEntity.getId(), "creatureType", creatureType.get(cardEntity).getCreatureType()));
-		}
+		io.sendToClient(new CardInfoMessage(zoneId, cardEntity.getId(), infoMap(cardEntity)));
 	}
 
 	private void remove(EntityRemoveEvent event) {
@@ -243,7 +242,16 @@ public class TCGGame extends ServerGame {
 	
 	private void sendCard(ClientIO io, Entity card) {
 		CardComponent cardData = card.getComponent(CardComponent.class);
-		io.sendToClient(new CardInfoMessage(cardData.getCurrentZone().getZoneId(), card.getId(), Resources.map(card)));
+		io.sendToClient(new CardInfoMessage(cardData.getCurrentZone().getZoneId(), card.getId(), infoMap(card)));
+	}
+	
+	private Map<String, Object> infoMap(Entity entity) {
+		Map<String, Object> result = new HashMap<>();
+		result.putAll(Resources.map(entity));
+		if (creatureType.has(entity)) {
+			result.put("creatureType", creatureType.get(entity).getCreatureType());
+		}
+		return result;
 	}
 
 	public ECSGame getGameModel() {

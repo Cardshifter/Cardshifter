@@ -12,9 +12,9 @@ public class CardInfoMessage extends Message {
 	private final int zone;
 	private int id;
 
-	private final Map<String, Integer> properties;
+	private final Map<String, Object> properties;
 	
-	public CardInfoMessage(@JsonProperty("zoneid") int zoneId, @JsonProperty("id") int cardId, @JsonProperty("properties") Map<String, Integer> properties) {
+	public CardInfoMessage(@JsonProperty("zoneid") int zoneId, @JsonProperty("id") int cardId, @JsonProperty("properties") Map<String, Object> properties) {
 		super("card");
 		this.zone = zoneId;
 		this.id = cardId;
@@ -25,7 +25,7 @@ public class CardInfoMessage extends Message {
 		return id;
 	}
 	
-	public Map<String, Integer> getProperties() {
+	public Map<String, Object> getProperties() {
 		return Collections.unmodifiableMap(properties);
 	}
 	
