@@ -87,19 +87,11 @@ public class MessageTypeIdResolver implements TypeIdResolver {
 
 	@Override
 	public String idFromBaseType() {
-		// FindBugs: NullPointerException guaranteed when you pass in null
-//		return idFromValueAndType(null, mBaseType.getRawClass());
 		throw new AssertionError("this should never happen");
 	}
 
 	@Override
 	public String idFromValueAndType(Object obj, Class<?> clazz) {
-//		String name = clazz.getName();
-//		if (name.startsWith(COMMAND_PACKAGE)) {
-//			return name.substring(COMMAND_PACKAGE.length() + 1);
-//		}
-//		throw new IllegalStateException("class " + clazz
-//				+ " is not in the package " + COMMAND_PACKAGE);
 		Message mess = (Message) obj;
 		return mess.getCommand();
 	}
@@ -107,12 +99,6 @@ public class MessageTypeIdResolver implements TypeIdResolver {
 	@Override
 	public JavaType typeFromId(String type) {
 		Class<?> clazz = clazzes.get(type);
-//		  String clazzName = COMMAND_PACKAGE + "." + type;
-//		  try {
-//			  clazz = ClassUtil.findClass(clazzName);
-//		  } catch (ClassNotFoundException e) {
-//			  throw new IllegalStateException("cannot find class '" + clazzName + "'");
-//		  }
 		if (clazz == null) {
 			throw new UnsupportedOperationException("No such defined type: " + type);
 		}
