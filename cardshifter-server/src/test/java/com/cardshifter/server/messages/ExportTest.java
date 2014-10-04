@@ -3,6 +3,7 @@ package com.cardshifter.server.messages;
 import org.apache.log4j.PropertyConfigurator;
 import org.junit.Test;
 
+import com.cardshifter.api.CardshifterConstants;
 import com.cardshifter.server.main.ServerMain;
 import com.cardshifter.server.model.MainServer;
 import com.cardshifter.server.model.Server;
@@ -16,7 +17,7 @@ public class ExportTest {
 		
 		Server server = new MainServer().start();
 		
-		server.createGame("VANILLA");
+		server.createGame(CardshifterConstants.VANILLA);
 		DataExporter exporter = new DataExporter();
 		exporter.export(server, new String[]{ "--gameid", "1" });
 		

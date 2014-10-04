@@ -1,5 +1,6 @@
 package com.cardshifter.client;
 
+import com.cardshifter.api.CardshifterConstants;
 import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.incoming.RequestTargetsMessage;
 import com.cardshifter.api.incoming.StartGameRequest;
@@ -137,7 +138,7 @@ public class GameClientController {
 			e.printStackTrace();
 		}
 		
-		this.send(new StartGameRequest(-1, "VANILLA"));
+		this.send(new StartGameRequest(-1, CardshifterConstants.VANILLA));
 		
 		try {
 			Message message = messages.take();

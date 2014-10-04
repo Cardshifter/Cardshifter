@@ -21,6 +21,7 @@ import org.junit.Test;
 import com.cardshifter.ai.AIs;
 import com.cardshifter.ai.CardshifterAI;
 import com.cardshifter.ai.ScoringAI;
+import com.cardshifter.api.CardshifterConstants;
 import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.incoming.ServerQueryMessage;
 import com.cardshifter.api.incoming.ServerQueryMessage.Request;
@@ -105,7 +106,7 @@ public class ServerConnectionTest {
 	@Test(timeout = 10000)
 	public void testStartGame() throws InterruptedException, UnknownHostException, IOException {
 		
-		client1.send(new StartGameRequest(2, "VANILLA"));
+		client1.send(new StartGameRequest(2, CardshifterConstants.VANILLA));
 		client1.await(WaitMessage.class);
 		NewGameMessage gameMessage = client1.await(NewGameMessage.class);
 		assertEquals(1, gameMessage.getGameId());
@@ -148,9 +149,9 @@ public class ServerConnectionTest {
 	public void testPlayAny() throws InterruptedException, UnknownHostException, IOException {
 		
 		Predicate<ClientIO> opponentFilter = client -> client.getName().equals("AI loser");
-		server.getIncomingHandler().perform(new StartGameRequest(-1, "VANILLA"), server.getClients().values().stream().filter(opponentFilter).findAny().get());
+		server.getIncomingHandler().perform(new StartGameRequest(-1, CardshifterConstants.VANILLA), server.getClients().values().stream().filter(opponentFilter).findAny().get());
 		
-		client1.send(new StartGameRequest(-1, "VANILLA"));
+		client1.send(new StartGameRequest(-1, CardshifterConstants.VANILLA));
 		NewGameMessage gameMessage = client1.await(NewGameMessage.class);
 		assertEquals(1, gameMessage.getGameId());
 		ServerGame game = server.getGames().get(1);
