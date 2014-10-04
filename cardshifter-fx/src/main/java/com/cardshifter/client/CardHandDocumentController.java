@@ -15,8 +15,9 @@ import javafx.scene.shape.Rectangle;
 
 import com.cardshifter.api.outgoing.CardInfoMessage;
 import com.cardshifter.api.outgoing.UseableActionMessage;
+import com.cardshifter.client.views.CardView;
 
-public final class CardHandDocumentController implements Initializable {
+public final class CardHandDocumentController extends CardView implements Initializable {
     
     @FXML private Label strength;
     @FXML private Label health;

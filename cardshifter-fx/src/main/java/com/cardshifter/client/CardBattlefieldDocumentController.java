@@ -3,6 +3,7 @@ package com.cardshifter.client;
 import com.cardshifter.api.outgoing.CardInfoMessage;
 import com.cardshifter.api.outgoing.UpdateMessage;
 import com.cardshifter.api.outgoing.UseableActionMessage;
+import com.cardshifter.client.views.CardView;
 
 import java.net.URL;
 import java.util.Map.Entry;
@@ -19,7 +20,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
-public final class CardBattlefieldDocumentController implements Initializable {
+public final class CardBattlefieldDocumentController extends CardView implements Initializable {
     
     @FXML private Label strength;
     @FXML private Label health;
