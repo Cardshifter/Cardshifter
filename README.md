@@ -27,3 +27,22 @@ Platform
 --------
 
 Currently we plan to support version Java 8u20 and above.
+
+Playing the game
+----------------
+
+To play the game, [download the latest release](https://github.com/Cardshifter/Cardshifter/releases). Start the client jar using `java -jar cardshifter-fx-<version>.jar`.
+
+There is a server running at `dwarftowers.com` port `4242` that you may connect to.
+
+Develop another client
+----------------------
+
+If you want to help develop another client, [download the latest server release](https://github.com/Cardshifter/Cardshifter/releases). Start the server using `java -jar cardshifter-server-<version>.jar`.
+
+All messages sent between client and server are using JSON format. The available messages can be found [here](https://github.com/Cardshifter/Cardshifter/tree/client-server/cardshifter-api/src/main/java/com/cardshifter/api).
+
+For example, to send a [`LoginMessage`](https://github.com/Cardshifter/Cardshifter/blob/client-server/cardshifter-api/src/main/java/com/cardshifter/api/incoming/LoginMessage.java) pass the following JSON: `{ "command": "login", "username": "example" }`.
+
+To send a request for starting a game, use [`StartGameRequest`](https://github.com/Cardshifter/Cardshifter/blob/client-server/cardshifter-api/src/main/java/com/cardshifter/api/incoming/StartGameRequest.java) which can be sent as JSON like this: `{ "command": "startgame", "opponent": 1, "gameType": "VANILLA" }` (currently "VANILLA" is the only supported game type).
+
