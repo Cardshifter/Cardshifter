@@ -203,7 +203,9 @@ public class TCGGame extends ServerGame {
 			if (io instanceof FakeAIClientTCG) {
 				FakeAIClientTCG aiClient = (FakeAIClientTCG) io;
 				Entity player = playerFor(io);
-				player.addComponent(new AIComponent(aiClient.getAI()));
+				AIComponent aiComponent = new AIComponent(aiClient.getAI());
+				aiComponent.setDelay(2000);
+				player.addComponent(aiComponent);
 				logger.info("AI is configured for " + player);
 			}
 		}
