@@ -108,16 +108,22 @@ public final class GameClientLauncherController implements Initializable {
 			Parent root = loader.load();
 			
 			FXMLGameController controller = loader.<FXMLGameController>getController();
-			controller.acceptAIChoice(this.aiChoice);
-			controller.initializeGame();
 			
-			this.closeWithSuccess();
+			if (this.aiChoice != null) {
+				controller.acceptAIChoice(this.aiChoice);
+				controller.initializeGame();
+			
+				this.closeWithSuccess();
 		
-			Scene scene = new Scene(root);
-			Stage stage = new Stage();
+				Scene scene = new Scene(root);
+				Stage stage = new Stage();
 		
-			stage.setScene(scene);
-			stage.show();
+				stage.setScene(scene);
+				stage.show();
+			} else {
+				System.out.println("AI not selected!");
+			}
+
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
