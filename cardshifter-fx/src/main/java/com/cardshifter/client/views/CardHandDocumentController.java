@@ -1,4 +1,4 @@
-package com.cardshifter.client;
+package com.cardshifter.client.views;
 
 import java.util.Map.Entry;
 
@@ -13,7 +13,7 @@ import javafx.scene.shape.Rectangle;
 import com.cardshifter.api.outgoing.CardInfoMessage;
 import com.cardshifter.api.outgoing.UpdateMessage;
 import com.cardshifter.api.outgoing.UseableActionMessage;
-import com.cardshifter.client.views.CardView;
+import com.cardshifter.client.GameClientController;
 
 public final class CardHandDocumentController extends CardView {
     

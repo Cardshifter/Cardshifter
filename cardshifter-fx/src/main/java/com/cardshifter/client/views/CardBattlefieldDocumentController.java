@@ -1,9 +1,9 @@
-package com.cardshifter.client;
+package com.cardshifter.client.views;
 
 import com.cardshifter.api.outgoing.CardInfoMessage;
 import com.cardshifter.api.outgoing.UpdateMessage;
 import com.cardshifter.api.outgoing.UseableActionMessage;
-import com.cardshifter.client.views.CardView;
+import com.cardshifter.client.GameClientController;
 
 import java.net.URL;
 import java.util.Map.Entry;

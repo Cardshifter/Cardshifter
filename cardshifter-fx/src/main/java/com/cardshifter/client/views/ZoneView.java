@@ -1,4 +1,4 @@
-package com.cardshifter.client;
+package com.cardshifter.client.views;
 
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +12,6 @@ import javafx.scene.shape.Rectangle;
 
 import com.cardshifter.api.outgoing.UpdateMessage;
 import com.cardshifter.api.outgoing.UseableActionMessage;
-import com.cardshifter.client.views.CardView;
 
 public class ZoneView<T extends CardView> {
 	
