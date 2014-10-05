@@ -87,6 +87,10 @@ public final class ECSGame {
 	public <T extends CancellableEvent> T executeCancellableEvent(T event, Runnable runInBetween) {
 		return events.executeCancellableEvent(event, runInBetween);
 	}
+
+	public Entity getEntity(int entity) {
+		return entities.get(entity);
+	}
 	
 	// TODO: Player component, Zone component for a zone
 	// TODO: Actions ++ copy actions. List<Target(s)> ("deal 1 damage to up to three targets and then give up to three targets +1/+1 until end of turn"), Set<ActionOptions>. choose one, choose two
