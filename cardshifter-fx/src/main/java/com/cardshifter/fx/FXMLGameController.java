@@ -2,6 +2,7 @@ package com.cardshifter.fx;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -28,6 +29,7 @@ import net.zomis.cardshifter.ecs.usage.PhrancisGame.PhrancisResources;
 
 import com.cardshifter.ai.CardshifterAI;
 import com.cardshifter.ai.CompleteIdiot;
+
 import javafx.scene.layout.HBox;
 import net.zomis.cardshifter.ecs.base.GameOverEvent;
 
@@ -128,6 +130,21 @@ public class FXMLGameController {
 		}
 		
 		Entity player = phases.getCurrentEntity();
+		if (player == null) {
+			// dirty fix for making it work with Mulligan action
+			Set<Entity> players = game.getEntitiesWithComponent(PlayerComponent.class);
+			for (Entity pl : players) {
+				ActionComponent actions = pl.getComponent(ActionComponent.class);
+				ECSAction action = actions.getAction("Mulligan");
+				if (action != null) {
+					action.perform(pl);
+				}
+			}
+			
+			this.createData();
+			this.render();
+			return;
+		}
 		ECSAction endturnAction = player.getComponent(ActionComponent.class).getAction("End Turn");
 		endturnAction.perform(player);
 
