@@ -61,15 +61,16 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 				this.sendToClient(new ServerErrorMessage("Error processing input: " + e.getMessage()));
 				logger.error(e.getMessage(), e);
 			} catch (IOException e) {
+				logger.error(e.getMessage(), e);
 				this.disconnected();
 				if (socket != null) {
 					try {
 						socket.close();
 					} catch (IOException e1) {
+						logger.error("Error closing on exception", e1);
 					}
 				}
 				socket = null;
-				logger.error(e.getMessage(), e);
 			}
 		}
 		logger.info("End of run method for " + this);

@@ -116,6 +116,7 @@ public class Server {
 	}
 	
 	public void onDisconnected(ClientIO client) {
+		logger.info("Client disconnected: " + client);
 		games.values().stream().filter(game -> game.hasPlayer(client))
 			.forEach(game -> game.send(new ClientDisconnectedMessage(client.getName(), game.getPlayers().indexOf(client))));
 		clients.remove(client);
