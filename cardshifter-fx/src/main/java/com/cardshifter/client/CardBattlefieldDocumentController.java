@@ -32,7 +32,6 @@ public final class CardBattlefieldDocumentController extends CardView implements
 	@FXML private AnchorPane anchorPane;
 	@FXML private Button scrapButton;
     
-//    private AnchorPane root;
 	private boolean isActive;
     private final CardInfoMessage card;
 	private final GameClientController controller;
@@ -43,7 +42,6 @@ public final class CardBattlefieldDocumentController extends CardView implements
             FXMLLoader loader = new FXMLLoader(getClass().getResource("CardBattlefieldDocument.fxml"));
             loader.setController(this);
 			loader.load();
-//            root = loader.load();
         }
         catch (Exception e) {
             throw new RuntimeException(e);
