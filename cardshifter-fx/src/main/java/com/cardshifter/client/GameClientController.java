@@ -1,10 +1,5 @@
 package com.cardshifter.client;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.Socket;
-import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,8 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.function.Consumer;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -27,7 +21,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.incoming.RequestTargetsMessage;
 import com.cardshifter.api.incoming.StartGameRequest;
 import com.cardshifter.api.incoming.UseAbilityMessage;
@@ -53,11 +46,6 @@ import com.cardshifter.client.views.CardHandDocumentController;
 import com.cardshifter.client.views.CardView;
 import com.cardshifter.client.views.PlayerHandZoneView;
 import com.cardshifter.client.views.ZoneView;
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.MappingIterator;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class GameClientController {
 	
@@ -77,14 +65,6 @@ public class GameClientController {
 	@FXML private Pane playerDeckPane;
 	@FXML private Label playerDeckLabel;
 	
-	private final ObjectMapper mapper = new ObjectMapper();
-	private final BlockingQueue<Message> messages = new LinkedBlockingQueue<>();
-	private Socket socket;
-	private InputStream in;
-	private OutputStream out;
-	private String ipAddress;
-	private int port;
-	private String userName;
 	private StartGameRequest startGameRequest;
 	
 	private int gameId;
@@ -108,95 +88,20 @@ public class GameClientController {
 	private List<UseableActionMessage> savedMessages = new ArrayList<>();
 	private final Set<Integer> chosenTargets = new HashSet<>();
 	private AvailableTargetsMessage targetInfo;
+	private Consumer<Message> sender;
 	
-	public void acceptConnectionSettings(String ipAddress, int port, String userName, StartGameRequest startGameRequest) {
+	public void acceptConnectionSettings(StartGameRequest startGameRequest, Consumer<Message> sender) {
 		// this is passed into this object after it is automatically created by the FXML document
-		this.ipAddress = ipAddress;
-		this.port = port;
-		this.userName = userName;
 		this.startGameRequest = startGameRequest;
+		this.sender = sender;
 	}
 	public boolean connectToGame() {
-		// this is called on the object from the Game launcher before the scene is displayed
-		try {
-			this.socket = new Socket(this.ipAddress, this.port);
-			this.out = socket.getOutputStream();
-			this.in = socket.getInputStream();
-			mapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, false);
-			mapper.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
-			this.listenThread = new Thread(this::listen);
-			this.listenThread.start();
-		} catch (IOException ex) {
-			System.out.println("Connection Failed");
-			return false;
-		}
-		this.playThread = new Thread(this::play);
-		this.playThread.start();	
-		return true;
-	}
-	private void play() {
 		// this method only runs once at the start
 		//String name = "Player" + new Random().nextInt(100);
-		this.send(new LoginMessage(this.userName));
-		
-		/*
-		try {
-			WelcomeMessage response = (WelcomeMessage) messages.take();
-			if (!response.isOK()) {
-				return;
-			}
-			//display the welcome message on the screen
-			Platform.runLater(() -> loginMessage.setText(response.getMessage()));
-		} catch (Exception e) {
-			System.out.println("Server message not OK");
-			e.printStackTrace();
-		}
-		*/
-		
 		this.send(this.startGameRequest);
-		
-		/*
-		try {
-			Message message = messages.take();
-			if (message instanceof WaitMessage) {	
-				//display the wait message on the screen
-				String displayMessage = ((WaitMessage)message).getMessage();
-				Platform.runLater(() -> loginMessage.setText(displayMessage));
-				message = messages.take();
-			}
-			this.gameId = ((NewGameMessage) message).getGameId();
-		} catch (Exception e) {
-			System.out.println("Invalid response from opponent");
-			e.printStackTrace();
-		}
-		*/
-		
-		//Platform.runLater(() -> this.repaintDeckLabels());
+		return true;
 	}
 
-	private void listen() {
-		while (true) {
-			try {
-				MappingIterator<Message> values = mapper.readValues(new JsonFactory().createParser(this.in), Message.class);
-				while (values.hasNextValue()) {
-					Message message = values.next();
-					try {
-						messages.put(message);
-					} catch (InterruptedException ex) {
-						Thread.currentThread().interrupt();
-					}
-					//This is where all the magic happens for message handling
-					Platform.runLater(() -> this.processMessageFromServer(message));
-				}
-			} catch (SocketException e) {
-				Platform.runLater(() -> loginMessage.setText(e.getMessage()));
-				return;
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-	
 	public void createAndSendMessage(UseableActionMessage action) {
 		if (action.isTargetRequired()) {
 			this.send(new RequestTargetsMessage(gameId, action.getId(), action.getAction()));
@@ -210,16 +115,10 @@ public class GameClientController {
 	}
 	
 	private void send(Message message) {
-		try {
-			System.out.println("Sending: " + this.mapper.writeValueAsString(message));
-			this.mapper.writeValue(out, message);
-		} catch (IOException e) {
-			System.out.println("Error sending message: " + message);
-			throw new RuntimeException(e);
-		}
+		this.sender.accept(message);
 	}
 	
-	private void processMessageFromServer(Message message) {
+	public void processMessageFromServer(Message message) {
 		
 		serverMessages.getItems().add(message.toString());
 		
@@ -629,20 +528,6 @@ public class GameClientController {
 		//this.playThread.stop();
 	}
 	
-	private void breakConnection() {
-		try {
-			this.in.close();
-			this.out.close();
-		} catch (Exception e) {
-			System.out.println("Failed to break connection");
-		}
-	}
-	
-	public void closeGame() {
-		this.stopThreads();
-		this.breakConnection();
-	}
-	
 	@SuppressWarnings("unchecked")
 	private <T extends ZoneView<?>> T getZoneView(int id) {
 		return (T) this.zoneViewMap.get(id);
@@ -655,6 +540,9 @@ public class GameClientController {
 			}
 		}
 		return null;
+	}
+	public void closeGame() {
+		// run on window close
 	}
 }
 

@@ -1,5 +1,30 @@
 package com.cardshifter.client;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.Socket;
+import java.net.SocketException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.Set;
+
+import javafx.application.Platform;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
+
 import com.cardshifter.api.CardshifterConstants;
 import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.incoming.LoginMessage;
@@ -16,31 +41,6 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.Socket;
-import java.net.SocketException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-
-import javafx.application.Platform;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.stage.Stage;
-
 public class GameClientLobby implements Initializable {
 	
 	@FXML private ListView<String> usersOnline;
@@ -50,7 +50,7 @@ public class GameClientLobby implements Initializable {
 	@FXML private AnchorPane inviteButton;
 	
 	private final ObjectMapper mapper = new ObjectMapper();
-	private final BlockingQueue<Message> messages = new LinkedBlockingQueue<>();
+	private final Set<GameClientController> gamesRunning = new HashSet<>();
 	private Socket socket;	
 	private InputStream in;
 	private OutputStream out;
@@ -98,11 +98,6 @@ public class GameClientLobby implements Initializable {
 				MappingIterator<Message> values = mapper.readValues(new JsonFactory().createParser(this.in), Message.class);
 				while (values.hasNextValue()) {
 					Message message = values.next();
-					try {
-						messages.put(message);
-					} catch (InterruptedException ex) {
-						Thread.currentThread().interrupt();
-					}
 					//This is where all the magic happens for message handling
 					Platform.runLater(() -> this.processMessageFromServer(message));
 				}
@@ -138,6 +133,10 @@ public class GameClientLobby implements Initializable {
 	private void processMessageFromServer(Message message) {	
 		//this is for diagnostics so I can copy paste the messages to know their format
 		System.out.println(message.toString());
+		
+		for (GameClientController gameController : this.gamesRunning) {
+			gameController.processMessageFromServer(message);
+		}
 		
 		if (message instanceof UserStatusMessage) {
 			this.processUserStatusMessage((UserStatusMessage)message);
@@ -186,21 +185,26 @@ public class GameClientLobby implements Initializable {
 	}
 	
 	private void switchToMainGameWindow(StartGameRequest startGameRequest) {
+		if (!gamesRunning.isEmpty()) {
+			this.chatOutput("You already have a running game. Unable to start a new one.");
+			return;
+		}
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("ClientDocument.fxml"));
 			Parent root = (Parent)loader.load();
 			
 			GameClientController controller = loader.<GameClientController>getController();
-			controller.acceptConnectionSettings(this.ipAddress, this.port, this.userName, startGameRequest);
+			this.gamesRunning.add(controller);
+			controller.acceptConnectionSettings(startGameRequest, this::send);
 			
 			if (controller.connectToGame()) {
 				//errorMessage.setText("Success!");
-				this.closeLobby();
+//				this.closeLobby();
 				
 				Scene scene = new Scene(root);
 				Stage gameStage = new Stage();
 				gameStage.setScene(scene);
-				gameStage.setOnCloseRequest(windowEvent -> controller.closeGame());
+				gameStage.setOnCloseRequest(windowEvent -> this.closeController(controller));
 				gameStage.show();
 			} else {
 				//errorMessage.setText("Connection Failed!");
@@ -212,13 +216,13 @@ public class GameClientLobby implements Initializable {
         }
 	}
 	
+	private void closeController(GameClientController controller) {
+		this.gamesRunning.remove(controller);
+		controller.closeGame();
+	}
+	
 	private void stopThreads() {
 		this.listenThread.interrupt();
-		//this.playThread.interrupt();
-		
-		//Uncomment these lines to cure the exception
-		//this.listenThread.stop();
-		//this.playThread.stop();
 	}
 	
 	private void breakConnection() {
