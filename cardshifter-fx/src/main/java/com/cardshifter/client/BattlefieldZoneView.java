@@ -29,8 +29,8 @@ public class BattlefieldZoneView extends ZoneView<CardBattlefieldDocumentControl
 	}
 	
 	public void removeTargetableAllCards() {
-		for (Object cardId : this.getAllIds()) {
-			this.removeCardTargetable((int)cardId);
+		for (Integer cardId : this.getAllIds()) {
+			this.removeCardTargetable(cardId);
 		}
 	}
 	

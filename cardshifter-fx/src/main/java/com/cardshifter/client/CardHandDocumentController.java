@@ -1,12 +1,9 @@
 package com.cardshifter.client;
 
-import java.net.URL;
 import java.util.Map.Entry;
-import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -18,7 +15,7 @@ import com.cardshifter.api.outgoing.UpdateMessage;
 import com.cardshifter.api.outgoing.UseableActionMessage;
 import com.cardshifter.client.views.CardView;
 
-public final class CardHandDocumentController extends CardView implements Initializable {
+public final class CardHandDocumentController extends CardView {
     
     @FXML private Label strength;
     @FXML private Label health;
@@ -32,7 +29,6 @@ public final class CardHandDocumentController extends CardView implements Initia
 	@FXML private Rectangle background;
 	@FXML private AnchorPane anchorPane;
     
-//    private AnchorPane root;
 	private boolean isActive;
     private final CardInfoMessage card;
 	private final GameClientController controller;
@@ -43,7 +39,6 @@ public final class CardHandDocumentController extends CardView implements Initia
             FXMLLoader loader = new FXMLLoader(getClass().getResource("CardHandDocument.fxml"));
             loader.setController(this);
 			loader.load();
-//            root = loader.load();
         }
         catch (Exception e) {
             throw new RuntimeException(e);
@@ -51,7 +46,7 @@ public final class CardHandDocumentController extends CardView implements Initia
                 
         this.card = message;
 		this.controller = controller;
-        this.setCardId();
+        this.cardId.setText(String.format("CardId = %d", message.getId()));
         this.setCardLabels();
     }
 	
@@ -87,11 +82,6 @@ public final class CardHandDocumentController extends CardView implements Initia
 		background.setFill(Color.BLACK);
 	}
 
-    private void setCardId() {
-        int newId = card.getId();
-        cardId.setText(String.format("CardId = %d", newId));
-    }
-	
     private void setCardLabels() {
 		for (Entry<String, Object> entry : this.card.getProperties().entrySet()) {
 			String key = entry.getKey();
@@ -108,12 +98,6 @@ public final class CardHandDocumentController extends CardView implements Initia
 				creatureType.setText(value);
 			}
 		}
-    }
-
-    //Boilerplate code
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // TODO
     }
 
 	@Override
