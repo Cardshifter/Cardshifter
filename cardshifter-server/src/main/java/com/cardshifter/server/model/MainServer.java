@@ -15,6 +15,8 @@ import com.cardshifter.api.CardshifterConstants;
 import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.incoming.StartGameRequest;
+import com.cardshifter.server.commands.AICommand;
+import com.cardshifter.server.commands.AICommand.AICommandParameters;
 import com.cardshifter.server.main.FakeAIClientTCG;
 import com.cardshifter.server.utils.export.DataExporter;
 
@@ -40,7 +42,7 @@ public class MainServer {
 			server.addConnections(new ServerWeb(server, 4243));
 			
 			logger.info("Starting Console...");
-			CommandHandler commandHandler = new CommandHandler();
+			CommandHandler commandHandler = new CommandHandler(server);
 			initializeCommands(commandHandler);
 			ServerConsole console = new ServerConsole(server, commandHandler);
 			consoleThread = new Thread(console, "Console-Thread");
@@ -62,11 +64,13 @@ public class MainServer {
 	
 	private void initializeCommands(CommandHandler commandHandler) {
 		commandHandler.addHandler("exit", command -> this.shutdown());
+//		commandHandler.addHandler("help", command -> commands.help());
 		commandHandler.addHandler("export", this::export);
 		commandHandler.addHandler("users", this::users);
 		commandHandler.addHandler("play", this::play);
 		commandHandler.addHandler("say", this::say);
 		commandHandler.addHandler("chat", this::chatInfo);
+		commandHandler.addHandler("ai", () -> new AICommandParameters(), new AICommand());
 		commandHandler.addHandler("threads", cmd -> showAllStackTraces(server, System.out::println));
 	}
 
