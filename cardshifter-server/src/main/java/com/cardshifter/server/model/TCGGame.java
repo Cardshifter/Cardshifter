@@ -256,6 +256,7 @@ public class TCGGame extends ServerGame {
 		return result;
 	}
 
+	@Override
 	public ECSGame getGameModel() {
 		return game;
 	}
