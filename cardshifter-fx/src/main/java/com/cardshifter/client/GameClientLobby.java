@@ -32,6 +32,7 @@ import com.cardshifter.api.incoming.ServerQueryMessage;
 import com.cardshifter.api.incoming.ServerQueryMessage.Request;
 import com.cardshifter.api.incoming.StartGameRequest;
 import com.cardshifter.api.messages.Message;
+import com.cardshifter.api.outgoing.NewGameMessage;
 import com.cardshifter.api.outgoing.ServerErrorMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage.Status;
@@ -138,6 +139,11 @@ public class GameClientLobby implements Initializable {
 			gameController.processMessageFromServer(message);
 		}
 		
+		if (message instanceof NewGameMessage) {
+			NewGameMessage msg = (NewGameMessage) message;
+			startNewGame(msg);
+		}
+		
 		if (message instanceof UserStatusMessage) {
 			this.processUserStatusMessage((UserStatusMessage)message);
 		}
@@ -149,6 +155,30 @@ public class GameClientLobby implements Initializable {
 			ServerErrorMessage msg = (ServerErrorMessage) message;
 			chatOutput("SERVER ERROR: " + msg.getMessage());
 		}
+	}
+	
+	private void startNewGame(NewGameMessage message) {
+		if (!gamesRunning.isEmpty()) {
+			this.chatOutput("You already have a running game. Unable to start a new one.");
+			return;
+		}
+
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("ClientDocument.fxml"));
+			Parent root = (Parent)loader.load();
+			GameClientController controller = loader.<GameClientController>getController();
+			this.gamesRunning.add(controller);
+			controller.acceptConnectionSettings(message, this::send);
+			
+			Scene scene = new Scene(root);
+			Stage gameStage = new Stage();
+			gameStage.setScene(scene);
+			gameStage.setOnCloseRequest(windowEvent -> this.closeController(controller));
+			gameStage.show();
+		}
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 	}
 	
 	private void chatOutput(String string) {
@@ -180,40 +210,17 @@ public class GameClientLobby implements Initializable {
 		if (this.userForGameInvite != null) {
 			int userIdToInvite = this.usersOnlineList.get(this.userForGameInvite);
 			StartGameRequest startGameRequest = new StartGameRequest(userIdToInvite, CardshifterConstants.VANILLA);
-			this.switchToMainGameWindow(startGameRequest);
+			this.sendInvite(startGameRequest);
 		}
 	}
 	
-	private void switchToMainGameWindow(StartGameRequest startGameRequest) {
+	private void sendInvite(StartGameRequest startGameRequest) {
 		if (!gamesRunning.isEmpty()) {
 			this.chatOutput("You already have a running game. Unable to start a new one.");
 			return;
 		}
-		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("ClientDocument.fxml"));
-			Parent root = (Parent)loader.load();
-			
-			GameClientController controller = loader.<GameClientController>getController();
-			this.gamesRunning.add(controller);
-			controller.acceptConnectionSettings(startGameRequest, this::send);
-			
-			if (controller.connectToGame()) {
-				//errorMessage.setText("Success!");
-//				this.closeLobby();
-				
-				Scene scene = new Scene(root);
-				Stage gameStage = new Stage();
-				gameStage.setScene(scene);
-				gameStage.setOnCloseRequest(windowEvent -> this.closeController(controller));
-				gameStage.show();
-			} else {
-				//errorMessage.setText("Connection Failed!");
-				System.out.println("Conneciton failed!");
-			}
-		}
-        catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+		
+		this.send(startGameRequest);
 	}
 	
 	private void closeController(GameClientController controller) {

@@ -22,7 +22,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 import com.cardshifter.api.incoming.RequestTargetsMessage;
-import com.cardshifter.api.incoming.StartGameRequest;
 import com.cardshifter.api.incoming.UseAbilityMessage;
 import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.outgoing.AvailableTargetsMessage;
@@ -65,8 +64,6 @@ public class GameClientController {
 	@FXML private Pane playerDeckPane;
 	@FXML private Label playerDeckLabel;
 	
-	private StartGameRequest startGameRequest;
-	
 	private int gameId;
 	private int playerIndex;
 	
@@ -88,16 +85,12 @@ public class GameClientController {
 	private AvailableTargetsMessage targetInfo;
 	private Consumer<Message> sender;
 	
-	public void acceptConnectionSettings(StartGameRequest startGameRequest, Consumer<Message> sender) {
+	public void acceptConnectionSettings(NewGameMessage message, Consumer<Message> sender) {
 		// this is passed into this object after it is automatically created by the FXML document
-		this.startGameRequest = startGameRequest;
+		this.playerIndex = message.getPlayerIndex();
+		this.gameId = message.getGameId();
+		System.out.println(String.format("You are player: %d", this.playerIndex));
 		this.sender = sender;
-	}
-	public boolean connectToGame() {
-		// this method only runs once at the start
-		//String name = "Player" + new Random().nextInt(100);
-		this.send(this.startGameRequest);
-		return true;
 	}
 
 	public void createAndSendMessage(UseableActionMessage action) {
@@ -123,10 +116,7 @@ public class GameClientController {
 		//this is for diagnostics so I can copy paste the messages to know their format
 		System.out.println(message.toString());
 		
-		if (message instanceof NewGameMessage) {
-			this.processNewGameMessage((NewGameMessage) message);
-			this.gameId = ((NewGameMessage) message).getGameId();
-		} else if (message instanceof WelcomeMessage) {
+		if (message instanceof WelcomeMessage) {
 			Platform.runLater(() -> loginMessage.setText(message.toString()));
 		} else if (message instanceof WaitMessage) {
 			Platform.runLater(() -> loginMessage.setText(message.toString()));
@@ -155,11 +145,6 @@ public class GameClientController {
 		} else if (message instanceof GameOverMessage) {
 			this.processGameOverMessage((GameOverMessage)message);
 		}
-	}
-	
-	private void processNewGameMessage(NewGameMessage message) {
-		this.playerIndex = message.getPlayerIndex();
-		System.out.println(String.format("You are player: %d", this.playerIndex));
 	}
 	
 	private void processPlayerMessage(PlayerMessage message) {
