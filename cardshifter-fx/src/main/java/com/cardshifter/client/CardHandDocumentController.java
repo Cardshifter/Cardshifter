@@ -120,4 +120,15 @@ public final class CardHandDocumentController extends CardView implements Initia
 	public void updateFields(UpdateMessage message) {
 	}
 
+	public void setCardTargetable() {
+//		this.isActive = true;
+		this.anchorPane.setOnMouseClicked(this::actionOnTarget);
+		background.setFill(Color.BLUE);
+	}
+	
+	private void actionOnTarget(MouseEvent event) {
+		boolean isChosenTarget = controller.addTarget(card.getId());
+		background.setFill(isChosenTarget ? Color.VIOLET : Color.BLUE);
+	}
+
 }

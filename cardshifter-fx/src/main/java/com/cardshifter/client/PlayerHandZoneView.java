@@ -20,5 +20,17 @@ public class PlayerHandZoneView extends ZoneView<CardHandDocumentController> {
 			card.removeCardActive();
 		}
 	}
+
+	public void setCardTargetable(int target) {
+		CardHandDocumentController card = getCard(target);
+		card.setCardTargetable();
+	}
+
+	public void removeTargetableAllCards() {
+		for (Integer cardId : this.getAllIds()) {
+			CardHandDocumentController card = getCard(cardId);
+			card.removeCardActive();
+		}
+	}
 	
 }
