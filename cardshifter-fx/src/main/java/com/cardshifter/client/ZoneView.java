@@ -94,4 +94,8 @@ public class ZoneView<T extends CardView> {
 		card.setCardActive(message);
 	}
 
+	public void removeActiveAllCards() {
+		zoneMap.values().forEach(card -> card.removeCardActive());
+	}
+
 }

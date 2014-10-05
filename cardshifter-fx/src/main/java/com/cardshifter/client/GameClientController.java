@@ -566,22 +566,13 @@ public class GameClientController {
 	
 	private void clearActiveFromAllCards() {
 		for (ZoneView<?> zoneView : this.zoneViewMap.values()) {
-			if (zoneView instanceof BattlefieldZoneView) {
-				((BattlefieldZoneView)zoneView).removeActiveAllCards();
-			} else if (zoneView instanceof PlayerHandZoneView) {
-				((PlayerHandZoneView)zoneView).removeActiveAllCards();
-			}
+			zoneView.removeActiveAllCards();
 		}
 	}
 	
 	private void clearTargetableFromAllCards() {
 		for (ZoneView<?> zoneView : this.zoneViewMap.values()) {
-			if (zoneView instanceof BattlefieldZoneView) {
-				((BattlefieldZoneView)zoneView).removeTargetableAllCards();
-			}
-			if (zoneView instanceof PlayerHandZoneView) {
-				((PlayerHandZoneView)zoneView).removeTargetableAllCards();
-			}
+			zoneView.removeActiveAllCards();
 		}
 	}
 	

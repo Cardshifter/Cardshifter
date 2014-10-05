@@ -16,5 +16,7 @@ public abstract class CardView {
 	public abstract void updateFields(UpdateMessage message);
 	
     public abstract void setCardActive(UseableActionMessage message);
+    
+    public abstract void removeCardActive();
 
 }
