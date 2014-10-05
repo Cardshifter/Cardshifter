@@ -1,12 +1,11 @@
 package com.cardshifter.client;
 
-import com.cardshifter.ai.AIs;
-import com.cardshifter.ai.ScoringAI;
-import com.cardshifter.fx.FXMLGameController;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.prefs.Preferences;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -22,6 +21,10 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import net.zomis.cardshifter.ecs.ai.AIComponent;
 
+import com.cardshifter.ai.AIs;
+import com.cardshifter.ai.ScoringAI;
+import com.cardshifter.fx.FXMLGameController;
+
 public final class GameClientLauncherController implements Initializable {
 	
 	@FXML private TextField ipAddressBox;
@@ -35,6 +38,9 @@ public final class GameClientLauncherController implements Initializable {
 	
 	private final Map<String, AIComponent> aiChoices = new HashMap<>();
 	private AIComponent aiChoice;
+	private final Preferences settings = Preferences.userNodeForPackage(GameClientLauncherController.class);
+	
+	private static final String CONF_NAME = "name";
 
 	private String getCharactersFromTextField(TextField textField) {
 		return textField.getCharacters().toString();
@@ -44,6 +50,7 @@ public final class GameClientLauncherController implements Initializable {
 		String ipAddressValue = this.getCharactersFromTextField(this.ipAddressBox);
 		int portValue = Integer.parseInt(this.getCharactersFromTextField(this.portBox));
 		String userNameValue = this.getCharactersFromTextField(this.userNameBox);
+		settings.put(CONF_NAME, userNameValue);
 		//this.switchToMainGameWindow(ipAddressValue, portValue);
 		this.switchToLobbyWindow(ipAddressValue, portValue, userNameValue);
 	}
@@ -165,7 +172,8 @@ public final class GameClientLauncherController implements Initializable {
 		this.connectButton.setOnAction(this::buttonClick);
 		this.ipAddressBox.setText("127.0.0.1");
 		this.portBox.setText("4242");
-		this.userNameBox.setText("EnterName");
+		this.userNameBox.setText(settings.get(CONF_NAME, "Enter Name"));
 		this.createAIChoices();
 	}	
+
 }
