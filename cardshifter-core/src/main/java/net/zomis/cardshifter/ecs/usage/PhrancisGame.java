@@ -49,7 +49,6 @@ public class PhrancisGame {
 	public static final String END_TURN_ACTION = "End Turn";
 	
 	private static final int CARDS_OF_EACH_TYPE = 3;
-	private static final int BOT_CARDS = 5;
 	
 	public static ECSGame createGame() {
 		ECSGame game = new ECSGame();
@@ -80,23 +79,21 @@ public class PhrancisGame {
 			player.addComponents(hand, deck, battlefield);
 			
 			for (int card = 0; card < CARDS_OF_EACH_TYPE; card++) {
+				createCreature(deck, 1, 1, "B0T", 1);
+				createCreature(deck, 2, 1, "B0T", 2);
+				createCreature(deck, 3, 3, "B0T", 3);
+				createCreature(deck, 4, 4, "B0T", 4);
+				createCreature(deck, 5, 5, "B0T", 5);
 				
-				for (int strength = 1; strength <= BOT_CARDS; strength++) {
-					Entity cardEntity = createCreature(deck, strength, strength, strength, "B0T");
-					if (strength == 2) {
-						cardEntity.getComponent(ECSResourceMap.class).getResource(PhrancisResources.HEALTH).change(-1);
-					}
-				}
-				createCreature(deck, 5, 4, 4, "Bio");
-				createCreature(deck, 5, 5, 3, "Bio");
-				createCreature(deck, 5, 3, 5, "Bio");
+				createCreature(deck, 4, 4, "Bio", 5);
+				createCreature(deck, 5, 3, "Bio", 5);
+				createCreature(deck, 3, 5, "Bio", 5);
 				
 				createEnchantment(deck, 1, 0, 1);
 				createEnchantment(deck, 0, 1, 1);
 				createEnchantment(deck, 3, 0, 3);
 				createEnchantment(deck, 0, 3, 3);
 				createEnchantment(deck, 2, 2, 5);
-
 			}
 			deck.shuffle();
 		}
@@ -176,8 +173,8 @@ public class PhrancisGame {
 		return new ECSAction(entity, ENCHANT_ACTION, act -> true, act -> {}).addTargetSet(1, 1);
 	}
 
-	private static Entity createCreature(ZoneComponent deck, int cost,
-			int strength, int health, String creatureType) {
+	private static Entity createCreature(ZoneComponent deck, int strength,
+			int health, String creatureType, int cost) {
 		Entity entity = deck.getOwner().getGame().newEntity();
 		ECSResourceMap.createFor(entity)
 			.set(PhrancisResources.HEALTH, health)
