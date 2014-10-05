@@ -98,4 +98,9 @@ public class ZoneView<T extends CardView> {
 		zoneMap.values().forEach(card -> card.removeCardActive());
 	}
 
+	public void setCardTargetable(int target) {
+		T card = getCard(target);
+		card.setCardTargetable();
+	}
+
 }

@@ -166,6 +166,17 @@ public final class CardBattlefieldDocumentController extends CardView implements
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-    }    
-    
+    }
+
+	@Override
+	public void setCardTargetable() {
+		this.anchorPane.setOnMouseClicked(this::actionOnTarget);
+		background.setFill(Color.BLUE);
+	}
+	
+	private void actionOnTarget(MouseEvent event) {
+		boolean isChosenTarget = controller.addTarget(card.getId());
+		background.setFill(isChosenTarget ? Color.VIOLET : Color.BLUE);
+	}
+
 }

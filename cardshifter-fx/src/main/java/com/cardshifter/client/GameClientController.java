@@ -192,16 +192,10 @@ public class GameClientController {
 	}
 	
 	public void createAndSendMessage(UseableActionMessage action) {
-		try {
-			if (action.isTargetRequired()) {
-				this.send(new RequestTargetsMessage(gameId, action.getId(), action.getAction()));
-			} else {
-				this.send(new UseAbilityMessage(gameId, action.getId(), action.getAction(), action.getTargetId()));
-				
-				this.clearActiveFromAllCards();
-			}
-		} catch (NumberFormatException | IndexOutOfBoundsException ex) {
-			System.out.println("Not a valid action");
+		if (action.isTargetRequired()) {
+			this.send(new RequestTargetsMessage(gameId, action.getId(), action.getAction()));
+		} else {
+			this.send(new UseAbilityMessage(gameId, action.getId(), action.getAction(), action.getTargetId()));
 		}
 		
 		//A new list of actions will be sent back from the server, so it is okay to clear them
@@ -472,16 +466,8 @@ public class GameClientController {
 			int target = message.getTargets()[i];
 			if (target != this.opponentId) {
 				ZoneView<?> zoneView = getZoneViewForCard(target);
-				
-				if (zoneView == null) {
-					continue;
-				}
-				if (zoneView instanceof BattlefieldZoneView) {
-					UseableActionMessage newMessage = new UseableActionMessage(message.getEntity(), message.getAction(), false, target);
-					((BattlefieldZoneView)zoneView).setCardTargetable(target, newMessage);
-				}
-				if (zoneView instanceof PlayerHandZoneView) {
-					((PlayerHandZoneView)zoneView).setCardTargetable(target);
+				if (zoneView != null) {
+					zoneView.setCardTargetable(target);
 				}
 			} else {
 				// automatically target opponent
@@ -497,6 +483,12 @@ public class GameClientController {
 	}
 	
 	public boolean addTarget(int id) {
+		if (chosenTargets.isEmpty() && targetInfo.getMax() == 1) {
+			// Only one target, perform that action with target now
+			this.createAndSendMessage(new UseableActionMessage(targetInfo.getEntity(), targetInfo.getAction(), false, id));
+			return false; // Card should not be selected, because we are sending the action directly
+		}
+		
 		if (chosenTargets.size() >= targetInfo.getMax()) {
 			System.out.println("Cannot add more targets");
 			return false;
@@ -512,6 +504,7 @@ public class GameClientController {
 	
 	private void sendActionWithCurrentTargets(AvailableTargetsMessage message) {
 		this.send(new UseAbilityMessage(gameId, message.getEntity(), message.getAction(), chosenTargets.stream().mapToInt(i -> i).toArray()));
+		this.actionBox.getChildren().clear();
 		this.clearActiveFromAllCards();
 	}
 	
@@ -559,7 +552,7 @@ public class GameClientController {
 		this.actionBox.getChildren().clear();
 		
 		for (UseableActionMessage message : this.savedMessages) {
-			Platform.runLater(() -> this.processUseableActionMessage(message));
+			this.processUseableActionMessage(message);
 		}
 	}
 	

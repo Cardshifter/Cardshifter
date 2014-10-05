@@ -19,4 +19,6 @@ public abstract class CardView {
     
     public abstract void removeCardActive();
 
+    public abstract void setCardTargetable();
+    
 }

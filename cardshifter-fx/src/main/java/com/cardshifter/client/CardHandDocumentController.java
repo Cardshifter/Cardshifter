@@ -104,8 +104,8 @@ public final class CardHandDocumentController extends CardView {
 	public void updateFields(UpdateMessage message) {
 	}
 
+	@Override
 	public void setCardTargetable() {
-//		this.isActive = true;
 		this.anchorPane.setOnMouseClicked(this::actionOnTarget);
 		background.setFill(Color.BLUE);
 	}
