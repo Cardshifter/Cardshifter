@@ -41,16 +41,10 @@ public class MainServer {
 			
 			logger.info("Starting Console...");
 			CommandHandler commandHandler = new CommandHandler();
-			commandHandler.addHandler("exit", command -> this.shutdown());
-			commandHandler.addHandler("export", this::export);
-			commandHandler.addHandler("users", this::users);
-			commandHandler.addHandler("play", this::play);
-			commandHandler.addHandler("say", this::say);
-			commandHandler.addHandler("chat", this::chatInfo);
+			initializeCommands(commandHandler);
 			ServerConsole console = new ServerConsole(server, commandHandler);
 			consoleThread = new Thread(console, "Console-Thread");
 			consoleThread.start();
-			console.addHandler("threads", cmd -> showAllStackTraces(server, System.out::println));
 			
 			ais.entrySet().forEach(entry -> {
 				ClientIO tcgAI = new FakeAIClientTCG(server, entry.getValue());
@@ -66,6 +60,16 @@ public class MainServer {
 		return server;
 	}
 	
+	private void initializeCommands(CommandHandler commandHandler) {
+		commandHandler.addHandler("exit", command -> this.shutdown());
+		commandHandler.addHandler("export", this::export);
+		commandHandler.addHandler("users", this::users);
+		commandHandler.addHandler("play", this::play);
+		commandHandler.addHandler("say", this::say);
+		commandHandler.addHandler("chat", this::chatInfo);
+		commandHandler.addHandler("threads", cmd -> showAllStackTraces(server, System.out::println));
+	}
+
 	private void say(Command command) {
 		ChatArea chat = server.getMainChat();
 		chat.broadcast(new ChatMessage(chat.getId(), "Server", command.getFullCommand(1)));
