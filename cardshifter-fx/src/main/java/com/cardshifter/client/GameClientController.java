@@ -69,8 +69,6 @@ public class GameClientController {
 	
 	private int gameId;
 	private int playerIndex;
-	private Thread listenThread;
-	private Thread playThread;
 	
 	private int opponentId;
 	private int opponentHandId;
@@ -419,7 +417,6 @@ public class GameClientController {
 	
 	private void processGameOverMessage(GameOverMessage message) {
 		Platform.runLater(() -> this.loginMessage.setText("Game Over!"));
-		this.stopThreads();
 	}
 	
 	private void removeCardFromDeck(int zoneId, int cardId) {
@@ -517,15 +514,6 @@ public class GameClientController {
 		card.getChildren().add(cardBack);
 		
 		return card;
-	}
-	
-	private void stopThreads() {
-		this.listenThread.interrupt();
-		this.playThread.interrupt();
-		
-		//Uncomment these lines to cure the exception
-		//this.listenThread.stop();
-		//this.playThread.stop();
 	}
 	
 	@SuppressWarnings("unchecked")
