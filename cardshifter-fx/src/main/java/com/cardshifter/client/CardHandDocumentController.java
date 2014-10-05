@@ -46,10 +46,14 @@ public final class CardHandDocumentController extends CardView {
                 
         this.card = message;
 		this.controller = controller;
-        this.cardId.setText(String.format("CardId = %d", message.getId()));
+        this.setCardId(message.getId());
         this.setCardLabels();
     }
 	
+	private void setCardId(int id) {
+        cardId.setText(String.format("CardId = %d", id));
+	}
+
 	public CardInfoMessage getCard() {
 		return this.card;
 	}
