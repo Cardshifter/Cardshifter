@@ -198,7 +198,7 @@ public class GameClientController {
 			} else {
 				this.send(new UseAbilityMessage(gameId, action.getId(), action.getAction(), action.getTargetId()));
 				
-				this.clearTargetableFromAllCards();
+				this.clearActiveFromAllCards();
 			}
 		} catch (NumberFormatException | IndexOutOfBoundsException ex) {
 			System.out.println("Not a valid action");
@@ -512,7 +512,7 @@ public class GameClientController {
 	
 	private void sendActionWithCurrentTargets(AvailableTargetsMessage message) {
 		this.send(new UseAbilityMessage(gameId, message.getEntity(), message.getAction(), chosenTargets.stream().mapToInt(i -> i).toArray()));
-		this.clearTargetableFromAllCards();
+		this.clearActiveFromAllCards();
 	}
 	
 	private void processClientDisconnectedMessage(ClientDisconnectedMessage message) {
@@ -556,7 +556,6 @@ public class GameClientController {
 	
 	public void cancelAction() {
 		this.clearActiveFromAllCards();
-		this.clearTargetableFromAllCards();
 		this.actionBox.getChildren().clear();
 		
 		for (UseableActionMessage message : this.savedMessages) {
@@ -565,12 +564,6 @@ public class GameClientController {
 	}
 	
 	private void clearActiveFromAllCards() {
-		for (ZoneView<?> zoneView : this.zoneViewMap.values()) {
-			zoneView.removeActiveAllCards();
-		}
-	}
-	
-	private void clearTargetableFromAllCards() {
 		for (ZoneView<?> zoneView : this.zoneViewMap.values()) {
 			zoneView.removeActiveAllCards();
 		}
