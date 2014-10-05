@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import net.zomis.cardshifter.ecs.base.ECSGame;
+
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -94,6 +96,8 @@ public abstract class ServerGame {
 	public GameState getState() {
 		return state;
 	}
+	
+	public abstract ECSGame getGameModel();
 	
 	public List<ClientIO> getPlayers() {
 		return Collections.unmodifiableList(players);

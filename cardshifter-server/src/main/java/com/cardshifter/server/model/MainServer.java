@@ -12,8 +12,11 @@ import com.cardshifter.ai.CardshifterAI;
 import com.cardshifter.ai.CompleteIdiot;
 import com.cardshifter.ai.ScoringAI;
 import com.cardshifter.api.CardshifterConstants;
+import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.incoming.StartGameRequest;
+import com.cardshifter.server.commands.AICommand;
+import com.cardshifter.server.commands.AICommand.AICommandParameters;
 import com.cardshifter.server.main.FakeAIClientTCG;
 import com.cardshifter.server.utils.export.DataExporter;
 
@@ -39,15 +42,11 @@ public class MainServer {
 			server.addConnections(new ServerWeb(server, 4243));
 			
 			logger.info("Starting Console...");
-			CommandHandler commandHandler = new CommandHandler();
-			commandHandler.addHandler("exit", command -> this.shutdown());
-			commandHandler.addHandler("export", this::export);
-			commandHandler.addHandler("users", this::users);
-			commandHandler.addHandler("play", this::play);
+			CommandHandler commandHandler = new CommandHandler(server);
+			initializeCommands(commandHandler);
 			ServerConsole console = new ServerConsole(server, commandHandler);
 			consoleThread = new Thread(console, "Console-Thread");
 			consoleThread.start();
-			console.addHandler("threads", cmd -> showAllStackTraces(server, System.out::println));
 			
 			ais.entrySet().forEach(entry -> {
 				ClientIO tcgAI = new FakeAIClientTCG(server, entry.getValue());
@@ -61,6 +60,34 @@ public class MainServer {
 			logger.error("Initializing Error", e);
 		}
 		return server;
+	}
+	
+	private void initializeCommands(CommandHandler commandHandler) {
+		commandHandler.addHandler("exit", command -> this.shutdown());
+//		commandHandler.addHandler("help", command -> commands.help());
+		commandHandler.addHandler("export", this::export);
+		commandHandler.addHandler("users", this::users);
+		commandHandler.addHandler("play", this::play);
+		commandHandler.addHandler("say", this::say);
+		commandHandler.addHandler("chat", this::chatInfo);
+		commandHandler.addHandler("ai", () -> new AICommandParameters(), new AICommand());
+		commandHandler.addHandler("threads", cmd -> showAllStackTraces(server, System.out::println));
+	}
+
+	private void say(Command command) {
+		ChatArea chat = server.getMainChat();
+		chat.broadcast(new ChatMessage(chat.getId(), "Server", command.getFullCommand(1)));
+	}
+	
+	private void chatInfo(Command command) {
+		int chatId = command.getParameterInt(1);
+		if (chatId == 0) {
+			System.out.println(server.getChats().keySet());
+		}
+		else {
+			ChatArea chat = server.getMainChat();
+			System.out.println(chat.getUsers());
+		}
 	}
 	
 	private void shutdown() {

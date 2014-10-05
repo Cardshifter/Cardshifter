@@ -1,8 +1,7 @@
 package com.cardshifter.client;
 
-import com.cardshifter.api.outgoing.CardInfoMessage;
-import com.cardshifter.api.outgoing.UseableActionMessage;
 import java.net.URL;
+import java.util.Map.Entry;
 import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
@@ -14,7 +13,12 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-public final class CardHandDocumentController implements Initializable {
+import com.cardshifter.api.outgoing.CardInfoMessage;
+import com.cardshifter.api.outgoing.UpdateMessage;
+import com.cardshifter.api.outgoing.UseableActionMessage;
+import com.cardshifter.client.views.CardView;
+
+public final class CardHandDocumentController extends CardView implements Initializable {
     
     @FXML private Label strength;
     @FXML private Label health;
@@ -89,15 +93,19 @@ public final class CardHandDocumentController implements Initializable {
     }
 	
     private void setCardLabels() {
-		for(String key : this.card.getProperties().keySet()) {
+		for (Entry<String, Object> entry : this.card.getProperties().entrySet()) {
+			String key = entry.getKey();
+			String value = String.valueOf(entry.getValue());
 			if (key.equals("MANA_COST")) {
-				manaCost.setText(String.format("Mana Cost = %d", this.card.getProperties().get(key)));
+				manaCost.setText(String.format("Mana Cost = %s", value));
 			} else if (key.equals("ATTACK")) {
-				strength.setText(this.card.getProperties().get(key).toString());
+				strength.setText(value);
 			} else if (key.equals("HEALTH")) {
-				health.setText(this.card.getProperties().get(key).toString());
+				health.setText(value);
 			} else if (key.equals("SCRAP_COST")) {
-				scrapCost.setText(String.format("Scrap Cost = %d", this.card.getProperties().get(key)));
+				scrapCost.setText(String.format("Scrap Cost = %s", value));
+			} else if (key.equals("creatureType")) {
+				creatureType.setText(value);
 			}
 		}
     }
@@ -106,6 +114,10 @@ public final class CardHandDocumentController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-    }    
-    
+    }
+
+	@Override
+	public void updateFields(UpdateMessage message) {
+	}
+
 }

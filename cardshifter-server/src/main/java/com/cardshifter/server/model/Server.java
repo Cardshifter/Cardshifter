@@ -18,6 +18,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import com.cardshifter.api.CardshifterConstants;
+import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.both.InviteResponse;
 import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.incoming.RequestTargetsMessage;
@@ -51,11 +52,12 @@ public class Server {
 	private final AtomicReference<ClientIO> playAny = new AtomicReference<>();
 
 	private final ScheduledExecutorService scheduler;
+	private final ChatArea mainChat;
 
 	public Server() {
 		this.incomingHandler = new IncomingHandler(this);
 		this.scheduler = Executors.newScheduledThreadPool(2, new ThreadFactoryBuilder().setNameFormat("ai-thread-%d").build());
-		this.newChatRoom("Main");
+		mainChat = this.newChatRoom("Main");
 		
 		Server server = this;
 		IncomingHandler incomings = server.getIncomingHandler();
@@ -63,7 +65,7 @@ public class Server {
 		Handlers handlers = new Handlers(this);
 		
 		incomings.addHandler("login", LoginMessage.class, handlers::loginMessage);
-//		incomings.addHandler("chat", ChatMessage.class);
+		incomings.addHandler("chat", ChatMessage.class, handlers::chat);
 		incomings.addHandler("startgame", StartGameRequest.class, handlers::play);
 		incomings.addHandler("use", UseAbilityMessage.class, handlers::useAbility);
 		incomings.addHandler("requestTargets", RequestTargetsMessage.class, handlers::requestTargets);
@@ -74,14 +76,13 @@ public class Server {
 		
 	}
 	
-	@Deprecated
-	private ChatArea getMainChat() {
-		return chats.get(0);
+	ChatArea getMainChat() {
+		return mainChat;
 	}
 	
 	public ChatArea newChatRoom(String name) {
-		int id = roomCounter.getAndIncrement();
-		ChatArea room = new ChatArea(roomCounter.getAndIncrement(), name);
+		int id = roomCounter.incrementAndGet();
+		ChatArea room = new ChatArea(id, name);
 		chats.put(id, room);
 		return room;
 	}
@@ -112,7 +113,6 @@ public class Server {
 		logger.info("New client: " + cl);
 		cl.setId(clientId.incrementAndGet());
 		clients.put(cl.getId(), cl);
-		getMainChat().add(cl);
 	}
 	
 	public void onDisconnected(ClientIO client) {
@@ -127,15 +127,6 @@ public class Server {
 		clients.values().forEach(cl -> cl.sendToClient(data));
 	}
 
-	public void incomingChatMessage(Command cmd) {
-		ChatArea room = this.chats.get(cmd.getParameterInt(1));
-		if (room == null) {
-			cmd.getSender().sendToClient("INVALID CHAT ROOM");
-			return;
-		}
-		room.broadcast(cmd.getFullCommand(2));
-	}
-	
 	public void addGameFactory(String gameType, GameFactory factory) {
 		this.gameFactories.put(gameType, factory);
 	}

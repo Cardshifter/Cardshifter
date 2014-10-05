@@ -1,6 +1,8 @@
 package com.cardshifter.server.model;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -18,6 +20,7 @@ import net.zomis.cardshifter.ecs.base.GameOverEvent;
 import net.zomis.cardshifter.ecs.cards.CardComponent;
 import net.zomis.cardshifter.ecs.cards.ZoneChangeEvent;
 import net.zomis.cardshifter.ecs.cards.ZoneComponent;
+import net.zomis.cardshifter.ecs.components.CreatureTypeComponent;
 import net.zomis.cardshifter.ecs.components.PlayerComponent;
 import net.zomis.cardshifter.ecs.resources.ResourceValueChange;
 import net.zomis.cardshifter.ecs.resources.Resources;
@@ -45,6 +48,7 @@ public class TCGGame extends ServerGame {
 	private static final Logger logger = LogManager.getLogger(TCGGame.class);
 	private final ECSGame game;
 	private final ComponentRetriever<CardComponent> card = ComponentRetriever.retreiverFor(CardComponent.class);
+	private final ComponentRetriever<CreatureTypeComponent> creatureType = ComponentRetriever.retreiverFor(CreatureTypeComponent.class);
 	
 	private ComponentRetriever<PlayerComponent> playerData = ComponentRetriever.retreiverFor(PlayerComponent.class);
 	
@@ -65,11 +69,15 @@ public class TCGGame extends ServerGame {
 			Entity player = playerFor(io);
 			io.sendToClient(new ZoneChangeMessage(event.getCard().getId(), event.getSource().getZoneId(), event.getDestination().getZoneId()));
 			if (event.getDestination().isKnownTo(player) && !event.getSource().isKnownTo(player)) {
-				io.sendToClient(new CardInfoMessage(event.getDestination().getZoneId(), cardEntity.getId(), Resources.map(cardEntity)));
+				sendRealCardData(io, event.getDestination().getZoneId(), cardEntity);
 			}
 		}
 	}
 	
+	private void sendRealCardData(ClientIO io, int zoneId, Entity cardEntity) {
+		io.sendToClient(new CardInfoMessage(zoneId, cardEntity.getId(), infoMap(cardEntity)));
+	}
+
 	private void remove(EntityRemoveEvent event) {
 		this.send(new EntityRemoveMessage(event.getEntity().getId()));
 	}
@@ -197,7 +205,9 @@ public class TCGGame extends ServerGame {
 			if (io instanceof FakeAIClientTCG) {
 				FakeAIClientTCG aiClient = (FakeAIClientTCG) io;
 				Entity player = playerFor(io);
-				player.addComponent(new AIComponent(aiClient.getAI()));
+				AIComponent aiComponent = new AIComponent(aiClient.getAI());
+				aiComponent.setDelay(2000);
+				player.addComponent(aiComponent);
 				logger.info("AI is configured for " + player);
 			}
 		}
@@ -236,9 +246,19 @@ public class TCGGame extends ServerGame {
 	
 	private void sendCard(ClientIO io, Entity card) {
 		CardComponent cardData = card.getComponent(CardComponent.class);
-		io.sendToClient(new CardInfoMessage(cardData.getCurrentZone().getZoneId(), card.getId(), Resources.map(card)));
+		io.sendToClient(new CardInfoMessage(cardData.getCurrentZone().getZoneId(), card.getId(), infoMap(card)));
+	}
+	
+	private Map<String, Object> infoMap(Entity entity) {
+		Map<String, Object> result = new HashMap<>();
+		result.putAll(Resources.map(entity));
+		if (creatureType.has(entity)) {
+			result.put("creatureType", creatureType.get(entity).getCreatureType());
+		}
+		return result;
 	}
 
+	@Override
 	public ECSGame getGameModel() {
 		return game;
 	}

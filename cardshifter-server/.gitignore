@@ -5,3 +5,5 @@ Server.log
 nb-configuration.xml
 nbactions.xml
 /bin
+
+game-*.xml

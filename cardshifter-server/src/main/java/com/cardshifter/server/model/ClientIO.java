@@ -62,6 +62,15 @@ public abstract class ClientIO implements IdObject {
 		server.handleMessage(this, message);
 	}
 	
+	public void sentToServer(Message message) {
+		try {
+			server.getIncomingHandler().perform(message, this);
+		}
+		catch (RuntimeException ex) {
+			logger.error("Error performing incoming message from " + this, ex);
+		}
+	}
+	
 	/**
 	 * Inform the server that this client has disconnected
 	 */

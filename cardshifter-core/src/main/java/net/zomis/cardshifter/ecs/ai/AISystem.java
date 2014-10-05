@@ -47,7 +47,7 @@ public class AISystem implements ECSSystem {
 			AIComponent aiComp = ai.get(entity);
 			long delay = aiComp.getDelay();
 			ECSAction action = aiComp.getAI().getAction(entity);
-			if (action != null) {
+			if (action != null && !game.isGameOver()) {
 				logger.info(entity + " will perform " + action + " in " + delay + " milliseconds");
 				Runnable runnable = () -> this.perform(entity, action);
 				if (delay <= 0) {
@@ -83,6 +83,29 @@ public class AISystem implements ECSSystem {
 	public void startGame(ECSGame game) {
 		game.getEvents().registerHandlerAfter(this, ActionPerformEvent.class, event -> this.aiPerform(event.getEntity().getGame()));
 		game.getEvents().registerHandlerAfter(this, StartGameEvent.class, event -> this.aiPerform(event.getGame()));
+	}
+
+	/**
+	 * Call all AIs in the game directly. Useful for when a new AI has been initialized while the game is running
+	 * @param game Game to call AIs in
+	 */
+	public static void call(ECSGame game) {
+		Set<Entity> ais = game.getEntitiesWithComponent(AIComponent.class);
+		ComponentRetriever<AIComponent> ai = game.componentRetreiver(AIComponent.class);
+		
+		logger.info("AI entities " + ais);
+		for (Entity entity : ais) {
+			AIComponent aiComp = ai.get(entity);
+			ECSAction action = aiComp.getAI().getAction(entity);
+			if (action != null && !game.isGameOver()) {
+				logger.info(entity + " performs " + action);
+				action.perform(entity);
+				return;
+			}
+			else {
+				logger.info(entity + ": No actions available");
+			}
+		}
 	}
 	
 }
