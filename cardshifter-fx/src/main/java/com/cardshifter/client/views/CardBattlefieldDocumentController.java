@@ -49,6 +49,8 @@ public final class CardBattlefieldDocumentController extends CardView implements
 		this.controller = controller;
         this.setCardId();
         this.setCardLabels();
+		
+		scrapButton.setOnMouseClicked(this::scrapButtonAction);
     }
 	
 	private void setCardId() {
@@ -84,6 +86,7 @@ public final class CardBattlefieldDocumentController extends CardView implements
 		}
     }
     
+	@Override
     public AnchorPane getRootPane() {
 		return this.anchorPane;
     }
@@ -97,42 +100,49 @@ public final class CardBattlefieldDocumentController extends CardView implements
 		this.message = message;
 		this.anchorPane.setOnMouseClicked(this::actionOnClick);
         background.setFill(Color.DARKGREEN);
-		this.setUpScrapButton();
-	}
-
-    public void setCardActive(UseableActionMessage message) {
-		this.isActive = true;
-		this.message = message;
-		//this.anchorPane.setOnMouseClicked(this::actionOnClick);
-        background.setFill(Color.YELLOW);
-		this.setUpScrapButton();
-    }
-	
-	public void removeCardActive() {
-		this.isActive = false;
-		this.message = null;
-		this.anchorPane.setOnMouseClicked(e -> {});
-		background.setFill(Color.BLACK);
-		this.scrapButton.setVisible(false);
-	}
-	
-	public void setCardTargetable(UseableActionMessage message) {
-		this.message = message;
-		this.anchorPane.setOnMouseClicked(this::actionOnClick);
-		background.setFill(Color.BLUE);
 	}
 	
 	private void setSickness() {
 		sicknessCircle.setVisible(true);
 	}
 	
+	@Override
+	public void setCardScrappable(UseableActionMessage message) {
+		this.message = message;
+		background.setFill(Color.GRAY);
+		this.scrapButton.setVisible(true);
+	}
+
+	@Override
+    public void setCardActive(UseableActionMessage message) {
+		this.isActive = true;
+		this.message = message;
+        background.setFill(Color.YELLOW);
+		//this.anchorPane.setOnMouseClicked(this::actionOnClick);
+    }
+	
+	@Override
+	public void setCardTargetable() {
+		this.anchorPane.setOnMouseClicked(this::actionOnTarget);
+		background.setFill(Color.BLUE);
+	}
+
 	public void removeSickness() {
 		sicknessCircle.setVisible(false);
 	}
 	
-	private void setUpScrapButton() {
-		scrapButton.setVisible(true);
-		scrapButton.setOnMouseClicked(this::scrapButtonAction);
+	public void removeCardScrappable() {
+		this.message = null;
+		this.background.setFill(Color.BLACK);
+		this.scrapButton.setVisible(false);
+	}
+	
+	@Override
+	public void removeCardActive() {
+		this.isActive = false;
+		this.message = null;
+		this.anchorPane.setOnMouseClicked(e -> {});
+		background.setFill(Color.BLACK);
 	}
 	
 	private void scrapButtonAction(MouseEvent event) {
@@ -161,21 +171,14 @@ public final class CardBattlefieldDocumentController extends CardView implements
 
 	}
 
-    //Boilerplate code
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }
-
-	@Override
-	public void setCardTargetable() {
-		this.anchorPane.setOnMouseClicked(this::actionOnTarget);
-		background.setFill(Color.BLUE);
-	}
-	
 	private void actionOnTarget(MouseEvent event) {
 		boolean isChosenTarget = controller.addTarget(card.getId());
 		background.setFill(isChosenTarget ? Color.VIOLET : Color.BLUE);
 	}
+	
+	@Override
+    public void initialize(URL url, ResourceBundle rb) {
+        // TODO
+    }
 
 }
