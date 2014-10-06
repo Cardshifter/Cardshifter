@@ -29,8 +29,8 @@ public class InviteWindow {
 		this.lobby = lobby;
 		
 		this.nameLabel.setText(message.getName());
-		this.noButton.setOnMouseClicked(lobby::acceptGameRequest);
-		this.yesButton.setOnMouseClicked(lobby::declineGameRequest);
+		this.yesButton.setOnMouseClicked(lobby::acceptGameRequest);
+		this.noButton.setOnMouseClicked(lobby::declineGameRequest);
 	}
 	
 	public AnchorPane getRootPane() {
