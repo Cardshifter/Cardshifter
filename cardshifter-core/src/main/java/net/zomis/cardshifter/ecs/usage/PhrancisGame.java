@@ -78,15 +78,15 @@ public class PhrancisGame {
 			player.addComponents(hand, deck, battlefield);
 			
 			for (int card = 0; card < CARDS_OF_EACH_TYPE; card++) {
-				createCreature(deck, 1, 1, "B0T", 1);
-				createCreature(deck, 2, 1, "B0T", 2);
-				createCreature(deck, 3, 3, "B0T", 3);
-				createCreature(deck, 4, 4, "B0T", 4);
-				createCreature(deck, 5, 5, "B0T", 5);
+				createCreature(1, deck, 1, 1, "B0T", 1);
+				createCreature(2, deck, 2, 1, "B0T", 1);
+				createCreature(3, deck, 3, 3, "B0T", 1);
+				createCreature(4, deck, 4, 4, "B0T", 1);
+				createCreature(5, deck, 5, 5, "B0T", 1);
 				
-				createCreature(deck, 4, 4, "Bio", 5);
-				createCreature(deck, 5, 3, "Bio", 5);
-				createCreature(deck, 3, 5, "Bio", 5);
+				createCreature(5, deck, 4, 4, "Bio", 0);
+				createCreature(5, deck, 5, 3, "Bio", 0);
+				createCreature(5, deck, 3, 5, "Bio", 0);
 				
 				createEnchantment(deck, 1, 0, 1);
 				createEnchantment(deck, 0, 1, 1);
@@ -172,12 +172,13 @@ public class PhrancisGame {
 		return new ECSAction(entity, ENCHANT_ACTION, act -> true, act -> {}).addTargetSet(1, 1);
 	}
 
-	private static Entity createCreature(ZoneComponent deck, int strength,
-			int health, String creatureType, int cost) {
+	private static Entity createCreature(int cost, ZoneComponent deck, int strength,
+			int health, String creatureType, int scrapValue) {
 		Entity entity = deck.getOwner().getGame().newEntity();
 		ECSResourceMap.createFor(entity)
 			.set(PhrancisResources.HEALTH, health)
 			.set(PhrancisResources.ATTACK, strength)
+			.set(PhrancisResources.SCRAP, scrapValue)
 			.set(PhrancisResources.MANA_COST, cost)
 			.set(PhrancisResources.SICKNESS, 1)
 			.set(PhrancisResources.ATTACK_AVAILABLE, 1);
