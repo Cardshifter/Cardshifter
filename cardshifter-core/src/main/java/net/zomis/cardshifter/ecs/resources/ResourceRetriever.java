@@ -33,5 +33,15 @@ public class ResourceRetriever {
 	public ECSResource getResource() {
 		return resource;
 	}
+
+	public int getOrDefault(Entity entity, int defaultValue) {
+		Objects.requireNonNull(entity, "Cannot retrieve resource map for null entity");
+		ECSResourceMap map = entity.getComponent(ECSResourceMap.class);
+		if (map == null) {
+			return defaultValue;
+		}
+		ECSResourceData resData = map.getResource(resource);
+		return resData == null ? defaultValue : resData.get();
+	}
 	
 }
