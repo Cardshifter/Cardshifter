@@ -13,9 +13,6 @@ public class InviteWindow {
 	@FXML private AnchorPane noButton;
 	@FXML private AnchorPane yesButton;
 	
-	private final InviteRequest message;
-	private final GameClientLobby lobby;
-	
 	public InviteWindow(InviteRequest message, GameClientLobby lobby) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("InviteWindowDocument.fxml"));
@@ -25,14 +22,15 @@ public class InviteWindow {
 			throw new RuntimeException(e);
 		}
 		
-		this.message = message;
-		this.lobby = lobby;
-		
+		this.initializeLabels(message, lobby);
+	}
+	
+	private void initializeLabels(InviteRequest message, GameClientLobby lobby) {
 		this.nameLabel.setText(message.getName());
 		this.yesButton.setOnMouseClicked(lobby::acceptGameRequest);
 		this.noButton.setOnMouseClicked(lobby::declineGameRequest);
 	}
-	
+
 	public AnchorPane getRootPane() {
 		return this.rootPane;
 	}

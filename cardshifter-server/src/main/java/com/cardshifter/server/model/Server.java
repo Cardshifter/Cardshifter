@@ -5,14 +5,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Stream;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -116,6 +114,7 @@ public class Server {
 	}
 	
 	public void onDisconnected(ClientIO client) {
+		logger.info("Client disconnected: " + client);
 		games.values().stream().filter(game -> game.hasPlayer(client))
 			.forEach(game -> game.send(new ClientDisconnectedMessage(client.getName(), game.getPlayers().indexOf(client))));
 		clients.remove(client);
@@ -129,62 +128,6 @@ public class Server {
 
 	public void addGameFactory(String gameType, GameFactory factory) {
 		this.gameFactories.put(gameType, factory);
-	}
-
-	@Deprecated
-	public boolean inviteRequest(Command cmd) {
-		final GameInvite invite;
-		switch (cmd.getCommand()) {
-			case "INVT":
-				String target = cmd.getParameter(2);
-				ServerGame game = createGame(cmd.getParameter(1));
-				// FindBugs tells this is redundant
-//				if (game == null) {
-//					cmd.getSender().sendToClient("FAIL Game creation failed");
-//					return false;
-//				}
-				invite = new GameInvite(this, invites.newId(), cmd.getSender(), game);
-				this.invites.add(invite);
-				
-				Stream<ClientIO> targetStream = clients.values().stream().filter(cl -> cl.getName().equals(target));
-				Optional<ClientIO> result = targetStream.findFirst();
-				if (result.isPresent()) {
-					invite.sendInvite(result.get());
-				}
-				else {
-					cmd.getSender().sendToClient("FAIL No such user");
-				}
-				return result.isPresent();
-			case "INVY":
-				invite = invites.get(cmd.getParameterInt(1));
-				if (invite == null) {
-					cmd.getSender().sendToClient("FAIL Invalid invite id");
-					return false;
-				}
-				return invite.inviteAccept(cmd.getSender());
-			case "INVN":
-				invite = invites.get(cmd.getParameterInt(1));
-				if (invite == null) {
-					cmd.getSender().sendToClient("FAIL Invalid invite id");
-					return false;
-				}
-				return invite.inviteDecline(cmd.getSender());
-			default:
-				throw new AssertionError("Invalid command: " + cmd);
-		}
-	}
-	
-	@Deprecated
-	public void incomingGameCommand(Command cmd) {
-		ServerGame game = games.get(cmd.getParameterInt(1));
-		if (game != null) {
-			if (!game.handleMove(cmd)) {
-				cmd.getSender().sendToClient("FAIL Invalid move");
-			}
-		}
-		else {
-			cmd.getSender().sendToClient("FAIL Invalid gameid");
-		}
 	}
 
 	public ServerGame createGame(String parameter) {

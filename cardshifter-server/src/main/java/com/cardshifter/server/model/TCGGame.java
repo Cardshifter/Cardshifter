@@ -54,7 +54,7 @@ public class TCGGame extends ServerGame {
 	
 	public TCGGame(Server server, int id) {
 		super(server, id);
-		game = PhrancisGame.createGame();
+		game = PhrancisGame.createGame(new ECSGame());
 		game.getEvents().registerHandlerAfter(this, ResourceValueChange.class, this::broadcast);
 		game.getEvents().registerHandlerAfter(this, ZoneChangeEvent.class, this::zoneChange);
 		game.getEvents().registerHandlerAfter(this, EntityRemoveEvent.class, this::remove);

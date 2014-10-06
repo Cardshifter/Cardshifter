@@ -21,6 +21,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.incoming.RequestTargetsMessage;
 import com.cardshifter.api.incoming.UseAbilityMessage;
 import com.cardshifter.api.messages.Message;
@@ -518,6 +519,7 @@ public class GameClientController {
 		return null;
 	}
 	public void closeGame() {
+		this.send(new ChatMessage(1, "unused", "(Ends game " + gameId + ")"));
 		// run on window close
 	}
 }
