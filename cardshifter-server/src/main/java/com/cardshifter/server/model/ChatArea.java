@@ -30,6 +30,10 @@ public class ChatArea implements IdObject {
 		clients.forEach(cl -> cl.sendToClient(message));
 	}
 	
+	public void broadcast(String from, String message) {
+		broadcast(new ChatMessage(id, from, message));
+	}
+	
 	public void add(ClientIO client) {
 		clients.add(client);
 		broadcast(new ChatMessage(id, "Server Chat " + id, client.getName() + " has joined the chat"));
