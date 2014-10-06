@@ -22,6 +22,7 @@ public final class CardHandDocumentController extends CardView {
     @FXML private Label cardId;
     @FXML private Label manaCost;
     @FXML private Label scrapCost;
+	@FXML private Label scrapValue;
     @FXML private Label creatureType;
 	@FXML private Label abilityText;
 	@FXML private Rectangle background;
@@ -101,6 +102,8 @@ public final class CardHandDocumentController extends CardView {
 				scrapCost.setText(String.format("Scrap Cost = %s", value));
 			} else if (key.equals("creatureType")) {
 				creatureType.setText(value);
+			} else if (key.equals("SCRAP")) {
+				scrapValue.setText(String.format("Scrap val = %s", value));
 			}
 		}
     }

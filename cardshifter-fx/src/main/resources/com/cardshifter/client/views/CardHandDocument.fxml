@@ -28,10 +28,11 @@
       <Label fx:id="strength" layoutX="73.0" layoutY="86.0" text="#" textFill="WHITE" />
       <Label fx:id="health" layoutX="103.0" layoutY="87.0" text="#" textFill="WHITE" />
       <Label fx:id="cardId" layoutX="16.0" layoutY="17.0" text="Card Id =" textFill="WHITE" />
-      <Label fx:id="manaCost" layoutX="17.0" layoutY="45.0" text="Mana Cost =" textFill="WHITE" />
-      <Label fx:id="scrapCost" layoutX="17.0" layoutY="61.0" text="Scrap Cost =" textFill="WHITE" />
-      <Label fx:id="creatureType" layoutX="15.0" layoutY="106.0" text="Type" textFill="WHITE" />
+      <Label fx:id="manaCost" layoutX="16.0" layoutY="30.0" text="Mana Cost =" textFill="WHITE" />
+      <Label fx:id="scrapCost" layoutX="16.0" layoutY="42.0" text="Scrap Cost =" textFill="WHITE" />
+      <Label fx:id="creatureType" layoutX="16.0" layoutY="106.0" text="Type" textFill="WHITE" />
       <Label fx:id="abilityText" layoutX="16.0" layoutY="125.0" text="Ability" textFill="WHITE" />
+      <Label fx:id="scrapValue" layoutX="16.0" layoutY="55.0" text="Scrap Val =" textFill="WHITE" />
       
    </children>
 </AnchorPane>

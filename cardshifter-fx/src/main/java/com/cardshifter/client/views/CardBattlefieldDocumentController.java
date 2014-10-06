@@ -25,6 +25,7 @@ public final class CardBattlefieldDocumentController extends CardView implements
     @FXML private Label strength;
     @FXML private Label health;
     @FXML private Label cardId;
+	@FXML private Label scrapValue;
     @FXML private Label creatureType;
 	@FXML private Rectangle background;
 	@FXML private Circle sicknessCircle;
@@ -79,6 +80,9 @@ public final class CardBattlefieldDocumentController extends CardView implements
 					break;
 				case "creatureType":
 					creatureType.setText(stringValue);
+					break;
+				case "SCRAP":
+					scrapValue.setText(String.format("Scrap = %s", stringValue));
 					break;
 				default:
 					break;
