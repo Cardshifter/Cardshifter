@@ -43,4 +43,9 @@ public class UseCostSystem extends SpecificActionSystem {
 		have.change(-want);
 	}
 
+	@Override
+	public String toString() {
+		return "UseCostSystem [action=" + getActionName() + ", useResource=" + useResource + "]";
+	}
+
 }

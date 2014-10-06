@@ -85,5 +85,9 @@ public final class Entity {
 	public boolean isRemoved() {
 		return removed;
 	}
+
+	public void removeComponent(Class<? extends Component> component) {
+		this.components.remove(component);
+	}
 	
 }

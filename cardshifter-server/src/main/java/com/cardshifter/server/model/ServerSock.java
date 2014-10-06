@@ -5,6 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.LogManager;
@@ -18,7 +19,7 @@ public class ServerSock implements ConnectionHandler {
 	private final AtomicInteger activeConnections = new AtomicInteger(0);
 	private final AtomicInteger threadCounter = new AtomicInteger(0);
 	private final ExecutorService executor;
-	private final Server	server;
+	private final Server server;
 	private final Thread thread;
 	private final ServerSocket serverSocket;
 	
@@ -42,7 +43,7 @@ public class ServerSock implements ConnectionHandler {
 					break;
 				}
 				this.server.newClient(clientHandler);
-				executor.submit(clientHandler);
+				Future<?> future = executor.submit(clientHandler);
 			}
 		}
 		catch (Exception e) {
@@ -61,6 +62,7 @@ public class ServerSock implements ConnectionHandler {
 	@Override
 	public void shutdown() throws Exception {
 		thread.interrupt();
+		serverSocket.close();
 	}
 
 }

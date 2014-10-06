@@ -1,6 +1,6 @@
 package com.cardshifter.server.model;
 
-import com.cardshifter.server.clients.ClientIO;
+import java.util.Arrays;
 
 public class Command {
 
@@ -54,6 +54,10 @@ public class Command {
 			str.append(params[i]);
 		}
 		return str.toString();
+	}
+
+	public String[] getAllParameters() {
+		return Arrays.copyOfRange(params, 1, params.length);
 	}
 	
 }

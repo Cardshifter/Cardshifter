@@ -11,7 +11,7 @@ public class RemoveDeadEntityFromZoneSystem implements ECSSystem {
 	
 	@Override
 	public void startGame(ECSGame game) {
-		game.getEvents().registerHandlerBefore(EntityRemoveEvent.class, this::removeEntity);
+		game.getEvents().registerHandlerBefore(this, EntityRemoveEvent.class, this::removeEntity);
 	}
 
 	private void removeEntity(EntityRemoveEvent event) {

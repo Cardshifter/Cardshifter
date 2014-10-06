@@ -30,4 +30,8 @@ public class ResourceRetriever {
 		return resMap(entity).getResource(resource);
 	}
 
+	public ECSResource getResource() {
+		return resource;
+	}
+	
 }

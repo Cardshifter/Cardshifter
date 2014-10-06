@@ -22,6 +22,7 @@ public class Game implements IdEntity {
 		void onChange(IdEntity what, Object key, Object value);
 	}
 	
+	@edu.umd.cs.findbugs.annotations.SuppressWarnings
 	public final LuaValue data = new ExtLuaTable((key, value) -> this.broadcastChange(this, key, value));
 	
 	private final List<Zone> zones = new ArrayList<>();

@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>com.cardshifter</groupId>
 		<artifactId>cardshifter</artifactId>
-		<version>0.2</version>
+		<version>0.3</version>
 	</parent>
 	
 	<artifactId>cardshifter-core</artifactId>
@@ -22,11 +22,28 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
+	<repositories>
+		<repository>
+			<id>zomisnet</id>
+			<name>Zomis' Maven Repository</name>
+			<url>http://www.zomis.net/maven</url>
+		</repository>
+	</repositories>
+	
+  	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>findbugs-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
 	<dependencies>
 		<dependency>
 			<groupId>com.cardshifter</groupId>
 			<artifactId>cardshifter-api</artifactId>
-			<version>0.2</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.luaj</groupId>
@@ -42,6 +59,11 @@
 			<groupId>org.apache.bcel</groupId>
 			<artifactId>bcel</artifactId>
 			<version>5.2</version>
+		</dependency>
+		<dependency>
+			<groupId>net.zomis</groupId>
+			<artifactId>scorers</artifactId>
+			<version>0.2-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>

@@ -1,32 +1,40 @@
 package com.cardshifter.server.clients;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import com.cardshifter.api.messages.Message;
+import com.cardshifter.api.outgoing.ServerErrorMessage;
+import com.cardshifter.server.model.ClientIO;
 import com.cardshifter.server.model.Server;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.MappingIterator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ClientSocketHandler extends ClientIO implements Runnable {
 	private static final Logger logger = LogManager.getLogger(ClientSocketHandler.class);
 	
 	private Socket	socket;
-	private final BufferedReader	in;
-	private final PrintWriter	out;
+	private final InputStream in;
+	@Deprecated
+	private final PrintWriter out; // TODO: Convert to simple OutputStream and let Jackson do the job
 	
-	private final char[] readBuffer = new char[4096];
+	private final ObjectMapper mapper = new ObjectMapper();
 
 	public ClientSocketHandler(Server server, Socket socket) throws IOException {
 		super(server);
 		this.socket = socket;
-		
-		in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-		out = new PrintWriter(socket.getOutputStream(), true);
-		
+		in = socket.getInputStream();
+		out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true);
 	}
 	
 	@Override
@@ -37,42 +45,32 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 
 	@Override
 	public void run() {
-		String data = "";
-		
-		int eventNr = 0;
 		while (socket != null && socket.isConnected()) {
 			try {
-				int bytesRead = 0;
-				while ((bytesRead = in.read(readBuffer)) != -1) {
-					data = new String(readBuffer, 0, bytesRead);
-					logger.info("");
-					
-					String[] datas = data.split("" + (char) 0);
-					for (String mess : datas) {
-						if (mess.trim().isEmpty())
-							continue;
-						
-						logger.info("[Event #" + ++eventNr + "]");
-						logger.info("Received from " + this + ": " + mess);
-						this.sentToServer(mess);
-					}
+				MappingIterator<Message> values;
+				values = mapper.readValues(new JsonFactory().createParser(this.in), Message.class);
+				while (values.hasNextValue()) {
+					Message message = values.next();
+					logger.info("Received from " + this + ": " + message);
+					this.sentToServer(message);
 				}
-
-				logger.info("Socket Communication no more bytes to read for " + this);
+			} catch (JsonParseException e) {
+				this.sendToClient(new ServerErrorMessage("Error reading input: " + e.getMessage()));
+				logger.error(e.getMessage(), e);
+			} catch (JsonProcessingException e) {
+				this.sendToClient(new ServerErrorMessage("Error processing input: " + e.getMessage()));
+				logger.error(e.getMessage(), e);
+			} catch (IOException e) {
+				logger.error(e.getMessage(), e);
+				this.disconnected();
 				if (socket != null) {
-					socket.close();
+					try {
+						socket.close();
+					} catch (IOException e1) {
+						logger.error("Error closing on exception", e1);
+					}
 				}
 				socket = null;
-			} catch (IOException ioe) {
-				logger.warn("Socket " + this + " exception: " + ioe.getMessage());
-				try {
-					if (this.socket != null) {
-						this.socket.close();
-					}
-				} catch (IOException e) {
-				}
-				this.socket = null;
-				logger.debug("Socket has been set to null: " + this);
 			}
 		}
 		logger.info("End of run method for " + this);
@@ -86,5 +84,6 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 		catch (IOException e) {
 			logger.warn("Error closing", e);
 		}
+		this.disconnected();
 	}
 }

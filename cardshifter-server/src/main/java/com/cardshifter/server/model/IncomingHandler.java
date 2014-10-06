@@ -1,14 +1,12 @@
 package com.cardshifter.server.model;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.cardshifter.server.clients.ClientIO;
-import com.cardshifter.server.messages.Message;
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.cardshifter.api.messages.Message;
 import com.fasterxml.jackson.databind.InjectableValues;
+import com.fasterxml.jackson.databind.InjectableValues.Std;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 
@@ -19,16 +17,15 @@ import com.fasterxml.jackson.databind.ObjectReader;
  */
 public class IncomingHandler {
 	
-	private final Map<String, ObjectReader> commandTypes;
 	private final Map<Class<?>, MessageHandler<?>> consumer;
 	private final ObjectMapper mapper;
-	private final InjectableValues inject;
+	private final ObjectReader reader;
 
 	public IncomingHandler(Server server) {
-		this.commandTypes = new ConcurrentHashMap<>();
 		this.consumer = new ConcurrentHashMap<>();
 		mapper = new ObjectMapper();
-		inject = new InjectableValues.Std().addValue(Server.class, server);
+		Std inject = new InjectableValues.Std().addValue(Server.class, server);
+		reader = mapper.reader(Message.class).with(inject);
 	}
 
 	/**
@@ -40,8 +37,6 @@ public class IncomingHandler {
 	 * @param handler The class to associate with this command identifier
 	 */
 	public <E extends Message> void addHandler(String command, Class<E> handler, MessageHandler<E> consumer) {
-		ObjectReader reader = mapper.reader(handler).with(inject);
-		this.commandTypes.put(command, reader);
 		this.consumer.put(handler, consumer);
 	}
 	
@@ -53,15 +48,6 @@ public class IncomingHandler {
 	 * @throws IOException If there was a problem parsing the JSON
 	 */
 	public <T extends Message> T parse(String json) throws IOException {
-		ObjectMapper mapper = new ObjectMapper(); 
-		TypeReference<HashMap<String, String>> typeRef = new TypeReference<HashMap<String, String>>() {};
-		HashMap<String, String> o = mapper.readValue(json, typeRef);
-
-		String command = o.get("command");
-		if (command == null || !commandTypes.containsKey(command)) {
-			throw new UnsupportedOperationException("Command " + command + " is not supported. JSON: " + json);
-		}
-		ObjectReader reader = commandTypes.getOrDefault(command, null);
 		return reader.readValue(json);
 	}
 

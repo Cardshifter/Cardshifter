@@ -11,6 +11,8 @@ public class ExtLuaTable extends LuaTable {
 
 	private final TableChange changeListener;
 	
+	@edu.umd.cs.findbugs.annotations.SuppressWarnings
+	// supressing warning that LuaTable defines an equals() method but no hashCode() method
 	public ExtLuaTable(TableChange change) {
 		this.changeListener = change;
 	}

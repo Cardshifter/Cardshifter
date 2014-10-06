@@ -18,7 +18,7 @@ public class ChoiceBoxNode {
 	
 	private final double sizeX;
 	private final double sizeY;
-	private final String name;
+//	private final String name;
 	private final ECSAction action;
 	private final FXMLGameController controller;
 	private final Entity performer;
@@ -29,7 +29,7 @@ public class ChoiceBoxNode {
 		this.performer = controller.getPlayerPerspective();
 		this.sizeX = sizeX;
 		this.sizeY = sizeY;
-		this.name = name;
+//		this.name = name;
 		this.action = action;
 		this.controller = controller;
 		this.choiceBoxGroup = new Group();
@@ -62,7 +62,7 @@ public class ChoiceBoxNode {
 	
 	private void createChoiceBoxText() {
 		Label choiceBoxText = new Label();
-		choiceBoxText.setText(String.format("Action = \n %s", this.action.getName()));
+		choiceBoxText.setText(String.format("Action = %n %s", this.action.getName()));
 		choiceBoxText.setTextFill(Color.WHITE);
 		choiceBoxText.relocate(this.sizeX/2,this.sizeY/2);
 		choiceBoxGroup.getChildren().add(choiceBoxText);

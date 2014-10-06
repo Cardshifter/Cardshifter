@@ -6,12 +6,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import net.zomis.cardshifter.ecs.base.ECSGame;
+
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import com.cardshifter.server.clients.ClientIO;
-import com.cardshifter.server.messages.Message;
-import com.cardshifter.server.outgoing.NewGameMessage;
+import com.cardshifter.api.messages.Message;
+import com.cardshifter.api.outgoing.GameOverMessage;
+import com.cardshifter.api.outgoing.NewGameMessage;
 
 public abstract class ServerGame {
 	private static final Logger logger = LogManager.getLogger(ServerGame.class);
@@ -32,6 +34,7 @@ public abstract class ServerGame {
 //		this.chat = server.newChatRoom(this.toString());
 	}
 	
+	@Deprecated
 	public boolean handleMove(Command command) {
 		if (!players.contains(command.getSender())) {
 			logger.warn("Game did not contain player " + command.getSender());
@@ -52,7 +55,7 @@ public abstract class ServerGame {
 			throw new IllegalStateException("Game can only be ended once");
 		}
 		logger.info("Game Ended: " + this + " with players " + players);
-		this.send("GEND " + this.id);
+		this.send(new GameOverMessage());
 		this.active = Instant.now();
 		this.state = GameState.ENDED;
 	}
@@ -66,7 +69,9 @@ public abstract class ServerGame {
 			throw new IllegalStateException("Game can only be started once");
 		}
 		this.players.addAll(players);
-		players.forEach(pl -> pl.sendToClient(new NewGameMessage(this.id, players.indexOf(pl))));
+		for (ClientIO player : players) {
+			player.sendToClient(new NewGameMessage(this.id, players.indexOf(player)));
+		}
 		this.onStart();
 		this.active = Instant.now();
 		this.state = GameState.RUNNING;
@@ -94,8 +99,14 @@ public abstract class ServerGame {
 		return state;
 	}
 	
+	public abstract ECSGame getGameModel();
+	
 	public List<ClientIO> getPlayers() {
 		return Collections.unmodifiableList(players);
+	}
+
+	public boolean hasPlayer(ClientIO client) {
+		return players.contains(client);
 	}
 	
 }

@@ -1,49 +1,137 @@
 package com.cardshifter.server.model;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Consumer;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import com.cardshifter.server.clients.ClientIO;
-import com.cardshifter.server.incoming.LoginMessage;
-import com.cardshifter.server.incoming.StartGameRequest;
+import com.cardshifter.ai.AIs;
+import com.cardshifter.ai.CardshifterAI;
+import com.cardshifter.ai.CompleteIdiot;
+import com.cardshifter.ai.ScoringAI;
+import com.cardshifter.api.CardshifterConstants;
+import com.cardshifter.api.both.ChatMessage;
+import com.cardshifter.api.incoming.LoginMessage;
+import com.cardshifter.api.incoming.StartGameRequest;
+import com.cardshifter.server.commands.AICommand;
+import com.cardshifter.server.commands.AICommand.AICommandParameters;
 import com.cardshifter.server.main.FakeAIClientTCG;
+import com.cardshifter.server.utils.export.DataExporter;
 
 public class MainServer {
+	
 	private static final Logger logger = LogManager.getLogger(MainServer.class);
 	
-	public void start() {
+	private final Server server = new Server();
+	private final Map<String, CardshifterAI> ais = new LinkedHashMap<>();
+
+	private Thread consoleThread;
+	
+	public Server start() {
+		ais.put("loser", new ScoringAI(AIs.loser()));
+		ais.put("idiot", new ScoringAI(AIs.idiot()));
+		ais.put("old", new CompleteIdiot());
+		ais.put("medium", new ScoringAI(AIs.medium()));
+		
 		try {
 			logger.info("Starting Server...");
-			Server server = new Server();
 			
 			server.addConnections(new ServerSock(server, 4242));
 			server.addConnections(new ServerWeb(server, 4243));
 			
 			logger.info("Starting Console...");
-			CommandHandler commandHandler = new CommandHandler();
-			commandHandler.addHandler("exit", command -> System.exit(0));
-			commandHandler.addHandler("ai", command -> newAI(server));
+			CommandHandler commandHandler = new CommandHandler(server);
+			initializeCommands(commandHandler);
 			ServerConsole console = new ServerConsole(server, commandHandler);
-			new Thread(console, "Console-Thread").start();
-			console.addHandler("threads", cmd -> showAllStackTraces(server, System.out::println));
-			logger.info("Started");
+			consoleThread = new Thread(console, "Console-Thread");
+			consoleThread.start();
 			
-			newAI(server);
+			ais.entrySet().forEach(entry -> {
+				ClientIO tcgAI = new FakeAIClientTCG(server, entry.getValue());
+				server.newClient(tcgAI);
+				server.getIncomingHandler().perform(new LoginMessage("AI " + entry.getKey()), tcgAI);
+			});
+			
+			logger.info("Started");
 		}
 		catch (Exception e) {
 			logger.error("Initializing Error", e);
 		}
+		return server;
 	}
 	
-	private void newAI(Server server) {
-		// Setup an AI that automatically wants to play (for testing purposes)
-		ClientIO tcgAI = new FakeAIClientTCG(server);
-		server.newClient(tcgAI);
-		server.getIncomingHandler().perform(new LoginMessage("AI Simple"), tcgAI);
-		server.getIncomingHandler().perform(new StartGameRequest(), tcgAI);
+	private void initializeCommands(CommandHandler commandHandler) {
+		commandHandler.addHandler("exit", command -> this.shutdown());
+//		commandHandler.addHandler("help", command -> commands.help());
+		commandHandler.addHandler("export", this::export);
+		commandHandler.addHandler("users", this::users);
+		commandHandler.addHandler("play", this::play);
+		commandHandler.addHandler("say", this::say);
+		commandHandler.addHandler("chat", this::chatInfo);
+		commandHandler.addHandler("games", this::showGames);
+		commandHandler.addHandler("invites", this::showInvites);
+		commandHandler.addHandler("ai", () -> new AICommandParameters(), new AICommand());
+		commandHandler.addHandler("threads", cmd -> showAllStackTraces(server, System.out::println));
+	}
+
+	private void showInvites(Command command) {
+		for (Entry<Integer, GameInvite> ee : server.getInvites().all().entrySet()) {
+			System.out.println(ee.getKey() + " = " + ee.getValue());
+		}
+	}
+	
+	private void showGames(Command command) {
+		for (Entry<Integer, ServerGame> ee : server.getGames().entrySet()) {
+			System.out.println(ee.getKey() + " = " + ee.getValue());
+		}
+	}
+	
+	private void say(Command command) {
+		ChatArea chat = server.getMainChat();
+		chat.broadcast(new ChatMessage(chat.getId(), "Server", command.getFullCommand(1)));
+	}
+	
+	private void chatInfo(Command command) {
+		int chatId = command.getParameterInt(1);
+		if (chatId == 0) {
+			System.out.println(server.getChats().keySet());
+		}
+		else {
+			ChatArea chat = server.getMainChat();
+			System.out.println(chat.getUsers());
+		}
+	}
+	
+	private void shutdown() {
+		server.stop();
+		
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			System.out.println("Interrupted when shutting down");
+		}
+		
+		showAllStackTraces(server, System.out::println);
+		consoleThread.interrupt();
+	}
+	
+	private void users(Command command) {
+		server.getClients().values().forEach(cl -> System.out.println(cl.getId() + ": " + cl.getName()));
+	}
+	
+	private void play(Command command) {
+		int userId = command.getParameterInt(1);
+		ClientIO client = server.getClients().get(userId);
+		server.getIncomingHandler().perform(new StartGameRequest(-1, CardshifterConstants.VANILLA), client);
+	}
+	
+	private void export(Command command) {
+		server.createGame(CardshifterConstants.VANILLA);
+		DataExporter exporter = new DataExporter();
+		exporter.export(server, command.getAllParameters());
 	}
 	
 	private void showAllStackTraces(Server server, Consumer<String> output) {

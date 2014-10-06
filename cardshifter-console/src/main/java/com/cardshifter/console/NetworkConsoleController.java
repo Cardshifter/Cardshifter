@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -15,16 +16,17 @@ import java.util.Scanner;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import com.cardshifter.server.incoming.LoginMessage;
-import com.cardshifter.server.incoming.RequestTargetsMessage;
-import com.cardshifter.server.incoming.StartGameRequest;
-import com.cardshifter.server.incoming.UseAbilityMessage;
-import com.cardshifter.server.messages.Message;
-import com.cardshifter.server.outgoing.NewGameMessage;
-import com.cardshifter.server.outgoing.ResetAvailableActionsMessage;
-import com.cardshifter.server.outgoing.UseableActionMessage;
-import com.cardshifter.server.outgoing.WaitMessage;
-import com.cardshifter.server.outgoing.WelcomeMessage;
+import com.cardshifter.api.CardshifterConstants;
+import com.cardshifter.api.incoming.LoginMessage;
+import com.cardshifter.api.incoming.RequestTargetsMessage;
+import com.cardshifter.api.incoming.StartGameRequest;
+import com.cardshifter.api.incoming.UseAbilityMessage;
+import com.cardshifter.api.messages.Message;
+import com.cardshifter.api.outgoing.NewGameMessage;
+import com.cardshifter.api.outgoing.ResetAvailableActionsMessage;
+import com.cardshifter.api.outgoing.UseableActionMessage;
+import com.cardshifter.api.outgoing.WaitMessage;
+import com.cardshifter.api.outgoing.WelcomeMessage;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -48,9 +50,12 @@ public class NetworkConsoleController {
 		in = socket.getInputStream();
 		mapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, false);
 		mapper.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
-		new Thread(this::listen).start();
+		initThreads();
 	}
 	
+	private void initThreads() {
+		new Thread(this::listen).start();
+	}
 	
 	public void play(Scanner input) throws IOException, InterruptedException {
 		System.out.println("Enter your name: ");
@@ -64,7 +69,7 @@ public class NetworkConsoleController {
 			return;
 		}
 		
-		this.send(new StartGameRequest());
+		this.send(new StartGameRequest(-1, CardshifterConstants.VANILLA));
 		Message message = messages.take();
 		if (message instanceof WaitMessage) {
 			System.out.println(((WaitMessage) message).getMessage());
@@ -85,7 +90,11 @@ public class NetworkConsoleController {
 				while (values.hasNext()) {
 					mess = values.next();
 					System.out.println("iterator: " + mess);
-					messages.offer(mess);
+					try {
+						messages.put(mess);
+					} catch (InterruptedException ex) {
+						Thread.currentThread().interrupt();
+					}
 					if (mess instanceof ResetAvailableActionsMessage) {
 						actions.clear();
 					}
@@ -191,7 +200,7 @@ public class NetworkConsoleController {
 	
 	public static void main(String[] args) throws UnknownHostException, IOException, InterruptedException {
 		NetworkConsoleController control = new NetworkConsoleController("127.0.0.1", 4242);
-		control.play(new Scanner(System.in));
+		control.play(new Scanner(System.in, StandardCharsets.UTF_8.name()));
 	}
 	
 }

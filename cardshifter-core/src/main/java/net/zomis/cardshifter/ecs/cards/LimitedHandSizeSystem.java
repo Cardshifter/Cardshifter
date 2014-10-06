@@ -17,7 +17,7 @@ public class LimitedHandSizeSystem implements ECSSystem {
 
 	@Override
 	public void startGame(ECSGame game) {
-		game.getEvents().registerHandlerBefore(DrawCardEvent.class, this::drawCard);
+		game.getEvents().registerHandlerBefore(this, DrawCardEvent.class, this::drawCard);
 	}
 	
 	private void drawCard(DrawCardEvent event) {
@@ -27,4 +27,10 @@ public class LimitedHandSizeSystem implements ECSSystem {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "LimitedHandSizeSystem [limit=" + limit + ", actionWhenFull="
+				+ actionWhenFull + "]";
+	}
+	
 }
