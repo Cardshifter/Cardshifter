@@ -25,7 +25,6 @@ public final class CardBattlefieldDocumentController extends CardView implements
     @FXML private Label strength;
     @FXML private Label health;
     @FXML private Label cardId;
-    @FXML private Label cardType;
     @FXML private Label creatureType;
 	@FXML private Rectangle background;
 	@FXML private Circle sicknessCircle;
@@ -98,15 +97,15 @@ public final class CardBattlefieldDocumentController extends CardView implements
 		this.message = message;
 		this.anchorPane.setOnMouseClicked(this::actionOnClick);
         background.setFill(Color.DARKGREEN);
-		
 		this.setUpScrapButton();
 	}
 
     public void setCardActive(UseableActionMessage message) {
 		this.isActive = true;
 		this.message = message;
-		this.anchorPane.setOnMouseClicked(this::actionOnClick);
+		//this.anchorPane.setOnMouseClicked(this::actionOnClick);
         background.setFill(Color.YELLOW);
+		this.setUpScrapButton();
     }
 	
 	public void removeCardActive() {

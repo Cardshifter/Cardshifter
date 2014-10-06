@@ -1,5 +1,6 @@
 package com.cardshifter.server.model;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -19,6 +20,10 @@ public class ServerHandler<T extends IdObject> {
 
 	public T get(int id) {
 		return map.get(id);
+	}
+
+	public Map<Integer, T> all() {
+		return Collections.unmodifiableMap(map);
 	}
 
 }

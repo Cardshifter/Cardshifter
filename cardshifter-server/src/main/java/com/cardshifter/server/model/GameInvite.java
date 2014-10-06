@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.both.InviteRequest;
 import com.cardshifter.server.main.FakeAIClientTCG;
 
@@ -20,11 +22,13 @@ public class GameInvite implements IdObject {
 	private final ServerGame	game;
 	private final List<ClientIO> invited;
 	private final List<ClientIO> players;
+	private final ChatArea chatArea;
 
-	public GameInvite(Server server, int id, ClientIO host, ServerGame game) {
+	public GameInvite(Server server, int id, ChatArea chatlog, ClientIO host, ServerGame game) {
 		this.id = id;
 		this.host = host;
 		this.game = game;
+		this.chatArea = chatlog;
 		this.invited = Collections.synchronizedList(new ArrayList<>());
 		this.players = Collections.synchronizedList(new ArrayList<>());
 		players.add(host);
@@ -58,6 +62,7 @@ public class GameInvite implements IdObject {
 
 	public boolean inviteDecline(ClientIO who) {
 		logger.info(this + " Invite Decline: " + who);
+		host.sendToClient(new ChatMessage(1, "Server", who.getName() + " declined invite"));
 		return invited.remove(who);
 	}
 	
@@ -65,6 +70,7 @@ public class GameInvite implements IdObject {
 		logger.info(this + " Game Start! " + players);
 		Collections.shuffle(players, random);
 		game.start(players);
+		chatArea.broadcast("Server", players.stream().map(io -> io.getName()).collect(Collectors.joining(", ")) + " are now playing game " + game.getId());
 		return true;
 	}
 

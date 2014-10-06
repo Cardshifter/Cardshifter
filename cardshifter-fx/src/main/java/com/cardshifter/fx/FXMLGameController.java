@@ -78,7 +78,7 @@ public class FXMLGameController {
 	}
 	
 	public void initializeGame() {
-		game = PhrancisGame.createGame();
+		game = PhrancisGame.createGame(new ECSGame());
 		phases = ComponentRetriever.singleton(game, PhaseController.class);
 		
 		if (!aiIsLoaded) {
