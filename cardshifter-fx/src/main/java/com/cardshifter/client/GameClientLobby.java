@@ -27,6 +27,8 @@ import javafx.stage.Stage;
 
 import com.cardshifter.api.CardshifterConstants;
 import com.cardshifter.api.both.ChatMessage;
+import com.cardshifter.api.both.InviteRequest;
+import com.cardshifter.api.both.InviteResponse;
 import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.incoming.ServerQueryMessage;
 import com.cardshifter.api.incoming.ServerQueryMessage.Request;
@@ -49,6 +51,7 @@ public class GameClientLobby implements Initializable {
 	@FXML private TextField messageBox;
 	@FXML private Button sendMessageButton;
 	@FXML private AnchorPane inviteButton;
+	@FXML private AnchorPane inviteWindow;
 	
 	private final ObjectMapper mapper = new ObjectMapper();
 	private final Set<GameClientController> gamesRunning = new HashSet<>();
@@ -62,6 +65,7 @@ public class GameClientLobby implements Initializable {
 	private Thread listenThread;
 	private final Map<String, Integer> usersOnlineList = new HashMap<>();
 	private String userForGameInvite;
+	private InviteRequest currentGameRequest;
 	
 	public void acceptConnectionSettings(String ipAddress, int port, String userName) {
 		// this is passed into this object after it is automatically created by the FXML document
@@ -140,20 +144,18 @@ public class GameClientLobby implements Initializable {
 		}
 		
 		if (message instanceof NewGameMessage) {
-			NewGameMessage msg = (NewGameMessage) message;
-			startNewGame(msg);
-		}
-		
-		if (message instanceof UserStatusMessage) {
+			this.startNewGame((NewGameMessage)message);
+		} else if (message instanceof UserStatusMessage) {
 			this.processUserStatusMessage((UserStatusMessage)message);
-		}
-		if (message instanceof ChatMessage) {
+		} else if (message instanceof ChatMessage) {
 			ChatMessage msg = (ChatMessage) message;
-			chatOutput(msg.getFrom() + ": " + msg.getMessage());
-		}
-		if (message instanceof ServerErrorMessage) {
+			this.chatOutput(msg.getFrom() + ": " + msg.getMessage());
+		} else if (message instanceof ServerErrorMessage) {
 			ServerErrorMessage msg = (ServerErrorMessage) message;
-			chatOutput("SERVER ERROR: " + msg.getMessage());
+			this.chatOutput("SERVER ERROR: " + msg.getMessage());
+		} else if (message instanceof InviteRequest) {
+			this.currentGameRequest = (InviteRequest)message;
+			this.createInviteWindow((InviteRequest)message);
 		}
 	}
 	
@@ -181,10 +183,6 @@ public class GameClientLobby implements Initializable {
         }
 	}
 	
-	private void chatOutput(String string) {
-		Platform.runLater(() -> this.chatMessages.getItems().add(string));
-		
-	}
 	private void processUserStatusMessage(UserStatusMessage message) {
 		if (message.getStatus() == Status.ONLINE) {
 			this.usersOnlineList.put(message.getName(), message.getUserId());
@@ -196,6 +194,31 @@ public class GameClientLobby implements Initializable {
 		this.usersOnline.getItems().addAll(this.usersOnlineList.keySet());
 	}
 	
+	
+	private void chatOutput(String string) {
+		Platform.runLater(() -> this.chatMessages.getItems().add(string));
+	}
+
+	private void createInviteWindow(InviteRequest message) {
+		this.inviteWindow.setVisible(true);
+		this.inviteWindow.getChildren().add(new InviteWindow(message, this).getRootPane());
+	}
+	
+	public void acceptGameRequest(MouseEvent event) {
+		this.send(new InviteResponse(this.currentGameRequest.getId(), true));
+		this.closeInviteWindow();
+	}
+	
+	public void declineGameRequest(MouseEvent event) {
+		this.send(new InviteResponse(this.currentGameRequest.getId(), false));
+		this.closeInviteWindow();
+	}
+	
+	private void closeInviteWindow() {
+		this.inviteWindow.getChildren().clear();
+		this.inviteWindow.setVisible(false);
+	}
+
 	private void selectUserForGameInvite(MouseEvent event) {
 		String selected = this.usersOnline.getSelectionModel().getSelectedItem();
 		if (selected != null) {

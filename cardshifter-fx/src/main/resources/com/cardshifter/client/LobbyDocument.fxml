@@ -55,5 +55,6 @@
             </Label>
          </children>
       </AnchorPane>
+      <AnchorPane fx:id="inviteWindow" prefHeight="275.0" prefWidth="400.0" visible="false" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="100.0" />
    </children>
 </AnchorPane>
