@@ -155,6 +155,6 @@ public class ConsoleControllerECS {
 	}
 	
 	public static void main(String[] args) {
-		new ConsoleControllerECS(PhrancisGame.createGame()).play(new Scanner(System.in, StandardCharsets.UTF_8.name()));
+		new ConsoleControllerECS(PhrancisGame.createGame(new ECSGame())).play(new Scanner(System.in, StandardCharsets.UTF_8.name()));
 	}
 }

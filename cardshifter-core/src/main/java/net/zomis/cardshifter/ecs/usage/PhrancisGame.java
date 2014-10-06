@@ -50,8 +50,7 @@ public class PhrancisGame {
 	
 	private static final int CARDS_OF_EACH_TYPE = 3;
 	
-	public static ECSGame createGame() {
-		ECSGame game = new ECSGame();
+	public static ECSGame createGame(ECSGame game) {
 		
 		PhaseController phaseController = new PhaseController();
 		game.newEntity().addComponent(phaseController);

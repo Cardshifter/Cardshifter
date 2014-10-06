@@ -9,10 +9,11 @@ import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
-import org.apache.log4j.PropertyConfigurator;
-
+import net.zomis.cardshifter.ecs.base.ECSGame;
 import net.zomis.cardshifter.ecs.main.ConsoleControllerECS;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame;
+
+import org.apache.log4j.PropertyConfigurator;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
@@ -42,7 +43,7 @@ public class Main {
 				startLuaGame(options);
 			}
 			else {
-				new ConsoleControllerECS(PhrancisGame.createGame()).play(input);
+				new ConsoleControllerECS(PhrancisGame.createGame(new ECSGame())).play(input);
 			}
 		}
 	}
