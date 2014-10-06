@@ -43,7 +43,7 @@
 		<dependency>
 			<groupId>com.cardshifter</groupId>
 			<artifactId>cardshifter-api</artifactId>
-			<version>0.3-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.luaj</groupId>
