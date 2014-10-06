@@ -87,18 +87,27 @@
 		</Pane>
         
 		<!--  Battlefields  -->
-		<AnchorPane layoutX="239.0" layoutY="237.0" prefHeight="132.0" prefWidth="810.0">
-			<children>
-				<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#b0d9ff" height="132.0" stroke="BLACK" strokeType="INSIDE" width="810.0" />
-				<HBox fx:id="playerBattlefieldPane" layoutX="19.0" layoutY="11.0" prefHeight="110.0" prefWidth="772.0" spacing="10.0" />
-			</children>
-		</AnchorPane>
-		<AnchorPane layoutX="239.0" layoutY="105.0" prefHeight="98.0" prefWidth="809.0">
-			<children>
-				<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f59782" height="127.0" stroke="BLACK" strokeType="INSIDE" width="810.0" />
-				<HBox fx:id="opponentBattlefieldPane" layoutX="19.0" layoutY="9.0" prefHeight="110.0" prefWidth="772.0" spacing="10.0" />
-			</children>
-		</AnchorPane>
+		<ScrollPane layoutX="239.0" layoutY="237.0" prefHeight="132.0" prefWidth="810.0">
+			<content>
+				<AnchorPane layoutX="239.0" layoutY="237.0" prefHeight="132.0" prefWidth="1024.0">
+					<children>
+						<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#b0d9ff" height="132.0" stroke="BLACK" strokeType="INSIDE" width="1024.0" />
+						<HBox fx:id="playerBattlefieldPane" layoutX="19.0" layoutY="11.0" prefHeight="110.0" prefWidth="772.0" spacing="10.0" />
+					</children>
+				</AnchorPane>
+			</content>
+		</ScrollPane>
+		<ScrollPane layoutX="239.0" layoutY="105.0" prefHeight="127.0" prefWidth="810.0">
+			<content>
+				<AnchorPane layoutX="239.0" layoutY="105.0" prefHeight="127.0" prefWidth="1024.0">
+					<children>
+						<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f59782" height="127.0" stroke="BLACK" strokeType="INSIDE" width="1024.0" />
+						<HBox fx:id="opponentBattlefieldPane" layoutX="19.0" layoutY="9.0" prefHeight="110.0" prefWidth="772.0" spacing="10.0" />
+					</children>
+				</AnchorPane>
+			</content>
+		</ScrollPane>
+		
 		
 		<!--  Player Hand  -->
 		<ScrollPane layoutX="11.0" layoutY="386.0" prefHeight="185.0" prefWidth="1045.0">
@@ -112,7 +121,7 @@
 		</ScrollPane>
 		
 		<!-- Opponent Hand -->
-		<HBox fx:id="opponentHandPane" alignment="CENTER" layoutX="232.0" layoutY="15.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="85.0" prefWidth="600.0" scaleShape="false" spacing="10.0" />
+		<HBox fx:id="opponentHandPane" alignment="CENTER" layoutX="225.0" layoutY="14.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="85.0" prefWidth="600.0" scaleShape="false" spacing="10.0" />
       
 		<!-- temporary action box -->
 		<HBox fx:id="actionBox" alignment="CENTER" layoutX="14.0" layoutY="574.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="25.0" prefWidth="1000.0" scaleShape="false" spacing="10" />
