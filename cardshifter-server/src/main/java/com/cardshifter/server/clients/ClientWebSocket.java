@@ -4,6 +4,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.java_websocket.WebSocket;
 
+import com.cardshifter.server.model.ClientIO;
 import com.cardshifter.server.model.Server;
 
 public class ClientWebSocket extends ClientIO {

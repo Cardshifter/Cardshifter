@@ -18,11 +18,17 @@ public class DamageConstantWhenOutOfCardsSystem implements ECSSystem {
 	
 	@Override
 	public void startGame(ECSGame game) {
-		game.getEvents().registerHandlerAfter(DrawCardFailedEvent.class, this::damage);
+		game.getEvents().registerHandlerAfter(this, DrawCardFailedEvent.class, this::damage);
 	}
 	
 	private void damage(DrawCardFailedEvent event) {
 		resource.resFor(event.getEntity()).change(-damage);
+	}
+
+	@Override
+	public String toString() {
+		return "DamageConstantWhenOutOfCardsSystem [damage=" + damage
+				+ ", resource=" + resource + "]";
 	}
 
 }

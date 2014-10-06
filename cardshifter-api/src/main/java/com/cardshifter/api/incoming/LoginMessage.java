@@ -4,23 +4,19 @@ import com.cardshifter.api.messages.Message;
 
 public class LoginMessage extends Message {
 
-	private String username;
+	private final String username;
 
 	LoginMessage() {
-		super("login");
+		this("");
 	}
 	
 	public LoginMessage(String username) {
-		this();
+		super("login");
 		this.username = username;
 	}
 	
 	public String getUsername() {
 		return username;
-	}
-	
-	public void setUsername(String username) {
-		this.username = username;
 	}
 	
 }

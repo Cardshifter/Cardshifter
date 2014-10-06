@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 import net.zomis.cardshifter.ecs.events.StartGameEvent;
 
-public class ECSGame {
+public final class ECSGame {
 
 	private final AtomicInteger ids = new AtomicInteger();
 	private final Map<Integer, Entity> entities = new HashMap<>();
@@ -30,18 +30,8 @@ public class ECSGame {
 		return entity;
 	}
 	
-	/**
-	 * Execute a pre-event, perform something, then execute a post-event.
-	 * 
-	 * @param event Event to execute
-	 * @param runInBetween What to do between pre- and post- events.
-	 * @return The event that was executed
-	 */
 	public <T extends IEvent> T executeEvent(T event, Runnable runInBetween) {
-		this.events.executePreEvent(event);
-		runInBetween.run();
-		this.events.executePostEvent(event);
-		return event;
+		return events.executeEvent(event, runInBetween);
 	}
 
 	public <T extends Component> ComponentRetriever<T> componentRetreiver(Class<T> class1) {
@@ -75,7 +65,7 @@ public class ECSGame {
 	}
 
 	public void endGame() {
-		gameState = ECSGameState.GAME_ENDED;
+		this.executeCancellableEvent(new GameOverEvent(this), () -> gameState = ECSGameState.GAME_ENDED);
 	}
 	
 	public ECSGameState getGameState() {
@@ -95,12 +85,11 @@ public class ECSGame {
 	}
 
 	public <T extends CancellableEvent> T executeCancellableEvent(T event, Runnable runInBetween) {
-		this.events.executePreEvent(event);
-		if (!event.isCancelled()) {
-			runInBetween.run();
-			this.events.executePostEvent(event);
-		}
-		return event;
+		return events.executeCancellableEvent(event, runInBetween);
+	}
+
+	public Entity getEntity(int entity) {
+		return entities.get(entity);
 	}
 	
 	// TODO: Player component, Zone component for a zone

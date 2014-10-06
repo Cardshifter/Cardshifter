@@ -1,20 +1,21 @@
-package com.cardshifter.client;
+package com.cardshifter.client.views;
 
-import com.cardshifter.api.outgoing.CardInfoMessage;
-import com.cardshifter.api.outgoing.UseableActionMessage;
-import java.net.URL;
-import java.util.ResourceBundle;
+import java.util.Map.Entry;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-public final class CardHandDocumentController implements Initializable {
+import com.cardshifter.api.outgoing.CardInfoMessage;
+import com.cardshifter.api.outgoing.UpdateMessage;
+import com.cardshifter.api.outgoing.UseableActionMessage;
+import com.cardshifter.client.GameClientController;
+
+public final class CardHandDocumentController extends CardView {
     
     @FXML private Label strength;
     @FXML private Label health;
@@ -28,7 +29,6 @@ public final class CardHandDocumentController implements Initializable {
 	@FXML private Rectangle background;
 	@FXML private AnchorPane anchorPane;
     
-//    private AnchorPane root;
 	private boolean isActive;
     private final CardInfoMessage card;
 	private final GameClientController controller;
@@ -39,7 +39,6 @@ public final class CardHandDocumentController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("CardHandDocument.fxml"));
             loader.setController(this);
 			loader.load();
-//            root = loader.load();
         }
         catch (Exception e) {
             throw new RuntimeException(e);
@@ -47,10 +46,14 @@ public final class CardHandDocumentController implements Initializable {
                 
         this.card = message;
 		this.controller = controller;
-        this.setCardId();
+        this.setCardId(message.getId());
         this.setCardLabels();
     }
 	
+	private void setCardId(int id) {
+        cardId.setText(String.format("CardId = %d", id));
+	}
+
 	public CardInfoMessage getCard() {
 		return this.card;
 	}
@@ -83,29 +86,37 @@ public final class CardHandDocumentController implements Initializable {
 		background.setFill(Color.BLACK);
 	}
 
-    private void setCardId() {
-        int newId = card.getId();
-        cardId.setText(String.format("CardId = %d", newId));
-    }
-	
     private void setCardLabels() {
-		for(String key : this.card.getProperties().keySet()) {
+		for (Entry<String, Object> entry : this.card.getProperties().entrySet()) {
+			String key = entry.getKey();
+			String value = String.valueOf(entry.getValue());
 			if (key.equals("MANA_COST")) {
-				manaCost.setText(String.format("Mana Cost = %d", this.card.getProperties().get(key)));
+				manaCost.setText(String.format("Mana Cost = %s", value));
 			} else if (key.equals("ATTACK")) {
-				strength.setText(this.card.getProperties().get(key).toString());
+				strength.setText(value);
 			} else if (key.equals("HEALTH")) {
-				health.setText(this.card.getProperties().get(key).toString());
+				health.setText(value);
 			} else if (key.equals("SCRAP_COST")) {
-				scrapCost.setText(String.format("Scrap Cost = %d", this.card.getProperties().get(key)));
+				scrapCost.setText(String.format("Scrap Cost = %s", value));
+			} else if (key.equals("creatureType")) {
+				creatureType.setText(value);
 			}
 		}
     }
 
-    //Boilerplate code
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
-    
+	@Override
+	public void updateFields(UpdateMessage message) {
+	}
+
+	@Override
+	public void setCardTargetable() {
+		this.anchorPane.setOnMouseClicked(this::actionOnTarget);
+		background.setFill(Color.BLUE);
+	}
+	
+	private void actionOnTarget(MouseEvent event) {
+		boolean isChosenTarget = controller.addTarget(card.getId());
+		background.setFill(isChosenTarget ? Color.VIOLET : Color.BLUE);
+	}
+
 }

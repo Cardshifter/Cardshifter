@@ -1,6 +1,7 @@
 package com.cardshifter.server.messages;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 
@@ -17,9 +18,9 @@ public class ParseJSONMessagesTest {
 	public void parse() throws IOException {
 		PropertyConfigurator.configure(ServerMain.class.getResourceAsStream("log4j.properties"));
 		Server server = new Server();
-		UseAbilityMessage message = server.getIncomingHandler().parse("{ \"command\": \"use\", \"gameId\": 1, \"action\": \"Play\", \"id\": \"2\", \"target\": 0 }");
+		UseAbilityMessage message = server.getIncomingHandler().parse("{ \"command\": \"use\", \"gameId\": 1, \"action\": \"Play\", \"id\": \"2\", \"targets\": [4,2] }");
 		assertEquals(2, message.getId());
-		assertEquals(0, message.getTarget());
+		assertArrayEquals(new int[]{ 4, 2 }, message.getTargets());
 		assertEquals("use", message.getCommand());
 		assertEquals(1, message.getGameId());
 		assertEquals("Play", message.getAction());

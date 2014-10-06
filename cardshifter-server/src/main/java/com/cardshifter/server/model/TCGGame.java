@@ -1,24 +1,27 @@
 package com.cardshifter.server.model;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 import net.zomis.cardshifter.ecs.actions.ActionComponent;
+import net.zomis.cardshifter.ecs.actions.ActionPerformEvent;
 import net.zomis.cardshifter.ecs.actions.ECSAction;
 import net.zomis.cardshifter.ecs.actions.TargetSet;
+import net.zomis.cardshifter.ecs.ai.AIComponent;
+import net.zomis.cardshifter.ecs.ai.AISystem;
 import net.zomis.cardshifter.ecs.base.ComponentRetriever;
 import net.zomis.cardshifter.ecs.base.ECSGame;
 import net.zomis.cardshifter.ecs.base.Entity;
 import net.zomis.cardshifter.ecs.base.EntityRemoveEvent;
+import net.zomis.cardshifter.ecs.base.GameOverEvent;
 import net.zomis.cardshifter.ecs.cards.CardComponent;
 import net.zomis.cardshifter.ecs.cards.ZoneChangeEvent;
 import net.zomis.cardshifter.ecs.cards.ZoneComponent;
+import net.zomis.cardshifter.ecs.components.CreatureTypeComponent;
 import net.zomis.cardshifter.ecs.components.PlayerComponent;
-import net.zomis.cardshifter.ecs.phase.PhaseController;
 import net.zomis.cardshifter.ecs.resources.ResourceValueChange;
 import net.zomis.cardshifter.ecs.resources.Resources;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame;
@@ -26,42 +29,38 @@ import net.zomis.cardshifter.ecs.usage.PhrancisGame;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import com.cardshifter.ai.CardshifterAI;
-import com.cardshifter.ai.CompleteIdiot;
-import com.cardshifter.server.clients.ClientIO;
 import com.cardshifter.api.incoming.RequestTargetsMessage;
 import com.cardshifter.api.incoming.UseAbilityMessage;
-import com.cardshifter.server.main.FakeAIClientTCG;
 import com.cardshifter.api.outgoing.AvailableTargetsMessage;
 import com.cardshifter.api.outgoing.CardInfoMessage;
 import com.cardshifter.api.outgoing.EntityRemoveMessage;
 import com.cardshifter.api.outgoing.PlayerMessage;
 import com.cardshifter.api.outgoing.ResetAvailableActionsMessage;
+import com.cardshifter.api.outgoing.ServerErrorMessage;
 import com.cardshifter.api.outgoing.UpdateMessage;
 import com.cardshifter.api.outgoing.UseableActionMessage;
 import com.cardshifter.api.outgoing.ZoneChangeMessage;
 import com.cardshifter.api.outgoing.ZoneMessage;
+import com.cardshifter.server.main.FakeAIClientTCG;
 
 public class TCGGame extends ServerGame {
 	
 	private static final Logger logger = LogManager.getLogger(TCGGame.class);
-	private static final long AI_DELAY_SECONDS = 5;
 	private final ECSGame game;
-	private final ScheduledExecutorService aiPerform = Executors.newScheduledThreadPool(1);
 	private final ComponentRetriever<CardComponent> card = ComponentRetriever.retreiverFor(CardComponent.class);
-	private final PhaseController phases;
-
-	private final CardshifterAI ai = new CompleteIdiot();
+	private final ComponentRetriever<CreatureTypeComponent> creatureType = ComponentRetriever.retreiverFor(CreatureTypeComponent.class);
+	
 	private ComponentRetriever<PlayerComponent> playerData = ComponentRetriever.retreiverFor(PlayerComponent.class);
 	
 	public TCGGame(Server server, int id) {
 		super(server, id);
 		game = PhrancisGame.createGame();
-		game.getEvents().registerHandlerAfter(ResourceValueChange.class, this::broadcast);
-		game.getEvents().registerHandlerAfter(ZoneChangeEvent.class, this::zoneChange);
-		game.getEvents().registerHandlerAfter(EntityRemoveEvent.class, this::remove);
-		aiPerform.scheduleWithFixedDelay(this::aiPerform, 0, AI_DELAY_SECONDS, TimeUnit.SECONDS);
-		phases = ComponentRetriever.singleton(game, PhaseController.class);
+		game.getEvents().registerHandlerAfter(this, ResourceValueChange.class, this::broadcast);
+		game.getEvents().registerHandlerAfter(this, ZoneChangeEvent.class, this::zoneChange);
+		game.getEvents().registerHandlerAfter(this, EntityRemoveEvent.class, this::remove);
+		game.getEvents().registerHandlerAfter(this, GameOverEvent.class, event -> this.endGame());
+		AISystem.setup(game, server.getScheduler());
+		game.addSystem(game -> game.getEvents().registerHandlerAfter(this, ActionPerformEvent.class, event -> this.sendAvailableActions()));
 	}
 
 	private void zoneChange(ZoneChangeEvent event) {
@@ -70,11 +69,15 @@ public class TCGGame extends ServerGame {
 			Entity player = playerFor(io);
 			io.sendToClient(new ZoneChangeMessage(event.getCard().getId(), event.getSource().getZoneId(), event.getDestination().getZoneId()));
 			if (event.getDestination().isKnownTo(player) && !event.getSource().isKnownTo(player)) {
-				io.sendToClient(new CardInfoMessage(event.getDestination().getZoneId(), cardEntity.getId(), Resources.map(cardEntity)));
+				sendRealCardData(io, event.getDestination().getZoneId(), cardEntity);
 			}
 		}
 	}
 	
+	private void sendRealCardData(ClientIO io, int zoneId, Entity cardEntity) {
+		io.sendToClient(new CardInfoMessage(zoneId, cardEntity.getId(), infoMap(cardEntity)));
+	}
+
 	private void remove(EntityRemoveEvent event) {
 		this.send(new EntityRemoveMessage(event.getEntity().getId()));
 	}
@@ -135,47 +138,32 @@ public class TCGGame extends ServerGame {
 	}
 	
 	public void handleMove(UseAbilityMessage message, ClientIO client) {
+		if (this.isGameOver()) {
+			logger.info("Ignoring move because game has ended: " + message + " from " + client);
+			return;
+		}
+		
 		if (!this.getPlayers().contains(client)) {
 			throw new IllegalArgumentException("Client is not in this game: " + client);
-		}
-		if (phases.getCurrentEntity() != playerFor(client)) {
-			throw new IllegalArgumentException("It's not that players turn: " + client);
 		}
 		
 		ECSAction action = findAction(message.getId(), message.getAction());
 		if (!action.getTargetSets().isEmpty()) {
 			TargetSet targetAction = action.getTargetSets().get(0);
 			targetAction.clearTargets();
-			targetAction.addTarget(findTargetable(message.getTarget()));
+			for (int target : message.getTargets()) {
+				targetAction.addTarget(findTargetable(target));
+			}
 		}
-		action.perform(playerFor(client));
+		boolean allowed = action.perform(playerFor(client));
+		if (!allowed) {
+			client.sendToClient(new ServerErrorMessage("Action not allowed: " + action));
+		}
 		
 		// TODO: Add listener to game for ZoneMoves, inform players about card movements, and send CardInfoMessage when a card becomes known
 		sendAvailableActions();
 	}
 	
-	private void aiPerform() {
-		if (this.getState() != GameState.RUNNING) {
-			return;
-		}
-		
-		for (ClientIO io : this.getPlayers()) {
-			if (io instanceof FakeAIClientTCG) {
-				Entity player = playerFor(io);
-				if (phases.getCurrentEntity() != player) {
-					continue;
-				}
-				ECSAction action = ai.getAction(player);
-				if (action != null) {
-					logger.info("AI Performs action: " + action);
-					action.perform(player);
-					sendAvailableActions();
-					return;
-				}
-			}
-		}
-	}
-
 	@Override
 	protected boolean makeMove(Command command, int player) {
 		throw new UnsupportedOperationException();
@@ -200,6 +188,8 @@ public class TCGGame extends ServerGame {
 	
 	@Override
 	protected void onStart() {
+		this.setupAIPlayers();
+		
 		game.startGame();
 		this.getPlayers().stream().forEach(pl -> {
 			Entity playerEntity = playerFor(pl);
@@ -210,15 +200,25 @@ public class TCGGame extends ServerGame {
 		this.sendAvailableActions();
 	}
 	
+	private void setupAIPlayers() {
+		for (ClientIO io : this.getPlayers()) {
+			if (io instanceof FakeAIClientTCG) {
+				FakeAIClientTCG aiClient = (FakeAIClientTCG) io;
+				Entity player = playerFor(io);
+				AIComponent aiComponent = new AIComponent(aiClient.getAI());
+				aiComponent.setDelay(2000);
+				player.addComponent(aiComponent);
+				logger.info("AI is configured for " + player);
+			}
+		}
+	}
+
 	private void sendAvailableActions() {
 		for (ClientIO io : this.getPlayers()) {
 			Entity player = playerFor(io);
 			io.sendToClient(new ResetAvailableActionsMessage());
-			if (phases.getCurrentEntity() == player) {
-				getAllActions(game).filter(action -> action.isAllowed(player))
-						.forEach(action -> io.sendToClient(new UseableActionMessage(action.getOwner().getId(), action.getName(), !action.getTargetSets().isEmpty())));
-				
-			}
+			getAllActions(game).filter(action -> action.isAllowed(player))
+				.forEach(action -> io.sendToClient(new UseableActionMessage(action.getOwner().getId(), action.getName(), !action.getTargetSets().isEmpty())));
 		}
 	}
 
@@ -240,12 +240,27 @@ public class TCGGame extends ServerGame {
 	}
 	
 	private ZoneMessage constructZoneMessage(ZoneComponent zone, Entity player) {
-		return new ZoneMessage(zone.getZoneId(), zone.getName(), zone.getOwner().getId(), zone.size(), zone.isKnownTo(player));
+		return new ZoneMessage(zone.getZoneId(), zone.getName(), 
+				zone.getOwner().getId(), zone.size(), zone.isKnownTo(player), zone.stream().mapToInt(e -> e.getId()).toArray());
 	}
 	
 	private void sendCard(ClientIO io, Entity card) {
 		CardComponent cardData = card.getComponent(CardComponent.class);
-		io.sendToClient(new CardInfoMessage(cardData.getCurrentZone().getZoneId(), card.getId(), Resources.map(card)));
+		io.sendToClient(new CardInfoMessage(cardData.getCurrentZone().getZoneId(), card.getId(), infoMap(card)));
+	}
+	
+	private Map<String, Object> infoMap(Entity entity) {
+		Map<String, Object> result = new HashMap<>();
+		result.putAll(Resources.map(entity));
+		if (creatureType.has(entity)) {
+			result.put("creatureType", creatureType.get(entity).getCreatureType());
+		}
+		return result;
 	}
 
+	@Override
+	public ECSGame getGameModel() {
+		return game;
+	}
+	
 }

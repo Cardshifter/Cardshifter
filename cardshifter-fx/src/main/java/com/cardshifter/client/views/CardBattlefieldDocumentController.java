@@ -1,10 +1,14 @@
-package com.cardshifter.client;
+package com.cardshifter.client.views;
 
 import com.cardshifter.api.outgoing.CardInfoMessage;
 import com.cardshifter.api.outgoing.UpdateMessage;
 import com.cardshifter.api.outgoing.UseableActionMessage;
+import com.cardshifter.client.GameClientController;
+
 import java.net.URL;
+import java.util.Map.Entry;
 import java.util.ResourceBundle;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -16,7 +20,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
-public final class CardBattlefieldDocumentController implements Initializable {
+public final class CardBattlefieldDocumentController extends CardView implements Initializable {
     
     @FXML private Label strength;
     @FXML private Label health;
@@ -28,7 +32,6 @@ public final class CardBattlefieldDocumentController implements Initializable {
 	@FXML private AnchorPane anchorPane;
 	@FXML private Button scrapButton;
     
-//    private AnchorPane root;
 	private boolean isActive;
     private final CardInfoMessage card;
 	private final GameClientController controller;
@@ -39,7 +42,6 @@ public final class CardBattlefieldDocumentController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("CardBattlefieldDocument.fxml"));
             loader.setController(this);
 			loader.load();
-//            root = loader.load();
         }
         catch (Exception e) {
             throw new RuntimeException(e);
@@ -56,20 +58,28 @@ public final class CardBattlefieldDocumentController implements Initializable {
     }
 	
     private void setCardLabels() {
-		for(String key : this.card.getProperties().keySet()) {
-			switch (key) {
+		for (Entry<String, Object> entry : this.card.getProperties().entrySet()) {
+			Object value = entry.getValue();
+			String stringValue = String.valueOf(entry.getValue());
+			switch (entry.getKey()) {
 				case "SICKNESS":
-					if (this.card.getProperties().get(key) == 1) {
+					int sicknessValue = (Integer) value;
+					if (sicknessValue == 1) {
 						this.setSickness();
 					}	
 					break;
 				case "ATTACK":
-					strength.setText(this.card.getProperties().get(key).toString());
+					strength.setText(stringValue);
 					break;
 				case "HEALTH":
-					health.setText(this.card.getProperties().get(key).toString());
+					health.setText(stringValue);
 					break;
 				case "ATTACK_AVAILABLE":
+					break;
+				case "creatureType":
+					creatureType.setText(stringValue);
+					break;
+				default:
 					break;
 			}
 		}
@@ -136,18 +146,37 @@ public final class CardBattlefieldDocumentController implements Initializable {
 		this.controller.createAndSendMessage(this.message);
 	}
 
+	@Override
 	public void updateFields(UpdateMessage message) {
 		if (message.getKey().equals("ATTACK")) {
 			strength.setText(String.format("%d", message.getValue()));
 		} else if (message.getKey().equals("HEALTH")) {
 			health.setText(String.format("%d", message.getValue()));
+		} else if (message.getKey().equals("creatureType")) {
+			creatureType.setText(String.valueOf(message.getValue()));
+		} else if (message.getKey().equals("SICKNESS")) {
+			if ((int)message.getValue() == 0) {
+				this.removeSickness();
+			}
 		}
+
 	}
 
     //Boilerplate code
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-    }    
-    
+    }
+
+	@Override
+	public void setCardTargetable() {
+		this.anchorPane.setOnMouseClicked(this::actionOnTarget);
+		background.setFill(Color.BLUE);
+	}
+	
+	private void actionOnTarget(MouseEvent event) {
+		boolean isChosenTarget = controller.addTarget(card.getId());
+		background.setFill(isChosenTarget ? Color.VIOLET : Color.BLUE);
+	}
+
 }

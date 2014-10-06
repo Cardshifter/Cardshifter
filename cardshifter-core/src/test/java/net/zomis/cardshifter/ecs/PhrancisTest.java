@@ -2,12 +2,15 @@ package net.zomis.cardshifter.ecs;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import net.zomis.cardshifter.ecs.actions.ActionComponent;
 import net.zomis.cardshifter.ecs.actions.ECSAction;
@@ -20,6 +23,7 @@ import net.zomis.cardshifter.ecs.cards.CardComponent;
 import net.zomis.cardshifter.ecs.cards.DeckComponent;
 import net.zomis.cardshifter.ecs.cards.HandComponent;
 import net.zomis.cardshifter.ecs.components.CreatureTypeComponent;
+import net.zomis.cardshifter.ecs.components.PlayerComponent;
 import net.zomis.cardshifter.ecs.phase.PhaseController;
 import net.zomis.cardshifter.ecs.resources.ECSResource;
 import net.zomis.cardshifter.ecs.resources.ECSResourceData;
@@ -62,10 +66,28 @@ public class PhrancisTest {
 	
 	@Test
 	public void integration() {
+		assertNull(phase.getCurrentEntity());
+		List<Entity> list = new ArrayList<>(game.getEntitiesWithComponent(PlayerComponent.class));
+		assertEquals(2, list.size());
+		for (int i = 0; i < list.size(); i++) {
+			Entity current = list.get(i);
+			Entity other = list.get((i + 1) % list.size());
+			
+			ECSAction action = getAction(current, "Mulligan");
+			assertFalse(action + "is allowed for " + other, action.perform(other));
+		}
+		
+		for (Entity entity : game.getEntitiesWithComponent(PlayerComponent.class)) {
+			ECSAction action = getAction(entity, "Mulligan");
+			assertTrue(action + " not allowed for " + entity, action.perform(entity));
+		}
+		
 		assertEquals(1, mana.getFor(phase.getCurrentEntity()));
 		nextPhase();
+		
 		assertEquals(1, mana.getFor(phase.getCurrentEntity()));
 		nextPhase();
+		useFail(opponent(), PhrancisGame.END_TURN_ACTION);
 		
 		assertEquals(2, mana.getFor(phase.getCurrentEntity()));
 		Predicate<Entity> isCreature = entity -> entity.hasComponent(CreatureTypeComponent.class);
@@ -121,6 +143,9 @@ public class PhrancisTest {
 		Entity scrap = cardToHand(isCreature.and(manaCost(1)));
 		useAction(scrap, PhrancisGame.PLAY_ACTION);
 		assertResource(attackerPlayer, PhrancisResources.SCRAP, 0);
+		
+		useFail(scrap, PhrancisGame.SCRAP_ACTION, opponent());
+		
 		useAction(scrap, PhrancisGame.SCRAP_ACTION);
 		assertResource(attackerPlayer, PhrancisResources.SCRAP, 1);
 		
@@ -156,7 +181,15 @@ public class PhrancisTest {
 		assertTrue(defender.isRemoved());
 	}
 
-    private Predicate<Entity> health(int value) {
+    private Entity opponent() {
+    	List<Entity> list = game.getEntitiesWithComponent(PlayerComponent.class).stream()
+   			.filter(entity -> entity != phase.getCurrentEntity())
+   			.collect(Collectors.toList());
+    	assertEquals("Found more than one opponent", 1, list.size());
+		return list.get(0);
+	}
+
+	private Predicate<Entity> health(int value) {
         return entity -> health.getFor(entity) == value;
     }
 
@@ -199,8 +232,12 @@ public class PhrancisTest {
 	}
 
 	private void useFail(Entity entity, String actionName) {
+		useFail(entity, actionName, phase.getCurrentEntity());
+	}
+
+	private void useFail(Entity entity, String actionName, Entity performer) {
 		ECSAction action = getAction(entity, actionName);
-		assertFalse("Did not expect action " + actionName + " to be allowed on " + entity, action.isAllowed(phase.getCurrentEntity()));
+		assertFalse("Did not expect action " + actionName + " to be allowed on " + entity + " by " + performer, action.isAllowed(performer));
 	}
 
 	private Entity findCardInDeck(Predicate<Entity> condition) {
@@ -234,7 +271,7 @@ public class PhrancisTest {
 
 	private void useAction(Entity entity, String actionName) {
 		ECSAction action = getAction(entity, actionName);
-		assertTrue(action.isAllowed(phase.getCurrentEntity()));
+		assertTrue("Action " + actionName + " is not allowed for " + entity, action.isAllowed(phase.getCurrentEntity()));
 		action.perform(phase.getCurrentEntity());
 	}
 

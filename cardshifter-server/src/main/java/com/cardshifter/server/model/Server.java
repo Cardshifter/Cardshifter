@@ -1,18 +1,15 @@
 package com.cardshifter.server.model;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
@@ -20,38 +17,47 @@ import java.util.stream.Stream;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import com.cardshifter.server.clients.ClientIO;
+import com.cardshifter.api.CardshifterConstants;
+import com.cardshifter.api.both.ChatMessage;
+import com.cardshifter.api.both.InviteResponse;
 import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.incoming.RequestTargetsMessage;
+import com.cardshifter.api.incoming.ServerQueryMessage;
 import com.cardshifter.api.incoming.StartGameRequest;
 import com.cardshifter.api.incoming.UseAbilityMessage;
 import com.cardshifter.api.messages.Message;
+import com.cardshifter.api.outgoing.ClientDisconnectedMessage;
+import com.cardshifter.api.outgoing.ServerErrorMessage;
+import com.cardshifter.api.outgoing.UserStatusMessage;
+import com.cardshifter.api.outgoing.UserStatusMessage.Status;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 public class Server {
 	private static final Logger	logger = LogManager.getLogger(Server.class);
 
-	private static final String VANILLA = "vanilla";
-
 	// Counters for various things
+	private final AtomicInteger clientId = new AtomicInteger(0);
 	private final AtomicInteger roomCounter = new AtomicInteger(0);
-	private final AtomicInteger inviteId = new AtomicInteger(0);
 	private final AtomicInteger gameId = new AtomicInteger(0);
 	
 	private final IncomingHandler incomingHandler;
 	
-	private final Set<ClientIO> clients = Collections.synchronizedSet(new HashSet<>());
+	private final Map<Integer, ClientIO> clients = new ConcurrentHashMap<>();
 	private final Map<Integer, ChatArea> chats = new ConcurrentHashMap<>();
 	private final Map<Integer, ServerGame> games = new ConcurrentHashMap<>();
-	private final Map<Integer, GameInvite> invites = new ConcurrentHashMap<>();
+	private final ServerHandler<GameInvite> invites = new ServerHandler<>();
 	private final Map<String, GameFactory> gameFactories = new ConcurrentHashMap<>();
 
 	private final Set<ConnectionHandler> handlers = Collections.synchronizedSet(new HashSet<>());
 	private final AtomicReference<ClientIO> playAny = new AtomicReference<>();
-	private final Random random = new Random();
+
+	private final ScheduledExecutorService scheduler;
+	private final ChatArea mainChat;
 
 	public Server() {
 		this.incomingHandler = new IncomingHandler(this);
-		this.newChatRoom("Main");
+		this.scheduler = Executors.newScheduledThreadPool(2, new ThreadFactoryBuilder().setNameFormat("ai-thread-%d").build());
+		mainChat = this.newChatRoom("Main");
 		
 		Server server = this;
 		IncomingHandler incomings = server.getIncomingHandler();
@@ -59,29 +65,30 @@ public class Server {
 		Handlers handlers = new Handlers(this);
 		
 		incomings.addHandler("login", LoginMessage.class, handlers::loginMessage);
-//		incomings.addHandler("chat", ChatMessage.class);
+		incomings.addHandler("chat", ChatMessage.class, handlers::chat);
 		incomings.addHandler("startgame", StartGameRequest.class, handlers::play);
 		incomings.addHandler("use", UseAbilityMessage.class, handlers::useAbility);
 		incomings.addHandler("requestTargets", RequestTargetsMessage.class, handlers::requestTargets);
+		incomings.addHandler("inviteResponse", InviteResponse.class, handlers::inviteResponse);
+		incomings.addHandler("query", ServerQueryMessage.class, handlers::query);
 		
-		server.addGameFactory(VANILLA, (serv, id) -> new TCGGame(serv, id));
+		server.addGameFactory(CardshifterConstants.VANILLA, (serv, id) -> new TCGGame(serv, id));
 		
 	}
 	
-	@Deprecated
-	private ChatArea getMainChat() {
-		return chats.get(0);
+	ChatArea getMainChat() {
+		return mainChat;
 	}
 	
 	public ChatArea newChatRoom(String name) {
-		int id = roomCounter.getAndIncrement();
-		ChatArea room = new ChatArea(roomCounter.getAndIncrement(), name);
+		int id = roomCounter.incrementAndGet();
+		ChatArea room = new ChatArea(id, name);
 		chats.put(id, room);
 		return room;
 	}
 	
-	public Collection<ClientIO> getClients() {
-		return new ArrayList<>(clients);
+	public Map<Integer, ClientIO> getClients() {
+		return Collections.unmodifiableMap(clients);
 	}
 	
 	public IncomingHandler getIncomingHandler() {
@@ -98,37 +105,34 @@ public class Server {
 			incomingHandler.perform(message, client);
 		} catch (Exception e) {
 			logger.error("Unable to parse incoming json: " + json, e);
+			client.sendToClient(new ServerErrorMessage(e.getMessage()));
 		}
 	}
 
 	public void newClient(ClientIO cl) {
 		logger.info("New client: " + cl);
-		clients.add(cl);
-		getMainChat().add(cl);
+		cl.setId(clientId.incrementAndGet());
+		clients.put(cl.getId(), cl);
 	}
 	
 	public void onDisconnected(ClientIO client) {
+		logger.info("Client disconnected: " + client);
+		games.values().stream().filter(game -> game.hasPlayer(client))
+			.forEach(game -> game.send(new ClientDisconnectedMessage(client.getName(), game.getPlayers().indexOf(client))));
 		clients.remove(client);
 		getMainChat().remove(client);
+		broadcast(new UserStatusMessage(client.getId(), client.getName(), Status.OFFLINE));
 	}
 
-	void broadcast(String data) {
-		clients.forEach(cl -> cl.sendToClient(data));
+	void broadcast(Message data) {
+		clients.values().forEach(cl -> cl.sendToClient(data));
 	}
 
-	public void incomingChatMessage(Command cmd) {
-		ChatArea room = this.chats.get(cmd.getParameterInt(1));
-		if (room == null) {
-			cmd.getSender().sendToClient("INVALID CHAT ROOM");
-			return;
-		}
-		room.broadcast(cmd.getFullCommand(2));
-	}
-	
 	public void addGameFactory(String gameType, GameFactory factory) {
 		this.gameFactories.put(gameType, factory);
 	}
 
+	@Deprecated
 	public boolean inviteRequest(Command cmd) {
 		final GameInvite invite;
 		switch (cmd.getCommand()) {
@@ -140,10 +144,10 @@ public class Server {
 //					cmd.getSender().sendToClient("FAIL Game creation failed");
 //					return false;
 //				}
-				invite = new GameInvite(this, inviteId.getAndIncrement(), cmd, game);
-				this.invites.put(invite.getId(), invite);
+				invite = new GameInvite(this, invites.newId(), cmd.getSender(), game);
+				this.invites.add(invite);
 				
-				Stream<ClientIO> targetStream = clients.stream().filter(cl -> cl.getName().equals(target));
+				Stream<ClientIO> targetStream = clients.values().stream().filter(cl -> cl.getName().equals(target));
 				Optional<ClientIO> result = targetStream.findFirst();
 				if (result.isPresent()) {
 					invite.sendInvite(result.get());
@@ -171,6 +175,7 @@ public class Server {
 		}
 	}
 	
+	@Deprecated
 	public void incomingGameCommand(Command cmd) {
 		ServerGame game = games.get(cmd.getParameterInt(1));
 		if (game != null) {
@@ -183,12 +188,12 @@ public class Server {
 		}
 	}
 
-	private ServerGame createGame(String parameter) {
+	public ServerGame createGame(String parameter) {
 		GameFactory suppl = gameFactories.get(parameter);
 		if (suppl == null) {
 			throw new IllegalArgumentException("No such game factory: " + parameter);
 		}
-		ServerGame game = suppl.newGame(this, gameId.getAndIncrement());
+		ServerGame game = suppl.newGame(this, gameId.incrementAndGet());
 		this.games.put(game.getId(), game);
 		return game;
 	}
@@ -201,8 +206,8 @@ public class Server {
 		return new HashMap<>(games);
 	}
 	
-	public Map<Integer, GameInvite> getInvites() {
-		return new HashMap<>(invites);
+	public ServerHandler<GameInvite> getInvites() {
+		return invites;
 	}
 
 	public void addConnections(ConnectionHandler handler) {
@@ -214,13 +219,19 @@ public class Server {
 		return playAny;
 	}
 
-	public void newGame(ClientIO client, ClientIO opponent) {
-		ServerGame game = this.gameFactories.get(VANILLA).newGame(this, this.gameId.getAndIncrement());
-		List<ClientIO> players = Arrays.asList(client, opponent);
-		Collections.shuffle(players, random);
-		
-		this.games.put(game.getId(), game);
-		game.start(players);
+	public ScheduledExecutorService getScheduler() {
+		return scheduler;
+	}
+	
+	public void stop() {
+		for (ConnectionHandler handler : handlers) {
+			try {
+				handler.shutdown();
+			} catch (Exception e) {
+				logger.error("Error shutting down " + handler, e);
+			}
+		}
+		this.scheduler.shutdown();
 	}
 	
 }

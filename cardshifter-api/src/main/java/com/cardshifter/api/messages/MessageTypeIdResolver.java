@@ -3,20 +3,27 @@ package com.cardshifter.api.messages;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.cardshifter.api.incoming.ChatMessage;
+import com.cardshifter.api.both.ChatMessage;
+import com.cardshifter.api.both.InviteRequest;
+import com.cardshifter.api.both.InviteResponse;
 import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.incoming.RequestTargetsMessage;
+import com.cardshifter.api.incoming.ServerQueryMessage;
 import com.cardshifter.api.incoming.StartGameRequest;
 import com.cardshifter.api.incoming.UseAbilityMessage;
 import com.cardshifter.api.outgoing.AvailableTargetsMessage;
 import com.cardshifter.api.outgoing.CardInfoMessage;
+import com.cardshifter.api.outgoing.ClientDisconnectedMessage;
 import com.cardshifter.api.outgoing.EntityRemoveMessage;
 import com.cardshifter.api.outgoing.GameMessage;
+import com.cardshifter.api.outgoing.GameOverMessage;
 import com.cardshifter.api.outgoing.NewGameMessage;
 import com.cardshifter.api.outgoing.PlayerMessage;
 import com.cardshifter.api.outgoing.ResetAvailableActionsMessage;
+import com.cardshifter.api.outgoing.ServerErrorMessage;
 import com.cardshifter.api.outgoing.UpdateMessage;
 import com.cardshifter.api.outgoing.UseableActionMessage;
+import com.cardshifter.api.outgoing.UserStatusMessage;
 import com.cardshifter.api.outgoing.WaitMessage;
 import com.cardshifter.api.outgoing.WelcomeMessage;
 import com.cardshifter.api.outgoing.ZoneChangeMessage;
@@ -38,9 +45,11 @@ public class MessageTypeIdResolver implements TypeIdResolver {
 		clazzes.put("requestTargets", RequestTargetsMessage.class);
 		clazzes.put("zoneChange", ZoneChangeMessage.class);
 		clazzes.put("entityRemoved", EntityRemoveMessage.class);
+		clazzes.put("disconnect", ClientDisconnectedMessage.class);
 		
 		clazzes.put("resetActions", ResetAvailableActionsMessage.class);
 		clazzes.put("game", GameMessage.class);
+		clazzes.put("gameover", GameOverMessage.class);
 		clazzes.put("wait", WaitMessage.class);
 		clazzes.put("loginresponse", WelcomeMessage.class);
 		clazzes.put("newgame", NewGameMessage.class);
@@ -50,6 +59,13 @@ public class MessageTypeIdResolver implements TypeIdResolver {
 		clazzes.put("update", UpdateMessage.class);
 		clazzes.put("useable", UseableActionMessage.class);
 		clazzes.put("targets", AvailableTargetsMessage.class);
+		
+		clazzes.put("inviteRequest", InviteRequest.class);
+		clazzes.put("inviteResponse", InviteResponse.class);
+		clazzes.put("error", ServerErrorMessage.class);
+		clazzes.put("userstatus", UserStatusMessage.class);
+		clazzes.put("query", ServerQueryMessage.class);
+		
 	}
 	
 	private JavaType mBaseType;
@@ -71,19 +87,11 @@ public class MessageTypeIdResolver implements TypeIdResolver {
 
 	@Override
 	public String idFromBaseType() {
-		// FindBugs: NullPointerException guaranteed when you pass in null
-//		return idFromValueAndType(null, mBaseType.getRawClass());
 		throw new AssertionError("this should never happen");
 	}
 
 	@Override
 	public String idFromValueAndType(Object obj, Class<?> clazz) {
-//		String name = clazz.getName();
-//		if (name.startsWith(COMMAND_PACKAGE)) {
-//			return name.substring(COMMAND_PACKAGE.length() + 1);
-//		}
-//		throw new IllegalStateException("class " + clazz
-//				+ " is not in the package " + COMMAND_PACKAGE);
 		Message mess = (Message) obj;
 		return mess.getCommand();
 	}
@@ -91,12 +99,6 @@ public class MessageTypeIdResolver implements TypeIdResolver {
 	@Override
 	public JavaType typeFromId(String type) {
 		Class<?> clazz = clazzes.get(type);
-//		  String clazzName = COMMAND_PACKAGE + "." + type;
-//		  try {
-//			  clazz = ClassUtil.findClass(clazzName);
-//		  } catch (ClassNotFoundException e) {
-//			  throw new IllegalStateException("cannot find class '" + clazzName + "'");
-//		  }
 		if (clazz == null) {
 			throw new UnsupportedOperationException("No such defined type: " + type);
 		}

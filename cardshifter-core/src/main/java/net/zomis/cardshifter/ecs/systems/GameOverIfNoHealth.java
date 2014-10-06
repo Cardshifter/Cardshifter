@@ -16,7 +16,7 @@ public class GameOverIfNoHealth implements ECSSystem {
 	
 	@Override
 	public void startGame(ECSGame game) {
-		game.getEvents().registerHandlerAfter(ResourceValueChange.class, this::endGame);
+		game.getEvents().registerHandlerAfter(this, ResourceValueChange.class, this::endGame);
 	}
 	
 	private void endGame(ResourceValueChange event) {

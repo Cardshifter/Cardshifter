@@ -29,12 +29,12 @@ public class EventTest {
 	@Test
 	public void executeTestEvent() {
 		assertEquals(42, value);
-		game.getEvents().registerHandlerBefore(TestEvent.class, event -> {
+		game.getEvents().registerHandlerBefore(this, TestEvent.class, event -> {
 			assertEquals(pre.size(), post.size());
 			assertNotEquals(pre.size(), value);
 			pre.add(event);
 		});
-		game.getEvents().registerHandlerAfter(TestEvent.class, event -> {
+		game.getEvents().registerHandlerAfter(this, TestEvent.class, event -> {
 			post.add(event);
 			assertEquals(pre.size(), post.size());
 			assertEquals(pre.size(), value);

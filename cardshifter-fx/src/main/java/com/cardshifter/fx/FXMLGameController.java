@@ -2,6 +2,7 @@ package com.cardshifter.fx;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -10,9 +11,10 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.QuadCurve;
 import javafx.scene.shape.Rectangle;
+import net.zomis.cardshifter.ecs.actions.ActionComponent;
 import net.zomis.cardshifter.ecs.actions.ECSAction;
+import net.zomis.cardshifter.ecs.ai.AIComponent;
 import net.zomis.cardshifter.ecs.base.ComponentRetriever;
 import net.zomis.cardshifter.ecs.base.ECSGame;
 import net.zomis.cardshifter.ecs.base.Entity;
@@ -28,41 +30,72 @@ import net.zomis.cardshifter.ecs.usage.PhrancisGame.PhrancisResources;
 import com.cardshifter.ai.CardshifterAI;
 import com.cardshifter.ai.CompleteIdiot;
 
+import javafx.scene.layout.HBox;
+import net.zomis.cardshifter.ecs.base.GameOverEvent;
+
 public class FXMLGameController {
+	
+	@FXML private Pane anchorPane;
+	@FXML private HBox opponentHandPane;
+	@FXML private HBox playerHandPane;
+	@FXML private HBox opponentBattlefieldPane;
+	@FXML private HBox playerBattlefieldPane;
+	@FXML private Label turnLabel;
+	@FXML private Label gameOverLabel;
+	@FXML private Label opponentLife;
+	@FXML private Label opponentCurrentMana;
+	@FXML private Label opponentTotalMana;
+	@FXML private Label opponentScrap;
+	@FXML private Label playerLife;
+	@FXML private Label playerCurrentMana;
+	@FXML private Label playerTotalMana;
+	@FXML private Label playerScrap;
+	
+	private List<Group> opponentHandData;
+	private List<Group> playerHandData;
+	private List<Group> opponentBattlefieldData;
+	private List<Group> playerBattlefieldData;
+	
+	public ECSAction nextAction;
    
 	private final CardshifterAI opponent = new CompleteIdiot();
 	private ECSGame game;
-	private boolean gameHasStarted = false; // hack to make the buttons work properly
+
 	private PhaseController phases;
 	private final ResourceRetriever health = ResourceRetriever.forResource(PhrancisResources.HEALTH);
 	private final ResourceRetriever mana = ResourceRetriever.forResource(PhrancisResources.MANA);
 	private final ResourceRetriever manaMax = ResourceRetriever.forResource(PhrancisResources.MANA_MAX);
 	private final ResourceRetriever scrap = ResourceRetriever.forResource(PhrancisResources.SCRAP);
 	
-	@FXML
-	Pane anchorPane;
+	private boolean gameHasStarted = false; // hack to make the buttons work properly
+
+	private AIComponent aiComponent;
+	private boolean aiIsLoaded;
 	
-	public FXMLGameController() throws Exception {
-		this.initializeGame();
+	public void acceptAIChoice(AIComponent aiChoice) {
+		this.aiComponent = aiChoice;
+		this.aiIsLoaded = false;
 	}
 	
-	private void initializeGame() throws Exception {
+	public void initializeGame() {
 		game = PhrancisGame.createGame();
 		phases = ComponentRetriever.singleton(game, PhaseController.class);
+		
+		if (!aiIsLoaded) {
+			getPlayer(1).addComponent(this.aiComponent);
+			this.aiIsLoaded = true;
+		}
 	}
 	
-	@FXML
-	private Label startGameLabel;
-	
-	@FXML
-	private void startGameButtonAction(ActionEvent event) {
+	@FXML private void startGameButtonAction(ActionEvent event) {
 		if (gameHasStarted) {
 			return;
 		}
-		startGameLabel.setText("Starting Game");
+		
 		game.startGame();
+		game.getEvents().registerHandlerAfter(this, GameOverEvent.class, e -> gameOverLabel.setVisible(true));
 		gameHasStarted = true;
-		turnLabel.setText(String.format("Turn Number %d", phases.getRecreateCount()));
+		turnLabel.setText(String.format("%d", phases.getRecreateCount()));
 			
 		this.playerBattlefieldData = new ArrayList<>();
 		this.opponentBattlefieldData = new ArrayList<>();
@@ -73,20 +106,62 @@ public class FXMLGameController {
 		this.render();
 	}
 	
-	@FXML
-	private void newGameButtonAction(ActionEvent event) throws Exception {
+	@FXML private void newGameButtonAction(ActionEvent event) {
 		this.initializeGame();
 		
-		startGameLabel.setText("Starting Game");
+		gameOverLabel.setVisible(false);
+		
 		game.startGame();
 		gameHasStarted = true;
-		turnLabel.setText(String.format("Turn Number %d", phases.getRecreateCount()));
+		turnLabel.setText(String.format("%d", phases.getRecreateCount()));
 			
 		this.playerBattlefieldData = new ArrayList<>();
 		this.opponentBattlefieldData = new ArrayList<>();
 		this.playerHandData = new ArrayList<>();
 		this.opponentHandData = new ArrayList<>();
 			
+		this.createData();
+		this.render();
+	}
+	
+	@FXML private void handleTurnButtonAction(ActionEvent event) {
+		if (!gameHasStarted) {
+			return;
+		}
+		
+		Entity player = phases.getCurrentEntity();
+		if (player == null) {
+			// dirty fix for making it work with Mulligan action
+			Set<Entity> players = game.getEntitiesWithComponent(PlayerComponent.class);
+			for (Entity pl : players) {
+				ActionComponent actions = pl.getComponent(ActionComponent.class);
+				ECSAction action = actions.getAction("Mulligan");
+				if (action != null) {
+					action.perform(pl);
+				}
+			}
+			
+			this.createData();
+			this.render();
+			return;
+		}
+		ECSAction endturnAction = player.getComponent(ActionComponent.class).getAction("End Turn");
+		endturnAction.perform(player);
+
+		//This is the AI doing the turn action
+		final Entity aiPlayer = getPlayer(1);
+		while (phases.getCurrentEntity() == aiPlayer) {
+			ECSAction action = opponent.getAction(aiPlayer);
+			if (action == null) {
+				System.out.println("Warning: Opponent did not properly end turn");
+				break;
+			}
+			action.perform(aiPlayer);
+		}
+
+		turnLabel.setText(String.format("%d", phases.getRecreateCount()));
+
+		//reload data at the start of a new turn
 		this.createData();
 		this.render();
 	}
@@ -107,12 +182,6 @@ public class FXMLGameController {
 		this.updateGameLabels();
 	}
 	
-	@FXML
-	private Pane opponentHandPane;
-	
-	@FXML
-	private Pane playerHandPane;
-	
 	private void renderHands() {
 		this.renderOpponentHand();
 		this.renderPlayerHand();
@@ -127,12 +196,6 @@ public class FXMLGameController {
 		playerHandPane.getChildren().clear();
 		playerHandPane.getChildren().addAll(playerHandData);
 	}
-	
-	@FXML
-	Pane opponentBattlefieldPane;
-	
-	@FXML
-	Pane playerBattlefieldPane;
 	
 	private void renderBattlefields() {
 		this.renderOpponentBattlefield();
@@ -163,8 +226,6 @@ public class FXMLGameController {
 	}
 	
 	//CREATE OPPONENT CARD BACKS
-	private List<Group> opponentHandData;
-	
 	private void createOpponentHand() {
 		opponentHandData.clear();
 		
@@ -173,13 +234,12 @@ public class FXMLGameController {
 		double paneWidth = opponentHandPane.getWidth();
 		
 		int numCards = this.getOpponentCardCount();
-		int maxCards = Math.max(numCards, 8);
+		int maxCards = Math.max(numCards, 10);
 		double cardWidth = paneWidth / maxCards;
 		
 		int currentCard = 0;
 		while (currentCard < numCards) {
 			Group cardGroup = new Group();
-			cardGroup.setTranslateX(currentCard * (cardWidth*1.05)); //1.05 so there is space between cards
 			opponentHandData.add(cardGroup);
 			
 			Rectangle cardBack = new Rectangle(0,0,cardWidth,paneHeight);
@@ -202,7 +262,6 @@ public class FXMLGameController {
 	}
 
 	//CREATE PLAYER HAND
-	private List<Group> playerHandData;
 	private void createPlayerHand() {
 		playerHandData.clear();
 		
@@ -213,9 +272,7 @@ public class FXMLGameController {
 		for (Entity card : cardsInHand) {
 			CardNode cardNode = new CardNode(playerHandPane, numCards, "testName", card, this);
 			Group cardGroup = cardNode.getCardGroup();
-			cardGroup.setAutoSizeChildren(true); //NEW
 			cardGroup.setId(String.format("card%d", card.getId()));
-			cardGroup.setTranslateX(cardIndex * cardNode.getWidth());
 			playerHandData.add(cardGroup);
 			
 			cardIndex++;
@@ -233,8 +290,6 @@ public class FXMLGameController {
 		this.createPlayerBattlefield();
 	}
 	
-	private List<Group> opponentBattlefieldData;
-	
 	private void createOpponentBattlefield() {
 		opponentBattlefieldData.clear();
 		
@@ -245,16 +300,12 @@ public class FXMLGameController {
 		for (Entity card : cardsInBattlefield) {
 			CardNodeBattlefield cardNode = new CardNodeBattlefield(opponentBattlefieldPane, numCards, "testName", card, this, false);
 			Group cardGroup = cardNode.getCardGroup();
-			cardGroup.setAutoSizeChildren(true); //NEW
 			cardGroup.setId(String.format("card%d", card.getId()));
-			cardGroup.setTranslateX(cardIndex * cardNode.getWidth());
 			opponentBattlefieldData.add(cardGroup);
 			
 			cardIndex++;
 		} 
 	}
-	
-	private List<Group> playerBattlefieldData;
 	
 	private void createPlayerBattlefield() {
 		playerBattlefieldData.clear();
@@ -268,7 +319,7 @@ public class FXMLGameController {
 			Group cardGroup = cardNode.getCardGroup();
 			cardGroup.setAutoSizeChildren(true); //NEW
 			cardGroup.setId(String.format("card%d", card.getId()));
-			cardGroup.setTranslateX(cardIndex * cardNode.getWidth());
+			//cardGroup.setTranslateX(cardIndex * cardNode.getWidth());
 			playerBattlefieldData.add(cardGroup);
 			
 			cardIndex++;
@@ -278,37 +329,6 @@ public class FXMLGameController {
 	private List<Entity> getBattlefield(Entity player) {
 		ZoneComponent battlefield = player.getComponent(BattlefieldComponent.class);
 		return battlefield.getCards();
-	}
-	
-	//TODO: Convert this to mana totals for players
-	//TODO: Play rotation needs to be changed so that it does not revolve around player 1
-	
-	@FXML
-	private Label turnLabel;
-	
-	@FXML
-	private void handleTurnButtonAction(ActionEvent event) {
-		if (!gameHasStarted) {
-			return;
-		}
-		phases.nextPhase();
-
-		//This is the AI doing the turn action
-		final Entity aiPlayer = getPlayer(1);
-		while (phases.getCurrentEntity() == aiPlayer) {
-			ECSAction action = opponent.getAction(aiPlayer);
-			if (action == null) {
-				System.out.println("Warning: Opponent did not properly end turn");
-				break;
-			}
-			action.perform(aiPlayer);
-		}
-
-		turnLabel.setText(String.format("Turn Number %d", phases.getRecreateCount()));
-
-		//reload data at the start of a new turn
-		this.createData();
-		this.render();
 	}
 	
 	//CHOICE BOX PANE
@@ -341,8 +361,6 @@ public class FXMLGameController {
 	}
    
 	// TARGETING
-	public ECSAction nextAction;
-	
 	public void performNextAction(Entity target) {
 		nextAction.getTargetSets().get(0).addTarget(target);
 		nextAction.perform(getPlayer(0));
@@ -370,30 +388,6 @@ public class FXMLGameController {
 	}
 	
 	//GAME STATE LABELS
-	@FXML
-	Label opponentLife;
-	
-	@FXML
-	Label opponentCurrentMana;
-	
-	@FXML
-	Label opponentTotalMana;
-	
-	@FXML
-	Label opponentScrap;
-	
-	@FXML
-	Label playerLife;
-	
-	@FXML
-	Label playerCurrentMana;
-	
-	@FXML
-	Label playerTotalMana;
-	
-	@FXML
-	Label playerScrap;
-	
 	private void updateGameLabels() {
 		Entity localOpponent = getPlayer(1);
 		opponentLife.setText(String.valueOf(health.getFor(localOpponent)));
@@ -408,13 +402,12 @@ public class FXMLGameController {
 		playerScrap.setText(String.valueOf(scrap.getFor(player)));
 	}
 	
-	/**
-	 * NOT YET USED
-	 */
-	@FXML
-	private QuadCurve handGuide;
-	
 	public Entity getPlayerPerspective() {
 		return getPlayer(0);
 	}
+
+	void shutdown() {
+//		aiExecutor.shutdownNow();
+	}
+
 }

@@ -6,10 +6,12 @@ public class EventHandler<T> {
 
 	private final Consumer<T> consumer;
 	private final boolean after;
+	private final Object identifier;
 
-	public EventHandler(Consumer<T> handler, boolean after) {
+	public EventHandler(Object identifier, Consumer<T> handler, boolean after) {
 		this.consumer = handler;
 		this.after = after;
+		this.identifier = identifier;
 	}
 	
 	public boolean isAfter() {
@@ -21,4 +23,9 @@ public class EventHandler<T> {
 		this.consumer.accept((T) event);
 	}
 
+	@Override
+	public String toString() {
+		return "EventHandler [" + identifier + ", after=" + after + "]";
+	}
+	
 }

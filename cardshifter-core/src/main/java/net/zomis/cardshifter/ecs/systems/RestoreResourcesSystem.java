@@ -21,7 +21,7 @@ public class RestoreResourcesSystem implements ECSSystem {
 
 	@Override
 	public void startGame(ECSGame game) {
-		game.getEvents().registerHandlerAfter(PhaseStartEvent.class, turn -> {
+		game.getEvents().registerHandlerAfter(this, PhaseStartEvent.class, turn -> {
 			Entity entity = turn.getNewPhase().getOwner();
 			ECSResourceMap map = entity.getComponent(ECSResourceMap.class);
 			int value = valueGetter.applyAsInt(entity);
@@ -29,4 +29,10 @@ public class RestoreResourcesSystem implements ECSSystem {
 		});
 	}
 
+	@Override
+	public String toString() {
+		return "RestoreResourcesSystem [resource=" + resource
+				+ ", valueGetter=" + valueGetter + "]";
+	}
+	
 }

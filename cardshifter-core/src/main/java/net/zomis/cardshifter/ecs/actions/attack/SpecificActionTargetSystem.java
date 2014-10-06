@@ -16,7 +16,7 @@ public abstract class SpecificActionTargetSystem implements ECSSystem {
 
 	@Override
 	public final void startGame(ECSGame game) {
-		game.getEvents().registerHandlerAfter(TargetableCheckEvent.class, this::targetableCheck);
+		game.getEvents().registerHandlerAfter(this, TargetableCheckEvent.class, this::targetableCheck);
 	}
 	
 	private void targetableCheck(TargetableCheckEvent event) {

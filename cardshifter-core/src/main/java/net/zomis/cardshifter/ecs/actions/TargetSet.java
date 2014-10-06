@@ -57,7 +57,7 @@ public class TargetSet {
 		return targets >= min && targets <= max;
 	}
 
-	public List<Entity> getTargets() {
+	public List<Entity> getChosenTargets() {
 		return new ArrayList<>(chosenTargets);
 	}
 
