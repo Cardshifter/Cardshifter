@@ -22,10 +22,8 @@ public final class CardHandDocumentController extends CardView {
     @FXML private Label cardId;
     @FXML private Label manaCost;
     @FXML private Label scrapCost;
-    @FXML private Label cardType;
     @FXML private Label creatureType;
-    @FXML private Label enchStrength;
-    @FXML private Label enchHealth;
+	@FXML private Label abilityText;
 	@FXML private Rectangle background;
 	@FXML private AnchorPane anchorPane;
     
