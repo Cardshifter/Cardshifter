@@ -12,12 +12,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-import net.zomis.cardshifter.ecs.usage.PhrancisGame;
-
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import com.cardshifter.api.CardshifterConstants;
 import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.both.InviteResponse;
 import com.cardshifter.api.incoming.LoginMessage;
@@ -126,6 +123,10 @@ public class Server {
 		this.gameFactories.put(gameType, factory);
 	}
 
+	public Map<String, GameFactory> getGameFactories() {
+		return Collections.unmodifiableMap(gameFactories);
+	}
+	
 	public ServerGame createGame(String parameter) {
 		GameFactory suppl = gameFactories.get(parameter);
 		if (suppl == null) {
