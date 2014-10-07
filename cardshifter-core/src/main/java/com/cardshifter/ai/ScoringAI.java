@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 
 import com.cardshifter.modapi.actions.ActionComponent;
 import com.cardshifter.modapi.actions.ECSAction;
+import com.cardshifter.modapi.ai.CardshifterAI;
 import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.Entity;
 

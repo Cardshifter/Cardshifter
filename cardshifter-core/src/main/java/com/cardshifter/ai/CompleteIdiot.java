@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import com.cardshifter.modapi.actions.Actions;
 import com.cardshifter.modapi.actions.ECSAction;
 import com.cardshifter.modapi.actions.TargetSet;
+import com.cardshifter.modapi.ai.CardshifterAI;
 import com.cardshifter.modapi.base.Entity;
 
 public class CompleteIdiot implements CardshifterAI {

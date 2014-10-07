@@ -2,7 +2,6 @@ package com.cardshifter.modapi.ai;
 
 import java.util.Objects;
 
-import com.cardshifter.ai.CardshifterAI;
 import com.cardshifter.modapi.base.Component;
 
 public class AIComponent extends Component {

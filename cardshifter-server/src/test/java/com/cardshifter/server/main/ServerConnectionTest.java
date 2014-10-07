@@ -15,7 +15,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.cardshifter.ai.AIs;
-import com.cardshifter.ai.CardshifterAI;
 import com.cardshifter.ai.ScoringAI;
 import com.cardshifter.api.CardshifterConstants;
 import com.cardshifter.api.both.ChatMessage;
@@ -32,6 +31,7 @@ import com.cardshifter.api.outgoing.WaitMessage;
 import com.cardshifter.api.outgoing.WelcomeMessage;
 import com.cardshifter.modapi.actions.ECSAction;
 import com.cardshifter.modapi.ai.AIComponent;
+import com.cardshifter.modapi.ai.CardshifterAI;
 import com.cardshifter.modapi.base.ECSGameState;
 import com.cardshifter.modapi.base.Entity;
 import com.cardshifter.server.model.ClientIO;

@@ -1,6 +1,7 @@
 package com.cardshifter.ai;
 
 import com.cardshifter.modapi.actions.ECSAction;
+import com.cardshifter.modapi.ai.CardshifterAI;
 import com.cardshifter.modapi.base.Entity;
 
 /**

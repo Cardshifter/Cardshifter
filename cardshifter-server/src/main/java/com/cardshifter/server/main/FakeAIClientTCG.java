@@ -3,8 +3,8 @@ package com.cardshifter.server.main;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import com.cardshifter.ai.CardshifterAI;
 import com.cardshifter.api.messages.Message;
+import com.cardshifter.modapi.ai.CardshifterAI;
 import com.cardshifter.server.model.ClientIO;
 import com.cardshifter.server.model.Server;
 
