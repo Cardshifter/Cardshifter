@@ -25,6 +25,7 @@
 		<module>cardshifter-mod</module>
 		<module>cardshifter-console</module>
 		<module>cardshifter-testmod-java</module>
+		<module>cardshifter-mod-api</module>
 	</modules>
 	
 	<build>
