@@ -23,14 +23,16 @@ public class GameInvite implements IdObject {
 	private final List<ClientIO> invited;
 	private final List<ClientIO> players;
 	private final ChatArea chatArea;
+	private final String gameType;
 
-	public GameInvite(Server server, int id, ChatArea chatlog, ClientIO host, ServerGame game) {
+	public GameInvite(Server server, int id, ChatArea chatlog, ClientIO host, ServerGame game, String gameType) {
 		this.id = id;
 		this.host = host;
 		this.game = game;
 		this.chatArea = chatlog;
 		this.invited = Collections.synchronizedList(new ArrayList<>());
 		this.players = Collections.synchronizedList(new ArrayList<>());
+		this.gameType = gameType;
 		players.add(host);
 	}
 
@@ -40,7 +42,7 @@ public class GameInvite implements IdObject {
 	}
 	
 	public void sendInvite(ClientIO to) {
-		to.sendToClient(new InviteRequest(this.id, this.host.getName()));
+		to.sendToClient(new InviteRequest(this.id, this.host.getName(), gameType));
 		this.invited.add(to);
 		if (to instanceof FakeAIClientTCG) {
 			inviteAccept(to);

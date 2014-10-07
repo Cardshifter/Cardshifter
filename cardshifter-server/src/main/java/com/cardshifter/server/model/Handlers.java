@@ -75,7 +75,7 @@ public class Handlers {
 			
 			ServerGame game = server.createGame(message.getGameType());
 			ServerHandler<GameInvite> invites = server.getInvites();
-			GameInvite invite = new GameInvite(server, invites.newId(), server.getMainChat(), client, game);
+			GameInvite invite = new GameInvite(server, invites.newId(), server.getMainChat(), client, game, message.getGameType());
 			invites.add(invite);
 			client.sendToClient(new WaitMessage());
 			
@@ -103,7 +103,7 @@ public class Handlers {
 			
 			ServerGame game = server.createGame(message.getGameType());
 			ServerHandler<GameInvite> invites = server.getInvites();
-			GameInvite invite = new GameInvite(server, invites.newId(), server.getMainChat(), client, game);
+			GameInvite invite = new GameInvite(server, invites.newId(), server.getMainChat(), client, game, message.getGameType());
 			invites.add(invite);
 			invite.addPlayer(opponent);
 			invite.start();
