@@ -3,11 +3,11 @@ package net.zomis.cardshifter.ecs.usage;
 import net.zomis.cardshifter.ecs.base.ECSGame;
 import net.zomis.cardshifter.ecs.base.ECSSystem;
 import net.zomis.cardshifter.ecs.base.Entity;
-import net.zomis.cardshifter.ecs.base.EntityRemoveEvent;
 import net.zomis.cardshifter.ecs.cards.BattlefieldComponent;
 import net.zomis.cardshifter.ecs.cards.CardComponent;
 import net.zomis.cardshifter.ecs.cards.Cards;
 import net.zomis.cardshifter.ecs.cards.DrawStartCards;
+import net.zomis.cardshifter.ecs.events.EntityRemoveEvent;
 
 public class OnCreatureDiesDrawCard implements ECSSystem {
 

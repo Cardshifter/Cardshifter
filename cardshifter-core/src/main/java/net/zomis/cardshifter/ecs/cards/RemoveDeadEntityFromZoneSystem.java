@@ -3,7 +3,7 @@ package net.zomis.cardshifter.ecs.cards;
 import net.zomis.cardshifter.ecs.base.ComponentRetriever;
 import net.zomis.cardshifter.ecs.base.ECSGame;
 import net.zomis.cardshifter.ecs.base.ECSSystem;
-import net.zomis.cardshifter.ecs.base.EntityRemoveEvent;
+import net.zomis.cardshifter.ecs.events.EntityRemoveEvent;
 
 public class RemoveDeadEntityFromZoneSystem implements ECSSystem {
 

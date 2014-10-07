@@ -1,4 +1,4 @@
-package net.zomis.cardshifter.ecs.base;
+package net.zomis.cardshifter.ecs.events;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,6 +11,8 @@ import java.util.Map.Entry;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import net.zomis.cardshifter.ecs.base.CancellableEvent;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;

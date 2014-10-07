@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import net.zomis.cardshifter.ecs.events.EntityRemoveEvent;
+
 public final class Entity {
 
 	private Map<Class<? extends Component>, Component> components = new HashMap<>();

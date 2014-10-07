@@ -16,13 +16,13 @@ import net.zomis.cardshifter.ecs.base.ComponentRetriever;
 import net.zomis.cardshifter.ecs.base.ECSGame;
 import net.zomis.cardshifter.ecs.base.ECSMod;
 import net.zomis.cardshifter.ecs.base.Entity;
-import net.zomis.cardshifter.ecs.base.EntityRemoveEvent;
-import net.zomis.cardshifter.ecs.base.GameOverEvent;
 import net.zomis.cardshifter.ecs.cards.CardComponent;
 import net.zomis.cardshifter.ecs.cards.ZoneChangeEvent;
 import net.zomis.cardshifter.ecs.cards.ZoneComponent;
 import net.zomis.cardshifter.ecs.components.CreatureTypeComponent;
 import net.zomis.cardshifter.ecs.components.PlayerComponent;
+import net.zomis.cardshifter.ecs.events.EntityRemoveEvent;
+import net.zomis.cardshifter.ecs.events.GameOverEvent;
 import net.zomis.cardshifter.ecs.resources.ResourceValueChange;
 import net.zomis.cardshifter.ecs.resources.Resources;
 

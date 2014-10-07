@@ -3,6 +3,8 @@ package net.zomis.cardshifter.ecs.base;
 import java.util.Objects;
 import java.util.Random;
 
+import net.zomis.cardshifter.ecs.events.IEvent;
+
 
 public abstract class Component {
 

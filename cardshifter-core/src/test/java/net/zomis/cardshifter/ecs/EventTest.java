@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.zomis.cardshifter.ecs.base.ECSGame;
-import net.zomis.cardshifter.ecs.base.IEvent;
+import net.zomis.cardshifter.ecs.events.IEvent;
 
 import org.junit.Test;
 

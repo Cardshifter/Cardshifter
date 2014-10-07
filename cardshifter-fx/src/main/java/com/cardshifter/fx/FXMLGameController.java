@@ -22,6 +22,7 @@ import net.zomis.cardshifter.ecs.cards.BattlefieldComponent;
 import net.zomis.cardshifter.ecs.cards.HandComponent;
 import net.zomis.cardshifter.ecs.cards.ZoneComponent;
 import net.zomis.cardshifter.ecs.components.PlayerComponent;
+import net.zomis.cardshifter.ecs.events.GameOverEvent;
 import net.zomis.cardshifter.ecs.phase.PhaseController;
 import net.zomis.cardshifter.ecs.resources.ResourceRetriever;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame;
@@ -31,7 +32,6 @@ import com.cardshifter.ai.CardshifterAI;
 import com.cardshifter.ai.CompleteIdiot;
 
 import javafx.scene.layout.HBox;
-import net.zomis.cardshifter.ecs.base.GameOverEvent;
 
 public class FXMLGameController {
 	

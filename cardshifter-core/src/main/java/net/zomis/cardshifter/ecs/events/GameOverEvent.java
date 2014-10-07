@@ -1,4 +1,7 @@
-package net.zomis.cardshifter.ecs.base;
+package net.zomis.cardshifter.ecs.events;
+
+import net.zomis.cardshifter.ecs.base.CancellableEvent;
+import net.zomis.cardshifter.ecs.base.ECSGame;
 
 public class GameOverEvent implements CancellableEvent {
 

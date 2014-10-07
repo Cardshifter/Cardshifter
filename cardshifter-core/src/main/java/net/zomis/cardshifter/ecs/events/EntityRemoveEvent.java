@@ -1,4 +1,6 @@
-package net.zomis.cardshifter.ecs.base;
+package net.zomis.cardshifter.ecs.events;
+
+import net.zomis.cardshifter.ecs.base.Entity;
 
 public class EntityRemoveEvent implements IEvent {
 

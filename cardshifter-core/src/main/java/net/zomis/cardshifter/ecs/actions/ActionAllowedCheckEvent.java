@@ -1,7 +1,7 @@
 package net.zomis.cardshifter.ecs.actions;
 
 import net.zomis.cardshifter.ecs.base.Entity;
-import net.zomis.cardshifter.ecs.base.IEvent;
+import net.zomis.cardshifter.ecs.events.IEvent;
 
 public class ActionAllowedCheckEvent implements IEvent {
 

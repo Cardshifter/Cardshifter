@@ -5,7 +5,7 @@ import java.util.List;
 
 import net.zomis.cardshifter.ecs.base.ECSGame;
 import net.zomis.cardshifter.ecs.base.Entity;
-import net.zomis.cardshifter.ecs.base.EventExecutor;
+import net.zomis.cardshifter.ecs.events.EventExecutor;
 
 public class TargetSet {
 

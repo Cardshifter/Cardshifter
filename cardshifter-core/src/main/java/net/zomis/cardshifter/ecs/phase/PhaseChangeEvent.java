@@ -1,6 +1,6 @@
 package net.zomis.cardshifter.ecs.phase;
 
-import net.zomis.cardshifter.ecs.base.IEvent;
+import net.zomis.cardshifter.ecs.events.IEvent;
 
 public abstract class PhaseChangeEvent implements IEvent {
 

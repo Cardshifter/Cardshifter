@@ -1,4 +1,4 @@
-package net.zomis.cardshifter.ecs.base;
+package net.zomis.cardshifter.ecs.events;
 
 import java.util.function.Consumer;
 

@@ -10,6 +10,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import net.zomis.cardshifter.ecs.events.EventExecutor;
+import net.zomis.cardshifter.ecs.events.GameOverEvent;
+import net.zomis.cardshifter.ecs.events.IEvent;
 import net.zomis.cardshifter.ecs.events.StartGameEvent;
 
 public final class ECSGame {

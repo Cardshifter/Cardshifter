@@ -1,4 +1,6 @@
-package net.zomis.cardshifter.ecs.base;
+package net.zomis.cardshifter.ecs.events;
+
+import net.zomis.cardshifter.ecs.base.CancellableEvent;
 
 public interface EventExecution {
 	
