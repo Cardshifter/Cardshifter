@@ -7,6 +7,7 @@ import net.zomis.cardshifter.ecs.actions.ECSAction;
 import net.zomis.cardshifter.ecs.actions.attack.AttackDamageYGO;
 import net.zomis.cardshifter.ecs.actions.attack.AttackTargetMinionsFirstThenPlayer;
 import net.zomis.cardshifter.ecs.base.ECSGame;
+import net.zomis.cardshifter.ecs.base.ECSMod;
 import net.zomis.cardshifter.ecs.base.Entity;
 import net.zomis.cardshifter.ecs.cards.BattlefieldComponent;
 import net.zomis.cardshifter.ecs.cards.CardComponent;
@@ -36,7 +37,7 @@ import net.zomis.cardshifter.ecs.systems.PlayEntersBattlefieldSystem;
 import net.zomis.cardshifter.ecs.systems.PlayFromHandSystem;
 import net.zomis.cardshifter.ecs.systems.RestoreResourcesSystem;
 
-public class PhrancisGame {
+public class PhrancisGame implements ECSMod {
 
 	public enum PhrancisResources implements ECSResource {
 		HEALTH, MANA, MANA_MAX, SCRAP, ATTACK, MANA_COST, SCRAP_COST, ENCHANTMENTS_ACTIVE, SICKNESS, ATTACK_AVAILABLE;
@@ -51,6 +52,12 @@ public class PhrancisGame {
 	private static final int CARDS_OF_EACH_TYPE = 3;
 	
 	public static ECSGame createGame(ECSGame game) {
+		new PhrancisGame().setupGame(game);
+		return game;
+	}
+	
+	@Override
+	public void setupGame(ECSGame game) {
 		
 		PhaseController phaseController = new PhaseController();
 		game.newEntity().addComponent(phaseController);
@@ -154,7 +161,6 @@ public class PhrancisGame {
 		game.addSystem(new RemoveDeadEntityFromZoneSystem());
 		game.addSystem(new PerformerMustBeCurrentPlayer());
 		
-		return game;
 	}
 
 	private static Entity createEnchantment(ZoneComponent deck, int strength, int health, int cost) {

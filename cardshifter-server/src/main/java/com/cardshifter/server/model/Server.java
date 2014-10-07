@@ -12,6 +12,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
+import net.zomis.cardshifter.ecs.usage.PhrancisGame;
+
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -70,7 +72,7 @@ public class Server {
 		incomings.addHandler("inviteResponse", InviteResponse.class, handlers::inviteResponse);
 		incomings.addHandler("query", ServerQueryMessage.class, handlers::query);
 		
-		server.addGameFactory(CardshifterConstants.VANILLA, (serv, id) -> new TCGGame(serv, id));
+		server.addGameFactory(CardshifterConstants.VANILLA, (serv, id) -> new TCGGame(serv, id, new PhrancisGame()));
 		
 	}
 	
