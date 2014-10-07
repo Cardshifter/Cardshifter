@@ -4,7 +4,6 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import com.cardshifter.api.messages.Message;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
@@ -15,7 +14,6 @@ public abstract class ClientIO implements IdObject {
 	
 	private String name = "";
 	private final Server server;
-	private final ObjectWriter writer = new ObjectMapper().writer();
 	private int id;
 	
 	public ClientIO(Server server) {
@@ -25,33 +23,15 @@ public abstract class ClientIO implements IdObject {
 	/**
 	 * Send a message to this client
 	 * 
-	 * @param data Message to send
-	 */
-	public final void sendToClient(String data) {
-		logger.info("Send to " + this.name + ": " + data);
-		onSendToClient(data);
-	}
-	
-	/**
-	 * Send a message to this client
-	 * 
 	 * @param message Message to send
 	 * @throws IllegalArgumentException If message is not serializable
 	 */
 	public final void sendToClient(Message message) throws IllegalArgumentException {
-		logger.debug("Send to " + this.name + ": " + message);
-		String data;
-		try {
-			data = writer.writeValueAsString(message);
-		} catch (JsonProcessingException e) {
-			String error = "Error occured when serializing message " + message;
-			logger.fatal(error, e);
-			throw new IllegalArgumentException(error, e);
-		}
-		this.sendToClient(data);
+		logger.info("Send to " + this.getName() + ": " + message);
+		this.onSendToClient(message);
 	}
 	
-	protected abstract void onSendToClient(String data);
+	protected abstract void onSendToClient(Message data);
 	
 	public String getName() {
 		return name;

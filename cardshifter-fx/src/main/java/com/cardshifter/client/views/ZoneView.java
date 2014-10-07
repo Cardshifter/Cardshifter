@@ -96,10 +96,19 @@ public class ZoneView<T extends CardView> {
 	public void removeActiveAllCards() {
 		zoneMap.values().forEach(card -> card.removeCardActive());
 	}
+	
+	public void removeScrappableAllCards() {
+		zoneMap.values().forEach(card -> card.removeCardScrappable());
+	}
 
 	public void setCardTargetable(int target) {
 		T card = getCard(target);
 		card.setCardTargetable();
+	}
+	
+	public void setCardScrappable(int target, UseableActionMessage message) {
+		T card = getCard(target);
+		card.setCardScrappable(message);
 	}
 
 }

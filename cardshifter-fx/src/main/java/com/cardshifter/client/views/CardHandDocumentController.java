@@ -22,6 +22,7 @@ public final class CardHandDocumentController extends CardView {
     @FXML private Label cardId;
     @FXML private Label manaCost;
     @FXML private Label scrapCost;
+	@FXML private Label scrapValue;
     @FXML private Label creatureType;
 	@FXML private Label abilityText;
 	@FXML private Rectangle background;
@@ -56,6 +57,7 @@ public final class CardHandDocumentController extends CardView {
 		return this.card;
 	}
     
+	@Override
     public AnchorPane getRootPane() {
 		return this.anchorPane;
     }
@@ -64,6 +66,7 @@ public final class CardHandDocumentController extends CardView {
 		return this.isActive;
 	}
 
+	@Override
     public void setCardActive(UseableActionMessage message) {
 		this.isActive = true;
 		this.message = message;
@@ -71,6 +74,7 @@ public final class CardHandDocumentController extends CardView {
         background.setFill(Color.YELLOW);
     }
 	
+	@Override
 	public void removeCardActive() {
 		this.isActive = false;
 		this.message = null;
@@ -98,6 +102,8 @@ public final class CardHandDocumentController extends CardView {
 				scrapCost.setText(String.format("Scrap Cost = %s", value));
 			} else if (key.equals("creatureType")) {
 				creatureType.setText(value);
+			} else if (key.equals("SCRAP")) {
+				scrapValue.setText(String.format("Scrap val = %s", value));
 			}
 		}
     }
@@ -105,11 +111,19 @@ public final class CardHandDocumentController extends CardView {
 	@Override
 	public void updateFields(UpdateMessage message) {
 	}
+	
+	@Override
+	public void setCardScrappable(UseableActionMessage message) {
+	}
 
 	@Override
 	public void setCardTargetable() {
 		this.anchorPane.setOnMouseClicked(this::actionOnTarget);
 		background.setFill(Color.BLUE);
+	}
+	
+	@Override
+	public void removeCardScrappable() {
 	}
 	
 	private void actionOnTarget(MouseEvent event) {

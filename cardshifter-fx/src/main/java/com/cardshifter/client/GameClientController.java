@@ -252,6 +252,8 @@ public class GameClientController {
 		}
 		if (message.getAction().equals("Attack")) {
 			((BattlefieldZoneView)zoneView).setCardCanAttack(message.getId(),message);
+		} else if (message.getAction().equals("Scrap")) {
+			zoneView.setCardScrappable(message.getId(), message);
 		} else {
 			zoneView.setCardActive(message.getId(), message);
 		}
@@ -447,6 +449,7 @@ public class GameClientController {
 	private void clearActiveFromAllCards() {
 		for (ZoneView<?> zoneView : this.zoneViewMap.values()) {
 			zoneView.removeActiveAllCards();
+			zoneView.removeScrappableAllCards();
 		}
 	}
 	

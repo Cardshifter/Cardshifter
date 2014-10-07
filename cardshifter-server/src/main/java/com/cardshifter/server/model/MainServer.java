@@ -5,6 +5,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
 
+import net.zomis.cardshifter.ecs.usage.PhrancisGame;
+import net.zomis.cardshifter.ecs.usage.SimpleGame;
+
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -54,6 +57,9 @@ public class MainServer {
 				server.newClient(tcgAI);
 				server.getIncomingHandler().perform(new LoginMessage("AI " + entry.getKey()), tcgAI);
 			});
+			
+			server.addGameFactory(CardshifterConstants.VANILLA, (serv, id) -> new TCGGame(serv, id, new PhrancisGame()));
+			server.addGameFactory("SIMPLE", (serv, id) -> new TCGGame(serv, id, new SimpleGame()));
 			
 			logger.info("Started");
 		}

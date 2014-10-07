@@ -5,6 +5,7 @@ import net.zomis.cardshifter.ecs.actions.ActionPerformEvent;
 import net.zomis.cardshifter.ecs.actions.SpecificActionSystem;
 import net.zomis.cardshifter.ecs.base.ComponentRetriever;
 import net.zomis.cardshifter.ecs.base.Entity;
+import net.zomis.cardshifter.ecs.base.Retriever;
 import net.zomis.cardshifter.ecs.cards.BattlefieldComponent;
 import net.zomis.cardshifter.ecs.cards.CardComponent;
 import net.zomis.cardshifter.ecs.cards.Cards;
@@ -20,7 +21,7 @@ public class ScrapSystem extends SpecificActionSystem {
 		this.resource = ResourceRetriever.forResource(resource);
 	}
 
-	private final ComponentRetriever<CardComponent> card = ComponentRetriever.retreiverFor(CardComponent.class);
+	@Retriever private ComponentRetriever<CardComponent> card;
 	
 	@Override
 	protected void isAllowed(ActionAllowedCheckEvent event) {
@@ -30,12 +31,16 @@ public class ScrapSystem extends SpecificActionSystem {
 		if (!Cards.isOnZone(event.getEntity(), BattlefieldComponent.class)) {
 			event.setAllowed(false);
 		}
+		if (resource.getOrDefault(event.getEntity(), 0) <= 0) {
+			event.setAllowed(false);
+		}
 	}
 	
 	@Override
 	protected void onPerform(ActionPerformEvent event) {
 		Entity cardOwner = card.get(event.getEntity()).getOwner();
-		resource.resFor(cardOwner).change(1);
+		int scrapValue = resource.getFor(event.getEntity());
+		resource.resFor(cardOwner).change(scrapValue);
 		event.getEntity().destroy();
 	}
 	

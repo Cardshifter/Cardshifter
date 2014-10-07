@@ -29,6 +29,7 @@ import com.cardshifter.api.incoming.ServerQueryMessage;
 import com.cardshifter.api.incoming.ServerQueryMessage.Request;
 import com.cardshifter.api.incoming.StartGameRequest;
 import com.cardshifter.api.incoming.UseAbilityMessage;
+import com.cardshifter.api.outgoing.AvailableModsMessage;
 import com.cardshifter.api.outgoing.NewGameMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage.Status;
@@ -63,11 +64,16 @@ public class ServerConnectionTest {
 		assertEquals(server.getClients().size(), welcome.getUserId());
 		userId = welcome.getUserId();
 		client1.await(ChatMessage.class);
+		client1.await(AvailableModsMessage.class);
 		Thread.sleep(500);
 	}
 	
 	@After
 	public void shutdown() {
+		try {
+			client1.disconnect();
+		} catch (IOException e) {
+		}
 		server.stop();
 	}
 	
