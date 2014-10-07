@@ -59,21 +59,15 @@ public class Server {
 		this.scheduler = Executors.newScheduledThreadPool(2, new ThreadFactoryBuilder().setNameFormat("ai-thread-%d").build());
 		mainChat = this.newChatRoom("Main");
 		
-		Server server = this;
-		IncomingHandler incomings = server.getIncomingHandler();
-		
 		Handlers handlers = new Handlers(this);
 		
-		incomings.addHandler("login", LoginMessage.class, handlers::loginMessage);
-		incomings.addHandler("chat", ChatMessage.class, handlers::chat);
-		incomings.addHandler("startgame", StartGameRequest.class, handlers::play);
-		incomings.addHandler("use", UseAbilityMessage.class, handlers::useAbility);
-		incomings.addHandler("requestTargets", RequestTargetsMessage.class, handlers::requestTargets);
-		incomings.addHandler("inviteResponse", InviteResponse.class, handlers::inviteResponse);
-		incomings.addHandler("query", ServerQueryMessage.class, handlers::query);
-		
-		server.addGameFactory(CardshifterConstants.VANILLA, (serv, id) -> new TCGGame(serv, id, new PhrancisGame()));
-		
+		incomingHandler.addHandler("login", LoginMessage.class, handlers::loginMessage);
+		incomingHandler.addHandler("chat", ChatMessage.class, handlers::chat);
+		incomingHandler.addHandler("startgame", StartGameRequest.class, handlers::play);
+		incomingHandler.addHandler("use", UseAbilityMessage.class, handlers::useAbility);
+		incomingHandler.addHandler("requestTargets", RequestTargetsMessage.class, handlers::requestTargets);
+		incomingHandler.addHandler("inviteResponse", InviteResponse.class, handlers::inviteResponse);
+		incomingHandler.addHandler("query", ServerQueryMessage.class, handlers::query);
 	}
 	
 	ChatArea getMainChat() {
