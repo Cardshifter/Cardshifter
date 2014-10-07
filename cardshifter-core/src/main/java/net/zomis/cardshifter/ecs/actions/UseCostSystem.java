@@ -1,11 +1,8 @@
-package net.zomis.cardshifter.ecs.systems;
+package net.zomis.cardshifter.ecs.actions;
 
 import java.util.function.ToIntFunction;
 import java.util.function.UnaryOperator;
 
-import net.zomis.cardshifter.ecs.actions.ActionAllowedCheckEvent;
-import net.zomis.cardshifter.ecs.actions.ActionPerformEvent;
-import net.zomis.cardshifter.ecs.actions.SpecificActionSystem;
 import net.zomis.cardshifter.ecs.base.Entity;
 import net.zomis.cardshifter.ecs.resources.ECSResource;
 import net.zomis.cardshifter.ecs.resources.ECSResourceData;

@@ -1,8 +1,7 @@
-package net.zomis.cardshifter.ecs.systems;
+package net.zomis.cardshifter.ecs.cards;
 
 import net.zomis.cardshifter.ecs.base.ECSGame;
 import net.zomis.cardshifter.ecs.base.ECSSystem;
-import net.zomis.cardshifter.ecs.cards.DrawStartCards;
 import net.zomis.cardshifter.ecs.phase.PhaseStartEvent;
 
 public class DrawCardAtBeginningOfTurnSystem implements ECSSystem {

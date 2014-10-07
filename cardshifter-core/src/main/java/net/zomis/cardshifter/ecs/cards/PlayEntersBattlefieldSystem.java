@@ -1,9 +1,7 @@
-package net.zomis.cardshifter.ecs.systems;
+package net.zomis.cardshifter.ecs.cards;
 
 import net.zomis.cardshifter.ecs.actions.ActionPerformEvent;
 import net.zomis.cardshifter.ecs.actions.SpecificActionSystem;
-import net.zomis.cardshifter.ecs.cards.BattlefieldComponent;
-import net.zomis.cardshifter.ecs.cards.CardComponent;
 
 public class PlayEntersBattlefieldSystem extends SpecificActionSystem {
 

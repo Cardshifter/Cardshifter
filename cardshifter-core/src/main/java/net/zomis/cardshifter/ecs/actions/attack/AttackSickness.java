@@ -1,4 +1,4 @@
-package net.zomis.cardshifter.ecs.systems;
+package net.zomis.cardshifter.ecs.actions.attack;
 
 import net.zomis.cardshifter.ecs.actions.ActionAllowedCheckEvent;
 import net.zomis.cardshifter.ecs.actions.ActionPerformEvent;

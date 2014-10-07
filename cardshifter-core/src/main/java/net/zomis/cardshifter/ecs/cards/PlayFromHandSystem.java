@@ -1,15 +1,13 @@
-package net.zomis.cardshifter.ecs.systems;
+package net.zomis.cardshifter.ecs.cards;
 
 import net.zomis.cardshifter.ecs.actions.ActionAllowedCheckEvent;
 import net.zomis.cardshifter.ecs.actions.ActionPerformEvent;
 import net.zomis.cardshifter.ecs.actions.SpecificActionSystem;
-import net.zomis.cardshifter.ecs.cards.BattlefieldComponent;
-import net.zomis.cardshifter.ecs.cards.Cards;
 
-public class AttackOnBattlefield extends SpecificActionSystem {
+public class PlayFromHandSystem extends SpecificActionSystem {
 
-	public AttackOnBattlefield() {
-		super("Attack");
+	public PlayFromHandSystem(String name) {
+		super(name);
 	}
 
 	@Override
@@ -17,7 +15,7 @@ public class AttackOnBattlefield extends SpecificActionSystem {
 		if (!Cards.isOwnedByCurrentPlayer(event.getEntity())) {
 			event.setAllowed(false);
 		}
-		if (!Cards.isOnZone(event.getEntity(), BattlefieldComponent.class)) {
+		if (!Cards.isOnZone(event.getEntity(), HandComponent.class)) {
 			event.setAllowed(false);
 		}
 	}

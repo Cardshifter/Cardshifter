@@ -1,11 +1,9 @@
-package net.zomis.cardshifter.ecs.systems;
+package net.zomis.cardshifter.ecs.phase;
 
 import java.util.function.Consumer;
 
 import net.zomis.cardshifter.ecs.base.ECSGame;
 import net.zomis.cardshifter.ecs.base.ECSSystem;
-import net.zomis.cardshifter.ecs.phase.Phase;
-import net.zomis.cardshifter.ecs.phase.PhaseChangeEvent;
 
 public class TurnStartSystem implements ECSSystem {
 	

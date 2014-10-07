@@ -11,8 +11,8 @@ import net.zomis.cardshifter.ecs.phase.PhaseController;
 import net.zomis.cardshifter.ecs.resources.ECSResource;
 import net.zomis.cardshifter.ecs.resources.ECSResourceDefault;
 import net.zomis.cardshifter.ecs.resources.ECSResourceMap;
+import net.zomis.cardshifter.ecs.resources.GameOverIfNoHealth;
 import net.zomis.cardshifter.ecs.resources.ResourceRetriever;
-import net.zomis.cardshifter.ecs.systems.GameOverIfNoHealth;
 
 public class SimpleGame implements ECSMod {
 	private static final ECSResource HEALTH = new ECSResourceDefault("Health");

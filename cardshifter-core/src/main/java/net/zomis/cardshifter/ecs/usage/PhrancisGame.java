@@ -4,7 +4,10 @@ import java.util.function.UnaryOperator;
 
 import net.zomis.cardshifter.ecs.actions.ActionComponent;
 import net.zomis.cardshifter.ecs.actions.ECSAction;
+import net.zomis.cardshifter.ecs.actions.UseCostSystem;
 import net.zomis.cardshifter.ecs.actions.attack.AttackDamageYGO;
+import net.zomis.cardshifter.ecs.actions.attack.AttackOnBattlefield;
+import net.zomis.cardshifter.ecs.actions.attack.AttackSickness;
 import net.zomis.cardshifter.ecs.actions.attack.AttackTargetMinionsFirstThenPlayer;
 import net.zomis.cardshifter.ecs.base.ECSGame;
 import net.zomis.cardshifter.ecs.base.ECSMod;
@@ -12,30 +15,27 @@ import net.zomis.cardshifter.ecs.base.Entity;
 import net.zomis.cardshifter.ecs.cards.BattlefieldComponent;
 import net.zomis.cardshifter.ecs.cards.CardComponent;
 import net.zomis.cardshifter.ecs.cards.Cards;
+import net.zomis.cardshifter.ecs.cards.DamageConstantWhenOutOfCardsSystem;
 import net.zomis.cardshifter.ecs.cards.DeckComponent;
+import net.zomis.cardshifter.ecs.cards.DrawCardAtBeginningOfTurnSystem;
 import net.zomis.cardshifter.ecs.cards.DrawStartCards;
 import net.zomis.cardshifter.ecs.cards.HandComponent;
 import net.zomis.cardshifter.ecs.cards.LimitedHandSizeSystem;
+import net.zomis.cardshifter.ecs.cards.PlayEntersBattlefieldSystem;
+import net.zomis.cardshifter.ecs.cards.PlayFromHandSystem;
 import net.zomis.cardshifter.ecs.cards.RemoveDeadEntityFromZoneSystem;
 import net.zomis.cardshifter.ecs.cards.ZoneComponent;
 import net.zomis.cardshifter.ecs.components.CreatureTypeComponent;
 import net.zomis.cardshifter.ecs.components.PlayerComponent;
+import net.zomis.cardshifter.ecs.phase.GainResourceSystem;
 import net.zomis.cardshifter.ecs.phase.Phase;
 import net.zomis.cardshifter.ecs.phase.PhaseController;
+import net.zomis.cardshifter.ecs.phase.RestoreResourcesSystem;
 import net.zomis.cardshifter.ecs.resources.ECSResource;
 import net.zomis.cardshifter.ecs.resources.ECSResourceMap;
+import net.zomis.cardshifter.ecs.resources.GameOverIfNoHealth;
 import net.zomis.cardshifter.ecs.resources.ResourceRetriever;
 import net.zomis.cardshifter.ecs.resources.RestoreResourcesToSystem;
-import net.zomis.cardshifter.ecs.systems.AttackOnBattlefield;
-import net.zomis.cardshifter.ecs.systems.AttackSickness;
-import net.zomis.cardshifter.ecs.systems.DamageConstantWhenOutOfCardsSystem;
-import net.zomis.cardshifter.ecs.systems.DrawCardAtBeginningOfTurnSystem;
-import net.zomis.cardshifter.ecs.systems.GainResourceSystem;
-import net.zomis.cardshifter.ecs.systems.GameOverIfNoHealth;
-import net.zomis.cardshifter.ecs.systems.UseCostSystem;
-import net.zomis.cardshifter.ecs.systems.PlayEntersBattlefieldSystem;
-import net.zomis.cardshifter.ecs.systems.PlayFromHandSystem;
-import net.zomis.cardshifter.ecs.systems.RestoreResourcesSystem;
 
 public class PhrancisGame implements ECSMod {
 

@@ -1,22 +1,21 @@
-package net.zomis.cardshifter.ecs.systems;
+package net.zomis.cardshifter.ecs.phase;
 
 import java.util.function.ToIntFunction;
 
 import net.zomis.cardshifter.ecs.base.ECSGame;
 import net.zomis.cardshifter.ecs.base.Entity;
 import net.zomis.cardshifter.ecs.base.ECSSystem;
-import net.zomis.cardshifter.ecs.phase.PhaseStartEvent;
 import net.zomis.cardshifter.ecs.resources.ECSResource;
 import net.zomis.cardshifter.ecs.resources.ECSResourceMap;
 
-public class RestoreResourcesSystem implements ECSSystem {
+public class GainResourceSystem implements ECSSystem {
 
-	private final ECSResource resource;
-	private final ToIntFunction<Entity> valueGetter;
+	private ECSResource resource;
+	private ToIntFunction<Entity> valueGet;
 
-	public RestoreResourcesSystem(ECSResource resource, ToIntFunction<Entity> valueGetter) {
+	public GainResourceSystem(ECSResource resource, ToIntFunction<Entity> object) {
 		this.resource = resource;
-		this.valueGetter = valueGetter;
+		this.valueGet = object;
 	}
 
 	@Override
@@ -24,15 +23,15 @@ public class RestoreResourcesSystem implements ECSSystem {
 		game.getEvents().registerHandlerAfter(this, PhaseStartEvent.class, turn -> {
 			Entity entity = turn.getNewPhase().getOwner();
 			ECSResourceMap map = entity.getComponent(ECSResourceMap.class);
-			int value = valueGetter.applyAsInt(entity);
-			map.getResource(resource).set(value);
+			int value = valueGet.applyAsInt(entity);
+			map.getResource(resource).change(value);
 		});
 	}
 
 	@Override
 	public String toString() {
-		return "RestoreResourcesSystem [resource=" + resource
-				+ ", valueGetter=" + valueGetter + "]";
+		return "GainResourceSystem [resource=" + resource + ", valueGet="
+				+ valueGet + "]";
 	}
 	
 }
