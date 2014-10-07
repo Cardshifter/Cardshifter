@@ -46,6 +46,11 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>com.cardshifter</groupId>
+			<artifactId>cardshifter-mod-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.luaj</groupId>
 			<artifactId>luaj-jse</artifactId>
 			<version>3.0</version>
