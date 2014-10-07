@@ -4,6 +4,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import com.cardshifter.ai.CardshifterAI;
+import com.cardshifter.api.messages.Message;
 import com.cardshifter.server.model.ClientIO;
 import com.cardshifter.server.model.Server;
 
@@ -18,7 +19,7 @@ public class FakeAIClientTCG extends ClientIO {
 	}
 
 	@Override
-	protected void onSendToClient(String data) {
+	protected void onSendToClient(Message data) {
 		logger.info(data);
 	}
 

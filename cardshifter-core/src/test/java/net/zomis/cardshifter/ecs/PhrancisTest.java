@@ -59,7 +59,9 @@ public class PhrancisTest {
 	@Before
 	public void before() {
 		PropertyConfigurator.configure(PhrancisTest.class.getResourceAsStream("log4j.properties"));
-		game = PhrancisGame.createGame();
+		game = new ECSGame();
+		game.setRandomSeed(42);
+		PhrancisGame.createGame(game);
 		game.startGame();
 		phase = ComponentRetriever.singleton(game, PhaseController.class);
 	}

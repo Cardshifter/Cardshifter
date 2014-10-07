@@ -1,5 +1,6 @@
 package com.cardshifter.server.model;
 
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.log4j.LogManager;
@@ -12,6 +13,7 @@ import com.cardshifter.api.incoming.RequestTargetsMessage;
 import com.cardshifter.api.incoming.ServerQueryMessage;
 import com.cardshifter.api.incoming.StartGameRequest;
 import com.cardshifter.api.incoming.UseAbilityMessage;
+import com.cardshifter.api.outgoing.AvailableModsMessage;
 import com.cardshifter.api.outgoing.ServerErrorMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage.Status;
@@ -55,6 +57,8 @@ public class Handlers {
 			.filter(cl -> cl != client)
 			.forEach(cl -> cl.sendToClient(statusMessage));
 		server.getMainChat().add(client);
+		Set<String> gameFactories = server.getGameFactories().keySet();
+		client.sendToClient(new AvailableModsMessage(gameFactories.toArray(new String[gameFactories.size()])));
 	}
 
 	public void play(StartGameRequest message, ClientIO client) {
@@ -71,7 +75,7 @@ public class Handlers {
 			
 			ServerGame game = server.createGame(message.getGameType());
 			ServerHandler<GameInvite> invites = server.getInvites();
-			GameInvite invite = new GameInvite(server, invites.newId(), client, game);
+			GameInvite invite = new GameInvite(server, invites.newId(), server.getMainChat(), client, game);
 			invites.add(invite);
 			client.sendToClient(new WaitMessage());
 			
@@ -99,7 +103,7 @@ public class Handlers {
 			
 			ServerGame game = server.createGame(message.getGameType());
 			ServerHandler<GameInvite> invites = server.getInvites();
-			GameInvite invite = new GameInvite(server, invites.newId(), client, game);
+			GameInvite invite = new GameInvite(server, invites.newId(), server.getMainChat(), client, game);
 			invites.add(invite);
 			invite.addPlayer(opponent);
 			invite.start();

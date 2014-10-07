@@ -69,17 +69,15 @@ public abstract class ServerGame {
 			throw new IllegalStateException("Game can only be started once");
 		}
 		this.players.addAll(players);
-		players.forEach(pl -> pl.sendToClient(new NewGameMessage(this.id, players.indexOf(pl))));
+		for (ClientIO player : players) {
+			player.sendToClient(new NewGameMessage(this.id, players.indexOf(player)));
+		}
 		this.onStart();
 		this.active = Instant.now();
 		this.state = GameState.RUNNING;
 	}
 
 	protected abstract void onStart();
-	
-	public void send(String data) {
-		players.forEach(pl -> pl.sendToClient(data));
-	}
 	
 	public void send(Message data) {
 		players.forEach(pl -> pl.sendToClient(data));

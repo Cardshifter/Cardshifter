@@ -1,4 +1,4 @@
-package com.cardshifter.client;
+package com.cardshifter.client.views;
 
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +12,6 @@ import javafx.scene.shape.Rectangle;
 
 import com.cardshifter.api.outgoing.UpdateMessage;
 import com.cardshifter.api.outgoing.UseableActionMessage;
-import com.cardshifter.client.views.CardView;
 
 public class ZoneView<T extends CardView> {
 	
@@ -92,6 +91,24 @@ public class ZoneView<T extends CardView> {
 	public void setCardActive(int id, UseableActionMessage message) {
 		T card = getCard(id);
 		card.setCardActive(message);
+	}
+
+	public void removeActiveAllCards() {
+		zoneMap.values().forEach(card -> card.removeCardActive());
+	}
+	
+	public void removeScrappableAllCards() {
+		zoneMap.values().forEach(card -> card.removeCardScrappable());
+	}
+
+	public void setCardTargetable(int target) {
+		T card = getCard(target);
+		card.setCardTargetable();
+	}
+	
+	public void setCardScrappable(int target, UseableActionMessage message) {
+		T card = getCard(target);
+		card.setCardScrappable(message);
 	}
 
 }

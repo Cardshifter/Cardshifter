@@ -14,6 +14,7 @@ import net.zomis.cardshifter.ecs.ai.AIComponent;
 import net.zomis.cardshifter.ecs.ai.AISystem;
 import net.zomis.cardshifter.ecs.base.ComponentRetriever;
 import net.zomis.cardshifter.ecs.base.ECSGame;
+import net.zomis.cardshifter.ecs.base.ECSMod;
 import net.zomis.cardshifter.ecs.base.Entity;
 import net.zomis.cardshifter.ecs.base.EntityRemoveEvent;
 import net.zomis.cardshifter.ecs.base.GameOverEvent;
@@ -24,7 +25,6 @@ import net.zomis.cardshifter.ecs.components.CreatureTypeComponent;
 import net.zomis.cardshifter.ecs.components.PlayerComponent;
 import net.zomis.cardshifter.ecs.resources.ResourceValueChange;
 import net.zomis.cardshifter.ecs.resources.Resources;
-import net.zomis.cardshifter.ecs.usage.PhrancisGame;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -52,9 +52,10 @@ public class TCGGame extends ServerGame {
 	
 	private ComponentRetriever<PlayerComponent> playerData = ComponentRetriever.retreiverFor(PlayerComponent.class);
 	
-	public TCGGame(Server server, int id) {
+	public TCGGame(Server server, int id, ECSMod mod) {
 		super(server, id);
-		game = PhrancisGame.createGame();
+		game = new ECSGame();
+		mod.setupGame(game);
 		game.getEvents().registerHandlerAfter(this, ResourceValueChange.class, this::broadcast);
 		game.getEvents().registerHandlerAfter(this, ZoneChangeEvent.class, this::zoneChange);
 		game.getEvents().registerHandlerAfter(this, EntityRemoveEvent.class, this::remove);
@@ -217,6 +218,9 @@ public class TCGGame extends ServerGame {
 		for (ClientIO io : this.getPlayers()) {
 			Entity player = playerFor(io);
 			io.sendToClient(new ResetAvailableActionsMessage());
+			if (game.isGameOver()) {
+				continue;
+			}
 			getAllActions(game).filter(action -> action.isAllowed(player))
 				.forEach(action -> io.sendToClient(new UseableActionMessage(action.getOwner().getId(), action.getName(), !action.getTargetSets().isEmpty())));
 		}

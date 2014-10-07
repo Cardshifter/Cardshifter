@@ -5,19 +5,16 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Stream;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import com.cardshifter.api.CardshifterConstants;
 import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.both.InviteResponse;
 import com.cardshifter.api.incoming.LoginMessage;
@@ -59,21 +56,15 @@ public class Server {
 		this.scheduler = Executors.newScheduledThreadPool(2, new ThreadFactoryBuilder().setNameFormat("ai-thread-%d").build());
 		mainChat = this.newChatRoom("Main");
 		
-		Server server = this;
-		IncomingHandler incomings = server.getIncomingHandler();
-		
 		Handlers handlers = new Handlers(this);
 		
-		incomings.addHandler("login", LoginMessage.class, handlers::loginMessage);
-		incomings.addHandler("chat", ChatMessage.class, handlers::chat);
-		incomings.addHandler("startgame", StartGameRequest.class, handlers::play);
-		incomings.addHandler("use", UseAbilityMessage.class, handlers::useAbility);
-		incomings.addHandler("requestTargets", RequestTargetsMessage.class, handlers::requestTargets);
-		incomings.addHandler("inviteResponse", InviteResponse.class, handlers::inviteResponse);
-		incomings.addHandler("query", ServerQueryMessage.class, handlers::query);
-		
-		server.addGameFactory(CardshifterConstants.VANILLA, (serv, id) -> new TCGGame(serv, id));
-		
+		incomingHandler.addHandler("login", LoginMessage.class, handlers::loginMessage);
+		incomingHandler.addHandler("chat", ChatMessage.class, handlers::chat);
+		incomingHandler.addHandler("startgame", StartGameRequest.class, handlers::play);
+		incomingHandler.addHandler("use", UseAbilityMessage.class, handlers::useAbility);
+		incomingHandler.addHandler("requestTargets", RequestTargetsMessage.class, handlers::requestTargets);
+		incomingHandler.addHandler("inviteResponse", InviteResponse.class, handlers::inviteResponse);
+		incomingHandler.addHandler("query", ServerQueryMessage.class, handlers::query);
 	}
 	
 	ChatArea getMainChat() {
@@ -116,6 +107,7 @@ public class Server {
 	}
 	
 	public void onDisconnected(ClientIO client) {
+		logger.info("Client disconnected: " + client);
 		games.values().stream().filter(game -> game.hasPlayer(client))
 			.forEach(game -> game.send(new ClientDisconnectedMessage(client.getName(), game.getPlayers().indexOf(client))));
 		clients.remove(client);
@@ -131,62 +123,10 @@ public class Server {
 		this.gameFactories.put(gameType, factory);
 	}
 
-	@Deprecated
-	public boolean inviteRequest(Command cmd) {
-		final GameInvite invite;
-		switch (cmd.getCommand()) {
-			case "INVT":
-				String target = cmd.getParameter(2);
-				ServerGame game = createGame(cmd.getParameter(1));
-				// FindBugs tells this is redundant
-//				if (game == null) {
-//					cmd.getSender().sendToClient("FAIL Game creation failed");
-//					return false;
-//				}
-				invite = new GameInvite(this, invites.newId(), cmd.getSender(), game);
-				this.invites.add(invite);
-				
-				Stream<ClientIO> targetStream = clients.values().stream().filter(cl -> cl.getName().equals(target));
-				Optional<ClientIO> result = targetStream.findFirst();
-				if (result.isPresent()) {
-					invite.sendInvite(result.get());
-				}
-				else {
-					cmd.getSender().sendToClient("FAIL No such user");
-				}
-				return result.isPresent();
-			case "INVY":
-				invite = invites.get(cmd.getParameterInt(1));
-				if (invite == null) {
-					cmd.getSender().sendToClient("FAIL Invalid invite id");
-					return false;
-				}
-				return invite.inviteAccept(cmd.getSender());
-			case "INVN":
-				invite = invites.get(cmd.getParameterInt(1));
-				if (invite == null) {
-					cmd.getSender().sendToClient("FAIL Invalid invite id");
-					return false;
-				}
-				return invite.inviteDecline(cmd.getSender());
-			default:
-				throw new AssertionError("Invalid command: " + cmd);
-		}
+	public Map<String, GameFactory> getGameFactories() {
+		return Collections.unmodifiableMap(gameFactories);
 	}
 	
-	@Deprecated
-	public void incomingGameCommand(Command cmd) {
-		ServerGame game = games.get(cmd.getParameterInt(1));
-		if (game != null) {
-			if (!game.handleMove(cmd)) {
-				cmd.getSender().sendToClient("FAIL Invalid move");
-			}
-		}
-		else {
-			cmd.getSender().sendToClient("FAIL Invalid gameid");
-		}
-	}
-
 	public ServerGame createGame(String parameter) {
 		GameFactory suppl = gameFactories.get(parameter);
 		if (suppl == null) {

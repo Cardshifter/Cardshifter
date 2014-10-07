@@ -2,7 +2,10 @@ package com.cardshifter.server.model;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Consumer;
+
+import net.zomis.cardshifter.ecs.usage.PhrancisGame;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -54,6 +57,8 @@ public class MainServer {
 				server.getIncomingHandler().perform(new LoginMessage("AI " + entry.getKey()), tcgAI);
 			});
 			
+			server.addGameFactory(CardshifterConstants.VANILLA, (serv, id) -> new TCGGame(serv, id, new PhrancisGame()));
+			
 			logger.info("Started");
 		}
 		catch (Exception e) {
@@ -70,10 +75,24 @@ public class MainServer {
 		commandHandler.addHandler("play", this::play);
 		commandHandler.addHandler("say", this::say);
 		commandHandler.addHandler("chat", this::chatInfo);
+		commandHandler.addHandler("games", this::showGames);
+		commandHandler.addHandler("invites", this::showInvites);
 		commandHandler.addHandler("ai", () -> new AICommandParameters(), new AICommand());
 		commandHandler.addHandler("threads", cmd -> showAllStackTraces(server, System.out::println));
 	}
 
+	private void showInvites(Command command) {
+		for (Entry<Integer, GameInvite> ee : server.getInvites().all().entrySet()) {
+			System.out.println(ee.getKey() + " = " + ee.getValue());
+		}
+	}
+	
+	private void showGames(Command command) {
+		for (Entry<Integer, ServerGame> ee : server.getGames().entrySet()) {
+			System.out.println(ee.getKey() + " = " + ee.getValue());
+		}
+	}
+	
 	private void say(Command command) {
 		ChatArea chat = server.getMainChat();
 		chat.broadcast(new ChatMessage(chat.getId(), "Server", command.getFullCommand(1)));

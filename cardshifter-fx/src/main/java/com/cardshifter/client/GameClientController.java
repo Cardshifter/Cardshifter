@@ -1,10 +1,5 @@
 package com.cardshifter.client;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.Socket;
-import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,8 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.function.Consumer;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -27,9 +21,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-import com.cardshifter.api.incoming.LoginMessage;
+import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.incoming.RequestTargetsMessage;
-import com.cardshifter.api.incoming.StartGameRequest;
 import com.cardshifter.api.incoming.UseAbilityMessage;
 import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.outgoing.AvailableTargetsMessage;
@@ -46,12 +39,13 @@ import com.cardshifter.api.outgoing.WaitMessage;
 import com.cardshifter.api.outgoing.WelcomeMessage;
 import com.cardshifter.api.outgoing.ZoneChangeMessage;
 import com.cardshifter.api.outgoing.ZoneMessage;
+import com.cardshifter.client.views.ActionButton;
+import com.cardshifter.client.views.BattlefieldZoneView;
+import com.cardshifter.client.views.CardBattlefieldDocumentController;
+import com.cardshifter.client.views.CardHandDocumentController;
 import com.cardshifter.client.views.CardView;
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.MappingIterator;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.cardshifter.client.views.PlayerHandZoneView;
+import com.cardshifter.client.views.ZoneView;
 
 public class GameClientController {
 	
@@ -71,20 +65,8 @@ public class GameClientController {
 	@FXML private Pane playerDeckPane;
 	@FXML private Label playerDeckLabel;
 	
-	private final ObjectMapper mapper = new ObjectMapper();
-	private final BlockingQueue<Message> messages = new LinkedBlockingQueue<>();
-	private Socket socket;
-	private InputStream in;
-	private OutputStream out;
-	private String ipAddress;
-	private int port;
-	private String userName;
-	private StartGameRequest startGameRequest;
-	
 	private int gameId;
 	private int playerIndex;
-	private Thread listenThread;
-	private Thread playThread;
 	
 	private int opponentId;
 	private int opponentHandId;
@@ -102,106 +84,21 @@ public class GameClientController {
 	private List<UseableActionMessage> savedMessages = new ArrayList<>();
 	private final Set<Integer> chosenTargets = new HashSet<>();
 	private AvailableTargetsMessage targetInfo;
+	private Consumer<Message> sender;
 	
-	public void acceptConnectionSettings(String ipAddress, int port, String userName, StartGameRequest startGameRequest) {
+	public void acceptConnectionSettings(NewGameMessage message, Consumer<Message> sender) {
 		// this is passed into this object after it is automatically created by the FXML document
-		this.ipAddress = ipAddress;
-		this.port = port;
-		this.userName = userName;
-		this.startGameRequest = startGameRequest;
-	}
-	public boolean connectToGame() {
-		// this is called on the object from the Game launcher before the scene is displayed
-		try {
-			this.socket = new Socket(this.ipAddress, this.port);
-			this.out = socket.getOutputStream();
-			this.in = socket.getInputStream();
-			mapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, false);
-			mapper.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
-			this.listenThread = new Thread(this::listen);
-			this.listenThread.start();
-		} catch (IOException ex) {
-			System.out.println("Connection Failed");
-			return false;
-		}
-		this.playThread = new Thread(this::play);
-		this.playThread.start();	
-		return true;
-	}
-	private void play() {
-		// this method only runs once at the start
-		//String name = "Player" + new Random().nextInt(100);
-		this.send(new LoginMessage(this.userName));
-		
-		/*
-		try {
-			WelcomeMessage response = (WelcomeMessage) messages.take();
-			if (!response.isOK()) {
-				return;
-			}
-			//display the welcome message on the screen
-			Platform.runLater(() -> loginMessage.setText(response.getMessage()));
-		} catch (Exception e) {
-			System.out.println("Server message not OK");
-			e.printStackTrace();
-		}
-		*/
-		
-		this.send(this.startGameRequest);
-		
-		/*
-		try {
-			Message message = messages.take();
-			if (message instanceof WaitMessage) {	
-				//display the wait message on the screen
-				String displayMessage = ((WaitMessage)message).getMessage();
-				Platform.runLater(() -> loginMessage.setText(displayMessage));
-				message = messages.take();
-			}
-			this.gameId = ((NewGameMessage) message).getGameId();
-		} catch (Exception e) {
-			System.out.println("Invalid response from opponent");
-			e.printStackTrace();
-		}
-		*/
-		
-		//Platform.runLater(() -> this.repaintDeckLabels());
+		this.playerIndex = message.getPlayerIndex();
+		this.gameId = message.getGameId();
+		System.out.println(String.format("You are player: %d", this.playerIndex));
+		this.sender = sender;
 	}
 
-	private void listen() {
-		while (true) {
-			try {
-				MappingIterator<Message> values = mapper.readValues(new JsonFactory().createParser(this.in), Message.class);
-				while (values.hasNextValue()) {
-					Message message = values.next();
-					try {
-						messages.put(message);
-					} catch (InterruptedException ex) {
-						Thread.currentThread().interrupt();
-					}
-					//This is where all the magic happens for message handling
-					Platform.runLater(() -> this.processMessageFromServer(message));
-				}
-			} catch (SocketException e) {
-				Platform.runLater(() -> loginMessage.setText(e.getMessage()));
-				return;
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-	
 	public void createAndSendMessage(UseableActionMessage action) {
-		try {
-			if (action.isTargetRequired()) {
-				this.send(new RequestTargetsMessage(gameId, action.getId(), action.getAction()));
-			} else {
-				this.send(new UseAbilityMessage(gameId, action.getId(), action.getAction(), action.getTargetId()));
-				
-				this.clearTargetableFromAllCards();
-			}
-		} catch (NumberFormatException | IndexOutOfBoundsException ex) {
-			System.out.println("Not a valid action");
+		if (action.isTargetRequired()) {
+			this.send(new RequestTargetsMessage(gameId, action.getId(), action.getAction()));
+		} else {
+			this.send(new UseAbilityMessage(gameId, action.getId(), action.getAction(), action.getTargetId()));
 		}
 		
 		//A new list of actions will be sent back from the server, so it is okay to clear them
@@ -210,26 +107,17 @@ public class GameClientController {
 	}
 	
 	private void send(Message message) {
-		try {
-			System.out.println("Sending: " + this.mapper.writeValueAsString(message));
-			this.mapper.writeValue(out, message);
-		} catch (IOException e) {
-			System.out.println("Error sending message: " + message);
-			throw new RuntimeException(e);
-		}
+		this.sender.accept(message);
 	}
 	
-	private void processMessageFromServer(Message message) {
+	public void processMessageFromServer(Message message) {
 		
 		serverMessages.getItems().add(message.toString());
 		
 		//this is for diagnostics so I can copy paste the messages to know their format
 		System.out.println(message.toString());
 		
-		if (message instanceof NewGameMessage) {
-			this.processNewGameMessage((NewGameMessage) message);
-			this.gameId = ((NewGameMessage) message).getGameId();
-		} else if (message instanceof WelcomeMessage) {
+		if (message instanceof WelcomeMessage) {
 			Platform.runLater(() -> loginMessage.setText(message.toString()));
 		} else if (message instanceof WaitMessage) {
 			Platform.runLater(() -> loginMessage.setText(message.toString()));
@@ -258,11 +146,6 @@ public class GameClientController {
 		} else if (message instanceof GameOverMessage) {
 			this.processGameOverMessage((GameOverMessage)message);
 		}
-	}
-	
-	private void processNewGameMessage(NewGameMessage message) {
-		this.playerIndex = message.getPlayerIndex();
-		System.out.println(String.format("You are player: %d", this.playerIndex));
 	}
 	
 	private void processPlayerMessage(PlayerMessage message) {
@@ -369,6 +252,8 @@ public class GameClientController {
 		}
 		if (message.getAction().equals("Attack")) {
 			((BattlefieldZoneView)zoneView).setCardCanAttack(message.getId(),message);
+		} else if (message.getAction().equals("Scrap")) {
+			zoneView.setCardScrappable(message.getId(), message);
 		} else {
 			zoneView.setCardActive(message.getId(), message);
 		}
@@ -472,16 +357,8 @@ public class GameClientController {
 			int target = message.getTargets()[i];
 			if (target != this.opponentId) {
 				ZoneView<?> zoneView = getZoneViewForCard(target);
-				
-				if (zoneView == null) {
-					continue;
-				}
-				if (zoneView instanceof BattlefieldZoneView) {
-					UseableActionMessage newMessage = new UseableActionMessage(message.getEntity(), message.getAction(), false, target);
-					((BattlefieldZoneView)zoneView).setCardTargetable(target, newMessage);
-				}
-				if (zoneView instanceof PlayerHandZoneView) {
-					((PlayerHandZoneView)zoneView).setCardTargetable(target);
+				if (zoneView != null) {
+					zoneView.setCardTargetable(target);
 				}
 			} else {
 				// automatically target opponent
@@ -497,6 +374,12 @@ public class GameClientController {
 	}
 	
 	public boolean addTarget(int id) {
+		if (chosenTargets.isEmpty() && targetInfo.getMax() == 1) {
+			// Only one target, perform that action with target now
+			this.createAndSendMessage(new UseableActionMessage(targetInfo.getEntity(), targetInfo.getAction(), false, id));
+			return false; // Card should not be selected, because we are sending the action directly
+		}
+		
 		if (chosenTargets.size() >= targetInfo.getMax()) {
 			System.out.println("Cannot add more targets");
 			return false;
@@ -512,7 +395,8 @@ public class GameClientController {
 	
 	private void sendActionWithCurrentTargets(AvailableTargetsMessage message) {
 		this.send(new UseAbilityMessage(gameId, message.getEntity(), message.getAction(), chosenTargets.stream().mapToInt(i -> i).toArray()));
-		this.clearTargetableFromAllCards();
+		this.actionBox.getChildren().clear();
+		this.clearActiveFromAllCards();
 	}
 	
 	private void processClientDisconnectedMessage(ClientDisconnectedMessage message) {
@@ -521,7 +405,6 @@ public class GameClientController {
 	
 	private void processGameOverMessage(GameOverMessage message) {
 		Platform.runLater(() -> this.loginMessage.setText("Game Over!"));
-		this.stopThreads();
 	}
 	
 	private void removeCardFromDeck(int zoneId, int cardId) {
@@ -556,32 +439,17 @@ public class GameClientController {
 	
 	public void cancelAction() {
 		this.clearActiveFromAllCards();
-		this.clearTargetableFromAllCards();
 		this.actionBox.getChildren().clear();
 		
 		for (UseableActionMessage message : this.savedMessages) {
-			Platform.runLater(() -> this.processUseableActionMessage(message));
+			this.processUseableActionMessage(message);
 		}
 	}
 	
 	private void clearActiveFromAllCards() {
 		for (ZoneView<?> zoneView : this.zoneViewMap.values()) {
-			if (zoneView instanceof BattlefieldZoneView) {
-				((BattlefieldZoneView)zoneView).removeActiveAllCards();
-			} else if (zoneView instanceof PlayerHandZoneView) {
-				((PlayerHandZoneView)zoneView).removeActiveAllCards();
-			}
-		}
-	}
-	
-	private void clearTargetableFromAllCards() {
-		for (ZoneView<?> zoneView : this.zoneViewMap.values()) {
-			if (zoneView instanceof BattlefieldZoneView) {
-				((BattlefieldZoneView)zoneView).removeTargetableAllCards();
-			}
-			if (zoneView instanceof PlayerHandZoneView) {
-				((PlayerHandZoneView)zoneView).removeTargetableAllCards();
-			}
+			zoneView.removeActiveAllCards();
+			zoneView.removeScrappableAllCards();
 		}
 	}
 	
@@ -637,29 +505,6 @@ public class GameClientController {
 		return card;
 	}
 	
-	private void stopThreads() {
-		this.listenThread.interrupt();
-		this.playThread.interrupt();
-		
-		//Uncomment these lines to cure the exception
-		//this.listenThread.stop();
-		//this.playThread.stop();
-	}
-	
-	private void breakConnection() {
-		try {
-			this.in.close();
-			this.out.close();
-		} catch (Exception e) {
-			System.out.println("Failed to break connection");
-		}
-	}
-	
-	public void closeGame() {
-		this.stopThreads();
-		this.breakConnection();
-	}
-	
 	@SuppressWarnings("unchecked")
 	private <T extends ZoneView<?>> T getZoneView(int id) {
 		return (T) this.zoneViewMap.get(id);
@@ -672,6 +517,10 @@ public class GameClientController {
 			}
 		}
 		return null;
+	}
+	public void closeGame() {
+		this.send(new ChatMessage(1, "unused", "(Ends game " + gameId + ")"));
+		// run on window close
 	}
 }
 

@@ -12,8 +12,8 @@
    <children>
       <AnchorPane layoutX="-1.0" layoutY="-3.0" prefHeight="50.0" prefWidth="900.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-3.0">
          <children>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="50.0" layoutX="1.0" stroke="BLACK" strokeType="INSIDE" width="900.0" />
-            <Label layoutX="310.0" layoutY="7.0" text="Cardshifter Lobby">
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="50.0" layoutX="1.0" stroke="BLACK" strokeType="INSIDE" width="900.0" AnchorPane.topAnchor="0.0" />
+            <Label layoutX="310.0" layoutY="7.0" text="Cardshifter Lobby" AnchorPane.topAnchor="7.0">
                <font>
                   <Font name="System Bold" size="30.0" />
                </font>
@@ -55,5 +55,6 @@
             </Label>
          </children>
       </AnchorPane>
+      <AnchorPane fx:id="inviteWindow" prefHeight="275.0" prefWidth="400.0" visible="false" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="100.0" />
    </children>
 </AnchorPane>
