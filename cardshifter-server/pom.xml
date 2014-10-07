@@ -55,11 +55,6 @@
 		</dependency>
 		<dependency>
 			<groupId>com.cardshifter</groupId>
-			<artifactId>cardshifter-mod</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.cardshifter</groupId>
 			<artifactId>cardshifter-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
