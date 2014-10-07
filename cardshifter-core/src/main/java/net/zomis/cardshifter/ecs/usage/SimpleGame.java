@@ -3,6 +3,7 @@ package net.zomis.cardshifter.ecs.usage;
 import net.zomis.cardshifter.ecs.actions.ActionComponent;
 import net.zomis.cardshifter.ecs.actions.ECSAction;
 import net.zomis.cardshifter.ecs.base.ECSGame;
+import net.zomis.cardshifter.ecs.base.ECSMod;
 import net.zomis.cardshifter.ecs.base.Entity;
 import net.zomis.cardshifter.ecs.components.PlayerComponent;
 import net.zomis.cardshifter.ecs.phase.Phase;
@@ -11,13 +12,13 @@ import net.zomis.cardshifter.ecs.resources.ECSResource;
 import net.zomis.cardshifter.ecs.resources.ECSResourceDefault;
 import net.zomis.cardshifter.ecs.resources.ECSResourceMap;
 import net.zomis.cardshifter.ecs.resources.ResourceRetriever;
+import net.zomis.cardshifter.ecs.systems.GameOverIfNoHealth;
 
-public class SimpleGame {
+public class SimpleGame implements ECSMod {
 	private static final ECSResource HEALTH = new ECSResourceDefault("Health");
 	
-	public static ECSGame bareGame() {
-		ECSGame game = new ECSGame();
-		
+	@Override
+	public void setupGame(ECSGame game) {
 		PhaseController phaseController = new PhaseController();
 		game.newEntity().addComponent(phaseController);
 		
@@ -39,8 +40,8 @@ public class SimpleGame {
 			ECSResourceMap.createFor(player).set(HEALTH, 10);
 		}
 		
-		return game;
+		game.addSystem(new GameOverIfNoHealth(HEALTH));
+		game.addSystem(new PerformerMustBeCurrentPlayer());
 	}
-	
 
 }
