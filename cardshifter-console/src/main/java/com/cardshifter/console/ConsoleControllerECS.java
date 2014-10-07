@@ -1,4 +1,4 @@
-package net.zomis.cardshifter.ecs.main;
+package com.cardshifter.console;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;

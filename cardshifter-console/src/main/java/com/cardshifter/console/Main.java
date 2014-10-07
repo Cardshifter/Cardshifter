@@ -10,7 +10,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 import net.zomis.cardshifter.ecs.base.ECSGame;
-import net.zomis.cardshifter.ecs.main.ConsoleControllerECS;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame;
 
 import org.apache.log4j.PropertyConfigurator;
