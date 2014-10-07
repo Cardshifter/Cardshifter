@@ -1,15 +1,15 @@
 
 package com.cardshifter.testmod.java;
 
-import net.zomis.cardshifter.ecs.actions.ActionComponent;
-import net.zomis.cardshifter.ecs.actions.ECSAction;
-import net.zomis.cardshifter.ecs.base.ECSGame;
-import net.zomis.cardshifter.ecs.base.Entity;
-import net.zomis.cardshifter.ecs.base.PlayerComponent;
-import net.zomis.cardshifter.ecs.phase.Phase;
-import net.zomis.cardshifter.ecs.phase.PhaseController;
-import net.zomis.cardshifter.ecs.resources.ECSResourceMap;
-import net.zomis.cardshifter.ecs.resources.ResourceRetriever;
+import com.cardshifter.modapi.actions.ActionComponent;
+import com.cardshifter.modapi.actions.ECSAction;
+import com.cardshifter.modapi.base.ECSGame;
+import com.cardshifter.modapi.base.Entity;
+import com.cardshifter.modapi.base.PlayerComponent;
+import com.cardshifter.modapi.phase.Phase;
+import com.cardshifter.modapi.phase.PhaseController;
+import com.cardshifter.modapi.resources.ECSResourceMap;
+import com.cardshifter.modapi.resources.ResourceRetriever;
 
 /**
  *

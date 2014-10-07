@@ -4,12 +4,13 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
+import com.cardshifter.modapi.actions.ECSAction;
+import com.cardshifter.modapi.actions.TargetSet;
+import com.cardshifter.modapi.base.Entity;
+import com.cardshifter.modapi.base.PlayerComponent;
+import com.cardshifter.modapi.resources.ResourceRetriever;
+
 import net.zomis.aiscores.ScoreParameters;
-import net.zomis.cardshifter.ecs.actions.ECSAction;
-import net.zomis.cardshifter.ecs.actions.TargetSet;
-import net.zomis.cardshifter.ecs.base.Entity;
-import net.zomis.cardshifter.ecs.base.PlayerComponent;
-import net.zomis.cardshifter.ecs.resources.ResourceRetriever;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame.PhrancisResources;
 

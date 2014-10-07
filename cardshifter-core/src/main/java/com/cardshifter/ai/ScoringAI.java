@@ -5,6 +5,11 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.cardshifter.modapi.actions.ActionComponent;
+import com.cardshifter.modapi.actions.ECSAction;
+import com.cardshifter.modapi.base.ECSGame;
+import com.cardshifter.modapi.base.Entity;
+
 import net.zomis.aiscores.FieldScoreProducer;
 import net.zomis.aiscores.ScoreConfig;
 import net.zomis.aiscores.ScoreConfigFactory;
@@ -12,10 +17,6 @@ import net.zomis.aiscores.ScoreParameters;
 import net.zomis.aiscores.ScoreStrategy;
 import net.zomis.aiscores.extra.ParamAndField;
 import net.zomis.aiscores.extra.ScoreUtils;
-import net.zomis.cardshifter.ecs.actions.ActionComponent;
-import net.zomis.cardshifter.ecs.actions.ECSAction;
-import net.zomis.cardshifter.ecs.base.ECSGame;
-import net.zomis.cardshifter.ecs.base.Entity;
 
 public class ScoringAI implements CardshifterAI, ScoreStrategy<Entity, ECSAction> {
 	

@@ -8,16 +8,17 @@ import java.util.Objects;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
-import net.zomis.cardshifter.ecs.actions.Actions;
-import net.zomis.cardshifter.ecs.actions.ECSAction;
-import net.zomis.cardshifter.ecs.actions.TargetSet;
-import net.zomis.cardshifter.ecs.base.Component;
-import net.zomis.cardshifter.ecs.base.ComponentRetriever;
-import net.zomis.cardshifter.ecs.base.ECSGame;
-import net.zomis.cardshifter.ecs.base.Entity;
-import net.zomis.cardshifter.ecs.base.PlayerComponent;
-import net.zomis.cardshifter.ecs.cards.ZoneComponent;
-import net.zomis.cardshifter.ecs.phase.PhaseController;
+import com.cardshifter.modapi.actions.Actions;
+import com.cardshifter.modapi.actions.ECSAction;
+import com.cardshifter.modapi.actions.TargetSet;
+import com.cardshifter.modapi.base.Component;
+import com.cardshifter.modapi.base.ComponentRetriever;
+import com.cardshifter.modapi.base.ECSGame;
+import com.cardshifter.modapi.base.Entity;
+import com.cardshifter.modapi.base.PlayerComponent;
+import com.cardshifter.modapi.cards.ZoneComponent;
+import com.cardshifter.modapi.phase.PhaseController;
+
 import net.zomis.cardshifter.ecs.usage.PhrancisGame;
 
 public class ConsoleControllerECS {

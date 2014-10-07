@@ -2,6 +2,14 @@ package com.cardshifter.fx;
 
 import java.util.List;
 
+import com.cardshifter.modapi.actions.ActionComponent;
+import com.cardshifter.modapi.actions.Actions;
+import com.cardshifter.modapi.actions.ECSAction;
+import com.cardshifter.modapi.actions.TargetSet;
+import com.cardshifter.modapi.base.ComponentRetriever;
+import com.cardshifter.modapi.base.Entity;
+import com.cardshifter.modapi.resources.ResourceRetriever;
+
 import javafx.event.ActionEvent;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
@@ -9,13 +17,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import net.zomis.cardshifter.ecs.actions.ActionComponent;
-import net.zomis.cardshifter.ecs.actions.Actions;
-import net.zomis.cardshifter.ecs.actions.ECSAction;
-import net.zomis.cardshifter.ecs.actions.TargetSet;
-import net.zomis.cardshifter.ecs.base.ComponentRetriever;
-import net.zomis.cardshifter.ecs.base.Entity;
-import net.zomis.cardshifter.ecs.resources.ResourceRetriever;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame.PhrancisResources;
 
 public class CardNodeBattlefield extends Group {

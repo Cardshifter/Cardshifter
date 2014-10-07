@@ -1,13 +1,13 @@
 package net.zomis.cardshifter.ecs.usage;
 
-import net.zomis.cardshifter.ecs.base.ECSGame;
-import net.zomis.cardshifter.ecs.base.ECSSystem;
-import net.zomis.cardshifter.ecs.base.Entity;
-import net.zomis.cardshifter.ecs.cards.BattlefieldComponent;
-import net.zomis.cardshifter.ecs.cards.CardComponent;
-import net.zomis.cardshifter.ecs.cards.Cards;
-import net.zomis.cardshifter.ecs.cards.DrawStartCards;
-import net.zomis.cardshifter.ecs.events.EntityRemoveEvent;
+import com.cardshifter.modapi.base.ECSGame;
+import com.cardshifter.modapi.base.ECSSystem;
+import com.cardshifter.modapi.base.Entity;
+import com.cardshifter.modapi.cards.BattlefieldComponent;
+import com.cardshifter.modapi.cards.CardComponent;
+import com.cardshifter.modapi.cards.Cards;
+import com.cardshifter.modapi.cards.DrawStartCards;
+import com.cardshifter.modapi.events.EntityRemoveEvent;
 
 public class OnCreatureDiesDrawCard implements ECSSystem {
 

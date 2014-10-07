@@ -8,11 +8,6 @@ import java.net.UnknownHostException;
 import java.util.List;
 import java.util.function.Predicate;
 
-import net.zomis.cardshifter.ecs.actions.ECSAction;
-import net.zomis.cardshifter.ecs.ai.AIComponent;
-import net.zomis.cardshifter.ecs.base.ECSGameState;
-import net.zomis.cardshifter.ecs.base.Entity;
-
 import org.apache.log4j.PropertyConfigurator;
 import org.junit.After;
 import org.junit.Before;
@@ -35,6 +30,10 @@ import com.cardshifter.api.outgoing.UserStatusMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage.Status;
 import com.cardshifter.api.outgoing.WaitMessage;
 import com.cardshifter.api.outgoing.WelcomeMessage;
+import com.cardshifter.modapi.actions.ECSAction;
+import com.cardshifter.modapi.ai.AIComponent;
+import com.cardshifter.modapi.base.ECSGameState;
+import com.cardshifter.modapi.base.Entity;
 import com.cardshifter.server.model.ClientIO;
 import com.cardshifter.server.model.GameState;
 import com.cardshifter.server.model.MainServer;

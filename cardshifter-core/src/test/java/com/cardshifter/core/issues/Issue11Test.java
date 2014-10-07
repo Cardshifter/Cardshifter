@@ -5,14 +5,14 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.zomis.cardshifter.ecs.base.ECSGame;
-import net.zomis.cardshifter.ecs.base.Entity;
-import net.zomis.cardshifter.ecs.cards.DeckComponent;
-import net.zomis.cardshifter.ecs.cards.DrawStartCards;
-import net.zomis.cardshifter.ecs.cards.HandComponent;
-import net.zomis.cardshifter.ecs.cards.LimitedHandSizeSystem;
-
 import org.junit.Test;
+
+import com.cardshifter.modapi.base.ECSGame;
+import com.cardshifter.modapi.base.Entity;
+import com.cardshifter.modapi.cards.DeckComponent;
+import com.cardshifter.modapi.cards.DrawStartCards;
+import com.cardshifter.modapi.cards.HandComponent;
+import com.cardshifter.modapi.cards.LimitedHandSizeSystem;
 
 public class Issue11Test {
 

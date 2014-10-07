@@ -19,11 +19,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import net.zomis.cardshifter.ecs.ai.AIComponent;
 
 import com.cardshifter.ai.AIs;
 import com.cardshifter.ai.ScoringAI;
 import com.cardshifter.fx.FXMLGameController;
+import com.cardshifter.modapi.ai.AIComponent;
 
 public final class GameClientLauncherController implements Initializable {
 	

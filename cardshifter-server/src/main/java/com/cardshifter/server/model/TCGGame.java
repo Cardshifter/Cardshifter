@@ -6,26 +6,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import net.zomis.cardshifter.ecs.actions.ActionComponent;
-import net.zomis.cardshifter.ecs.actions.ActionPerformEvent;
-import net.zomis.cardshifter.ecs.actions.ECSAction;
-import net.zomis.cardshifter.ecs.actions.TargetSet;
-import net.zomis.cardshifter.ecs.ai.AIComponent;
-import net.zomis.cardshifter.ecs.ai.AISystem;
-import net.zomis.cardshifter.ecs.base.ComponentRetriever;
-import net.zomis.cardshifter.ecs.base.CreatureTypeComponent;
-import net.zomis.cardshifter.ecs.base.ECSGame;
-import net.zomis.cardshifter.ecs.base.ECSMod;
-import net.zomis.cardshifter.ecs.base.Entity;
-import net.zomis.cardshifter.ecs.base.PlayerComponent;
-import net.zomis.cardshifter.ecs.cards.CardComponent;
-import net.zomis.cardshifter.ecs.cards.ZoneChangeEvent;
-import net.zomis.cardshifter.ecs.cards.ZoneComponent;
-import net.zomis.cardshifter.ecs.events.EntityRemoveEvent;
-import net.zomis.cardshifter.ecs.events.GameOverEvent;
-import net.zomis.cardshifter.ecs.resources.ResourceValueChange;
-import net.zomis.cardshifter.ecs.resources.Resources;
-
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -41,6 +21,25 @@ import com.cardshifter.api.outgoing.UpdateMessage;
 import com.cardshifter.api.outgoing.UseableActionMessage;
 import com.cardshifter.api.outgoing.ZoneChangeMessage;
 import com.cardshifter.api.outgoing.ZoneMessage;
+import com.cardshifter.modapi.actions.ActionComponent;
+import com.cardshifter.modapi.actions.ActionPerformEvent;
+import com.cardshifter.modapi.actions.ECSAction;
+import com.cardshifter.modapi.actions.TargetSet;
+import com.cardshifter.modapi.ai.AIComponent;
+import com.cardshifter.modapi.ai.AISystem;
+import com.cardshifter.modapi.base.ComponentRetriever;
+import com.cardshifter.modapi.base.CreatureTypeComponent;
+import com.cardshifter.modapi.base.ECSGame;
+import com.cardshifter.modapi.base.ECSMod;
+import com.cardshifter.modapi.base.Entity;
+import com.cardshifter.modapi.base.PlayerComponent;
+import com.cardshifter.modapi.cards.CardComponent;
+import com.cardshifter.modapi.cards.ZoneChangeEvent;
+import com.cardshifter.modapi.cards.ZoneComponent;
+import com.cardshifter.modapi.events.EntityRemoveEvent;
+import com.cardshifter.modapi.events.GameOverEvent;
+import com.cardshifter.modapi.resources.ResourceValueChange;
+import com.cardshifter.modapi.resources.Resources;
 import com.cardshifter.server.main.FakeAIClientTCG;
 
 public class TCGGame extends ServerGame {

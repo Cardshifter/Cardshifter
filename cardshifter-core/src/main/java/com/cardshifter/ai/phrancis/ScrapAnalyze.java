@@ -3,14 +3,15 @@ package com.cardshifter.ai.phrancis;
 import java.util.Comparator;
 import java.util.List;
 
+import com.cardshifter.modapi.actions.ECSAction;
+import com.cardshifter.modapi.base.ComponentRetriever;
+import com.cardshifter.modapi.base.Entity;
+import com.cardshifter.modapi.base.Retrievers;
+import com.cardshifter.modapi.cards.CardComponent;
+import com.cardshifter.modapi.cards.ZoneComponent;
+import com.cardshifter.modapi.resources.ResourceRetriever;
+
 import net.zomis.aiscores.ScoreParameters;
-import net.zomis.cardshifter.ecs.actions.ECSAction;
-import net.zomis.cardshifter.ecs.base.ComponentRetriever;
-import net.zomis.cardshifter.ecs.base.Entity;
-import net.zomis.cardshifter.ecs.base.Retrievers;
-import net.zomis.cardshifter.ecs.cards.CardComponent;
-import net.zomis.cardshifter.ecs.cards.ZoneComponent;
-import net.zomis.cardshifter.ecs.resources.ResourceRetriever;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame.PhrancisResources;
 

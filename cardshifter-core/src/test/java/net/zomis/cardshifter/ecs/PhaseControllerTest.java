@@ -1,13 +1,14 @@
 package net.zomis.cardshifter.ecs;
 
 import static org.junit.Assert.*;
-import net.zomis.cardshifter.ecs.base.ECSGame;
-import net.zomis.cardshifter.ecs.base.Entity;
-import net.zomis.cardshifter.ecs.phase.Phase;
-import net.zomis.cardshifter.ecs.phase.PhaseController;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import com.cardshifter.modapi.base.ECSGame;
+import com.cardshifter.modapi.base.Entity;
+import com.cardshifter.modapi.phase.Phase;
+import com.cardshifter.modapi.phase.PhaseController;
 
 public class PhaseControllerTest {
 

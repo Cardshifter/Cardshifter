@@ -3,7 +3,7 @@ package com.cardshifter.core.mod;
 
 import java.nio.file.Path;
 
-import net.zomis.cardshifter.ecs.base.ECSGame;
+import com.cardshifter.modapi.base.ECSGame;
 
 /**
  *

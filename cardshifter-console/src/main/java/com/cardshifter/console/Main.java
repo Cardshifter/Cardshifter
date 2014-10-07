@@ -9,7 +9,6 @@ import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
-import net.zomis.cardshifter.ecs.base.ECSGame;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame;
 
 import org.apache.log4j.PropertyConfigurator;
@@ -17,6 +16,7 @@ import org.apache.log4j.PropertyConfigurator;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import com.cardshifter.core.Game;
+import com.cardshifter.modapi.base.ECSGame;
 
 public class Main {
 

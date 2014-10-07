@@ -3,12 +3,12 @@ package com.cardshifter.ai;
 import net.zomis.aiscores.ScoreConfigFactory;
 import net.zomis.aiscores.scorers.PredicateScorer;
 import net.zomis.aiscores.scorers.SimpleScorer;
-import net.zomis.cardshifter.ecs.actions.ECSAction;
-import net.zomis.cardshifter.ecs.base.Entity;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame;
 
 import com.cardshifter.ai.phrancis.AttackAnalyze;
 import com.cardshifter.ai.phrancis.ScrapAnalyze;
+import com.cardshifter.modapi.actions.ECSAction;
+import com.cardshifter.modapi.base.Entity;
 
 public class AIs {
 	

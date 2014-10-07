@@ -6,10 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-import net.zomis.cardshifter.ecs.base.Entity;
-import net.zomis.cardshifter.ecs.resources.ECSResourceMap;
-
 import com.beust.jcommander.JCommander;
+import com.cardshifter.modapi.base.Entity;
+import com.cardshifter.modapi.resources.ECSResourceMap;
 import com.cardshifter.server.model.Server;
 import com.cardshifter.server.model.ServerGame;
 import com.cardshifter.server.model.TCGGame;

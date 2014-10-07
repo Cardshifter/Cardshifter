@@ -1,7 +1,7 @@
 package com.cardshifter.ai;
 
-import net.zomis.cardshifter.ecs.actions.ECSAction;
-import net.zomis.cardshifter.ecs.base.Entity;
+import com.cardshifter.modapi.actions.ECSAction;
+import com.cardshifter.modapi.base.Entity;
 
 public interface CardshifterAI {
 	ECSAction getAction(Entity player);

@@ -1,12 +1,13 @@
 package net.zomis.cardshifter.ecs;
 
-import net.zomis.cardshifter.ecs.actions.*;
-import net.zomis.cardshifter.ecs.base.ComponentRetriever;
-import net.zomis.cardshifter.ecs.base.ECSGame;
-import net.zomis.cardshifter.ecs.base.Entity;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+
+import com.cardshifter.modapi.actions.*;
+import com.cardshifter.modapi.base.ComponentRetriever;
+import com.cardshifter.modapi.base.ECSGame;
+import com.cardshifter.modapi.base.Entity;
 
 import java.util.Collections;
 import java.util.function.Consumer;

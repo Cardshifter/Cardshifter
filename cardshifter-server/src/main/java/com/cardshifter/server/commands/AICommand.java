@@ -3,15 +3,14 @@ package com.cardshifter.server.commands;
 import java.util.Optional;
 import java.util.Set;
 
-import net.zomis.cardshifter.ecs.ai.AIComponent;
-import net.zomis.cardshifter.ecs.ai.AISystem;
-import net.zomis.cardshifter.ecs.base.ECSGame;
-import net.zomis.cardshifter.ecs.base.Entity;
-import net.zomis.cardshifter.ecs.base.PlayerComponent;
-
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 import com.cardshifter.ai.IdleAI;
+import com.cardshifter.modapi.ai.AIComponent;
+import com.cardshifter.modapi.ai.AISystem;
+import com.cardshifter.modapi.base.ECSGame;
+import com.cardshifter.modapi.base.Entity;
+import com.cardshifter.modapi.base.PlayerComponent;
 import com.cardshifter.server.commands.AICommand.AICommandParameters;
 import com.cardshifter.server.main.FakeAIClientTCG;
 import com.cardshifter.server.model.ClientIO;

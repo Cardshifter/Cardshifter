@@ -1,7 +1,7 @@
 
 package com.cardshifter.core.mod;
 
-import net.zomis.cardshifter.ecs.base.ECSGame;
+import com.cardshifter.modapi.base.ECSGame;
 
 /**
  *

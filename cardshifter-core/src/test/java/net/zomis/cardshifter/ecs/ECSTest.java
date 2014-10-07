@@ -2,12 +2,13 @@ package net.zomis.cardshifter.ecs;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import net.zomis.cardshifter.ecs.base.Component;
-import net.zomis.cardshifter.ecs.base.ComponentRetriever;
-import net.zomis.cardshifter.ecs.base.ECSGame;
-import net.zomis.cardshifter.ecs.base.Entity;
 
 import org.junit.Test;
+
+import com.cardshifter.modapi.base.Component;
+import com.cardshifter.modapi.base.ComponentRetriever;
+import com.cardshifter.modapi.base.ECSGame;
+import com.cardshifter.modapi.base.Entity;
 
 public class ECSTest {
 

@@ -1,7 +1,7 @@
 
 package com.cardshifter.testmod.java;
 
-import net.zomis.cardshifter.ecs.resources.ECSResource;
+import com.cardshifter.modapi.resources.ECSResource;
 
 /**
  *

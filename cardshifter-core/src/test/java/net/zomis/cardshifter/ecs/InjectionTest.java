@@ -1,18 +1,19 @@
 package net.zomis.cardshifter.ecs;
 
 import static org.junit.Assert.*;
-import net.zomis.cardshifter.ecs.base.ComponentRetriever;
-import net.zomis.cardshifter.ecs.base.ECSGame;
-import net.zomis.cardshifter.ecs.base.ECSSystem;
-import net.zomis.cardshifter.ecs.base.Entity;
-import net.zomis.cardshifter.ecs.base.PlayerComponent;
-import net.zomis.cardshifter.ecs.base.Retriever;
-import net.zomis.cardshifter.ecs.base.RetrieverSingleton;
-import net.zomis.cardshifter.ecs.base.Retrievers;
-import net.zomis.cardshifter.ecs.phase.Phase;
-import net.zomis.cardshifter.ecs.phase.PhaseController;
 
 import org.junit.Test;
+
+import com.cardshifter.modapi.base.ComponentRetriever;
+import com.cardshifter.modapi.base.ECSGame;
+import com.cardshifter.modapi.base.ECSSystem;
+import com.cardshifter.modapi.base.Entity;
+import com.cardshifter.modapi.base.PlayerComponent;
+import com.cardshifter.modapi.base.Retriever;
+import com.cardshifter.modapi.base.RetrieverSingleton;
+import com.cardshifter.modapi.base.Retrievers;
+import com.cardshifter.modapi.phase.Phase;
+import com.cardshifter.modapi.phase.PhaseController;
 
 public class InjectionTest {
 
