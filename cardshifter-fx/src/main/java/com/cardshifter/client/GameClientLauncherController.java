@@ -85,35 +85,7 @@ public final class GameClientLauncherController implements Initializable {
         catch (Exception e) {
             throw new RuntimeException(e);
         }
-	}
-	
-	/*
-	private void switchToMainGameWindow(String ipAddress, int port) {
-		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("ClientDocument.fxml"));
-			Parent root = (Parent)loader.load();
-			
-			GameClientController controller = loader.<GameClientController>getController();
-			controller.acceptIPAndPort(ipAddress, port);
-			
-			if (controller.connectToGame()) {
-				errorMessage.setText("Success!");
-				this.closeWithSuccess();
-				
-				Scene scene = new Scene(root);
-				Stage gameStage = new Stage();
-				gameStage.setScene(scene);
-				gameStage.setOnCloseRequest(windowEvent -> controller.closeGame());
-				gameStage.show();
-			} else {
-				errorMessage.setText("Connection Failed!");
-			}
-		}
-        catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-	}
-	*/
+	}	
 	
 	private void createAIChoices() {
 		this.aiChoices.put("Idiot", new AIComponent(new ScoringAI(AIs.idiot())));
