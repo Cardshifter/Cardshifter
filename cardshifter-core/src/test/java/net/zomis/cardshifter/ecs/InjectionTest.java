@@ -5,10 +5,10 @@ import net.zomis.cardshifter.ecs.base.ComponentRetriever;
 import net.zomis.cardshifter.ecs.base.ECSGame;
 import net.zomis.cardshifter.ecs.base.ECSSystem;
 import net.zomis.cardshifter.ecs.base.Entity;
+import net.zomis.cardshifter.ecs.base.PlayerComponent;
 import net.zomis.cardshifter.ecs.base.Retriever;
 import net.zomis.cardshifter.ecs.base.RetrieverSingleton;
 import net.zomis.cardshifter.ecs.base.Retrievers;
-import net.zomis.cardshifter.ecs.components.PlayerComponent;
 import net.zomis.cardshifter.ecs.phase.Phase;
 import net.zomis.cardshifter.ecs.phase.PhaseController;
 

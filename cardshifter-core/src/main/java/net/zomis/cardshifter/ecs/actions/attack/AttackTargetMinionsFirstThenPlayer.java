@@ -3,10 +3,10 @@ package net.zomis.cardshifter.ecs.actions.attack;
 import net.zomis.cardshifter.ecs.actions.TargetableCheckEvent;
 import net.zomis.cardshifter.ecs.base.ComponentRetriever;
 import net.zomis.cardshifter.ecs.base.Entity;
+import net.zomis.cardshifter.ecs.base.PlayerComponent;
 import net.zomis.cardshifter.ecs.cards.BattlefieldComponent;
 import net.zomis.cardshifter.ecs.cards.CardComponent;
 import net.zomis.cardshifter.ecs.cards.Cards;
-import net.zomis.cardshifter.ecs.components.PlayerComponent;
 import net.zomis.cardshifter.ecs.phase.PhaseController;
 
 public class AttackTargetMinionsFirstThenPlayer extends SpecificActionTargetSystem {

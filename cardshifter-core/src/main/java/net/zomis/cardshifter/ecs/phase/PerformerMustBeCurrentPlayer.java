@@ -1,10 +1,9 @@
-package net.zomis.cardshifter.ecs.usage;
+package net.zomis.cardshifter.ecs.phase;
 
 import net.zomis.cardshifter.ecs.actions.ActionAllowedCheckEvent;
 import net.zomis.cardshifter.ecs.base.ECSGame;
 import net.zomis.cardshifter.ecs.base.ECSSystem;
 import net.zomis.cardshifter.ecs.base.RetrieverSingleton;
-import net.zomis.cardshifter.ecs.phase.PhaseController;
 
 public class PerformerMustBeCurrentPlayer implements ECSSystem {
 

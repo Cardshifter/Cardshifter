@@ -7,7 +7,7 @@ import net.zomis.cardshifter.ecs.ai.AIComponent;
 import net.zomis.cardshifter.ecs.ai.AISystem;
 import net.zomis.cardshifter.ecs.base.ECSGame;
 import net.zomis.cardshifter.ecs.base.Entity;
-import net.zomis.cardshifter.ecs.components.PlayerComponent;
+import net.zomis.cardshifter.ecs.base.PlayerComponent;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;

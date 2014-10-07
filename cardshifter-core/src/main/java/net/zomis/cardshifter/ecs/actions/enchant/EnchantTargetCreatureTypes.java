@@ -1,14 +1,14 @@
-package net.zomis.cardshifter.ecs.usage;
+package net.zomis.cardshifter.ecs.actions.enchant;
 
 import java.util.Arrays;
 
 import net.zomis.cardshifter.ecs.actions.TargetableCheckEvent;
 import net.zomis.cardshifter.ecs.actions.attack.SpecificActionTargetSystem;
 import net.zomis.cardshifter.ecs.base.ComponentRetriever;
+import net.zomis.cardshifter.ecs.base.CreatureTypeComponent;
 import net.zomis.cardshifter.ecs.cards.BattlefieldComponent;
 import net.zomis.cardshifter.ecs.cards.CardComponent;
 import net.zomis.cardshifter.ecs.cards.Cards;
-import net.zomis.cardshifter.ecs.components.CreatureTypeComponent;
 
 public class EnchantTargetCreatureTypes extends SpecificActionTargetSystem {
 

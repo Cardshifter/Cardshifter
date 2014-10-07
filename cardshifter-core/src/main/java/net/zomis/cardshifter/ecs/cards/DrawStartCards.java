@@ -4,7 +4,7 @@ import net.zomis.cardshifter.ecs.base.ComponentRetriever;
 import net.zomis.cardshifter.ecs.base.ECSGame;
 import net.zomis.cardshifter.ecs.base.Entity;
 import net.zomis.cardshifter.ecs.base.ECSSystem;
-import net.zomis.cardshifter.ecs.components.PlayerComponent;
+import net.zomis.cardshifter.ecs.base.PlayerComponent;
 
 public class DrawStartCards implements ECSSystem {
 

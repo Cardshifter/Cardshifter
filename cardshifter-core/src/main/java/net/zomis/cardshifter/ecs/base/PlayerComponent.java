@@ -1,6 +1,5 @@
-package net.zomis.cardshifter.ecs.components;
+package net.zomis.cardshifter.ecs.base;
 
-import net.zomis.cardshifter.ecs.base.Component;
 
 public class PlayerComponent extends Component {
 

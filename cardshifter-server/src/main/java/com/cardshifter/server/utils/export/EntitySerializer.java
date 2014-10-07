@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import net.zomis.cardshifter.ecs.base.ComponentRetriever;
+import net.zomis.cardshifter.ecs.base.CreatureTypeComponent;
 import net.zomis.cardshifter.ecs.base.Entity;
 import net.zomis.cardshifter.ecs.base.Retrievers;
-import net.zomis.cardshifter.ecs.components.CreatureTypeComponent;
 import net.zomis.cardshifter.ecs.resources.ECSResourceData;
 import net.zomis.cardshifter.ecs.resources.ECSResourceMap;
 

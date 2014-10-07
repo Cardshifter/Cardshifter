@@ -3,8 +3,8 @@ package net.zomis.cardshifter.ecs.actions.attack;
 import net.zomis.cardshifter.ecs.actions.ActionPerformEvent;
 import net.zomis.cardshifter.ecs.actions.SpecificActionSystem;
 import net.zomis.cardshifter.ecs.base.Entity;
+import net.zomis.cardshifter.ecs.base.PlayerComponent;
 import net.zomis.cardshifter.ecs.cards.CardComponent;
-import net.zomis.cardshifter.ecs.components.PlayerComponent;
 import net.zomis.cardshifter.ecs.resources.ECSResource;
 import net.zomis.cardshifter.ecs.resources.ResourceRetriever;
 

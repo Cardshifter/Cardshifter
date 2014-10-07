@@ -15,8 +15,8 @@ import net.zomis.cardshifter.ecs.base.Component;
 import net.zomis.cardshifter.ecs.base.ComponentRetriever;
 import net.zomis.cardshifter.ecs.base.ECSGame;
 import net.zomis.cardshifter.ecs.base.Entity;
+import net.zomis.cardshifter.ecs.base.PlayerComponent;
 import net.zomis.cardshifter.ecs.cards.ZoneComponent;
-import net.zomis.cardshifter.ecs.components.PlayerComponent;
 import net.zomis.cardshifter.ecs.phase.PhaseController;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame;
 

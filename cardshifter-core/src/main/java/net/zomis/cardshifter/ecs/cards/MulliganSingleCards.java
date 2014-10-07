@@ -1,4 +1,4 @@
-package net.zomis.cardshifter.ecs.usage;
+package net.zomis.cardshifter.ecs.cards;
 
 import java.util.List;
 import java.util.Set;
@@ -12,12 +12,7 @@ import net.zomis.cardshifter.ecs.base.ComponentRetriever;
 import net.zomis.cardshifter.ecs.base.ECSGame;
 import net.zomis.cardshifter.ecs.base.ECSSystem;
 import net.zomis.cardshifter.ecs.base.Entity;
-import net.zomis.cardshifter.ecs.cards.CardComponent;
-import net.zomis.cardshifter.ecs.cards.Cards;
-import net.zomis.cardshifter.ecs.cards.DeckComponent;
-import net.zomis.cardshifter.ecs.cards.DrawStartCards;
-import net.zomis.cardshifter.ecs.cards.HandComponent;
-import net.zomis.cardshifter.ecs.components.PlayerComponent;
+import net.zomis.cardshifter.ecs.base.PlayerComponent;
 import net.zomis.cardshifter.ecs.phase.Phase;
 import net.zomis.cardshifter.ecs.phase.PhaseController;
 

@@ -18,17 +18,17 @@ import net.zomis.cardshifter.ecs.actions.TargetSet;
 import net.zomis.cardshifter.ecs.base.ComponentRetriever;
 import net.zomis.cardshifter.ecs.base.ECSGame;
 import net.zomis.cardshifter.ecs.base.Entity;
+import net.zomis.cardshifter.ecs.base.PlayerComponent;
 import net.zomis.cardshifter.ecs.cards.DeckComponent;
 import net.zomis.cardshifter.ecs.cards.DrawStartCards;
 import net.zomis.cardshifter.ecs.cards.HandComponent;
-import net.zomis.cardshifter.ecs.components.PlayerComponent;
+import net.zomis.cardshifter.ecs.cards.MulliganSingleCards;
 import net.zomis.cardshifter.ecs.phase.Phase;
 import net.zomis.cardshifter.ecs.phase.PhaseController;
 import net.zomis.cardshifter.ecs.resources.ECSResource;
 import net.zomis.cardshifter.ecs.resources.ECSResourceDefault;
 import net.zomis.cardshifter.ecs.resources.ECSResourceMap;
 import net.zomis.cardshifter.ecs.resources.ResourceRetriever;
-import net.zomis.cardshifter.ecs.usage.MulliganSingleCards;
 
 import org.junit.Test;
 

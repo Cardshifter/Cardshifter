@@ -2,7 +2,7 @@ package net.zomis.cardshifter.ecs.resources;
 
 import net.zomis.cardshifter.ecs.base.ECSGame;
 import net.zomis.cardshifter.ecs.base.ECSSystem;
-import net.zomis.cardshifter.ecs.components.PlayerComponent;
+import net.zomis.cardshifter.ecs.base.PlayerComponent;
 
 public class GameOverIfNoHealth implements ECSSystem {
 
