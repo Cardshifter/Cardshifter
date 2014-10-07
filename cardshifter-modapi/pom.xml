@@ -10,8 +10,8 @@
 		<version>0.4-SNAPSHOT</version>
 	</parent>
 	
-	<artifactId>cardshifter-mod-api</artifactId>
-	<name>cardshifter-mod-api</name>
+	<artifactId>cardshifter-modapi</artifactId>
+	<name>cardshifter-modapi</name>
 	<url>https://github.com/Cardshifter/Cardshifter</url>
 	
 	<packaging>jar</packaging>

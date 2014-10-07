@@ -47,7 +47,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.cardshifter</groupId>
-			<artifactId>cardshifter-mod-api</artifactId>
+			<artifactId>cardshifter-modapi</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
