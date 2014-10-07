@@ -79,10 +79,6 @@ public abstract class ServerGame {
 
 	protected abstract void onStart();
 	
-	public void send(String data) {
-		players.forEach(pl -> pl.sendToClient(data));
-	}
-	
 	public void send(Message data) {
 		players.forEach(pl -> pl.sendToClient(data));
 	}
