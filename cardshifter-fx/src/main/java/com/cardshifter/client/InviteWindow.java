@@ -10,6 +10,7 @@ public class InviteWindow {
 	
 	@FXML private AnchorPane rootPane;
 	@FXML private Label nameLabel;
+	@FXML private Label gameTypeLabel;
 	@FXML private AnchorPane noButton;
 	@FXML private AnchorPane yesButton;
 	
@@ -27,6 +28,7 @@ public class InviteWindow {
 	
 	private void initializeLabels(InviteRequest message, GameClientLobby lobby) {
 		this.nameLabel.setText(message.getName());
+		this.gameTypeLabel.setText(message.getGameType() + "?");
 		this.yesButton.setOnMouseClicked(lobby::acceptGameRequest);
 		this.noButton.setOnMouseClicked(lobby::declineGameRequest);
 	}
