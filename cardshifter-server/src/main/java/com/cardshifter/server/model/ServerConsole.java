@@ -6,6 +6,8 @@ import java.util.function.Consumer;
 
 import org.apache.log4j.LogManager;
 
+import com.cardshifter.api.messages.Message;
+
 public class ServerConsole extends ClientIO implements Runnable {
 
 	public ServerConsole(Server server, CommandHandler commands) {
@@ -37,7 +39,7 @@ public class ServerConsole extends ClientIO implements Runnable {
 	}
 
 	@Override
-	public void onSendToClient(String message) {
+	public void onSendToClient(Message message) {
 		System.out.println(message);
 	}
 

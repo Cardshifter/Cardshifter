@@ -70,6 +70,10 @@ public class ServerConnectionTest {
 	
 	@After
 	public void shutdown() {
+		try {
+			client1.disconnect();
+		} catch (IOException e) {
+		}
 		server.stop();
 	}
 	

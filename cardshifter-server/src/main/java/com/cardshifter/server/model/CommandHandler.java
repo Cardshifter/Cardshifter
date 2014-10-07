@@ -9,6 +9,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import com.beust.jcommander.JCommander;
+import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.server.commands.CommandContext;
 
 /**
@@ -50,7 +51,7 @@ public class CommandHandler {
 		try {
 			Consumer<Command> handler = commands.get(command.getCommand());
 			if (handler == null) {
-				command.getSender().sendToClient("Invalid command: " + command);
+				command.getSender().sendToClient(new ChatMessage(1, "Server", "Invalid command: " + command));
 			}
 			else {
 				handler.accept(command);
