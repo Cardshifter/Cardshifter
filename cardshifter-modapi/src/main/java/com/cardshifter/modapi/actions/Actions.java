@@ -26,5 +26,14 @@ public class Actions {
 					.getECSActions().stream())
 			.collect(Collectors.toList());
 	}
+
+	public static ECSAction getAction(Entity performer, String actionName) {
+		ActionComponent actionComponent = actions.get(performer);
+		if (actionComponent == null) {
+			return null;
+		}
+		
+		return actionComponent.getAction(actionName);
+	}
 	
 }
