@@ -3,7 +3,6 @@ package com.cardshifter.server.model;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import net.zomis.cardshifter.ecs.EntitySerialization;
@@ -116,11 +115,6 @@ public class TCGGame extends ServerGame {
 		client.sendToClient(new AvailableTargetsMessage(message.getId(), message.getAction(), targetIds, targetAction.getMin(), targetAction.getMax()));
 	}
 	
-	public Entity findTargetable(int entityId) {
-		Optional<Entity> entity = game.findEntities(e -> e.getId() == entityId).stream().findFirst();
-		return entity.orElse(null);
-	}
-	
 	public ECSAction findAction(int entityId, String actionId) {
 		Entity entity = Objects.requireNonNull(game.getEntity(entityId), "Entity " + entityId + " not found");
 		ECSAction action = Actions.getAction(entity, actionId);
@@ -142,7 +136,7 @@ public class TCGGame extends ServerGame {
 			TargetSet targetAction = action.getTargetSets().get(0);
 			targetAction.clearTargets();
 			for (int target : message.getTargets()) {
-				targetAction.addTarget(findTargetable(target));
+				targetAction.addTarget(game.getEntity(target));
 			}
 		}
 		boolean allowed = action.perform(playerFor(client));
