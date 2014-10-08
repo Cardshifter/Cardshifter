@@ -1,10 +1,12 @@
 package com.cardshifter.server.model;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
+
+import net.zomis.cardshifter.ecs.EntitySerialization;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -23,12 +25,12 @@ import com.cardshifter.api.outgoing.ZoneChangeMessage;
 import com.cardshifter.api.outgoing.ZoneMessage;
 import com.cardshifter.modapi.actions.ActionComponent;
 import com.cardshifter.modapi.actions.ActionPerformEvent;
+import com.cardshifter.modapi.actions.Actions;
 import com.cardshifter.modapi.actions.ECSAction;
 import com.cardshifter.modapi.actions.TargetSet;
 import com.cardshifter.modapi.ai.AIComponent;
 import com.cardshifter.modapi.ai.AISystem;
 import com.cardshifter.modapi.base.ComponentRetriever;
-import com.cardshifter.modapi.base.CreatureTypeComponent;
 import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.ECSMod;
 import com.cardshifter.modapi.base.Entity;
@@ -47,7 +49,6 @@ public class TCGGame extends ServerGame {
 	private static final Logger logger = LogManager.getLogger(TCGGame.class);
 	private final ECSGame game;
 	private final ComponentRetriever<CardComponent> card = ComponentRetriever.retreiverFor(CardComponent.class);
-	private final ComponentRetriever<CreatureTypeComponent> creatureType = ComponentRetriever.retreiverFor(CreatureTypeComponent.class);
 	
 	private ComponentRetriever<PlayerComponent> playerData = ComponentRetriever.retreiverFor(PlayerComponent.class);
 	
@@ -121,20 +122,9 @@ public class TCGGame extends ServerGame {
 	}
 	
 	public ECSAction findAction(int entityId, String actionId) {
-		Optional<Entity> entity = game.findEntities(e -> e.getId() == entityId).stream().findFirst();
-		
-		if (!entity.isPresent()) {
-			throw new IllegalArgumentException("No such entity found");
-		}
-		Entity e = entity.get();
-		if (e.hasComponent(ActionComponent.class)) {
-			ActionComponent comp = e.getComponent(ActionComponent.class);
-			if (comp.getActions().contains(actionId)) {
-				return comp.getAction(actionId);
-			}
-			throw new IllegalArgumentException("No such action was found.");
-		}
-		throw new IllegalArgumentException(e + " does not have an action component");
+		Entity entity = Objects.requireNonNull(game.getEntity(entityId), "Entity " + entityId + " not found");
+		ECSAction action = Actions.getAction(entity, actionId);
+		return Objects.requireNonNull(action, "Action " + actionId + " not found on entity " + entityId);
 	}
 	
 	public void handleMove(UseAbilityMessage message, ClientIO client) {
@@ -253,12 +243,7 @@ public class TCGGame extends ServerGame {
 	}
 	
 	private Map<String, Object> infoMap(Entity entity) {
-		Map<String, Object> result = new HashMap<>();
-		result.putAll(Resources.map(entity));
-		if (creatureType.has(entity)) {
-			result.put("creatureType", creatureType.get(entity).getCreatureType());
-		}
-		return result;
+		return EntitySerialization.serialize(entity);
 	}
 
 	@Override
