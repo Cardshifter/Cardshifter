@@ -6,6 +6,7 @@ import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.ECSMod;
 import com.cardshifter.modapi.base.Entity;
 import com.cardshifter.modapi.base.PlayerComponent;
+import com.cardshifter.modapi.phase.LimitedActionsPerTurnSystem;
 import com.cardshifter.modapi.phase.PerformerMustBeCurrentPlayer;
 import com.cardshifter.modapi.phase.Phase;
 import com.cardshifter.modapi.phase.PhaseController;
@@ -17,6 +18,7 @@ import com.cardshifter.modapi.resources.ResourceRetriever;
 
 public class SimpleGame implements ECSMod {
 	private static final ECSResource HEALTH = new ECSResourceDefault("Health");
+	private static final String END_TURN = "End Turn";
 	
 	@Override
 	public void setupGame(ECSGame game) {
@@ -34,13 +36,14 @@ public class SimpleGame implements ECSMod {
 			player.addComponent(actions);
 			
 			ResourceRetriever health = ResourceRetriever.forResource(HEALTH);
-			actions.addAction(new ECSAction(player, "End Turn", act -> phaseController.getCurrentPhase() == playerPhase, act -> phaseController.nextPhase()));
+			actions.addAction(new ECSAction(player, END_TURN, act -> phaseController.getCurrentPhase() == playerPhase, act -> phaseController.nextPhase()));
 			actions.addAction(new ECSAction(player, "Damage me", act -> phaseController.getCurrentPhase() == playerPhase, act -> health.resFor(player).change(-2)));
 			actions.addAction(new ECSAction(player, "Heal", act -> phaseController.getCurrentPhase() == playerPhase, act -> health.resFor(player).change(1)));
 			
 			ECSResourceMap.createFor(player).set(HEALTH, 10);
 		}
 		
+		game.addSystem(new LimitedActionsPerTurnSystem(5, END_TURN));
 		game.addSystem(new GameOverIfNoHealth(HEALTH));
 		game.addSystem(new PerformerMustBeCurrentPlayer());
 	}
