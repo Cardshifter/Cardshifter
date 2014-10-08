@@ -23,20 +23,24 @@ public class LimitedActionsPerTurnSystem implements ECSSystem {
 	
 	@Override
 	public void startGame(ECSGame game) {
+		game.getEvents().registerHandlerAfter(this, PhaseStartEvent.class, this::onNewTurn);
 		game.getEvents().registerHandlerAfter(this, ActionPerformEvent.class, this::onCardPlayed);
-		game.getEvents().registerHandlerAfter(this, PhaseChangeEvent.class, this::onNewTurn);
 	}
 	
-	private void onNewTurn(PhaseChangeEvent event) {
+	private void onNewTurn(PhaseStartEvent event) {
 		// TODO: This is technically not turn-dependent, only phase-dependent. One *turn* can consist of many *phases*
 		this.cardsPlayedThisTurn = 0;
 	}
 	
 	private void onCardPlayed(ActionPerformEvent event) {
+		if (event.getAction().getName().equals(actionName)) {
+			return;
+		}
 		this.cardsPlayedThisTurn++;
 		if (this.cardsPlayedThisTurn >= limit) {
 			ECSAction action = Actions.getAction(event.getPerformer(), actionName);
 			action.perform(event.getPerformer());
+			cardsPlayedThisTurn = 0;
 		}
 	}
 
