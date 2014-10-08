@@ -11,7 +11,7 @@ import org.junit.Test;
 import com.cardshifter.core.mod.LuaMod;
 import com.cardshifter.core.mod.Mod;
 import com.cardshifter.core.mod.ModNotLoadableException;
-import com.cardshifter.core.mod.Mods;
+import com.cardshifter.core.mod.ModLoader;
 import org.junit.Ignore;
 
 /**
@@ -23,7 +23,7 @@ public class LuaModTest {
 	@Test
 	public void testLoadMod() throws IOException, ModNotLoadableException {
 		Path tempFile = Files.createTempFile("luamodtest-load", ".zip");
-		Mod luaMod = Mods.load(tempFile, "lua");
+		Mod luaMod = ModLoader.load(tempFile, "lua");
 		assertEquals(LuaMod.class, luaMod.getClass());
 		Files.delete(tempFile);
 	}

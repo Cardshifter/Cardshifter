@@ -10,14 +10,14 @@ import java.util.Objects;
  *
  * @author Frank van Heeswijk
  */
-public final class Mods {
+public final class ModLoader {
 	private final static Map<String, ModLoadingFunction<Path, Mod, ModNotLoadableException>> LANGUAGE_MAPPING = new HashMap<>();
 	static {
 		LANGUAGE_MAPPING.put("java", JavaMod::new);
 		LANGUAGE_MAPPING.put("lua", LuaMod::new);
 	}
 	
-	private Mods() {
+	private ModLoader() {
 		throw new UnsupportedOperationException();
 	}
 	

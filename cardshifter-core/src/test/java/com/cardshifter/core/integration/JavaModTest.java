@@ -10,7 +10,7 @@ import org.junit.Test;
 import com.cardshifter.core.mod.JavaMod;
 import com.cardshifter.core.mod.Mod;
 import com.cardshifter.core.mod.ModNotLoadableException;
-import com.cardshifter.core.mod.Mods;
+import com.cardshifter.core.mod.ModLoader;
 import com.cardshifter.modapi.actions.ActionComponent;
 import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.Entity;
@@ -31,7 +31,7 @@ public class JavaModTest {
 	@Test
 	public void testLoadMod() throws IOException, URISyntaxException, ModNotLoadableException {
         Path javaModFile = Paths.get(JavaModTest.class.getResource("cardshifter-mod-examples-java-0.1.jar").toURI());
-		Mod javaMod = Mods.load(javaModFile, "java");
+		Mod javaMod = ModLoader.load(javaModFile, "java");
 		assertEquals(JavaMod.class, javaMod.getClass());
         
         ECSGame game = javaMod.createGame();
