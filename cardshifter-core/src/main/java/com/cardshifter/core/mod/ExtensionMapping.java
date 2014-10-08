@@ -3,7 +3,6 @@ package com.cardshifter.core.mod;
 
 import java.nio.file.Path;
 import java.util.Objects;
-import java.util.function.Function;
 
 /**
  *
@@ -13,13 +12,13 @@ enum ExtensionMapping {
 	JAR(JavaMod::new),
 	ZIP(LuaMod::new);
 	
-	private final Function<Path, Mod> constructor;
+	private final ModLoadingFunction<Path, Mod, ModNotLoadableException> constructor;
 	
-	private ExtensionMapping(final Function<Path, Mod> constructor) {
+	private ExtensionMapping(final ModLoadingFunction<Path, Mod, ModNotLoadableException> constructor) {
 		this.constructor = Objects.requireNonNull(constructor, "constructor");
 	}
 
-	Function<Path, Mod> getConstructor() {
+	ModLoadingFunction<Path, Mod, ModNotLoadableException> getConstructor() {
 		return constructor;
 	}
 }
