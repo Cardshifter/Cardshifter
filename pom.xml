@@ -28,7 +28,21 @@
 		<module>cardshifter-modapi</module>
 	</modules>
 	
+	<distributionManagement>
+		<repository>
+			<id>zomisnet</id>
+			<url>ftp://www.zomis.net/public_html/maven</url>
+		</repository>
+	</distributionManagement>
+	
 	<build>
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-ftp</artifactId>
+				<version>1.0-beta-6</version>
+			</extension>
+		</extensions>
 		<pluginManagement>
 			<plugins>
 	            <plugin>
