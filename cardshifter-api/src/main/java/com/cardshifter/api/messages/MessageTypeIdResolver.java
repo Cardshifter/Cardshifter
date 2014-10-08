@@ -6,6 +6,7 @@ import java.util.Map;
 import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.both.InviteRequest;
 import com.cardshifter.api.both.InviteResponse;
+import com.cardshifter.api.both.PlayerConfigMessage;
 import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.incoming.RequestTargetsMessage;
 import com.cardshifter.api.incoming.ServerQueryMessage;
@@ -67,7 +68,7 @@ public class MessageTypeIdResolver implements TypeIdResolver {
 		clazzes.put("error", ServerErrorMessage.class);
 		clazzes.put("userstatus", UserStatusMessage.class);
 		clazzes.put("query", ServerQueryMessage.class);
-		
+		clazzes.put("playerconfig", PlayerConfigMessage.class);
 	}
 	
 	private JavaType mBaseType;
