@@ -6,8 +6,11 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -23,11 +26,15 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import net.zomis.cardshifter.ecs.usage.CardshifterIO;
+import net.zomis.cardshifter.ecs.usage.DeckConfig;
 
 import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.both.InviteRequest;
 import com.cardshifter.api.both.InviteResponse;
+import com.cardshifter.api.both.PlayerConfigMessage;
 import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.incoming.ServerQueryMessage;
 import com.cardshifter.api.incoming.ServerQueryMessage.Request;
@@ -41,14 +48,8 @@ import com.cardshifter.api.outgoing.UserStatusMessage.Status;
 import com.cardshifter.client.buttons.GameTypeButton;
 import com.cardshifter.client.buttons.GenericButton;
 import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import javafx.scene.layout.HBox;
 
 public class GameClientLobby implements Initializable {
 	
@@ -60,7 +61,7 @@ public class GameClientLobby implements Initializable {
 	@FXML private AnchorPane inviteWindow;
 	@FXML private HBox gameTypeBox;
 	
-	private final ObjectMapper mapper = new ObjectMapper();
+	private final ObjectMapper mapper = CardshifterIO.mapper();
 	private final Set<GameClientController> gamesRunning = new HashSet<>();
 	private Socket socket;	
 	private InputStream in;
@@ -88,8 +89,6 @@ public class GameClientLobby implements Initializable {
 			this.socket = new Socket(this.ipAddress, this.port);
 			this.out = socket.getOutputStream();
 			this.in = socket.getInputStream();
-			mapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, false);
-			mapper.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
 			this.listenThread = new Thread(this::listen);
 			this.listenThread.start();
 		} catch (IOException ex) {
@@ -162,6 +161,11 @@ public class GameClientLobby implements Initializable {
 		} else if (message instanceof ServerErrorMessage) {
 			ServerErrorMessage msg = (ServerErrorMessage) message;
 			this.chatOutput("SERVER ERROR: " + msg.getMessage());
+		} else if (message instanceof PlayerConfigMessage) {
+			PlayerConfigMessage msg = (PlayerConfigMessage) message;
+			Object config = msg.getConfigs().get("Deck");
+			DeckConfig brea = (DeckConfig) config;
+			this.chatOutput("Deck config message received: " + brea);
 		} else if (message instanceof InviteRequest) {
 			this.currentGameRequest = (InviteRequest)message;
 			this.createInviteWindow((InviteRequest)message);

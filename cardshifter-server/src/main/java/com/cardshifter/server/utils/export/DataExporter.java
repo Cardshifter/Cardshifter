@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
+import net.zomis.cardshifter.ecs.usage.CardshifterIO;
+
 import com.beust.jcommander.JCommander;
 import com.cardshifter.modapi.base.Entity;
 import com.cardshifter.modapi.resources.ECSResourceMap;
@@ -55,13 +57,13 @@ public class DataExporter {
 
 	private static ObjectMapper createMapper() {
 		XmlMapper xmlMapper = new XmlMapper();
+		CardshifterIO.configureMapper(xmlMapper);
 	    SimpleModule module = new SimpleModule("ECSModule", new Version(0, 1, 0, "alpha", "com.cardshifter", "cardshifter"));
-//	    // functionality includes add mix-in annotations???
 	    module.addSerializer(Entity.class, new EntitySerializer());
 
 		xmlMapper.registerModule(module);
 		xmlMapper.enable(ToXmlGenerator.Feature.WRITE_XML_DECLARATION);
-//		xmlMapper.enable(SerializationFeature.INDENT_OUTPUT);
+//		xmlMapper.enable(SerializationFeature.INDENT_OUTPUT); // this seem to break
 		return xmlMapper;
 	}
 
