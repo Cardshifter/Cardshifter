@@ -35,7 +35,7 @@ public class SimpleGame implements ECSMod {
 			
 			ResourceRetriever health = ResourceRetriever.forResource(HEALTH);
 			actions.addAction(new ECSAction(player, "End Turn", act -> phaseController.getCurrentPhase() == playerPhase, act -> phaseController.nextPhase()));
-			actions.addAction(new ECSAction(player, "Damage me", act -> phaseController.getCurrentPhase() == playerPhase, act -> health.resFor(player).change(-1)));
+			actions.addAction(new ECSAction(player, "Damage me", act -> phaseController.getCurrentPhase() == playerPhase, act -> health.resFor(player).change(-2)));
 			actions.addAction(new ECSAction(player, "Heal", act -> phaseController.getCurrentPhase() == playerPhase, act -> health.resFor(player).change(1)));
 			
 			ECSResourceMap.createFor(player).set(HEALTH, 10);
