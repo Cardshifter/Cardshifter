@@ -1,5 +1,6 @@
 package com.cardshifter.client;
 
+import com.cardshifter.client.buttons.AIChoiceButton;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -96,15 +97,17 @@ public final class GameClientLauncherController implements Initializable {
 	}
 	
 	private void createAIButtons() {
+		double buttonWidth = this.aiChoiceBox.getPrefWidth() / this.aiChoices.size();
+		double buttonHeight = this.aiChoiceBox.getPrefHeight() - this.aiChoiceBox.getPrefHeight()/4;
 		for (String string : this.aiChoices.keySet()) {
-			GenericButton button = new GenericButton(this.aiChoiceBox.getPrefWidth() / this.aiChoices.size(), this.aiChoiceBox.getPrefHeight() / this.aiChoices.size(), string, this);
+			AIChoiceButton button = new AIChoiceButton(buttonWidth, buttonHeight, string, this);
 			this.aiChoiceBox.getChildren().add(button);
 		}
 	}
 	
 	public void clearAIButtons() {
 		for (Object button : this.aiChoiceBox.getChildren()) {
-			((GenericButton)button).unHighlightButton();
+			((AIChoiceButton)button).unHighlightButton();
 		}
 	}
 	

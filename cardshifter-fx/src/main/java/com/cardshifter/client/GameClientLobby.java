@@ -25,7 +25,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
-import com.cardshifter.api.CardshifterConstants;
 import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.both.InviteRequest;
 import com.cardshifter.api.both.InviteResponse;
@@ -34,15 +33,22 @@ import com.cardshifter.api.incoming.ServerQueryMessage;
 import com.cardshifter.api.incoming.ServerQueryMessage.Request;
 import com.cardshifter.api.incoming.StartGameRequest;
 import com.cardshifter.api.messages.Message;
+import com.cardshifter.api.outgoing.AvailableModsMessage;
 import com.cardshifter.api.outgoing.NewGameMessage;
 import com.cardshifter.api.outgoing.ServerErrorMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage.Status;
+import com.cardshifter.client.buttons.GameTypeButton;
+import com.cardshifter.client.buttons.GenericButton;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import javafx.scene.layout.HBox;
 
 public class GameClientLobby implements Initializable {
 	
@@ -52,6 +58,7 @@ public class GameClientLobby implements Initializable {
 	@FXML private Button sendMessageButton;
 	@FXML private AnchorPane inviteButton;
 	@FXML private AnchorPane inviteWindow;
+	@FXML private HBox gameTypeBox;
 	
 	private final ObjectMapper mapper = new ObjectMapper();
 	private final Set<GameClientController> gamesRunning = new HashSet<>();
@@ -66,6 +73,8 @@ public class GameClientLobby implements Initializable {
 	private final Map<String, Integer> usersOnlineList = new HashMap<>();
 	private String userForGameInvite;
 	private InviteRequest currentGameRequest;
+	private final List<String> gameTypes = new ArrayList<>();
+	private String selectedGameType;
 	
 	public void acceptConnectionSettings(String ipAddress, int port, String userName) {
 		// this is passed into this object after it is automatically created by the FXML document
@@ -156,6 +165,9 @@ public class GameClientLobby implements Initializable {
 		} else if (message instanceof InviteRequest) {
 			this.currentGameRequest = (InviteRequest)message;
 			this.createInviteWindow((InviteRequest)message);
+		} else if (message instanceof AvailableModsMessage) {
+			this.gameTypes.addAll(Arrays.asList(((AvailableModsMessage)message).getMods()));
+			this.createGameTypeButtons();
 		}
 	}
 	
@@ -222,7 +234,7 @@ public class GameClientLobby implements Initializable {
 	private void selectUserForGameInvite(MouseEvent event) {
 		String selected = this.usersOnline.getSelectionModel().getSelectedItem();
 		if (selected != null) {
-			this.userForGameInvite = selected.toString();
+			this.userForGameInvite = selected;
 		} else {
 			this.usersOnline.getItems().clear();
 			this.sendServerQueryMessage();
@@ -231,9 +243,15 @@ public class GameClientLobby implements Initializable {
 	
 	private void startGameWithUser(MouseEvent event) {
 		if (this.userForGameInvite != null) {
-			int userIdToInvite = this.usersOnlineList.get(this.userForGameInvite);
-			StartGameRequest startGameRequest = new StartGameRequest(userIdToInvite, CardshifterConstants.VANILLA);
-			this.sendInvite(startGameRequest);
+			if (this.selectedGameType != null) {
+				int userIdToInvite = this.usersOnlineList.get(this.userForGameInvite);
+				StartGameRequest startGameRequest = new StartGameRequest(userIdToInvite, this.selectedGameType);
+				this.sendInvite(startGameRequest);
+			} else {
+				this.chatOutput("No Game Type selected");
+			}
+		} else {
+			this.chatOutput("No Opponent selected");
 		}
 	}
 	
@@ -267,6 +285,23 @@ public class GameClientLobby implements Initializable {
 	public void closeLobby() {
 		this.stopThreads();
 		this.breakConnection();
+	}
+	
+	private void createGameTypeButtons() {
+		for (String string : this.gameTypes) {
+			GameTypeButton button = new GameTypeButton(this.gameTypeBox.getPrefWidth() / this.gameTypes.size(), this.gameTypeBox.getPrefHeight(), string, this);
+			this.gameTypeBox.getChildren().add(button);
+		}
+	}
+	
+	public void clearGameTypeButtons() {
+		for (Object button : this.gameTypeBox.getChildren()) {
+			((GenericButton)button).unHighlightButton();
+		}
+	}
+	
+	public void setGameType(String string) {
+		this.selectedGameType = string;
 	}
 	
 	@Override
