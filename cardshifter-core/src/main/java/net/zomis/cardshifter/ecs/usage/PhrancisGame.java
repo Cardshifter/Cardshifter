@@ -124,6 +124,9 @@ public class PhrancisGame implements ECSMod {
 			ZoneComponent battlefield = new BattlefieldComponent(player);
 			player.addComponents(hand, deck, battlefield);
 			
+			ConfigComponent config = player.getComponent(ConfigComponent.class);
+			DeckConfig deckConf = config.getConfig(DeckConfig.class);
+			
 			for (int card = 0; card < CARDS_OF_EACH_TYPE; card++) {
 				createCreature(1, deck, 1, 1, "B0T", 1);
 				createCreature(2, deck, 2, 1, "B0T", 1);

@@ -26,5 +26,14 @@ public class ConfigComponent extends Component {
 	public void setConfigured(boolean configured) {
 		this.configured = configured;
 	}
+	
+	public <T> T getConfig(Class<T> configClass) {
+		for (Object confObject : configs.values()) {
+			if (confObject.getClass() == configClass) {
+				return configClass.cast(confObject);
+			}
+		}
+		return null;
+	}
 
 }
