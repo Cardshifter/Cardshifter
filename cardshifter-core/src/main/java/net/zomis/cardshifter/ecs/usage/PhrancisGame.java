@@ -55,6 +55,42 @@ public class PhrancisGame implements ECSMod {
 	
 	private static final int CARDS_OF_EACH_TYPE = 3;
 	
+	@Override
+	public void declareConfiguration(ECSGame game) {
+		Entity neutral = game.newEntity();
+		ZoneComponent zone = new ZoneComponent(neutral, "Cards");
+		
+		// Create card models that should be possible to choose from
+		
+		createCreature(1, zone, 1, 1, "B0T", 1);
+		createCreature(2, zone, 2, 1, "B0T", 1);
+		createCreature(3, zone, 3, 3, "B0T", 1);
+		createCreature(4, zone, 4, 4, "B0T", 1);
+		createCreature(5, zone, 5, 5, "B0T", 1);
+		
+		createCreature(5, zone, 4, 4, "Bio", 0);
+		createCreature(5, zone, 5, 3, "Bio", 0);
+		createCreature(5, zone, 3, 5, "Bio", 0);
+		
+		createEnchantment(zone, 1, 0, 1);
+		createEnchantment(zone, 0, 1, 1);
+		createEnchantment(zone, 3, 0, 3);
+		createEnchantment(zone, 0, 3, 3);
+		createEnchantment(zone, 2, 2, 5);
+		
+		// Create the players
+		
+		for (int i = 0; i < 2; i++) {
+			Entity entity = game.newEntity();
+			PlayerComponent playerComponent = new PlayerComponent(i, "Player" + (i+1));
+			entity.addComponent(playerComponent);
+			DeckConfig config = new DeckConfig(30, 30, zone.getCards(), 3);
+			entity.addComponent(new ConfigComponent().addConfig("Deck", config));
+		}
+		
+	}
+	
+	@Deprecated
 	public static ECSGame createGame(ECSGame game) {
 		new PhrancisGame().setupGame(game);
 		return game;
@@ -66,9 +102,9 @@ public class PhrancisGame implements ECSMod {
 		PhaseController phaseController = new PhaseController();
 		game.newEntity().addComponent(phaseController);
 		
-		for (int i = 1; i <= 2; i++) {
-			PlayerComponent playerComponent = new PlayerComponent(i - 1, "Player" + i);
-			Entity player = game.newEntity().addComponent(playerComponent);
+		for (int i = 0; i < 2; i++) {
+			final int playerIndex = i;
+			Entity player = game.findEntities(e -> e.hasComponent(PlayerComponent.class) && e.getComponent(PlayerComponent.class).getIndex() == playerIndex).get(0);
 			Phase playerPhase = new Phase(player, "Main");
 			phaseController.addPhase(playerPhase);
 			
