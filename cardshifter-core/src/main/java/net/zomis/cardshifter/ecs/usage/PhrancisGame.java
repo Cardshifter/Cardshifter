@@ -1,5 +1,6 @@
 package net.zomis.cardshifter.ecs.usage;
 
+import java.util.Map.Entry;
 import java.util.function.UnaryOperator;
 
 import com.cardshifter.modapi.actions.ActionComponent;
@@ -53,8 +54,6 @@ public class PhrancisGame implements ECSMod {
 	public static final String SCRAP_ACTION = "Scrap";
 	public static final String END_TURN_ACTION = "End Turn";
 	
-	private static final int CARDS_OF_EACH_TYPE = 3;
-	
 	@Override
 	public void declareConfiguration(ECSGame game) {
 		Entity neutral = game.newEntity();
@@ -79,12 +78,15 @@ public class PhrancisGame implements ECSMod {
 		createEnchantment(zone, 2, 2, 5);
 		
 		// Create the players
+		int maxCardsPerType = 3;
+		int minSize = 30;
+		int maxSize = 30;
 		
 		for (int i = 0; i < 2; i++) {
 			Entity entity = game.newEntity();
 			PlayerComponent playerComponent = new PlayerComponent(i, "Player" + (i+1));
 			entity.addComponent(playerComponent);
-			DeckConfig config = new DeckConfig(30, 30, zone.getCards(), 3);
+			DeckConfig config = new DeckConfig(minSize, maxSize, zone.getCards(), maxCardsPerType);
 			entity.addComponent(new ConfigComponent().addConfig("Deck", config));
 		}
 		
@@ -132,24 +134,6 @@ public class PhrancisGame implements ECSMod {
 			
 			setupDeck(deck, deckConf);
 			
-			
-			for (int card = 0; card < CARDS_OF_EACH_TYPE; card++) {
-				createCreature(1, deck, 1, 1, "B0T", 1);
-				createCreature(2, deck, 2, 1, "B0T", 1);
-				createCreature(3, deck, 3, 3, "B0T", 1);
-				createCreature(4, deck, 4, 4, "B0T", 1);
-				createCreature(5, deck, 5, 5, "B0T", 1);
-				
-				createCreature(5, deck, 4, 4, "Bio", 0);
-				createCreature(5, deck, 5, 3, "Bio", 0);
-				createCreature(5, deck, 3, 5, "Bio", 0);
-				
-				createEnchantment(deck, 1, 0, 1);
-				createEnchantment(deck, 0, 1, 1);
-				createEnchantment(deck, 3, 0, 3);
-				createEnchantment(deck, 0, 3, 3);
-				createEnchantment(deck, 2, 2, 5);
-			}
 			deck.shuffle();
 		}
 		
@@ -186,7 +170,6 @@ public class PhrancisGame implements ECSMod {
 		game.addSystem(new EnchantPerform(PhrancisResources.ATTACK, PhrancisResources.HEALTH));
 		
 //		game.addSystem(new ConsumeCardSystem());
-//		game.addSystem(new LimitedPlaysPerTurnSystem(2));
 		
 		// Resources
 		// TODO: ManaOverloadSystem -- Uses an `OverloadComponent` for both cards and players. Checks for turn start and afterCardPlayed
@@ -213,8 +196,17 @@ public class PhrancisGame implements ECSMod {
 	}
 
 	private void setupDeck(ZoneComponent deck, DeckConfig deckConf) {
-		// TODO Auto-generated method stub
-		
+		ECSGame game = deck.getOwner().getGame();
+		for (Entry<Integer, Integer> chosen : deckConf.getChosen().entrySet()) {
+			int entityId = chosen.getKey();
+			int count = chosen.getValue();
+			
+			for (int i = 0; i < count; i++) {
+				Entity existing = game.getEntity(entityId);
+				Entity copy = existing.copy();
+				deck.addOnBottom(copy);
+			}
+		}
 	}
 
 	private static Entity createEnchantment(ZoneComponent deck, int strength, int health, int cost) {
