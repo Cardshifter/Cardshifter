@@ -61,11 +61,11 @@ public class Events {
 	 */
 	public void startGame(final Game game) {
 		globals.set("gadsame", CoerceJavaToLua.coerce(game));
-//        globals.load(new StringReader(codeTextArea.getText()), "interopTest").call();
-        LuaValue applyFunction = globals.get("startGame");
-        Varargs applyFunctionResult = applyFunction.invoke(CoerceJavaToLua.coerce(game));
-        System.out.println("Result: " + applyFunctionResult);
-        game.setCurrentPlayer(game.getFirstPlayer());
+//		  globals.load(new StringReader(codeTextArea.getText()), "interopTest").call();
+		LuaValue applyFunction = globals.get("startGame");
+		Varargs applyFunctionResult = applyFunction.invoke(CoerceJavaToLua.coerce(game));
+		System.out.println("Result: " + applyFunctionResult);
+		game.setCurrentPlayer(game.getFirstPlayer());
 	}
 	
 	public void callEvent(final String eventName, final LuaValue source, final LuaValue table) {

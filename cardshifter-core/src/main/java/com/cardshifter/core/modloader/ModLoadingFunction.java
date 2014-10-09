@@ -7,5 +7,5 @@ package com.cardshifter.core.modloader;
  */
 @FunctionalInterface
 interface ModLoadingFunction<T, R, X extends Throwable> {
-    R apply(final T t) throws X;
+	R apply(final T t) throws X;
 }

@@ -14,7 +14,7 @@ public abstract class AbstractMod implements Mod {
 	public AbstractMod(final Path modDirectory) {
 		this.modDirectory = Objects.requireNonNull(modDirectory, "modDirectory");
 	}
-    
+	
 	@Override
 	public String getName() {
 		return modDirectory.getFileName().toString();

@@ -9,6 +9,6 @@ import com.cardshifter.modapi.base.ECSGame;
  */
 public interface Mod {
 	ECSGame createGame();
-    
-    String getName();
+	
+	String getName();
 }
