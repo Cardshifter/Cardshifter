@@ -47,3 +47,5 @@ atlassian-ide-plugin.xml
 # Crashlytics plugin (for Android Studio and IntelliJ)
 com_crashlytics_export_strings.xml
 
+# Unignore test resources folders
+!cardshifter-core/src/test/resources/**
