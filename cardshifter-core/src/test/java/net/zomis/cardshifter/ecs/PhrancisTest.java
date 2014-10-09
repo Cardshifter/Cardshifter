@@ -27,6 +27,7 @@ import com.cardshifter.modapi.actions.TargetSet;
 import com.cardshifter.modapi.base.ComponentRetriever;
 import com.cardshifter.modapi.base.CreatureTypeComponent;
 import com.cardshifter.modapi.base.ECSGame;
+import com.cardshifter.modapi.base.ECSMod;
 import com.cardshifter.modapi.base.Entity;
 import com.cardshifter.modapi.base.PlayerComponent;
 import com.cardshifter.modapi.cards.BattlefieldComponent;
@@ -62,7 +63,10 @@ public class PhrancisTest {
 		PropertyConfigurator.configure(PhrancisTest.class.getResourceAsStream("log4j.properties"));
 		game = new ECSGame();
 		game.setRandomSeed(42);
-		PhrancisGame.createGame(game);
+		ECSMod mod = new PhrancisGame();
+		mod.declareConfiguration(game);
+		
+		mod.setupGame(game);
 		game.startGame();
 		phase = ComponentRetriever.singleton(game, PhaseController.class);
 	}

@@ -10,7 +10,8 @@ public class Cards {
 	private static final ComponentRetriever<PhaseController> phase = ComponentRetriever.singleton(PhaseController.class);
 	
 	public static boolean isOnZone(Entity entity, Class<? extends ZoneComponent> class1) {
-		return card.required(entity).getCurrentZone().getClass().isAssignableFrom(class1);
+		ZoneComponent zone = card.required(entity).getCurrentZone();
+		return class1.isAssignableFrom(zone.getClass());
 	}
 
 	public static boolean isOwnedByCurrentPlayer(Entity entity) {
