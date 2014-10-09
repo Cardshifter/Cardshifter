@@ -1,5 +1,5 @@
 
-package com.cardshifter.core.mod;
+package com.cardshifter.core.modloader;
 
 import java.nio.file.Path;
 import java.util.Objects;

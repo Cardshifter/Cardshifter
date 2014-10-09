@@ -8,10 +8,10 @@ import java.nio.file.Path;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-import com.cardshifter.core.mod.LuaMod;
-import com.cardshifter.core.mod.Mod;
-import com.cardshifter.core.mod.ModNotLoadableException;
-import com.cardshifter.core.mod.ModLoader;
+import com.cardshifter.core.modloader.LuaMod;
+import com.cardshifter.core.modloader.Mod;
+import com.cardshifter.core.modloader.ModNotLoadableException;
+import com.cardshifter.core.modloader.ModLoader;
 import org.junit.Ignore;
 
 /**

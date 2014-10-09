@@ -7,10 +7,10 @@ import java.nio.file.Path;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-import com.cardshifter.core.mod.JavaMod;
-import com.cardshifter.core.mod.Mod;
-import com.cardshifter.core.mod.ModNotLoadableException;
-import com.cardshifter.core.mod.ModLoader;
+import com.cardshifter.core.modloader.JavaMod;
+import com.cardshifter.core.modloader.Mod;
+import com.cardshifter.core.modloader.ModNotLoadableException;
+import com.cardshifter.core.modloader.ModLoader;
 import com.cardshifter.modapi.actions.ActionComponent;
 import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.Entity;
