@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import net.zomis.cardshifter.ecs.EntitySerialization;
 
@@ -80,6 +81,14 @@ public class DeckConfig {
 	@Override
 	public String toString() {
 		return "DeckConfig [chosen=" + chosen + "]";
+	}
+	
+	public void generateRandom() {
+		Random random = new Random();
+		List<Integer> ids = new ArrayList<>(this.getCardData().keySet());
+		while (this.getTotal() < this.getMinSize()) {
+			this.setChosen(ids.get(random.nextInt(ids.size())), this.getMaxPerCard());
+		}
 	}
 
 }

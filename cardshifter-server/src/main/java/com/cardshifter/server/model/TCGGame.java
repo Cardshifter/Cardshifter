@@ -1,9 +1,7 @@
 package com.cardshifter.server.model;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
@@ -180,12 +178,14 @@ public class TCGGame extends ServerGame {
 	@Override
 	protected void onStart() {
 		mod.declareConfiguration(game);
-		this.setupAIPlayers();
+		
 		if (this.isConfigNeeded()) {
+			this.setupAIPlayers();
 			this.requestPlayerConfig();
 			return;
 		}
 		this.startECSGame();
+		this.setupAIPlayers();
 	}
 	
 	private void startECSGame() {
@@ -239,11 +239,7 @@ public class TCGGame extends ServerGame {
 			Object value = entry.getValue();
 			if (value instanceof DeckConfig) {
 				DeckConfig deckConfig = (DeckConfig) value;
-				Random random = new Random();
-				List<Integer> ids = new ArrayList<>(deckConfig.getCardData().keySet());
-				while (deckConfig.getTotal() < deckConfig.getMinSize()) {
-					deckConfig.setChosen(ids.get(random.nextInt(ids.size())), deckConfig.getMaxPerCard());
-				}
+				deckConfig.generateRandom();
 			}
 		}
 		PlayerConfigMessage finalConfig = new PlayerConfigMessage(configMessage.getGameId(), configs);

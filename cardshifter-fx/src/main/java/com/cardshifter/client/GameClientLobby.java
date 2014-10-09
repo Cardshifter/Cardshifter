@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Map.Entry;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -184,14 +183,9 @@ public class GameClientLobby implements Initializable {
 				DeckConfig deckConfig = (DeckConfig) value;
 				this.chatOutput("Deck config message received: " + deckConfig);
 				
-				// TODO: Instead of generating a deck with the lines below, show the Deck Builder and let the player build a deck, or choose a previously built deck
+				// TODO: Instead of generating a deck, show the Deck Builder and let the player build a deck, or choose a previously built deck
 				// keep a reference to the `configs` object and send that map in a `PlayerConfigMessage` to the server when done.
-				
-				Random random = new Random();
-				List<Integer> ids = new ArrayList<>(deckConfig.getCardData().keySet());
-				while (deckConfig.getTotal() < deckConfig.getMinSize()) {
-					deckConfig.setChosen(ids.get(random.nextInt(ids.size())), deckConfig.getMaxPerCard());
-				}
+				deckConfig.generateRandom();
 			}
 		}
 		

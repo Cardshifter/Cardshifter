@@ -126,6 +126,12 @@ public class PhrancisGame implements ECSMod {
 			
 			ConfigComponent config = player.getComponent(ConfigComponent.class);
 			DeckConfig deckConf = config.getConfig(DeckConfig.class);
+			if (deckConf.getTotal() < deckConf.getMinSize()) {
+				deckConf.generateRandom();
+			}
+			
+			setupDeck(deck, deckConf);
+			
 			
 			for (int card = 0; card < CARDS_OF_EACH_TYPE; card++) {
 				createCreature(1, deck, 1, 1, "B0T", 1);
@@ -203,6 +209,11 @@ public class PhrancisGame implements ECSMod {
 		game.addSystem(new GameOverIfNoHealth(PhrancisResources.HEALTH));
 		game.addSystem(new RemoveDeadEntityFromZoneSystem());
 		game.addSystem(new PerformerMustBeCurrentPlayer());
+		
+	}
+
+	private void setupDeck(ZoneComponent deck, DeckConfig deckConf) {
+		// TODO Auto-generated method stub
 		
 	}
 
