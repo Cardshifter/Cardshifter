@@ -90,5 +90,9 @@ public class DeckConfig {
 			this.setChosen(ids.get(random.nextInt(ids.size())), this.getMaxPerCard());
 		}
 	}
+	
+	public void add(int cardId) {
+		chosen.merge(cardId, 1, (a, b) -> a + b);
+	}
 
 }

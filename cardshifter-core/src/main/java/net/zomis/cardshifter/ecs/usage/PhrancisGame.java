@@ -58,6 +58,7 @@ public class PhrancisGame implements ECSMod {
 	public void declareConfiguration(ECSGame game) {
 		Entity neutral = game.newEntity();
 		ZoneComponent zone = new ZoneComponent(neutral, "Cards");
+		neutral.addComponent(zone);
 		
 		// Create card models that should be possible to choose from
 		

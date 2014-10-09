@@ -9,9 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import net.zomis.cardshifter.ecs.usage.ConfigComponent;
+import net.zomis.cardshifter.ecs.usage.DeckConfig;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame.PhrancisResources;
 
@@ -34,6 +37,7 @@ import com.cardshifter.modapi.cards.BattlefieldComponent;
 import com.cardshifter.modapi.cards.CardComponent;
 import com.cardshifter.modapi.cards.DeckComponent;
 import com.cardshifter.modapi.cards.HandComponent;
+import com.cardshifter.modapi.cards.ZoneComponent;
 import com.cardshifter.modapi.phase.PhaseController;
 import com.cardshifter.modapi.resources.ECSResource;
 import com.cardshifter.modapi.resources.ECSResourceData;
@@ -57,6 +61,7 @@ public class PhrancisTest {
 	private final ComponentRetriever<BattlefieldComponent> field = ComponentRetriever.retreiverFor(BattlefieldComponent.class);
 	
 	private final ComponentRetriever<CardComponent> card = ComponentRetriever.retreiverFor(CardComponent.class);
+	private final Predicate<Entity> isCreature = entity -> entity.hasComponent(CreatureTypeComponent.class);
 			
 	@Before
 	public void before() {
@@ -66,11 +71,34 @@ public class PhrancisTest {
 		ECSMod mod = new PhrancisGame();
 		mod.declareConfiguration(game);
 		
+		// TODO: Configure decks
+		Set<Entity> configEntities = game.getEntitiesWithComponent(ConfigComponent.class);
+		for (Entity configEntity : configEntities) {
+			ConfigComponent config = configEntity.getComponent(ConfigComponent.class);
+			DeckConfig deckConf = config.getConfig(DeckConfig.class);
+			
+			addCard(deckConf, isCreature.and(manaCost(1)));
+			addCard(deckConf, e -> scrapCost.getFor(e) == 1);
+			addCard(deckConf, isCreature.and(manaCost(1)));
+			addCard(deckConf, isCreature.and(manaCost(3)));
+			addCard(deckConf, isCreature.and(manaCost(1)));
+			addCard(deckConf, isCreature.and(manaCost(1)));
+			addCard(deckConf, isCreatureType("Bio").and(health(4)));
+			addCard(deckConf, e -> scrapCost.getFor(e) == 1 && health.getFor(e) == 1);
+		}
+
 		mod.setupGame(game);
 		game.startGame();
 		phase = ComponentRetriever.singleton(game, PhaseController.class);
 	}
 	
+	private void addCard(DeckConfig config, Predicate<Entity> condition) {
+		Set<Entity> availableCards = game.getEntitiesWithComponent(ZoneComponent.class);
+		ZoneComponent zone = availableCards.iterator().next().getComponent(ZoneComponent.class);
+		Entity entity = zone.stream().filter(condition).findFirst().get();
+		config.add(entity.getId());
+	}
+
 	@Test
 	public void integration() {
 		assertNull(phase.getCurrentEntity());
@@ -97,7 +125,6 @@ public class PhrancisTest {
 		useFail(opponent(), PhrancisGame.END_TURN_ACTION);
 		
 		assertEquals(2, mana.getFor(phase.getCurrentEntity()));
-		Predicate<Entity> isCreature = entity -> entity.hasComponent(CreatureTypeComponent.class);
 		Entity entity;
 		
 		entity = findCardInDeck(isCreature.and(manaCost(1)));
