@@ -9,9 +9,9 @@ import com.cardshifter.modapi.base.ECSGame;
  *
  * @author Frank van Heeswijk
  */
-public class LuaMod extends BaseMod {
-	public LuaMod(final Path bootFile) {
-		super(bootFile);
+public class LuaMod extends AbstractMod {
+	public LuaMod(final Path modDirectory) {
+		super(modDirectory);
 	}
 	
 	@Override

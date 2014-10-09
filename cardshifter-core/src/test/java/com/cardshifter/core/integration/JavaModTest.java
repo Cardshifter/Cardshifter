@@ -10,6 +10,7 @@ import org.junit.Test;
 import com.cardshifter.core.modloader.JavaMod;
 import com.cardshifter.core.modloader.Mod;
 import com.cardshifter.core.modloader.ModNotLoadableException;
+import com.cardshifter.core.modloader.DirectoryModLoader;
 import com.cardshifter.core.modloader.ModLoader;
 import com.cardshifter.modapi.actions.ActionComponent;
 import com.cardshifter.modapi.base.ECSGame;
@@ -30,28 +31,30 @@ import java.util.stream.Collectors;
 public class JavaModTest {
 	@Test
 	public void testLoadMod() throws IOException, URISyntaxException, ModNotLoadableException {
-        Path javaModFile = Paths.get(JavaModTest.class.getResource("cardshifter-mod-examples-java-0.1.jar").toURI());
-		Mod javaMod = ModLoader.load(javaModFile, "java");
+		Path testResourcesPath = Paths.get(getClass().getClassLoader().getResource("com/cardshifter/core/integration/").toURI());
+		ModLoader modLoader = new DirectoryModLoader(testResourcesPath);
+
+		Mod javaMod = modLoader.load("cardshifter-mod-examples-java");
 		assertEquals(JavaMod.class, javaMod.getClass());
-        
-        ECSGame game = javaMod.createGame();
-        
-        //assert two players
-        Set<Entity> players = game.getEntitiesWithComponent(PlayerComponent.class);
-        assertEquals(2, players.size());
-        
-        for (Entity player : players) {
-            ActionComponent actionComponent = player.getComponent(ActionComponent.class);
-            
-            //assert three actions
-            assertEquals(3, actionComponent.getECSActions().size());
-            
-            //assert available resources
-            ECSResourceMap resourceMap = player.getComponent(ECSResourceMap.class);
-            List<ECSResourceData> resources = resourceMap.getResources().collect(Collectors.toList());
-            ECSResourceData testResource = resources.get(0);
-            assertEquals(10, testResource.get());
-            //TODO check that this belongs to resource called "TEST"
-        }
+
+		ECSGame game = javaMod.createGame();
+
+		//assert two players
+		Set<Entity> players = game.getEntitiesWithComponent(PlayerComponent.class);
+		assertEquals(2, players.size());
+
+		for (Entity player : players) {
+			ActionComponent actionComponent = player.getComponent(ActionComponent.class);
+
+			//assert three actions
+			assertEquals(3, actionComponent.getECSActions().size());
+
+			//assert available resources
+			ECSResourceMap resourceMap = player.getComponent(ECSResourceMap.class);
+			List<ECSResourceData> resources = resourceMap.getResources().collect(Collectors.toList());
+			ECSResourceData testResource = resources.get(0);
+			assertEquals(10, testResource.get());
+			//TODO check that this belongs to resource called "TEST"
+		}
 	}
 }
