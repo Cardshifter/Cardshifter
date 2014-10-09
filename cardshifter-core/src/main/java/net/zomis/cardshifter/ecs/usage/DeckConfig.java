@@ -13,6 +13,7 @@ import com.cardshifter.modapi.base.Entity;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY)
 public class DeckConfig {
@@ -69,6 +70,16 @@ public class DeckConfig {
 	
 	public int getMaxPerCard() {
 		return maxPerCard;
+	}
+	
+	@JsonIgnore
+	public int getTotal() {
+		return chosen.values().stream().mapToInt(i -> i).sum();
+	}
+	
+	@Override
+	public String toString() {
+		return "DeckConfig [chosen=" + chosen + "]";
 	}
 
 }
