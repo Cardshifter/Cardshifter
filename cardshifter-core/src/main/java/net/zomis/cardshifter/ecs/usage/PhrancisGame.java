@@ -93,12 +93,6 @@ public class PhrancisGame implements ECSMod {
 		
 	}
 	
-	@Deprecated
-	public static ECSGame createGame(ECSGame game) {
-		new PhrancisGame().setupGame(game);
-		return game;
-	}
-	
 	@Override
 	public void setupGame(ECSGame game) {
 		
