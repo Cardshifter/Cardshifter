@@ -107,7 +107,6 @@ public class Handlers {
 			GameInvite invite = new GameInvite(server, invites.newId(), server.getMainChat(), client, game, message.getGameType());
 			invites.add(invite);
 			invite.addPlayer(opponent);
-			invite.start();
 		}
 	}
 

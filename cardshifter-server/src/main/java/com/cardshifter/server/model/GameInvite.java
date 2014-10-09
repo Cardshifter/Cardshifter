@@ -54,11 +54,8 @@ public class GameInvite implements IdObject {
 		if (!invited.remove(who)) {
 			return false;
 		}
-		players.add(who);
+		addPlayer(who);
 		
-		if (players.size() == 2) {
-			return start();
-		}
 		return true;
 	}
 
@@ -72,7 +69,7 @@ public class GameInvite implements IdObject {
 		logger.info(this + " Game Start! " + players);
 		Collections.shuffle(players, random);
 		game.start(players);
-		chatArea.broadcast("Server", players.stream().map(io -> io.getName()).collect(Collectors.joining(", ")) + " are now playing game " + game.getId());
+		chatArea.broadcast("Server", players.stream().map(io -> io.getName()).collect(Collectors.joining(" and ")) + " are now playing game " + game.getId());
 		return true;
 	}
 
@@ -87,6 +84,9 @@ public class GameInvite implements IdObject {
 
 	public void addPlayer(ClientIO player) {
 		this.players.add(player);
+		if (players.size() == 2) {
+			start();
+		}
 	}
 	
 }
