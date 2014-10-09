@@ -183,6 +183,7 @@ public class GameClientLobby implements Initializable {
 				DeckConfig deckConfig = (DeckConfig) value;
 				this.chatOutput("Deck config message received: " + deckConfig);
 				
+				this.showDeckBuilderWindow(deckConfig);
 				// TODO: Instead of generating a deck, show the Deck Builder and let the player build a deck, or choose a previously built deck
 				// keep a reference to the `configs` object and send that map in a `PlayerConfigMessage` to the server when done.
 				deckConfig.generateRandom();
@@ -191,6 +192,26 @@ public class GameClientLobby implements Initializable {
 		
 		this.send(new PlayerConfigMessage(configMessage.getGameId(), configs));
 		
+	}
+	
+	private void showDeckBuilderWindow(DeckConfig deckConfig) {
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("DeckBuilderDocument.fxml"));
+			Parent root = (Parent)loader.load();
+			DeckBuilderWindow controller = loader.<DeckBuilderWindow>getController();
+			
+			controller.acceptDeckConfig(deckConfig);
+			controller.configureWindow();
+			
+			Scene scene = new Scene(root);
+			Stage stage = new Stage();
+			stage.setScene(scene);
+			//stage.setOnCloseRequest(windowEvent -> this.closeDeckBuilder(controller));
+			stage.show();
+		}
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 	}
 	
 	private void startNewGame(NewGameMessage message) {
