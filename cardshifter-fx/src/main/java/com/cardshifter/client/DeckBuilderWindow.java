@@ -4,6 +4,7 @@ import com.cardshifter.api.outgoing.CardInfoMessage;
 import com.cardshifter.client.views.CardHandDocumentController;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javafx.fxml.FXML;
@@ -21,7 +22,7 @@ public class DeckBuilderWindow {
 	@FXML private AnchorPane nextPage;
 	@FXML private AnchorPane exitButton;
 	
-	private final int cardsPerPage = 12;
+	private static final int CARDS_PER_PAGE = 12;
 	private int currentPage = 0;
 	
 	private Map<Integer, CardInfoMessage> cardList = new HashMap<>();
@@ -35,7 +36,7 @@ public class DeckBuilderWindow {
 		this.previousPage.setOnMouseClicked(this::goToPreviousPage);
 		this.nextPage.setOnMouseClicked(this::goToNextPage);
 		
-		this.pageList = this.listSplitter(new ArrayList<>(this.cardList.values()), this.cardsPerPage);
+		this.pageList = listSplitter(new ArrayList<>(this.cardList.values()), CARDS_PER_PAGE);
 		
 		this.displayCurrentPage();
 	}
@@ -55,34 +56,34 @@ public class DeckBuilderWindow {
 		}
 	}
 	private void goToNextPage(MouseEvent event) {
-		if (this.currentPage < this.pageList.size()) {
+		if (this.currentPage < this.pageList.size() - 1) {
 			this.currentPage++;
 			this.displayCurrentPage();
 		}
 	}
 	
-	private <T> List<List<T>> listSplitter(List<T> originalList, int splitCount) {
-		List<List<T>> listOfLists= new ArrayList<>();
-		listOfLists.add(new ArrayList<>());
-	
-		int originalListSize = originalList.size();		
-		int index = 0;
-		int pageNumber = 0;
-		int numItemsAdded = 0;
-		
-		while (index < originalListSize) {
-			if (numItemsAdded > splitCount - 1) {
-				numItemsAdded = 0;
-				pageNumber ++;
-				listOfLists.add(new ArrayList<>());
-			}
-			List activeList = listOfLists.get(pageNumber);
-			activeList.add(originalList.get(index));
-			numItemsAdded++;
-			index++;
+	private static <T> List<List<T>> listSplitter(List<T> originalList, int resultsPerList) {
+		if (resultsPerList <= 0) {
+			throw new IllegalArgumentException("resultsPerList must be positive");
 		}
-		
+		List<List<T>> listOfLists = new ArrayList<>();
+		List<T> latestList = new ArrayList<>();
+		Iterator<T> iterator = originalList.iterator();
+
+	    while (iterator.hasNext()) {
+		    T next = iterator.next();
+			if (latestList.size() >= resultsPerList) {
+				listOfLists.add(latestList);
+				latestList = new ArrayList<>();
+			} 
+			latestList.add(next);
+		}
+
+		if (!latestList.isEmpty()) {
+			listOfLists.add(latestList);
+		}
+
 		return listOfLists;
 	}
-	
+
 }
