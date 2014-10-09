@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 
 import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.both.InviteResponse;
+import com.cardshifter.api.both.PlayerConfigMessage;
 import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.incoming.RequestTargetsMessage;
 import com.cardshifter.api.incoming.ServerQueryMessage;
@@ -65,6 +66,7 @@ public class Server {
 		incomingHandler.addHandler("requestTargets", RequestTargetsMessage.class, handlers::requestTargets);
 		incomingHandler.addHandler("inviteResponse", InviteResponse.class, handlers::inviteResponse);
 		incomingHandler.addHandler("query", ServerQueryMessage.class, handlers::query);
+		incomingHandler.addHandler("playerconfig", PlayerConfigMessage.class, handlers::incomingConfig);
 	}
 	
 	ChatArea getMainChat() {

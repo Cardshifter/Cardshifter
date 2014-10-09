@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.Map.Entry;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -163,9 +165,7 @@ public class GameClientLobby implements Initializable {
 			this.chatOutput("SERVER ERROR: " + msg.getMessage());
 		} else if (message instanceof PlayerConfigMessage) {
 			PlayerConfigMessage msg = (PlayerConfigMessage) message;
-			Object config = msg.getConfigs().get("Deck");
-			DeckConfig brea = (DeckConfig) config;
-			this.chatOutput("Deck config message received: " + brea);
+			this.showConfigDialog(msg);
 		} else if (message instanceof InviteRequest) {
 			this.currentGameRequest = (InviteRequest)message;
 			this.createInviteWindow((InviteRequest)message);
@@ -173,6 +173,30 @@ public class GameClientLobby implements Initializable {
 			this.gameTypes.addAll(Arrays.asList(((AvailableModsMessage)message).getMods()));
 			this.createGameTypeButtons();
 		}
+	}
+	
+	private void showConfigDialog(PlayerConfigMessage configMessage) {
+		Map<String, Object> configs = configMessage.getConfigs();
+		
+		for (Entry<String, Object> entry : configs.entrySet()) {
+			Object value = entry.getValue();
+			if (value instanceof DeckConfig) {
+				DeckConfig deckConfig = (DeckConfig) value;
+				this.chatOutput("Deck config message received: " + deckConfig);
+				
+				// TODO: Instead of generating a deck with the lines below, show the Deck Builder and let the player build a deck, or choose a previously built deck
+				// keep a reference to the `configs` object and send that map in a `PlayerConfigMessage` to the server when done.
+				
+				Random random = new Random();
+				List<Integer> ids = new ArrayList<>(deckConfig.getCardData().keySet());
+				while (deckConfig.getTotal() < deckConfig.getMinSize()) {
+					deckConfig.setChosen(ids.get(random.nextInt(ids.size())), deckConfig.getMaxPerCard());
+				}
+			}
+		}
+		
+		this.send(new PlayerConfigMessage(configMessage.getGameId(), configs));
+		
 	}
 	
 	private void startNewGame(NewGameMessage message) {
