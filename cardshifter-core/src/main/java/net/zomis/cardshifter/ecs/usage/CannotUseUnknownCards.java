@@ -1,12 +1,12 @@
 package net.zomis.cardshifter.ecs.usage;
 
-import net.zomis.cardshifter.ecs.actions.ActionAllowedCheckEvent;
-import net.zomis.cardshifter.ecs.base.ComponentRetriever;
-import net.zomis.cardshifter.ecs.base.ECSGame;
-import net.zomis.cardshifter.ecs.base.ECSSystem;
-import net.zomis.cardshifter.ecs.base.Entity;
-import net.zomis.cardshifter.ecs.base.Retriever;
-import net.zomis.cardshifter.ecs.cards.CardComponent;
+import com.cardshifter.modapi.actions.ActionAllowedCheckEvent;
+import com.cardshifter.modapi.base.ComponentRetriever;
+import com.cardshifter.modapi.base.ECSGame;
+import com.cardshifter.modapi.base.ECSSystem;
+import com.cardshifter.modapi.base.Entity;
+import com.cardshifter.modapi.base.Retriever;
+import com.cardshifter.modapi.cards.CardComponent;
 
 public class CannotUseUnknownCards implements ECSSystem {
 
@@ -15,7 +15,7 @@ public class CannotUseUnknownCards implements ECSSystem {
 	
 	@Override
 	public void startGame(ECSGame game) {
-		game.getEvents().registerHandlerAfter(ActionAllowedCheckEvent.class, this::denyUnknownCards);
+		game.getEvents().registerHandlerAfter(this, ActionAllowedCheckEvent.class, this::denyUnknownCards);
 	}
 	
 	private void denyUnknownCards(ActionAllowedCheckEvent event) {

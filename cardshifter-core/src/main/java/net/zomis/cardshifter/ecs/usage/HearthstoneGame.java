@@ -1,6 +1,6 @@
 package net.zomis.cardshifter.ecs.usage;
 
-import net.zomis.cardshifter.ecs.base.ECSGame;
+import com.cardshifter.modapi.base.ECSGame;
 
 public class HearthstoneGame {
 
