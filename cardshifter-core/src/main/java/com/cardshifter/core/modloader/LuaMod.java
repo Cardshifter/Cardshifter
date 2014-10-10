@@ -9,13 +9,23 @@ import com.cardshifter.modapi.base.ECSGame;
  *
  * @author Frank van Heeswijk
  */
-public class LuaMod extends AbstractMod {
+public class LuaMod extends LoadableMod {
 	public LuaMod(final Path modDirectory) {
 		super(modDirectory);
 	}
-	
+
 	@Override
-	public ECSGame createGame() {
-		throw new UnsupportedOperationException("Not supported yet.");
+	protected void load0() throws ModNotLoadableException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	protected void unload0() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	protected ECSGame createGame0() {
+		throw new UnsupportedOperationException();
 	}
 }

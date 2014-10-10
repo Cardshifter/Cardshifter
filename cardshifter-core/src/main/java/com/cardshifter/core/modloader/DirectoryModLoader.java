@@ -1,7 +1,6 @@
 
 package com.cardshifter.core.modloader;
 
-import java.io.FileInputStream;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +12,7 @@ import java.util.Properties;
  * @author Frank van Heeswijk
  */
 public final class DirectoryModLoader implements ModLoader {
-	private static final Map<String, ModLoadingFunction<Path, Mod, ModNotLoadableException>> LANGUAGE_MAPPING = new HashMap<>();
+	private static final Map<String, ModLoadingFunction<Path, LoadableMod, ModNotLoadableException>> LANGUAGE_MAPPING = new HashMap<>();
 	static {
 		LANGUAGE_MAPPING.put("java", JavaMod::new);
 		LANGUAGE_MAPPING.put("lua", LuaMod::new);
@@ -21,7 +20,7 @@ public final class DirectoryModLoader implements ModLoader {
 	
 	private final Path modsDirectory;
 	
-	private final Map<String, Mod> loadedMods = new HashMap<>();
+	private final Map<String, LoadableMod> loadedMods = new HashMap<>();
 	
 	public DirectoryModLoader(final Path modsDirectory) {
 		this.modsDirectory = Objects.requireNonNull(modsDirectory, "modsDirectory");
@@ -40,9 +39,10 @@ public final class DirectoryModLoader implements ModLoader {
 			if (!LANGUAGE_MAPPING.containsKey(language)) {
 				throw new ModNotLoadableException("Language " + language + " is not supported");
 			}
-			Mod mod = LANGUAGE_MAPPING.get(language).apply(modDirectory);
-			loadedMods.put(modName, mod);
-			return mod;
+			LoadableMod loadableMod = LANGUAGE_MAPPING.get(language).apply(modDirectory);
+			loadableMod.load();
+			loadedMods.put(modName, loadableMod);
+			return loadableMod;
 		} catch (Exception ex) {
 			throw new ModNotLoadableException(ex);
 		}
@@ -60,6 +60,8 @@ public final class DirectoryModLoader implements ModLoader {
 	
 	@Override
 	public Map<String, Mod> getLoadedMods() {
-		return loadedMods;
+		Map<String, Mod> loadedModsCopy = new HashMap<>();
+		loadedModsCopy.putAll(loadedMods);
+		return loadedModsCopy;
 	}
 }

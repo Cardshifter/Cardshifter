@@ -16,13 +16,17 @@ import java.util.Properties;
  *
  * @author Frank van Heeswijk
  */
-public class JavaMod extends AbstractMod {
-	private final URLClassLoader urlClassLoader;
-	private final ECSMod ecsMod;
+public class JavaMod extends LoadableMod {
+	private ECSMod ecsMod;
+	
+	private URLClassLoader urlClassLoader;
 	
 	public JavaMod(final Path modDirectory) throws ModNotLoadableException {
 		super(modDirectory);
-		
+	}
+	
+	@Override
+	protected void load0() throws ModNotLoadableException {
 		try {
 			Properties properties = ModLoaderHelper.getConfiguration(modDirectory);
 			String jarName = properties.getProperty("jar");
@@ -45,9 +49,13 @@ public class JavaMod extends AbstractMod {
 		}
 	}
 	
+	@Override
+	protected void unload0() {
+		throw new UnsupportedOperationException();
+	}
 	
 	@Override
-	public ECSGame createGame() {
+	protected ECSGame createGame0() {
 		ECSGame ecsGame = new ECSGame();
 		ecsMod.setupGame(ecsGame);
 		return ecsGame;

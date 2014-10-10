@@ -34,8 +34,12 @@ public class JavaModTest {
 		Path testResourcesPath = Paths.get(getClass().getClassLoader().getResource("com/cardshifter/core/integration/").toURI());
 		ModLoader modLoader = new DirectoryModLoader(testResourcesPath);
 
-		Mod javaMod = modLoader.load("cardshifter-mod-examples-java");
+		String modName = "cardshifter-mod-examples-java";
+		Mod javaMod = modLoader.load(modName);
+		
 		assertEquals(JavaMod.class, javaMod.getClass());
+		assertTrue(modLoader.getLoadedMods().containsKey(modName));
+		assertEquals(javaMod, modLoader.getLoadedMods().get(modName));
 
 		ECSGame game = javaMod.createGame();
 
