@@ -48,6 +48,7 @@ import com.cardshifter.api.outgoing.UserStatusMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage.Status;
 import com.cardshifter.client.buttons.GameTypeButton;
 import com.cardshifter.client.buttons.GenericButton;
+import com.cardshifter.core.Player;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -180,27 +181,31 @@ public class GameClientLobby implements Initializable {
 		for (Entry<String, Object> entry : configs.entrySet()) {
 			Object value = entry.getValue();
 			if (value instanceof DeckConfig) {
-				DeckConfig deckConfig = (DeckConfig) value;
-				this.chatOutput("Deck config message received: " + deckConfig);
+				//DeckConfig deckConfig = (DeckConfig) value;
+				//this.chatOutput("Deck config message received: " + deckConfig);
 				
-				this.showDeckBuilderWindow(deckConfig);
+				this.showDeckBuilderWindow(configMessage);
 				// TODO: Instead of generating a deck, show the Deck Builder and let the player build a deck, or choose a previously built deck
 				// keep a reference to the `configs` object and send that map in a `PlayerConfigMessage` to the server when done.
-				deckConfig.generateRandom();
+				//deckConfig.generateRandom();
 			}
 		}
 		
-		this.send(new PlayerConfigMessage(configMessage.getGameId(), configs));
+		//this.send(new PlayerConfigMessage(configMessage.getGameId(), configs));
 		
 	}
 	
-	private void showDeckBuilderWindow(DeckConfig deckConfig) {
+	public void sendDeckAndPlayerConfigToServer(PlayerConfigMessage message) {
+		this.send(message);
+	}
+	
+	private void showDeckBuilderWindow(PlayerConfigMessage message) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("DeckBuilderDocument.fxml"));
 			Parent root = (Parent)loader.load();
 			DeckBuilderWindow controller = loader.<DeckBuilderWindow>getController();
 			
-			controller.acceptDeckConfig(deckConfig);
+			controller.acceptPlayerConfig(message, this);
 			controller.configureWindow();
 			
 			Scene scene = new Scene(root);

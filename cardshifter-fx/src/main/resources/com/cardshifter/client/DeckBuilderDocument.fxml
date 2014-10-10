@@ -25,7 +25,7 @@
 		</AnchorPane>
 	   
 		<!-- Active Deck -->
-		<AnchorPane layoutX="866.0" prefHeight="640.0" prefWidth="200.0">
+		<AnchorPane fx:id="activeDeckAnchorPane" layoutX="866.0" prefHeight="640.0" prefWidth="200.0">
 			<children>
 				<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#7d8056" height="60.0" stroke="BLACK" strokeType="INSIDE" width="200.0" />
 				<Label layoutX="27.0" layoutY="16.0" text="Active Deck" textFill="WHITE">
