@@ -4,18 +4,28 @@ import com.cardshifter.api.outgoing.CardInfoMessage;
 import com.cardshifter.client.buttons.GenericButton;
 import com.cardshifter.client.buttons.SavedDeckButton;
 import com.cardshifter.client.views.CardHandDocumentController;
+<<<<<<< HEAD
 import com.cardshifter.client.views.DeckCardController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
+=======
+
+>>>>>>> 1e0a6e91c772035b48bd854258bda21c75df99a9
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+<<<<<<< HEAD
+=======
+
+import javafx.event.EventHandler;
+>>>>>>> 1e0a6e91c772035b48bd854258bda21c75df99a9
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DataFormat;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
@@ -24,6 +34,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+
 import net.zomis.cardshifter.ecs.usage.DeckConfig;
 
 public class DeckBuilderWindow {
@@ -50,18 +61,47 @@ public class DeckBuilderWindow {
 	
 	public void acceptDeckConfig(DeckConfig deckConfig, GameClientLobby lobby) {
 		this.lobby = lobby;
+<<<<<<< HEAD
 		this.activeDeckConfig = deckConfig;
 		this.cardList = deckConfig.getCardData();
+=======
+		
+		Map<String, Object> configs = message.getConfigs();
+		
+		for (Map.Entry<String, Object> entry : configs.entrySet()) {
+			Object value = entry.getValue();
+			if (value instanceof DeckConfig) {
+				DeckConfig deckConfig = (DeckConfig) value;
+				this.cardList = deckConfig.getCardData();
+			}
+		}
+>>>>>>> 1e0a6e91c772035b48bd854258bda21c75df99a9
 	}
 	
 	public void configureWindow() {
 		this.previousPage.setOnMouseClicked(this::goToPreviousPage);
 		this.nextPage.setOnMouseClicked(this::goToNextPage);
+<<<<<<< HEAD
 		this.exitButton.setOnMouseClicked(this::startGame);
 		this.saveDeckButton.setOnMouseClicked(this::saveDeck);
 		this.loadDeckButton.setOnMouseClicked(this::loadDeck);
 		this.activeDeckBox.setOnDragDropped(e -> this.completeDrag(e, true));
 		this.activeDeckBox.setOnDragOver(e -> this.completeDrag(e, false));
+=======
+		
+		this.activeDeckBox.setOnDragDropped(new EventHandler<DragEvent>() {
+			@Override
+			public void handle(DragEvent event) {
+				System.out.println("helpme");
+			}
+		});
+		
+		this.activeDeckBox.setOnDragDropped(e -> this.receiveDrag(e, true));
+		//this.activeDeckBox.setOnDragEntered(e -> {this.receiveDrag(e);});
+		this.activeDeckBox.setOnDragOver(e -> this.receiveDrag(e, false));
+		//this.activeDeckAnchorPane.setOnDragDropped(e -> {this.receiveDrag(e);});
+		
+>>>>>>> 1e0a6e91c772035b48bd854258bda21c75df99a9
 		this.pageList = listSplitter(new ArrayList<>(this.cardList.values()), CARDS_PER_PAGE);
 		this.displayCurrentPage();
 		this.displaySavedDecks();
@@ -83,13 +123,52 @@ public class DeckBuilderWindow {
 		this.cardListBox.getChildren().clear();
 		for (CardInfoMessage message : this.pageList.get(this.currentPage)) {
 			CardHandDocumentController card = new CardHandDocumentController(message, null);
+<<<<<<< HEAD
 			Pane cardPane = card.getRootPane();			
 			cardPane.setOnMouseClicked(e -> {this.addCardToActiveDeck(e, message);});
 			cardPane.setOnDragDetected(e -> this.startDrag(e, cardPane, message));
+=======
+			Pane cardPane = card.getRootPane();
+			cardPane.setOnDragDetected(e -> this.reportDrag(e, cardPane, card));
+			
+			
+			cardPane.setOnDragDone(event -> System.out.println("dropped it"));
+			
+			
+			
+>>>>>>> 1e0a6e91c772035b48bd854258bda21c75df99a9
 			this.cardListBox.getChildren().add(cardPane);
 		}
 	}
 	
+<<<<<<< HEAD
+=======
+	private void reportDrag(MouseEvent event, Pane pane, CardHandDocumentController card) {
+		Dragboard db = pane.startDragAndDrop(TransferMode.MOVE);
+		ClipboardContent content = new ClipboardContent();
+		content.put(DataFormat.RTF, pane);
+		content.putString(card.toString());
+		db.setContent(content);
+		
+		System.out.println("drag detected");
+		System.out.println(card.toString());
+		
+		event.consume();
+	}
+	
+	private void receiveDrag(DragEvent event, boolean dropped) {
+		System.out.println("drag dropped");
+//		this.activeDeckBox.getChildren().add(new Label(event.getDragboard().getString()));
+//		event.setDropCompleted(true);
+		
+		event.acceptTransferModes(TransferMode.MOVE);
+		if (dropped) {
+			this.activeDeckBox.getChildren().add(new Label(event.getDragboard().getString()));
+		}
+		event.consume();
+	}
+	
+>>>>>>> 1e0a6e91c772035b48bd854258bda21c75df99a9
 	private void goToPreviousPage(MouseEvent event) {
 		if (this.currentPage > 0) {
 			this.currentPage--;
