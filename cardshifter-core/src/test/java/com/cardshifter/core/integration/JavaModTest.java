@@ -29,17 +29,18 @@ import java.util.stream.Collectors;
  * @author Frank van Heeswijk
  */
 public class JavaModTest {
+	private final static String MOD_NAME = "cardshifter-mod-examples-java";
+	
 	@Test
 	public void testLoadMod() throws IOException, URISyntaxException, ModNotLoadableException {
 		Path testResourcesPath = Paths.get(getClass().getClassLoader().getResource("com/cardshifter/core/integration/").toURI());
 		ModLoader modLoader = new DirectoryModLoader(testResourcesPath);
 
-		String modName = "cardshifter-mod-examples-java";
-		Mod javaMod = modLoader.load(modName);
+		Mod javaMod = modLoader.load(MOD_NAME);
 		
 		assertEquals(JavaMod.class, javaMod.getClass());
-		assertTrue(modLoader.getLoadedMods().containsKey(modName));
-		assertEquals(javaMod, modLoader.getLoadedMods().get(modName));
+		assertTrue(modLoader.getLoadedMods().containsKey(MOD_NAME));
+		assertEquals(javaMod, modLoader.getLoadedMods().get(MOD_NAME));
 
 		ECSGame game = javaMod.createGame();
 

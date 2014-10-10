@@ -1,10 +1,13 @@
 
 package com.cardshifter.core.modloader;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Path;
 
 import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.ECSMod;
+
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.security.AccessController;
@@ -51,7 +54,11 @@ public class JavaMod extends LoadableMod {
 	
 	@Override
 	protected void unload0() {
-		throw new UnsupportedOperationException();
+		try {
+			urlClassLoader.close();
+		} catch (IOException ex) {
+			throw new UncheckedIOException(ex);
+		}
 	}
 	
 	@Override

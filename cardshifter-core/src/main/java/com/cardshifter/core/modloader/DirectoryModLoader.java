@@ -50,12 +50,12 @@ public final class DirectoryModLoader implements ModLoader {
 	
 	@Override
 	public void unload(final String modName) {
-		throw new UnsupportedOperationException();
-//		  Objects.requireNonNull(modName, "modName");
-//		  if (!loadedMods.containsKey(modName)) {
-//			  throw new IllegalArgumentException("Mod " + modName + " has not been loaded");
-//		  }
-//		  loadedMods.remove(modName);
+		  Objects.requireNonNull(modName, "modName");
+		  if (!loadedMods.containsKey(modName)) {
+			  throw new IllegalArgumentException("Mod " + modName + " has not been loaded");
+		  }
+		  loadedMods.get(modName).unload();
+		  loadedMods.remove(modName);
 	}
 	
 	@Override
