@@ -10,7 +10,7 @@ import com.cardshifter.modapi.base.ECSGame;
  * @author Frank van Heeswijk
  */
 public class LuaMod extends LoadableMod {
-	public LuaMod(final Path modDirectory) {
+	LuaMod(final Path modDirectory) {
 		super(modDirectory);
 	}
 

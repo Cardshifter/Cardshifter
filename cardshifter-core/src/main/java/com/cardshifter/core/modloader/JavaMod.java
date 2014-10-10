@@ -21,7 +21,7 @@ public class JavaMod extends LoadableMod {
 	
 	private URLClassLoader urlClassLoader;
 	
-	public JavaMod(final Path modDirectory) throws ModNotLoadableException {
+	JavaMod(final Path modDirectory) throws ModNotLoadableException {
 		super(modDirectory);
 	}
 	
