@@ -3,15 +3,18 @@ package com.cardshifter.client;
 import com.cardshifter.api.both.PlayerConfigMessage;
 import com.cardshifter.api.outgoing.CardInfoMessage;
 import com.cardshifter.client.views.CardHandDocumentController;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DataFormat;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
@@ -20,6 +23,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+
 import net.zomis.cardshifter.ecs.usage.DeckConfig;
 
 public class DeckBuilderWindow {
@@ -51,7 +55,7 @@ public class DeckBuilderWindow {
 				DeckConfig deckConfig = (DeckConfig) value;
 				this.cardList = deckConfig.getCardData();
 			}
-		}	
+		}
 	}
 	
 	public void configureWindow() {
@@ -65,9 +69,9 @@ public class DeckBuilderWindow {
 			}
 		});
 		
-		//this.activeDeckBox.setOnDragDropped(e -> {this.receiveDrag(e);});
+		this.activeDeckBox.setOnDragDropped(e -> this.receiveDrag(e, true));
 		//this.activeDeckBox.setOnDragEntered(e -> {this.receiveDrag(e);});
-		//this.activeDeckBox.setOnDragOver(e -> {this.receiveDrag(e);});
+		this.activeDeckBox.setOnDragOver(e -> this.receiveDrag(e, false));
 		//this.activeDeckAnchorPane.setOnDragDropped(e -> {this.receiveDrag(e);});
 		
 		this.pageList = listSplitter(new ArrayList<>(this.cardList.values()), CARDS_PER_PAGE);
@@ -80,15 +84,10 @@ public class DeckBuilderWindow {
 		for (CardInfoMessage message : this.pageList.get(this.currentPage)) {
 			CardHandDocumentController card = new CardHandDocumentController(message, null);
 			Pane cardPane = card.getRootPane();
-			cardPane.setOnDragDetected(e -> {this.reportDrag(e, cardPane, card);});
+			cardPane.setOnDragDetected(e -> this.reportDrag(e, cardPane, card));
 			
 			
-			cardPane.setOnDragDone(new EventHandler<DragEvent>() {
-				@Override
-				public void handle(DragEvent event) {
-					System.out.println("dropped it");
-				}
-			});
+			cardPane.setOnDragDone(event -> System.out.println("dropped it"));
 			
 			
 			
@@ -99,20 +98,26 @@ public class DeckBuilderWindow {
 	private void reportDrag(MouseEvent event, Pane pane, CardHandDocumentController card) {
 		Dragboard db = pane.startDragAndDrop(TransferMode.MOVE);
 		ClipboardContent content = new ClipboardContent();
-		//content.put(DataFormat.RTF, pane);
+		content.put(DataFormat.RTF, pane);
 		content.putString(card.toString());
 		db.setContent(content);
 		
 		System.out.println("drag detected");
 		System.out.println(card.toString());
 		
-		//event.consume();
+		event.consume();
 	}
 	
-	private void receiveDrag(DragEvent event) {
+	private void receiveDrag(DragEvent event, boolean dropped) {
 		System.out.println("drag dropped");
-		this.activeDeckBox.getChildren().add(new Label(event.getDragboard().getString()));
-		event.setDropCompleted(true);
+//		this.activeDeckBox.getChildren().add(new Label(event.getDragboard().getString()));
+//		event.setDropCompleted(true);
+		
+		event.acceptTransferModes(TransferMode.MOVE);
+		if (dropped) {
+			this.activeDeckBox.getChildren().add(new Label(event.getDragboard().getString()));
+		}
+		event.consume();
 	}
 	
 	private void goToPreviousPage(MouseEvent event) {
