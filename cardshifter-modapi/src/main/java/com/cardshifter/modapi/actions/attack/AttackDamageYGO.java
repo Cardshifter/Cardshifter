@@ -1,5 +1,6 @@
 package com.cardshifter.modapi.actions.attack;
 
+import com.cardshifter.modapi.actions.ActionAllowedCheckEvent;
 import com.cardshifter.modapi.actions.ActionPerformEvent;
 import com.cardshifter.modapi.actions.SpecificActionSystem;
 import com.cardshifter.modapi.base.Entity;
@@ -19,6 +20,13 @@ public class AttackDamageYGO extends SpecificActionSystem {
 		this.health = ResourceRetriever.forResource(health);
 	}
 
+	@Override
+	protected void isAllowed(ActionAllowedCheckEvent event) {
+		if (attack.getFor(event.getEntity()) <= 0) {
+			event.setAllowed(false);
+		}
+	}
+	
 	@Override
 	protected void onPerform(ActionPerformEvent event) {
 		Entity source = event.getEntity();
