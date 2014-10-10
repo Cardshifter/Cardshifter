@@ -48,7 +48,6 @@ import com.cardshifter.api.outgoing.UserStatusMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage.Status;
 import com.cardshifter.client.buttons.GameTypeButton;
 import com.cardshifter.client.buttons.GenericButton;
-import com.cardshifter.core.Player;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -78,6 +77,7 @@ public class GameClientLobby implements Initializable {
 	private InviteRequest currentGameRequest;
 	private final List<String> gameTypes = new ArrayList<>();
 	private String selectedGameType;
+	private PlayerConfigMessage currentPlayerConfig;
 	
 	public void acceptConnectionSettings(String ipAddress, int port, String userName) {
 		// this is passed into this object after it is automatically created by the FXML document
@@ -176,36 +176,40 @@ public class GameClientLobby implements Initializable {
 	}
 	
 	private void showConfigDialog(PlayerConfigMessage configMessage) {
+		this.currentPlayerConfig = configMessage;
+		
 		Map<String, Object> configs = configMessage.getConfigs();
 		
 		for (Entry<String, Object> entry : configs.entrySet()) {
 			Object value = entry.getValue();
 			if (value instanceof DeckConfig) {
-				//DeckConfig deckConfig = (DeckConfig) value;
-				//this.chatOutput("Deck config message received: " + deckConfig);
-				
-				this.showDeckBuilderWindow(configMessage);
-				// TODO: Instead of generating a deck, show the Deck Builder and let the player build a deck, or choose a previously built deck
-				// keep a reference to the `configs` object and send that map in a `PlayerConfigMessage` to the server when done.
-				//deckConfig.generateRandom();
+				DeckConfig deckConfig = (DeckConfig) value;
+				this.showDeckBuilderWindow(deckConfig);
+			}
+		}		
+	}
+	
+	public void sendDeckAndPlayerConfigToServer(DeckConfig deckConfig) {
+		Map<String, Object> configs = this.currentPlayerConfig.getConfigs();
+		
+		for (Entry<String, Object> entry : configs.entrySet()) {
+			Object value = entry.getValue();
+			if (value instanceof DeckConfig) {
+				DeckConfig config = (DeckConfig) value;
+				config = deckConfig;
 			}
 		}
 		
-		//this.send(new PlayerConfigMessage(configMessage.getGameId(), configs));
-		
+		this.send(new PlayerConfigMessage(this.currentPlayerConfig.getGameId(), configs));
 	}
 	
-	public void sendDeckAndPlayerConfigToServer(PlayerConfigMessage message) {
-		this.send(message);
-	}
-	
-	private void showDeckBuilderWindow(PlayerConfigMessage message) {
+	private void showDeckBuilderWindow(DeckConfig deckConfig) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("DeckBuilderDocument.fxml"));
 			Parent root = (Parent)loader.load();
 			DeckBuilderWindow controller = loader.<DeckBuilderWindow>getController();
 			
-			controller.acceptPlayerConfig(message, this);
+			controller.acceptDeckConfig(deckConfig, this);
 			controller.configureWindow();
 			
 			Scene scene = new Scene(root);

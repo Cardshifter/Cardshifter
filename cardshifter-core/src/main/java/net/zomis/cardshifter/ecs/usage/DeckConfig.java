@@ -49,6 +49,14 @@ public class DeckConfig {
 		this.chosen.put(id, chosen);
 	}
 	
+	public void removeChosen(int id) {
+		if (this.chosen.get(id) > 1) {
+			this.setChosen(id, this.getChosen().get(id) - 1);
+		} else {
+			this.chosen.remove(id);
+		}
+	}
+	
 	public int getMinSize() {
 		return minSize;
 	}
