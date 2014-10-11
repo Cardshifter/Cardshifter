@@ -5,9 +5,10 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import com.cardshifter.modapi.base.Component;
+import com.cardshifter.modapi.base.CopyableComponent;
 import com.cardshifter.modapi.base.Entity;
 
-public class ECSResourceMap extends Component {
+public class ECSResourceMap extends Component implements CopyableComponent {
 
 	private final Map<ECSResource, ECSResourceData> map = new HashMap<>();
 
@@ -38,6 +39,16 @@ public class ECSResourceMap extends Component {
 
 	public Stream<ECSResourceData> getResources() {
 		return map.values().stream();
+	}
+
+	@Override
+	public Component copy(Entity copyTo) {
+		ECSResourceMap copy = new ECSResourceMap();
+		for (ECSResourceData data : map.values()) {
+			ECSResourceData copyData = data.copy(copyTo);
+			copy.map.put(data.getResource(), copyData);
+		}
+		return copy;
 	}
 	
 }

@@ -92,4 +92,27 @@ public final class Entity {
 		this.components.remove(component);
 	}
 	
+	/**
+	 * Copy this entity and all of it's copyable components
+	 * 
+	 * @see CopyableComponent
+	 * 
+	 * @return A copy of this entity
+	 */
+	public Entity copy() {
+		if (isRemoved()) {
+			throw new IllegalStateException("Unable to copy a removed entity");
+		}
+		Entity copy = game.newEntity();
+		
+		for (Component comp : components.values()) {
+			if (comp instanceof CopyableComponent) {
+				CopyableComponent copyable = (CopyableComponent) comp;
+				copy.addComponent(copyable.copy(copy));
+			}
+		}
+		
+		return copy;
+	}
+	
 }

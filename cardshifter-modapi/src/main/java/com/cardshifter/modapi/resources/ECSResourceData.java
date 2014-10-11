@@ -66,5 +66,13 @@ public class ECSResourceData {
 	public ECSResource getResource() {
 		return this.resource;
 	}
+
+	ECSResourceData copy(Entity copyTo) {
+		ECSResourceData copy = new ECSResourceData(copyTo, resource);
+		copy.current = this.current;
+		copy.previousGet = this.previousGet;
+		copy.strategy = this.strategy;
+		return copy;
+	}
 	
 }

@@ -28,7 +28,7 @@ public final class ECSGame {
 	}
 	
 	public Entity newEntity() {
-		Entity entity = new Entity(this, ids.getAndIncrement());
+		Entity entity = new Entity(this, ids.incrementAndGet());
 		this.entities.put(entity.getId(), entity);
 		return entity;
 	}

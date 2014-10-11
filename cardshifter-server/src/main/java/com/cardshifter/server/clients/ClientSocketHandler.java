@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
+import net.zomis.cardshifter.ecs.usage.CardshifterIO;
+
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -27,7 +29,7 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 	private final InputStream in;
 	private final OutputStream out;
 	
-	private final ObjectMapper mapper = new ObjectMapper();
+	private final ObjectMapper mapper = CardshifterIO.mapper();
 
 	public ClientSocketHandler(Server server, Socket socket) throws IOException {
 		super(server);

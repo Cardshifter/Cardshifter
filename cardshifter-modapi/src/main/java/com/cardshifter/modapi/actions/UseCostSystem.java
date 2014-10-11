@@ -23,7 +23,12 @@ public class UseCostSystem extends SpecificActionSystem {
 
 	@Override
 	protected void isAllowed(ActionAllowedCheckEvent event) {
-		ECSResourceData have = useResource.resFor(whoPays.apply(event.getEntity()));
+		Entity payer = whoPays.apply(event.getEntity());
+		if (!useResource.has(payer)) {
+			event.setAllowed(false);
+			return;
+		}
+		ECSResourceData have = useResource.resFor(payer);
 		int want = cost.applyAsInt(event.getEntity());
 		if (!have.has(want)) {
 			event.setAllowed(false);

@@ -32,9 +32,19 @@ public class ECSAction {
 	}
 	
 	public ECSAction copy() {
-		return new ECSAction(this.owner, this.name, this.allowed, this.perform);
+		return copy(owner);
 	}
 
+	public ECSAction copy(Entity copyTo) {
+		ECSAction action = new ECSAction(copyTo, this.name, this.allowed, this.perform);
+		for (TargetSet set : targetSets) {
+			action.addTargetSet(set.getMin(), set.getMax());
+			TargetSet lastSet = action.getTargetSets().get(action.getTargetSets().size() - 1);
+			set.getChosenTargets().forEach(target -> lastSet.addTarget(target));
+		}
+		return action;
+	}
+	
 	public boolean perform(Entity performer) {
 		if (!this.isAllowed(performer)) {
 			return false;
@@ -70,5 +80,5 @@ public class ECSAction {
 	public String toString() {
 		return name + " for entity " + owner;
 	}
-	
+
 }

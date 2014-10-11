@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import net.zomis.cardshifter.ecs.usage.CardshifterIO;
+
 import com.cardshifter.api.messages.Message;
 import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.InjectableValues.Std;
@@ -23,7 +25,7 @@ public class IncomingHandler {
 
 	public IncomingHandler(Server server) {
 		this.consumer = new ConcurrentHashMap<>();
-		mapper = new ObjectMapper();
+		mapper = CardshifterIO.mapper();
 		Std inject = new InjectableValues.Std().addValue(Server.class, server);
 		reader = mapper.reader(Message.class).with(inject);
 	}

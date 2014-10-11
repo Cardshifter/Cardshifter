@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 
 import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.both.InviteResponse;
+import com.cardshifter.api.both.PlayerConfigMessage;
 import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.incoming.RequestTargetsMessage;
 import com.cardshifter.api.incoming.ServerQueryMessage;
@@ -106,7 +107,6 @@ public class Handlers {
 			GameInvite invite = new GameInvite(server, invites.newId(), server.getMainChat(), client, game, message.getGameType());
 			invites.add(invite);
 			invite.addPlayer(opponent);
-			invite.start();
 		}
 	}
 
@@ -123,6 +123,11 @@ public class Handlers {
 	public void chat(ChatMessage message, ClientIO client) {
 		ChatArea chat = server.getChats().get(message.getChatId());
 		chat.incomingMessage(message, client);
+	}
+	
+	public void incomingConfig(PlayerConfigMessage message, ClientIO client) {
+		TCGGame game = (TCGGame) server.getGames().get(message.getGameId());
+		game.incomingPlayerConfig(message, client);
 	}
 	
 }

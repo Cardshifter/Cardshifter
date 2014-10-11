@@ -22,6 +22,7 @@ import com.cardshifter.modapi.ai.AIComponent;
 import com.cardshifter.modapi.ai.CardshifterAI;
 import com.cardshifter.modapi.base.ComponentRetriever;
 import com.cardshifter.modapi.base.ECSGame;
+import com.cardshifter.modapi.base.ECSMod;
 import com.cardshifter.modapi.base.Entity;
 import com.cardshifter.modapi.base.PlayerComponent;
 import com.cardshifter.modapi.cards.BattlefieldComponent;
@@ -59,6 +60,7 @@ public class FXMLGameController {
 	public ECSAction nextAction;
    
 	private final CardshifterAI opponent = new CompleteIdiot();
+	private final ECSMod mod = new PhrancisGame();
 	private ECSGame game;
 
 	private PhaseController phases;
@@ -78,7 +80,9 @@ public class FXMLGameController {
 	}
 	
 	public void initializeGame() {
-		game = PhrancisGame.createGame(new ECSGame());
+		game = new ECSGame();
+		mod.declareConfiguration(game);
+		mod.setupGame(game);
 		phases = ComponentRetriever.singleton(game, PhaseController.class);
 		
 		if (!aiIsLoaded) {

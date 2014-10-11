@@ -14,6 +14,7 @@ import com.cardshifter.modapi.actions.TargetSet;
 import com.cardshifter.modapi.base.Component;
 import com.cardshifter.modapi.base.ComponentRetriever;
 import com.cardshifter.modapi.base.ECSGame;
+import com.cardshifter.modapi.base.ECSMod;
 import com.cardshifter.modapi.base.Entity;
 import com.cardshifter.modapi.base.PlayerComponent;
 import com.cardshifter.modapi.cards.ZoneComponent;
@@ -156,6 +157,10 @@ public class ConsoleControllerECS {
 	}
 	
 	public static void main(String[] args) {
-		new ConsoleControllerECS(PhrancisGame.createGame(new ECSGame())).play(new Scanner(System.in, StandardCharsets.UTF_8.name()));
+		ECSMod mod = new PhrancisGame();
+		ECSGame newgame = new ECSGame();
+		mod.declareConfiguration(newgame);
+		mod.setupGame(newgame);
+		new ConsoleControllerECS(newgame).play(new Scanner(System.in, StandardCharsets.UTF_8.name()));
 	}
 }

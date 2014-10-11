@@ -6,9 +6,13 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -23,11 +27,15 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import net.zomis.cardshifter.ecs.usage.CardshifterIO;
+import net.zomis.cardshifter.ecs.usage.DeckConfig;
 
 import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.both.InviteRequest;
 import com.cardshifter.api.both.InviteResponse;
+import com.cardshifter.api.both.PlayerConfigMessage;
 import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.incoming.ServerQueryMessage;
 import com.cardshifter.api.incoming.ServerQueryMessage.Request;
@@ -41,14 +49,8 @@ import com.cardshifter.api.outgoing.UserStatusMessage.Status;
 import com.cardshifter.client.buttons.GameTypeButton;
 import com.cardshifter.client.buttons.GenericButton;
 import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import javafx.scene.layout.HBox;
 
 public class GameClientLobby implements Initializable {
 	
@@ -60,7 +62,7 @@ public class GameClientLobby implements Initializable {
 	@FXML private AnchorPane inviteWindow;
 	@FXML private HBox gameTypeBox;
 	
-	private final ObjectMapper mapper = new ObjectMapper();
+	private final ObjectMapper mapper = CardshifterIO.mapper();
 	private final Set<GameClientController> gamesRunning = new HashSet<>();
 	private Socket socket;	
 	private InputStream in;
@@ -75,6 +77,7 @@ public class GameClientLobby implements Initializable {
 	private InviteRequest currentGameRequest;
 	private final List<String> gameTypes = new ArrayList<>();
 	private String selectedGameType;
+	private PlayerConfigMessage currentPlayerConfig;
 	
 	public void acceptConnectionSettings(String ipAddress, int port, String userName) {
 		// this is passed into this object after it is automatically created by the FXML document
@@ -88,8 +91,6 @@ public class GameClientLobby implements Initializable {
 			this.socket = new Socket(this.ipAddress, this.port);
 			this.out = socket.getOutputStream();
 			this.in = socket.getInputStream();
-			mapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, false);
-			mapper.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
 			this.listenThread = new Thread(this::listen);
 			this.listenThread.start();
 		} catch (IOException ex) {
@@ -162,6 +163,9 @@ public class GameClientLobby implements Initializable {
 		} else if (message instanceof ServerErrorMessage) {
 			ServerErrorMessage msg = (ServerErrorMessage) message;
 			this.chatOutput("SERVER ERROR: " + msg.getMessage());
+		} else if (message instanceof PlayerConfigMessage) {
+			PlayerConfigMessage msg = (PlayerConfigMessage) message;
+			this.showConfigDialog(msg);
 		} else if (message instanceof InviteRequest) {
 			this.currentGameRequest = (InviteRequest)message;
 			this.createInviteWindow((InviteRequest)message);
@@ -169,6 +173,54 @@ public class GameClientLobby implements Initializable {
 			this.gameTypes.addAll(Arrays.asList(((AvailableModsMessage)message).getMods()));
 			this.createGameTypeButtons();
 		}
+	}
+	
+	private void showConfigDialog(PlayerConfigMessage configMessage) {
+		this.currentPlayerConfig = configMessage;
+		
+		Map<String, Object> configs = configMessage.getConfigs();
+		
+		for (Entry<String, Object> entry : configs.entrySet()) {
+			Object value = entry.getValue();
+			if (value instanceof DeckConfig) {
+				DeckConfig deckConfig = (DeckConfig) value;
+				this.showDeckBuilderWindow(deckConfig);
+			}
+		}		
+	}
+	
+	public void sendDeckAndPlayerConfigToServer(DeckConfig deckConfig) {
+		Map<String, Object> configs = this.currentPlayerConfig.getConfigs();
+		
+		for (Entry<String, Object> entry : configs.entrySet()) {
+			Object value = entry.getValue();
+			if (value instanceof DeckConfig) {
+				DeckConfig config = (DeckConfig) value;
+				config = deckConfig;
+			}
+		}
+		
+		this.send(new PlayerConfigMessage(this.currentPlayerConfig.getGameId(), configs));
+	}
+	
+	private void showDeckBuilderWindow(DeckConfig deckConfig) {
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("DeckBuilderDocument.fxml"));
+			Parent root = (Parent)loader.load();
+			DeckBuilderWindow controller = loader.<DeckBuilderWindow>getController();
+			
+			controller.acceptDeckConfig(deckConfig, this);
+			controller.configureWindow();
+			
+			Scene scene = new Scene(root);
+			Stage stage = new Stage();
+			stage.setScene(scene);
+			//stage.setOnCloseRequest(windowEvent -> this.closeDeckBuilder(controller));
+			stage.show();
+		}
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 	}
 	
 	private void startNewGame(NewGameMessage message) {

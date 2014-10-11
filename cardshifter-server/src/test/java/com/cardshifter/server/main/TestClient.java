@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import net.zomis.cardshifter.ecs.usage.CardshifterIO;
+
 import org.junit.Assert;
 
 import com.cardshifter.api.messages.Message;
@@ -36,7 +38,7 @@ public class TestClient {
 	
 	public TestClient() throws UnknownHostException, IOException {
 		this.socket = new Socket("127.0.0.1", 4242);
-		this.mapper = new ObjectMapper();
+		this.mapper = CardshifterIO.mapper();
 		out = socket.getOutputStream();
 		in = socket.getInputStream();
 		mapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, false);

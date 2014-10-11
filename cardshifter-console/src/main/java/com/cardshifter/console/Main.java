@@ -17,6 +17,7 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import com.cardshifter.core.Game;
 import com.cardshifter.modapi.base.ECSGame;
+import com.cardshifter.modapi.base.ECSMod;
 
 public class Main {
 
@@ -42,7 +43,11 @@ public class Main {
 				startLuaGame(options);
 			}
 			else {
-				new ConsoleControllerECS(PhrancisGame.createGame(new ECSGame())).play(input);
+				ECSMod mod = new PhrancisGame();
+				ECSGame newgame = new ECSGame();
+				mod.declareConfiguration(newgame);
+				mod.setupGame(newgame);
+				new ConsoleControllerECS(newgame).play(input);
 			}
 		}
 	}

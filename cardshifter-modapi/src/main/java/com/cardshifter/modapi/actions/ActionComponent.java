@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import com.cardshifter.modapi.base.Component;
+import com.cardshifter.modapi.base.CopyableComponent;
+import com.cardshifter.modapi.base.Entity;
 
-public class ActionComponent extends Component {
+public class ActionComponent extends Component implements CopyableComponent {
 
 	private final Map<String, ECSAction> actions = new HashMap<>();
 
@@ -34,6 +37,15 @@ public class ActionComponent extends Component {
 	
 	public boolean removeAction(String actionName) {
 		return actions.remove(actionName) != null;
+	}
+
+	@Override
+	public Component copy(Entity copyTo) {
+		ActionComponent copy = new ActionComponent();
+		for (Entry<String, ECSAction> entry : actions.entrySet()) {
+			copy.addAction(entry.getValue().copy(copyTo));
+		}
+		return copy;
 	}
 	
 }
