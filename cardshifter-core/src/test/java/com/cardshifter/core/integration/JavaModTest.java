@@ -2,6 +2,7 @@
 package com.cardshifter.core.integration;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 
 import static org.junit.Assert.*;
@@ -18,9 +19,14 @@ import com.cardshifter.modapi.base.Entity;
 import com.cardshifter.modapi.base.PlayerComponent;
 import com.cardshifter.modapi.resources.ECSResourceData;
 import com.cardshifter.modapi.resources.ECSResourceMap;
+
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -61,5 +67,44 @@ public class JavaModTest {
 			assertEquals(10, testResource.get());
 			//TODO check that this belongs to resource called "TEST"
 		}
+	}
+	
+	@Test
+	public void testLoadModSimple() throws IOException, ClassNotFoundException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ModNotLoadableException {
+		Path modLoaderDirectory = Files.createTempDirectory("modloader");
+		modLoaderDirectory.toFile().deleteOnExit();
+		
+		Path modDirectory = Files.createTempDirectory(modLoaderDirectory, "simplemod");
+		Path compileDirectory = Files.createTempDirectory("compileDirectory");
+		
+		String simpleModSourceString = RuntimeJarHelper.createModSourceString(
+			"SimpleMod", 
+			"import com.cardshifter.modapi.base.PlayerComponent;\n", 
+			"game.newEntity().addComponent(new PlayerComponent(0, \"Test Player\"));\n"
+		);
+		
+		Path simpleModSource = compileDirectory.resolve("SimpleMod.java");
+		Files.createFile(simpleModSource);
+		Files.write(simpleModSource, simpleModSourceString.getBytes(StandardCharsets.UTF_8));
+		
+		Path compiledModSource = RuntimeJarHelper.compileJavaSource(simpleModSource, compileDirectory);
+		
+		Path jarFile = modDirectory.resolve("simplemod");
+		Files.createFile(jarFile);
+		RuntimeJarHelper.createJar(jarFile, Arrays.asList(compiledModSource));
+		
+		Properties properties = new Properties();
+		properties.setProperty("language", "java");
+		properties.setProperty("jar", jarFile.getFileName().toString());
+		properties.setProperty("entryPoint", "com.cardshifter.core.integration.throwaway.runtimemod.SimpleMod");
+		RuntimeJarHelper.createProperties(modDirectory, properties);
+		
+		ModLoader modLoader = new DirectoryModLoader(modLoaderDirectory);
+		Mod mod = modLoader.load(modDirectory.getFileName().toString());
+		
+		ECSGame ecsGame = mod.createGame();
+		assertEquals(1, ecsGame.getEntitiesWithComponent(PlayerComponent.class).size());
+		
+		modLoader.unload(modDirectory.getFileName().toString());
 	}
 }
