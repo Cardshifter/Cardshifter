@@ -22,4 +22,8 @@ public class Resources {
 		return new ResourceRetriever(resource);
 	}
 
+	public static int getOrDefault(Entity entity, ECSResource resource, int defaultValue) {
+		return ResourceRetriever.forResource(resource).getOrDefault(entity, defaultValue);
+	}
+
 }
