@@ -115,7 +115,7 @@ public class JavaModTest {
 		modLoader.unload(modDirectory.getFileName().toString());
 	}
 	
-	@Test
+	@Test(expected = SecurityException.class)
 	public void testLoadModThatExitsJVM() throws IOException, ClassNotFoundException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ModNotLoadableException {
 		Path modLoaderDirectory = Files.createTempDirectory("modloader");
 		modLoaderDirectory.toFile().deleteOnExit();
@@ -154,7 +154,7 @@ public class JavaModTest {
 		modLoader.unload(modDirectory.getFileName().toString());
 	}
 	
-	@Test
+	@Test(expected = SecurityException.class)
 	public void testLoadModThatExitsJVMViaCallback() throws IOException, ClassNotFoundException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ModNotLoadableException {
 		Path modLoaderDirectory = Files.createTempDirectory("modloader");
 		modLoaderDirectory.toFile().deleteOnExit();
