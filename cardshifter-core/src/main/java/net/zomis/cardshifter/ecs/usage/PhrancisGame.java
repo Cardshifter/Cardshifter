@@ -63,22 +63,36 @@ public class PhrancisGame implements ECSMod {
 		neutral.addComponent(zone);
 		
 		// Create card models that should be possible to choose from
-		
+		// B0Ts
+		createCreature(0, zone, 0, 1, "B0T", 1);
 		createCreature(1, zone, 1, 1, "B0T", 1);
 		createCreature(2, zone, 2, 1, "B0T", 1);
-		createCreature(3, zone, 3, 3, "B0T", 1);
-		createCreature(4, zone, 4, 4, "B0T", 1);
-		createCreature(5, zone, 5, 5, "B0T", 1);
+		createCreature(2, zone, 1, 2, "B0T", 1);
+		createCreature(3, zone, 3, 3, "B0T", 2);
+		createCreature(3, zone, 2, 4, "B0T", 2);
+		createCreature(3, zone, 4, 2, "B0T", 2);
+		createCreature(5, zone, 3, 1, "B0T", 3);
+		createCreature(5, zone, 1, 3, "B0T", 3);
+		createCreature(5, zone, 4, 4, "B0T", 3);
 		
-		createCreature(5, zone, 4, 4, "Bio", 0);
-		createCreature(5, zone, 5, 3, "Bio", 0);
-		createCreature(5, zone, 3, 5, "Bio", 0);
+		// Bios
+		createCreature(3, zone, 3, 2, "Bio", 0);
+		createCreature(4, zone, 2, 3, "Bio", 0);
+		createCreature(5, zone, 3, 3, "Bio", 0);
+		createCreature(6, zone, 4, 4, "Bio", 0);
+		createCreature(6, zone, 5, 3, "Bio", 0);
+		createCreature(6, zone, 3, 5, "Bio", 0);
+		createCreature(8, zone, 5, 5, "Bio", 0);
+		createCreature(10, zone, 6, 6, "Bio", 0);
 		
+		// Enchantments: (deck), attack effect, health effect, scrap cost
 		createEnchantment(zone, 1, 0, 1);
 		createEnchantment(zone, 0, 1, 1);
-		createEnchantment(zone, 3, 0, 3);
-		createEnchantment(zone, 0, 3, 3);
-		createEnchantment(zone, 2, 2, 5);
+		createEnchantment(zone, 1, 1, 1);
+		createEnchantment(zone, 2, 1, 2);
+		createEnchantment(zone, 3, 0, 2);
+		createEnchantment(zone, 0, 3, 2);
+		createEnchantment(zone, 2, 2, 3);
 		
 		// Create the players
 		int maxCardsPerType = 3;
