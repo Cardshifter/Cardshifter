@@ -38,7 +38,7 @@ public class JavaMod extends LoadableMod {
 			Path jarPath = modDirectory.resolve(jarName);
 			
 			try {
-				urlClassLoader = AccessController.doPrivileged((PrivilegedExceptionAction<URLClassLoader>)(() -> new URLClassLoader(new URL[] { jarPath.toUri().toURL() }, getClass().getClassLoader())));
+				urlClassLoader = AccessController.doPrivileged((PrivilegedExceptionAction<URLClassLoader>)() -> new URLClassLoader(new URL[] { jarPath.toUri().toURL() }, getClass().getClassLoader()));
 			} catch (PrivilegedActionException ex) {
 				throw new ModNotLoadableException(ex);
 			}			 

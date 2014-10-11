@@ -30,12 +30,19 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.junit.Ignore;
+import org.junit.Rule;
+import org.junit.contrib.java.lang.system.ExpectedSystemExit;
+
 /**
  *
  * @author Frank van Heeswijk
  */
 public class JavaModTest {
 	private final static String MOD_NAME = "cardshifter-mod-examples-java";
+	
+	@Rule
+	public final ExpectedSystemExit exit = ExpectedSystemExit.none();
 	
 	@Test
 	public void testLoadMod() throws IOException, URISyntaxException, ModNotLoadableException {
@@ -87,11 +94,11 @@ public class JavaModTest {
 		Files.createFile(simpleModSource);
 		Files.write(simpleModSource, simpleModSourceString.getBytes(StandardCharsets.UTF_8));
 		
-		Path compiledModSource = RuntimeJarHelper.compileJavaSource(simpleModSource, compileDirectory);
+		List<Path> compiledModSources = RuntimeJarHelper.compileJavaSource(simpleModSource, compileDirectory);
 		
 		Path jarFile = modDirectory.resolve("simplemod");
 		Files.createFile(jarFile);
-		RuntimeJarHelper.createJar(jarFile, Arrays.asList(compiledModSource));
+		RuntimeJarHelper.createJar(jarFile, compiledModSources);
 		
 		Properties properties = new Properties();
 		properties.setProperty("language", "java");
@@ -104,6 +111,95 @@ public class JavaModTest {
 		
 		ECSGame ecsGame = mod.createGame();
 		assertEquals(1, ecsGame.getEntitiesWithComponent(PlayerComponent.class).size());
+		
+		modLoader.unload(modDirectory.getFileName().toString());
+	}
+	
+	@Test
+	public void testLoadModThatExitsJVM() throws IOException, ClassNotFoundException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ModNotLoadableException {
+		Path modLoaderDirectory = Files.createTempDirectory("modloader");
+		modLoaderDirectory.toFile().deleteOnExit();
+		
+		Path modDirectory = Files.createTempDirectory(modLoaderDirectory, "exitingmod");
+		Path compileDirectory = Files.createTempDirectory("compileDirectory");
+		
+		String simpleModSourceString = RuntimeJarHelper.createModSourceString(
+			"ExitingMod", 
+			"", 
+			"System.exit(0);\n"
+		);
+		
+		Path simpleModSource = compileDirectory.resolve("ExitingMod.java");
+		Files.createFile(simpleModSource);
+		Files.write(simpleModSource, simpleModSourceString.getBytes(StandardCharsets.UTF_8));
+		
+		List<Path> compiledModSources = RuntimeJarHelper.compileJavaSource(simpleModSource, compileDirectory);
+		
+		Path jarFile = modDirectory.resolve("exitingmod");
+		Files.createFile(jarFile);
+		RuntimeJarHelper.createJar(jarFile, compiledModSources);
+		
+		Properties properties = new Properties();
+		properties.setProperty("language", "java");
+		properties.setProperty("jar", jarFile.getFileName().toString());
+		properties.setProperty("entryPoint", "com.cardshifter.core.integration.throwaway.runtimemod.ExitingMod");
+		RuntimeJarHelper.createProperties(modDirectory, properties);
+		
+		ModLoader modLoader = new DirectoryModLoader(modLoaderDirectory);
+		Mod mod = modLoader.load(modDirectory.getFileName().toString());
+		
+		ECSGame ecsGame = mod.createGame();
+		assertEquals(0, ecsGame.getEntitiesWithComponent(PlayerComponent.class).size());
+		
+		modLoader.unload(modDirectory.getFileName().toString());
+	}
+	
+	@Test
+	public void testLoadModThatExitsJVMViaCallback() throws IOException, ClassNotFoundException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ModNotLoadableException {
+		Path modLoaderDirectory = Files.createTempDirectory("modloader");
+		modLoaderDirectory.toFile().deleteOnExit();
+		
+		Path modDirectory = Files.createTempDirectory(modLoaderDirectory, "exitingviacallbackmod");
+		Path compileDirectory = Files.createTempDirectory("compileDirectory");
+		
+		String simpleModSourceString = RuntimeJarHelper.createModSourceString(
+			"ExitingViaCallbackMod", 
+			new StringBuilder()
+			.append("import com.cardshifter.modapi.base.ECSSystem;\n")
+			.append("import com.cardshifter.modapi.events.StartGameEvent;\n")
+			.toString(), 
+			new StringBuilder()
+			.append("game.addSystem(new ECSSystem() {\n")
+			.append("    @Override\n")
+			.append("    public void startGame(final ECSGame game) {\n")
+			.append("		game.getEvents().registerHandlerAfter(this, StartGameEvent.class, event -> System.exit(0));\n")
+			.append("    }\n")
+			.append("});\n")
+			.toString()
+		);
+		
+		Path simpleModSource = compileDirectory.resolve("ExitingViaCallbackMod.java");
+		Files.createFile(simpleModSource);
+		Files.write(simpleModSource, simpleModSourceString.getBytes(StandardCharsets.UTF_8));
+		
+		List<Path> compiledModSources = RuntimeJarHelper.compileJavaSource(simpleModSource, compileDirectory);
+		
+		Path jarFile = modDirectory.resolve("exitingviacallbackmod");
+		Files.createFile(jarFile);
+		RuntimeJarHelper.createJar(jarFile, compiledModSources);
+		
+		Properties properties = new Properties();
+		properties.setProperty("language", "java");
+		properties.setProperty("jar", jarFile.getFileName().toString());
+		properties.setProperty("entryPoint", "com.cardshifter.core.integration.throwaway.runtimemod.ExitingViaCallbackMod");
+		RuntimeJarHelper.createProperties(modDirectory, properties);
+		
+		ModLoader modLoader = new DirectoryModLoader(modLoaderDirectory);
+		Mod mod = modLoader.load(modDirectory.getFileName().toString());
+		
+		ECSGame ecsGame = mod.createGame();
+		ecsGame.startGame();
+		assertEquals(0, ecsGame.getEntitiesWithComponent(PlayerComponent.class).size());
 		
 		modLoader.unload(modDirectory.getFileName().toString());
 	}

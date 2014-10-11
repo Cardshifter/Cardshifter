@@ -70,5 +70,11 @@
 			<artifactId>scorers</artifactId>
 			<version>0.2-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+		  <groupId>com.github.stefanbirkner</groupId>
+		  <artifactId>system-rules</artifactId>
+		  <version>1.7.0</version>
+		  <scope>test</scope>
+		</dependency>
 	</dependencies>
 </project>
