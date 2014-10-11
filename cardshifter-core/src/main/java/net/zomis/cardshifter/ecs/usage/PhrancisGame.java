@@ -230,7 +230,7 @@ public class PhrancisGame implements ECSMod {
 			.set(PhrancisResources.SCRAP, scrapValue)
 			.set(PhrancisResources.MANA_COST, cost)
 			.set(PhrancisResources.SICKNESS, 1)
-			.set(PhrancisResources.TRAMPLE, 1)
+//			.set(PhrancisResources.TRAMPLE, 1)
 			.set(PhrancisResources.ATTACK_AVAILABLE, 1);
 		entity.addComponent(new CreatureTypeComponent(creatureType));
 		deck.addOnBottom(entity);
