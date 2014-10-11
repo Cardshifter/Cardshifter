@@ -5,7 +5,6 @@ import com.cardshifter.client.buttons.GenericButton;
 import com.cardshifter.client.buttons.SavedDeckButton;
 import com.cardshifter.client.views.CardHandDocumentController;
 import com.cardshifter.client.views.DeckCardController;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,8 +60,8 @@ public class DeckBuilderWindow {
 		this.exitButton.setOnMouseClicked(this::startGame);
 		this.saveDeckButton.setOnMouseClicked(this::saveDeck);
 		this.loadDeckButton.setOnMouseClicked(this::loadDeck);
-		this.activeDeckBox.setOnDragDropped(e -> this.completeDrag(e, true));
-		this.activeDeckBox.setOnDragOver(e -> this.completeDrag(e, false));
+		this.activeDeckBox.setOnDragDropped(e -> this.completeDragToActiveDeck(e, true));
+		this.activeDeckBox.setOnDragOver(e -> this.completeDragToActiveDeck(e, false));
 		this.pageList = listSplitter(new ArrayList<>(this.cardList.values()), CARDS_PER_PAGE);
 		this.displayCurrentPage();
 		this.displaySavedDecks();
@@ -80,7 +79,7 @@ public class DeckBuilderWindow {
 			CardHandDocumentController card = new CardHandDocumentController(message, null);
 			Pane cardPane = card.getRootPane();			
 			cardPane.setOnMouseClicked(e -> {this.addCardToActiveDeck(e, message);});
-			cardPane.setOnDragDetected(e -> this.startDrag(e, cardPane, message));
+			cardPane.setOnDragDetected(e -> this.startDragToActiveDeck(e, cardPane, message));
 			this.cardListBox.getChildren().add(cardPane);
 		}
 	}
@@ -91,7 +90,7 @@ public class DeckBuilderWindow {
 		if (dir.listFiles() != null) {
 			for (File file : dir.listFiles()) {
 				try {
-					if ((new CardshifterIO().mapper().readValue(file, DeckConfig.class) instanceof DeckConfig)) {
+					if ((CardshifterIO.mapper().readValue(file, DeckConfig.class) instanceof DeckConfig)) {
 						SavedDeckButton deckButton = new SavedDeckButton(this.deckListBox.getPrefWidth(), 40, file.getName(), this);
 						this.deckListBox.getChildren().add(deckButton);
 					}
@@ -135,7 +134,7 @@ public class DeckBuilderWindow {
 		this.displayActiveDeck();
 	}
 	
-	private void startDrag(MouseEvent event, Pane pane, CardInfoMessage message) {
+	private void startDragToActiveDeck(MouseEvent event, Pane pane, CardInfoMessage message) {
 		this.cardBeingDragged = message;
  		Dragboard db = pane.startDragAndDrop(TransferMode.MOVE);
  		ClipboardContent content = new ClipboardContent();
@@ -144,7 +143,7 @@ public class DeckBuilderWindow {
 		event.consume();
  	}
 	
-	private void completeDrag(DragEvent event, boolean dropped) {
+	private void completeDragToActiveDeck(DragEvent event, boolean dropped) {
 		event.acceptTransferModes(TransferMode.MOVE);
 		if (dropped) {
 			this.addCardToActiveDeck(null, this.cardBeingDragged);
@@ -159,11 +158,11 @@ public class DeckBuilderWindow {
 	private void saveDeck(MouseEvent event) {
 		if(!this.deckNameBox.textProperty().get().isEmpty()) {
 			try {
-				File file = new File(this.deckNameBox.textProperty().get());
+				File file = new File(this.deckNameBox.textProperty().get() + ".deck");
 				if (file.isFile()) {
 					System.out.println("Deck already exists");
 				} else {
-					new CardshifterIO().mapper().writeValue(new File(this.deckNameBox.textProperty().get()), this.activeDeckConfig);
+					CardshifterIO.mapper().writeValue(new File(this.deckNameBox.textProperty().get() + ".deck"), this.activeDeckConfig);
 				}
 			} catch (Exception e) {
 				System.out.println("Deck failed to save");
@@ -175,8 +174,9 @@ public class DeckBuilderWindow {
 	private void loadDeck(MouseEvent event) {
 		if (this.deckToLoad != null) {
 			try {
-				this.activeDeckConfig = new CardshifterIO().mapper().readValue(new File(this.deckToLoad), DeckConfig.class);
-				this.deckNameBox.textProperty().set(this.deckToLoad);
+				this.activeDeckConfig = CardshifterIO.mapper().readValue(new File(this.deckToLoad), DeckConfig.class);
+				String truncatedDeckName = this.deckToLoad.substring(0, this.deckToLoad.length()- 5);
+				this.deckNameBox.textProperty().set(truncatedDeckName);
 			} catch (Exception e) {
 				System.out.println("Deck failed to load");
 			}
