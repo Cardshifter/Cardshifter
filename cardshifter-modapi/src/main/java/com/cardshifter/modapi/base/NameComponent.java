@@ -1,6 +1,5 @@
-package net.zomis.cardshifter.ecs.usage;
+package com.cardshifter.modapi.base;
 
-import com.cardshifter.modapi.base.Component;
 
 public class NameComponent extends Component {
 

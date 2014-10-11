@@ -9,12 +9,12 @@ import java.util.function.Consumer;
 
 import net.zomis.cardshifter.ecs.usage.CW2Game;
 import net.zomis.cardshifter.ecs.usage.CostComponent;
-import net.zomis.cardshifter.ecs.usage.NameComponent;
 import net.zomis.cardshifter.ecs.usage.CW2Game.Resources;
 
 import com.cardshifter.modapi.base.Component;
 import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.Entity;
+import com.cardshifter.modapi.base.NameComponent;
 import com.cardshifter.modapi.resources.ECSResource;
 
 public class CrystalCards implements Consumer<ECSGame> {
