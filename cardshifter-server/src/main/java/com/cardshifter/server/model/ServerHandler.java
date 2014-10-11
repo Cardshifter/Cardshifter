@@ -2,6 +2,7 @@ package com.cardshifter.server.model;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -24,6 +25,11 @@ public class ServerHandler<T extends IdObject> {
 
 	public Map<Integer, T> all() {
 		return Collections.unmodifiableMap(map);
+	}
+	
+	public void remove(T object) {
+		Objects.requireNonNull(object, "Object to remove cannot be null");
+		map.remove(object.getId());
 	}
 
 }
