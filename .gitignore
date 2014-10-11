@@ -1,5 +1,6 @@
 *.class
 .settings/
+.metadata/
 */bin/**
 */target/**
 dependency-reduced-pom.xml
