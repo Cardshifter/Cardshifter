@@ -24,9 +24,11 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import net.zomis.cardshifter.ecs.usage.CardshifterIO;
 import net.zomis.cardshifter.ecs.usage.DeckConfig;
 
 public class DeckBuilderWindow {
+	
 	@FXML private FlowPane cardListBox;
 	@FXML private VBox activeDeckBox;
 	@FXML private VBox deckListBox;
@@ -38,15 +40,14 @@ public class DeckBuilderWindow {
 	@FXML private AnchorPane exitButton;
 	@FXML private Label cardCountLabel;
 	
-	private GameClientLobby lobby;
 	private static final int CARDS_PER_PAGE = 12;
 	private int currentPage = 0;
-	
 	private Map<Integer, CardInfoMessage> cardList = new HashMap<>();
 	private List<List<CardInfoMessage>> pageList = new ArrayList<>();
 	private DeckConfig activeDeckConfig;
-	private String deckToLoad;
 	private CardInfoMessage cardBeingDragged;
+	private GameClientLobby lobby;
+	private String deckToLoad;
 	
 	public void acceptDeckConfig(DeckConfig deckConfig, GameClientLobby lobby) {
 		this.lobby = lobby;
@@ -67,15 +68,9 @@ public class DeckBuilderWindow {
 		this.displaySavedDecks();
 	}
 	
-	//File jarFile = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
-	private void displaySavedDecks() {
-		this.deckListBox.getChildren().clear();
-		File dir = new File("");
-		if (dir.listFiles() != null) {
-			for (File file : dir.listFiles()) {
-				SavedDeckButton deckButton = new SavedDeckButton(this.deckListBox.getPrefWidth(), 40, file.getName(), this);
-				this.deckListBox.getChildren().add(deckButton);
-			}
+	private void startGame(MouseEvent event) {
+		if (this.activeDeckConfig.getTotal() == this.activeDeckConfig.getMaxSize()) {
+			this.lobby.sendDeckAndPlayerConfigToServer(this.activeDeckConfig);
 		}
 	}
 	
@@ -89,20 +84,37 @@ public class DeckBuilderWindow {
 			this.cardListBox.getChildren().add(cardPane);
 		}
 	}
-	
-	private void goToPreviousPage(MouseEvent event) {
-		if (this.currentPage > 0) {
-			this.currentPage--;
-			this.displayCurrentPage();
+
+	private void displaySavedDecks() {
+		this.deckListBox.getChildren().clear();
+		File dir = new File(".");
+		if (dir.listFiles() != null) {
+			for (File file : dir.listFiles()) {
+				try {
+					if ((new CardshifterIO().mapper().readValue(file, DeckConfig.class) instanceof DeckConfig)) {
+						SavedDeckButton deckButton = new SavedDeckButton(this.deckListBox.getPrefWidth(), 40, file.getName(), this);
+						this.deckListBox.getChildren().add(deckButton);
+					}
+				} catch (Exception e) {
+					//swallowing this exception because it clogs the logs
+					//happens every time the file is not the proper format
+					//System.out.println("File failed to load");
+				}				
+			}
 		}
 	}
-	private void goToNextPage(MouseEvent event) {
-		if (this.currentPage < this.pageList.size() - 1) {
-			this.currentPage++;
-			this.displayCurrentPage();
-		}
-	}
 	
+	private void displayActiveDeck() {
+		this.activeDeckBox.getChildren().clear();
+		for (Integer cardId : this.activeDeckConfig.getChosen().keySet()) {
+			DeckCardController card = new DeckCardController(this.cardList.get(cardId), this.activeDeckConfig.getChosen().get(cardId));
+			Pane cardPane = card.getRootPane();
+			cardPane.setOnMouseClicked(e -> {this.removeCardFromDeck(e, cardId);});
+			this.activeDeckBox.getChildren().add(cardPane);
+		}
+		this.cardCountLabel.setText(String.format("%d / %d", this.activeDeckConfig.getTotal(), this.activeDeckConfig.getMaxSize()));
+	}
+
 	private void addCardToActiveDeck(MouseEvent event, CardInfoMessage message) {
 		if (this.activeDeckConfig.getTotal() < this.activeDeckConfig.getMaxSize()) {
 			if(this.activeDeckConfig.getChosen().get(message.getId()) == null) {
@@ -123,30 +135,38 @@ public class DeckBuilderWindow {
 		this.displayActiveDeck();
 	}
 	
-	private void displayActiveDeck() {
-		this.activeDeckBox.getChildren().clear();
-		for (Integer cardId : this.activeDeckConfig.getChosen().keySet()) {
-			DeckCardController card = new DeckCardController(this.cardList.get(cardId), this.activeDeckConfig.getChosen().get(cardId));
-			Pane cardPane = card.getRootPane();
-			cardPane.setOnMouseClicked(e -> {this.removeCardFromDeck(e, cardId);});
-			this.activeDeckBox.getChildren().add(cardPane);
-		}
-		this.cardCountLabel.setText(String.format("%d / %d", this.activeDeckConfig.getTotal(), this.activeDeckConfig.getMaxSize()));
-	}
+	private void startDrag(MouseEvent event, Pane pane, CardInfoMessage message) {
+		this.cardBeingDragged = message;
+ 		Dragboard db = pane.startDragAndDrop(TransferMode.MOVE);
+ 		ClipboardContent content = new ClipboardContent();
+ 		content.putString(message.toString());
+ 		db.setContent(content);
+		event.consume();
+ 	}
 	
-	private void startGame(MouseEvent event) {
-		if (this.activeDeckConfig.getTotal() == this.activeDeckConfig.getMaxSize()) {
-			this.lobby.sendDeckAndPlayerConfigToServer(this.activeDeckConfig);
+	private void completeDrag(DragEvent event, boolean dropped) {
+		event.acceptTransferModes(TransferMode.MOVE);
+		if (dropped) {
+			this.addCardToActiveDeck(null, this.cardBeingDragged);
 		}
+		event.consume();
+ 	}
+
+	public void setDeckToLoad(String deckName) {
+		this.deckToLoad = deckName;
 	}
-	
+
 	private void saveDeck(MouseEvent event) {
 		if(!this.deckNameBox.textProperty().get().isEmpty()) {
 			try {
-				new ObjectMapper().writeValue(new File(this.deckNameBox.textProperty().get()), this.activeDeckConfig);
+				File file = new File(this.deckNameBox.textProperty().get());
+				if (file.isFile()) {
+					System.out.println("Deck already exists");
+				} else {
+					new CardshifterIO().mapper().writeValue(new File(this.deckNameBox.textProperty().get()), this.activeDeckConfig);
+				}
 			} catch (Exception e) {
-				System.out.println("Failed to save deck");
-				e.printStackTrace();
+				System.out.println("Deck failed to save");
 			}
 		}
 		this.displaySavedDecks();
@@ -155,7 +175,8 @@ public class DeckBuilderWindow {
 	private void loadDeck(MouseEvent event) {
 		if (this.deckToLoad != null) {
 			try {
-				this.activeDeckConfig = new ObjectMapper().readValue(this.deckToLoad, DeckConfig.class);
+				this.activeDeckConfig = new CardshifterIO().mapper().readValue(new File(this.deckToLoad), DeckConfig.class);
+				this.deckNameBox.textProperty().set(this.deckToLoad);
 			} catch (Exception e) {
 				System.out.println("Deck failed to load");
 			}
@@ -169,10 +190,19 @@ public class DeckBuilderWindow {
 		}
 	}
 	
-	public void setDeckToLoad(String deckName) {
-		this.deckToLoad = deckName;
+	private void goToPreviousPage(MouseEvent event) {
+		if (this.currentPage > 0) {
+			this.currentPage--;
+			this.displayCurrentPage();
+		}
 	}
-		
+	private void goToNextPage(MouseEvent event) {
+		if (this.currentPage < this.pageList.size() - 1) {
+			this.currentPage++;
+			this.displayCurrentPage();
+		}
+	}
+	
 	private static <T> List<List<T>> listSplitter(List<T> originalList, int resultsPerList) {
 		if (resultsPerList <= 0) {
 			throw new IllegalArgumentException("resultsPerList must be positive");
@@ -197,21 +227,4 @@ public class DeckBuilderWindow {
 		return listOfLists;
 	}
 	
-	private void startDrag(MouseEvent event, Pane pane, CardInfoMessage message) {
-		this.cardBeingDragged = message;
- 		Dragboard db = pane.startDragAndDrop(TransferMode.MOVE);
- 		ClipboardContent content = new ClipboardContent();
- 		content.putString(message.toString());
- 		db.setContent(content);
-		event.consume();
- 	}
-	
-	private void completeDrag(DragEvent event, boolean dropped) {
-		event.acceptTransferModes(TransferMode.MOVE);
-		if (dropped) {
-			this.addCardToActiveDeck(null, this.cardBeingDragged);
-		}
-		event.consume();
- 	}
-
 }
