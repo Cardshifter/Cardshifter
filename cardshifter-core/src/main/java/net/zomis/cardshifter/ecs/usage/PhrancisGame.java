@@ -53,7 +53,7 @@ public class PhrancisGame implements ECSMod {
 	public static final String SCRAP_ACTION = "Scrap";
 	public static final String END_TURN_ACTION = "End Turn";
 	
-	private static final int CARDS_OF_EACH_TYPE = 3;
+	private static final int CARDS_OF_EACH_TYPE = 2;
 	
 	public static ECSGame createGame(ECSGame game) {
 		new PhrancisGame().setupGame(game);
@@ -89,21 +89,36 @@ public class PhrancisGame implements ECSMod {
 			player.addComponents(hand, deck, battlefield);
 			
 			for (int card = 0; card < CARDS_OF_EACH_TYPE; card++) {
+				// Creatures: mana cost, (deck), attack, health, (type), scrap value
+				// B0TS
+				createCreature(0, deck, 0, 1, "B0T", 1);
 				createCreature(1, deck, 1, 1, "B0T", 1);
 				createCreature(2, deck, 2, 1, "B0T", 1);
-				createCreature(3, deck, 3, 3, "B0T", 1);
-				createCreature(4, deck, 4, 4, "B0T", 1);
-				createCreature(5, deck, 5, 5, "B0T", 1);
+				createCreature(2, deck, 1, 2, "B0T", 1);
+				createCreature(3, deck, 3, 3, "B0T", 2);
+				createCreature(3, deck, 2, 4, "B0T", 2);
+				createCreature(3, deck, 4, 2, "B0T", 2);
+				createCreature(5, deck, 3, 1, "B0T", 3);
+				createCreature(5, deck, 1, 3, "B0T", 3);
+				createCreature(5, deck, 4, 4, "B0T", 3);
+				// Bios
+				createCreature(3, deck, 3, 2, "Bio", 0);		
+				createCreature(4, deck, 2, 3, "Bio", 0);
+				createCreature(5, deck, 3, 3, "Bio", 0);
+				createCreature(6, deck, 4, 4, "Bio", 0);
+				createCreature(6, deck, 5, 3, "Bio", 0);
+				createCreature(6, deck, 3, 5, "Bio", 0);
+				createCreature(8, deck, 5, 5, "Bio", 0);
+				createCreature(10, deck, 6, 6, "Bio", 0);
 				
-				createCreature(5, deck, 4, 4, "Bio", 0);
-				createCreature(5, deck, 5, 3, "Bio", 0);
-				createCreature(5, deck, 3, 5, "Bio", 0);
-				
+				// Enchantments: (deck), attack effect, health effect, scrap cost
 				createEnchantment(deck, 1, 0, 1);
 				createEnchantment(deck, 0, 1, 1);
-				createEnchantment(deck, 3, 0, 3);
-				createEnchantment(deck, 0, 3, 3);
-				createEnchantment(deck, 2, 2, 5);
+				createEnchantment(deck, 1, 1, 1);
+				createEnchantment(deck, 2, 1, 2);
+				createEnchantment(deck, 3, 0, 2);
+				createEnchantment(deck, 0, 3, 2);
+				createEnchantment(deck, 2, 2, 3);
 			}
 			deck.shuffle();
 		}
