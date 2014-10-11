@@ -9,7 +9,10 @@ import java.util.function.Predicate;
 import net.zomis.cardshifter.ecs.usage.CardshifterIO;
 
 import com.beust.jcommander.JCommander;
+import com.cardshifter.modapi.base.CreatureTypeComponent;
 import com.cardshifter.modapi.base.Entity;
+import com.cardshifter.modapi.base.PlayerComponent;
+import com.cardshifter.modapi.cards.CardComponent;
 import com.cardshifter.modapi.resources.ECSResourceMap;
 import com.cardshifter.server.model.Server;
 import com.cardshifter.server.model.ServerGame;
@@ -50,7 +53,9 @@ public class DataExporter {
 		TCGGame g = (TCGGame) game;
 		
 		Predicate<Entity> hasResources = e -> e.hasComponent(ECSResourceMap.class);
-		List<Entity> entities = g.getGameModel().findEntities(hasResources.and(e -> e.getId() < 20));
+		Entity p1 = g.getGameModel().findEntities(e -> e.hasComponent(PlayerComponent.class) && e.getComponent(PlayerComponent.class).getIndex() == 0).iterator().next();
+		Predicate<Entity> isPlayer1 = e -> e.hasComponent(CardComponent.class) && e.getComponent(CardComponent.class).getOwner() == p1;
+		List<Entity> entities = g.getGameModel().findEntities(hasResources.and(isPlayer1)); // .and(e -> e.getId() < 50));
 		System.out.println("Found " + entities.size() + " interesting entities to save");
 		list.addAll(entities);
 	}
