@@ -1,5 +1,5 @@
 
-package com.cardshifter.core.mod;
+package com.cardshifter.core.modloader;
 
 import com.cardshifter.modapi.base.ECSGame;
 
@@ -9,4 +9,6 @@ import com.cardshifter.modapi.base.ECSGame;
  */
 public interface Mod {
 	ECSGame createGame();
+	
+	String getName();
 }

@@ -184,19 +184,19 @@ public class PhrancisTest {
 		assertTrue(defender.isRemoved());
 	}
 
-    private Entity opponent() {
-    	List<Entity> list = game.getEntitiesWithComponent(PlayerComponent.class).stream()
-   			.filter(entity -> entity != phase.getCurrentEntity())
-   			.collect(Collectors.toList());
-    	assertEquals("Found more than one opponent", 1, list.size());
+	private Entity opponent() {
+		List<Entity> list = game.getEntitiesWithComponent(PlayerComponent.class).stream()
+			.filter(entity -> entity != phase.getCurrentEntity())
+			.collect(Collectors.toList());
+		assertEquals("Found more than one opponent", 1, list.size());
 		return list.get(0);
 	}
 
 	private Predicate<Entity> health(int value) {
-        return entity -> health.getFor(entity) == value;
-    }
+		return entity -> health.getFor(entity) == value;
+	}
 
-    private Predicate<Entity> isCreatureType(String creatureType) {
+	private Predicate<Entity> isCreatureType(String creatureType) {
 		return entity -> entity.hasComponent(CreatureTypeComponent.class) &&
 				entity.getComponent(CreatureTypeComponent.class).getCreatureType().equals(creatureType);
 	}
