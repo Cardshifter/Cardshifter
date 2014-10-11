@@ -1,6 +1,7 @@
 
 package com.cardshifter.core.modloader;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +25,9 @@ public final class DirectoryModLoader implements ModLoader {
 	
 	public DirectoryModLoader(final Path modsDirectory) {
 		this.modsDirectory = Objects.requireNonNull(modsDirectory, "modsDirectory");
+		if (!Files.isDirectory(modsDirectory)) {
+			throw new IllegalArgumentException("modsDirectory " + modsDirectory + " must be a directory");
+		}
 	}
 	
 	@Override
