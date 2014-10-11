@@ -24,15 +24,17 @@ public class GameInvite implements IdObject {
 	private final List<ClientIO> players;
 	private final ChatArea chatArea;
 	private final String gameType;
+	private final ServerHandler<GameInvite> handler;
 
-	public GameInvite(Server server, int id, ChatArea chatlog, ClientIO host, ServerGame game, String gameType) {
-		this.id = id;
+	public GameInvite(ServerHandler<GameInvite> handler, ChatArea chatlog, ClientIO host, ServerGame game, String gameType) {
+		this.id = handler.newId();
 		this.host = host;
 		this.game = game;
 		this.chatArea = chatlog;
 		this.invited = Collections.synchronizedList(new ArrayList<>());
 		this.players = Collections.synchronizedList(new ArrayList<>());
 		this.gameType = gameType;
+		this.handler = handler;
 		players.add(host);
 	}
 
@@ -65,14 +67,20 @@ public class GameInvite implements IdObject {
 	public boolean inviteDecline(ClientIO who) {
 		logger.info(this + " Invite Decline: " + who);
 		host.sendToClient(new ChatMessage(1, "Server", who.getName() + " declined invite"));
+		this.removeInvite();
 		return invited.remove(who);
 	}
 	
+	private void removeInvite() {
+		handler.remove(this);
+	}
+
 	public boolean start() {
 		logger.info(this + " Game Start! " + players);
 		Collections.shuffle(players, random);
 		game.start(players);
 		chatArea.broadcast("Server", players.stream().map(io -> io.getName()).collect(Collectors.joining(", ")) + " are now playing game " + game.getId());
+		this.removeInvite();
 		return true;
 	}
 
