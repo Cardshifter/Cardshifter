@@ -215,8 +215,10 @@ public class PhrancisTest {
 		assertResource(defender, PhrancisResources.ATTACK, 3);
 		assertResource(defender, PhrancisResources.HEALTH, 3);
 		assertResource(attacker, PhrancisResources.ATTACK, 4);
-		useActionWithTarget(attacker, PhrancisGame.ATTACK_ACTION, defender);
 		assertResource(opponent, PhrancisResources.HEALTH, 9);
+		// Attacking with attack 4 on a creature with health 3. Opponent has 9 life now, will lose 1 life because of trample damage
+		useActionWithTarget(attacker, PhrancisGame.ATTACK_ACTION, defender);
+		assertResource(opponent, PhrancisResources.HEALTH, 8);
 		assertTrue(defender.isRemoved());
 	}
 

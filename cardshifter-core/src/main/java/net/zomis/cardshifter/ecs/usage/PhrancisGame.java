@@ -40,11 +40,13 @@ import com.cardshifter.modapi.resources.ECSResource;
 import com.cardshifter.modapi.resources.ECSResourceMap;
 import com.cardshifter.modapi.resources.GameOverIfNoHealth;
 import com.cardshifter.modapi.resources.ResourceRetriever;
+import com.cardshifter.modapi.resources.Resources;
 import com.cardshifter.modapi.resources.RestoreResourcesToSystem;
 
 public class PhrancisGame implements ECSMod {
 
 	public enum PhrancisResources implements ECSResource {
+		TRAMPLE,
 		HEALTH, MANA, MANA_MAX, SCRAP, ATTACK, MANA_COST, SCRAP_COST, ENCHANTMENTS_ACTIVE, SICKNESS, ATTACK_AVAILABLE;
 	}
 
@@ -151,7 +153,7 @@ public class PhrancisGame implements ECSMod {
 		game.addSystem(new AttackOnBattlefield());
 		game.addSystem(new AttackSickness(PhrancisResources.SICKNESS));
 		game.addSystem(new AttackTargetMinionsFirstThenPlayer());
-		game.addSystem(new AttackDamageYGO(PhrancisResources.ATTACK, PhrancisResources.HEALTH));
+		game.addSystem(new AttackDamageYGO(PhrancisResources.ATTACK, PhrancisResources.HEALTH, e -> Resources.getOrDefault(e, PhrancisResources.TRAMPLE, 0) >= 1));
 		game.addSystem(new UseCostSystem(ATTACK_ACTION, PhrancisResources.ATTACK_AVAILABLE, entity -> 1, entity -> entity));
 		game.addSystem(new RestoreResourcesToSystem(entity -> entity.hasComponent(CreatureTypeComponent.class) 
 				&& Cards.isOnZone(entity, BattlefieldComponent.class), PhrancisResources.ATTACK_AVAILABLE, entity -> 1));
@@ -228,6 +230,7 @@ public class PhrancisGame implements ECSMod {
 			.set(PhrancisResources.SCRAP, scrapValue)
 			.set(PhrancisResources.MANA_COST, cost)
 			.set(PhrancisResources.SICKNESS, 1)
+			.set(PhrancisResources.TRAMPLE, 1)
 			.set(PhrancisResources.ATTACK_AVAILABLE, 1);
 		entity.addComponent(new CreatureTypeComponent(creatureType));
 		deck.addOnBottom(entity);

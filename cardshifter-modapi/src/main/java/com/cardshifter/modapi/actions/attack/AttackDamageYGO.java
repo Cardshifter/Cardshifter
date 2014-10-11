@@ -1,5 +1,7 @@
 package com.cardshifter.modapi.actions.attack;
 
+import java.util.function.Predicate;
+
 import com.cardshifter.modapi.actions.ActionAllowedCheckEvent;
 import com.cardshifter.modapi.actions.ActionPerformEvent;
 import com.cardshifter.modapi.actions.SpecificActionSystem;
@@ -13,11 +15,13 @@ public class AttackDamageYGO extends SpecificActionSystem {
 
 	private final ResourceRetriever attack;
 	private final ResourceRetriever health;
+	private final Predicate<Entity> trample;
 	
-	public AttackDamageYGO(ECSResource attack, ECSResource health) {
+	public AttackDamageYGO(ECSResource attack, ECSResource health, Predicate<Entity> hasTrample) {
 		super("Attack");
 		this.attack = ResourceRetriever.forResource(attack);
 		this.health = ResourceRetriever.forResource(health);
+		this.trample = hasTrample;
 	}
 
 	@Override
@@ -40,9 +44,9 @@ public class AttackDamageYGO extends SpecificActionSystem {
 			destroyOrNothing(defenseDamage, source);
 		}
 		else {
+			Entity player = target.getComponent(CardComponent.class).getOwner();
 			int overflowDamage = destroyOrNothing(attackDamage, target);
-			if (overflowDamage > 0 && target.hasComponent(CardComponent.class)) {
-				Entity player = target.getComponent(CardComponent.class).getOwner();
+			if (overflowDamage > 0 && trample.test(source)) {
 				damage(overflowDamage, player);
 			}
 			destroyOrNothing(defenseDamage, source);
