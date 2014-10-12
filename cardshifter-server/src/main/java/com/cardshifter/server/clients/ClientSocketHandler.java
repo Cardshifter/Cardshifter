@@ -97,4 +97,9 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 		}
 		this.disconnected();
 	}
+
+	@Override
+	public String getRemoteAddress() {
+		return String.valueOf(socket.getRemoteSocketAddress());
+	}
 }

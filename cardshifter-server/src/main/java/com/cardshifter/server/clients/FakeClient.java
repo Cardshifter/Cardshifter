@@ -24,5 +24,10 @@ public class FakeClient extends ClientIO {
 	public void close() {
 		
 	}
+
+	@Override
+	public String getRemoteAddress() {
+		return "Fake";
+	}
 	
 }

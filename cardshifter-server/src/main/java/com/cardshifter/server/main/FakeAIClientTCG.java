@@ -17,7 +17,7 @@ public class FakeAIClientTCG extends ClientIO {
 		super(server);
 		this.ai = ai;
 	}
-
+	
 	@Override
 	protected void onSendToClient(Message data) {
 		logger.info(data);
@@ -29,6 +29,11 @@ public class FakeAIClientTCG extends ClientIO {
 
 	public CardshifterAI getAI() {
 		return ai;
+	}
+
+	@Override
+	public String getRemoteAddress() {
+		return "FakeAI: " + ai;
 	}
 
 }

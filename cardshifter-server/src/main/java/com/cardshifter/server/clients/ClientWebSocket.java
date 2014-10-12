@@ -42,4 +42,9 @@ public class ClientWebSocket extends ClientIO {
 		conn.send(data);
 	}
 
+	@Override
+	public String getRemoteAddress() {
+		return conn.getRemoteSocketAddress().toString();
+	}
+
 }

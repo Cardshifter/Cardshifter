@@ -32,6 +32,8 @@ public abstract class ClientIO implements IdObject {
 	
 	protected abstract void onSendToClient(Message data);
 	
+	public abstract String getRemoteAddress();
+	
 	public String getName() {
 		return name;
 	}
