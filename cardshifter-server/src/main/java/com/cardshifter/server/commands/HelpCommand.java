@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import com.beust.jcommander.Parameter;
+import com.beust.jcommander.Parameters;
 import com.cardshifter.server.commands.HelpCommand.HelpParameters;
 import com.cardshifter.server.model.CommandHandler;
 import com.cardshifter.server.model.CommandHandler.CommandHandle;
@@ -12,6 +13,7 @@ import com.cardshifter.server.model.CommandHandler.CommandInfo;
 
 public class HelpCommand implements CommandHandle<HelpParameters> {
 
+	@Parameters(commandDescription = "Get information about what the `/`-commands is doing")
 	public static class HelpParameters {
 		
 		@Parameter()
