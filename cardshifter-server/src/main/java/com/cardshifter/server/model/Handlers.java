@@ -123,6 +123,7 @@ public class Handlers {
 	public void chat(ChatMessage message, ClientIO client) {
 		ChatArea chat = server.getChats().get(message.getChatId());
 		if (message.getMessage().startsWith("/")) {
+			client.sendToClient(new ChatMessage(message.getChatId(), "Command Handler", message.getMessage()));
 			server.getCommandHandler().handle(new Command(client, message.getMessage().substring(1)));
 		}
 		else {
