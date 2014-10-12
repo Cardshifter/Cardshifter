@@ -12,7 +12,6 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import com.cardshifter.ai.AIs;
-import com.cardshifter.ai.CompleteIdiot;
 import com.cardshifter.ai.ScoringAI;
 import com.cardshifter.api.CardshifterConstants;
 import com.cardshifter.api.both.ChatMessage;
@@ -34,10 +33,10 @@ public class MainServer {
 	private Thread consoleThread;
 	
 	public Server start() {
-		ais.put("loser", new ScoringAI(AIs.loser()));
-		ais.put("idiot", new ScoringAI(AIs.idiot()));
-		ais.put("old", new CompleteIdiot());
-		ais.put("medium", new ScoringAI(AIs.medium()));
+		ais.put("Loser", new ScoringAI(AIs.loser()));
+		ais.put("Idiot", new ScoringAI(AIs.idiot()));
+		ais.put("Medium", new ScoringAI(AIs.medium()));
+		ais.put("Fighter", new ScoringAI(AIs.fighter()));
 		
 		try {
 			logger.info("Starting Server...");
@@ -71,7 +70,7 @@ public class MainServer {
 	
 	private void initializeCommands(CommandHandler commandHandler) {
 		commandHandler.addHandler("exit", command -> this.shutdown());
-//		commandHandler.addHandler("help", command -> commands.help());
+		commandHandler.addHandler("help", this::commandHelp);
 		commandHandler.addHandler("export", this::export);
 		commandHandler.addHandler("users", this::users);
 		commandHandler.addHandler("play", this::play);
@@ -81,6 +80,10 @@ public class MainServer {
 		commandHandler.addHandler("invites", this::showInvites);
 		commandHandler.addHandler("ai", () -> new AICommandParameters(), new AICommand());
 		commandHandler.addHandler("threads", cmd -> showAllStackTraces(server, System.out::println));
+	}
+	
+	private void commandHelp(Command command) {
+		System.out.println("Not implemented yet");
 	}
 
 	private void showInvites(Command command) {
