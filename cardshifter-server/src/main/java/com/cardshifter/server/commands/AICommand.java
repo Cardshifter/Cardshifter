@@ -19,7 +19,7 @@ import com.cardshifter.server.model.CommandHandler.CommandHandle;
 
 public class AICommand implements CommandHandle<AICommandParameters> {
 	
-	@Parameters(commandNames = "ai", commandDescription = "Set the AI an entity uses in a game")
+	@Parameters(commandNames = "ai", commandDescription = "Control AIs within a game")
 	public static class AICommandParameters {
 		@Parameter(names = "-g", description = "Gameid", required = true)
 		private int gameId;
@@ -36,6 +36,12 @@ public class AICommand implements CommandHandle<AICommandParameters> {
 		@Parameter(names = "-call", description = "Call the AI")
 		private boolean call;
 		
+		@Parameter(names = "pause", description = "Pause all AIs in the game")
+		private boolean pause;
+		
+		@Parameter(names = "continue", description = "Unpause all AIs in the game")
+		private boolean cont;
+		
 	}
 	
 	@Override
@@ -46,6 +52,28 @@ public class AICommand implements CommandHandle<AICommandParameters> {
 		players.stream().forEach(e -> command.sendChatResponse("Player " + e + ": " + e.getComponent(AIComponent.class)));
 		ais.stream().forEach(e -> command.sendChatResponse("AI " + e + ": " + e.getComponent(AIComponent.class)));
 		Entity entity = game.getEntity(parameters.entity);
+		
+		if (parameters.call) {
+			command.sendChatResponse("Calling AIs in game...");
+			AISystem.call(game);
+			return;
+		}
+		
+		if (parameters.pause) {
+			ais.forEach(e -> e.getComponent(AIComponent.class).setPaused(true));
+			return;
+		}
+		
+		if (parameters.cont) {
+			ais.forEach(e -> e.getComponent(AIComponent.class).setPaused(false));
+			return;
+		}
+		
+		if (entity == null) {
+			command.sendChatResponse("No entity specified");
+			return;
+		}
+		
 		AIComponent ai = entity.getComponent(AIComponent.class);
 		
 		command.sendChatResponse("Chosen entity is " + entity);
@@ -68,15 +96,12 @@ public class AICommand implements CommandHandle<AICommandParameters> {
 			ai.setDelay(parameters.delay);
 			command.sendChatResponse("Changing delay to " + parameters.delay);
 		}
-		if (parameters.call) {
-			command.sendChatResponse("Calling AIs in game...");
-			AISystem.call(game);
-		}
 	}
 
 	private AIComponent createIfNotExists(AIComponent obj, Entity entity) {
 		if (obj == null) {
 			AIComponent comp = new AIComponent(new IdleAI());
+			comp.setDelay(10000);
 			entity.addComponent(comp);
 			return comp;
 		}

@@ -9,6 +9,7 @@ public class AIComponent extends Component {
 	
 	private CardshifterAI ai;
 	private long delay = 4000;
+	private boolean paused;
 	ScheduledFuture<?> future;
 
 	public AIComponent(CardshifterAI ai) {
@@ -33,6 +34,14 @@ public class AIComponent extends Component {
 
 	public boolean hasWaitingAction() {
 		return future != null && !future.isDone();
+	}
+	
+	public boolean isPaused() {
+		return paused;
+	}
+	
+	public void setPaused(boolean paused) {
+		this.paused = paused;
 	}
 	
 }

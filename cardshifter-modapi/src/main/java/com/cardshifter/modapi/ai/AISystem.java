@@ -50,6 +50,10 @@ public class AISystem implements ECSSystem {
 				logger.info(entity + " already has a waiting action");
 				continue;
 			}
+			if (aiComp.isPaused()) {
+				logger.info(entity + " AI is paused");
+				continue;
+			}
 			
 			long delay = aiComp.getDelay();
 			ECSAction action = aiComp.getAI().getAction(entity);
