@@ -22,6 +22,14 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
+	<repositories>
+		<repository>
+			<id>zomisnet</id>
+			<name>Zomis' Maven Repository</name>
+			<url>http://www.zomis.net/maven</url>
+		</repository>
+	</repositories>
+	
 	<build>
 		<plugins>
 			<plugin>
@@ -142,6 +150,11 @@
 			<groupId>com.beust</groupId>
 			<artifactId>jcommander</artifactId>
 			<version>1.30</version>
+		</dependency>
+		<dependency>
+			<groupId>net.zomis</groupId>
+			<artifactId>fights</artifactId>
+			<version>0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>
