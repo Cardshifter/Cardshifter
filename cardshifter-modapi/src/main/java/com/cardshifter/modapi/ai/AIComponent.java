@@ -1,6 +1,7 @@
 package com.cardshifter.modapi.ai;
 
 import java.util.Objects;
+import java.util.concurrent.ScheduledFuture;
 
 import com.cardshifter.modapi.base.Component;
 
@@ -8,6 +9,7 @@ public class AIComponent extends Component {
 	
 	private CardshifterAI ai;
 	private long delay = 4000;
+	ScheduledFuture<?> future;
 
 	public AIComponent(CardshifterAI ai) {
 		setAI(ai);
@@ -27,6 +29,10 @@ public class AIComponent extends Component {
 	
 	public void setDelay(long delay) {
 		this.delay = delay;
+	}
+
+	public boolean hasWaitingAction() {
+		return future != null && !future.isDone();
 	}
 	
 }
