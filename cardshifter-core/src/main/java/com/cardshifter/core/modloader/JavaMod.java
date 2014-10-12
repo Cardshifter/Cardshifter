@@ -12,17 +12,9 @@ import com.cardshifter.modapi.base.ECSMod;
 
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.security.AccessControlContext;
 import java.security.AccessController;
-import java.security.Permission;
-import java.security.PermissionCollection;
-import java.security.Permissions;
-import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-import java.security.ProtectionDomain;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.Properties;
 
 /**
