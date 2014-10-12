@@ -101,10 +101,10 @@ public class ServerConnectionTest {
 		// There is no determined order in which the UserStatusMessages are received, so it is harder to make any assertions.
 		assertTrue(users.stream().filter(mess -> mess.getName().equals("Tester")).findAny().isPresent());
 		assertTrue(users.stream().filter(mess -> mess.getName().equals("Test2")).findAny().isPresent());
-		assertTrue(users.stream().filter(mess -> mess.getName().equals("AI old")).findAny().isPresent());
-		assertTrue(users.stream().filter(mess -> mess.getName().equals("AI loser")).findAny().isPresent());
-		assertTrue(users.stream().filter(mess -> mess.getName().equals("AI medium")).findAny().isPresent());
-		assertTrue(users.stream().filter(mess -> mess.getName().equals("AI idiot")).findAny().isPresent());
+		assertTrue(users.stream().filter(mess -> mess.getName().equals("AI Fighter")).findAny().isPresent());
+		assertTrue(users.stream().filter(mess -> mess.getName().equals("AI Loser")).findAny().isPresent());
+		assertTrue(users.stream().filter(mess -> mess.getName().equals("AI Medium")).findAny().isPresent());
+		assertTrue(users.stream().filter(mess -> mess.getName().equals("AI Idiot")).findAny().isPresent());
 		
 		client2.disconnect();
 		
@@ -160,7 +160,7 @@ public class ServerConnectionTest {
 	@Test(timeout = 10000)
 	public void testPlayAny() throws InterruptedException, UnknownHostException, IOException {
 		
-		Predicate<ClientIO> opponentFilter = client -> client.getName().equals("AI loser");
+		Predicate<ClientIO> opponentFilter = client -> client.getName().equals("AI Loser");
 		server.getIncomingHandler().perform(new StartGameRequest(-1, TEST_MOD), server.getClients().values().stream().filter(opponentFilter).findAny().get());
 		
 		client1.send(new StartGameRequest(-1, TEST_MOD));
