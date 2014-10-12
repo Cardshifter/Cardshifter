@@ -18,5 +18,10 @@ public class PlayerComponent extends Component {
 	public int getIndex() {
 		return index;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "PlayerComponent [index=" + index + ", name=" + name + "]";
+	}
+
 }

@@ -47,5 +47,10 @@ public class ActionComponent extends Component implements CopyableComponent {
 		}
 		return copy;
 	}
+
+	@Override
+	public String toString() {
+		return "ActionComponent [actions=" + actions + "]";
+	}
 	
 }

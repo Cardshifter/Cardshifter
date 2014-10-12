@@ -18,4 +18,9 @@ public class CreatureTypeComponent extends Component implements CopyableComponen
 		return new CreatureTypeComponent(creatureType);
 	}
 
+	@Override
+	public String toString() {
+		return "CreatureTypeComponent [creatureType=" + creatureType + "]";
+	}
+
 }
