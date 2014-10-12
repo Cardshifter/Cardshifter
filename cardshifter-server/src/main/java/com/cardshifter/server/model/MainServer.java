@@ -19,7 +19,10 @@ import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.incoming.StartGameRequest;
 import com.cardshifter.modapi.ai.CardshifterAI;
 import com.cardshifter.server.commands.AICommand;
+import com.cardshifter.server.commands.HelpCommand;
 import com.cardshifter.server.commands.AICommand.AICommandParameters;
+import com.cardshifter.server.commands.HelpCommand.HelpParameters;
+import com.cardshifter.server.commands.CommandContext;
 import com.cardshifter.server.main.FakeAIClientTCG;
 import com.cardshifter.server.utils.export.DataExporter;
 
@@ -45,7 +48,7 @@ public class MainServer {
 			server.addConnections(new ServerWeb(server, 4243));
 			
 			logger.info("Starting Console...");
-			CommandHandler commandHandler = new CommandHandler(server);
+			CommandHandler commandHandler = server.getCommandHandler();
 			initializeCommands(commandHandler);
 			ServerConsole console = new ServerConsole(server, commandHandler);
 			consoleThread = new Thread(console, "Console-Thread");
@@ -69,8 +72,8 @@ public class MainServer {
 	}
 	
 	private void initializeCommands(CommandHandler commandHandler) {
-		commandHandler.addHandler("exit", command -> this.shutdown());
-		commandHandler.addHandler("help", this::commandHelp);
+		commandHandler.addHandler("exit", () -> new Object(), this::shutdown);
+		commandHandler.addHandler("help", () -> new HelpParameters(), new HelpCommand(commandHandler));
 		commandHandler.addHandler("export", this::export);
 		commandHandler.addHandler("users", this::users);
 		commandHandler.addHandler("play", this::play);
@@ -82,10 +85,6 @@ public class MainServer {
 		commandHandler.addHandler("threads", cmd -> showAllStackTraces(server, System.out::println));
 	}
 	
-	private void commandHelp(Command command) {
-		System.out.println("Not implemented yet");
-	}
-
 	private void showInvites(Command command) {
 		for (Entry<Integer, GameInvite> ee : server.getInvites().all().entrySet()) {
 			System.out.println(ee.getKey() + " = " + ee.getValue());
@@ -114,7 +113,7 @@ public class MainServer {
 		}
 	}
 	
-	private void shutdown() {
+	private void shutdown(CommandContext command, Object parameters) {
 		server.stop();
 		
 		try {
