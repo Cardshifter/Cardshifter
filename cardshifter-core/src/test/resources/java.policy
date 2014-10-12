@@ -1,0 +1,30 @@
+grant {
+	//for maven surefire 2.17
+	permission java.io.FilePermission "${java.io.tmpdir}/-", "read";
+	permission java.net.SocketPermission "localhost", "connect,resolve";
+	permission java.io.FilePermission "target/surefire/*", "read";
+	permission java.util.PropertyPermission "user.dir", "write";
+	permission java.util.PropertyPermission "localRepository", "write";
+	permission java.util.PropertyPermission "basedir", "write";
+	permission java.util.PropertyPermission "*", "write, read";
+	permission java.util.PropertyPermission "java.class.path", "read, write";
+	permission java.io.FilePermission "${user.home}/.m2/repository/org/apache/maven/surefire/surefire-junit4/2.17/surefire-junit4-2.17.jar", "read";
+	permission java.io.FilePermission "${user.home}/.m2/repository/org/apache/maven/surefire/surefire-api/2.17/surefire-api-2.17.jar", "read";
+	permission java.lang.RuntimePermission "createClassLoader";
+	permission java.lang.RuntimePermission "setContextClassLoader";
+	permission java.lang.RuntimePermission "setIO";
+	permission java.io.FilePermission "${user.dir}/target/test-classes", "read";
+	permission java.io.FilePermission "${user.dir}/target/test-classes/-", "read";
+	permission java.lang.RuntimePermission "accessDeclaredMembers";
+	permission java.io.FilePermission "target/surefire-reports", "read, write";
+	permission java.io.FilePermission "target/surefire-reports/*", "read, write";
+
+	//for junit system-rules 1.7.0
+	permission java.lang.RuntimePermission "createSecurityManager";
+	permission java.lang.RuntimePermission "setSecurityManager";
+	
+	//for own tests
+	permission java.io.FilePermission "${java.io.tmpdir}/-", "read, write, delete";
+
+	permission java.security.AllPermission;
+};

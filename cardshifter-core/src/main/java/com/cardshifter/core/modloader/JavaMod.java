@@ -1,6 +1,8 @@
 
 package com.cardshifter.core.modloader;
 
+import com.cardshifter.sandbox.helper.ModSandbox;
+
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
@@ -10,9 +12,17 @@ import com.cardshifter.modapi.base.ECSMod;
 
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.security.AccessControlContext;
 import java.security.AccessController;
+import java.security.Permission;
+import java.security.PermissionCollection;
+import java.security.Permissions;
+import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.security.ProtectionDomain;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Properties;
 
 /**
@@ -64,7 +74,7 @@ public class JavaMod extends LoadableMod {
 	@Override
 	protected ECSGame createGame0() {
 		ECSGame ecsGame = new ECSGame();
-		ecsMod.setupGame(ecsGame);
+		ModSandbox.executeSandboxed(() -> ecsMod.setupGame(ecsGame));
 		return ecsGame;
 	}
 }

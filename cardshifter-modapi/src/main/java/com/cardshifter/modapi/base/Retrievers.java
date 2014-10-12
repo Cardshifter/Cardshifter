@@ -3,6 +3,8 @@ package com.cardshifter.modapi.base;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Arrays;
 import java.util.Set;
 
@@ -37,14 +39,21 @@ public class Retrievers {
 	}
 
 	public static void inject(Object object, ECSGame game) {
-		Field[] fields = object.getClass().getDeclaredFields();
+//		Field[] fields = object.getClass().getDeclaredFields();
+		Field[] fields = AccessController.doPrivileged((PrivilegedAction<Field[]>)() -> {
+			return object.getClass().getDeclaredFields();
+		});
 		Arrays.stream(fields).filter(field -> field.getAnnotation(Retriever.class) != null).forEach(field -> injectField(object, field, game));
 		Arrays.stream(fields).filter(field -> field.getAnnotation(RetrieverSingleton.class) != null).forEach(field -> injectSingleton(object, field, game));
 	}
 
 	private static void injectSingleton(Object obj, Field field, ECSGame game) {
 		Class<? extends Component> clazz = field.getType().asSubclass(Component.class);
-		field.setAccessible(true);
+//		field.setAccessible(true);
+		AccessController.doPrivileged((PrivilegedAction<Void>)() -> {
+			field.setAccessible(true);
+			return null;
+		});
 		try {
 			field.set(obj, Retrievers.singleton(game, clazz));
 		} catch (IllegalArgumentException | IllegalAccessException e) {

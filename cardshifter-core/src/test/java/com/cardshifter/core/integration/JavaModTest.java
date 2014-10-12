@@ -24,15 +24,14 @@ import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
+import java.security.AccessControlException;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.junit.Ignore;
 import org.junit.Rule;
-import org.junit.contrib.java.lang.system.ExpectedSystemExit;
+import org.junit.rules.ExpectedException;
 
 /**
  *
@@ -42,7 +41,7 @@ public class JavaModTest {
 	private final static String MOD_NAME = "cardshifter-mod-examples-java";
 	
 	@Rule
-	public final ExpectedSystemExit exit = ExpectedSystemExit.none();
+	public final ExpectedException expectedException = ExpectedException.none();
 	
 	@Test
 	public void testLoadMod() throws IOException, URISyntaxException, ModNotLoadableException {
@@ -115,8 +114,11 @@ public class JavaModTest {
 		modLoader.unload(modDirectory.getFileName().toString());
 	}
 	
-	@Test(expected = SecurityException.class)
+	@Test
 	public void testLoadModThatExitsJVM() throws IOException, ClassNotFoundException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ModNotLoadableException {
+		expectedException.expect(AccessControlException.class);
+		expectedException.expectMessage("access denied (\"java.lang.RuntimePermission\" \"exitVM.0\")");
+		
 		Path modLoaderDirectory = Files.createTempDirectory("modloader");
 		modLoaderDirectory.toFile().deleteOnExit();
 		
@@ -154,8 +156,11 @@ public class JavaModTest {
 		modLoader.unload(modDirectory.getFileName().toString());
 	}
 	
-	@Test(expected = SecurityException.class)
+	@Test
 	public void testLoadModThatExitsJVMViaCallback() throws IOException, ClassNotFoundException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ModNotLoadableException {
+		expectedException.expect(AccessControlException.class);
+		expectedException.expectMessage("access denied (\"java.lang.RuntimePermission\" \"exitVM.0\")");
+		
 		Path modLoaderDirectory = Files.createTempDirectory("modloader");
 		modLoaderDirectory.toFile().deleteOnExit();
 		
@@ -199,6 +204,146 @@ public class JavaModTest {
 		
 		ECSGame ecsGame = mod.createGame();
 		ecsGame.startGame();
+		assertEquals(0, ecsGame.getEntitiesWithComponent(PlayerComponent.class).size());
+		
+		modLoader.unload(modDirectory.getFileName().toString());
+	}
+	
+	@Test
+	public void testLoadModThatExitsJVMViaNewThread() throws IOException, ClassNotFoundException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ModNotLoadableException {
+		expectedException.expect(AccessControlException.class);
+		expectedException.expectMessage("access denied (\"java.lang.RuntimePermission\" \"exitVM.0\")");
+		
+		Path modLoaderDirectory = Files.createTempDirectory("modloader");
+		modLoaderDirectory.toFile().deleteOnExit();
+		
+		Path modDirectory = Files.createTempDirectory(modLoaderDirectory, "exitingvianewthreadmod");
+		Path compileDirectory = Files.createTempDirectory("compileDirectory");
+		
+		String simpleModSourceString = RuntimeJarHelper.createModSourceString(
+			"ExitingViaNewThreadMod", 
+			"",
+			"new Thread(() -> System.exit(0)).start();\n"
+		);
+		
+		Path simpleModSource = compileDirectory.resolve("ExitingViaNewThreadMod.java");
+		Files.createFile(simpleModSource);
+		Files.write(simpleModSource, simpleModSourceString.getBytes(StandardCharsets.UTF_8));
+		
+		List<Path> compiledModSources = RuntimeJarHelper.compileJavaSource(simpleModSource, compileDirectory);
+		
+		Path jarFile = modDirectory.resolve("exitingvianewthreadmod");
+		Files.createFile(jarFile);
+		RuntimeJarHelper.createJar(jarFile, compiledModSources);
+		
+		Properties properties = new Properties();
+		properties.setProperty("language", "java");
+		properties.setProperty("jar", jarFile.getFileName().toString());
+		properties.setProperty("entryPoint", "com.cardshifter.core.integration.throwaway.runtimemod.ExitingViaNewThreadMod");
+		RuntimeJarHelper.createProperties(modDirectory, properties);
+		
+		ModLoader modLoader = new DirectoryModLoader(modLoaderDirectory);
+		Mod mod = modLoader.load(modDirectory.getFileName().toString());
+		
+		ECSGame ecsGame = mod.createGame();
+		ecsGame.startGame();
+		assertEquals(0, ecsGame.getEntitiesWithComponent(PlayerComponent.class).size());
+		
+		modLoader.unload(modDirectory.getFileName().toString());
+	}
+	
+	
+	@Test
+	public void testLoadModThatExitsJVMViaNewThreadInCallback() throws IOException, ClassNotFoundException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ModNotLoadableException {
+		expectedException.expect(AccessControlException.class);
+		expectedException.expectMessage("access denied (\"java.lang.RuntimePermission\" \"exitVM.0\")");
+		
+		Path modLoaderDirectory = Files.createTempDirectory("modloader");
+		modLoaderDirectory.toFile().deleteOnExit();
+		
+		Path modDirectory = Files.createTempDirectory(modLoaderDirectory, "exitingvianewthreadincallbackmod");
+		Path compileDirectory = Files.createTempDirectory("compileDirectory");
+		
+		String simpleModSourceString = RuntimeJarHelper.createModSourceString(
+			"ExitingViaNewThreadInCallbackMod", 
+			new StringBuilder()
+			.append("import com.cardshifter.modapi.base.ECSSystem;\n")
+			.append("import com.cardshifter.modapi.events.StartGameEvent;\n")
+			.toString(), 
+			new StringBuilder()
+			.append("game.addSystem(new ECSSystem() {\n")
+			.append("    @Override\n")
+			.append("    public void startGame(final ECSGame game) {\n")
+			.append("		game.getEvents().registerHandlerAfter(this, StartGameEvent.class, event -> new Thread(() -> System.exit(0)).start());\n")
+			.append("    }\n")
+			.append("});\n")
+			.toString()
+		);
+		
+		Path simpleModSource = compileDirectory.resolve("ExitingViaNewThreadInCallbackMod.java");
+		Files.createFile(simpleModSource);
+		Files.write(simpleModSource, simpleModSourceString.getBytes(StandardCharsets.UTF_8));
+		
+		List<Path> compiledModSources = RuntimeJarHelper.compileJavaSource(simpleModSource, compileDirectory);
+		
+		Path jarFile = modDirectory.resolve("exitingvianewthreadincallbackmod");
+		Files.createFile(jarFile);
+		RuntimeJarHelper.createJar(jarFile, compiledModSources);
+		
+		Properties properties = new Properties();
+		properties.setProperty("language", "java");
+		properties.setProperty("jar", jarFile.getFileName().toString());
+		properties.setProperty("entryPoint", "com.cardshifter.core.integration.throwaway.runtimemod.ExitingViaNewThreadInCallbackMod");
+		RuntimeJarHelper.createProperties(modDirectory, properties);
+		
+		ModLoader modLoader = new DirectoryModLoader(modLoaderDirectory);
+		Mod mod = modLoader.load(modDirectory.getFileName().toString());
+		
+		ECSGame ecsGame = mod.createGame();
+		ecsGame.startGame();
+		assertEquals(0, ecsGame.getEntitiesWithComponent(PlayerComponent.class).size());
+		
+		modLoader.unload(modDirectory.getFileName().toString());
+	}
+	
+	
+	@Test
+	public void testLoadModThatExitsJVMViaModSandboxExecutePrivileged() throws IOException, ClassNotFoundException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ModNotLoadableException {
+		expectedException.expect(AccessControlException.class);
+		expectedException.expectMessage("random");	//should be something denoting that accesscontroller.doprivileged is not allowed?
+		
+		Path modLoaderDirectory = Files.createTempDirectory("modloader");
+		modLoaderDirectory.toFile().deleteOnExit();
+		
+		Path modDirectory = Files.createTempDirectory(modLoaderDirectory, "exitingviamodsandboxexecuteprivilegedmod");
+		Path compileDirectory = Files.createTempDirectory("compileDirectory");
+		
+		String simpleModSourceString = RuntimeJarHelper.createModSourceString(
+			"ExitingViaModSandboxExecutePrivilegedMod", 
+			"import com.cardshifter.sandbox.helper.Modsandbox;\n", 
+			"ModSandbox.executePrivileged(() -> System.exit(0));\n"
+		);
+		
+		Path simpleModSource = compileDirectory.resolve("ExitingViaModSandboxExecutePrivilegedMod.java");
+		Files.createFile(simpleModSource);
+		Files.write(simpleModSource, simpleModSourceString.getBytes(StandardCharsets.UTF_8));
+		
+		List<Path> compiledModSources = RuntimeJarHelper.compileJavaSource(simpleModSource, compileDirectory);
+		
+		Path jarFile = modDirectory.resolve("exitingviamodsandboxexecuteprivilegedmod");
+		Files.createFile(jarFile);
+		RuntimeJarHelper.createJar(jarFile, compiledModSources);
+		
+		Properties properties = new Properties();
+		properties.setProperty("language", "java");
+		properties.setProperty("jar", jarFile.getFileName().toString());
+		properties.setProperty("entryPoint", "com.cardshifter.core.integration.throwaway.runtimemod.ExitingViaModSandboxExecutePrivilegedMod");
+		RuntimeJarHelper.createProperties(modDirectory, properties);
+		
+		ModLoader modLoader = new DirectoryModLoader(modLoaderDirectory);
+		Mod mod = modLoader.load(modDirectory.getFileName().toString());
+		
+		ECSGame ecsGame = mod.createGame();
 		assertEquals(0, ecsGame.getEntitiesWithComponent(PlayerComponent.class).size());
 		
 		modLoader.unload(modDirectory.getFileName().toString());
