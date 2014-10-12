@@ -127,7 +127,7 @@ public class MainServer {
 	}
 	
 	private void users(Command command) {
-		server.getClients().values().forEach(cl -> System.out.println(cl.getId() + ": " + cl.getName()));
+		server.getClients().values().forEach(cl -> System.out.println(cl));
 	}
 	
 	private void play(Command command) {
