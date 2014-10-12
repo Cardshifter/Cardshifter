@@ -19,10 +19,12 @@ import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.incoming.StartGameRequest;
 import com.cardshifter.modapi.ai.CardshifterAI;
 import com.cardshifter.server.commands.AICommand;
-import com.cardshifter.server.commands.HelpCommand;
 import com.cardshifter.server.commands.AICommand.AICommandParameters;
-import com.cardshifter.server.commands.HelpCommand.HelpParameters;
+import com.cardshifter.server.commands.EntityCommand.EntityInspectParameters;
+import com.cardshifter.server.commands.EntityCommand;
 import com.cardshifter.server.commands.CommandContext;
+import com.cardshifter.server.commands.HelpCommand;
+import com.cardshifter.server.commands.HelpCommand.HelpParameters;
 import com.cardshifter.server.main.FakeAIClientTCG;
 import com.cardshifter.server.utils.export.DataExporter;
 
@@ -82,6 +84,7 @@ public class MainServer {
 		commandHandler.addHandler("games", this::showGames);
 		commandHandler.addHandler("invites", this::showInvites);
 		commandHandler.addHandler("ai", () -> new AICommandParameters(), new AICommand());
+		commandHandler.addHandler("ent", () -> new EntityInspectParameters(), new EntityCommand());
 		commandHandler.addHandler("threads", cmd -> showAllStackTraces(server, System.out::println));
 	}
 	
