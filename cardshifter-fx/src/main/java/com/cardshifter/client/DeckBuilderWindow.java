@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.ClipboardContent;
@@ -27,11 +28,13 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.Stage;
 import net.zomis.cardshifter.ecs.usage.CardshifterIO;
 import net.zomis.cardshifter.ecs.usage.DeckConfig;
 
 public class DeckBuilderWindow {
 	
+	@FXML private AnchorPane rootPane;
 	@FXML private FlowPane cardListBox;
 	@FXML private VBox activeDeckBox;
 	@FXML private VBox deckListBox;
@@ -78,6 +81,7 @@ public class DeckBuilderWindow {
 	private void startGame(MouseEvent event) {
 		if (this.activeDeckConfig.getTotal() == this.activeDeckConfig.getMaxSize()) {
 			this.lobby.sendDeckAndPlayerConfigToServer(this.activeDeckConfig);
+			this.closeWindow();
 		}
 	}
 	
@@ -228,6 +232,12 @@ public class DeckBuilderWindow {
 			this.currentPage++;
 			this.displayCurrentPage();
 		}
+	}
+	
+	public void closeWindow() {
+		Node source = this.rootPane;
+		Stage stage = (Stage)source.getScene().getWindow();
+		stage.close();
 	}
 	
 	private static <T> List<List<T>> listSplitter(List<T> originalList, int resultsPerList) {

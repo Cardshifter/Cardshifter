@@ -46,6 +46,8 @@ import com.cardshifter.client.views.CardHandDocumentController;
 import com.cardshifter.client.views.CardView;
 import com.cardshifter.client.views.PlayerHandZoneView;
 import com.cardshifter.client.views.ZoneView;
+import javafx.scene.Node;
+import javafx.stage.Stage;
 
 public class GameClientController {
 	
@@ -511,6 +513,12 @@ public class GameClientController {
 		card.getChildren().add(cardBack);
 		
 		return card;
+	}
+	
+	public void closeWindow() {
+		Node source = this.rootPane;
+		Stage stage = (Stage)source.getScene().getWindow();
+		stage.close();
 	}
 	
 	@SuppressWarnings("unchecked")

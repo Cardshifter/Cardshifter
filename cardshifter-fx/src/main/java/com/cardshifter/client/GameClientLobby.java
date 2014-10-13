@@ -54,6 +54,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class GameClientLobby implements Initializable {
 	
+	@FXML private AnchorPane rootPane;
 	@FXML private ListView<String> usersOnline;
 	@FXML private ListView<String> chatMessages;
 	@FXML private TextField messageBox;
@@ -78,6 +79,7 @@ public class GameClientLobby implements Initializable {
 	private final List<String> gameTypes = new ArrayList<>();
 	private String selectedGameType;
 	private PlayerConfigMessage currentPlayerConfig;
+	private DeckBuilderWindow openDeckBuilderWindow;
 	
 	public void acceptConnectionSettings(String ipAddress, int port, String userName) {
 		// this is passed into this object after it is automatically created by the FXML document
@@ -212,10 +214,12 @@ public class GameClientLobby implements Initializable {
 			controller.acceptDeckConfig(deckConfig, this);
 			controller.configureWindow();
 			
+			this.openDeckBuilderWindow = controller;
+			
 			Scene scene = new Scene(root);
 			Stage stage = new Stage();
 			stage.setScene(scene);
-			//stage.setOnCloseRequest(windowEvent -> this.closeDeckBuilder(controller));
+			stage.setOnCloseRequest(windowEvent -> this.closeDeckBuilderWindow());
 			stage.show();
 		}
         catch (Exception e) {
@@ -319,6 +323,17 @@ public class GameClientLobby implements Initializable {
 	private void closeController(GameClientController controller) {
 		this.gamesRunning.remove(controller);
 		controller.closeGame();
+		controller.closeWindow();
+	}
+	
+	private void closeDeckBuilderWindow() {
+		//this is a workaround to allow the player to "decline" an invite once the deck builder is open
+		if(this.gamesRunning.size() == 1) {
+			for (GameClientController controller : this.gamesRunning) {
+				this.closeController(controller);
+				this.openDeckBuilderWindow = null;
+			}
+		}
 	}
 	
 	private void stopThreads() {
@@ -337,6 +352,14 @@ public class GameClientLobby implements Initializable {
 	public void closeLobby() {
 		this.stopThreads();
 		this.breakConnection();
+		
+		for (GameClientController game : this.gamesRunning) {
+			game.closeWindow();
+		}
+		
+		if (this.openDeckBuilderWindow != null) {
+			this.openDeckBuilderWindow.closeWindow();
+		}
 	}
 	
 	private void createGameTypeButtons() {
