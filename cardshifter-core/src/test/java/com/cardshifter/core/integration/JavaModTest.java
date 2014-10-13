@@ -284,9 +284,6 @@ public class JavaModTest {
 	
 	@Test
 	public void testLoadModThatExitsJVMViaNewThreadInCallback() throws IOException, ClassNotFoundException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ModNotLoadableException {
-		expectedException.expect(AccessControlException.class);
-		expectedException.expectMessage("access denied (\"java.lang.RuntimePermission\" \"exitVM.0\")");
-		
 		Path modLoaderDirectory = Files.createTempDirectory("modloader");
 		modLoaderDirectory.toFile().deleteOnExit();
 		
@@ -341,6 +338,12 @@ public class JavaModTest {
 		assertEquals(0, ecsGame.getEntitiesWithComponent(PlayerComponent.class).size());
 		
 		modLoader.unload(modDirectory.getFileName().toString());
+		
+		assertEquals(1, caughtUnhandledExceptions.size());
+		caughtUnhandledExceptions.forEach((thread, ex) -> {
+			assertEquals(AccessControlException.class, ex.getClass());
+			assertEquals("access denied (\"java.lang.RuntimePermission\" \"exitVM.0\")", ex.getMessage());
+		});
 	}
 	
 	@Test
