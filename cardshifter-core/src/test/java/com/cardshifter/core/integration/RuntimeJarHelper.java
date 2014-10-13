@@ -11,7 +11,6 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.jar.JarOutputStream;
@@ -71,7 +70,6 @@ final class RuntimeJarHelper {
 			
 			Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjects(sourceFile.toFile());
 			CompilationTask compilationTask = compiler.getTask(null, fileManager, null, null, null, compilationUnits);
-			
 			
 			if (compilationTask.call()) {
 				return Files.list(subOutputDirectory.resolve("com/cardshifter/core/integration/throwaway/runtimemod")).collect(Collectors.toList());

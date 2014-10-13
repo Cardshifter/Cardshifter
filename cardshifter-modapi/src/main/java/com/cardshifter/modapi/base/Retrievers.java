@@ -39,7 +39,6 @@ public class Retrievers {
 	}
 
 	public static void inject(Object object, ECSGame game) {
-//		Field[] fields = object.getClass().getDeclaredFields();
 		Field[] fields = AccessController.doPrivileged((PrivilegedAction<Field[]>)() -> {
 			return object.getClass().getDeclaredFields();
 		});
@@ -49,11 +48,7 @@ public class Retrievers {
 
 	private static void injectSingleton(Object obj, Field field, ECSGame game) {
 		Class<? extends Component> clazz = field.getType().asSubclass(Component.class);
-//		field.setAccessible(true);
-		AccessController.doPrivileged((PrivilegedAction<Void>)() -> {
-			field.setAccessible(true);
-			return null;
-		});
+		field.setAccessible(true);
 		try {
 			field.set(obj, Retrievers.singleton(game, clazz));
 		} catch (IllegalArgumentException | IllegalAccessException e) {
