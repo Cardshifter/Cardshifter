@@ -106,6 +106,10 @@ public final class CardBattlefieldDocumentController extends CardView implements
         background.setFill(Color.DARKGREEN);
 	}
 	
+	public void setCardIsAttacking() {
+		this.background.setFill(Color.MAGENTA);
+	}
+	
 	private void setSickness() {
 		sicknessCircle.setVisible(true);
 	}

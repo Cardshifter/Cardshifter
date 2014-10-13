@@ -353,6 +353,14 @@ public class GameClientController {
 	private void processAvailableTargetsMessage(AvailableTargetsMessage message) {
 		this.chosenTargets.clear();
 		this.targetInfo = message;
+		
+		if (message.getAction().equals("Attack")) {
+			ZoneView<?> attackerZoneView = getZoneViewForCard(message.getEntity());
+			if (attackerZoneView != null) {
+				((BattlefieldZoneView)attackerZoneView).setCardIsAttacking(message.getEntity());
+			}
+		}
+		
 		for (int i = 0; i < message.getTargets().length; i++) {
 			int target = message.getTargets()[i];
 			if (target != this.opponentId) {
