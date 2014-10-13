@@ -213,6 +213,7 @@ public class DeckBuilderWindow {
 			}
 		}
 		this.displayActiveDeck();
+		this.displayCurrentPage();
 	}
 	
 	public void clearSavedDeckButtons() {
