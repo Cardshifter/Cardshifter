@@ -25,6 +25,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import net.zomis.cardshifter.ecs.usage.CardshifterIO;
 import net.zomis.cardshifter.ecs.usage.DeckConfig;
 
@@ -84,6 +86,21 @@ public class DeckBuilderWindow {
 		for (CardInfoMessage message : this.pageList.get(this.currentPage)) {
 			CardHandDocumentController card = new CardHandDocumentController(message, null);
 			Pane cardPane = card.getRootPane();			
+			
+			Rectangle numberOfCardsBox = new Rectangle(cardPane.getPrefWidth()/3, cardPane.getPrefHeight()/10);
+			numberOfCardsBox.setFill(Color.BLUE);
+			numberOfCardsBox.setStroke(Color.BLACK);
+			int numChosenCards = 0;
+			if (this.activeDeckConfig.getChosen().get(message.getId()) != null) {
+				numChosenCards = this.activeDeckConfig.getChosen().get(message.getId());
+			}
+			Label numberOfCardsLabel = new Label(String.format("%d / %d", numChosenCards, this.activeDeckConfig.getMaxPerCard()));
+			numberOfCardsLabel.setTextFill(Color.WHITE);
+			numberOfCardsBox.relocate(cardPane.getPrefWidth()/2.6, cardPane.getPrefHeight() - cardPane.getPrefHeight()/18);
+			numberOfCardsLabel.relocate(cardPane.getPrefWidth()/2.3, cardPane.getPrefHeight() - cardPane.getPrefHeight()/18);
+			cardPane.getChildren().add(numberOfCardsBox);
+			cardPane.getChildren().add(numberOfCardsLabel);
+			
 			cardPane.setOnMouseClicked(e -> {this.addCardToActiveDeck(e, message);});
 			cardPane.setOnDragDetected(e -> this.startDragToActiveDeck(e, cardPane, message));
 			this.cardListBox.getChildren().add(cardPane);
@@ -133,6 +150,7 @@ public class DeckBuilderWindow {
 			}
 		}
 		this.displayActiveDeck();
+		this.displayCurrentPage();
 	}
 	
 	private void removeCardFromDeck(MouseEvent event, int cardId) {
@@ -140,6 +158,7 @@ public class DeckBuilderWindow {
 			this.activeDeckConfig.removeChosen(cardId);
 		}
 		this.displayActiveDeck();
+		this.displayCurrentPage();
 	}
 	
 	private void startDragToActiveDeck(MouseEvent event, Pane pane, CardInfoMessage message) {
