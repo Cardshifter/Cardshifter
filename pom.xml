@@ -24,7 +24,6 @@
 		<module>cardshifter-api</module>
 		<module>cardshifter-console</module>
 		<module>cardshifter-modapi</module>
-	 <module>cardshifter-sandbox-helper</module>
 	</modules>
 	
 	<distributionManagement>
