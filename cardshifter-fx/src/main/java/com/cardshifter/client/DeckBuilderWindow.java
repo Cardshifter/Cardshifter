@@ -7,6 +7,8 @@ import com.cardshifter.client.views.CardHandDocumentController;
 import com.cardshifter.client.views.DeckCardController;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -62,7 +64,11 @@ public class DeckBuilderWindow {
 		this.loadDeckButton.setOnMouseClicked(this::loadDeck);
 		this.activeDeckBox.setOnDragDropped(e -> this.completeDragToActiveDeck(e, true));
 		this.activeDeckBox.setOnDragOver(e -> this.completeDragToActiveDeck(e, false));
-		this.pageList = listSplitter(new ArrayList<>(this.cardList.values()), CARDS_PER_PAGE);
+		
+		List<CardInfoMessage> sortedCardList = new ArrayList<>(this.cardList.values());
+		Collections.sort(sortedCardList, Comparator.comparingInt(msg -> msg.getId()));
+		this.pageList = listSplitter(sortedCardList, CARDS_PER_PAGE);
+		
 		this.displayCurrentPage();
 		this.displaySavedDecks();
 	}
@@ -105,7 +111,9 @@ public class DeckBuilderWindow {
 	
 	private void displayActiveDeck() {
 		this.activeDeckBox.getChildren().clear();
-		for (Integer cardId : this.activeDeckConfig.getChosen().keySet()) {
+		List<Integer> sortedKeys = new ArrayList<>(this.activeDeckConfig.getChosen().keySet());
+		Collections.sort(sortedKeys, Comparator.comparingInt(key -> key));
+		for (Integer cardId : sortedKeys) {
 			DeckCardController card = new DeckCardController(this.cardList.get(cardId), this.activeDeckConfig.getChosen().get(cardId));
 			Pane cardPane = card.getRootPane();
 			cardPane.setOnMouseClicked(e -> {this.removeCardFromDeck(e, cardId);});
