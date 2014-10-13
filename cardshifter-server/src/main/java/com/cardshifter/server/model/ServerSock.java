@@ -38,6 +38,7 @@ public class ServerSock implements ConnectionHandler {
 				logger.info("Waiting for client nr: " + activeConnections.get() + "...");
 				Socket client = serverSocket.accept();
 				ClientSocketHandler clientHandler = new ClientSocketHandler(this.server, client);
+				logger.info("Incoming connection from " + client.getRemoteSocketAddress());
 				if (thread.isInterrupted()) {
 					logger.info("ServerSocket thread interrupted, shutting down.");
 					break;

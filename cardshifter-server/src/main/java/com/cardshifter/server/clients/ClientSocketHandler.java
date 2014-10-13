@@ -68,6 +68,7 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 			} catch (JsonParseException e) {
 				this.sendToClient(new ServerErrorMessage("Error reading input: " + e.getMessage()));
 				logger.error(e.getMessage(), e);
+				this.close();
 			} catch (JsonProcessingException e) {
 				this.sendToClient(new ServerErrorMessage("Error processing input: " + e.getMessage()));
 				logger.error(e.getMessage(), e);
@@ -96,5 +97,10 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 			logger.warn("Error closing", e);
 		}
 		this.disconnected();
+	}
+
+	@Override
+	public String getRemoteAddress() {
+		return String.valueOf(socket.getRemoteSocketAddress());
 	}
 }

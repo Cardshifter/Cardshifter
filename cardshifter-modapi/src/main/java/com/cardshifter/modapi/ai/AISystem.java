@@ -2,6 +2,7 @@ package com.cardshifter.modapi.ai;
 
 import java.util.Set;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.LogManager;
@@ -45,6 +46,15 @@ public class AISystem implements ECSSystem {
 		logger.info("AI entities " + ais);
 		for (Entity entity : ais) {
 			AIComponent aiComp = ai.get(entity);
+			if (aiComp.hasWaitingAction()) {
+				logger.info(entity + " already has a waiting action");
+				continue;
+			}
+			if (aiComp.isPaused()) {
+				logger.info(entity + " AI is paused");
+				continue;
+			}
+			
 			long delay = aiComp.getDelay();
 			ECSAction action = aiComp.getAI().getAction(entity);
 			if (action != null && !game.isGameOver()) {
@@ -54,7 +64,8 @@ public class AISystem implements ECSSystem {
 					runnable.run();
 				}
 				else {
-					executor.schedule(runnable, delay, TimeUnit.MILLISECONDS);
+					ScheduledFuture<?> future = executor.schedule(runnable, delay, TimeUnit.MILLISECONDS);
+					aiComp.future = future;
 				}
 				return;
 			}
@@ -67,7 +78,11 @@ public class AISystem implements ECSSystem {
 	private void perform(Entity entity, ECSAction action) {
 		try {
 			logger.info(entity + " performs " + action);
+			if (ai.has(entity)) {
+				ai.get(entity).future = null;
+			}
 			boolean performed = action.perform(entity);
+			
 			if (!performed) {
 				logger.error(entity + " AI cannot perform action " + action);
 				aiPerform(entity.getGame());
@@ -96,6 +111,11 @@ public class AISystem implements ECSSystem {
 		logger.info("AI entities " + ais);
 		for (Entity entity : ais) {
 			AIComponent aiComp = ai.get(entity);
+			if (aiComp.hasWaitingAction()) {
+				logger.info(entity + " already has a waiting action");
+				continue;
+			}
+			
 			ECSAction action = aiComp.getAI().getAction(entity);
 			if (action != null && !game.isGameOver()) {
 				logger.info(entity + " performs " + action);

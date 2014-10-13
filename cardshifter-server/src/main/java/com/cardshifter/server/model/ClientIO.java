@@ -32,6 +32,8 @@ public abstract class ClientIO implements IdObject {
 	
 	protected abstract void onSendToClient(Message data);
 	
+	public abstract String getRemoteAddress();
+	
 	public String getName() {
 		return name;
 	}
@@ -82,6 +84,11 @@ public abstract class ClientIO implements IdObject {
 	
 	void setId(int id) {
 		this.id = id;
+	}
+	
+	@Override
+	public String toString() {
+		return getId() + ": " + getName() + " @ " + getRemoteAddress();
 	}
 	
 }

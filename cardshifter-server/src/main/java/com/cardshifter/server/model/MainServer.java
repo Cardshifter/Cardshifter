@@ -12,7 +12,6 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import com.cardshifter.ai.AIs;
-import com.cardshifter.ai.CompleteIdiot;
 import com.cardshifter.ai.ScoringAI;
 import com.cardshifter.api.CardshifterConstants;
 import com.cardshifter.api.both.ChatMessage;
@@ -21,6 +20,11 @@ import com.cardshifter.api.incoming.StartGameRequest;
 import com.cardshifter.modapi.ai.CardshifterAI;
 import com.cardshifter.server.commands.AICommand;
 import com.cardshifter.server.commands.AICommand.AICommandParameters;
+import com.cardshifter.server.commands.EntityCommand.EntityInspectParameters;
+import com.cardshifter.server.commands.EntityCommand;
+import com.cardshifter.server.commands.CommandContext;
+import com.cardshifter.server.commands.HelpCommand;
+import com.cardshifter.server.commands.HelpCommand.HelpParameters;
 import com.cardshifter.server.main.FakeAIClientTCG;
 import com.cardshifter.server.utils.export.DataExporter;
 
@@ -34,10 +38,10 @@ public class MainServer {
 	private Thread consoleThread;
 	
 	public Server start() {
-		ais.put("loser", new ScoringAI(AIs.loser()));
-		ais.put("idiot", new ScoringAI(AIs.idiot()));
-		ais.put("old", new CompleteIdiot());
-		ais.put("medium", new ScoringAI(AIs.medium()));
+		ais.put("Loser", new ScoringAI(AIs.loser()));
+		ais.put("Idiot", new ScoringAI(AIs.idiot()));
+		ais.put("Medium", new ScoringAI(AIs.medium()));
+		ais.put("Fighter", new ScoringAI(AIs.fighter()));
 		
 		try {
 			logger.info("Starting Server...");
@@ -46,7 +50,7 @@ public class MainServer {
 			server.addConnections(new ServerWeb(server, 4243));
 			
 			logger.info("Starting Console...");
-			CommandHandler commandHandler = new CommandHandler(server);
+			CommandHandler commandHandler = server.getCommandHandler();
 			initializeCommands(commandHandler);
 			ServerConsole console = new ServerConsole(server, commandHandler);
 			consoleThread = new Thread(console, "Console-Thread");
@@ -70,8 +74,8 @@ public class MainServer {
 	}
 	
 	private void initializeCommands(CommandHandler commandHandler) {
-		commandHandler.addHandler("exit", command -> this.shutdown());
-//		commandHandler.addHandler("help", command -> commands.help());
+		commandHandler.addHandler("exit", () -> new Object(), this::shutdown);
+		commandHandler.addHandler("help", () -> new HelpParameters(), new HelpCommand(commandHandler));
 		commandHandler.addHandler("export", this::export);
 		commandHandler.addHandler("users", this::users);
 		commandHandler.addHandler("play", this::play);
@@ -80,9 +84,10 @@ public class MainServer {
 		commandHandler.addHandler("games", this::showGames);
 		commandHandler.addHandler("invites", this::showInvites);
 		commandHandler.addHandler("ai", () -> new AICommandParameters(), new AICommand());
+		commandHandler.addHandler("ent", () -> new EntityInspectParameters(), new EntityCommand());
 		commandHandler.addHandler("threads", cmd -> showAllStackTraces(server, System.out::println));
 	}
-
+	
 	private void showInvites(Command command) {
 		for (Entry<Integer, GameInvite> ee : server.getInvites().all().entrySet()) {
 			System.out.println(ee.getKey() + " = " + ee.getValue());
@@ -111,7 +116,7 @@ public class MainServer {
 		}
 	}
 	
-	private void shutdown() {
+	private void shutdown(CommandContext command, Object parameters) {
 		server.stop();
 		
 		try {
@@ -125,7 +130,7 @@ public class MainServer {
 	}
 	
 	private void users(Command command) {
-		server.getClients().values().forEach(cl -> System.out.println(cl.getId() + ": " + cl.getName()));
+		server.getClients().values().forEach(cl -> System.out.println(cl));
 	}
 	
 	private void play(Command command) {

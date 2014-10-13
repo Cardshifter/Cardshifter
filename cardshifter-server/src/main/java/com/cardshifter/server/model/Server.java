@@ -39,6 +39,7 @@ public class Server {
 	private final AtomicInteger gameId = new AtomicInteger(0);
 	
 	private final IncomingHandler incomingHandler;
+	private final CommandHandler commandHandler;
 	
 	private final Map<Integer, ClientIO> clients = new ConcurrentHashMap<>();
 	private final Map<Integer, ChatArea> chats = new ConcurrentHashMap<>();
@@ -54,6 +55,7 @@ public class Server {
 
 	public Server() {
 		this.incomingHandler = new IncomingHandler(this);
+		this.commandHandler = new CommandHandler(this);
 		this.scheduler = Executors.newScheduledThreadPool(2, new ThreadFactoryBuilder().setNameFormat("ai-thread-%d").build());
 		mainChat = this.newChatRoom("Main");
 		
@@ -173,6 +175,10 @@ public class Server {
 			}
 		}
 		this.scheduler.shutdown();
+	}
+	
+	public CommandHandler getCommandHandler() {
+		return commandHandler;
 	}
 	
 }

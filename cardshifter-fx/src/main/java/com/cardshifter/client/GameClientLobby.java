@@ -196,7 +196,7 @@ public class GameClientLobby implements Initializable {
 			Object value = entry.getValue();
 			if (value instanceof DeckConfig) {
 				DeckConfig config = (DeckConfig) value;
-				config = deckConfig;
+				deckConfig.getChosen().forEach((id, count) -> config.setChosen(id, count));
 			}
 		}
 		

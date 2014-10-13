@@ -12,6 +12,7 @@ import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.Entity;
 
 import net.zomis.aiscores.FieldScoreProducer;
+import net.zomis.aiscores.FieldScores;
 import net.zomis.aiscores.ScoreConfig;
 import net.zomis.aiscores.ScoreConfigFactory;
 import net.zomis.aiscores.ScoreParameters;
@@ -26,6 +27,12 @@ public class ScoringAI implements CardshifterAI, ScoreStrategy<Entity, ECSAction
 	
 	public ScoringAI(ScoreConfigFactory<Entity, ECSAction> config) {
 		this.config = config.build();
+	}
+	
+	public FieldScores<Entity, ECSAction> calculateFullScore(Entity player) {
+		FieldScoreProducer<Entity, ECSAction> prod = new FieldScoreProducer<Entity, ECSAction>(config, this);
+		prod.setDetailed(true);
+		return prod.analyzeAndScore(player);
 	}
 	
 	@Override
