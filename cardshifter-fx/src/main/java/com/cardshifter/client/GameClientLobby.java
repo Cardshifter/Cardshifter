@@ -62,6 +62,7 @@ public class GameClientLobby implements Initializable {
 	@FXML private AnchorPane inviteButton;
 	@FXML private AnchorPane inviteWindow;
 	@FXML private HBox gameTypeBox;
+	@FXML private AnchorPane deckBuilderButton;
 	
 	private final ObjectMapper mapper = CardshifterIO.mapper();
 	private final Set<GameClientController> gamesRunning = new HashSet<>();
@@ -105,6 +106,7 @@ public class GameClientLobby implements Initializable {
 		
 		this.usersOnline.setOnMouseClicked(this::selectUserForGameInvite);
 		this.inviteButton.setOnMouseClicked(this::startGameWithUser);
+		this.deckBuilderButton.setOnMouseClicked(this::openDeckBuilderWindowWithoutGame);
 		
 		return true;
 	}
@@ -186,7 +188,7 @@ public class GameClientLobby implements Initializable {
 			Object value = entry.getValue();
 			if (value instanceof DeckConfig) {
 				DeckConfig deckConfig = (DeckConfig) value;
-				this.showDeckBuilderWindow(deckConfig);
+				this.showDeckBuilderWindow(deckConfig, true);
 			}
 		}		
 	}
@@ -205,7 +207,23 @@ public class GameClientLobby implements Initializable {
 		this.send(new PlayerConfigMessage(this.currentPlayerConfig.getGameId(), configs));
 	}
 	
-	private void showDeckBuilderWindow(DeckConfig deckConfig) {
+	private void openDeckBuilderWindowWithoutGame(MouseEvent event) {
+		if (this.currentPlayerConfig != null) {
+			Map<String, Object> configs = this.currentPlayerConfig.getConfigs();
+		
+			for (Entry<String, Object> entry : configs.entrySet()) {
+				Object value = entry.getValue();
+				if (value instanceof DeckConfig) {
+					DeckConfig deckConfig = (DeckConfig) value;
+					this.showDeckBuilderWindow(deckConfig, false);
+				}
+			}		
+		} else {
+			//get the player config from the server?
+		}
+	}
+	
+	private void showDeckBuilderWindow(DeckConfig deckConfig, boolean startingGame) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("DeckBuilderDocument.fxml"));
 			Parent root = (Parent)loader.load();
@@ -215,6 +233,10 @@ public class GameClientLobby implements Initializable {
 			controller.configureWindow();
 			
 			this.openDeckBuilderWindow = controller;
+			
+			if (!startingGame) {
+				controller.disableGameStart();
+			}
 			
 			Scene scene = new Scene(root);
 			Stage stage = new Stage();

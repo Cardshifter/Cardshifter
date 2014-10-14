@@ -78,6 +78,10 @@ public class DeckBuilderWindow {
 		this.displaySavedDecks();
 	}
 	
+	public void disableGameStart() {
+		this.exitButton.setVisible(false);
+	}
+	
 	private void startGame(MouseEvent event) {
 		if (this.activeDeckConfig.getTotal() == this.activeDeckConfig.getMaxSize()) {
 			this.lobby.sendDeckAndPlayerConfigToServer(this.activeDeckConfig);
