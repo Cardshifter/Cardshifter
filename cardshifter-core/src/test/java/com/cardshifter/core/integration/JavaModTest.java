@@ -37,6 +37,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 
+import com.cardshifter.modapi.base.ECSGameState;
+
 
 /**
  *
@@ -503,6 +505,46 @@ public class JavaModTest {
 		
 		ECSGame ecsGame = mod.createGame();
 		assertEquals(0, ecsGame.getEntitiesWithComponent(PlayerComponent.class).size());
+		
+		modLoader.unload(modDirectory.getFileName().toString());
+	}
+	
+	@Test
+	public void testLoadModAddSystem() throws IOException, ClassNotFoundException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ModNotLoadableException {
+		Path modLoaderDirectory = Files.createTempDirectory("modloader");
+		modLoaderDirectory.toFile().deleteOnExit();
+		
+		Path modDirectory = Files.createTempDirectory(modLoaderDirectory, "addsystemmod");
+		Path compileDirectory = Files.createTempDirectory("compileDirectory");
+		
+		String simpleModSourceString = RuntimeJarHelper.createModSourceString(
+			"AddSystemMod", 
+			"import com.cardshifter.modapi.actions.attack.AttackOnBattlefield;\n", 
+			"game.addSystem(new AttackOnBattlefield());\n"
+		);
+		
+		Path simpleModSource = compileDirectory.resolve("AddSystemMod.java");
+		Files.createFile(simpleModSource);
+		Files.write(simpleModSource, simpleModSourceString.getBytes(StandardCharsets.UTF_8));
+		
+		List<Path> compiledModSources = RuntimeJarHelper.compileJavaSource(simpleModSource, compileDirectory);
+		
+		Path jarFile = modDirectory.resolve("addsystemmod");
+		Files.createFile(jarFile);
+		RuntimeJarHelper.createJar(jarFile, compiledModSources);
+		
+		Properties properties = new Properties();
+		properties.setProperty("language", "java");
+		properties.setProperty("jar", jarFile.getFileName().toString());
+		properties.setProperty("entryPoint", "com.cardshifter.core.integration.throwaway.runtimemod.AddSystemMod");
+		RuntimeJarHelper.createProperties(modDirectory, properties);
+		
+		ModLoader modLoader = new DirectoryModLoader(modLoaderDirectory);
+		Mod mod = modLoader.load(modDirectory.getFileName().toString());
+		
+		ECSGame ecsGame = mod.createGame();
+		assertEquals(ECSGameState.NOT_STARTED, ecsGame.getGameState());
+		//TODO verify that system got added
 		
 		modLoader.unload(modDirectory.getFileName().toString());
 	}
