@@ -21,7 +21,7 @@ Coding style
 We would like everyone to follow the following guidelines:
  - Use the most common coding standard for the language you are coding in.
  - Use tabs for indentation in Java.
- - Use two blanks for indentation in Lua.
+ - Use two spaces for indentation in Lua.
 
 Platform
 --------
@@ -34,6 +34,8 @@ Playing the game
 To play the game, [download the latest release](https://github.com/Cardshifter/Cardshifter/releases). Start the client jar using `java -jar cardshifter-fx-<version>.jar`.
 
 There is a server running at `dwarftowers.com` port `4242` that you may connect to.
+
+Otherwise, you may run a server locally in the console, and connect to `127.0.0.1` port `4242` to play.
 
 Develop another client
 ----------------------
