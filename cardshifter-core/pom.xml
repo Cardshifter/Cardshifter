@@ -42,8 +42,6 @@
 				<version>2.17</version>
 				<configuration>
 					<skip>true</skip>
-					<!--<reuseForks>false</reuseForks>-->
-					<!--<argLine>-Djava.security.manager -Djava.security.policy==${basedir}/src/test/resources/java.policy</argLine>-->
 				</configuration>
 				<executions>
 					<execution>
@@ -71,7 +69,7 @@
 								<include>**/JavaModTest.java</include>
 							</includes>
 							<reuseForks>false</reuseForks>
-							<argLine>-Djava.security.manager -Djava.security.policy==${basedir}/src/test/resources/java.policy -Djava.security.debug=policy</argLine>
+							<argLine>-Djava.security.manager -Djava.security.policy==${basedir}/src/test/resources/java.policy</argLine>
 						</configuration>
 					</execution>
 				</executions>
