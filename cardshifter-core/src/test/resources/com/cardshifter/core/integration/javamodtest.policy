@@ -2,6 +2,16 @@ grant codeBase "file:./-" {
 	permission java.security.AllPermission;
 };
 
+//when compiled from sources
+grant codeBase "file:../cardshifter-modapi/target/-" {
+	permission java.security.AllPermission;
+};
+
+//when up-to-date version is present
+grant codeBase "file:${user.home}/.m2/repository/com/cardshifter/cardshifter-modapi/-" {
+	permission java.security.AllPermission;
+};
+
 grant codeBase "file:${user.home}/.m2/repository/org/apache/maven/surefire/-" {
 	permission java.security.AllPermission;
 };
@@ -11,10 +21,6 @@ grant codeBase "file:${user.home}/.m2/repository/junit/-" {
 };
 
 grant codeBase "file:${user.home}/.m2/repository/log4j/-" {
-	permission java.security.AllPermission;
-};
-
-grant codeBase "file:${user.home}/.m2/repository/com/cardshifter/cardshifter-modapi/-" {
 	permission java.security.AllPermission;
 };
 
