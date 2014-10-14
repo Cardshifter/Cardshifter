@@ -44,6 +44,7 @@ public class DeckBuilderWindow {
 	@FXML private AnchorPane loadDeckButton;
 	@FXML private TextField deckNameBox;
 	@FXML private AnchorPane exitButton;
+	@FXML private AnchorPane deleteButton;
 	@FXML private Label cardCountLabel;
 	
 	private static final int CARDS_PER_PAGE = 12;
@@ -67,6 +68,7 @@ public class DeckBuilderWindow {
 		this.exitButton.setOnMouseClicked(this::startGame);
 		this.saveDeckButton.setOnMouseClicked(this::saveDeck);
 		this.loadDeckButton.setOnMouseClicked(this::loadDeck);
+		this.deleteButton.setOnMouseClicked(this::deleteDeck);
 		this.activeDeckBox.setOnDragDropped(e -> this.completeDragToActiveDeck(e, true));
 		this.activeDeckBox.setOnDragOver(e -> this.completeDragToActiveDeck(e, false));
 		
@@ -220,6 +222,20 @@ public class DeckBuilderWindow {
 		this.displayCurrentPage();
 	}
 	
+	private void deleteDeck(MouseEvent event) {
+		if(this.deckToLoad != null) {
+			try {
+				File deckToDelete = new File(this.deckToLoad);
+				if (deckToDelete.exists()) {
+					deckToDelete.delete();
+				}
+			} catch (Exception e) {
+				System.out.println("Failed to load deck for delete");
+			}
+		}
+		this.displaySavedDecks();
+	}
+ 	
 	public void clearSavedDeckButtons() {
 		for (Object button : this.deckListBox.getChildren()) {
 			((GenericButton)button).unHighlightButton();
