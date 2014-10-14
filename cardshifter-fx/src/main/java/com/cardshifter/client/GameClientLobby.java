@@ -325,6 +325,7 @@ public class GameClientLobby implements Initializable {
 				int userIdToInvite = this.usersOnlineList.get(this.userForGameInvite);
 				StartGameRequest startGameRequest = new StartGameRequest(userIdToInvite, this.selectedGameType);
 				this.sendInvite(startGameRequest);
+				this.chatOutput("Invite sent to " + this.userForGameInvite);
 			} else {
 				this.chatOutput("No Game Type selected");
 			}
