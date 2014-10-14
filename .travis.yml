@@ -18,6 +18,7 @@ deploy:
   file: 
       - "target/cardshifter-fx-0.3.jar"
       - "target/cardshifter-server-0.3.jar"
+      - "target/cardshifter-server-0.3.policy"
   skip_cleanup: true
   on:
     tags: true

@@ -50,3 +50,11 @@ Running cardshifter-server from within the IDE
 ----------------------------------------------
 
 In order to run the cardshifter-server module from within your IDE, you will need to run it with JVM arguments `-Djava.security.manager -Djava.security.policy==server.policy`.
+
+Running cardshifter-server standalone
+-------------------------------------
+
+In order to run the cardshifter server standalone, you will need to use the supplied JAR and policy file, suppose we are on version 0.4-SNAPSHOT, then you can start the server with the following command:
+`java -jar -Djava.security.manager -D.java.security.policy==cardshifter-server-0.4-SNAPSHOT.policy cardshifter-server-0.4-SNAPSHOT.jar`
+
+For secure execution, you must use a double equals sign in the -Djava.security.policy==x declaration and you must not edit the policy file.
