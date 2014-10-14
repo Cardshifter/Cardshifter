@@ -46,3 +46,7 @@ For example, to send a [`LoginMessage`](https://github.com/Cardshifter/Cardshift
 
 To send a request for starting a game, use [`StartGameRequest`](https://github.com/Cardshifter/Cardshifter/blob/client-server/cardshifter-api/src/main/java/com/cardshifter/api/incoming/StartGameRequest.java) which can be sent as JSON like this: `{ "command": "startgame", "opponent": 1, "gameType": "VANILLA" }` (currently "VANILLA" is the only supported game type).
 
+Running cardshifter-server from within the IDE
+----------------------------------------------
+
+In order to run the cardshifter-server module from within your IDE, you will need to run it with JVM arguments `-Djava.security.manager -Djava.security.policy==server.policy`.
