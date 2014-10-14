@@ -69,7 +69,7 @@
 								<include>**/JavaModTest.java</include>
 							</includes>
 							<reuseForks>false</reuseForks>
-							<argLine>-Djava.security.manager -Djava.security.policy==${basedir}/src/test/resources/com/cardshifter/core/integration/javamodtest.policy</argLine>
+							<argLine>-Djava.security.manager -Djava.security.policy==${basedir}/src/test/resources/com/cardshifter/core/integration/javamodtest.policy -Djava.security.debug=policy</argLine>
 						</configuration>
 					</execution>
 				</executions>
