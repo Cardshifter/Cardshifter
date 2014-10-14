@@ -1,0 +1,47 @@
+grant codeBase "file:./-" {
+	permission java.security.AllPermission;
+};
+
+grant codeBase "file:${user.home}/.m2/repository/com/cardshifter/cardshifter-core/-" {
+	permission java.security.AllPermission;
+};
+
+grant codeBase "file:${user.home}/.m2/repository/com/cardshifter/cardshifter-modapi/-" {
+	permission java.security.AllPermission;
+};
+
+grant codeBase "file:${user.home}/.m2/repository/org/apache/maven/surefire/-" {
+	permission java.security.AllPermission;
+};
+
+grant codeBase "file:${user.home}/.m2/repository/junit/-" {
+	permission java.security.AllPermission;
+};
+
+grant codeBase "file:${user.home}/.m2/repository/log4j/-" {
+	permission java.security.AllPermission;
+};
+
+grant codeBase "file:${user.home}/.m2/repository/org/java-websocket/-" {
+	permission java.security.AllPermission;
+};
+
+grant codeBase "file:${user.home}/.m2/repository/com/fasterxml/jackson/-" {
+	permission java.security.AllPermission;
+};
+
+grant codeBase "file:${user.home}/.m2/repository/org/codehaus/woodstox/-" {
+	permission java.security.AllPermission;
+};
+
+grant codeBase "file:${user.home}/.m2/repository/com/google/guava/-" {
+	permission java.security.AllPermission;
+};
+
+grant codeBase "file:${user.home}/.m2/repository/com/beust/-" {
+	permission java.security.AllPermission;
+};
+
+grant {
+	//mod permissions
+};

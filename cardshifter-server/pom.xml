@@ -25,6 +25,15 @@
 	<build>
 		<plugins>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.17</version>
+				<configuration>
+					<reuseForks>false</reuseForks>
+					<argLine>-Djava.security.manager -Djava.security.policy==${basedir}/src/test/resources/com/cardshifter/server/servertests.policy</argLine>
+				</configuration>
+			</plugin>
+			<plugin>
 				<groupId>com.google.code.maven-replacer-plugin</groupId>
 				<artifactId>maven-replacer-plugin</artifactId>
 				<version>1.4.1</version>
