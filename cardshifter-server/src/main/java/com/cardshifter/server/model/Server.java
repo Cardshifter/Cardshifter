@@ -114,7 +114,7 @@ public class Server {
 		logger.info("Client disconnected: " + client);
 		games.values().stream().filter(game -> game.hasPlayer(client))
 			.forEach(game -> game.send(new ClientDisconnectedMessage(client.getName(), game.getPlayers().indexOf(client))));
-		clients.remove(client);
+		clients.remove(client.getId());
 		getMainChat().remove(client);
 		broadcast(new UserStatusMessage(client.getId(), client.getName(), Status.OFFLINE));
 	}
