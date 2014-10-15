@@ -2,6 +2,10 @@ language: java
 
 jdk:
     - oraclejdk8
+    
+before_install:
+    - sudo apt-get update -qq
+    - sudo apt-get install oracle-java8-installer
 
 notifications:
     webhooks:
