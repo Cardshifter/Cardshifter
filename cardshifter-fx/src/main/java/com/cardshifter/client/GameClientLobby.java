@@ -121,10 +121,10 @@ public class GameClientLobby implements Initializable {
 					Platform.runLater(() -> this.processMessageFromServer(message));
 				}
 			} catch (SocketException e) {
-				System.out.println("Error receiving message: " + e.getMessage());
+				this.chatOutput("Error receiving message: " + e.getMessage());
 				return;
 			} catch (IOException e) {
-				e.printStackTrace();
+				this.chatOutput("Lost connection to server");
 			}
 		}
 	}
