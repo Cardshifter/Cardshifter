@@ -51,7 +51,7 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 		} catch (IOException e) {
 			String error = "Error occured when sending message " + message;
 			logger.fatal(error, e);
-			this.close();
+//			this.disconnected(); // Possibly mark client as disconnected here
 		}
 	}
 
@@ -89,18 +89,6 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 	@Override
 	public void close() {
 		this.disconnected();
-//		try {
-//			logger.info(this + " Closing input stream");
-//			in.close();
-//		} catch (IOException e1) {
-//			logger.warn("Error closing input stream", e1);
-//		}
-//		try {
-//			logger.info(this + " Closing output stream");
-//			out.close();
-//		} catch (IOException e1) {
-//			logger.warn("Error closing output stream", e1);
-//		}
 		try {
 			logger.info(this + " Closing socket");
 			socket.close();
