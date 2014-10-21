@@ -113,6 +113,10 @@ public class GameClientLobby implements Initializable {
 	
 	private void listen() {
 		while (true) {
+			if (socket.isClosed()) {
+				chatOutput("Connection Closed");
+				break;
+			}
 			try {
 				MappingIterator<Message> values = mapper.readValues(new JsonFactory().createParser(this.in), Message.class);
 				while (values.hasNextValue()) {
