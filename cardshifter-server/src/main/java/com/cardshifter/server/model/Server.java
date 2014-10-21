@@ -1,5 +1,6 @@
 package com.cardshifter.server.model;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -114,7 +115,7 @@ public class Server {
 		logger.info("Client disconnected: " + client);
 		games.values().stream().filter(game -> game.hasPlayer(client))
 			.forEach(game -> game.send(new ClientDisconnectedMessage(client.getName(), game.getPlayers().indexOf(client))));
-		clients.remove(client);
+		clients.remove(client.getId());
 		getMainChat().remove(client);
 		broadcast(new UserStatusMessage(client.getId(), client.getName(), Status.OFFLINE));
 	}
@@ -167,6 +168,10 @@ public class Server {
 	}
 	
 	public void stop() {
+		for (ClientIO client : new ArrayList<>(clients.values())) {
+			client.close();
+		}
+
 		for (ConnectionHandler handler : handlers) {
 			try {
 				handler.shutdown();

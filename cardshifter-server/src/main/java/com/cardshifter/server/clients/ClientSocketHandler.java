@@ -51,6 +51,7 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 		} catch (IOException e) {
 			String error = "Error occured when sending message " + message;
 			logger.fatal(error, e);
+			this.close();
 		}
 	}
 
@@ -74,15 +75,12 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 				logger.error(e.getMessage(), e);
 			} catch (IOException e) {
 				logger.error(e.getMessage(), e);
-				this.disconnected();
-				if (socket != null) {
-					try {
-						socket.close();
-					} catch (IOException e1) {
-						logger.error("Error closing on exception", e1);
-					}
-				}
-				socket = null;
+				this.close();
+			}
+			if (Thread.interrupted()) {
+				logger.info(this + " interrupted");
+				close();
+				break;
 			}
 		}
 		logger.info("End of run method for " + this);
@@ -90,17 +88,34 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 
 	@Override
 	public void close() {
+		this.disconnected();
+//		try {
+//			logger.info(this + " Closing input stream");
+//			in.close();
+//		} catch (IOException e1) {
+//			logger.warn("Error closing input stream", e1);
+//		}
+//		try {
+//			logger.info(this + " Closing output stream");
+//			out.close();
+//		} catch (IOException e1) {
+//			logger.warn("Error closing output stream", e1);
+//		}
 		try {
+			logger.info(this + " Closing socket");
 			socket.close();
 		}
 		catch (IOException e) {
 			logger.warn("Error closing", e);
 		}
-		this.disconnected();
+		socket = null;
 	}
 
 	@Override
 	public String getRemoteAddress() {
+		if (socket == null) {
+			return "Not connected";
+		}
 		return String.valueOf(socket.getRemoteSocketAddress());
 	}
 }

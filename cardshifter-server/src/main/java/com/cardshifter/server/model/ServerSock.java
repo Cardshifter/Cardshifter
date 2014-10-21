@@ -61,9 +61,16 @@ public class ServerSock implements ConnectionHandler {
 	}
 
 	@Override
-	public void shutdown() throws Exception {
+	public void shutdown() {
 		thread.interrupt();
-		serverSocket.close();
+		logger.info("Shutting down ServerSock Executor");
+		executor.shutdownNow();
+		logger.info("Shutting down serverSocket");
+		try {
+			serverSocket.close();
+		} catch (IOException e) {
+			logger.error("IOException when closing ServerSocket", e);
+		}
 	}
 
 }
