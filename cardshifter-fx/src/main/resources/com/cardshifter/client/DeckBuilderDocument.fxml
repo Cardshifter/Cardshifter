@@ -10,7 +10,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="647.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cardshifter.client.DeckBuilderWindow">
+<AnchorPane fx:id="rootPane" prefHeight="647.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cardshifter.client.DeckBuilderWindow">
 	<children>
 	   
 		<!-- Card List -->
@@ -64,8 +64,8 @@
 					<content>
 						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="664.0" prefWidth="132.0">
 							<children>
-								<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#797158" height="594.0" stroke="BLACK" strokeType="INSIDE" width="134.0" />
-								<VBox fx:id="deckListBox" prefHeight="530.0" prefWidth="134.0" />
+								<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#797158" height="666.0" stroke="BLACK" strokeType="INSIDE" width="134.0" />
+								<VBox fx:id="deckListBox" prefHeight="524.0" prefWidth="134.0" />
 							</children>
 						</AnchorPane>
 					</content>
@@ -97,6 +97,17 @@
 						</Label>
 					</children>
 				</AnchorPane>
+      		
+      		<AnchorPane fx:id="deleteButton" layoutX="8.0" layoutY="13.0" prefHeight="23.0" prefWidth="91.0">
+      			<children>
+      				<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f20000" height="28.0" stroke="BLACK" strokeType="INSIDE" width="91.0" />
+      				<Label layoutX="8.0" layoutY="7.0" text="Delete Deck">
+      					<font>
+      						<Font name="System Bold" size="12.0" />
+      					</font>
+      				</Label>
+      			</children>
+      		</AnchorPane>
 			</children>
 		</AnchorPane>
 	  
@@ -138,9 +149,9 @@
 		<AnchorPane fx:id="loadDeckButton" layoutX="1068.0" layoutY="555.0" prefHeight="44.0" prefWidth="134.0">
 			<children>
 				<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#bf4d41" height="44.0" layoutY="1.0" stroke="BLACK" strokeType="INSIDE" width="134.0" />
-				<Label layoutX="32.0" layoutY="14.0" text="Load Deck" textFill="WHITE">
+				<Label layoutX="22.0" layoutY="12.0" text="Load Deck" textFill="WHITE">
 					<font>
-						<Font size="14.0" />
+						<Font size="18.0" />
 					</font>
 				</Label>
 			</children>

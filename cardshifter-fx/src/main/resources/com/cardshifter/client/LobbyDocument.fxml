@@ -8,7 +8,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="532.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cardshifter.client.GameClientLobby">
+<AnchorPane fx:id="rootPane" prefHeight="532.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cardshifter.client.GameClientLobby">
 	<children>
 	  
 		<!-- Title bar -->
@@ -20,6 +20,16 @@
 					<Font name="System Bold" size="30.0" />
 				</font>
 				</Label>
+				<AnchorPane fx:id="deckBuilderButton" layoutX="755.0" layoutY="7.0" prefHeight="36.0" prefWidth="134.0">
+					<children>
+						<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#48285e" height="36.0" stroke="BLACK" strokeType="INSIDE" width="134.0" />
+						<Label layoutX="8.0" layoutY="7.0" text="Deck Builder" textFill="WHITE">
+							<font>
+								<Font name="System Bold" size="18.0" />
+							</font>
+						</Label>
+					</children>
+				</AnchorPane>
 			</children>
 		</AnchorPane>
 	  

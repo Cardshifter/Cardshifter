@@ -54,6 +54,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class GameClientLobby implements Initializable {
 	
+	@FXML private AnchorPane rootPane;
 	@FXML private ListView<String> usersOnline;
 	@FXML private ListView<String> chatMessages;
 	@FXML private TextField messageBox;
@@ -61,6 +62,7 @@ public class GameClientLobby implements Initializable {
 	@FXML private AnchorPane inviteButton;
 	@FXML private AnchorPane inviteWindow;
 	@FXML private HBox gameTypeBox;
+	@FXML private AnchorPane deckBuilderButton;
 	
 	private final ObjectMapper mapper = CardshifterIO.mapper();
 	private final Set<GameClientController> gamesRunning = new HashSet<>();
@@ -78,6 +80,7 @@ public class GameClientLobby implements Initializable {
 	private final List<String> gameTypes = new ArrayList<>();
 	private String selectedGameType;
 	private PlayerConfigMessage currentPlayerConfig;
+	private DeckBuilderWindow openDeckBuilderWindow;
 	
 	public void acceptConnectionSettings(String ipAddress, int port, String userName) {
 		// this is passed into this object after it is automatically created by the FXML document
@@ -103,6 +106,7 @@ public class GameClientLobby implements Initializable {
 		
 		this.usersOnline.setOnMouseClicked(this::selectUserForGameInvite);
 		this.inviteButton.setOnMouseClicked(this::startGameWithUser);
+		this.deckBuilderButton.setOnMouseClicked(this::openDeckBuilderWindowWithoutGame);
 		
 		return true;
 	}
@@ -117,10 +121,10 @@ public class GameClientLobby implements Initializable {
 					Platform.runLater(() -> this.processMessageFromServer(message));
 				}
 			} catch (SocketException e) {
-				System.out.println("Error receiving message: " + e.getMessage());
+				this.chatOutput("Error receiving message: " + e.getMessage());
 				return;
 			} catch (IOException e) {
-				e.printStackTrace();
+				this.chatOutput("Lost connection to server");
 			}
 		}
 	}
@@ -184,7 +188,7 @@ public class GameClientLobby implements Initializable {
 			Object value = entry.getValue();
 			if (value instanceof DeckConfig) {
 				DeckConfig deckConfig = (DeckConfig) value;
-				this.showDeckBuilderWindow(deckConfig);
+				this.showDeckBuilderWindow(deckConfig, true);
 			}
 		}		
 	}
@@ -203,7 +207,23 @@ public class GameClientLobby implements Initializable {
 		this.send(new PlayerConfigMessage(this.currentPlayerConfig.getGameId(), configs));
 	}
 	
-	private void showDeckBuilderWindow(DeckConfig deckConfig) {
+	private void openDeckBuilderWindowWithoutGame(MouseEvent event) {
+		if (this.currentPlayerConfig != null) {
+			Map<String, Object> configs = this.currentPlayerConfig.getConfigs();
+		
+			for (Entry<String, Object> entry : configs.entrySet()) {
+				Object value = entry.getValue();
+				if (value instanceof DeckConfig) {
+					DeckConfig deckConfig = (DeckConfig) value;
+					this.showDeckBuilderWindow(deckConfig, false);
+				}
+			}		
+		} else {
+			//get the player config from the server?
+		}
+	}
+	
+	private void showDeckBuilderWindow(DeckConfig deckConfig, boolean startingGame) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("DeckBuilderDocument.fxml"));
 			Parent root = (Parent)loader.load();
@@ -212,10 +232,16 @@ public class GameClientLobby implements Initializable {
 			controller.acceptDeckConfig(deckConfig, this);
 			controller.configureWindow();
 			
+			this.openDeckBuilderWindow = controller;
+			
+			if (!startingGame) {
+				controller.disableGameStart();
+			}
+			
 			Scene scene = new Scene(root);
 			Stage stage = new Stage();
 			stage.setScene(scene);
-			//stage.setOnCloseRequest(windowEvent -> this.closeDeckBuilder(controller));
+			stage.setOnCloseRequest(windowEvent -> this.closeDeckBuilderWindow());
 			stage.show();
 		}
         catch (Exception e) {
@@ -299,6 +325,7 @@ public class GameClientLobby implements Initializable {
 				int userIdToInvite = this.usersOnlineList.get(this.userForGameInvite);
 				StartGameRequest startGameRequest = new StartGameRequest(userIdToInvite, this.selectedGameType);
 				this.sendInvite(startGameRequest);
+				this.chatOutput("Invite sent to " + this.userForGameInvite);
 			} else {
 				this.chatOutput("No Game Type selected");
 			}
@@ -319,6 +346,17 @@ public class GameClientLobby implements Initializable {
 	private void closeController(GameClientController controller) {
 		this.gamesRunning.remove(controller);
 		controller.closeGame();
+		controller.closeWindow();
+	}
+	
+	private void closeDeckBuilderWindow() {
+		//this is a workaround to allow the player to "decline" an invite once the deck builder is open
+		if(this.gamesRunning.size() == 1) {
+			for (GameClientController controller : this.gamesRunning) {
+				this.closeController(controller);
+				this.openDeckBuilderWindow = null;
+			}
+		}
 	}
 	
 	private void stopThreads() {
@@ -337,6 +375,14 @@ public class GameClientLobby implements Initializable {
 	public void closeLobby() {
 		this.stopThreads();
 		this.breakConnection();
+		
+		for (GameClientController game : this.gamesRunning) {
+			game.closeWindow();
+		}
+		
+		if (this.openDeckBuilderWindow != null) {
+			this.openDeckBuilderWindow.closeWindow();
+		}
 	}
 	
 	private void createGameTypeButtons() {

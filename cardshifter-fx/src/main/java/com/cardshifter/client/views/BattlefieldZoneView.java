@@ -15,6 +15,11 @@ public class BattlefieldZoneView extends ZoneView<CardBattlefieldDocumentControl
 		card.setCardAttackActive(message);
 	}
 	
+	public void setCardIsAttacking(int cardId) {
+		CardBattlefieldDocumentController card = super.getCard(cardId);
+		card.setCardIsAttacking();
+	}
+	
 	public void setCardTargetable(int cardId, UseableActionMessage message) {
 		CardBattlefieldDocumentController card = getCard(cardId);
 		card.setCardTargetable();

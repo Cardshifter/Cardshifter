@@ -7,11 +7,14 @@ import com.cardshifter.client.views.CardHandDocumentController;
 import com.cardshifter.client.views.DeckCardController;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.ClipboardContent;
@@ -23,11 +26,15 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.stage.Stage;
 import net.zomis.cardshifter.ecs.usage.CardshifterIO;
 import net.zomis.cardshifter.ecs.usage.DeckConfig;
 
 public class DeckBuilderWindow {
 	
+	@FXML private AnchorPane rootPane;
 	@FXML private FlowPane cardListBox;
 	@FXML private VBox activeDeckBox;
 	@FXML private VBox deckListBox;
@@ -37,6 +44,7 @@ public class DeckBuilderWindow {
 	@FXML private AnchorPane loadDeckButton;
 	@FXML private TextField deckNameBox;
 	@FXML private AnchorPane exitButton;
+	@FXML private AnchorPane deleteButton;
 	@FXML private Label cardCountLabel;
 	
 	private static final int CARDS_PER_PAGE = 12;
@@ -60,16 +68,26 @@ public class DeckBuilderWindow {
 		this.exitButton.setOnMouseClicked(this::startGame);
 		this.saveDeckButton.setOnMouseClicked(this::saveDeck);
 		this.loadDeckButton.setOnMouseClicked(this::loadDeck);
+		this.deleteButton.setOnMouseClicked(this::deleteDeck);
 		this.activeDeckBox.setOnDragDropped(e -> this.completeDragToActiveDeck(e, true));
 		this.activeDeckBox.setOnDragOver(e -> this.completeDragToActiveDeck(e, false));
-		this.pageList = listSplitter(new ArrayList<>(this.cardList.values()), CARDS_PER_PAGE);
+		
+		List<CardInfoMessage> sortedCardList = new ArrayList<>(this.cardList.values());
+		Collections.sort(sortedCardList, Comparator.comparingInt(msg -> msg.getId()));
+		this.pageList = listSplitter(sortedCardList, CARDS_PER_PAGE);
+		
 		this.displayCurrentPage();
 		this.displaySavedDecks();
+	}
+	
+	public void disableGameStart() {
+		this.exitButton.setVisible(false);
 	}
 	
 	private void startGame(MouseEvent event) {
 		if (this.activeDeckConfig.getTotal() == this.activeDeckConfig.getMaxSize()) {
 			this.lobby.sendDeckAndPlayerConfigToServer(this.activeDeckConfig);
+			this.closeWindow();
 		}
 	}
 	
@@ -78,6 +96,21 @@ public class DeckBuilderWindow {
 		for (CardInfoMessage message : this.pageList.get(this.currentPage)) {
 			CardHandDocumentController card = new CardHandDocumentController(message, null);
 			Pane cardPane = card.getRootPane();			
+			
+			Rectangle numberOfCardsBox = new Rectangle(cardPane.getPrefWidth()/3, cardPane.getPrefHeight()/10);
+			numberOfCardsBox.setFill(Color.BLUE);
+			numberOfCardsBox.setStroke(Color.BLACK);
+			int numChosenCards = 0;
+			if (this.activeDeckConfig.getChosen().get(message.getId()) != null) {
+				numChosenCards = this.activeDeckConfig.getChosen().get(message.getId());
+			}
+			Label numberOfCardsLabel = new Label(String.format("%d / %d", numChosenCards, this.activeDeckConfig.getMaxPerCard()));
+			numberOfCardsLabel.setTextFill(Color.WHITE);
+			numberOfCardsBox.relocate(cardPane.getPrefWidth()/2.6, cardPane.getPrefHeight() - cardPane.getPrefHeight()/18);
+			numberOfCardsLabel.relocate(cardPane.getPrefWidth()/2.3, cardPane.getPrefHeight() - cardPane.getPrefHeight()/18);
+			cardPane.getChildren().add(numberOfCardsBox);
+			cardPane.getChildren().add(numberOfCardsLabel);
+			
 			cardPane.setOnMouseClicked(e -> {this.addCardToActiveDeck(e, message);});
 			cardPane.setOnDragDetected(e -> this.startDragToActiveDeck(e, cardPane, message));
 			this.cardListBox.getChildren().add(cardPane);
@@ -105,7 +138,9 @@ public class DeckBuilderWindow {
 	
 	private void displayActiveDeck() {
 		this.activeDeckBox.getChildren().clear();
-		for (Integer cardId : this.activeDeckConfig.getChosen().keySet()) {
+		List<Integer> sortedKeys = new ArrayList<>(this.activeDeckConfig.getChosen().keySet());
+		Collections.sort(sortedKeys, Comparator.comparingInt(key -> key));
+		for (Integer cardId : sortedKeys) {
 			DeckCardController card = new DeckCardController(this.cardList.get(cardId), this.activeDeckConfig.getChosen().get(cardId));
 			Pane cardPane = card.getRootPane();
 			cardPane.setOnMouseClicked(e -> {this.removeCardFromDeck(e, cardId);});
@@ -125,6 +160,7 @@ public class DeckBuilderWindow {
 			}
 		}
 		this.displayActiveDeck();
+		this.displayCurrentPage();
 	}
 	
 	private void removeCardFromDeck(MouseEvent event, int cardId) {
@@ -132,6 +168,7 @@ public class DeckBuilderWindow {
 			this.activeDeckConfig.removeChosen(cardId);
 		}
 		this.displayActiveDeck();
+		this.displayCurrentPage();
 	}
 	
 	private void startDragToActiveDeck(MouseEvent event, Pane pane, CardInfoMessage message) {
@@ -182,8 +219,23 @@ public class DeckBuilderWindow {
 			}
 		}
 		this.displayActiveDeck();
+		this.displayCurrentPage();
 	}
 	
+	private void deleteDeck(MouseEvent event) {
+		if(this.deckToLoad != null) {
+			try {
+				File deckToDelete = new File(this.deckToLoad);
+				if (deckToDelete.exists()) {
+					deckToDelete.delete();
+				}
+			} catch (Exception e) {
+				System.out.println("Failed to load deck for delete");
+			}
+		}
+		this.displaySavedDecks();
+	}
+ 	
 	public void clearSavedDeckButtons() {
 		for (Object button : this.deckListBox.getChildren()) {
 			((GenericButton)button).unHighlightButton();
@@ -201,6 +253,12 @@ public class DeckBuilderWindow {
 			this.currentPage++;
 			this.displayCurrentPage();
 		}
+	}
+	
+	public void closeWindow() {
+		Node source = this.rootPane;
+		Stage stage = (Stage)source.getScene().getWindow();
+		stage.close();
 	}
 	
 	private static <T> List<List<T>> listSplitter(List<T> originalList, int resultsPerList) {
