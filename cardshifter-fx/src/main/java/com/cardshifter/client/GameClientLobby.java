@@ -6,6 +6,9 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.URL;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -290,7 +293,9 @@ public class GameClientLobby implements Initializable {
 	
 	
 	private void chatOutput(String string) {
-		Platform.runLater(() -> this.chatMessages.getItems().add(string));
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault());
+		String time = "[" + formatter.format(Instant.now()) + "] ";
+		Platform.runLater(() -> this.chatMessages.getItems().add(time + string));
 	}
 
 	private void createInviteWindow(InviteRequest message) {
