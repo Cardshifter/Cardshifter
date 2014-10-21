@@ -96,7 +96,9 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 		this.disconnected();
 		try {
 			logger.info(this + " Closing socket");
-			socket.close();
+			if (socket != null) {
+				socket.close();
+			}
 		}
 		catch (IOException e) {
 			logger.warn("Error closing", e);
