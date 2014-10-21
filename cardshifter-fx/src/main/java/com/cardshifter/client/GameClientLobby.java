@@ -285,6 +285,7 @@ public class GameClientLobby implements Initializable {
 			this.usersOnlineList.put(message.getName(), message.getUserId());
 		} else if (message.getStatus() == Status.OFFLINE) {
 			this.usersOnlineList.remove(message.getName());
+			chatOutput(message.getName() + " is now offline.");
 		}
 		
 		this.usersOnline.getItems().clear();
