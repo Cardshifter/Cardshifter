@@ -82,6 +82,11 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 				close();
 				break;
 			}
+			if (socket.isClosed()) {
+				logger.info(this + " socket closed");
+				close();
+				break;
+			}
 		}
 		logger.info("End of run method for " + this);
 	}
