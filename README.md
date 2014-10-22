@@ -21,7 +21,7 @@ Coding style
 We would like everyone to follow the following guidelines:
  - Use the most common coding standard for the language you are coding in.
  - Use tabs for indentation in Java.
- - Use two blanks for indentation in Lua.
+ - Use two spaces for indentation in Lua.
 
 Platform
 --------
@@ -35,6 +35,8 @@ To play the game, [download the latest release](https://github.com/Cardshifter/C
 
 There is a server running at `dwarftowers.com` port `4242` that you may connect to.
 
+Otherwise, you may run a server locally in the console, and connect to `127.0.0.1` port `4242` to play.
+
 Develop another client
 ----------------------
 
@@ -46,3 +48,15 @@ For example, to send a [`LoginMessage`](https://github.com/Cardshifter/Cardshift
 
 To send a request for starting a game, use [`StartGameRequest`](https://github.com/Cardshifter/Cardshifter/blob/client-server/cardshifter-api/src/main/java/com/cardshifter/api/incoming/StartGameRequest.java) which can be sent as JSON like this: `{ "command": "startgame", "opponent": 1, "gameType": "VANILLA" }` (currently "VANILLA" is the only supported game type).
 
+Running cardshifter-server from within the IDE
+----------------------------------------------
+
+In order to run the cardshifter-server module from within your IDE, you will need to run it with JVM arguments `-Djava.security.manager -Djava.security.policy==server.policy`.
+
+Running cardshifter-server standalone
+-------------------------------------
+
+In order to run the cardshifter server standalone, you will need to use the supplied JAR and policy file, suppose we are on version 0.4-SNAPSHOT, then you can start the server with the following command:
+`java -jar -Djava.security.manager -D.java.security.policy==cardshifter-server-0.4-SNAPSHOT.policy cardshifter-server-0.4-SNAPSHOT.jar`
+
+For secure execution, you must use a double equals sign in the -Djava.security.policy==x declaration and you must not edit the policy file.

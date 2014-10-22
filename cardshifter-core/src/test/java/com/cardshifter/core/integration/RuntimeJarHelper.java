@@ -11,10 +11,10 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.jar.JarOutputStream;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 
 import javax.tools.JavaCompiler;
@@ -52,7 +52,7 @@ final class RuntimeJarHelper {
 		return stringBuilder.toString();
 	}
 	
-	static Path compileJavaSource(final Path sourceFile, final Path outputDirectory) throws IOException {
+	static List<Path> compileJavaSource(final Path sourceFile, final Path outputDirectory) throws IOException {
 		Objects.requireNonNull(sourceFile, "sourceFile");
 		Objects.requireNonNull(outputDirectory, "outputDirectory");
 		if (sourceFile.getFileName().endsWith(".java")) {
@@ -62,16 +62,17 @@ final class RuntimeJarHelper {
 			throw new IllegalArgumentException("outputDirectory " + outputDirectory + " must be a directory");
 		}
 		
+		Path subOutputDirectory = Files.createTempDirectory(outputDirectory, "unique");
+		
 		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 		try (StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, Locale.ENGLISH, StandardCharsets.UTF_8)) {
-			fileManager.setLocation(StandardLocation.CLASS_OUTPUT, Arrays.asList(outputDirectory.toFile()));
+			fileManager.setLocation(StandardLocation.CLASS_OUTPUT, Arrays.asList(subOutputDirectory.toFile()));
 			
 			Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjects(sourceFile.toFile());
 			CompilationTask compilationTask = compiler.getTask(null, fileManager, null, null, null, compilationUnits);
 			
-			
 			if (compilationTask.call()) {
-				return outputDirectory.resolve("com/cardshifter/core/integration/throwaway/runtimemod").resolve(sourceFile.getFileName().toString().replace(".java", ".class"));
+				return Files.list(subOutputDirectory.resolve("com/cardshifter/core/integration/throwaway/runtimemod")).collect(Collectors.toList());
 			}
 			throw new IllegalStateException("Failed to compile java source file, compilation task failed");
 		}
