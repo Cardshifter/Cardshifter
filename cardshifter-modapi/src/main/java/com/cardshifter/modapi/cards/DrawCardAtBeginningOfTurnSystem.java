@@ -12,6 +12,9 @@ public class DrawCardAtBeginningOfTurnSystem implements ECSSystem {
 	}
 	
 	private void drawCard(PhaseStartEvent event) {
+		if (event.getOldPhase().getOwner() == null) {
+			return;
+		}
 		DrawStartCards.drawCard(event.getNewPhase().getOwner());
 	}
 
