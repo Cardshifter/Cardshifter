@@ -98,6 +98,17 @@ public final class ECSGame {
 	public void setRandomSeed(long seed) {
 		random.setSeed(seed);
 	}
+
+	public List<ECSSystem> findSystemsOfClass(Class<? extends ECSSystem> clazz) {
+		return systems.stream().filter(sys -> clazz.isAssignableFrom(sys.getClass())).collect(Collectors.toList());
+	}
+
+	public boolean removeSystem(ECSSystem system) {
+		if (this.gameState != ECSGameState.NOT_STARTED) {
+			throw new UnsupportedOperationException("Removing a system when game has started has not yet been implemented");
+		}
+		return systems.remove(system);
+	}
 	
 	// TODO: copy actions. Set<ActionOptions>. choose one, choose two
 	// TODO: More Hearthstone-like features. Enchantments, effects, battlecry, deathrattle, etc.
