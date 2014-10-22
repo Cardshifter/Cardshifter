@@ -43,13 +43,13 @@ public abstract class GameTest {
 	
 	protected ECSGame game;
 	
-	@Retriever private ComponentRetriever<ActionComponent> actions;
-	@Retriever private ComponentRetriever<CardComponent> card;
-	@Retriever private ComponentRetriever<DeckComponent> deck;
-	@Retriever private ComponentRetriever<HandComponent> hand;
-	@Retriever private ComponentRetriever<BattlefieldComponent> field;
-	@Retriever private ComponentRetriever<CreatureTypeComponent> ctype;
-	@RetrieverSingleton private PhaseController phase;
+	@Retriever protected ComponentRetriever<ActionComponent> actions;
+	@Retriever protected ComponentRetriever<CardComponent> card;
+	@Retriever protected ComponentRetriever<DeckComponent> deck;
+	@Retriever protected ComponentRetriever<HandComponent> hand;
+	@Retriever protected ComponentRetriever<BattlefieldComponent> field;
+	@Retriever protected ComponentRetriever<CreatureTypeComponent> ctype;
+	@RetrieverSingleton protected PhaseController phase;
 	
 	@Before
 	public void before() {
@@ -59,6 +59,7 @@ public abstract class GameTest {
 		setupGame(game);
 		onBefore();
 		Retrievers.inject(this, game);
+		game.startGame();
 	}
 
 	protected abstract void onBefore();
@@ -158,4 +159,8 @@ public abstract class GameTest {
 		return available.getAction(actionName);
 	}
 	
+	protected Entity currentPlayer() {
+		return phase.getCurrentEntity();
+	}
+
 }

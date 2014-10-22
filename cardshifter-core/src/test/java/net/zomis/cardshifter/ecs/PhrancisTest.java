@@ -70,9 +70,6 @@ public class PhrancisTest extends GameTest {
 		}
 
 		mod.setupGame(game);
-		
-		game.startGame();
-		phase = ComponentRetriever.singleton(game, PhaseController.class);
 	}
 	
 	private void addCard(DeckConfig config, Predicate<Entity> condition) {
