@@ -1,5 +1,6 @@
 package com.cardshifter.server.model;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,9 +16,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import com.cardshifter.api.CardshifterConstants;
 import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.both.InviteResponse;
+import com.cardshifter.api.both.PlayerConfigMessage;
 import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.incoming.RequestTargetsMessage;
 import com.cardshifter.api.incoming.ServerQueryMessage;
@@ -39,6 +40,7 @@ public class Server {
 	private final AtomicInteger gameId = new AtomicInteger(0);
 	
 	private final IncomingHandler incomingHandler;
+	private final CommandHandler commandHandler;
 	
 	private final Map<Integer, ClientIO> clients = new ConcurrentHashMap<>();
 	private final Map<Integer, ChatArea> chats = new ConcurrentHashMap<>();
@@ -54,24 +56,20 @@ public class Server {
 
 	public Server() {
 		this.incomingHandler = new IncomingHandler(this);
+		this.commandHandler = new CommandHandler(this);
 		this.scheduler = Executors.newScheduledThreadPool(2, new ThreadFactoryBuilder().setNameFormat("ai-thread-%d").build());
 		mainChat = this.newChatRoom("Main");
 		
-		Server server = this;
-		IncomingHandler incomings = server.getIncomingHandler();
-		
 		Handlers handlers = new Handlers(this);
 		
-		incomings.addHandler("login", LoginMessage.class, handlers::loginMessage);
-		incomings.addHandler("chat", ChatMessage.class, handlers::chat);
-		incomings.addHandler("startgame", StartGameRequest.class, handlers::play);
-		incomings.addHandler("use", UseAbilityMessage.class, handlers::useAbility);
-		incomings.addHandler("requestTargets", RequestTargetsMessage.class, handlers::requestTargets);
-		incomings.addHandler("inviteResponse", InviteResponse.class, handlers::inviteResponse);
-		incomings.addHandler("query", ServerQueryMessage.class, handlers::query);
-		
-		server.addGameFactory(CardshifterConstants.VANILLA, (serv, id) -> new TCGGame(serv, id));
-		
+		incomingHandler.addHandler("login", LoginMessage.class, handlers::loginMessage);
+		incomingHandler.addHandler("chat", ChatMessage.class, handlers::chat);
+		incomingHandler.addHandler("startgame", StartGameRequest.class, handlers::play);
+		incomingHandler.addHandler("use", UseAbilityMessage.class, handlers::useAbility);
+		incomingHandler.addHandler("requestTargets", RequestTargetsMessage.class, handlers::requestTargets);
+		incomingHandler.addHandler("inviteResponse", InviteResponse.class, handlers::inviteResponse);
+		incomingHandler.addHandler("query", ServerQueryMessage.class, handlers::query);
+		incomingHandler.addHandler("playerconfig", PlayerConfigMessage.class, handlers::incomingConfig);
 	}
 	
 	ChatArea getMainChat() {
@@ -117,7 +115,7 @@ public class Server {
 		logger.info("Client disconnected: " + client);
 		games.values().stream().filter(game -> game.hasPlayer(client))
 			.forEach(game -> game.send(new ClientDisconnectedMessage(client.getName(), game.getPlayers().indexOf(client))));
-		clients.remove(client);
+		clients.remove(client.getId());
 		getMainChat().remove(client);
 		broadcast(new UserStatusMessage(client.getId(), client.getName(), Status.OFFLINE));
 	}
@@ -130,6 +128,10 @@ public class Server {
 		this.gameFactories.put(gameType, factory);
 	}
 
+	public Map<String, GameFactory> getGameFactories() {
+		return Collections.unmodifiableMap(gameFactories);
+	}
+	
 	public ServerGame createGame(String parameter) {
 		GameFactory suppl = gameFactories.get(parameter);
 		if (suppl == null) {
@@ -166,6 +168,10 @@ public class Server {
 	}
 	
 	public void stop() {
+		for (ClientIO client : new ArrayList<>(clients.values())) {
+			client.close();
+		}
+
 		for (ConnectionHandler handler : handlers) {
 			try {
 				handler.shutdown();
@@ -174,6 +180,10 @@ public class Server {
 			}
 		}
 		this.scheduler.shutdown();
+	}
+	
+	public CommandHandler getCommandHandler() {
+		return commandHandler;
 	}
 	
 }

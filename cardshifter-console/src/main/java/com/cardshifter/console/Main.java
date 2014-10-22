@@ -9,8 +9,6 @@ import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
-import net.zomis.cardshifter.ecs.base.ECSGame;
-import net.zomis.cardshifter.ecs.main.ConsoleControllerECS;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame;
 
 import org.apache.log4j.PropertyConfigurator;
@@ -18,6 +16,8 @@ import org.apache.log4j.PropertyConfigurator;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import com.cardshifter.core.Game;
+import com.cardshifter.modapi.base.ECSGame;
+import com.cardshifter.modapi.base.ECSMod;
 
 public class Main {
 
@@ -43,7 +43,11 @@ public class Main {
 				startLuaGame(options);
 			}
 			else {
-				new ConsoleControllerECS(PhrancisGame.createGame(new ECSGame())).play(input);
+				ECSMod mod = new PhrancisGame();
+				ECSGame newgame = new ECSGame();
+				mod.declareConfiguration(newgame);
+				mod.setupGame(newgame);
+				new ConsoleControllerECS(newgame).play(input);
 			}
 		}
 	}

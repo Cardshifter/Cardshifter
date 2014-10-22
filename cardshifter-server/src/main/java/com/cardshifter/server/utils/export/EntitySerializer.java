@@ -4,13 +4,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import net.zomis.cardshifter.ecs.base.ComponentRetriever;
-import net.zomis.cardshifter.ecs.base.Entity;
-import net.zomis.cardshifter.ecs.base.Retrievers;
-import net.zomis.cardshifter.ecs.components.CreatureTypeComponent;
-import net.zomis.cardshifter.ecs.resources.ECSResourceData;
-import net.zomis.cardshifter.ecs.resources.ECSResourceMap;
-
+import com.cardshifter.modapi.base.ComponentRetriever;
+import com.cardshifter.modapi.base.CreatureTypeComponent;
+import com.cardshifter.modapi.base.Entity;
+import com.cardshifter.modapi.base.Retrievers;
+import com.cardshifter.modapi.resources.ECSResourceData;
+import com.cardshifter.modapi.resources.ECSResourceMap;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;

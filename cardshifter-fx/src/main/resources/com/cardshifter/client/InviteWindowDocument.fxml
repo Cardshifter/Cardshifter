@@ -8,40 +8,56 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
-<AnchorPane fx:id="rootPane" prefHeight="240.0" prefWidth="400.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8">
-   <children>
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#0055a4" height="240.0" stroke="BLACK" strokeType="INSIDE" width="400.0" />
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#b1bdff" height="120.0" layoutX="15.0" layoutY="14.0" stroke="BLACK" strokeType="INSIDE" width="370.0" />
-      <Label layoutX="28.0" layoutY="22.0" text="Accept invite from">
-         <font>
-            <Font name="System Bold" size="36.0" />
-         </font>
-      </Label>
-      <Label fx:id="nameLabel" layoutX="166.0" layoutY="84.0" text="name" textAlignment="CENTER">
-         <font>
-            <Font name="System Bold" size="24.0" />
-         </font>
-      </Label>
-      <AnchorPane fx:id="yesButton" layoutX="15.0" layoutY="152.0" prefHeight="73.0" prefWidth="151.0">
-         <children>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#2bab35" height="73.0" stroke="BLACK" strokeType="INSIDE" width="151.0" />
-            <Label layoutX="42.0" layoutY="15.0" text="Yes">
-               <font>
-                  <Font name="System Bold" size="36.0" />
-               </font>
-            </Label>
-         </children>
-      </AnchorPane>
-      <AnchorPane fx:id="noButton" layoutX="234.0" layoutY="152.0" prefHeight="73.0" prefWidth="151.0">
-         <children>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#a4300d" height="73.0" stroke="BLACK" strokeType="INSIDE" width="151.0" />
-            <Label layoutX="50.0" layoutY="15.0" text="No">
-               <font>
-                  <Font name="System Bold" size="36.0" />
-               </font>
-            </Label>
-         </children>
-      </AnchorPane>
-   </children>
+<AnchorPane fx:id="rootPane" prefHeight="240.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+	<children>
+	  
+		<!-- non functional elements -->
+		<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#0055a4" height="240.0" stroke="BLACK" strokeType="INSIDE" width="400.0" />
+		<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#b1bdff" height="120.0" layoutX="15.0" layoutY="14.0" stroke="BLACK" strokeType="INSIDE" width="370.0" />
+		<Label layoutX="28.0" layoutY="22.0" text="Accept invite from">
+			<font>
+				<Font name="System Bold" size="36.0" />
+			</font>
+		</Label>
+		<Label layoutX="37.0" layoutY="100.0" text="for game type">
+			<font>
+				<Font name="System Bold" size="24.0" />
+			</font>
+		</Label>
+		
+		<!-- Labels -->
+		<Label fx:id="nameLabel" layoutX="166.0" layoutY="66.0" text="name" textAlignment="CENTER">
+			<font>
+				<Font name="System Bold" size="24.0" />
+			</font>
+		</Label>
+		<Label fx:id="gameTypeLabel" layoutX="219.0" layoutY="100.0">
+			<font>
+				<Font name="System Bold" size="24.0" />
+			</font>
+		</Label>
+		
+		<!-- Buttons -->
+		<AnchorPane fx:id="yesButton" layoutX="15.0" layoutY="152.0" prefHeight="73.0" prefWidth="151.0">
+			<children>
+				<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#2bab35" height="73.0" stroke="BLACK" strokeType="INSIDE" width="151.0" />
+				<Label layoutX="42.0" layoutY="15.0" text="Yes">
+					<font>
+						<Font name="System Bold" size="36.0" />
+					</font>
+				</Label>
+			</children>
+		</AnchorPane>
+		<AnchorPane fx:id="noButton" layoutX="234.0" layoutY="152.0" prefHeight="73.0" prefWidth="151.0">
+			<children>
+				<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#a4300d" height="73.0" stroke="BLACK" strokeType="INSIDE" width="151.0" />
+				<Label layoutX="50.0" layoutY="15.0" text="No">
+					<font>
+						<Font name="System Bold" size="36.0" />
+					</font>
+				</Label>
+			</children>
+		</AnchorPane>
+		
+	</children>
 </AnchorPane>

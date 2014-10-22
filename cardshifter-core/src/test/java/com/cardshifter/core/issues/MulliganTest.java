@@ -12,25 +12,25 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
-import net.zomis.cardshifter.ecs.actions.ActionComponent;
-import net.zomis.cardshifter.ecs.actions.ECSAction;
-import net.zomis.cardshifter.ecs.actions.TargetSet;
-import net.zomis.cardshifter.ecs.base.ComponentRetriever;
-import net.zomis.cardshifter.ecs.base.ECSGame;
-import net.zomis.cardshifter.ecs.base.Entity;
-import net.zomis.cardshifter.ecs.cards.DeckComponent;
-import net.zomis.cardshifter.ecs.cards.DrawStartCards;
-import net.zomis.cardshifter.ecs.cards.HandComponent;
-import net.zomis.cardshifter.ecs.components.PlayerComponent;
-import net.zomis.cardshifter.ecs.phase.Phase;
-import net.zomis.cardshifter.ecs.phase.PhaseController;
-import net.zomis.cardshifter.ecs.resources.ECSResource;
-import net.zomis.cardshifter.ecs.resources.ECSResourceDefault;
-import net.zomis.cardshifter.ecs.resources.ECSResourceMap;
-import net.zomis.cardshifter.ecs.resources.ResourceRetriever;
-import net.zomis.cardshifter.ecs.usage.MulliganSingleCards;
-
 import org.junit.Test;
+
+import com.cardshifter.modapi.actions.ActionComponent;
+import com.cardshifter.modapi.actions.ECSAction;
+import com.cardshifter.modapi.actions.TargetSet;
+import com.cardshifter.modapi.base.ComponentRetriever;
+import com.cardshifter.modapi.base.ECSGame;
+import com.cardshifter.modapi.base.Entity;
+import com.cardshifter.modapi.base.PlayerComponent;
+import com.cardshifter.modapi.cards.DeckComponent;
+import com.cardshifter.modapi.cards.DrawStartCards;
+import com.cardshifter.modapi.cards.HandComponent;
+import com.cardshifter.modapi.cards.MulliganSingleCards;
+import com.cardshifter.modapi.phase.Phase;
+import com.cardshifter.modapi.phase.PhaseController;
+import com.cardshifter.modapi.resources.ECSResource;
+import com.cardshifter.modapi.resources.ECSResourceDefault;
+import com.cardshifter.modapi.resources.ECSResourceMap;
+import com.cardshifter.modapi.resources.ResourceRetriever;
 
 public class MulliganTest {
 

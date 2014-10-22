@@ -1,5 +1,6 @@
 package com.cardshifter.client;
 
+import com.cardshifter.client.buttons.AIChoiceButton;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,11 +20,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import net.zomis.cardshifter.ecs.ai.AIComponent;
 
 import com.cardshifter.ai.AIs;
 import com.cardshifter.ai.ScoringAI;
 import com.cardshifter.fx.FXMLGameController;
+import com.cardshifter.modapi.ai.AIComponent;
 
 public final class GameClientLauncherController implements Initializable {
 	
@@ -85,35 +86,7 @@ public final class GameClientLauncherController implements Initializable {
         catch (Exception e) {
             throw new RuntimeException(e);
         }
-	}
-	
-	/*
-	private void switchToMainGameWindow(String ipAddress, int port) {
-		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("ClientDocument.fxml"));
-			Parent root = (Parent)loader.load();
-			
-			GameClientController controller = loader.<GameClientController>getController();
-			controller.acceptIPAndPort(ipAddress, port);
-			
-			if (controller.connectToGame()) {
-				errorMessage.setText("Success!");
-				this.closeWithSuccess();
-				
-				Scene scene = new Scene(root);
-				Stage gameStage = new Stage();
-				gameStage.setScene(scene);
-				gameStage.setOnCloseRequest(windowEvent -> controller.closeGame());
-				gameStage.show();
-			} else {
-				errorMessage.setText("Connection Failed!");
-			}
-		}
-        catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-	}
-	*/
+	}	
 	
 	private void createAIChoices() {
 		this.aiChoices.put("Idiot", new AIComponent(new ScoringAI(AIs.idiot())));
@@ -124,15 +97,17 @@ public final class GameClientLauncherController implements Initializable {
 	}
 	
 	private void createAIButtons() {
+		double buttonWidth = this.aiChoiceBox.getPrefWidth() / this.aiChoices.size();
+		double buttonHeight = this.aiChoiceBox.getPrefHeight() - this.aiChoiceBox.getPrefHeight()/4;
 		for (String string : this.aiChoices.keySet()) {
-			GenericButton button = new GenericButton(this.aiChoiceBox.getPrefWidth() / this.aiChoices.size(), this.aiChoiceBox.getPrefHeight() / this.aiChoices.size(), string, this);
+			AIChoiceButton button = new AIChoiceButton(buttonWidth, buttonHeight, string, this);
 			this.aiChoiceBox.getChildren().add(button);
 		}
 	}
 	
 	public void clearAIButtons() {
 		for (Object button : this.aiChoiceBox.getChildren()) {
-			((GenericButton)button).unHighlightButton();
+			((AIChoiceButton)button).unHighlightButton();
 		}
 	}
 	

@@ -3,7 +3,8 @@ package com.cardshifter.server.main;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import com.cardshifter.ai.CardshifterAI;
+import com.cardshifter.api.messages.Message;
+import com.cardshifter.modapi.ai.CardshifterAI;
 import com.cardshifter.server.model.ClientIO;
 import com.cardshifter.server.model.Server;
 
@@ -16,9 +17,9 @@ public class FakeAIClientTCG extends ClientIO {
 		super(server);
 		this.ai = ai;
 	}
-
+	
 	@Override
-	protected void onSendToClient(String data) {
+	protected void onSendToClient(Message data) {
 		logger.info(data);
 	}
 
@@ -28,6 +29,11 @@ public class FakeAIClientTCG extends ClientIO {
 
 	public CardshifterAI getAI() {
 		return ai;
+	}
+
+	@Override
+	public String getRemoteAddress() {
+		return "FakeAI: " + ai;
 	}
 
 }

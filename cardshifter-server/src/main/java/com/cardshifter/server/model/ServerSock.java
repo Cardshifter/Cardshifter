@@ -38,6 +38,7 @@ public class ServerSock implements ConnectionHandler {
 				logger.info("Waiting for client nr: " + activeConnections.get() + "...");
 				Socket client = serverSocket.accept();
 				ClientSocketHandler clientHandler = new ClientSocketHandler(this.server, client);
+				logger.info("Incoming connection from " + client.getRemoteSocketAddress());
 				if (thread.isInterrupted()) {
 					logger.info("ServerSocket thread interrupted, shutting down.");
 					break;
@@ -60,9 +61,16 @@ public class ServerSock implements ConnectionHandler {
 	}
 
 	@Override
-	public void shutdown() throws Exception {
+	public void shutdown() {
 		thread.interrupt();
-		serverSocket.close();
+		logger.info("Shutting down ServerSock Executor");
+		executor.shutdownNow();
+		logger.info("Shutting down serverSocket");
+		try {
+			serverSocket.close();
+		} catch (IOException e) {
+			logger.error("IOException when closing ServerSocket", e);
+		}
 	}
 
 }

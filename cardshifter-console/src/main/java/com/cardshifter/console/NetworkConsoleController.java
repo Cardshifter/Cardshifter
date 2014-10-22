@@ -16,6 +16,8 @@ import java.util.Scanner;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import net.zomis.cardshifter.ecs.usage.CardshifterIO;
+
 import com.cardshifter.api.CardshifterConstants;
 import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.incoming.RequestTargetsMessage;
@@ -39,7 +41,7 @@ public class NetworkConsoleController {
 	private final Socket socket;
 	private final InputStream in;
 	private final OutputStream out;
-	private final ObjectMapper mapper = new ObjectMapper();
+	private final ObjectMapper mapper = CardshifterIO.mapper();
 	private final BlockingQueue<Message> messages = new LinkedBlockingQueue<>();
 	private final List<UseableActionMessage> actions = Collections.synchronizedList(new ArrayList<>());
 	private int gameId;

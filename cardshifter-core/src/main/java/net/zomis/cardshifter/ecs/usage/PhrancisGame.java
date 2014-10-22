@@ -1,44 +1,53 @@
 package net.zomis.cardshifter.ecs.usage;
 
+import java.util.Map.Entry;
 import java.util.function.UnaryOperator;
 
-import net.zomis.cardshifter.ecs.actions.ActionComponent;
-import net.zomis.cardshifter.ecs.actions.ECSAction;
-import net.zomis.cardshifter.ecs.actions.attack.AttackDamageYGO;
-import net.zomis.cardshifter.ecs.actions.attack.AttackTargetMinionsFirstThenPlayer;
-import net.zomis.cardshifter.ecs.base.ECSGame;
-import net.zomis.cardshifter.ecs.base.Entity;
-import net.zomis.cardshifter.ecs.cards.BattlefieldComponent;
-import net.zomis.cardshifter.ecs.cards.CardComponent;
-import net.zomis.cardshifter.ecs.cards.Cards;
-import net.zomis.cardshifter.ecs.cards.DeckComponent;
-import net.zomis.cardshifter.ecs.cards.DrawStartCards;
-import net.zomis.cardshifter.ecs.cards.HandComponent;
-import net.zomis.cardshifter.ecs.cards.LimitedHandSizeSystem;
-import net.zomis.cardshifter.ecs.cards.RemoveDeadEntityFromZoneSystem;
-import net.zomis.cardshifter.ecs.cards.ZoneComponent;
-import net.zomis.cardshifter.ecs.components.CreatureTypeComponent;
-import net.zomis.cardshifter.ecs.components.PlayerComponent;
-import net.zomis.cardshifter.ecs.phase.Phase;
-import net.zomis.cardshifter.ecs.phase.PhaseController;
-import net.zomis.cardshifter.ecs.resources.ECSResource;
-import net.zomis.cardshifter.ecs.resources.ECSResourceMap;
-import net.zomis.cardshifter.ecs.resources.ResourceRetriever;
-import net.zomis.cardshifter.ecs.resources.RestoreResourcesToSystem;
-import net.zomis.cardshifter.ecs.systems.AttackOnBattlefield;
-import net.zomis.cardshifter.ecs.systems.AttackSickness;
-import net.zomis.cardshifter.ecs.systems.DamageConstantWhenOutOfCardsSystem;
-import net.zomis.cardshifter.ecs.systems.DrawCardAtBeginningOfTurnSystem;
-import net.zomis.cardshifter.ecs.systems.GainResourceSystem;
-import net.zomis.cardshifter.ecs.systems.GameOverIfNoHealth;
-import net.zomis.cardshifter.ecs.systems.UseCostSystem;
-import net.zomis.cardshifter.ecs.systems.PlayEntersBattlefieldSystem;
-import net.zomis.cardshifter.ecs.systems.PlayFromHandSystem;
-import net.zomis.cardshifter.ecs.systems.RestoreResourcesSystem;
+import com.cardshifter.modapi.actions.ActionComponent;
+import com.cardshifter.modapi.actions.ECSAction;
+import com.cardshifter.modapi.actions.UseCostSystem;
+import com.cardshifter.modapi.actions.attack.AttackDamageYGO;
+import com.cardshifter.modapi.actions.attack.AttackOnBattlefield;
+import com.cardshifter.modapi.actions.attack.AttackSickness;
+import com.cardshifter.modapi.actions.attack.AttackTargetMinionsFirstThenPlayer;
+import com.cardshifter.modapi.actions.enchant.EnchantPerform;
+import com.cardshifter.modapi.actions.enchant.EnchantTargetCreatureTypes;
+import com.cardshifter.modapi.base.CreatureTypeComponent;
+import com.cardshifter.modapi.base.ECSGame;
+import com.cardshifter.modapi.base.ECSMod;
+import com.cardshifter.modapi.base.Entity;
+import com.cardshifter.modapi.base.PlayerComponent;
+import com.cardshifter.modapi.cards.BattlefieldComponent;
+import com.cardshifter.modapi.cards.CardComponent;
+import com.cardshifter.modapi.cards.Cards;
+import com.cardshifter.modapi.cards.DamageConstantWhenOutOfCardsSystem;
+import com.cardshifter.modapi.cards.DeckComponent;
+import com.cardshifter.modapi.cards.DrawCardAtBeginningOfTurnSystem;
+import com.cardshifter.modapi.cards.DrawStartCards;
+import com.cardshifter.modapi.cards.HandComponent;
+import com.cardshifter.modapi.cards.LimitedHandSizeSystem;
+import com.cardshifter.modapi.cards.MulliganSingleCards;
+import com.cardshifter.modapi.cards.PlayEntersBattlefieldSystem;
+import com.cardshifter.modapi.cards.PlayFromHandSystem;
+import com.cardshifter.modapi.cards.RemoveDeadEntityFromZoneSystem;
+import com.cardshifter.modapi.cards.ZoneComponent;
+import com.cardshifter.modapi.phase.GainResourceSystem;
+import com.cardshifter.modapi.phase.PerformerMustBeCurrentPlayer;
+import com.cardshifter.modapi.phase.Phase;
+import com.cardshifter.modapi.phase.PhaseController;
+import com.cardshifter.modapi.phase.RestoreResourcesSystem;
+import com.cardshifter.modapi.resources.ECSResource;
+import com.cardshifter.modapi.resources.ECSResourceMap;
+import com.cardshifter.modapi.resources.GameOverIfNoHealth;
+import com.cardshifter.modapi.resources.ResourceRetriever;
+import com.cardshifter.modapi.resources.Resources;
+import com.cardshifter.modapi.resources.RestoreResourcesToSystem;
 
-public class PhrancisGame {
+public class PhrancisGame implements ECSMod {
 
 	public enum PhrancisResources implements ECSResource {
+		TRAMPLE,
+		MAX_HEALTH,
 		HEALTH, MANA, MANA_MAX, SCRAP, ATTACK, MANA_COST, SCRAP_COST, ENCHANTMENTS_ACTIVE, SICKNESS, ATTACK_AVAILABLE;
 	}
 
@@ -48,16 +57,68 @@ public class PhrancisGame {
 	public static final String SCRAP_ACTION = "Scrap";
 	public static final String END_TURN_ACTION = "End Turn";
 	
-	private static final int CARDS_OF_EACH_TYPE = 3;
+	@Override
+	public void declareConfiguration(ECSGame game) {
+		Entity neutral = game.newEntity();
+		ZoneComponent zone = new ZoneComponent(neutral, "Cards");
+		neutral.addComponent(zone);
+		
+		// Create card models that should be possible to choose from
+		// B0Ts
+		createCreature(0, zone, 0, 1, "B0T", 1);
+		createCreature(1, zone, 1, 1, "B0T", 1);
+		createCreature(2, zone, 2, 1, "B0T", 1);
+		createCreature(2, zone, 1, 2, "B0T", 1);
+		createCreature(3, zone, 3, 3, "B0T", 2);
+		createCreature(3, zone, 2, 4, "B0T", 2);
+		createCreature(3, zone, 4, 2, "B0T", 2);
+		createCreature(5, zone, 3, 1, "B0T", 3);
+		createCreature(5, zone, 1, 3, "B0T", 3);
+		createCreature(5, zone, 4, 4, "B0T", 3);
+		
+		// Bios
+		createCreature(3, zone, 3, 2, "Bio", 0);
+		createCreature(4, zone, 2, 3, "Bio", 0);
+		createCreature(5, zone, 3, 3, "Bio", 0);
+		createCreature(6, zone, 4, 4, "Bio", 0);
+		createCreature(6, zone, 5, 3, "Bio", 0);
+		createCreature(6, zone, 3, 5, "Bio", 0);
+		createCreature(8, zone, 5, 5, "Bio", 0);
+		createCreature(10, zone, 6, 6, "Bio", 0);
+		
+		// Enchantments: (deck), attack effect, health effect, scrap cost
+		createEnchantment(zone, 1, 0, 1);
+		createEnchantment(zone, 0, 1, 1);
+		createEnchantment(zone, 1, 1, 1);
+		createEnchantment(zone, 2, 1, 2);
+		createEnchantment(zone, 3, 0, 2);
+		createEnchantment(zone, 0, 3, 2);
+		createEnchantment(zone, 2, 2, 3);
+		
+		// Create the players
+		int maxCardsPerType = 3;
+		int minSize = 30;
+		int maxSize = 30;
+		
+		for (int i = 0; i < 2; i++) {
+			Entity entity = game.newEntity();
+			PlayerComponent playerComponent = new PlayerComponent(i, "Player" + (i+1));
+			entity.addComponent(playerComponent);
+			DeckConfig config = new DeckConfig(minSize, maxSize, zone.getCards(), maxCardsPerType);
+			entity.addComponent(new ConfigComponent().addConfig("Deck", config));
+		}
+		
+	}
 	
-	public static ECSGame createGame(ECSGame game) {
+	@Override
+	public void setupGame(ECSGame game) {
 		
 		PhaseController phaseController = new PhaseController();
 		game.newEntity().addComponent(phaseController);
 		
-		for (int i = 1; i <= 2; i++) {
-			PlayerComponent playerComponent = new PlayerComponent(i - 1, "Player" + i);
-			Entity player = game.newEntity().addComponent(playerComponent);
+		for (int i = 0; i < 2; i++) {
+			final int playerIndex = i;
+			Entity player = game.findEntities(e -> e.hasComponent(PlayerComponent.class) && e.getComponent(PlayerComponent.class).getIndex() == playerIndex).get(0);
 			Phase playerPhase = new Phase(player, "Main");
 			phaseController.addPhase(playerPhase);
 			
@@ -68,7 +129,7 @@ public class PhrancisGame {
 			actions.addAction(endTurnAction);
 			
 			ECSResourceMap.createFor(player)
-				.set(PhrancisResources.HEALTH, 10)
+				.set(PhrancisResources.HEALTH, 30)
 				.set(PhrancisResources.MANA, 0)
 				.set(PhrancisResources.SCRAP, 0);
 			
@@ -77,23 +138,14 @@ public class PhrancisGame {
 			ZoneComponent battlefield = new BattlefieldComponent(player);
 			player.addComponents(hand, deck, battlefield);
 			
-			for (int card = 0; card < CARDS_OF_EACH_TYPE; card++) {
-				createCreature(deck, 1, 1, "B0T", 1);
-				createCreature(deck, 2, 1, "B0T", 2);
-				createCreature(deck, 3, 3, "B0T", 3);
-				createCreature(deck, 4, 4, "B0T", 4);
-				createCreature(deck, 5, 5, "B0T", 5);
-				
-				createCreature(deck, 4, 4, "Bio", 5);
-				createCreature(deck, 5, 3, "Bio", 5);
-				createCreature(deck, 3, 5, "Bio", 5);
-				
-				createEnchantment(deck, 1, 0, 1);
-				createEnchantment(deck, 0, 1, 1);
-				createEnchantment(deck, 3, 0, 3);
-				createEnchantment(deck, 0, 3, 3);
-				createEnchantment(deck, 2, 2, 5);
+			ConfigComponent config = player.getComponent(ConfigComponent.class);
+			DeckConfig deckConf = config.getConfig(DeckConfig.class);
+			if (deckConf.getTotal() < deckConf.getMinSize()) {
+				deckConf.generateRandom();
 			}
+			
+			setupDeck(deck, deckConf);
+			
 			deck.shuffle();
 		}
 		
@@ -116,7 +168,7 @@ public class PhrancisGame {
 		game.addSystem(new AttackOnBattlefield());
 		game.addSystem(new AttackSickness(PhrancisResources.SICKNESS));
 		game.addSystem(new AttackTargetMinionsFirstThenPlayer());
-		game.addSystem(new AttackDamageYGO(PhrancisResources.ATTACK, PhrancisResources.HEALTH));
+		game.addSystem(new AttackDamageYGO(PhrancisResources.ATTACK, PhrancisResources.HEALTH, e -> Resources.getOrDefault(e, PhrancisResources.TRAMPLE, 0) >= 1));
 		game.addSystem(new UseCostSystem(ATTACK_ACTION, PhrancisResources.ATTACK_AVAILABLE, entity -> 1, entity -> entity));
 		game.addSystem(new RestoreResourcesToSystem(entity -> entity.hasComponent(CreatureTypeComponent.class) 
 				&& Cards.isOnZone(entity, BattlefieldComponent.class), PhrancisResources.ATTACK_AVAILABLE, entity -> 1));
@@ -127,10 +179,9 @@ public class PhrancisGame {
 		game.addSystem(new PlayFromHandSystem(ENCHANT_ACTION));
 		game.addSystem(new UseCostSystem(ENCHANT_ACTION, PhrancisResources.SCRAP, scrapCostResource::getFor, owningPlayerPays));
 		game.addSystem(new EnchantTargetCreatureTypes(new String[]{ "Bio" }));
-		game.addSystem(new EnchantPerform(PhrancisResources.ATTACK, PhrancisResources.HEALTH));
+		game.addSystem(new EnchantPerform(PhrancisResources.ATTACK, PhrancisResources.HEALTH, PhrancisResources.MAX_HEALTH));
 		
 //		game.addSystem(new ConsumeCardSystem());
-//		game.addSystem(new LimitedPlaysPerTurnSystem(2));
 		
 		// Resources
 		// TODO: ManaOverloadSystem -- Uses an `OverloadComponent` for both cards and players. Checks for turn start and afterCardPlayed
@@ -154,13 +205,27 @@ public class PhrancisGame {
 		game.addSystem(new RemoveDeadEntityFromZoneSystem());
 		game.addSystem(new PerformerMustBeCurrentPlayer());
 		
-		return game;
+	}
+
+	private void setupDeck(ZoneComponent deck, DeckConfig deckConf) {
+		ECSGame game = deck.getOwner().getGame();
+		for (Entry<Integer, Integer> chosen : deckConf.getChosen().entrySet()) {
+			int entityId = chosen.getKey();
+			int count = chosen.getValue();
+			
+			for (int i = 0; i < count; i++) {
+				Entity existing = game.getEntity(entityId);
+				Entity copy = existing.copy();
+				deck.addOnBottom(copy);
+			}
+		}
 	}
 
 	private static Entity createEnchantment(ZoneComponent deck, int strength, int health, int cost) {
 		Entity entity = deck.getOwner().getGame().newEntity();
 		ECSResourceMap.createFor(entity)
 			.set(PhrancisResources.HEALTH, health)
+			.set(PhrancisResources.MAX_HEALTH, health)
 			.set(PhrancisResources.SCRAP_COST, cost)
 			.set(PhrancisResources.ATTACK, strength);
 		entity.addComponent(new ActionComponent().addAction(enchantAction(entity)));
@@ -172,14 +237,17 @@ public class PhrancisGame {
 		return new ECSAction(entity, ENCHANT_ACTION, act -> true, act -> {}).addTargetSet(1, 1);
 	}
 
-	private static Entity createCreature(ZoneComponent deck, int strength,
-			int health, String creatureType, int cost) {
+	private static Entity createCreature(int cost, ZoneComponent deck, int strength,
+			int health, String creatureType, int scrapValue) {
 		Entity entity = deck.getOwner().getGame().newEntity();
 		ECSResourceMap.createFor(entity)
 			.set(PhrancisResources.HEALTH, health)
+			.set(PhrancisResources.MAX_HEALTH, health)
 			.set(PhrancisResources.ATTACK, strength)
+			.set(PhrancisResources.SCRAP, scrapValue)
 			.set(PhrancisResources.MANA_COST, cost)
 			.set(PhrancisResources.SICKNESS, 1)
+//			.set(PhrancisResources.TRAMPLE, 1)
 			.set(PhrancisResources.ATTACK_AVAILABLE, 1);
 		entity.addComponent(new CreatureTypeComponent(creatureType));
 		deck.addOnBottom(entity);

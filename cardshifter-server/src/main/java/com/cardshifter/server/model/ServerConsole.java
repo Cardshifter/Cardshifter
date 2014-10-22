@@ -2,9 +2,10 @@ package com.cardshifter.server.model;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
-import java.util.function.Consumer;
 
 import org.apache.log4j.LogManager;
+
+import com.cardshifter.api.messages.Message;
 
 public class ServerConsole extends ClientIO implements Runnable {
 
@@ -14,10 +15,6 @@ public class ServerConsole extends ClientIO implements Runnable {
 	}
 	
 	private final CommandHandler commands;
-	
-	public void addHandler(String command, Consumer<Command> handler) {
-		commands.addHandler(command, handler);
-	}
 	
 	@Override
 	public void run() {
@@ -37,7 +34,7 @@ public class ServerConsole extends ClientIO implements Runnable {
 	}
 
 	@Override
-	public void onSendToClient(String message) {
+	public void onSendToClient(Message message) {
 		System.out.println(message);
 	}
 
@@ -49,6 +46,11 @@ public class ServerConsole extends ClientIO implements Runnable {
 	@Override
 	public void close() {
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public String getRemoteAddress() {
+		return "Console";
 	}
 
 }

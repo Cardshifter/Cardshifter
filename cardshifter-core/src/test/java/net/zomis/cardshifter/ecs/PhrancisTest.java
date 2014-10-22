@@ -9,25 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import net.zomis.cardshifter.ecs.actions.ActionComponent;
-import net.zomis.cardshifter.ecs.actions.ECSAction;
-import net.zomis.cardshifter.ecs.actions.TargetSet;
-import net.zomis.cardshifter.ecs.base.ComponentRetriever;
-import net.zomis.cardshifter.ecs.base.ECSGame;
-import net.zomis.cardshifter.ecs.base.Entity;
-import net.zomis.cardshifter.ecs.cards.BattlefieldComponent;
-import net.zomis.cardshifter.ecs.cards.CardComponent;
-import net.zomis.cardshifter.ecs.cards.DeckComponent;
-import net.zomis.cardshifter.ecs.cards.HandComponent;
-import net.zomis.cardshifter.ecs.components.CreatureTypeComponent;
-import net.zomis.cardshifter.ecs.components.PlayerComponent;
-import net.zomis.cardshifter.ecs.phase.PhaseController;
-import net.zomis.cardshifter.ecs.resources.ECSResource;
-import net.zomis.cardshifter.ecs.resources.ECSResourceData;
-import net.zomis.cardshifter.ecs.resources.ResourceRetriever;
+import net.zomis.cardshifter.ecs.usage.ConfigComponent;
+import net.zomis.cardshifter.ecs.usage.DeckConfig;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame.PhrancisResources;
 
@@ -35,7 +22,27 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+
+import com.cardshifter.modapi.actions.ActionComponent;
+import com.cardshifter.modapi.actions.ECSAction;
+import com.cardshifter.modapi.actions.TargetSet;
+import com.cardshifter.modapi.base.ComponentRetriever;
+import com.cardshifter.modapi.base.CreatureTypeComponent;
+import com.cardshifter.modapi.base.ECSGame;
+import com.cardshifter.modapi.base.ECSMod;
+import com.cardshifter.modapi.base.Entity;
+import com.cardshifter.modapi.base.PlayerComponent;
+import com.cardshifter.modapi.cards.BattlefieldComponent;
+import com.cardshifter.modapi.cards.CardComponent;
+import com.cardshifter.modapi.cards.DeckComponent;
+import com.cardshifter.modapi.cards.HandComponent;
+import com.cardshifter.modapi.cards.ZoneComponent;
+import com.cardshifter.modapi.phase.PhaseController;
+import com.cardshifter.modapi.resources.ECSResource;
+import com.cardshifter.modapi.resources.ECSResourceData;
+import com.cardshifter.modapi.resources.ResourceRetriever;
 
 public class PhrancisTest {
 
@@ -53,20 +60,51 @@ public class PhrancisTest {
 	private final ComponentRetriever<DeckComponent> deck = ComponentRetriever.retreiverFor(DeckComponent.class);
 	private final ComponentRetriever<HandComponent> hand = ComponentRetriever.retreiverFor(HandComponent.class);
 	private final ComponentRetriever<BattlefieldComponent> field = ComponentRetriever.retreiverFor(BattlefieldComponent.class);
+	private final ComponentRetriever<CreatureTypeComponent> ctype = ComponentRetriever.retreiverFor(CreatureTypeComponent.class);
 	
 	private final ComponentRetriever<CardComponent> card = ComponentRetriever.retreiverFor(CardComponent.class);
+	private final Predicate<Entity> isB0T = e -> ctype.has(e) && ctype.get(e).getCreatureType().equals("B0T");
+	private final Predicate<Entity> isCreature = entity -> entity.hasComponent(CreatureTypeComponent.class);
 			
 	@Before
 	public void before() {
 		PropertyConfigurator.configure(PhrancisTest.class.getResourceAsStream("log4j.properties"));
 		game = new ECSGame();
 		game.setRandomSeed(42);
-		PhrancisGame.createGame(game);
+		ECSMod mod = new PhrancisGame();
+		mod.declareConfiguration(game);
+		
+		// TODO: Configure decks
+		Set<Entity> configEntities = game.getEntitiesWithComponent(ConfigComponent.class);
+		for (Entity configEntity : configEntities) {
+			ConfigComponent config = configEntity.getComponent(ConfigComponent.class);
+			DeckConfig deckConf = config.getConfig(DeckConfig.class);
+			
+			addCard(deckConf, isCreature.and(manaCost(1)));
+			addCard(deckConf, e -> scrapCost.getFor(e) == 1);
+			addCard(deckConf, isCreature.and(manaCost(1)));
+			addCard(deckConf, isCreature.and(manaCost(3)));
+			addCard(deckConf, isCreature.and(manaCost(1)));
+			addCard(deckConf, isCreature.and(manaCost(1)));
+			addCard(deckConf, isCreatureType("Bio").and(health(4)));
+			addCard(deckConf, e -> scrapCost.getFor(e) == 1 && health.getFor(e) == 1);
+		}
+
+		mod.setupGame(game);
+		
 		game.startGame();
 		phase = ComponentRetriever.singleton(game, PhaseController.class);
 	}
 	
+	private void addCard(DeckConfig config, Predicate<Entity> condition) {
+		Set<Entity> availableCards = game.getEntitiesWithComponent(ZoneComponent.class);
+		ZoneComponent zone = availableCards.iterator().next().getComponent(ZoneComponent.class);
+		Entity entity = zone.stream().filter(condition).findFirst().get();
+		config.add(entity.getId());
+	}
+
 	@Test
+	@Ignore
 	public void integration() {
 		assertNull(phase.getCurrentEntity());
 		List<Entity> list = new ArrayList<>(game.getEntitiesWithComponent(PlayerComponent.class));
@@ -92,7 +130,6 @@ public class PhrancisTest {
 		useFail(opponent(), PhrancisGame.END_TURN_ACTION);
 		
 		assertEquals(2, mana.getFor(phase.getCurrentEntity()));
-		Predicate<Entity> isCreature = entity -> entity.hasComponent(CreatureTypeComponent.class);
 		Entity entity;
 		
 		entity = findCardInDeck(isCreature.and(manaCost(1)));
@@ -123,7 +160,7 @@ public class PhrancisTest {
 		assertEquals(0, attackPoints.getFor(attacker));
 		
 		nextPhase();
-		Entity defender = cardToHand(isCreature.and(manaCost(3)));
+		Entity defender = cardToHand(isCreature.and(manaCost(3)).and(isB0T).and(health(3)));
 		useAction(defender, PhrancisGame.PLAY_ACTION);
 		assertEquals(3, health.getFor(defender));
 		
@@ -178,24 +215,26 @@ public class PhrancisTest {
 		assertResource(defender, PhrancisResources.ATTACK, 3);
 		assertResource(defender, PhrancisResources.HEALTH, 3);
 		assertResource(attacker, PhrancisResources.ATTACK, 4);
+		assertResource(opponent, PhrancisResources.HEALTH, 9);
+		// Attacking with attack 4 on a creature with health 3. Opponent has 9 life now, will lose 1 life because of trample damage
 		useActionWithTarget(attacker, PhrancisGame.ATTACK_ACTION, defender);
 		assertResource(opponent, PhrancisResources.HEALTH, 9);
 		assertTrue(defender.isRemoved());
 	}
 
-    private Entity opponent() {
-    	List<Entity> list = game.getEntitiesWithComponent(PlayerComponent.class).stream()
-   			.filter(entity -> entity != phase.getCurrentEntity())
-   			.collect(Collectors.toList());
-    	assertEquals("Found more than one opponent", 1, list.size());
+	private Entity opponent() {
+		List<Entity> list = game.getEntitiesWithComponent(PlayerComponent.class).stream()
+			.filter(entity -> entity != phase.getCurrentEntity())
+			.collect(Collectors.toList());
+		assertEquals("Found more than one opponent", 1, list.size());
 		return list.get(0);
 	}
 
 	private Predicate<Entity> health(int value) {
-        return entity -> health.getFor(entity) == value;
-    }
+		return entity -> health.getFor(entity) == value;
+	}
 
-    private Predicate<Entity> isCreatureType(String creatureType) {
+	private Predicate<Entity> isCreatureType(String creatureType) {
 		return entity -> entity.hasComponent(CreatureTypeComponent.class) &&
 				entity.getComponent(CreatureTypeComponent.class).getCreatureType().equals(creatureType);
 	}

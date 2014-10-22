@@ -2,10 +2,10 @@ package com.cardshifter.server.clients;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
+import java.io.OutputStream;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
+
+import net.zomis.cardshifter.ecs.usage.CardshifterIO;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -15,7 +15,9 @@ import com.cardshifter.api.outgoing.ServerErrorMessage;
 import com.cardshifter.server.model.ClientIO;
 import com.cardshifter.server.model.Server;
 import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,22 +27,32 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 	
 	private Socket	socket;
 	private final InputStream in;
-	@Deprecated
-	private final PrintWriter out; // TODO: Convert to simple OutputStream and let Jackson do the job
+	private final OutputStream out;
 	
-	private final ObjectMapper mapper = new ObjectMapper();
+	private final ObjectMapper mapper = CardshifterIO.mapper();
 
 	public ClientSocketHandler(Server server, Socket socket) throws IOException {
 		super(server);
 		this.socket = socket;
+		mapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, false);
+		mapper.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
 		in = socket.getInputStream();
-		out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true);
+		out = socket.getOutputStream();
 	}
 	
 	@Override
-	public void onSendToClient(String message) {
-		this.out.print(message);
-		this.out.flush();
+	public void onSendToClient(Message message) {
+		try {
+			mapper.writeValue(out, message);
+		} catch (JsonProcessingException e) {
+			String error = "Error occured when serializing message " + message;
+			logger.fatal(error, e);
+			throw new IllegalArgumentException(error, e);
+		} catch (IOException e) {
+			String error = "Error occured when sending message " + message;
+			logger.fatal(error, e);
+//			this.disconnected(); // Possibly mark client as disconnected here
+		}
 	}
 
 	@Override
@@ -57,20 +69,23 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 			} catch (JsonParseException e) {
 				this.sendToClient(new ServerErrorMessage("Error reading input: " + e.getMessage()));
 				logger.error(e.getMessage(), e);
+				this.close();
 			} catch (JsonProcessingException e) {
 				this.sendToClient(new ServerErrorMessage("Error processing input: " + e.getMessage()));
 				logger.error(e.getMessage(), e);
 			} catch (IOException e) {
 				logger.error(e.getMessage(), e);
-				this.disconnected();
-				if (socket != null) {
-					try {
-						socket.close();
-					} catch (IOException e1) {
-						logger.error("Error closing on exception", e1);
-					}
-				}
-				socket = null;
+				this.close();
+			}
+			if (Thread.interrupted()) {
+				logger.info(this + " interrupted");
+				close();
+				break;
+			}
+			if (socket.isClosed()) {
+				logger.info(this + " socket closed");
+				close();
+				break;
 			}
 		}
 		logger.info("End of run method for " + this);
@@ -78,12 +93,24 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 
 	@Override
 	public void close() {
+		this.disconnected();
 		try {
-			socket.close();
+			logger.info(this + " Closing socket");
+			if (socket != null) {
+				socket.close();
+			}
 		}
 		catch (IOException e) {
 			logger.warn("Error closing", e);
 		}
-		this.disconnected();
+		socket = null;
+	}
+
+	@Override
+	public String getRemoteAddress() {
+		if (socket == null) {
+			return "Not connected";
+		}
+		return String.valueOf(socket.getRemoteSocketAddress());
 	}
 }

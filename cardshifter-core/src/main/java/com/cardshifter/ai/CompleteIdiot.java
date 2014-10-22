@@ -5,13 +5,14 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import net.zomis.cardshifter.ecs.actions.Actions;
-import net.zomis.cardshifter.ecs.actions.ECSAction;
-import net.zomis.cardshifter.ecs.actions.TargetSet;
-import net.zomis.cardshifter.ecs.base.Entity;
-
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+
+import com.cardshifter.modapi.actions.Actions;
+import com.cardshifter.modapi.actions.ECSAction;
+import com.cardshifter.modapi.actions.TargetSet;
+import com.cardshifter.modapi.ai.CardshifterAI;
+import com.cardshifter.modapi.base.Entity;
 
 public class CompleteIdiot implements CardshifterAI {
 

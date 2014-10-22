@@ -1,15 +1,16 @@
 package net.zomis.cardshifter.ecs.usage;
 
-import net.zomis.cardshifter.ecs.actions.ActionAllowedCheckEvent;
-import net.zomis.cardshifter.ecs.actions.ActionPerformEvent;
-import net.zomis.cardshifter.ecs.actions.SpecificActionSystem;
-import net.zomis.cardshifter.ecs.base.ComponentRetriever;
-import net.zomis.cardshifter.ecs.base.Entity;
-import net.zomis.cardshifter.ecs.cards.BattlefieldComponent;
-import net.zomis.cardshifter.ecs.cards.CardComponent;
-import net.zomis.cardshifter.ecs.cards.Cards;
-import net.zomis.cardshifter.ecs.resources.ECSResource;
-import net.zomis.cardshifter.ecs.resources.ResourceRetriever;
+import com.cardshifter.modapi.actions.ActionAllowedCheckEvent;
+import com.cardshifter.modapi.actions.ActionPerformEvent;
+import com.cardshifter.modapi.actions.SpecificActionSystem;
+import com.cardshifter.modapi.base.ComponentRetriever;
+import com.cardshifter.modapi.base.Entity;
+import com.cardshifter.modapi.base.Retriever;
+import com.cardshifter.modapi.cards.BattlefieldComponent;
+import com.cardshifter.modapi.cards.CardComponent;
+import com.cardshifter.modapi.cards.Cards;
+import com.cardshifter.modapi.resources.ECSResource;
+import com.cardshifter.modapi.resources.ResourceRetriever;
 
 public class ScrapSystem extends SpecificActionSystem {
 
@@ -20,7 +21,7 @@ public class ScrapSystem extends SpecificActionSystem {
 		this.resource = ResourceRetriever.forResource(resource);
 	}
 
-	private final ComponentRetriever<CardComponent> card = ComponentRetriever.retreiverFor(CardComponent.class);
+	@Retriever private ComponentRetriever<CardComponent> card;
 	
 	@Override
 	protected void isAllowed(ActionAllowedCheckEvent event) {
@@ -30,12 +31,16 @@ public class ScrapSystem extends SpecificActionSystem {
 		if (!Cards.isOnZone(event.getEntity(), BattlefieldComponent.class)) {
 			event.setAllowed(false);
 		}
+		if (resource.getOrDefault(event.getEntity(), 0) <= 0) {
+			event.setAllowed(false);
+		}
 	}
 	
 	@Override
 	protected void onPerform(ActionPerformEvent event) {
 		Entity cardOwner = card.get(event.getEntity()).getOwner();
-		resource.resFor(cardOwner).change(1);
+		int scrapValue = resource.getFor(event.getEntity());
+		resource.resFor(cardOwner).change(scrapValue);
 		event.getEntity().destroy();
 	}
 	

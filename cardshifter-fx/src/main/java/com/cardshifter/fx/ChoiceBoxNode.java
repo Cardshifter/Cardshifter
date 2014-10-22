@@ -3,16 +3,17 @@ package com.cardshifter.fx;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.cardshifter.modapi.actions.ECSAction;
+import com.cardshifter.modapi.actions.TargetSet;
+import com.cardshifter.modapi.base.Entity;
+import com.cardshifter.modapi.cards.CardComponent;
+
 import javafx.event.ActionEvent;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import net.zomis.cardshifter.ecs.actions.ECSAction;
-import net.zomis.cardshifter.ecs.actions.TargetSet;
-import net.zomis.cardshifter.ecs.base.Entity;
-import net.zomis.cardshifter.ecs.cards.CardComponent;
 
 public class ChoiceBoxNode {
 	

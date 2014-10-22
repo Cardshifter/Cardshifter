@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>com.cardshifter</groupId>
 		<artifactId>cardshifter</artifactId>
-		<version>0.3</version>
+		<version>0.4</version>
 	</parent>
 	
 	<artifactId>cardshifter-fx</artifactId>
@@ -52,11 +52,6 @@
 	</build>
 	
 	<dependencies>
-		<dependency>
-			<groupId>com.cardshifter</groupId>
-			<artifactId>cardshifter-mod</artifactId>
-			<version>${project.version}</version>
-		</dependency>
 		<dependency>
 			<groupId>com.cardshifter</groupId>
 			<artifactId>cardshifter-core</artifactId>

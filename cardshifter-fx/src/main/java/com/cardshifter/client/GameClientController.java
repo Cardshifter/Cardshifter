@@ -46,6 +46,8 @@ import com.cardshifter.client.views.CardHandDocumentController;
 import com.cardshifter.client.views.CardView;
 import com.cardshifter.client.views.PlayerHandZoneView;
 import com.cardshifter.client.views.ZoneView;
+import javafx.scene.Node;
+import javafx.stage.Stage;
 
 public class GameClientController {
 	
@@ -252,6 +254,8 @@ public class GameClientController {
 		}
 		if (message.getAction().equals("Attack")) {
 			((BattlefieldZoneView)zoneView).setCardCanAttack(message.getId(),message);
+		} else if (message.getAction().equals("Scrap")) {
+			zoneView.setCardScrappable(message.getId(), message);
 		} else {
 			zoneView.setCardActive(message.getId(), message);
 		}
@@ -351,6 +355,14 @@ public class GameClientController {
 	private void processAvailableTargetsMessage(AvailableTargetsMessage message) {
 		this.chosenTargets.clear();
 		this.targetInfo = message;
+		
+		if (message.getAction().equals("Attack")) {
+			ZoneView<?> attackerZoneView = getZoneViewForCard(message.getEntity());
+			if (attackerZoneView != null) {
+				((BattlefieldZoneView)attackerZoneView).setCardIsAttacking(message.getEntity());
+			}
+		}
+		
 		for (int i = 0; i < message.getTargets().length; i++) {
 			int target = message.getTargets()[i];
 			if (target != this.opponentId) {
@@ -447,6 +459,7 @@ public class GameClientController {
 	private void clearActiveFromAllCards() {
 		for (ZoneView<?> zoneView : this.zoneViewMap.values()) {
 			zoneView.removeActiveAllCards();
+			zoneView.removeScrappableAllCards();
 		}
 	}
 	
@@ -500,6 +513,12 @@ public class GameClientController {
 		card.getChildren().add(cardBack);
 		
 		return card;
+	}
+	
+	public void closeWindow() {
+		Node source = this.rootPane;
+		Stage stage = (Stage)source.getScene().getWindow();
+		stage.close();
 	}
 	
 	@SuppressWarnings("unchecked")

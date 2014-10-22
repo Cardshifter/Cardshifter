@@ -1,19 +1,20 @@
 package net.zomis.cardshifter.ecs;
 
 import static org.junit.Assert.assertEquals;
-import net.zomis.cardshifter.ecs.base.ComponentRetriever;
-import net.zomis.cardshifter.ecs.base.ECSGame;
-import net.zomis.cardshifter.ecs.base.Entity;
-import net.zomis.cardshifter.ecs.phase.Phase;
-import net.zomis.cardshifter.ecs.phase.PhaseController;
-import net.zomis.cardshifter.ecs.phase.PhaseStartEvent;
-import net.zomis.cardshifter.ecs.resources.ECSResource;
-import net.zomis.cardshifter.ecs.resources.ECSResourceData;
-import net.zomis.cardshifter.ecs.resources.ECSResourceMap;
-import net.zomis.cardshifter.ecs.resources.ResourceValueChange;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import com.cardshifter.modapi.base.ComponentRetriever;
+import com.cardshifter.modapi.base.ECSGame;
+import com.cardshifter.modapi.base.Entity;
+import com.cardshifter.modapi.phase.Phase;
+import com.cardshifter.modapi.phase.PhaseController;
+import com.cardshifter.modapi.phase.PhaseStartEvent;
+import com.cardshifter.modapi.resources.ECSResource;
+import com.cardshifter.modapi.resources.ECSResourceData;
+import com.cardshifter.modapi.resources.ECSResourceMap;
+import com.cardshifter.modapi.resources.ResourceValueChange;
 
 public class ResourceTest {
 

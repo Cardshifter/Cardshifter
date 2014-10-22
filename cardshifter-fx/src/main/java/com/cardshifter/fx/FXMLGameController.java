@@ -12,26 +12,27 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import net.zomis.cardshifter.ecs.actions.ActionComponent;
-import net.zomis.cardshifter.ecs.actions.ECSAction;
-import net.zomis.cardshifter.ecs.ai.AIComponent;
-import net.zomis.cardshifter.ecs.base.ComponentRetriever;
-import net.zomis.cardshifter.ecs.base.ECSGame;
-import net.zomis.cardshifter.ecs.base.Entity;
-import net.zomis.cardshifter.ecs.cards.BattlefieldComponent;
-import net.zomis.cardshifter.ecs.cards.HandComponent;
-import net.zomis.cardshifter.ecs.cards.ZoneComponent;
-import net.zomis.cardshifter.ecs.components.PlayerComponent;
-import net.zomis.cardshifter.ecs.phase.PhaseController;
-import net.zomis.cardshifter.ecs.resources.ResourceRetriever;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame.PhrancisResources;
 
-import com.cardshifter.ai.CardshifterAI;
 import com.cardshifter.ai.CompleteIdiot;
+import com.cardshifter.modapi.actions.ActionComponent;
+import com.cardshifter.modapi.actions.ECSAction;
+import com.cardshifter.modapi.ai.AIComponent;
+import com.cardshifter.modapi.ai.CardshifterAI;
+import com.cardshifter.modapi.base.ComponentRetriever;
+import com.cardshifter.modapi.base.ECSGame;
+import com.cardshifter.modapi.base.ECSMod;
+import com.cardshifter.modapi.base.Entity;
+import com.cardshifter.modapi.base.PlayerComponent;
+import com.cardshifter.modapi.cards.BattlefieldComponent;
+import com.cardshifter.modapi.cards.HandComponent;
+import com.cardshifter.modapi.cards.ZoneComponent;
+import com.cardshifter.modapi.events.GameOverEvent;
+import com.cardshifter.modapi.phase.PhaseController;
+import com.cardshifter.modapi.resources.ResourceRetriever;
 
 import javafx.scene.layout.HBox;
-import net.zomis.cardshifter.ecs.base.GameOverEvent;
 
 public class FXMLGameController {
 	
@@ -59,6 +60,7 @@ public class FXMLGameController {
 	public ECSAction nextAction;
    
 	private final CardshifterAI opponent = new CompleteIdiot();
+	private final ECSMod mod = new PhrancisGame();
 	private ECSGame game;
 
 	private PhaseController phases;
@@ -78,7 +80,9 @@ public class FXMLGameController {
 	}
 	
 	public void initializeGame() {
-		game = PhrancisGame.createGame(new ECSGame());
+		game = new ECSGame();
+		mod.declareConfiguration(game);
+		mod.setupGame(game);
 		phases = ComponentRetriever.singleton(game, PhaseController.class);
 		
 		if (!aiIsLoaded) {

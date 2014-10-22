@@ -5,7 +5,7 @@
 
 	<groupId>com.cardshifter</groupId>
 	<artifactId>cardshifter</artifactId>
-	<version>0.3</version>
+	<version>0.4</version>
 	<packaging>pom</packaging>
 
 	<name>cardshifter</name>
@@ -22,41 +22,58 @@
 		<module>cardshifter-core</module>
 		<module>cardshifter-server</module>
 		<module>cardshifter-api</module>
-		<module>cardshifter-mod</module>
 		<module>cardshifter-console</module>
+		<module>cardshifter-modapi</module>
 	</modules>
 	
+	<distributionManagement>
+		<repository>
+			<id>zomisnet</id>
+			<url>ftp://www.zomis.net/public_html/maven</url>
+		</repository>
+	</distributionManagement>
+	
 	<build>
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-ftp</artifactId>
+				<version>1.0-beta-6</version>
+			</extension>
+		</extensions>
 		<pluginManagement>
 			<plugins>
-	            <plugin>
-	                <groupId>org.eclipse.m2e</groupId>
-	                <artifactId>lifecycle-mapping</artifactId>
-	                <version>1.0.0</version>
-	                <configuration>
-	                    <lifecycleMappingMetadata>
-	                        <pluginExecutions>
-	                            <pluginExecution>
-	                                <pluginExecutionFilter>
-	                                    <groupId>org.codehaus.mojo</groupId>
-	                                    <artifactId>findbugs-maven-plugin</artifactId>
-	                                    <versionRange>[1.0,)</versionRange>
-	                                    <goals>
-	                                        <goal>check</goal>
-	                                    </goals>
-	                                </pluginExecutionFilter>
-	                                <action>
-	                                    <execute />
-	                                </action>
-	                            </pluginExecution>
-	                        </pluginExecutions>
-	                    </lifecycleMappingMetadata>
-	                </configuration>
-	            </plugin>
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.codehaus.mojo</groupId>
+										<artifactId>findbugs-maven-plugin</artifactId>
+										<versionRange>[1.0,)</versionRange>
+										<goals>
+											<goal>check</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<execute />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>findbugs-maven-plugin</artifactId>
 					<version>3.0.0</version>
+					<configuration>
+						<threshold>High</threshold>
+					</configuration>
 					<executions>
 						<execution>
 							<id>analyze-compile</id>

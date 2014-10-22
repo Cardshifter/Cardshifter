@@ -5,13 +5,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.Predicate;
-
-import net.zomis.cardshifter.ecs.actions.ECSAction;
-import net.zomis.cardshifter.ecs.ai.AIComponent;
-import net.zomis.cardshifter.ecs.base.ECSGameState;
-import net.zomis.cardshifter.ecs.base.Entity;
 
 import org.apache.log4j.PropertyConfigurator;
 import org.junit.After;
@@ -20,20 +16,26 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.cardshifter.ai.AIs;
-import com.cardshifter.ai.CardshifterAI;
 import com.cardshifter.ai.ScoringAI;
 import com.cardshifter.api.CardshifterConstants;
 import com.cardshifter.api.both.ChatMessage;
+import com.cardshifter.api.both.PlayerConfigMessage;
 import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.incoming.ServerQueryMessage;
 import com.cardshifter.api.incoming.ServerQueryMessage.Request;
 import com.cardshifter.api.incoming.StartGameRequest;
 import com.cardshifter.api.incoming.UseAbilityMessage;
+import com.cardshifter.api.outgoing.AvailableModsMessage;
 import com.cardshifter.api.outgoing.NewGameMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage.Status;
 import com.cardshifter.api.outgoing.WaitMessage;
 import com.cardshifter.api.outgoing.WelcomeMessage;
+import com.cardshifter.modapi.actions.ECSAction;
+import com.cardshifter.modapi.ai.AIComponent;
+import com.cardshifter.modapi.ai.CardshifterAI;
+import com.cardshifter.modapi.base.ECSGameState;
+import com.cardshifter.modapi.base.Entity;
 import com.cardshifter.server.model.ClientIO;
 import com.cardshifter.server.model.GameState;
 import com.cardshifter.server.model.MainServer;
@@ -43,6 +45,8 @@ import com.cardshifter.server.model.TCGGame;
 
 public class ServerConnectionTest {
 
+	private static final String TEST_MOD = CardshifterConstants.VANILLA;
+	
 	private MainServer main;
 	private Server server;
 	private TestClient client1;
@@ -63,11 +67,16 @@ public class ServerConnectionTest {
 		assertEquals(server.getClients().size(), welcome.getUserId());
 		userId = welcome.getUserId();
 		client1.await(ChatMessage.class);
+		client1.await(AvailableModsMessage.class);
 		Thread.sleep(500);
 	}
 	
 	@After
 	public void shutdown() {
+		try {
+			client1.disconnect();
+		} catch (IOException e) {
+		}
 		server.stop();
 	}
 	
@@ -89,17 +98,13 @@ public class ServerConnectionTest {
 		client2.send(new ServerQueryMessage(Request.USERS));
 		List<UserStatusMessage> users = client2.awaitMany(6, UserStatusMessage.class);
 		System.out.println("Online users: " + users);
+		// There is no determined order in which the UserStatusMessages are received, so it is harder to make any assertions.
 		assertTrue(users.stream().filter(mess -> mess.getName().equals("Tester")).findAny().isPresent());
 		assertTrue(users.stream().filter(mess -> mess.getName().equals("Test2")).findAny().isPresent());
-		assertTrue(users.stream().filter(mess -> mess.getName().equals("AI old")).findAny().isPresent());
-		assertTrue(users.stream().filter(mess -> mess.getName().equals("AI loser")).findAny().isPresent());
-		assertTrue(users.stream().filter(mess -> mess.getName().equals("AI medium")).findAny().isPresent());
-		assertTrue(users.stream().filter(mess -> mess.getName().equals("AI idiot")).findAny().isPresent());
-		// There is currently no determined order in which the received messages occur, so it is harder to make any assertions.
-//		UserStatusMessage status = 
-//		assertEquals("Tester", status.getName());
-//		assertEquals(userId, status.getUserId());
-//		assertEquals(Status.ONLINE, status.getStatus());
+		assertTrue(users.stream().filter(mess -> mess.getName().equals("AI Fighter")).findAny().isPresent());
+		assertTrue(users.stream().filter(mess -> mess.getName().equals("AI Loser")).findAny().isPresent());
+		assertTrue(users.stream().filter(mess -> mess.getName().equals("AI Medium")).findAny().isPresent());
+		assertTrue(users.stream().filter(mess -> mess.getName().equals("AI Idiot")).findAny().isPresent());
 		
 		client2.disconnect();
 		
@@ -112,7 +117,7 @@ public class ServerConnectionTest {
 	@Test(timeout = 10000)
 	public void testStartGame() throws InterruptedException, UnknownHostException, IOException {
 		
-		client1.send(new StartGameRequest(2, CardshifterConstants.VANILLA));
+		client1.send(new StartGameRequest(2, TEST_MOD));
 		client1.await(WaitMessage.class);
 		NewGameMessage gameMessage = client1.await(NewGameMessage.class);
 		assertEquals(1, gameMessage.getGameId());
@@ -127,8 +132,9 @@ public class ServerConnectionTest {
 		testPlayAny();
 		Thread.sleep(1000);
 		TCGGame game = (TCGGame) server.getGames().get(1);
-		assertEquals(ECSGameState.RUNNING, game.getGameModel().getGameState());
 		ClientIO io = server.getClients().get(server.getClients().size());
+		game.incomingPlayerConfig(new PlayerConfigMessage(game.getId(), new HashMap<>()), io);
+		assertEquals(ECSGameState.RUNNING, game.getGameModel().getGameState());
 		Entity human = game.playerFor(io);
 		Entity ai = game.getGameModel().getEntitiesWithComponent(AIComponent.class).stream().findFirst().get();
 		ai.getComponent(AIComponent.class).setDelay(0);
@@ -154,10 +160,10 @@ public class ServerConnectionTest {
 	@Test(timeout = 10000)
 	public void testPlayAny() throws InterruptedException, UnknownHostException, IOException {
 		
-		Predicate<ClientIO> opponentFilter = client -> client.getName().equals("AI loser");
-		server.getIncomingHandler().perform(new StartGameRequest(-1, CardshifterConstants.VANILLA), server.getClients().values().stream().filter(opponentFilter).findAny().get());
+		Predicate<ClientIO> opponentFilter = client -> client.getName().equals("AI Loser");
+		server.getIncomingHandler().perform(new StartGameRequest(-1, TEST_MOD), server.getClients().values().stream().filter(opponentFilter).findAny().get());
 		
-		client1.send(new StartGameRequest(-1, CardshifterConstants.VANILLA));
+		client1.send(new StartGameRequest(-1, TEST_MOD));
 		NewGameMessage gameMessage = client1.await(NewGameMessage.class);
 		assertEquals(1, gameMessage.getGameId());
 		ServerGame game = server.getGames().get(1);

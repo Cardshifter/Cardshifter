@@ -23,14 +23,18 @@ public class GameInvite implements IdObject {
 	private final List<ClientIO> invited;
 	private final List<ClientIO> players;
 	private final ChatArea chatArea;
+	private final String gameType;
+	private final ServerHandler<GameInvite> handler;
 
-	public GameInvite(Server server, int id, ChatArea chatlog, ClientIO host, ServerGame game) {
-		this.id = id;
+	public GameInvite(ServerHandler<GameInvite> handler, ChatArea chatlog, ClientIO host, ServerGame game, String gameType) {
+		this.id = handler.newId();
 		this.host = host;
 		this.game = game;
 		this.chatArea = chatlog;
 		this.invited = Collections.synchronizedList(new ArrayList<>());
 		this.players = Collections.synchronizedList(new ArrayList<>());
+		this.gameType = gameType;
+		this.handler = handler;
 		players.add(host);
 	}
 
@@ -40,7 +44,7 @@ public class GameInvite implements IdObject {
 	}
 	
 	public void sendInvite(ClientIO to) {
-		to.sendToClient(new InviteRequest(this.id, this.host.getName()));
+		to.sendToClient(new InviteRequest(this.id, this.host.getName(), gameType));
 		this.invited.add(to);
 		if (to instanceof FakeAIClientTCG) {
 			inviteAccept(to);
@@ -52,25 +56,28 @@ public class GameInvite implements IdObject {
 		if (!invited.remove(who)) {
 			return false;
 		}
-		players.add(who);
+		addPlayer(who);
 		
-		if (players.size() == 2) {
-			return start();
-		}
 		return true;
 	}
 
 	public boolean inviteDecline(ClientIO who) {
 		logger.info(this + " Invite Decline: " + who);
 		host.sendToClient(new ChatMessage(1, "Server", who.getName() + " declined invite"));
+		this.removeInvite();
 		return invited.remove(who);
 	}
 	
+	private void removeInvite() {
+		handler.remove(this);
+	}
+
 	public boolean start() {
 		logger.info(this + " Game Start! " + players);
 		Collections.shuffle(players, random);
 		game.start(players);
-		chatArea.broadcast("Server", players.stream().map(io -> io.getName()).collect(Collectors.joining(", ")) + " are now playing game " + game.getId());
+		chatArea.broadcast("Server", players.stream().map(io -> io.getName()).collect(Collectors.joining(" and ")) + " are now playing game " + game.getId());
+		this.removeInvite();
 		return true;
 	}
 
@@ -85,6 +92,9 @@ public class GameInvite implements IdObject {
 
 	public void addPlayer(ClientIO player) {
 		this.players.add(player);
+		if (players.size() == 2) {
+			start();
+		}
 	}
 	
 }
