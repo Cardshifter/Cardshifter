@@ -107,6 +107,12 @@ public class EventExecutor implements EventExecution {
 		}
 	}
 	
+	public void removeListenersWithIdentifier(Object identifier) {
+		for (Entry<Class<? extends IEvent>, Collection<EventHandler<?>>> ee : bindings.entrySet()) {
+			ee.getValue().removeIf(eh -> eh.getIdentifier() == identifier);
+		}
+	}
+	
 	public <T extends IEvent> EventHandler<T> registerHandlerAfter(Object identifier, Class<T> realParam, Consumer<T> handler) {
 		EventHandler<T> listener = new EventHandler<T>(identifier, handler, true);
 		registerHandler(realParam, listener);

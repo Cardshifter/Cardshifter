@@ -104,9 +104,7 @@ public final class ECSGame {
 	}
 
 	public boolean removeSystem(ECSSystem system) {
-		if (this.gameState != ECSGameState.NOT_STARTED) {
-			throw new UnsupportedOperationException("Removing a system when game has started has not yet been implemented");
-		}
+		events.removeListenersWithIdentifier(system);
 		return systems.remove(system);
 	}
 	

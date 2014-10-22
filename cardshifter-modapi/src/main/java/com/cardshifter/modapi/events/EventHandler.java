@@ -28,4 +28,8 @@ public class EventHandler<T> {
 		return "EventHandler [" + identifier + ", after=" + after + "]";
 	}
 	
+	public Object getIdentifier() {
+		return identifier;
+	}
+	
 }
