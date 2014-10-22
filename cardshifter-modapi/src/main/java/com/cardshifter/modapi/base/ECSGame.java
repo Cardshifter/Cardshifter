@@ -10,12 +10,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import com.cardshifter.modapi.events.EventExecutor;
 import com.cardshifter.modapi.events.GameOverEvent;
 import com.cardshifter.modapi.events.IEvent;
 import com.cardshifter.modapi.events.StartGameEvent;
 
 public final class ECSGame {
+	private static final Logger logger = LogManager.getLogger(ECSGame.class);
 
 	private final AtomicInteger ids = new AtomicInteger();
 	private final Map<Integer, Entity> entities = new HashMap<>();
@@ -50,6 +54,7 @@ public final class ECSGame {
 	}
 
 	public void addSystem(ECSSystem system) {
+		logger.info("Add system: " + system);
 		this.systems.add(system);
 		Retrievers.inject(system, this);
 		if (gameState != ECSGameState.NOT_STARTED) {
