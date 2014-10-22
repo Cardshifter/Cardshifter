@@ -35,5 +35,12 @@ public class ActionAllowedCheckEvent implements IEvent {
 	public void setAllowed(boolean allowed) {
 		this.allowed = allowed;
 	}
+
+	@Override
+	public String toString() {
+		return "ActionAllowedCheckEvent [entity=" + entity + ", action="
+				+ action + ", performer=" + performer + ", allowed=" + allowed
+				+ "]";
+	}
 	
 }
