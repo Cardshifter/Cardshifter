@@ -129,7 +129,7 @@ public class PhrancisGame implements ECSMod {
 			actions.addAction(endTurnAction);
 			
 			ECSResourceMap.createFor(player)
-				.set(PhrancisResources.HEALTH, 10)
+				.set(PhrancisResources.HEALTH, 30)
 				.set(PhrancisResources.MANA, 0)
 				.set(PhrancisResources.SCRAP, 0);
 			
