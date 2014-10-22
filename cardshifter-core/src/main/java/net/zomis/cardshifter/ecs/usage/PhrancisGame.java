@@ -47,6 +47,7 @@ public class PhrancisGame implements ECSMod {
 
 	public enum PhrancisResources implements ECSResource {
 		TRAMPLE,
+		MAX_HEALTH,
 		HEALTH, MANA, MANA_MAX, SCRAP, ATTACK, MANA_COST, SCRAP_COST, ENCHANTMENTS_ACTIVE, SICKNESS, ATTACK_AVAILABLE;
 	}
 
@@ -178,7 +179,7 @@ public class PhrancisGame implements ECSMod {
 		game.addSystem(new PlayFromHandSystem(ENCHANT_ACTION));
 		game.addSystem(new UseCostSystem(ENCHANT_ACTION, PhrancisResources.SCRAP, scrapCostResource::getFor, owningPlayerPays));
 		game.addSystem(new EnchantTargetCreatureTypes(new String[]{ "Bio" }));
-		game.addSystem(new EnchantPerform(PhrancisResources.ATTACK, PhrancisResources.HEALTH));
+		game.addSystem(new EnchantPerform(PhrancisResources.ATTACK, PhrancisResources.HEALTH, PhrancisResources.MAX_HEALTH));
 		
 //		game.addSystem(new ConsumeCardSystem());
 		
@@ -224,6 +225,7 @@ public class PhrancisGame implements ECSMod {
 		Entity entity = deck.getOwner().getGame().newEntity();
 		ECSResourceMap.createFor(entity)
 			.set(PhrancisResources.HEALTH, health)
+			.set(PhrancisResources.MAX_HEALTH, health)
 			.set(PhrancisResources.SCRAP_COST, cost)
 			.set(PhrancisResources.ATTACK, strength);
 		entity.addComponent(new ActionComponent().addAction(enchantAction(entity)));
@@ -240,6 +242,7 @@ public class PhrancisGame implements ECSMod {
 		Entity entity = deck.getOwner().getGame().newEntity();
 		ECSResourceMap.createFor(entity)
 			.set(PhrancisResources.HEALTH, health)
+			.set(PhrancisResources.MAX_HEALTH, health)
 			.set(PhrancisResources.ATTACK, strength)
 			.set(PhrancisResources.SCRAP, scrapValue)
 			.set(PhrancisResources.MANA_COST, cost)
