@@ -21,7 +21,11 @@ public class Cards {
 	}
 
 	public static boolean isOwnedBy(Entity cardEntity, Entity player) {
-		return card.required(cardEntity).getCurrentZone().getOwner() == player;
+		return getOwner(cardEntity) == player;
+	}
+
+	public static Entity getOwner(Entity cardEntity) {
+		return card.required(cardEntity).getOwner();
 	}
 
 }
