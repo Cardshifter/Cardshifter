@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import com.cardshifter.modapi.base.Entity;
 
@@ -79,6 +80,10 @@ public class ECSAction {
 	@Override
 	public String toString() {
 		return name + " for entity " + owner;
+	}
+
+	public Stream<Entity> getAllTargets() {
+		return targetSets.stream().flatMap(e -> e.getChosenTargets().stream());
 	}
 
 }
