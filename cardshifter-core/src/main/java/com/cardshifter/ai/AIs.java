@@ -27,6 +27,7 @@ public class AIs {
 
 	public static ScoreConfigFactory<Entity, ECSAction> medium() {
 		ScoreConfigFactory<Entity, ECSAction> config = new ScoreConfigFactory<>();
+		config.withScorer(new PredicateScorer<>(action -> action.getName().equals(PhrancisGame.USE_ACTION)), -10);
 		config.withScorer(new PredicateScorer<>(action -> action.getName().equals(PhrancisGame.PLAY_ACTION)), 10);
 		config.withScorer(new PredicateScorer<>(action -> action.getName().equals(PhrancisGame.ENCHANT_ACTION)), -10); // this AI does not enchant
 		config.withScorer(new SimpleScorer<>(AttackAnalyze::scrapScore));
@@ -38,6 +39,7 @@ public class AIs {
 		ScoreConfigFactory<Entity, ECSAction> config = new ScoreConfigFactory<>();
 		config.withScorer(Scorers.multiplication(playActionScorer, new SimpleScorer<>(AttackAnalyze::health)), 10);
 		config.withScorer(Scorers.multiplication(playActionScorer, new SimpleScorer<>(AttackAnalyze::attack)), 2);
+		config.withScorer(new PredicateScorer<>(action -> action.getName().equals(PhrancisGame.USE_ACTION)), -10);
 		config.withScorer(new PredicateScorer<>(action -> action.getName().equals(PhrancisGame.SCRAP_ACTION)), -1);
 		config.withScorer(Scorers.multiplication(new SimpleScorer<>(AttackAnalyze::scrapNeeded), 
 				new SimpleScorer<>(AttackAnalyze::scrapIfCanGetKilled)));

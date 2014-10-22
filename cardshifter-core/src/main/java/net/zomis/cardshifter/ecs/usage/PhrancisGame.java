@@ -12,6 +12,7 @@ import com.cardshifter.modapi.actions.attack.AttackSickness;
 import com.cardshifter.modapi.actions.attack.AttackTargetMinionsFirstThenPlayer;
 import com.cardshifter.modapi.actions.enchant.EnchantPerform;
 import com.cardshifter.modapi.actions.enchant.EnchantTargetCreatureTypes;
+import com.cardshifter.modapi.base.Component;
 import com.cardshifter.modapi.base.CreatureTypeComponent;
 import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.ECSMod;
@@ -48,6 +49,7 @@ public class PhrancisGame implements ECSMod {
 	public enum PhrancisResources implements ECSResource {
 		TRAMPLE,
 		MAX_HEALTH,
+		SNIPER,
 		HEALTH, MANA, MANA_MAX, SCRAP, ATTACK, MANA_COST, SCRAP_COST, ENCHANTMENTS_ACTIVE, SICKNESS, ATTACK_AVAILABLE;
 	}
 
@@ -56,6 +58,7 @@ public class PhrancisGame implements ECSMod {
 	public static final String ATTACK_ACTION = "Attack";
 	public static final String SCRAP_ACTION = "Scrap";
 	public static final String END_TURN_ACTION = "End Turn";
+	public static final String USE_ACTION = "Use";
 	
 	@Override
 	public void declareConfiguration(ECSGame game) {
@@ -95,6 +98,21 @@ public class PhrancisGame implements ECSMod {
 		createEnchantment(zone, 0, 3, 2);
 		createEnchantment(zone, 2, 2, 3);
 		
+//		Effects effects = new Effects();
+//		createSpell(zone, 2, 2, effects.giveTarget(PhrancisResources.SNIPER, 1));
+//		createSpell(zone, 0, 0, effects.system(e -> new OpponentCannotUseSystem(e, ATTACK_ACTION)));
+//		createSpell(zone, 2, 2, effects.giveTarget(new SpecificActionSystem(ATTACK_ACTION) {
+//			@Override
+//			protected void onPerform(ActionPerformEvent event) {
+//				// Heals after each attack
+////				if (event.getEntity())
+//			}
+//		}));
+		// Attack twice each turn
+		// Can attack player directly
+		// Health -2
+		// Strength -2
+		
 		// Create the players
 		int maxCardsPerType = 3;
 		int minSize = 30;
@@ -110,6 +128,21 @@ public class PhrancisGame implements ECSMod {
 		
 	}
 	
+	public Entity createSpell(ZoneComponent zone, int manaCost, int scrapCost, Component... components) {
+		Entity entity = zone.getOwner().getGame().newEntity();
+		ECSResourceMap.createFor(entity)
+			.set(PhrancisResources.SCRAP_COST, scrapCost)
+			.set(PhrancisResources.MANA_COST, manaCost);
+		entity.addComponent(new ActionComponent().addAction(spellAction(entity)));
+		entity.addComponents(components);
+		zone.addOnBottom(entity);
+		return entity;
+	}
+
+	private ECSAction spellAction(Entity entity) {
+		return new ECSAction(entity, USE_ACTION, act -> true, act -> {}); //.addTargetSet(1, 1);
+	}
+
 	@Override
 	public void setupGame(ECSGame game) {
 		
@@ -164,6 +197,13 @@ public class PhrancisGame implements ECSMod {
 		ResourceRetriever scrapCostResource = ResourceRetriever.forResource(PhrancisResources.SCRAP_COST);
 		game.addSystem(new ScrapSystem(PhrancisResources.SCRAP));
 		
+		// Actions - Spell
+//		game.addSystem(new UseCostSystem(USE_ACTION, PhrancisResources.MANA, manaCostResource::getFor, owningPlayerPays));
+//		game.addSystem(new UseCostSystem(USE_ACTION, PhrancisResources.SCRAP, scrapCostResource::getFor, owningPlayerPays));
+		game.addSystem(new PlayFromHandSystem(USE_ACTION));
+		game.addSystem(new EffectActionSystem(USE_ACTION));
+		game.addSystem(new EffectActionSystem(PLAY_ACTION));
+		
 		// Actions - Attack
 		game.addSystem(new AttackOnBattlefield());
 		game.addSystem(new AttackSickness(PhrancisResources.SICKNESS));
@@ -196,7 +236,6 @@ public class PhrancisGame implements ECSMod {
 //		game.addSystem(new RecreateDeckSystem());
 		
 		// Initial setup
-		// TODO: ??? Card models aren't being used the same way now... game.addSystem(new DeckFromEachCardSystem(4, null));
 //		game.addSystem(new CreateDeckOnceFromSourceSystem());
 		// TODO: game.addSystem(new GiveStartCard(game.getPlayers().get(1), "The Coin"));
 		
