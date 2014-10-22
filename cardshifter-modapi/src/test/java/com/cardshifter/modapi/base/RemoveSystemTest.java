@@ -38,6 +38,10 @@ public class RemoveSystemTest {
 		assertEquals(1, value.get());
 		act.getAction("Test").perform(entity);
 		assertEquals(1, value.get());
+		
+		game.addSystem(system);
+		act.getAction("Test").perform(entity);
+		assertEquals(2, value.get());
 	}
 
 }

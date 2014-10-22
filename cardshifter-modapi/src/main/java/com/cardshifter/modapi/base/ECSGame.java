@@ -52,6 +52,9 @@ public final class ECSGame {
 	public void addSystem(ECSSystem system) {
 		this.systems.add(system);
 		Retrievers.inject(system, this);
+		if (gameState != ECSGameState.NOT_STARTED) {
+			system.startGame(this);
+		}
 	}
 	
 	public void startGame() {
