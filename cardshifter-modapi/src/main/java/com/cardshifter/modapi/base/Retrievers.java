@@ -5,7 +5,9 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 public class Retrievers {
@@ -39,11 +41,18 @@ public class Retrievers {
 	}
 
 	public static void inject(Object object, ECSGame game) {
-		Field[] fields = AccessController.doPrivileged((PrivilegedAction<Field[]>)() -> {
-			return object.getClass().getDeclaredFields();
+		List<Field> fields = AccessController.doPrivileged((PrivilegedAction<List<Field>>)() -> {
+			Class<?> clazz = object.getClass();
+			List<Field> result = new ArrayList<>();
+			do {
+				result.addAll(Arrays.asList(clazz.getDeclaredFields()));
+				clazz = clazz.getSuperclass();
+			}
+			while (clazz != Object.class);
+			return result;
 		});
-		Arrays.stream(fields).filter(field -> field.getAnnotation(Retriever.class) != null).forEach(field -> injectField(object, field, game));
-		Arrays.stream(fields).filter(field -> field.getAnnotation(RetrieverSingleton.class) != null).forEach(field -> injectSingleton(object, field, game));
+		fields.stream().filter(field -> field.getAnnotation(Retriever.class) != null).forEach(field -> injectField(object, field, game));
+		fields.stream().filter(field -> field.getAnnotation(RetrieverSingleton.class) != null).forEach(field -> injectSingleton(object, field, game));
 	}
 
 	private static void injectSingleton(Object obj, Field field, ECSGame game) {
@@ -63,7 +72,7 @@ public class Retrievers {
 
 		Type genericFieldType = field.getGenericType();
 
-		if(genericFieldType instanceof ParameterizedType){
+		if (genericFieldType instanceof ParameterizedType) {
 			ParameterizedType aType = (ParameterizedType) genericFieldType;
 			Type[] fieldArgTypes = aType.getActualTypeArguments();
 			Class<?> fieldArgClass = (Class<?>) fieldArgTypes[0];
