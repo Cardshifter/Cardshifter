@@ -260,7 +260,7 @@ public class PhrancisGame implements ECSMod {
 		}
 	}
 
-	private static Entity createEnchantment(ZoneComponent deck, int strength, int health, int cost) {
+	public Entity createEnchantment(ZoneComponent deck, int strength, int health, int cost) {
 		Entity entity = deck.getOwner().getGame().newEntity();
 		ECSResourceMap.createFor(entity)
 			.set(PhrancisResources.HEALTH, health)
@@ -276,7 +276,7 @@ public class PhrancisGame implements ECSMod {
 		return new ECSAction(entity, ENCHANT_ACTION, act -> true, act -> {}).addTargetSet(1, 1);
 	}
 
-	private static Entity createCreature(int cost, ZoneComponent deck, int strength,
+	public Entity createCreature(int cost, ZoneComponent deck, int strength,
 			int health, String creatureType, int scrapValue) {
 		Entity entity = deck.getOwner().getGame().newEntity();
 		ECSResourceMap.createFor(entity)
