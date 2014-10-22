@@ -29,13 +29,11 @@ import com.cardshifter.modapi.base.Entity;
 import com.cardshifter.modapi.base.PlayerComponent;
 import com.cardshifter.modapi.cards.BattlefieldComponent;
 import com.cardshifter.modapi.cards.ZoneComponent;
-import com.cardshifter.modapi.phase.PhaseController;
 import com.cardshifter.modapi.resources.ResourceRetriever;
 
 public class PhrancisTest extends GameTest {
 
 	private static final int originalLife = 30;
-	private PhaseController phase;
 	private final ResourceRetriever mana = ResourceRetriever.forResource(PhrancisResources.MANA);
 	private final ResourceRetriever manaCost = ResourceRetriever.forResource(PhrancisResources.MANA_COST);
 	private final ResourceRetriever health = ResourceRetriever.forResource(PhrancisResources.HEALTH);
