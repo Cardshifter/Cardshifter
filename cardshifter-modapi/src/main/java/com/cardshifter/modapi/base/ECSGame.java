@@ -107,8 +107,11 @@ public final class ECSGame {
 		random.setSeed(seed);
 	}
 
-	public List<ECSSystem> findSystemsOfClass(Class<? extends ECSSystem> clazz) {
-		return systems.stream().filter(sys -> clazz.isAssignableFrom(sys.getClass())).collect(Collectors.toList());
+	public <T extends ECSSystem> List<T> findSystemsOfClass(Class<T> clazz) {
+		return systems.stream()
+				.filter(sys -> clazz.isAssignableFrom(sys.getClass()))
+				.map(obj -> clazz.cast(obj))
+				.collect(Collectors.toList());
 	}
 
 	public boolean removeSystem(ECSSystem system) {
