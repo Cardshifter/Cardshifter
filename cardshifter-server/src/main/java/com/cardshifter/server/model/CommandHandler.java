@@ -62,7 +62,6 @@ public class CommandHandler {
 		this.server = server;
 	}
 	
-	@Deprecated
 	public void addHandler(String command, Consumer<Command> handler) {
 		commands.put(command, new CommandInfo<Object>(() -> new Object(), (a, b) -> {}){
 			@Override
