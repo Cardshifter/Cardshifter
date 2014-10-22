@@ -86,14 +86,14 @@ public class Server {
 	
 	/**
 	 * 
-	 * @return Right now Server just makes this one chat room when created
+	 * @return This is the master chat room where all clients connecting are automatically added
 	 */
 	ChatArea getMainChat() {
 		return mainChat;
 	}
 	
 	/**
-	 * Creates a ChatArea with an id incremented from roomCounter
+	 * Creates a ChatArea a given name and assigns an id
 	 * 
 	 * @param name The name of the chat room to create
 	 * @return The room that was created
@@ -115,7 +115,7 @@ public class Server {
 	
 	/**
 	 * 
-	 * @return Server has just one IncomingHandler
+	 * @return Returns the IncomingHandler for the Server
 	 */
 	public IncomingHandler getIncomingHandler() {
 		return incomingHandler;
@@ -144,7 +144,7 @@ public class Server {
 	/**
 	 * Puts the client in the clients collection
 	 * 
-	 * @param client All the information about a client
+	 * @param client The client object that will be connecting
 	 */
 	public void newClient(ClientIO client) {
 		logger.info("New client: " + client);
@@ -155,7 +155,7 @@ public class Server {
 	/**
 	 * Removes client from the clients collection and broadcasts the event
 	 * 
-	 * @param client All the information about a client
+	 * @param client The client object that was disconnected
 	 */
 	public void onDisconnected(ClientIO client) {
 		logger.info("Client disconnected: " + client);
@@ -211,7 +211,7 @@ public class Server {
 	
 	/**
 	 * 
-	 * @return A new hash map that contains the contents of chats
+	 * @return The available ChatAreas
 	 */
 	public Map<Integer, ChatArea> getChats() {
 		return new HashMap<>(chats);
@@ -245,7 +245,7 @@ public class Server {
 
 	/**
 	 * 
-	 * @return A reference to (any?) available ClientIO
+	 * @return This could be used for randomly pairing up clients
 	 */
 	public AtomicReference<ClientIO> getPlayAny() {
 		return playAny;
