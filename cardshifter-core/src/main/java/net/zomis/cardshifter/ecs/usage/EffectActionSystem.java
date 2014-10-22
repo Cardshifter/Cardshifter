@@ -18,7 +18,7 @@ public class EffectActionSystem extends SpecificActionSystem {
 	protected void onPerform(ActionPerformEvent event) {
 		if (effect.has(event.getEntity())) {
 			EffectComponent eff = effect.get(event.getEntity());
-			eff.perform(event.getEntity());
+			eff.perform(event);
 		}
 	}
 
