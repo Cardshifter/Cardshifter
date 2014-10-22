@@ -4,6 +4,7 @@ import com.cardshifter.modapi.actions.ActionAllowedCheckEvent;
 import com.cardshifter.modapi.actions.ActionPerformEvent;
 import com.cardshifter.modapi.actions.SpecificActionSystem;
 import com.cardshifter.modapi.base.Entity;
+import com.cardshifter.modapi.base.PlayerComponent;
 import com.cardshifter.modapi.resources.ECSResource;
 import com.cardshifter.modapi.resources.ResourceRetriever;
 
@@ -46,7 +47,7 @@ public class AttackDamageAccumulating extends SpecificActionSystem {
 			throw new IllegalArgumentException("damage must be positive");
 		}
 		health.resFor(target).change(-damage);
-		if (health.getFor(target) <= 0) {
+		if (health.getFor(target) <= 0 && !target.hasComponent(PlayerComponent.class)) {
 			target.destroy();
 		}
 	}

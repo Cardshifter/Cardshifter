@@ -261,11 +261,11 @@ public class TCGGame extends ServerGame {
 
 	private void sendAvailableActions() {
 		for (ClientIO io : this.getPlayers()) {
-			Entity player = playerFor(io);
 			io.sendToClient(new ResetAvailableActionsMessage());
 			if (game.isGameOver()) {
 				continue;
 			}
+			Entity player = playerFor(io);
 			getAllActions(game).filter(action -> action.isAllowed(player))
 				.forEach(action -> io.sendToClient(new UseableActionMessage(action.getOwner().getId(), action.getName(), !action.getTargetSets().isEmpty())));
 		}
