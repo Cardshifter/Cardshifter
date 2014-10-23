@@ -14,6 +14,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import com.cardshifter.ai.AIs;
+import com.cardshifter.ai.FakeAIClientTCG;
 import com.cardshifter.ai.ScoringAI;
 import com.cardshifter.api.CardshifterConstants;
 import com.cardshifter.api.ClientIO;
@@ -29,7 +30,6 @@ import com.cardshifter.server.commands.EntityCommand.EntityInspectParameters;
 import com.cardshifter.server.commands.HelpCommand;
 import com.cardshifter.server.commands.HelpCommand.HelpParameters;
 import com.cardshifter.server.game.TCGGame;
-import com.cardshifter.server.main.FakeAIClientTCG;
 import com.cardshifter.server.utils.export.DataExporter;
 
 /**

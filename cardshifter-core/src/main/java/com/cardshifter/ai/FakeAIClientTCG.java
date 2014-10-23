@@ -1,4 +1,4 @@
-package com.cardshifter.server.main;
+package com.cardshifter.ai;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;

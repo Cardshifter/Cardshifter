@@ -16,6 +16,7 @@ import net.zomis.cardshifter.ecs.usage.DeckConfig;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import com.cardshifter.ai.FakeAIClientTCG;
 import com.cardshifter.api.ClientIO;
 import com.cardshifter.api.both.PlayerConfigMessage;
 import com.cardshifter.api.incoming.RequestTargetsMessage;
@@ -50,7 +51,6 @@ import com.cardshifter.modapi.events.EntityRemoveEvent;
 import com.cardshifter.modapi.events.GameOverEvent;
 import com.cardshifter.modapi.resources.ResourceValueChange;
 import com.cardshifter.modapi.resources.Resources;
-import com.cardshifter.server.main.FakeAIClientTCG;
 import com.cardshifter.server.model.ServerGame;
 
 public class TCGGame extends ServerGame {
