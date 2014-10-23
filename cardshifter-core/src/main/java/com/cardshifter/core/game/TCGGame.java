@@ -413,8 +413,7 @@ public class TCGGame extends ServerGame {
 	}
 
 	/**  
-	 * If the player config does not need configuration, starts the ECSGame.
-	 * Otherwise?
+	 * If all player entities have submitted configs, start the game
 	 * 
 	 * @param message The PlayerConfigMessage object
 	 * @param client The client that sent the config
