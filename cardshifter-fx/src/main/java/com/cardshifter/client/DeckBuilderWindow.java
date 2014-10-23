@@ -1,10 +1,5 @@
 package com.cardshifter.client;
 
-import com.cardshifter.api.outgoing.CardInfoMessage;
-import com.cardshifter.client.buttons.GenericButton;
-import com.cardshifter.client.buttons.SavedDeckButton;
-import com.cardshifter.client.views.CardHandDocumentController;
-import com.cardshifter.client.views.DeckCardController;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,6 +8,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
+
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -31,6 +28,12 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import net.zomis.cardshifter.ecs.usage.CardshifterIO;
 import net.zomis.cardshifter.ecs.usage.DeckConfig;
+
+import com.cardshifter.api.outgoing.CardInfoMessage;
+import com.cardshifter.client.buttons.GenericButton;
+import com.cardshifter.client.buttons.SavedDeckButton;
+import com.cardshifter.client.views.CardHandDocumentController;
+import com.cardshifter.client.views.DeckCardController;
 
 public class DeckBuilderWindow {
 	
@@ -53,11 +56,11 @@ public class DeckBuilderWindow {
 	private List<List<CardInfoMessage>> pageList = new ArrayList<>();
 	private DeckConfig activeDeckConfig;
 	private CardInfoMessage cardBeingDragged;
-	private GameClientLobby lobby;
+	private Consumer<DeckConfig> configCallback;
 	private String deckToLoad;
 	
-	public void acceptDeckConfig(DeckConfig deckConfig, GameClientLobby lobby) {
-		this.lobby = lobby;
+	public void acceptDeckConfig(DeckConfig deckConfig, Consumer<DeckConfig> configCallback) {
+		this.configCallback = configCallback;
 		this.activeDeckConfig = deckConfig;
 		this.cardList = deckConfig.getCardData();
 	}
@@ -86,7 +89,7 @@ public class DeckBuilderWindow {
 	
 	private void startGame(MouseEvent event) {
 		if (this.activeDeckConfig.getTotal() == this.activeDeckConfig.getMaxSize()) {
-			this.lobby.sendDeckAndPlayerConfigToServer(this.activeDeckConfig);
+			this.configCallback.accept(this.activeDeckConfig);
 			this.closeWindow();
 		}
 	}

@@ -236,7 +236,7 @@ public class GameClientLobby implements Initializable {
 			Parent root = (Parent)loader.load();
 			DeckBuilderWindow controller = loader.<DeckBuilderWindow>getController();
 			
-			controller.acceptDeckConfig(deckConfig, this);
+			controller.acceptDeckConfig(deckConfig, conf -> this.sendDeckAndPlayerConfigToServer(conf));
 			controller.configureWindow();
 			
 			this.openDeckBuilderWindow = controller;
