@@ -1,4 +1,4 @@
-package com.cardshifter.server.model;
+package com.cardshifter.api;
 
 public interface IdObject {
 	int getId();

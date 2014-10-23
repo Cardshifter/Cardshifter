@@ -16,6 +16,7 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 import com.cardshifter.ai.IdleAI;
 import com.cardshifter.ai.ScoringAI;
+import com.cardshifter.api.ClientIO;
 import com.cardshifter.modapi.actions.ECSAction;
 import com.cardshifter.modapi.ai.AIComponent;
 import com.cardshifter.modapi.ai.AISystem;
@@ -24,7 +25,6 @@ import com.cardshifter.modapi.base.Entity;
 import com.cardshifter.modapi.base.PlayerComponent;
 import com.cardshifter.server.commands.AICommand.AICommandParameters;
 import com.cardshifter.server.main.FakeAIClientTCG;
-import com.cardshifter.server.model.ClientIO;
 import com.cardshifter.server.model.CommandHandler.CommandHandle;
 
 

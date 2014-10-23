@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import net.zomis.cardshifter.ecs.usage.CardshifterIO;
 
+import com.cardshifter.api.ClientIO;
 import com.cardshifter.api.messages.Message;
 import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.InjectableValues.Std;

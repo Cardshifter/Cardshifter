@@ -1,4 +1,4 @@
-package com.cardshifter.server.model;
+package com.cardshifter.api;
 
 import com.cardshifter.api.messages.Message;
 
@@ -9,5 +9,7 @@ public interface ClientServerInterface {
 	void performIncoming(Message message, ClientIO clientIO);
 
 	void onDisconnected(ClientIO clientIO);
+
+	int newClientId();
 
 }

@@ -10,6 +10,7 @@ import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
+import com.cardshifter.api.ClientIO;
 import com.cardshifter.server.clients.ClientWebSocket;
 
 public class ServerWeb implements ConnectionHandler {

@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import com.cardshifter.api.ClientIO;
 import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.outgoing.GameOverMessage;
 import com.cardshifter.api.outgoing.NewGameMessage;
@@ -39,7 +40,7 @@ public abstract class ServerGame {
 	 * @param server Server where the game is located
 	 * @param id ID of the game
 	 */
-	public ServerGame(Server server, int id) {
+	public ServerGame(int id) {
 		this.id = id;
 		this.players = Collections.synchronizedList(new ArrayList<>());
 		this.state = GameState.NOT_STARTED;

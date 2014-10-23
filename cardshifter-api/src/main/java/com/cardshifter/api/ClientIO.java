@@ -1,11 +1,10 @@
-package com.cardshifter.server.model;
+package com.cardshifter.api;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.outgoing.ServerErrorMessage;
-
 
 public abstract class ClientIO implements IdObject {
 
@@ -17,6 +16,7 @@ public abstract class ClientIO implements IdObject {
 	
 	public ClientIO(ClientServerInterface server) {
 		this.server = server;
+		this.id = server.newClientId();
 	}
 	
 	/**

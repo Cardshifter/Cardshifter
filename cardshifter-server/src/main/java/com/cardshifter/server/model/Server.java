@@ -16,6 +16,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import com.cardshifter.api.ClientIO;
+import com.cardshifter.api.ClientServerInterface;
 import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.both.InviteResponse;
 import com.cardshifter.api.both.PlayerConfigMessage;
@@ -149,7 +151,6 @@ public class Server implements ClientServerInterface {
 	 */
 	public void newClient(ClientIO client) {
 		logger.info("New client: " + client);
-		client.setId(clientId.incrementAndGet());
 		clients.put(client.getId(), client);
 	}
 	
@@ -290,6 +291,11 @@ public class Server implements ClientServerInterface {
 	@Override
 	public void performIncoming(Message message, ClientIO client) {
 		getIncomingHandler().perform(message, client);
+	}
+
+	@Override
+	public int newClientId() {
+		return clientId.incrementAndGet();
 	}
 	
 }

@@ -14,6 +14,7 @@ import net.zomis.cardshifter.ecs.usage.DeckConfig;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import com.cardshifter.api.ClientIO;
 import com.cardshifter.api.both.PlayerConfigMessage;
 import com.cardshifter.api.incoming.RequestTargetsMessage;
 import com.cardshifter.api.incoming.UseAbilityMessage;
@@ -59,7 +60,7 @@ public class TCGGame extends ServerGame {
 	private final Server server;
 	
 	public TCGGame(Server server, int id, ECSMod mod) {
-		super(server, id);
+		super(id);
 		this.server = server;
 		game = new ECSGame();
 		this.mod = mod;
