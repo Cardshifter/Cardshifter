@@ -52,7 +52,6 @@ import com.cardshifter.server.main.FakeAIClientTCG;
 public class TCGGame extends ServerGame {
 	
 	private static final Logger logger = LogManager.getLogger(TCGGame.class);
-	private final ECSGame game;
 	private final ComponentRetriever<CardComponent> card = ComponentRetriever.retreiverFor(CardComponent.class);
 	
 	private ComponentRetriever<PlayerComponent> playerData = ComponentRetriever.retreiverFor(PlayerComponent.class);
@@ -60,9 +59,8 @@ public class TCGGame extends ServerGame {
 	private final Server server;
 	
 	public TCGGame(Server server, int id, ECSMod mod) {
-		super(id);
+		super(id, new ECSGame());
 		this.server = server;
-		game = new ECSGame();
 		this.mod = mod;
 	}
 
@@ -291,11 +289,6 @@ public class TCGGame extends ServerGame {
 	
 	private Map<String, Object> infoMap(Entity entity) {
 		return EntitySerialization.serialize(entity);
-	}
-
-	@Override
-	public ECSGame getGameModel() {
-		return game;
 	}
 
 	public void incomingPlayerConfig(PlayerConfigMessage message, ClientIO client) {

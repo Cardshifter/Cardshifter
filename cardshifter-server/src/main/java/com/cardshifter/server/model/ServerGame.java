@@ -31,6 +31,8 @@ public abstract class ServerGame {
 	 * This is where the current game state is stored
 	 */
 	private GameState state;
+
+	protected final ECSGame game;
 //	private final Set<ClientIO> observers;
 //	private final ChatArea chat;
 	
@@ -39,12 +41,14 @@ public abstract class ServerGame {
 	 * 
 	 * @param server Server where the game is located
 	 * @param id ID of the game
+	 * @param game ECS Game object
 	 */
-	public ServerGame(int id) {
+	public ServerGame(int id, ECSGame game) {
 		this.id = id;
 		this.players = Collections.synchronizedList(new ArrayList<>());
 		this.state = GameState.NOT_STARTED;
 		this.active = Instant.now();
+		this.game = game;
 //		this.chat = server.newChatRoom(this.toString());
 	}
 
@@ -125,7 +129,9 @@ public abstract class ServerGame {
 		return state;
 	}
 	
-	public abstract ECSGame getGameModel();
+	public ECSGame getGameModel() {
+		return game;
+	}
 	
 	/**
 	 * 
