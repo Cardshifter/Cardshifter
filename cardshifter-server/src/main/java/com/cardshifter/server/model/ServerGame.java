@@ -46,29 +46,6 @@ public abstract class ServerGame {
 		this.active = Instant.now();
 //		this.chat = server.newChatRoom(this.toString());
 	}
-	
-	/**
-	 * Checks if the command belongs to a player in the game, passes the command to makeMove if so
-	 * 
-	 * @param command A command from one of the players
-	 * @return The results of the makeMove method as a boolean
-	 * @deprecated Not used in this project
-	 */
-	@Deprecated
-	public boolean handleMove(Command command) {
-		if (!players.contains(command.getSender())) {
-			logger.warn("Game did not contain player " + command.getSender());
-			return false;
-		}
-		int index = players.indexOf(command.getSender());
-		logger.info("Command was received from index " + index + ": " + command.getSender().getName());
-		this.active = Instant.now();
-		return makeMove(command, index);
-	}
-	@Deprecated
-	protected abstract boolean makeMove(Command command, int player);
-	@Deprecated
-	protected abstract void updateStatus();
 
 	/**
 	 * Checks if the game is already over, sets state if not and sends a message to players

@@ -149,16 +149,6 @@ public class TCGGame extends ServerGame {
 		sendAvailableActions();
 	}
 	
-	@Override
-	protected boolean makeMove(Command command, int player) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	protected void updateStatus() {
-		
-	}
-
 	public Entity playerFor(ClientIO io) {
 		int index = this.getPlayers().indexOf(io);
 		if (index < 0) {
