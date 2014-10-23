@@ -39,6 +39,7 @@ import com.cardshifter.modapi.ai.AIComponent;
 import com.cardshifter.modapi.ai.AISystem;
 import com.cardshifter.modapi.base.ComponentRetriever;
 import com.cardshifter.modapi.base.ECSGame;
+import com.cardshifter.modapi.base.ECSGameState;
 import com.cardshifter.modapi.base.ECSMod;
 import com.cardshifter.modapi.base.Entity;
 import com.cardshifter.modapi.base.PlayerComponent;
@@ -50,7 +51,6 @@ import com.cardshifter.modapi.events.GameOverEvent;
 import com.cardshifter.modapi.resources.ResourceValueChange;
 import com.cardshifter.modapi.resources.Resources;
 import com.cardshifter.server.main.FakeAIClientTCG;
-import com.cardshifter.server.model.GameState;
 import com.cardshifter.server.model.ServerGame;
 
 public class TCGGame extends ServerGame {
@@ -88,7 +88,7 @@ public class TCGGame extends ServerGame {
 	}
 	
 	private void broadcast(ResourceValueChange event) {
-		if (getState() == GameState.NOT_STARTED) {
+		if (game.getGameState() == ECSGameState.NOT_STARTED) {
 			// let the most information be sent when actually starting the game
 			return;
 		}

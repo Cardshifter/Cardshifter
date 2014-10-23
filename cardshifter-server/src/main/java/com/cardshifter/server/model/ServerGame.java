@@ -14,6 +14,7 @@ import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.outgoing.GameOverMessage;
 import com.cardshifter.api.outgoing.NewGameMessage;
 import com.cardshifter.modapi.base.ECSGame;
+import com.cardshifter.modapi.base.ECSGameState;
 
 /**
  * Handles the state of the game and knows the current players
@@ -27,10 +28,6 @@ public abstract class ServerGame {
 	private final int id;
 
 	private Instant active;
-	/**
-	 * This is where the current game state is stored
-	 */
-	private GameState state;
 
 	protected final ECSGame game;
 //	private final Set<ClientIO> observers;
@@ -46,7 +43,6 @@ public abstract class ServerGame {
 	public ServerGame(int id, ECSGame game) {
 		this.id = id;
 		this.players = Collections.synchronizedList(new ArrayList<>());
-		this.state = GameState.NOT_STARTED;
 		this.active = Instant.now();
 		this.game = game;
 //		this.chat = server.newChatRoom(this.toString());
@@ -56,13 +52,12 @@ public abstract class ServerGame {
 	 * Checks if the game is already over, sets state if not and sends a message to players
 	 */
 	public void endGame() {
-		if (state == GameState.ENDED) {
+		if (game.isGameOver()) {
 			throw new IllegalStateException("Game can only be ended once");
 		}
 		logger.info("Game Ended: " + this + " with players " + players);
 		this.send(new GameOverMessage());
 		this.active = Instant.now();
-		this.state = GameState.ENDED;
 	}
 
 	/**
@@ -70,7 +65,7 @@ public abstract class ServerGame {
 	 * @return Whether or not the game is in the ended state
 	 */
 	public boolean isGameOver() {
-		return state == GameState.ENDED;
+		return game.isGameOver();
 	}
 	
 	/**
@@ -79,7 +74,7 @@ public abstract class ServerGame {
 	 * @param players The players to add to the game
 	 */
 	public void start(List<ClientIO> players) {
-		if (state != GameState.NOT_STARTED) {
+		if (game.getGameState() != ECSGameState.NOT_STARTED) {
 			throw new IllegalStateException("Game can only be started once");
 		}
 		this.players.addAll(players);
@@ -88,7 +83,6 @@ public abstract class ServerGame {
 		}
 		this.onStart();
 		this.active = Instant.now();
-		this.state = GameState.RUNNING;
 	}
 
 	/**
@@ -125,8 +119,8 @@ public abstract class ServerGame {
 	 * 
 	 * @return The current state of the game
 	 */
-	public GameState getState() {
-		return state;
+	public ECSGameState getState() {
+		return game.getGameState();
 	}
 	
 	public ECSGame getGameModel() {
