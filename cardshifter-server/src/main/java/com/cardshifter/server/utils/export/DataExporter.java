@@ -3,17 +3,16 @@ package com.cardshifter.server.utils.export;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import net.zomis.cardshifter.ecs.usage.CardshifterIO;
 
 import com.beust.jcommander.JCommander;
-import com.cardshifter.modapi.base.CreatureTypeComponent;
 import com.cardshifter.modapi.base.Entity;
-import com.cardshifter.modapi.base.PlayerComponent;
-import com.cardshifter.modapi.cards.CardComponent;
-import com.cardshifter.modapi.resources.ECSResourceMap;
+import com.cardshifter.modapi.cards.ZoneComponent;
 import com.cardshifter.server.model.Server;
 import com.cardshifter.server.model.ServerGame;
 import com.cardshifter.server.model.TCGGame;
@@ -52,10 +51,12 @@ public class DataExporter {
 	private void gatherInterestingEntities(List<Entity> list, ServerGame game) {
 		TCGGame g = (TCGGame) game;
 		
-		Predicate<Entity> hasResources = e -> e.hasComponent(ECSResourceMap.class);
-		Entity p1 = g.getGameModel().findEntities(e -> e.hasComponent(PlayerComponent.class) && e.getComponent(PlayerComponent.class).getIndex() == 0).iterator().next();
-		Predicate<Entity> isPlayer1 = e -> e.hasComponent(CardComponent.class) && e.getComponent(CardComponent.class).getOwner() == p1;
-		List<Entity> entities = g.getGameModel().findEntities(hasResources.and(isPlayer1)); // .and(e -> e.getId() < 50));
+		List<Entity> zone = new ArrayList<>(g.getGameModel().getEntitiesWithComponent(ZoneComponent.class));
+		zone.sort(Comparator.comparing(e -> e.getId()));
+		Entity entity = zone.get(0);
+		Stream<Entity> stream = entity.getSuperComponents(ZoneComponent.class).stream().flatMap(z -> z.stream());
+		
+		List<Entity> entities = stream.collect(Collectors.toList());
 		System.out.println("Found " + entities.size() + " interesting entities to save");
 		list.addAll(entities);
 	}
