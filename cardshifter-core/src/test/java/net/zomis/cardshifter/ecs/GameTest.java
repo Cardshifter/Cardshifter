@@ -57,12 +57,12 @@ public abstract class GameTest {
 		game = new ECSGame();
 		game.setRandomSeed(42);
 		setupGame(game);
-		onBefore();
 		Retrievers.inject(this, game);
 		game.startGame();
+		onAfterGameStart();
 	}
 
-	protected abstract void onBefore();
+	protected abstract void onAfterGameStart();
 	protected abstract void setupGame(ECSGame ecsGame);
 
 	protected Entity getOpponent() {

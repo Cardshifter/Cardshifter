@@ -1,9 +1,6 @@
 package net.zomis.cardshifter.ecs;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +14,6 @@ import net.zomis.cardshifter.ecs.usage.PhrancisGame;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame.PhrancisResources;
 
 import org.apache.log4j.PropertyConfigurator;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.cardshifter.modapi.actions.ECSAction;
@@ -30,6 +26,7 @@ import com.cardshifter.modapi.base.PlayerComponent;
 import com.cardshifter.modapi.cards.BattlefieldComponent;
 import com.cardshifter.modapi.cards.ZoneComponent;
 import com.cardshifter.modapi.resources.ResourceRetriever;
+import com.cardshifter.modapi.resources.Resources;
 
 public class PhrancisTest extends GameTest {
 
@@ -39,12 +36,14 @@ public class PhrancisTest extends GameTest {
 	private final ResourceRetriever health = ResourceRetriever.forResource(PhrancisResources.HEALTH);
 	private final ResourceRetriever attackPoints = ResourceRetriever.forResource(PhrancisResources.ATTACK_AVAILABLE);
 	private final ResourceRetriever scrapCost = ResourceRetriever.forResource(PhrancisResources.SCRAP_COST);
+	private final ResourceRetriever scrap = ResourceRetriever.forResource(PhrancisResources.SCRAP);
 	
 	private final ComponentRetriever<BattlefieldComponent> field = ComponentRetriever.retreiverFor(BattlefieldComponent.class);
 	
-	private final Predicate<Entity> isB0T = isCreatureType("B0T");
 	private final Predicate<Entity> isCreature = entity -> entity.hasComponent(CreatureTypeComponent.class);
-			
+	
+	private final PhrancisGame mod = new PhrancisGame();
+	
 	@Override
 	protected void setupGame(ECSGame game) {
 		PropertyConfigurator.configure(PhrancisTest.class.getResourceAsStream("log4j.properties"));
@@ -78,113 +77,136 @@ public class PhrancisTest extends GameTest {
 	}
 
 	@Test
-	public void mulligan() {
-		assertNull(phase.getCurrentEntity());
-		List<Entity> list = new ArrayList<>(game.getEntitiesWithComponent(PlayerComponent.class));
-		assertEquals(2, list.size());
-		for (int i = 0; i < list.size(); i++) {
-			Entity current = list.get(i);
-			Entity other = list.get((i + 1) % list.size());
-			
-			ECSAction action = getAction(current, "Mulligan");
-			assertFalse(action + "is allowed for " + other, action.perform(other));
-		}
-		
-		for (Entity entity : game.getEntitiesWithComponent(PlayerComponent.class)) {
-			ECSAction action = getAction(entity, "Mulligan");
-			assertTrue(action + " not allowed for " + entity, action.perform(entity));
-		}
+	public void opponentCanNotChangeTurn() {
+		useFail(opponent(), PhrancisGame.END_TURN_ACTION);
 	}
 	
 	@Test
-	@Ignore
-	public void integration() {
-		mulligan();
-		assertEquals(1, mana.getFor(phase.getCurrentEntity()));
+	public void manaIncrease() {
+		assertEquals(1, mana.getFor(currentPlayer()));
 		nextPhase();
-		
-		assertEquals(1, mana.getFor(phase.getCurrentEntity()));
+		assertEquals(1, mana.getFor(currentPlayer()));
 		nextPhase();
-		useFail(opponent(), PhrancisGame.END_TURN_ACTION);
-		
-		assertEquals(2, mana.getFor(phase.getCurrentEntity()));
-		Entity entity;
-		
-		entity = findCardInDeck(isCreature.and(manaCost(1)));
+		assertEquals(2, mana.getFor(currentPlayer()));
+	}
+	
+	@Test
+	public void cannotPlayCardFromDeck() {
+		Entity entity = findCardInDeck(isCreature.and(manaCost(1)));
 		useFail(entity, PhrancisGame.PLAY_ACTION);
-		
+	}
+	
+	@Test
+	public void cannotEnchantWithoutScrap() {
+		assertEquals(0, scrap.getFor(currentPlayer()));
 		Entity enchantment = cardToHand(e -> scrapCost.getFor(e) == 1);
 		useFail(enchantment, PhrancisGame.ENCHANT_ACTION);
-		
-		Entity attackerPlayer = phase.getCurrentEntity();
-		Entity attacker = cardToHand(isCreature.and(manaCost(1)));
-		useAction(attacker, PhrancisGame.PLAY_ACTION);
-		assertEquals(1, phase.getCurrentEntity().get(field).size());
+	}
+	
+	@Test
+	public void canPlayCreatureFromHand() {
+		Entity creature = mod.createCreature(0, hand.get(currentPlayer()), 1, 1, "B0T", 1);
+		useAction(creature, PhrancisGame.PLAY_ACTION);
+	}
+	
+	@Test
+	public void canAttackWithCreatureNextTurn() {
+		Entity creature = mod.createCreature(0, field.get(currentPlayer()), 1, 1, "B0T", 1);
+		nextPhase();
+		nextPhase();
+		assertResource(getOpponent(), PhrancisResources.HEALTH, originalLife);
+		useActionWithTarget(creature, PhrancisGame.ATTACK_ACTION, getOpponent());
+		assertResource(getOpponent(), PhrancisResources.HEALTH, originalLife - 1);
+	}
+	
+	@Test
+	public void onlyAttackOncePerTurn() {
+		Entity creature = mod.createCreature(0, field.get(currentPlayer()), 1, 1, "B0T", 1);
+		nextPhase();
+		nextPhase();
+		assertEquals(1, attackPoints.getFor(creature));
+		useActionWithTarget(creature, PhrancisGame.ATTACK_ACTION, getOpponent());
+		assertResource(getOpponent(), PhrancisResources.HEALTH, 29);
+		assertEquals(0, attackPoints.getFor(creature));
+		useFail(creature, PhrancisGame.ATTACK_ACTION);
+	}
+	
+	@Test
+	public void summoningSicknessCannotAttack() {
+		Entity attacker = mod.createCreature(0, field.get(currentPlayer()), 1, 1, "B0T", 1);
 		assertResource(attacker, PhrancisResources.SICKNESS, 1);
 		assertResource(attacker, PhrancisResources.ATTACK_AVAILABLE, 1);
 		useFail(attacker, PhrancisGame.ATTACK_ACTION);
-		
+	}
+	
+	@Test
+	public void canOnlyAttackOpponentPlayer() {
+		Entity attacker = mod.createCreature(0, field.get(currentPlayer()), 1, 1, "B0T", 1);
 		nextPhase();
-		Entity opponent = phase.getCurrentEntity();
 		nextPhase();
-		
 		List<Entity> possibleTargets = findPossibleTargets(attacker, PhrancisGame.ATTACK_ACTION);
 		assertEquals(1, possibleTargets.size());
-		assertEquals(1, attackPoints.getFor(attacker));
-		assertResource(attacker, PhrancisResources.SICKNESS, 0);
-		assertResource(attacker, PhrancisResources.ATTACK_AVAILABLE, 1);
-		useActionWithTarget(attacker, PhrancisGame.ATTACK_ACTION, opponent);
-		assertEquals(originalLife - 1, health.getFor(opponent));
-		assertEquals(0, attackPoints.getFor(attacker));
-		
+	}
+	
+	@Test
+	public void attackGetKilled() {
+		Entity attacker = mod.createCreature(0, field.get(currentPlayer()), 1, 1, "B0T", 0);
 		nextPhase();
-		Entity defender = cardToHand(isCreature.and(manaCost(3)).and(isB0T).and(health(3)));
-		useAction(defender, PhrancisGame.PLAY_ACTION);
-		assertEquals(3, health.getFor(defender));
-		
-		// Test attack - kill attacker (1/1) gets killed by defender (3/3)
+		Entity defender = mod.createCreature(0, field.get(currentPlayer()), 3, 3, "B0T", 0);
 		nextPhase();
 		assertResource(attacker, PhrancisResources.SICKNESS, 0);
 		assertResource(attacker, PhrancisResources.ATTACK_AVAILABLE, 1);
-		useActionWithFailedTarget(attacker, PhrancisGame.ATTACK_ACTION, opponent);
+		useActionWithFailedTarget(attacker, PhrancisGame.ATTACK_ACTION, getOpponent());
 		assertResource(defender, PhrancisResources.HEALTH, 3);
 		useActionWithTarget(attacker, PhrancisGame.ATTACK_ACTION, defender);
 		assertTrue(attacker.isRemoved());
 		assertFalse(defender.isRemoved());
 		assertResource(defender, PhrancisResources.HEALTH, 3);
+	}
+	
+	@Test
+	public void scrap() {
+		Entity scrapped = mod.createCreature(0, field.get(currentPlayer()), 1, 1, "B0T", 4);
+		assertResource(currentPlayer(), PhrancisResources.SCRAP, 0);
+		useFail(scrapped, PhrancisGame.SCRAP_ACTION, opponent());
+		useAction(scrapped, PhrancisGame.SCRAP_ACTION);
+		assertResource(currentPlayer(), PhrancisResources.SCRAP, 4);
+	}
+	
+	@Test
+	public void trample() {
+		Entity attacker = mod.createCreature(0, field.get(currentPlayer()), 10, 1, "B0T", 0);
+		Resources.retriever(PhrancisResources.TRAMPLE).resFor(attacker).set(1);
 		
+		Entity defender = mod.createCreature(0, field.get(opponent()), 3, 3, "Bio", 0);
 		nextPhase();
 		nextPhase();
+		assertResource(getOpponent(), PhrancisResources.HEALTH, originalLife);
+		useActionWithTarget(attacker, PhrancisGame.ATTACK_ACTION, defender);
+		assertResource(getOpponent(), PhrancisResources.HEALTH, originalLife - 7);
+	}
+	
+	@Test
+	public void cannotEnchantPlayer() {
+		Entity enchantment = mod.createEnchantment(hand.get(currentPlayer()), 4, 4, 0);
+		useActionWithFailedTarget(enchantment, PhrancisGame.ENCHANT_ACTION, currentPlayer());
+	}
+	
+	@Test
+	public void enchantBio() {
+		Entity attackerPlayer = currentPlayer();
+		Entity enchantedCreature = mod.createCreature(0, field.get(currentPlayer()), 4, 4, "Bio", 0);
+		Entity defender = mod.createCreature(0, field.get(opponent()), 3, 3, "Bio", 0);
+		Entity enchantment = mod.createEnchantment(hand.get(currentPlayer()), 0, 1, 0);
 		
-		// Test scrap
-		Entity scrap = cardToHand(isCreature.and(manaCost(1)));
-		useAction(scrap, PhrancisGame.PLAY_ACTION);
-		assertResource(attackerPlayer, PhrancisResources.SCRAP, 0);
-		
-		useFail(scrap, PhrancisGame.SCRAP_ACTION, opponent());
-		
-		useAction(scrap, PhrancisGame.SCRAP_ACTION);
-		assertResource(attackerPlayer, PhrancisResources.SCRAP, 1);
-		
-		nextPhase();
-		nextPhase();
-		
-		assertResource(attackerPlayer, PhrancisResources.MANA, 6);
-		attacker = cardToHand(isCreature.and(manaCost(1)));
-		useAction(attacker, PhrancisGame.PLAY_ACTION);
-		
-		attacker = cardToHand(isCreatureType("Bio").and(health(4)));
-		useAction(attacker, PhrancisGame.PLAY_ACTION);
-		
-		enchantment = cardToHand(e -> scrapCost.getFor(e) == 1 && health.getFor(e) == 1);
 		useActionWithFailedTarget(enchantment, PhrancisGame.ENCHANT_ACTION, attackerPlayer);
-		assertResource(attacker, PhrancisResources.ATTACK, 4);
-		assertResource(attacker, PhrancisResources.HEALTH, 4);
+		assertResource(enchantedCreature, PhrancisResources.ATTACK, 4);
+		assertResource(enchantedCreature, PhrancisResources.HEALTH, 4);
 		List<Entity> targets = getAction(enchantment, PhrancisGame.ENCHANT_ACTION).getTargetSets().get(0).findPossibleTargets();
 		assertEquals(1, targets.size());
-		useActionWithTarget(enchantment, PhrancisGame.ENCHANT_ACTION, attacker);
-		assertResource(attacker, PhrancisResources.ATTACK, 4);
-		assertResource(attacker, PhrancisResources.HEALTH, 5);
+		useActionWithTarget(enchantment, PhrancisGame.ENCHANT_ACTION, enchantedCreature);
+		assertResource(enchantedCreature, PhrancisResources.ATTACK, 4);
+		assertResource(enchantedCreature, PhrancisResources.HEALTH, 5);
 		
 		nextPhase();
 		nextPhase();
@@ -192,11 +214,10 @@ public class PhrancisTest extends GameTest {
 		assertFalse(defender.isRemoved());
 		assertResource(defender, PhrancisResources.ATTACK, 3);
 		assertResource(defender, PhrancisResources.HEALTH, 3);
-		assertResource(attacker, PhrancisResources.ATTACK, 4);
-		assertResource(opponent, PhrancisResources.HEALTH, 9);
-		// Attacking with attack 4 on a creature with health 3. Opponent has 9 life now, will lose 1 life because of trample damage
-		useActionWithTarget(attacker, PhrancisGame.ATTACK_ACTION, defender);
-		assertResource(opponent, PhrancisResources.HEALTH, 9);
+		assertResource(enchantedCreature, PhrancisResources.ATTACK, 4);
+		assertResource(opponent(), PhrancisResources.HEALTH, originalLife);
+		useActionWithTarget(enchantedCreature, PhrancisGame.ATTACK_ACTION, defender);
+		assertResource(opponent(), PhrancisResources.HEALTH, originalLife);
 		assertTrue(defender.isRemoved());
 	}
 
@@ -217,7 +238,22 @@ public class PhrancisTest extends GameTest {
 	}
 
 	@Override
-	protected void onBefore() {
+	protected void onAfterGameStart() {
+		assertNull(phase.getCurrentEntity());
+		List<Entity> list = new ArrayList<>(game.getEntitiesWithComponent(PlayerComponent.class));
+		assertEquals(2, list.size());
+		for (int i = 0; i < list.size(); i++) {
+			Entity current = list.get(i);
+			Entity other = list.get((i + 1) % list.size());
+			
+			ECSAction action = getAction(current, "Mulligan");
+			assertFalse(action + "is allowed for " + other, action.perform(other));
+		}
+		
+		for (Entity entity : game.getEntitiesWithComponent(PlayerComponent.class)) {
+			ECSAction action = getAction(entity, "Mulligan");
+			assertTrue(action + " not allowed for " + entity, action.perform(entity));
+		}
 	}
 
 }

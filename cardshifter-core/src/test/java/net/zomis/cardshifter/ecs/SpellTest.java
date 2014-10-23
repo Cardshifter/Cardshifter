@@ -59,7 +59,7 @@ public class SpellTest extends GameTest {
 	}
 
 	@Override
-	protected void onBefore() {
+	protected void onAfterGameStart() {
 	}
 
 	
