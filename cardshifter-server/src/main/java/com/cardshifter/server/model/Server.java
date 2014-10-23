@@ -80,10 +80,12 @@ public class Server implements ClientServerInterface {
 		incomingHandler.addHandler("login", LoginMessage.class, handlers::loginMessage);
 		incomingHandler.addHandler("chat", ChatMessage.class, handlers::chat);
 		incomingHandler.addHandler("startgame", StartGameRequest.class, handlers::play);
-		incomingHandler.addHandler("use", UseAbilityMessage.class, handlers::useAbility);
-		incomingHandler.addHandler("requestTargets", RequestTargetsMessage.class, handlers::requestTargets);
 		incomingHandler.addHandler("inviteResponse", InviteResponse.class, handlers::inviteResponse);
 		incomingHandler.addHandler("query", ServerQueryMessage.class, handlers::query);
+		
+		// Directly game-related
+		incomingHandler.addHandler("use", UseAbilityMessage.class, handlers::useAbility);
+		incomingHandler.addHandler("requestTargets", RequestTargetsMessage.class, handlers::requestTargets);
 		incomingHandler.addHandler("playerconfig", PlayerConfigMessage.class, handlers::incomingConfig);
 	}
 	
