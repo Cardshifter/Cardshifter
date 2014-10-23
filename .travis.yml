@@ -22,6 +22,7 @@ deploy:
   file: 
       - "target/cardshifter-fx-0.4.jar"
       - "target/cardshifter-server-0.4.jar"
+      - "target/cardshifter-server-0.4.policy"
   skip_cleanup: true
   on:
     tags: true

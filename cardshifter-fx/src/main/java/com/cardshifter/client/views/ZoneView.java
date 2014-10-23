@@ -46,13 +46,14 @@ public class ZoneView<T extends CardView> {
 	
 	public void removePane(int paneId) {
 		T paneToRemove = this.zoneMap.remove(paneId);
-		this.rootPane.getChildren().remove(paneToRemove.getRootPane());
-	}
-	
-	public void removeRawPane(int paneId) {
-		Pane paneToRemove = this.rawPanes.remove(paneId);
-		System.out.println("Remove pane " + paneId + " = " + paneToRemove);
-		this.rootPane.getChildren().remove(paneToRemove);
+		if (paneToRemove != null) {
+			this.rootPane.getChildren().remove(paneToRemove.getRootPane());
+		}
+		
+		Pane rawPaneToRemove = this.rawPanes.remove(paneId);
+		if (rawPaneToRemove != null) {
+			this.rootPane.getChildren().remove(rawPaneToRemove);
+		}
 	}
 	
 	public int getId() {
@@ -109,6 +110,10 @@ public class ZoneView<T extends CardView> {
 	public void setCardScrappable(int target, UseableActionMessage message) {
 		T card = getCard(target);
 		card.setCardScrappable(message);
+	}
+
+	public boolean contains(int id) {
+		return zoneMap.containsKey(id) || rawPanes.containsKey(id);
 	}
 
 }

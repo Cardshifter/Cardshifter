@@ -6,6 +6,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import com.cardshifter.api.ClientIO;
 import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.both.InviteResponse;
 import com.cardshifter.api.both.PlayerConfigMessage;
@@ -20,6 +21,8 @@ import com.cardshifter.api.outgoing.UserStatusMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage.Status;
 import com.cardshifter.api.outgoing.WaitMessage;
 import com.cardshifter.api.outgoing.WelcomeMessage;
+import com.cardshifter.core.game.ServerGame;
+import com.cardshifter.core.game.TCGGame;
 
 public class Handlers {
 

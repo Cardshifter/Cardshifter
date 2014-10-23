@@ -1,10 +1,12 @@
-package com.cardshifter.server.model;
+package com.cardshifter.core.game;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import net.zomis.cardshifter.ecs.EntitySerialization;
@@ -14,6 +16,8 @@ import net.zomis.cardshifter.ecs.usage.DeckConfig;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import com.cardshifter.ai.FakeAIClientTCG;
+import com.cardshifter.api.ClientIO;
 import com.cardshifter.api.both.PlayerConfigMessage;
 import com.cardshifter.api.incoming.RequestTargetsMessage;
 import com.cardshifter.api.incoming.UseAbilityMessage;
@@ -36,6 +40,7 @@ import com.cardshifter.modapi.ai.AIComponent;
 import com.cardshifter.modapi.ai.AISystem;
 import com.cardshifter.modapi.base.ComponentRetriever;
 import com.cardshifter.modapi.base.ECSGame;
+import com.cardshifter.modapi.base.ECSGameState;
 import com.cardshifter.modapi.base.ECSMod;
 import com.cardshifter.modapi.base.Entity;
 import com.cardshifter.modapi.base.PlayerComponent;
@@ -46,7 +51,6 @@ import com.cardshifter.modapi.events.EntityRemoveEvent;
 import com.cardshifter.modapi.events.GameOverEvent;
 import com.cardshifter.modapi.resources.ResourceValueChange;
 import com.cardshifter.modapi.resources.Resources;
-import com.cardshifter.server.main.FakeAIClientTCG;
 
 /**
  * Extends ServerGame which is primarily a state manager.
@@ -57,10 +61,13 @@ import com.cardshifter.server.main.FakeAIClientTCG;
 public class TCGGame extends ServerGame {
 	
 	private static final Logger logger = LogManager.getLogger(TCGGame.class);
+<<<<<<< HEAD:cardshifter-server/src/main/java/com/cardshifter/server/model/TCGGame.java
 	/**
 	 * Initialized when the game starts
 	 */
 	private final ECSGame game;
+=======
+>>>>>>> c3b698a374cc420412a7ff4d87827f6ce4142e29:cardshifter-core/src/main/java/com/cardshifter/core/game/TCGGame.java
 	private final ComponentRetriever<CardComponent> card = ComponentRetriever.retreiverFor(CardComponent.class);
 	
 	private ComponentRetriever<PlayerComponent> playerData = ComponentRetriever.retreiverFor(PlayerComponent.class);
@@ -68,8 +75,9 @@ public class TCGGame extends ServerGame {
 	 * Supplied as an argument to the initialization method
 	 */
 	private final ECSMod mod;
-	private final Server server;
+	private final Supplier<ScheduledExecutorService> aiExecutor;
 	
+<<<<<<< HEAD:cardshifter-server/src/main/java/com/cardshifter/server/model/TCGGame.java
 	/**
 	 * @param server The server for the game
 	 * @param id The game id
@@ -79,6 +87,11 @@ public class TCGGame extends ServerGame {
 		super(server, id);
 		this.server = server;
 		game = new ECSGame();
+=======
+	public TCGGame(Supplier<ScheduledExecutorService> aiExecutor, int id, ECSMod mod) {
+		super(id, new ECSGame());
+		this.aiExecutor = aiExecutor;
+>>>>>>> c3b698a374cc420412a7ff4d87827f6ce4142e29:cardshifter-core/src/main/java/com/cardshifter/core/game/TCGGame.java
 		this.mod = mod;
 	}
 
@@ -127,7 +140,7 @@ public class TCGGame extends ServerGame {
 	 * @param event The ResourceValueChange event
 	 */
 	private void broadcast(ResourceValueChange event) {
-		if (getState() == GameState.NOT_STARTED) {
+		if (game.getGameState() == ECSGameState.NOT_STARTED) {
 			// let the most information be sent when actually starting the game
 			return;
 		}
@@ -211,6 +224,7 @@ public class TCGGame extends ServerGame {
 		sendAvailableActions();
 	}
 	
+<<<<<<< HEAD:cardshifter-server/src/main/java/com/cardshifter/server/model/TCGGame.java
 	/**
 	 * This throws an exception if called
 	 * 
@@ -235,6 +249,8 @@ public class TCGGame extends ServerGame {
 	 * @param io The target client
 	 * @return The index of the client in this object
 	 */
+=======
+>>>>>>> c3b698a374cc420412a7ff4d87827f6ce4142e29:cardshifter-core/src/main/java/com/cardshifter/core/game/TCGGame.java
 	public Entity playerFor(ClientIO io) {
 		int index = this.getPlayers().indexOf(io);
 		if (index < 0) {
@@ -284,7 +300,7 @@ public class TCGGame extends ServerGame {
 		game.getEvents().registerHandlerAfter(this, ZoneChangeEvent.class, this::zoneChange);
 		game.getEvents().registerHandlerAfter(this, EntityRemoveEvent.class, this::remove);
 		game.getEvents().registerHandlerAfter(this, GameOverEvent.class, event -> this.endGame());
-		AISystem.setup(game, server.getScheduler());
+		AISystem.setup(game, aiExecutor.get());
 		game.addSystem(game -> game.getEvents().registerHandlerAfter(this, ActionPerformEvent.class, event -> this.sendAvailableActions()));
 		
 		game.startGame();
@@ -362,11 +378,11 @@ public class TCGGame extends ServerGame {
 	 */
 	private void sendAvailableActions() {
 		for (ClientIO io : this.getPlayers()) {
-			Entity player = playerFor(io);
 			io.sendToClient(new ResetAvailableActionsMessage());
 			if (game.isGameOver()) {
 				continue;
 			}
+			Entity player = playerFor(io);
 			getAllActions(game).filter(action -> action.isAllowed(player))
 				.forEach(action -> io.sendToClient(new UseableActionMessage(action.getOwner().getId(), action.getName(), !action.getTargetSets().isEmpty())));
 		}
@@ -431,6 +447,7 @@ public class TCGGame extends ServerGame {
 		return EntitySerialization.serialize(entity);
 	}
 
+<<<<<<< HEAD:cardshifter-server/src/main/java/com/cardshifter/server/model/TCGGame.java
 	/**
 	 * 
 	 * @return The ECSGame object
@@ -447,6 +464,8 @@ public class TCGGame extends ServerGame {
 	 * @param message The PlayerConfigMessage object
 	 * @param client The client that sent the config
 	 */
+=======
+>>>>>>> c3b698a374cc420412a7ff4d87827f6ce4142e29:cardshifter-core/src/main/java/com/cardshifter/core/game/TCGGame.java
 	public void incomingPlayerConfig(PlayerConfigMessage message, ClientIO client) {
 		Entity player = playerFor(client);
 		ConfigComponent config = player.getComponent(ConfigComponent.class);

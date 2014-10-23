@@ -3,17 +3,19 @@ package com.cardshifter.server.utils.export;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import net.zomis.cardshifter.ecs.usage.CardshifterIO;
 
 import com.beust.jcommander.JCommander;
+import com.cardshifter.core.game.ServerGame;
+import com.cardshifter.core.game.TCGGame;
 import com.cardshifter.modapi.base.Entity;
-import com.cardshifter.modapi.resources.ECSResourceMap;
+import com.cardshifter.modapi.cards.ZoneComponent;
 import com.cardshifter.server.model.Server;
-import com.cardshifter.server.model.ServerGame;
-import com.cardshifter.server.model.TCGGame;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -49,8 +51,12 @@ public class DataExporter {
 	private void gatherInterestingEntities(List<Entity> list, ServerGame game) {
 		TCGGame g = (TCGGame) game;
 		
-		Predicate<Entity> hasResources = e -> e.hasComponent(ECSResourceMap.class);
-		List<Entity> entities = g.getGameModel().findEntities(hasResources.and(e -> e.getId() < 20));
+		List<Entity> zone = new ArrayList<>(g.getGameModel().getEntitiesWithComponent(ZoneComponent.class));
+		zone.sort(Comparator.comparing(e -> e.getId()));
+		Entity entity = zone.get(0);
+		Stream<Entity> stream = entity.getSuperComponents(ZoneComponent.class).stream().flatMap(z -> z.stream());
+		
+		List<Entity> entities = stream.collect(Collectors.toList());
 		System.out.println("Found " + entities.size() + " interesting entities to save");
 		list.addAll(entities);
 	}

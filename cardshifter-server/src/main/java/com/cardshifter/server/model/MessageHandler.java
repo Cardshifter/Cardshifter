@@ -1,5 +1,6 @@
 package com.cardshifter.server.model;
 
+import com.cardshifter.api.ClientIO;
 import com.cardshifter.api.messages.Message;
 
 public interface MessageHandler<E extends Message> {

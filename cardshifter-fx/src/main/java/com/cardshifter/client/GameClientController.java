@@ -190,8 +190,7 @@ public class GameClientController {
 				} else {
 					this.opponentHandId = message.getId();
 					this.zoneViewMap.put(this.opponentHandId, new ZoneView<CardView>(message.getId(), opponentHandPane));
-					
-					this.createOpponentHand(message.getSize());
+					this.createOpponentHand(message);
 				}
 			} else if (message.getName().equals("Deck")) {
 				if (message.getOwner() == this.playerId) {
@@ -296,17 +295,14 @@ public class GameClientController {
 			this.removeCardFromDeck(sourceZoneId, cardId);
 		} else if (sourceZoneId == playerDeckId) {
 			this.removeCardFromDeck(sourceZoneId, cardId);
-		} else if (sourceZoneId == opponentHandId) {
-			this.removeCardFromOpponentHand();
 		}
 		
 		if (destinationZoneId == opponentHandId) {
-			this.addCardToOpponentHand();
+			this.addCardToOpponentHand(cardId);
 		}
 		if (destinationZoneId == opponentDeckId || destinationZoneId == playerDeckId) {
 			this.addCardToDeck(destinationZoneId, cardId);
 		}
-		
 		if (this.zoneViewMap.containsKey(sourceZoneId) && this.zoneViewMap.containsKey(destinationZoneId)) {
 			if (sourceZoneId == playerHandId) {
 				PlayerHandZoneView sourceZone = getZoneView(sourceZoneId);
@@ -323,9 +319,12 @@ public class GameClientController {
 				} else {
 					// Card moving to deck is handled above
 				}
-			
-				sourceZone.removePane(cardId);
 			}
+		}
+		
+		if (zoneViewMap.containsKey(sourceZoneId)) {
+			ZoneView<?> view = zoneViewMap.get(sourceZoneId);
+			view.removePane(cardId);
 		}
 	}
 	
@@ -482,22 +481,15 @@ public class GameClientController {
 		}
 	}
 	
-	private void createOpponentHand(int size) {
-		for(int i = 0; i < size; i++) {
-			this.addCardToOpponentHand();
+	private void createOpponentHand(ZoneMessage message) {
+		for (int i : message.getEntities()) {
+			this.addCardToOpponentHand(i);
 		}
 	}
 	
-	private void addCardToOpponentHand() {
+	private void addCardToOpponentHand(int i) {
 		ZoneView<?> opponentHand = this.zoneViewMap.get(this.opponentHandId);
-		int handSize = opponentHand.getSize();
-		opponentHand.addSimplePane(handSize, this.cardForOpponentHand());
-	}
-	
-	private void removeCardFromOpponentHand() {
-		ZoneView<?> opponentHand = this.zoneViewMap.get(this.opponentHandId);
-		int handSize = opponentHand.getSize();
-		opponentHand.removeRawPane(handSize - 1);
+		opponentHand.addSimplePane(i, this.cardForOpponentHand());
 	}
 	
 	private Pane cardForOpponentHand() {
@@ -528,7 +520,7 @@ public class GameClientController {
 	
 	private ZoneView<?> getZoneViewForCard(int id) {
 		for (ZoneView<?> zoneView : this.zoneViewMap.values()) {
-			if (zoneView.getAllIds().contains(id)) {
+			if (zoneView.contains(id)) {
 				return zoneView;
 			}
 		}

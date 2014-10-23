@@ -3,7 +3,9 @@ package com.cardshifter.server.model;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import net.zomis.cardshifter.ecs.usage.PhrancisGame;
 import net.zomis.cardshifter.ecs.usage.PhrancisGameNewAttackSystem;
@@ -12,11 +14,15 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import com.cardshifter.ai.AIs;
+import com.cardshifter.ai.FakeAIClientTCG;
 import com.cardshifter.ai.ScoringAI;
 import com.cardshifter.api.CardshifterConstants;
+import com.cardshifter.api.ClientIO;
 import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.incoming.StartGameRequest;
+import com.cardshifter.core.game.ServerGame;
+import com.cardshifter.core.game.TCGGame;
 import com.cardshifter.modapi.ai.CardshifterAI;
 import com.cardshifter.server.commands.AICommand;
 import com.cardshifter.server.commands.AICommand.AICommandParameters;
@@ -25,7 +31,6 @@ import com.cardshifter.server.commands.EntityCommand;
 import com.cardshifter.server.commands.EntityCommand.EntityInspectParameters;
 import com.cardshifter.server.commands.HelpCommand;
 import com.cardshifter.server.commands.HelpCommand.HelpParameters;
-import com.cardshifter.server.main.FakeAIClientTCG;
 import com.cardshifter.server.utils.export.DataExporter;
 
 /**
@@ -75,9 +80,9 @@ public class MainServer {
 				server.newClient(tcgAI);
 				server.getIncomingHandler().perform(new LoginMessage("AI " + entry.getKey()), tcgAI);
 			});
-			
-			server.addGameFactory(CardshifterConstants.VANILLA, (serv, id) -> new TCGGame(serv, id, new PhrancisGame()));
-			server.addGameFactory("New Attack Style", (serv, id) -> new TCGGame(serv, id, new PhrancisGameNewAttackSystem()));
+			final Supplier<ScheduledExecutorService> aiExecutor = () -> server.getScheduler();
+			server.addGameFactory(CardshifterConstants.VANILLA, (serv, id) -> new TCGGame(aiExecutor, id, new PhrancisGame()));
+			server.addGameFactory("New Attack Style", (serv, id) -> new TCGGame(aiExecutor, id, new PhrancisGameNewAttackSystem()));
 //			server.addGameFactory("SIMPLE", (serv, id) -> new TCGGame(serv, id, new SimpleGame()));
 			
 			logger.info("Started");
@@ -114,8 +119,9 @@ public class MainServer {
 	 * @param command The command object
 	 */
 	private void showInvites(Command command) {
+		CommandContext context = new CommandContext(server, command, command.getSender());
 		for (Entry<Integer, GameInvite> ee : server.getInvites().all().entrySet()) {
-			System.out.println(ee.getKey() + " = " + ee.getValue());
+			context.sendChatResponse(ee.getKey() + " = " + ee.getValue());
 		}
 	}
 	
@@ -125,8 +131,9 @@ public class MainServer {
 	 * @param command The command object
 	 */
 	private void showGames(Command command) {
+		CommandContext context = new CommandContext(server, command, command.getSender());
 		for (Entry<Integer, ServerGame> ee : server.getGames().entrySet()) {
-			System.out.println(ee.getKey() + " = " + ee.getValue());
+			context.sendChatResponse(ee.getKey() + " = " + ee.getValue());
 		}
 	}
 	
@@ -147,12 +154,13 @@ public class MainServer {
 	 */
 	private void chatInfo(Command command) {
 		int chatId = command.getParameterInt(1);
+		CommandContext context = new CommandContext(server, command, command.getSender());
 		if (chatId == 0) {
-			System.out.println(server.getChats().keySet());
+			context.sendChatResponse(server.getChats().keySet().toString());
 		}
 		else {
-			ChatArea chat = server.getMainChat();
-			System.out.println(chat.getUsers());
+			ChatArea chat = server.getChats().get(chatId);
+			context.sendChatResponse(chat.getUsers().toString());
 		}
 	}
 	

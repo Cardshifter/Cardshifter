@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 import org.apache.log4j.LogManager;
 
+import com.cardshifter.api.ClientIO;
 import com.cardshifter.api.messages.Message;
 
 public class ServerConsole extends ClientIO implements Runnable {

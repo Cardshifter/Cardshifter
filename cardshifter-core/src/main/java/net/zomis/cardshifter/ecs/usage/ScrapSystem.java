@@ -38,10 +38,14 @@ public class ScrapSystem extends SpecificActionSystem {
 	
 	@Override
 	protected void onPerform(ActionPerformEvent event) {
-		Entity cardOwner = card.get(event.getEntity()).getOwner();
-		int scrapValue = resource.getFor(event.getEntity());
+		forceScrap(event.getEntity());
+	}
+	
+	public void forceScrap(Entity entity) {
+		Entity cardOwner = Cards.getOwner(entity);
+		int scrapValue = resource.getOrDefault(entity, 0);
 		resource.resFor(cardOwner).change(scrapValue);
-		event.getEntity().destroy();
+		entity.destroy();
 	}
 	
 }

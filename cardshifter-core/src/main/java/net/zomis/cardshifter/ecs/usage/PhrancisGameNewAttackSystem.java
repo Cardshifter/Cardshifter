@@ -9,7 +9,6 @@ import com.cardshifter.modapi.actions.attack.AttackDamageHealAtEndOfTurn;
 import com.cardshifter.modapi.actions.attack.AttackDamageYGO;
 import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.ECSMod;
-import com.cardshifter.modapi.base.ECSSystem;
 
 public class PhrancisGameNewAttackSystem implements ECSMod {
 
@@ -23,7 +22,7 @@ public class PhrancisGameNewAttackSystem implements ECSMod {
 	@Override
 	public void setupGame(ECSGame game) {
 		parent.setupGame(game);
-		List<ECSSystem> attackSystems = game.findSystemsOfClass(AttackDamageYGO.class);
+		List<AttackDamageYGO> attackSystems = game.findSystemsOfClass(AttackDamageYGO.class);
 		game.removeSystem(attackSystems.get(0));
 		game.addSystem(new AttackDamageAccumulating(PhrancisResources.ATTACK, PhrancisResources.HEALTH));
 		game.addSystem(new AttackDamageHealAtEndOfTurn(PhrancisResources.HEALTH, PhrancisResources.MAX_HEALTH));

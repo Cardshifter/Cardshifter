@@ -16,6 +16,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import com.cardshifter.api.ClientIO;
+import com.cardshifter.api.ClientServerInterface;
 import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.both.InviteResponse;
 import com.cardshifter.api.both.PlayerConfigMessage;
@@ -29,6 +31,7 @@ import com.cardshifter.api.outgoing.ClientDisconnectedMessage;
 import com.cardshifter.api.outgoing.ServerErrorMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage.Status;
+import com.cardshifter.core.game.ServerGame;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 
@@ -38,7 +41,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
  *
  */
 
-public class Server {
+public class Server implements ClientServerInterface {
 	private static final Logger	logger = LogManager.getLogger(Server.class);
 
 	private final AtomicInteger clientId = new AtomicInteger(0);
@@ -127,6 +130,7 @@ public class Server {
 	 * @param client The client sending the message
 	 * @param json The actual contents of the message
 	 */
+	@Override
 	public void handleMessage(ClientIO client, String json) {
 		Objects.requireNonNull(client, "Cannot handle message from a null client");
 		logger.info("Handle message " + client + ": " + json);
@@ -148,7 +152,6 @@ public class Server {
 	 */
 	public void newClient(ClientIO client) {
 		logger.info("New client: " + client);
-		client.setId(clientId.incrementAndGet());
 		clients.put(client.getId(), client);
 	}
 	
@@ -157,6 +160,7 @@ public class Server {
 	 * 
 	 * @param client The client object that was disconnected
 	 */
+	@Override
 	public void onDisconnected(ClientIO client) {
 		logger.info("Client disconnected: " + client);
 		games.values().stream().filter(game -> game.hasPlayer(client))
@@ -283,6 +287,16 @@ public class Server {
 	 */
 	public CommandHandler getCommandHandler() {
 		return commandHandler;
+	}
+
+	@Override
+	public void performIncoming(Message message, ClientIO client) {
+		getIncomingHandler().perform(message, client);
+	}
+
+	@Override
+	public int newClientId() {
+		return clientId.incrementAndGet();
 	}
 	
 }

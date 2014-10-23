@@ -10,9 +10,9 @@ import net.zomis.cardshifter.ecs.usage.CardshifterIO;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import com.cardshifter.api.ClientIO;
 import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.outgoing.ServerErrorMessage;
-import com.cardshifter.server.model.ClientIO;
 import com.cardshifter.server.model.Server;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;

@@ -9,9 +9,12 @@ import java.util.stream.Collectors;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import com.cardshifter.ai.FakeAIClientTCG;
+import com.cardshifter.api.ClientIO;
+import com.cardshifter.api.IdObject;
 import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.both.InviteRequest;
-import com.cardshifter.server.main.FakeAIClientTCG;
+import com.cardshifter.core.game.ServerGame;
 
 public class GameInvite implements IdObject {
 	private static final Logger logger = LogManager.getLogger(GameInvite.class);

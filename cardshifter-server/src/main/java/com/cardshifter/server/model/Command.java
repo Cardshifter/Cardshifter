@@ -2,6 +2,8 @@ package com.cardshifter.server.model;
 
 import java.util.Arrays;
 
+import com.cardshifter.api.ClientIO;
+
 public class Command {
 
 	private final String[] params;

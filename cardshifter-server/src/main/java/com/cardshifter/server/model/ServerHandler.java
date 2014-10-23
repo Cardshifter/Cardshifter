@@ -6,6 +6,8 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.cardshifter.api.IdObject;
+
 public class ServerHandler<T extends IdObject> {
 	
 	private final AtomicInteger ids = new AtomicInteger(0);
