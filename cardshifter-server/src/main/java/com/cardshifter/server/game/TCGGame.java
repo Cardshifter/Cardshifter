@@ -1,10 +1,12 @@
-package com.cardshifter.server.model;
+package com.cardshifter.server.game;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import net.zomis.cardshifter.ecs.EntitySerialization;
@@ -48,6 +50,8 @@ import com.cardshifter.modapi.events.GameOverEvent;
 import com.cardshifter.modapi.resources.ResourceValueChange;
 import com.cardshifter.modapi.resources.Resources;
 import com.cardshifter.server.main.FakeAIClientTCG;
+import com.cardshifter.server.model.GameState;
+import com.cardshifter.server.model.ServerGame;
 
 public class TCGGame extends ServerGame {
 	
@@ -56,11 +60,11 @@ public class TCGGame extends ServerGame {
 	
 	private ComponentRetriever<PlayerComponent> playerData = ComponentRetriever.retreiverFor(PlayerComponent.class);
 	private final ECSMod mod;
-	private final Server server;
+	private final Supplier<ScheduledExecutorService> aiExecutor;
 	
-	public TCGGame(Server server, int id, ECSMod mod) {
+	public TCGGame(Supplier<ScheduledExecutorService> aiExecutor, int id, ECSMod mod) {
 		super(id, new ECSGame());
-		this.server = server;
+		this.aiExecutor = aiExecutor;
 		this.mod = mod;
 	}
 
@@ -184,7 +188,7 @@ public class TCGGame extends ServerGame {
 		game.getEvents().registerHandlerAfter(this, ZoneChangeEvent.class, this::zoneChange);
 		game.getEvents().registerHandlerAfter(this, EntityRemoveEvent.class, this::remove);
 		game.getEvents().registerHandlerAfter(this, GameOverEvent.class, event -> this.endGame());
-		AISystem.setup(game, server.getScheduler());
+		AISystem.setup(game, aiExecutor.get());
 		game.addSystem(game -> game.getEvents().registerHandlerAfter(this, ActionPerformEvent.class, event -> this.sendAvailableActions()));
 		
 		game.startGame();

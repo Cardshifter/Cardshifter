@@ -3,7 +3,9 @@ package com.cardshifter.server.model;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import net.zomis.cardshifter.ecs.usage.PhrancisGame;
 import net.zomis.cardshifter.ecs.usage.PhrancisGameNewAttackSystem;
@@ -26,6 +28,7 @@ import com.cardshifter.server.commands.EntityCommand;
 import com.cardshifter.server.commands.EntityCommand.EntityInspectParameters;
 import com.cardshifter.server.commands.HelpCommand;
 import com.cardshifter.server.commands.HelpCommand.HelpParameters;
+import com.cardshifter.server.game.TCGGame;
 import com.cardshifter.server.main.FakeAIClientTCG;
 import com.cardshifter.server.utils.export.DataExporter;
 
@@ -76,9 +79,9 @@ public class MainServer {
 				server.newClient(tcgAI);
 				server.getIncomingHandler().perform(new LoginMessage("AI " + entry.getKey()), tcgAI);
 			});
-			
-			server.addGameFactory(CardshifterConstants.VANILLA, (serv, id) -> new TCGGame(serv, id, new PhrancisGame()));
-			server.addGameFactory("New Attack Style", (serv, id) -> new TCGGame(serv, id, new PhrancisGameNewAttackSystem()));
+			final Supplier<ScheduledExecutorService> aiExecutor = () -> server.getScheduler();
+			server.addGameFactory(CardshifterConstants.VANILLA, (serv, id) -> new TCGGame(aiExecutor, id, new PhrancisGame()));
+			server.addGameFactory("New Attack Style", (serv, id) -> new TCGGame(aiExecutor, id, new PhrancisGameNewAttackSystem()));
 //			server.addGameFactory("SIMPLE", (serv, id) -> new TCGGame(serv, id, new SimpleGame()));
 			
 			logger.info("Started");

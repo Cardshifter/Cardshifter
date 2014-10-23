@@ -37,11 +37,11 @@ import com.cardshifter.modapi.ai.AIComponent;
 import com.cardshifter.modapi.ai.CardshifterAI;
 import com.cardshifter.modapi.base.ECSGameState;
 import com.cardshifter.modapi.base.Entity;
+import com.cardshifter.server.game.TCGGame;
 import com.cardshifter.server.model.GameState;
 import com.cardshifter.server.model.MainServer;
 import com.cardshifter.server.model.Server;
 import com.cardshifter.server.model.ServerGame;
-import com.cardshifter.server.model.TCGGame;
 
 public class ServerConnectionTest {
 
