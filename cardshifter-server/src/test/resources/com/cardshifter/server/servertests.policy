@@ -3,12 +3,22 @@ grant codeBase "file:./-" {
 };
 
 //when compiled from sources
+grant codeBase "file:../cardshifter-api/target/-" {
+	permission java.security.AllPermission;
+};
+
+//when compiled from sources
 grant codeBase "file:../cardshifter-core/target/-" {
 	permission java.security.AllPermission;
 };
 
 //when compiled from sources
 grant codeBase "file:../cardshifter-modapi/target/-" {
+	permission java.security.AllPermission;
+};
+
+//when up-to-date version is present
+grant codeBase "file:${user.home}/.m2/repository/com/cardshifter/cardshifter-api/-" {
 	permission java.security.AllPermission;
 };
 
