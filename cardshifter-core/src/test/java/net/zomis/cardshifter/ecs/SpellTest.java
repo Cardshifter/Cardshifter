@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.Entity;
+import com.cardshifter.modapi.base.GameTest;
 import com.cardshifter.modapi.resources.ResourceRetriever;
 
 public class SpellTest extends GameTest {

@@ -13,7 +13,6 @@ import net.zomis.cardshifter.ecs.usage.DeckConfig;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame.PhrancisResources;
 
-import org.apache.log4j.PropertyConfigurator;
 import org.junit.Test;
 
 import com.cardshifter.modapi.actions.ECSAction;
@@ -22,6 +21,7 @@ import com.cardshifter.modapi.base.CreatureTypeComponent;
 import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.ECSMod;
 import com.cardshifter.modapi.base.Entity;
+import com.cardshifter.modapi.base.GameTest;
 import com.cardshifter.modapi.base.PlayerComponent;
 import com.cardshifter.modapi.cards.BattlefieldComponent;
 import com.cardshifter.modapi.cards.ZoneComponent;
@@ -46,7 +46,6 @@ public class PhrancisTest extends GameTest {
 	
 	@Override
 	protected void setupGame(ECSGame game) {
-		PropertyConfigurator.configure(PhrancisTest.class.getResourceAsStream("log4j.properties"));
 		ECSMod mod = new PhrancisGame();
 		mod.declareConfiguration(game);
 		

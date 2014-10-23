@@ -1,4 +1,4 @@
-package net.zomis.cardshifter.ecs;
+package com.cardshifter.modapi.base;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -10,24 +10,13 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import net.zomis.cardshifter.ecs.usage.PhrancisGame;
-
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
 import org.junit.Before;
 
 import com.cardshifter.modapi.actions.ActionComponent;
 import com.cardshifter.modapi.actions.ECSAction;
 import com.cardshifter.modapi.actions.TargetSet;
-import com.cardshifter.modapi.base.ComponentRetriever;
-import com.cardshifter.modapi.base.CreatureTypeComponent;
-import com.cardshifter.modapi.base.ECSGame;
-import com.cardshifter.modapi.base.Entity;
-import com.cardshifter.modapi.base.PlayerComponent;
-import com.cardshifter.modapi.base.Retriever;
-import com.cardshifter.modapi.base.RetrieverSingleton;
-import com.cardshifter.modapi.base.Retrievers;
 import com.cardshifter.modapi.cards.BattlefieldComponent;
 import com.cardshifter.modapi.cards.CardComponent;
 import com.cardshifter.modapi.cards.DeckComponent;
@@ -53,7 +42,6 @@ public abstract class GameTest {
 	
 	@Before
 	public void before() {
-		PropertyConfigurator.configure(PhrancisTest.class.getResourceAsStream("log4j.properties"));
 		game = new ECSGame();
 		game.setRandomSeed(42);
 		setupGame(game);
@@ -141,7 +129,7 @@ public abstract class GameTest {
 	}
 
 	protected void nextPhase() {
-		useAction(phase.getCurrentEntity(), PhrancisGame.END_TURN_ACTION);
+		useAction(phase.getCurrentEntity(), "End Turn");
 		logger.info("Next phase, current entity is now " + phase.getCurrentEntity() + " phase is " + phase.getCurrentPhase());
 	}
 

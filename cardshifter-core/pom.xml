@@ -89,6 +89,12 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>com.cardshifter</groupId>
+			<artifactId>cardshifter-test</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.luaj</groupId>
 			<artifactId>luaj-jse</artifactId>
 			<version>3.0</version>
