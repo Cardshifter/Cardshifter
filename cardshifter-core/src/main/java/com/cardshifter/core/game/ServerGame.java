@@ -1,4 +1,4 @@
-package com.cardshifter.server.model;
+package com.cardshifter.core.game;
 
 import java.time.Duration;
 import java.time.Instant;

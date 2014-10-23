@@ -31,16 +31,16 @@ import com.cardshifter.api.outgoing.UserStatusMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage.Status;
 import com.cardshifter.api.outgoing.WaitMessage;
 import com.cardshifter.api.outgoing.WelcomeMessage;
+import com.cardshifter.core.game.ServerGame;
+import com.cardshifter.core.game.TCGGame;
 import com.cardshifter.modapi.actions.ECSAction;
 import com.cardshifter.modapi.ai.AIComponent;
 import com.cardshifter.modapi.ai.CardshifterAI;
 import com.cardshifter.modapi.base.ECSGameState;
 import com.cardshifter.modapi.base.Entity;
 import com.cardshifter.modapi.base.PlayerComponent;
-import com.cardshifter.server.game.TCGGame;
 import com.cardshifter.server.model.MainServer;
 import com.cardshifter.server.model.Server;
-import com.cardshifter.server.model.ServerGame;
 
 public class ServerConnectionTest {
 

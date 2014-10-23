@@ -21,6 +21,8 @@ import com.cardshifter.api.ClientIO;
 import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.incoming.StartGameRequest;
+import com.cardshifter.core.game.ServerGame;
+import com.cardshifter.core.game.TCGGame;
 import com.cardshifter.modapi.ai.CardshifterAI;
 import com.cardshifter.server.commands.AICommand;
 import com.cardshifter.server.commands.AICommand.AICommandParameters;
@@ -29,7 +31,6 @@ import com.cardshifter.server.commands.EntityCommand;
 import com.cardshifter.server.commands.EntityCommand.EntityInspectParameters;
 import com.cardshifter.server.commands.HelpCommand;
 import com.cardshifter.server.commands.HelpCommand.HelpParameters;
-import com.cardshifter.server.game.TCGGame;
 import com.cardshifter.server.utils.export.DataExporter;
 
 /**

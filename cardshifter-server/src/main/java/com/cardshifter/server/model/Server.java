@@ -31,6 +31,7 @@ import com.cardshifter.api.outgoing.ClientDisconnectedMessage;
 import com.cardshifter.api.outgoing.ServerErrorMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage.Status;
+import com.cardshifter.core.game.ServerGame;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 

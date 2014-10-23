@@ -14,6 +14,7 @@ import com.cardshifter.api.ClientIO;
 import com.cardshifter.api.IdObject;
 import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.both.InviteRequest;
+import com.cardshifter.core.game.ServerGame;
 
 public class GameInvite implements IdObject {
 	private static final Logger logger = LogManager.getLogger(GameInvite.class);

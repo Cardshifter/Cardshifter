@@ -11,11 +11,11 @@ import java.util.stream.Stream;
 import net.zomis.cardshifter.ecs.usage.CardshifterIO;
 
 import com.beust.jcommander.JCommander;
+import com.cardshifter.core.game.ServerGame;
+import com.cardshifter.core.game.TCGGame;
 import com.cardshifter.modapi.base.Entity;
 import com.cardshifter.modapi.cards.ZoneComponent;
-import com.cardshifter.server.game.TCGGame;
 import com.cardshifter.server.model.Server;
-import com.cardshifter.server.model.ServerGame;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;

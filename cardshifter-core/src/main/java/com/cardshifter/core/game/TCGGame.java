@@ -1,4 +1,4 @@
-package com.cardshifter.server.game;
+package com.cardshifter.core.game;
 
 import java.util.List;
 import java.util.Map;
@@ -51,7 +51,6 @@ import com.cardshifter.modapi.events.EntityRemoveEvent;
 import com.cardshifter.modapi.events.GameOverEvent;
 import com.cardshifter.modapi.resources.ResourceValueChange;
 import com.cardshifter.modapi.resources.Resources;
-import com.cardshifter.server.model.ServerGame;
 
 public class TCGGame extends ServerGame {
 	

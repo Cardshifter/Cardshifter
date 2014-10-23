@@ -21,7 +21,8 @@ import com.cardshifter.api.outgoing.UserStatusMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage.Status;
 import com.cardshifter.api.outgoing.WaitMessage;
 import com.cardshifter.api.outgoing.WelcomeMessage;
-import com.cardshifter.server.game.TCGGame;
+import com.cardshifter.core.game.ServerGame;
+import com.cardshifter.core.game.TCGGame;
 
 public class Handlers {
 
