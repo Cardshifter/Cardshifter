@@ -12,7 +12,6 @@ import java.util.function.Predicate;
 import org.apache.log4j.PropertyConfigurator;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.cardshifter.ai.AIs;
@@ -82,7 +81,7 @@ public class ServerConnectionTest {
 	}
 	
 	@Test(timeout = 10000)
-	@Ignore
+//	@Ignore
 	public void testUserOnlineOffline() throws InterruptedException, UnknownHostException, IOException {
 		
 		TestClient client2 = new TestClient();
@@ -91,12 +90,16 @@ public class ServerConnectionTest {
 		client2.await(ChatMessage.class);
 		
 		UserStatusMessage statusMessage = client1.await(UserStatusMessage.class);
+		ChatMessage chat = client1.await(ChatMessage.class);
+		String message = chat.getMessage();
+		assertTrue("Unexpected message: " + message, message.contains("Test2") && message.contains("joined"));
 		int client2id = statusMessage.getUserId();
 		assertEquals(Status.ONLINE, statusMessage.getStatus());
-		assertEquals(server.getClients().size(), client2id);
+		assertEquals(server.getClients().size() + 1, client2id);
 		assertEquals("Test2", statusMessage.getName());
 		
 		client2.send(new ServerQueryMessage(Request.USERS));
+		client2.await(AvailableModsMessage.class);
 		List<UserStatusMessage> users = client2.awaitMany(6, UserStatusMessage.class);
 		System.out.println("Online users: " + users);
 		// There is no determined order in which the UserStatusMessages are received, so it is harder to make any assertions.
@@ -109,6 +112,7 @@ public class ServerConnectionTest {
 		
 		client2.disconnect();
 		
+		System.out.println(chat);
 		statusMessage = client1.await(UserStatusMessage.class);
 		assertEquals(Status.OFFLINE, statusMessage.getStatus());
 		assertEquals(client2id, statusMessage.getUserId());
@@ -147,6 +151,7 @@ public class ServerConnectionTest {
 		ai.getComponent(AIComponent.class).setDelay(0);
 		
 		CardshifterAI humanActions = new ScoringAI(AIs.medium());
+		int count = 0;
 		while (!game.isGameOver()) {
 			System.out.println("Perform");
 			ECSAction action = humanActions.getAction(human);
@@ -161,6 +166,10 @@ public class ServerConnectionTest {
 				client1.send(message);
 			}
 			Thread.sleep(1000);
+			if (count++ > 5) {
+				// no need to test the entire game
+				break;
+			}
 		}
 	}
 	
