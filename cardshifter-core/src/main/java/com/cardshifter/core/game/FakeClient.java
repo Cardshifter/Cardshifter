@@ -1,16 +1,16 @@
-package com.cardshifter.server.clients;
+package com.cardshifter.core.game;
 
 import java.util.function.Consumer;
 
 import com.cardshifter.api.ClientIO;
+import com.cardshifter.api.ClientServerInterface;
 import com.cardshifter.api.messages.Message;
-import com.cardshifter.server.model.Server;
 
 public class FakeClient extends ClientIO {
 
 	private final Consumer<Message> consumer;
 	
-	public FakeClient(Server server, Consumer<Message> consumer) {
+	public FakeClient(ClientServerInterface server, Consumer<Message> consumer) {
 		super(server);
 		this.consumer = consumer;
 	}
