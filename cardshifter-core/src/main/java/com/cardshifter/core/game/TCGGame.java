@@ -61,13 +61,6 @@ import com.cardshifter.modapi.resources.Resources;
 public class TCGGame extends ServerGame {
 	
 	private static final Logger logger = LogManager.getLogger(TCGGame.class);
-<<<<<<< HEAD:cardshifter-server/src/main/java/com/cardshifter/server/model/TCGGame.java
-	/**
-	 * Initialized when the game starts
-	 */
-	private final ECSGame game;
-=======
->>>>>>> c3b698a374cc420412a7ff4d87827f6ce4142e29:cardshifter-core/src/main/java/com/cardshifter/core/game/TCGGame.java
 	private final ComponentRetriever<CardComponent> card = ComponentRetriever.retreiverFor(CardComponent.class);
 	
 	private ComponentRetriever<PlayerComponent> playerData = ComponentRetriever.retreiverFor(PlayerComponent.class);
@@ -77,24 +70,18 @@ public class TCGGame extends ServerGame {
 	private final ECSMod mod;
 	private final Supplier<ScheduledExecutorService> aiExecutor;
 	
-<<<<<<< HEAD:cardshifter-server/src/main/java/com/cardshifter/server/model/TCGGame.java
 	/**
-	 * @param server The server for the game
+	 * 
+	 * @param aiExecutor AI action scheduler
 	 * @param id The game id
 	 * @param mod The mod that the game will run
 	 */
-	public TCGGame(Server server, int id, ECSMod mod) {
-		super(server, id);
-		this.server = server;
-		game = new ECSGame();
-=======
 	public TCGGame(Supplier<ScheduledExecutorService> aiExecutor, int id, ECSMod mod) {
 		super(id, new ECSGame());
 		this.aiExecutor = aiExecutor;
->>>>>>> c3b698a374cc420412a7ff4d87827f6ce4142e29:cardshifter-core/src/main/java/com/cardshifter/core/game/TCGGame.java
 		this.mod = mod;
 	}
-
+	
 	/**
 	 * Gets the card entity for the card, then sends a ZoneChangeMessage to all clients.
 	 * Checks if the player has knowledge of the zone, and sends the real card data if so
@@ -224,33 +211,11 @@ public class TCGGame extends ServerGame {
 		sendAvailableActions();
 	}
 	
-<<<<<<< HEAD:cardshifter-server/src/main/java/com/cardshifter/server/model/TCGGame.java
-	/**
-	 * This throws an exception if called
-	 * 
-	 * @param command
-	 * @param player
-	 * @throw UnsupportedOperationException()
-	 */
-	@Override
-	protected boolean makeMove(Command command, int player) {
-		throw new UnsupportedOperationException();
-	}
-
-	/**
-	 * Empty method
-	 */
-	@Override
-	protected void updateStatus() {
-	}
-
 	/**
 	 * 
 	 * @param io The target client
 	 * @return The index of the client in this object
 	 */
-=======
->>>>>>> c3b698a374cc420412a7ff4d87827f6ce4142e29:cardshifter-core/src/main/java/com/cardshifter/core/game/TCGGame.java
 	public Entity playerFor(ClientIO io) {
 		int index = this.getPlayers().indexOf(io);
 		if (index < 0) {
@@ -447,16 +412,6 @@ public class TCGGame extends ServerGame {
 		return EntitySerialization.serialize(entity);
 	}
 
-<<<<<<< HEAD:cardshifter-server/src/main/java/com/cardshifter/server/model/TCGGame.java
-	/**
-	 * 
-	 * @return The ECSGame object
-	 */
-	@Override
-	public ECSGame getGameModel() {
-		return game;
-	}
-
 	/**  
 	 * If the player config does not need configuration, starts the ECSGame.
 	 * Otherwise?
@@ -464,8 +419,6 @@ public class TCGGame extends ServerGame {
 	 * @param message The PlayerConfigMessage object
 	 * @param client The client that sent the config
 	 */
-=======
->>>>>>> c3b698a374cc420412a7ff4d87827f6ce4142e29:cardshifter-core/src/main/java/com/cardshifter/core/game/TCGGame.java
 	public void incomingPlayerConfig(PlayerConfigMessage message, ClientIO client) {
 		Entity player = playerFor(client);
 		ConfigComponent config = player.getComponent(ConfigComponent.class);
