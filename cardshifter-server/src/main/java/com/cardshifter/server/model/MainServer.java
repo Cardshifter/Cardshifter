@@ -28,15 +28,29 @@ import com.cardshifter.server.commands.HelpCommand.HelpParameters;
 import com.cardshifter.server.main.FakeAIClientTCG;
 import com.cardshifter.server.utils.export.DataExporter;
 
+/**
+ *Starts the Server object, sets up the AIs and GameFactories, and controls other functions of Server
+ * 
+ * @author Simon Forsberg
+ */
 public class MainServer {
 	
 	private static final Logger logger = LogManager.getLogger(MainServer.class);
 	
+	/**
+	 * Server handles incoming messages and passes them to appropriate methods
+	 */
 	private final Server server = new Server();
 	private final Map<String, CardshifterAI> ais = new LinkedHashMap<>();
 
 	private Thread consoleThread;
 	
+	/**
+	 * Adds connections, AIs, and GameFactories to the Server, and starts the ServerConsole.
+	 * CommandHandler is a reference to the CommandHandler in Server
+	 * 
+	 * @return The configured Server object
+	 */
 	public Server start() {
 		ais.put("Loser", new ScoringAI(AIs.loser()));
 		ais.put("Idiot", new ScoringAI(AIs.idiot()));
@@ -74,6 +88,11 @@ public class MainServer {
 		return server;
 	}
 	
+	/**
+	 * Adds specific commands to the CommandHandler such as "exit" and "chat" and attaches them to various methods
+	 * 
+	 * @param commandHandler The command handler that commands will be added to
+	 */
 	private void initializeCommands(CommandHandler commandHandler) {
 		commandHandler.addHandler("exit", () -> new Object(), this::shutdown);
 		commandHandler.addHandler("help", () -> new HelpParameters(), new HelpCommand(commandHandler));
@@ -89,6 +108,11 @@ public class MainServer {
 		commandHandler.addHandler("threads", cmd -> showAllStackTraces(server, System.out::println));
 	}
 	
+	/**
+	 * Prints out the game invites of the Server
+	 * 
+	 * @param command The command object
+	 */
 	private void showInvites(Command command) {
 		CommandContext context = new CommandContext(server, command, command.getSender());
 		for (Entry<Integer, GameInvite> ee : server.getInvites().all().entrySet()) {
@@ -96,6 +120,11 @@ public class MainServer {
 		}
 	}
 	
+	/**
+	 * Prints out the current games of the Server
+	 * 
+	 * @param command The command object
+	 */
 	private void showGames(Command command) {
 		CommandContext context = new CommandContext(server, command, command.getSender());
 		for (Entry<Integer, ServerGame> ee : server.getGames().entrySet()) {
@@ -103,11 +132,21 @@ public class MainServer {
 		}
 	}
 	
+	/**
+	 * Sends a chat message to the master chat of the Server
+	 * 
+	 * @param command The command object
+	 */
 	private void say(Command command) {
 		ChatArea chat = server.getMainChat();
 		chat.broadcast(new ChatMessage(chat.getId(), "Server", command.getFullCommand(1)));
 	}
 	
+	/**
+	 * Either prints out all of the chats, or the users currently in the master chat
+	 * 
+	 * @param command The command object
+	 */
 	private void chatInfo(Command command) {
 		int chatId = command.getParameterInt(1);
 		CommandContext context = new CommandContext(server, command, command.getSender());
@@ -120,6 +159,12 @@ public class MainServer {
 		}
 	}
 	
+	/**
+	 * Stops the Server and consoleThread, and shows all stack traces for Server
+	 * 
+	 * @param command A command object with the Server and ClientIO also (unused)
+	 * @param parameters Unused parameter
+	 */
 	private void shutdown(CommandContext command, Object parameters) {
 		server.stop();
 		
@@ -133,22 +178,45 @@ public class MainServer {
 		consoleThread.interrupt();
 	}
 	
+	/**
+	 * Print out the clients
+	 * 
+	 * @param command The command object
+	 */
 	private void users(Command command) {
 		server.getClients().values().forEach(cl -> System.out.println(cl));
 	}
 	
+	/**
+	 * Get the client that sent the command, perform a StartGameRequest. 
+	 * Right now this only sends CardshifterConstants.VANILLA
+	 * 
+	 * @param command The command object
+	 */
 	private void play(Command command) {
 		int userId = command.getParameterInt(1);
 		ClientIO client = server.getClients().get(userId);
 		server.getIncomingHandler().perform(new StartGameRequest(-1, CardshifterConstants.VANILLA), client);
 	}
 	
+	/**
+	 * Send createGame to the Server for CardshifterConstants.VANILLA. 
+	 * Exports the Server along with the full command
+	 * 
+	 * @param command The command object
+	 */
 	private void export(Command command) {
 		server.createGame(CardshifterConstants.VANILLA);
 		DataExporter exporter = new DataExporter();
 		exporter.export(server, command.getAllParameters());
 	}
 	
+	/**
+	 * The Consumer accepts all stack traces for all threads
+	 * 
+	 * @param server Unused parameter
+	 * @param output Receives all stack trace strings
+	 */
 	private void showAllStackTraces(Server server, Consumer<String> output) {
 		output.accept("All stack traces:");
 		Map<Thread, StackTraceElement[]> allTraces = Thread.getAllStackTraces();
@@ -158,6 +226,12 @@ public class MainServer {
 		}
 	}
 	
+	/**
+	 * Convert the stack traces to strings and send them to the output
+	 * 
+	 * @param thread Thread to get a stack trace for
+	 * @param output Where the stack traces are sent
+	 */
 	private void stackTrace(Thread thread, Consumer<String> output) {
 		StackTraceElement[] stackTrace = thread.getStackTrace();
 		output.accept("Stack trace for thread " + thread.getId() + ": " + thread.getName());
