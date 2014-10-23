@@ -38,7 +38,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
  *
  */
 
-public class Server {
+public class Server implements ClientServerInterface {
 	private static final Logger	logger = LogManager.getLogger(Server.class);
 
 	private final AtomicInteger clientId = new AtomicInteger(0);
@@ -127,6 +127,7 @@ public class Server {
 	 * @param client The client sending the message
 	 * @param json The actual contents of the message
 	 */
+	@Override
 	public void handleMessage(ClientIO client, String json) {
 		Objects.requireNonNull(client, "Cannot handle message from a null client");
 		logger.info("Handle message " + client + ": " + json);
@@ -157,6 +158,7 @@ public class Server {
 	 * 
 	 * @param client The client object that was disconnected
 	 */
+	@Override
 	public void onDisconnected(ClientIO client) {
 		logger.info("Client disconnected: " + client);
 		games.values().stream().filter(game -> game.hasPlayer(client))
@@ -283,6 +285,11 @@ public class Server {
 	 */
 	public CommandHandler getCommandHandler() {
 		return commandHandler;
+	}
+
+	@Override
+	public void performIncoming(Message message, ClientIO client) {
+		getIncomingHandler().perform(message, client);
 	}
 	
 }

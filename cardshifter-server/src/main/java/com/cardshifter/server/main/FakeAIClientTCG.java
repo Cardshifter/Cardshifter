@@ -6,14 +6,14 @@ import org.apache.log4j.Logger;
 import com.cardshifter.api.messages.Message;
 import com.cardshifter.modapi.ai.CardshifterAI;
 import com.cardshifter.server.model.ClientIO;
-import com.cardshifter.server.model.Server;
+import com.cardshifter.server.model.ClientServerInterface;
 
 public class FakeAIClientTCG extends ClientIO {
 
 	private static final Logger logger = LogManager.getLogger(FakeAIClientTCG.class);
 	private final CardshifterAI ai;
 	
-	public FakeAIClientTCG(Server server, CardshifterAI ai) {
+	public FakeAIClientTCG(ClientServerInterface server, CardshifterAI ai) {
 		super(server);
 		this.ai = ai;
 	}

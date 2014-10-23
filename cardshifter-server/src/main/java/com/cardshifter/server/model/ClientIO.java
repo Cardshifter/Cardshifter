@@ -12,10 +12,10 @@ public abstract class ClientIO implements IdObject {
 	private static final Logger logger = LogManager.getLogger(ClientIO.class);
 	
 	private String name = "";
-	private final Server server;
+	private final ClientServerInterface server;
 	private int id;
 	
-	public ClientIO(Server server) {
+	public ClientIO(ClientServerInterface server) {
 		this.server = server;
 	}
 	
@@ -45,7 +45,7 @@ public abstract class ClientIO implements IdObject {
 	
 	public void sentToServer(Message message) {
 		try {
-			server.getIncomingHandler().perform(message, this);
+			server.performIncoming(message, this);
 		}
 		catch (RuntimeException ex) {
 			logger.error("Error performing incoming message from " + this, ex);
