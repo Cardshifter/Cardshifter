@@ -90,14 +90,16 @@ public class MainServer {
 	}
 	
 	private void showInvites(Command command) {
+		CommandContext context = new CommandContext(server, command, command.getSender());
 		for (Entry<Integer, GameInvite> ee : server.getInvites().all().entrySet()) {
-			System.out.println(ee.getKey() + " = " + ee.getValue());
+			context.sendChatResponse(ee.getKey() + " = " + ee.getValue());
 		}
 	}
 	
 	private void showGames(Command command) {
+		CommandContext context = new CommandContext(server, command, command.getSender());
 		for (Entry<Integer, ServerGame> ee : server.getGames().entrySet()) {
-			System.out.println(ee.getKey() + " = " + ee.getValue());
+			context.sendChatResponse(ee.getKey() + " = " + ee.getValue());
 		}
 	}
 	
@@ -108,12 +110,13 @@ public class MainServer {
 	
 	private void chatInfo(Command command) {
 		int chatId = command.getParameterInt(1);
+		CommandContext context = new CommandContext(server, command, command.getSender());
 		if (chatId == 0) {
-			System.out.println(server.getChats().keySet());
+			context.sendChatResponse(server.getChats().keySet().toString());
 		}
 		else {
-			ChatArea chat = server.getMainChat();
-			System.out.println(chat.getUsers());
+			ChatArea chat = server.getChats().get(chatId);
+			context.sendChatResponse(chat.getUsers().toString());
 		}
 	}
 	
