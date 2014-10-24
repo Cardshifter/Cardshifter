@@ -1,4 +1,4 @@
-package net.zomis.cardshifter.ecs;
+package net.zomis.cardshifter.ecs.usage;
 
 import com.cardshifter.modapi.actions.ActionAllowedCheckEvent;
 import com.cardshifter.modapi.actions.ActionPerformEvent;

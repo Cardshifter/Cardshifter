@@ -1,4 +1,4 @@
-package net.zomis.cardshifter.ecs;
+package net.zomis.cardshifter.ecs.usage;
 
 import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.ECSSystem;

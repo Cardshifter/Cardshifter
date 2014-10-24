@@ -3,11 +3,13 @@ package net.zomis.cardshifter.ecs;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import net.zomis.cardshifter.ecs.usage.Effects;
+import net.zomis.cardshifter.ecs.usage.EntityCannotUseSystem;
 import net.zomis.cardshifter.ecs.usage.FilterComponent;
 import net.zomis.cardshifter.ecs.usage.Filters;
 import net.zomis.cardshifter.ecs.usage.OpponentCannotUseSystem;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame.PhrancisResources;
+import net.zomis.cardshifter.ecs.usage.UntilEndOfOwnerTurnSystem;
 
 import org.junit.Test;
 
