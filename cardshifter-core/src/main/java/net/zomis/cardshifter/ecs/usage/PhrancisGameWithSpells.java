@@ -3,6 +3,9 @@ package net.zomis.cardshifter.ecs.usage;
 import java.util.function.IntUnaryOperator;
 import java.util.function.Supplier;
 
+import net.zomis.cardshifter.ecs.EntityCannotUseSystem;
+import net.zomis.cardshifter.ecs.UntilEndOfOwnerTurnSystem;
+
 import com.cardshifter.modapi.base.PlayerComponent;
 import com.cardshifter.modapi.cards.DrawStartCards;
 import com.cardshifter.modapi.cards.ZoneComponent;
@@ -23,6 +26,10 @@ public class PhrancisGameWithSpells extends PhrancisGameNewAttackSystem {
 		Supplier<FilterComponent> targetSupplier = () -> new FilterComponent(filters.isCreature().and(filters.isCreatureOnBattlefield()));
 //		createTargetSpell(zone, 1, 3, effects.giveTarget(PhrancisResources.SNIPER, 1).and(effects.giveTarget(PhrancisResources.ATTACK, -2, attackLimit)),
 //				targetSupplier.get());
+		
+		createTargetSpell(zone, 4, 2, effects.giveTarget(e -> new UntilEndOfOwnerTurnSystem(e, new EntityCannotUseSystem(e, PhrancisGame.ATTACK_ACTION))),
+				new FilterComponent(new Filters().isCreatureOnBattlefield()));
+		
 		createTargetSpell(zone, 4, 4, effects.giveTarget(effects.triggerSystem(PhaseEndEvent.class,
 				(me, event) -> Players.findOwnerFor(me) == event.getOldPhase().getOwner(),
 				(me, event) -> DrawStartCards.drawCard(event.getOldPhase().getOwner()))),

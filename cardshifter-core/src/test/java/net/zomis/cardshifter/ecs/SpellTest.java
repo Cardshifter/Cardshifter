@@ -3,6 +3,8 @@ package net.zomis.cardshifter.ecs;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import net.zomis.cardshifter.ecs.usage.Effects;
+import net.zomis.cardshifter.ecs.usage.FilterComponent;
+import net.zomis.cardshifter.ecs.usage.Filters;
 import net.zomis.cardshifter.ecs.usage.OpponentCannotUseSystem;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame.PhrancisResources;
@@ -30,6 +32,22 @@ public class SpellTest extends GameTest {
 		assertTrue(spell.isRemoved());
 		nextPhase();
 		useFail(currentPlayer(), PhrancisGame.END_TURN_ACTION);
+	}
+	
+	@Test
+	public void frezeOpponentMinion() {
+		assertNotNull(currentPlayer());
+		Effects eff = new Effects();
+		Entity freezeTarget = mod.createCreature(0, field.get(getOpponent()), 1, 1, "B0T", 0);
+		Entity spell = mod.createTargetSpell(hand.get(currentPlayer()), 0, 0, eff.giveTarget(e -> new UntilEndOfOwnerTurnSystem(e, new EntityCannotUseSystem(e, PhrancisGame.ATTACK_ACTION))),
+			new FilterComponent(new Filters().isCreatureOnBattlefield()));
+		useActionWithTarget(spell, PhrancisGame.USE_ACTION, freezeTarget);
+		assertTrue(spell.isRemoved());
+		nextPhase();
+		useFail(freezeTarget, PhrancisGame.ATTACK_ACTION);
+		nextPhase();
+		nextPhase();
+		useActionWithTarget(freezeTarget, PhrancisGame.ATTACK_ACTION, getOpponent());
 	}
 	
 	@Test

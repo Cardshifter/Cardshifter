@@ -93,7 +93,7 @@ public abstract class GameTest {
 	protected void useActionWithTarget(Entity entity, String actionName, Entity target) {
 		ECSAction action = getAction(entity, actionName);
 		assertTrue(action.isAllowed(phase.getCurrentEntity()));
-		assertEquals(1, action.getTargetSets().size());
+		assertEquals("Unexpected numbet of TargetSets.", 1, action.getTargetSets().size());
 		TargetSet targets = action.getTargetSets().get(0);
 		assertTrue("Target could not be added: " + target + " to action " + action, targets.addTarget(target));
 		assertTrue(action + " could not be performed", action.perform(phase.getCurrentEntity()));

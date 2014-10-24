@@ -118,12 +118,12 @@ public class PhrancisGame implements ECSMod {
 		createEnchantment(zone, 2, 2, 3);
 	}
 
-	public Entity createTargetSpell(ZoneComponent zone, int manaCost, int scrapCost, Component... components) {
-		return createSpellWithTargets(1, zone, manaCost, scrapCost, components);
+	public Entity createTargetSpell(ZoneComponent zone, int manaCost, int scrapCost, EffectComponent effect, FilterComponent filter) {
+		return createSpellWithTargets(1, zone, manaCost, scrapCost, effect, filter);
 	}
 
-	public Entity createSpell(ZoneComponent zone, int manaCost, int scrapCost, Component... components) {
-		return createSpellWithTargets(0, zone, manaCost, scrapCost, components);
+	public Entity createSpell(ZoneComponent zone, int manaCost, int scrapCost, EffectComponent effect) {
+		return createSpellWithTargets(0, zone, manaCost, scrapCost, effect);
 	}
 
 	private Entity createSpellWithTargets(int targets, ZoneComponent zone, int manaCost, int scrapCost, Component... components) {

@@ -5,7 +5,6 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.IntUnaryOperator;
 
-import com.cardshifter.modapi.base.Component;
 import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.ECSSystem;
 import com.cardshifter.modapi.base.Entity;
@@ -121,7 +120,7 @@ public class Effects {
 		return new EffectComponent("special system", effect);
 	}
 
-	public Component addSystem(Function<Entity, ECSSystem> systemSupplier) {
+	public EffectComponent addSystem(Function<Entity, ECSSystem> systemSupplier) {
 		GameEffect effect = e -> e.getEntity().getGame().addSystem(systemSupplier.apply(e.getEntity()));
 		
 		return new EffectComponent("Add System", effect);

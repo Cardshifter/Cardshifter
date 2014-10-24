@@ -115,6 +115,7 @@ public final class ECSGame {
 	}
 
 	public boolean removeSystem(ECSSystem system) {
+		logger.info("Remove system " + system);
 		events.removeListenersWithIdentifier(system);
 		return systems.remove(system);
 	}
