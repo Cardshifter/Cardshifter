@@ -45,5 +45,12 @@ public class AvailableTargetsMessage extends Message {
 	public int getEntity() {
 		return entity;
 	}
+
+	@Override
+	public String toString() {
+		return "AvailableTargetsMessage [entity=" + entity + ", action="
+				+ action + ", min=" + min + ", max=" + max + ", targets="
+				+ Arrays.toString(targets) + "]";
+	}
 	
 }
