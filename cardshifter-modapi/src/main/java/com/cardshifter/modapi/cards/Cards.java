@@ -28,4 +28,8 @@ public class Cards {
 		return card.required(cardEntity).getOwner();
 	}
 
+	public static boolean isCard(Entity target) {
+		return card.has(target);
+	}
+
 }
