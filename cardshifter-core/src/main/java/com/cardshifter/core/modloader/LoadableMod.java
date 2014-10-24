@@ -39,9 +39,15 @@ public abstract class LoadableMod implements Mod {
 	}
 	
 	@Override
-	public final ECSGame createGame() {
+	public void setupGame(ECSGame game) {
 		checkLoaded();
-		return createGame0();
+		createGame0(game);
+	}
+	
+	@Override
+	public void declareConfiguration(ECSGame game) {
+		checkLoaded();
+		declareConfiguration0(game);
 	}
 	
 	private void checkLoaded() {
@@ -54,5 +60,8 @@ public abstract class LoadableMod implements Mod {
 	
 	protected abstract void unload0();
 	
-	protected abstract ECSGame createGame0();
+	protected abstract void createGame0(ECSGame game);
+	
+	protected abstract void declareConfiguration0(ECSGame game);
+
 }

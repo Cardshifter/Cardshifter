@@ -1,14 +1,12 @@
 
 package com.cardshifter.core.modloader;
 
-import com.cardshifter.modapi.base.ECSGame;
+import com.cardshifter.modapi.base.ECSMod;
 
 /**
  *
  * @author Frank van Heeswijk
  */
-public interface Mod {
-	ECSGame createGame();
-	
+public interface Mod extends ECSMod {
 	String getName();
 }

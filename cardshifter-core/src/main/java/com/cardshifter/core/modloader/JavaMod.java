@@ -62,9 +62,13 @@ public class JavaMod extends LoadableMod {
 	}
 
 	@Override
-	protected ECSGame createGame0() {
-		ECSGame ecsGame = new ECSGame();
-		ecsMod.setupGame(ecsGame);
-		return ecsGame;
+	protected void createGame0(ECSGame game) {
+		ecsMod.setupGame(game);
 	}
+
+	@Override
+	protected void declareConfiguration0(ECSGame game) {
+		ecsMod.declareConfiguration(game);
+	}
+
 }

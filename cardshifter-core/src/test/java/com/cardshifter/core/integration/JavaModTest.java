@@ -1,28 +1,14 @@
 
 package com.cardshifter.core.integration;
 
+import static org.junit.Assert.*;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.file.Path;
-
-import static org.junit.Assert.*;
-import org.junit.Test;
-
-import com.cardshifter.core.modloader.JavaMod;
-import com.cardshifter.core.modloader.Mod;
-import com.cardshifter.core.modloader.ModNotLoadableException;
-import com.cardshifter.core.modloader.DirectoryModLoader;
-import com.cardshifter.core.modloader.ModLoader;
-import com.cardshifter.modapi.actions.ActionComponent;
-import com.cardshifter.modapi.base.ECSGame;
-import com.cardshifter.modapi.base.Entity;
-import com.cardshifter.modapi.base.PlayerComponent;
-import com.cardshifter.modapi.resources.ECSResourceData;
-import com.cardshifter.modapi.resources.ECSResourceMap;
-
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.AccessControlException;
 import java.util.List;
@@ -35,9 +21,21 @@ import java.util.stream.Collectors;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import com.cardshifter.core.modloader.DirectoryModLoader;
+import com.cardshifter.core.modloader.JavaMod;
+import com.cardshifter.core.modloader.Mod;
+import com.cardshifter.core.modloader.ModLoader;
+import com.cardshifter.core.modloader.ModNotLoadableException;
+import com.cardshifter.modapi.actions.ActionComponent;
+import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.ECSGameState;
+import com.cardshifter.modapi.base.Entity;
+import com.cardshifter.modapi.base.PlayerComponent;
+import com.cardshifter.modapi.resources.ECSResourceData;
+import com.cardshifter.modapi.resources.ECSResourceMap;
 
 
 /**
@@ -46,6 +44,12 @@ import com.cardshifter.modapi.base.ECSGameState;
  */
 public class JavaModTest {
 	private final static String MOD_NAME = "cardshifter-mod-examples-java";
+	private final ECSGame gameFromMod(Mod mod) {
+		ECSGame game = new ECSGame();
+		mod.declareConfiguration(game);
+		mod.setupGame(game);
+		return game;
+	}
 	
 	@Rule
 	public final ExpectedException expectedException = ExpectedException.none();
@@ -74,7 +78,7 @@ public class JavaModTest {
 		assertTrue(modLoader.getLoadedMods().containsKey(MOD_NAME));
 		assertEquals(javaMod, modLoader.getLoadedMods().get(MOD_NAME));
 
-		ECSGame game = javaMod.createGame();
+		ECSGame game = gameFromMod(javaMod);
 
 		//assert two players
 		Set<Entity> players = game.getEntitiesWithComponent(PlayerComponent.class);
@@ -128,7 +132,7 @@ public class JavaModTest {
 		ModLoader modLoader = new DirectoryModLoader(modLoaderDirectory);
 		Mod mod = modLoader.load(modDirectory.getFileName().toString());
 		
-		ECSGame ecsGame = mod.createGame();
+		ECSGame ecsGame = gameFromMod(mod);
 		assertEquals(1, ecsGame.getEntitiesWithComponent(PlayerComponent.class).size());
 		
 		modLoader.unload(modDirectory.getFileName().toString());
@@ -170,7 +174,7 @@ public class JavaModTest {
 		ModLoader modLoader = new DirectoryModLoader(modLoaderDirectory);
 		Mod mod = modLoader.load(modDirectory.getFileName().toString());
 		
-		ECSGame ecsGame = mod.createGame();
+		ECSGame ecsGame = gameFromMod(mod);
 		assertEquals(0, ecsGame.getEntitiesWithComponent(PlayerComponent.class).size());
 		
 		modLoader.unload(modDirectory.getFileName().toString());
@@ -222,7 +226,7 @@ public class JavaModTest {
 		ModLoader modLoader = new DirectoryModLoader(modLoaderDirectory);
 		Mod mod = modLoader.load(modDirectory.getFileName().toString());
 		
-		ECSGame ecsGame = mod.createGame();
+		ECSGame ecsGame = gameFromMod(mod);
 		ecsGame.startGame();
 		assertEquals(0, ecsGame.getEntitiesWithComponent(PlayerComponent.class).size());
 		
@@ -270,7 +274,7 @@ public class JavaModTest {
 		ModLoader modLoader = new DirectoryModLoader(modLoaderDirectory);
 		Mod mod = modLoader.load(modDirectory.getFileName().toString());
 		
-		ECSGame ecsGame = mod.createGame();
+		ECSGame ecsGame = gameFromMod(mod);
 		ecsGame.startGame();
 		assertEquals(0, ecsGame.getEntitiesWithComponent(PlayerComponent.class).size());
 		
@@ -335,7 +339,7 @@ public class JavaModTest {
 		ModLoader modLoader = new DirectoryModLoader(modLoaderDirectory);
 		Mod mod = modLoader.load(modDirectory.getFileName().toString());
 		
-		ECSGame ecsGame = mod.createGame();
+		ECSGame ecsGame = gameFromMod(mod);
 		ecsGame.startGame();
 		assertEquals(0, ecsGame.getEntitiesWithComponent(PlayerComponent.class).size());
 		
@@ -392,7 +396,7 @@ public class JavaModTest {
 		ModLoader modLoader = new DirectoryModLoader(modLoaderDirectory);
 		Mod mod = modLoader.load(modDirectory.getFileName().toString());
 		
-		ECSGame ecsGame = mod.createGame();
+		ECSGame ecsGame = gameFromMod(mod);
 		assertEquals(0, ecsGame.getEntitiesWithComponent(PlayerComponent.class).size());
 		
 		modLoader.unload(modDirectory.getFileName().toString());
@@ -451,7 +455,7 @@ public class JavaModTest {
 		ModLoader modLoader = new DirectoryModLoader(modLoaderDirectory);
 		Mod mod = modLoader.load(modDirectory.getFileName().toString());
 		
-		ECSGame ecsGame = mod.createGame();
+		ECSGame ecsGame = gameFromMod(mod);
 		ecsGame.startGame();
 		assertEquals(0, ecsGame.getEntitiesWithComponent(PlayerComponent.class).size());
 		
@@ -503,7 +507,7 @@ public class JavaModTest {
 		ModLoader modLoader = new DirectoryModLoader(modLoaderDirectory);
 		Mod mod = modLoader.load(modDirectory.getFileName().toString());
 		
-		ECSGame ecsGame = mod.createGame();
+		ECSGame ecsGame = gameFromMod(mod);
 		assertEquals(0, ecsGame.getEntitiesWithComponent(PlayerComponent.class).size());
 		
 		modLoader.unload(modDirectory.getFileName().toString());
@@ -542,7 +546,7 @@ public class JavaModTest {
 		ModLoader modLoader = new DirectoryModLoader(modLoaderDirectory);
 		Mod mod = modLoader.load(modDirectory.getFileName().toString());
 		
-		ECSGame ecsGame = mod.createGame();
+		ECSGame ecsGame = gameFromMod(mod);
 		assertEquals(ECSGameState.NOT_STARTED, ecsGame.getGameState());
 		//TODO verify that system got added
 		
