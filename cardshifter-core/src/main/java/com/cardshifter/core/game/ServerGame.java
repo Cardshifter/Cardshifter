@@ -53,7 +53,8 @@ public abstract class ServerGame {
 	 */
 	public void endGame() {
 		if (game.isGameOver()) {
-			throw new IllegalStateException("Game can only be ended once");
+			logger.warn("Game was already ended, ignoring second call.", new IllegalStateException("Game can only be ended once"));
+			return;
 		}
 		logger.info("Game Ended: " + this + " with players " + players);
 		this.send(new GameOverMessage());
