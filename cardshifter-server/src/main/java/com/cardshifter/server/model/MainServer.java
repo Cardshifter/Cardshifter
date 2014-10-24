@@ -74,9 +74,8 @@ public class MainServer {
 				server.getIncomingHandler().perform(new LoginMessage("AI " + entry.getKey()), tcgAI);
 			});
 			final Supplier<ScheduledExecutorService> aiExecutor = () -> server.getScheduler();
-			server.addGameFactory(CardshifterConstants.VANILLA, (serv, id) -> new TCGGame(aiExecutor, id, new PhrancisGame()));
-			server.addGameFactory("New Attack Style", (serv, id) -> new TCGGame(aiExecutor, id, new PhrancisGameNewAttackSystem()));
-//			server.addGameFactory("SIMPLE", (serv, id) -> new TCGGame(serv, id, new SimpleGame()));
+			
+			mods.getMods().forEach((name, mod) -> server.addGameFactory(name, (serv, id) -> new TCGGame(aiExecutor, id, mod)));
 			
 			logger.info("Started");
 		}
