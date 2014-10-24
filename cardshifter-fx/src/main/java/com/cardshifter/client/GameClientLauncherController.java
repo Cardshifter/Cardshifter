@@ -27,9 +27,7 @@ import javafx.stage.Stage;
 import net.zomis.cardshifter.ecs.usage.DeckConfig;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame;
 
-import com.cardshifter.ai.AIs;
 import com.cardshifter.ai.FakeAIClientTCG;
-import com.cardshifter.ai.ScoringAI;
 import com.cardshifter.api.ClientIO;
 import com.cardshifter.api.ClientServerInterface;
 import com.cardshifter.api.both.PlayerConfigMessage;
@@ -39,6 +37,7 @@ import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.outgoing.NewGameMessage;
 import com.cardshifter.client.buttons.AIChoiceButton;
 import com.cardshifter.core.game.FakeClient;
+import com.cardshifter.core.game.ModCollection;
 import com.cardshifter.core.game.TCGGame;
 import com.cardshifter.modapi.ai.AIComponent;
 import com.cardshifter.modapi.base.ECSMod;
@@ -109,9 +108,8 @@ public final class GameClientLauncherController implements Initializable {
 	}	
 	
 	private void createAIChoices() {
-		this.aiChoices.put("Idiot", new AIComponent(new ScoringAI(AIs.idiot())));
-		this.aiChoices.put("Loser", new AIComponent(new ScoringAI(AIs.loser())));
-		this.aiChoices.put("Medium", new AIComponent(new ScoringAI(AIs.medium())));
+		ModCollection mods = new ModCollection();
+		mods.getAIs().forEach((name, ai) -> aiChoices.put(name, new AIComponent(ai)));
 		localGameButton.setOnAction(this::localGameStart);
 		this.createAIButtons();
 	}

@@ -1,6 +1,5 @@
 package com.cardshifter.server.model;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ScheduledExecutorService;
@@ -13,17 +12,15 @@ import net.zomis.cardshifter.ecs.usage.PhrancisGameNewAttackSystem;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import com.cardshifter.ai.AIs;
 import com.cardshifter.ai.FakeAIClientTCG;
-import com.cardshifter.ai.ScoringAI;
 import com.cardshifter.api.CardshifterConstants;
 import com.cardshifter.api.ClientIO;
 import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.incoming.StartGameRequest;
+import com.cardshifter.core.game.ModCollection;
 import com.cardshifter.core.game.ServerGame;
 import com.cardshifter.core.game.TCGGame;
-import com.cardshifter.modapi.ai.CardshifterAI;
 import com.cardshifter.server.commands.AICommand;
 import com.cardshifter.server.commands.AICommand.AICommandParameters;
 import com.cardshifter.server.commands.CommandContext;
@@ -46,7 +43,7 @@ public class MainServer {
 	 * Server handles incoming messages and passes them to appropriate methods
 	 */
 	private final Server server = new Server();
-	private final Map<String, CardshifterAI> ais = new LinkedHashMap<>();
+	private final ModCollection mods = new ModCollection();
 
 	private Thread consoleThread;
 	
@@ -57,10 +54,6 @@ public class MainServer {
 	 * @return The configured Server object
 	 */
 	public Server start() {
-		ais.put("Loser", new ScoringAI(AIs.loser()));
-		ais.put("Idiot", new ScoringAI(AIs.idiot()));
-		ais.put("Medium", new ScoringAI(AIs.medium()));
-		ais.put("Fighter", new ScoringAI(AIs.fighter()));
 		
 		try {
 			logger.info("Starting Server...");
@@ -75,7 +68,7 @@ public class MainServer {
 			consoleThread = new Thread(console, "Console-Thread");
 			consoleThread.start();
 			
-			ais.entrySet().forEach(entry -> {
+			mods.getAIs().entrySet().forEach(entry -> {
 				ClientIO tcgAI = new FakeAIClientTCG(server, entry.getValue());
 				server.newClient(tcgAI);
 				server.getIncomingHandler().perform(new LoginMessage("AI " + entry.getKey()), tcgAI);
