@@ -13,6 +13,9 @@ import net.zomis.cardshifter.ecs.usage.PhrancisGameWithSpells;
 import com.cardshifter.ai.AIs;
 import com.cardshifter.ai.ScoringAI;
 import com.cardshifter.api.CardshifterConstants;
+import com.cardshifter.core.modloader.DirectoryModLoader;
+import com.cardshifter.core.modloader.Mod;
+import com.cardshifter.core.modloader.ModNotLoadableException;
 import com.cardshifter.modapi.ai.CardshifterAI;
 import com.cardshifter.modapi.base.ECSMod;
 
@@ -33,7 +36,14 @@ public class ModCollection {
 	}
 	
 	public void loadExternal(Path directory) {
-		throw new UnsupportedOperationException("Not implemented yet.");
+		String MOD_NAME = "cardshifter-mod-examples-java";
+		DirectoryModLoader loader = new DirectoryModLoader(directory);
+		try {
+			Mod mod = loader.load(MOD_NAME);
+			mods.put(mod.getName(), mod);
+		} catch (ModNotLoadableException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	public Map<String, CardshifterAI> getAIs() {

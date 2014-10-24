@@ -1,5 +1,6 @@
 package com.cardshifter.server.model;
 
+import java.io.File;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ScheduledExecutorService;
@@ -52,7 +53,7 @@ public class MainServer {
 	 * @return The configured Server object
 	 */
 	public Server start() {
-		
+		mods.loadExternal(new File(System.getProperty("user.home"), "cardshifter").toPath());
 		try {
 			logger.info("Starting Server...");
 			
