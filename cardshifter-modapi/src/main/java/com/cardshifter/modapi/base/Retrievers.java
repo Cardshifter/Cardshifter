@@ -57,12 +57,15 @@ public class Retrievers {
 
 	private static void injectSingleton(Object obj, Field field, ECSGame game) {
 		Class<? extends Component> clazz = field.getType().asSubclass(Component.class);
-		field.setAccessible(true);
-		try {
-			field.set(obj, Retrievers.singleton(game, clazz));
-		} catch (IllegalArgumentException | IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
+		AccessController.doPrivileged((PrivilegedAction<Void>)() -> {
+			field.setAccessible(true);
+			try {
+				field.set(obj, Retrievers.singleton(game, clazz));
+			} catch (IllegalArgumentException | IllegalAccessException e) {
+				throw new RuntimeException(e);
+			}
+			return null;
+		});
 	}
 
 	private static void injectField(Object obj, Field field, ECSGame game) {
