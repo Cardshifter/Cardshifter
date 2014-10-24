@@ -21,7 +21,6 @@ public class SpellTest extends GameTest {
 
 	@Test
 	public void preventOpponentAction() {
-		phase.nextPhase();
 		assertNotNull(currentPlayer());
 		Effects eff = new Effects();
 		Entity spell = mod.createSpell(hand.get(currentPlayer()), 0, 0, eff.addSystem(e -> new OpponentCannotUseSystem(e, PhrancisGame.END_TURN_ACTION)));
@@ -32,8 +31,6 @@ public class SpellTest extends GameTest {
 	
 	@Test
 	public void scrapAll() {
-		phase.nextPhase();
-		
 		assertNotNull(currentPlayer());
 		Effects eff = new Effects();
 		scrap.resFor(currentPlayer()).set(2);
@@ -56,13 +53,11 @@ public class SpellTest extends GameTest {
 		mod = new PhrancisGame();
 		mod.declareConfiguration(game);
 		mod.setupGame(game);
-//		game.findSystemsOfClass(MulliganSingleCards.class).forEach(game::removeSystem);
 	}
 
 	@Override
 	protected void onAfterGameStart() {
+		phase.nextPhase();
 	}
-
-	
 
 }
