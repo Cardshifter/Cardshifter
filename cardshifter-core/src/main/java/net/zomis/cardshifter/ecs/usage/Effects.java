@@ -1,9 +1,9 @@
 package net.zomis.cardshifter.ecs.usage;
 
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.function.IntUnaryOperator;
 
 import com.cardshifter.modapi.base.Component;
 import com.cardshifter.modapi.base.ECSGame;
@@ -14,16 +14,34 @@ import com.cardshifter.modapi.cards.CardComponent;
 import com.cardshifter.modapi.cards.Cards;
 import com.cardshifter.modapi.cards.ZoneChangeEvent;
 import com.cardshifter.modapi.events.EntityRemoveEvent;
+import com.cardshifter.modapi.events.IEvent;
 import com.cardshifter.modapi.resources.ECSResource;
+import com.cardshifter.modapi.resources.ECSResourceData;
 import com.cardshifter.modapi.resources.ResourceRetriever;
+
 
 public class Effects {
 
-	public EffectComponent forEach(Predicate<Entity> filter, Consumer<Entity> consumer) {
+	public <T extends IEvent> Function<Entity, ECSSystem> triggerSystem(Class<T> eventClass, BiPredicate<Entity, T> interestingEvents, BiConsumer<Entity, T> handler) {
+		return e -> new ECSSystem() {
+			@Override
+			public void startGame(ECSGame game) {
+				game.getEvents().registerHandlerAfter(this, eventClass, this::event);
+			}
+			
+			private void event(T event) {
+				if (interestingEvents.test(e, event)) {
+					 handler.accept(e, event);
+				}
+			}
+		};
+	}
+	
+	public EffectComponent forEach(TargetFilter filter, TargetEffect consumer) {
 		GameEffect effect = event -> event.getEntity().getGame()
-			.findEntities(e -> Cards.isOnZone(e, BattlefieldComponent.class))
-			.forEach(consumer);
-		return new EffectComponent("For each", effect);
+			.findEntities(target -> filter.isTargetable(event.getEntity(), target))
+			.forEach(target -> consumer.perform(event.getEntity(), target));
+		return new EffectComponent("For each " + filter + ", " + consumer, effect);
 	}
 	
 	public EffectComponent scrapAll() {
@@ -43,20 +61,26 @@ public class Effects {
 		return new EffectComponent("Give target " + value + " " + resource, effect);
 	}
 
-	public EffectComponent giveTarget(ECSSystem system) {
-		return new EffectComponent(system.toString(), this.targetTrigger(system));
+	public EffectComponent giveTarget(ECSResource resource, int value, IntUnaryOperator operator) {
+		ResourceRetriever res = ResourceRetriever.forResource(resource);
+		GameEffect effect = event -> event.getAction().getAllTargets().forEach(e -> {
+			ECSResourceData data = res.resFor(e);
+			data.change(value);
+			data.set(operator.applyAsInt(data.get()));
+		});
+		return new EffectComponent("Give target " + value + " " + resource, effect);
 	}
 
-	public <T> EffectComponent giveTrigger(Class<T> eventClass, BiConsumer<Entity, T> handler) {
-		return new EffectComponent("Not implemented yet", e -> {});
-//		return new EffectComponent("On " + eventClass + " do " + handler, this.targetTrigger(system));
+	public <T extends IEvent> EffectComponent giveTarget(Function<Entity, ECSSystem> system) {
+		GameEffect effect = event -> event.getAction().getAllTargets().forEach(e -> e.getGame().addSystem(new InGameSystem(e, system.apply(e))));
+		return new EffectComponent("Give target " + system, effect);
 	}
 
-	private GameEffect targetTrigger(ECSSystem system) {
-		GameEffect effect = event -> event.getAction().getAllTargets().forEach(e -> e.getGame().addSystem(new InGameSystem(e, system)));
-		return effect;
+	public <T extends IEvent> EffectComponent giveSelf(Function<Entity, ECSSystem> system) {
+		GameEffect effect = event -> event.getEntity().getGame().addSystem(new InGameSystem(event.getEntity(), system.apply(event.getEntity())));
+		return new EffectComponent("Give target " + system, effect);
 	}
-	
+
 	public static class InGameSystem implements ECSSystem {
 
 		private final Entity owningEntity;
@@ -91,8 +115,8 @@ public class Effects {
 	}
 
 	public EffectComponent systemWhileOnBattlefield(Function<Entity, ECSSystem> systemSupplier) {
-//		GameEffect effect = event -> event.getAction().getAllTargets().forEach(e -> e.getGame().addSystem(new InGameSystem(e, systemSupplier.apply(e))));
-		GameEffect effect = e -> e.getEntity().getGame().addSystem(new InGameSystem(e.getEntity(), systemSupplier.apply(e.getEntity())));
+		GameEffect effect = event -> event.getAction().getAllTargets().forEach(e -> e.getGame().addSystem(new InGameSystem(e, systemSupplier.apply(e))));
+//		GameEffect effect = e -> e.getEntity().getGame().addSystem(new InGameSystem(e.getEntity(), systemSupplier.apply(e.getEntity())));
 		
 		return new EffectComponent("special system", effect);
 	}
