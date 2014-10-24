@@ -99,7 +99,8 @@ public class PhrancisGame implements ECSMod {
 		createEnchantment(zone, 2, 2, 3);
 		
 //		Effects effects = new Effects();
-//		createSpell(zone, 2, 2, effects.giveTarget(PhrancisResources.SNIPER, 1));
+//		Filters filters = new Filters();
+//		createTargetSpell(zone, 2, 2, effects.giveTarget(PhrancisResources.SNIPER, 1), new FilterComponent(filters.isCreature()));
 //		createSpell(zone, 0, 0, effects.system(e -> new OpponentCannotUseSystem(e, ATTACK_ACTION)));
 //		createSpell(zone, 2, 2, effects.giveTarget(new SpecificActionSystem(ATTACK_ACTION) {
 //			@Override
@@ -128,19 +129,31 @@ public class PhrancisGame implements ECSMod {
 		
 	}
 	
+	public Entity createTargetSpell(ZoneComponent zone, int manaCost, int scrapCost, Component... components) {
+		return createSpellWithTargets(1, zone, manaCost, scrapCost, components);
+	}
+
 	public Entity createSpell(ZoneComponent zone, int manaCost, int scrapCost, Component... components) {
+		return createSpellWithTargets(0, zone, manaCost, scrapCost, components);
+	}
+
+	private Entity createSpellWithTargets(int targets, ZoneComponent zone, int manaCost, int scrapCost, Component... components) {
 		Entity entity = zone.getOwner().getGame().newEntity();
 		ECSResourceMap.createFor(entity)
 			.set(PhrancisResources.SCRAP_COST, scrapCost)
 			.set(PhrancisResources.MANA_COST, manaCost);
-		entity.addComponent(new ActionComponent().addAction(spellAction(entity)));
+		entity.addComponent(new ActionComponent().addAction(spellAction(entity, targets)));
 		entity.addComponents(components);
 		zone.addOnBottom(entity);
 		return entity;
 	}
 
-	private ECSAction spellAction(Entity entity) {
-		return new ECSAction(entity, USE_ACTION, act -> true, act -> {}); //.addTargetSet(1, 1);
+	private ECSAction spellAction(Entity entity, int targets) {
+		ECSAction action = new ECSAction(entity, USE_ACTION, act -> true, act -> {});
+		if (targets > 0) {
+			action.addTargetSet(targets, targets);
+		}
+		return action;
 	}
 
 	@Override
