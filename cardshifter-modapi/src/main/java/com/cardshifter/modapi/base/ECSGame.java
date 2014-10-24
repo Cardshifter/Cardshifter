@@ -18,25 +18,54 @@ import com.cardshifter.modapi.events.GameOverEvent;
 import com.cardshifter.modapi.events.IEvent;
 import com.cardshifter.modapi.events.StartGameEvent;
 
+/**
+ * Starting point for the entire ECS
+ * 
+ * @author Simon Forsberg
+ */
 public final class ECSGame {
 	private static final Logger logger = LogManager.getLogger(ECSGame.class);
 
 	private final AtomicInteger ids = new AtomicInteger();
+	/**
+	 * All the entities of a single game
+	 */
 	private final Map<Integer, Entity> entities = new HashMap<>();
 	private final EventExecutor events = new EventExecutor();
+	/**
+	 * All the systems that comprise the game
+	 */
 	private final List<ECSSystem> systems = new ArrayList<>();
 	private final Random random = new Random();
+	/**
+	 * An enum for the current state of the game
+	 */
 	private ECSGameState gameState = ECSGameState.NOT_STARTED;
 	
 	public ECSGame() {
 	}
 	
+	/**
+	 * Creates an entity, assigns an Id, adds it to the entities of the game object
+	 * @return The created entity
+	 */
 	public Entity newEntity() {
 		Entity entity = new Entity(this, ids.incrementAndGet());
 		this.entities.put(entity.getId(), entity);
 		return entity;
 	}
 	
+	/**
+	 * Executes an event while performing something in the middle of executing the event.
+	 * It will first do an event for listeners that have registered before, then
+	 * it will do runInBetween, then it will fire off the listeners that have registered
+	 * for after.
+	 * 
+	 * @param <T> The event type that is executed
+	 * @param event The event to execute
+	 * @param runInBetween The action to run in between 
+	 * @return The same event that was executed
+	 */
 	public <T extends IEvent> T executeEvent(T event, Runnable runInBetween) {
 		return events.executeEvent(event, runInBetween);
 	}
