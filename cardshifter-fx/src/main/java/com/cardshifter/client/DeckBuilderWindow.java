@@ -144,6 +144,10 @@ public class DeckBuilderWindow {
 		List<Integer> sortedKeys = new ArrayList<>(this.activeDeckConfig.getChosen().keySet());
 		Collections.sort(sortedKeys, Comparator.comparingInt(key -> key));
 		for (Integer cardId : sortedKeys) {
+			if (!cardList.containsKey(cardId)) {
+				activeDeckConfig.setChosen(cardId, 0);
+				continue;
+			}
 			DeckCardController card = new DeckCardController(this.cardList.get(cardId), this.activeDeckConfig.getChosen().get(cardId));
 			Pane cardPane = card.getRootPane();
 			cardPane.setOnMouseClicked(e -> {this.removeCardFromDeck(e, cardId);});
