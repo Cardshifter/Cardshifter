@@ -67,7 +67,24 @@ public class PhrancisGame implements ECSMod {
 		Entity neutral = game.newEntity();
 		ZoneComponent zone = new ZoneComponent(neutral, "Cards");
 		neutral.addComponent(zone);
+		addCards(zone);
 		
+		// Create the players
+		int maxCardsPerType = 3;
+		int minSize = 30;
+		int maxSize = 30;
+		
+		for (int i = 0; i < 2; i++) {
+			Entity entity = game.newEntity();
+			PlayerComponent playerComponent = new PlayerComponent(i, "Player" + (i+1));
+			entity.addComponent(playerComponent);
+			DeckConfig config = new DeckConfig(minSize, maxSize, zone.getCards(), maxCardsPerType);
+			entity.addComponent(new ConfigComponent().addConfig("Deck", config));
+		}
+		
+	}
+	
+	public void addCards(ZoneComponent zone) {
 		// Create card models that should be possible to choose from
 		// B0Ts
 		createCreature(0, zone, 0, 1, "B0T", 1);
@@ -99,24 +116,8 @@ public class PhrancisGame implements ECSMod {
 		createEnchantment(zone, 3, 0, 2);
 		createEnchantment(zone, 0, 3, 2);
 		createEnchantment(zone, 2, 2, 3);
-		
-//		addCards();
-		
-		// Create the players
-		int maxCardsPerType = 3;
-		int minSize = 30;
-		int maxSize = 30;
-		
-		for (int i = 0; i < 2; i++) {
-			Entity entity = game.newEntity();
-			PlayerComponent playerComponent = new PlayerComponent(i, "Player" + (i+1));
-			entity.addComponent(playerComponent);
-			DeckConfig config = new DeckConfig(minSize, maxSize, zone.getCards(), maxCardsPerType);
-			entity.addComponent(new ConfigComponent().addConfig("Deck", config));
-		}
-		
 	}
-	
+
 	public Entity createTargetSpell(ZoneComponent zone, int manaCost, int scrapCost, Component... components) {
 		return createSpellWithTargets(1, zone, manaCost, scrapCost, components);
 	}
