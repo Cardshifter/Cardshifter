@@ -200,12 +200,13 @@ public class PhrancisGame implements ECSMod {
 		game.addSystem(new ScrapSystem(PhrancisResources.SCRAP));
 		
 		// Actions - Spell
-//		game.addSystem(new UseCostSystem(USE_ACTION, PhrancisResources.MANA, manaCostResource::getFor, owningPlayerPays));
-//		game.addSystem(new UseCostSystem(USE_ACTION, PhrancisResources.SCRAP, scrapCostResource::getFor, owningPlayerPays));
+		game.addSystem(new UseCostSystem(USE_ACTION, PhrancisResources.MANA, manaCostResource::getFor, owningPlayerPays));
+		game.addSystem(new UseCostSystem(USE_ACTION, PhrancisResources.SCRAP, scrapCostResource::getFor, owningPlayerPays));
 		game.addSystem(new PlayFromHandSystem(USE_ACTION));
 		game.addSystem(new EffectActionSystem(USE_ACTION));
 		game.addSystem(new EffectActionSystem(PLAY_ACTION));
 		game.addSystem(new EffectTargetFilterSystem(USE_ACTION));
+		game.addSystem(new DestroyAfterUseSystem(USE_ACTION));
 		
 		// Actions - Attack
 		game.addSystem(new AttackOnBattlefield());

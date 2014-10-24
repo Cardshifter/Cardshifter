@@ -18,7 +18,6 @@ public class RemoveDeadEntityFromZoneSystem implements ECSSystem {
 		CardComponent card = zones.get(event.getEntity());
 		if (card != null) {
 			ZoneComponent currentZone = card.getCurrentZone();
-			System.out.println("Removing entity " + event.getEntity() + " from zone " + currentZone);
 			currentZone.cardMoveFrom(event.getEntity());
 		}
 	}

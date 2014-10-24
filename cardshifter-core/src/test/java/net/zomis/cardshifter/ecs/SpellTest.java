@@ -1,6 +1,7 @@
 package net.zomis.cardshifter.ecs;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import net.zomis.cardshifter.ecs.usage.Effects;
 import net.zomis.cardshifter.ecs.usage.OpponentCannotUseSystem;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame;
@@ -11,6 +12,7 @@ import org.junit.Test;
 import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.Entity;
 import com.cardshifter.modapi.base.GameTest;
+import com.cardshifter.modapi.players.Players;
 import com.cardshifter.modapi.resources.ResourceRetriever;
 
 public class SpellTest extends GameTest {
@@ -23,8 +25,9 @@ public class SpellTest extends GameTest {
 	public void preventOpponentAction() {
 		assertNotNull(currentPlayer());
 		Effects eff = new Effects();
-		Entity spell = mod.createSpell(hand.get(currentPlayer()), 0, 0, eff.addSystem(e -> new OpponentCannotUseSystem(e, PhrancisGame.END_TURN_ACTION)));
+		Entity spell = mod.createSpell(hand.get(currentPlayer()), 0, 0, eff.addSystem(e -> new OpponentCannotUseSystem(Players.findOwnerFor(e), PhrancisGame.END_TURN_ACTION)));
 		useAction(spell, PhrancisGame.USE_ACTION);
+		assertTrue(spell.isRemoved());
 		nextPhase();
 		useFail(currentPlayer(), PhrancisGame.END_TURN_ACTION);
 	}
@@ -43,6 +46,7 @@ public class SpellTest extends GameTest {
 		mod.createCreature(0, field.get(getOpponent()), 0, 1, "Temp", 1);
 		Entity spell = mod.createSpell(hand.get(currentPlayer()), 0, 0, eff.scrapAll());
 		useAction(spell, PhrancisGame.USE_ACTION);
+		assertTrue(spell.isRemoved());
 		
 		assertResource(currentPlayer(), PhrancisResources.SCRAP, 2 + 4);
 		assertResource(getOpponent(), PhrancisResources.SCRAP, 3 + 3);
