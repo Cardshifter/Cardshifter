@@ -50,6 +50,8 @@ public class PhrancisGame implements ECSMod {
 		TRAMPLE,
 		MAX_HEALTH,
 		SNIPER,
+		DOUBLE_ATTACK,
+		TAUNT,
 		HEALTH, MANA, MANA_MAX, SCRAP, ATTACK, MANA_COST, SCRAP_COST, ENCHANTMENTS_ACTIVE, SICKNESS, ATTACK_AVAILABLE;
 	}
 
@@ -98,21 +100,7 @@ public class PhrancisGame implements ECSMod {
 		createEnchantment(zone, 0, 3, 2);
 		createEnchantment(zone, 2, 2, 3);
 		
-//		Effects effects = new Effects();
-//		Filters filters = new Filters();
-//		createTargetSpell(zone, 2, 2, effects.giveTarget(PhrancisResources.SNIPER, 1), new FilterComponent(filters.isCreature()));
-//		createSpell(zone, 0, 0, effects.system(e -> new OpponentCannotUseSystem(e, ATTACK_ACTION)));
-//		createSpell(zone, 2, 2, effects.giveTarget(new SpecificActionSystem(ATTACK_ACTION) {
-//			@Override
-//			protected void onPerform(ActionPerformEvent event) {
-//				// Heals after each attack
-////				if (event.getEntity())
-//			}
-//		}));
-		// Attack twice each turn
-		// Can attack player directly
-		// Health -2
-		// Strength -2
+//		addCards();
 		
 		// Create the players
 		int maxCardsPerType = 3;
@@ -216,11 +204,12 @@ public class PhrancisGame implements ECSMod {
 		game.addSystem(new PlayFromHandSystem(USE_ACTION));
 		game.addSystem(new EffectActionSystem(USE_ACTION));
 		game.addSystem(new EffectActionSystem(PLAY_ACTION));
+		game.addSystem(new EffectTargetFilterSystem(USE_ACTION));
 		
 		// Actions - Attack
 		game.addSystem(new AttackOnBattlefield());
 		game.addSystem(new AttackSickness(PhrancisResources.SICKNESS));
-		game.addSystem(new AttackTargetMinionsFirstThenPlayer());
+		game.addSystem(new AttackTargetMinionsFirstThenPlayer(PhrancisResources.TAUNT));
 		game.addSystem(new AttackDamageYGO(PhrancisResources.ATTACK, PhrancisResources.HEALTH, e -> Resources.getOrDefault(e, PhrancisResources.TRAMPLE, 0) >= 1));
 		game.addSystem(new UseCostSystem(ATTACK_ACTION, PhrancisResources.ATTACK_AVAILABLE, entity -> 1, entity -> entity));
 		game.addSystem(new RestoreResourcesToSystem(entity -> entity.hasComponent(CreatureTypeComponent.class) 
@@ -299,6 +288,7 @@ public class PhrancisGame implements ECSMod {
 			.set(PhrancisResources.SCRAP, scrapValue)
 			.set(PhrancisResources.MANA_COST, cost)
 			.set(PhrancisResources.SICKNESS, 1)
+			.set(PhrancisResources.TAUNT, 1)
 //			.set(PhrancisResources.TRAMPLE, 1)
 			.set(PhrancisResources.ATTACK_AVAILABLE, 1);
 		entity.addComponent(new CreatureTypeComponent(creatureType));
