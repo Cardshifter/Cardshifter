@@ -67,8 +67,8 @@ public final class ECSGame {
 			throw new IllegalStateException("Game is already started");
 		}
 		systems.forEach(sys -> sys.startGame(this));
-		events.executePostEvent(new StartGameEvent(this));
 		gameState = ECSGameState.RUNNING;
+		events.executePostEvent(new StartGameEvent(this));
 	}
 
 	public Random getRandom() {
