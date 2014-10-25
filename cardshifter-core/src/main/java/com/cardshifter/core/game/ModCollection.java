@@ -1,6 +1,7 @@
 package com.cardshifter.core.game;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashMap;
@@ -43,6 +44,10 @@ public class ModCollection {
 	}
 	
 	public void loadExternal(Path directory) {
+		if (!Files.isDirectory(directory)) {
+			logger.warn(directory + " not found. No external mods loaded");
+			return;
+		}
 		DirectoryModLoader loader = new DirectoryModLoader(directory);
 		List<String> loadableMods = loader.getAvailableMods();
 		for (String modName : loadableMods) {
