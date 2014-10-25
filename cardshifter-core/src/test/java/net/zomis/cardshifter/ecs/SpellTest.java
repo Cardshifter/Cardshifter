@@ -1,16 +1,22 @@
 package net.zomis.cardshifter.ecs;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import net.zomis.cardshifter.ecs.usage.Effects;
+import net.zomis.cardshifter.ecs.usage.EntityCannotUseSystem;
+import net.zomis.cardshifter.ecs.usage.FilterComponent;
+import net.zomis.cardshifter.ecs.usage.Filters;
 import net.zomis.cardshifter.ecs.usage.OpponentCannotUseSystem;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame.PhrancisResources;
+import net.zomis.cardshifter.ecs.usage.UntilEndOfOwnerTurnSystem;
 
 import org.junit.Test;
 
 import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.Entity;
 import com.cardshifter.modapi.base.GameTest;
+import com.cardshifter.modapi.players.Players;
 import com.cardshifter.modapi.resources.ResourceRetriever;
 
 public class SpellTest extends GameTest {
@@ -21,19 +27,33 @@ public class SpellTest extends GameTest {
 
 	@Test
 	public void preventOpponentAction() {
-		phase.nextPhase();
 		assertNotNull(currentPlayer());
 		Effects eff = new Effects();
-		Entity spell = mod.createSpell(hand.get(currentPlayer()), 0, 0, eff.addSystem(e -> new OpponentCannotUseSystem(e, PhrancisGame.END_TURN_ACTION)));
+		Entity spell = mod.createSpell(hand.get(currentPlayer()), 0, 0, eff.addSystem(e -> new OpponentCannotUseSystem(Players.findOwnerFor(e), PhrancisGame.END_TURN_ACTION)));
 		useAction(spell, PhrancisGame.USE_ACTION);
+		assertTrue(spell.isRemoved());
 		nextPhase();
 		useFail(currentPlayer(), PhrancisGame.END_TURN_ACTION);
 	}
 	
 	@Test
+	public void frezeOpponentMinion() {
+		assertNotNull(currentPlayer());
+		Effects eff = new Effects();
+		Entity freezeTarget = mod.createCreature(0, field.get(getOpponent()), 1, 1, "B0T", 0);
+		Entity spell = mod.createTargetSpell(hand.get(currentPlayer()), 0, 0, eff.giveTarget(e -> new UntilEndOfOwnerTurnSystem(e, new EntityCannotUseSystem(e, PhrancisGame.ATTACK_ACTION))),
+			new FilterComponent(new Filters().isCreatureOnBattlefield()));
+		useActionWithTarget(spell, PhrancisGame.USE_ACTION, freezeTarget);
+		assertTrue(spell.isRemoved());
+		nextPhase();
+		useFail(freezeTarget, PhrancisGame.ATTACK_ACTION);
+		nextPhase();
+		nextPhase();
+		useActionWithTarget(freezeTarget, PhrancisGame.ATTACK_ACTION, getOpponent());
+	}
+	
+	@Test
 	public void scrapAll() {
-		phase.nextPhase();
-		
 		assertNotNull(currentPlayer());
 		Effects eff = new Effects();
 		scrap.resFor(currentPlayer()).set(2);
@@ -46,6 +66,7 @@ public class SpellTest extends GameTest {
 		mod.createCreature(0, field.get(getOpponent()), 0, 1, "Temp", 1);
 		Entity spell = mod.createSpell(hand.get(currentPlayer()), 0, 0, eff.scrapAll());
 		useAction(spell, PhrancisGame.USE_ACTION);
+		assertTrue(spell.isRemoved());
 		
 		assertResource(currentPlayer(), PhrancisResources.SCRAP, 2 + 4);
 		assertResource(getOpponent(), PhrancisResources.SCRAP, 3 + 3);
@@ -56,13 +77,11 @@ public class SpellTest extends GameTest {
 		mod = new PhrancisGame();
 		mod.declareConfiguration(game);
 		mod.setupGame(game);
-//		game.findSystemsOfClass(MulliganSingleCards.class).forEach(game::removeSystem);
 	}
 
 	@Override
 	protected void onAfterGameStart() {
+		phase.nextPhase();
 	}
-
-	
 
 }

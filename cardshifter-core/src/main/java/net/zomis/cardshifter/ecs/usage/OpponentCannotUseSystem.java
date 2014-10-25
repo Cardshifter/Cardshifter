@@ -1,5 +1,7 @@
 package net.zomis.cardshifter.ecs.usage;
 
+import java.util.Objects;
+
 import com.cardshifter.modapi.actions.ActionAllowedCheckEvent;
 import com.cardshifter.modapi.actions.ActionPerformEvent;
 import com.cardshifter.modapi.actions.SpecificActionSystem;
@@ -8,6 +10,7 @@ import com.cardshifter.modapi.base.Entity;
 import com.cardshifter.modapi.base.PlayerComponent;
 import com.cardshifter.modapi.base.Retriever;
 import com.cardshifter.modapi.cards.CardComponent;
+import com.cardshifter.modapi.players.Players;
 
 public class OpponentCannotUseSystem extends SpecificActionSystem {
 	
@@ -35,15 +38,8 @@ public class OpponentCannotUseSystem extends SpecificActionSystem {
 	}
 	
 	private PlayerComponent findOwnerFor(Entity entity) {
-		if (player.has(entity)) {
-			return player.get(entity);
-		}
-		else if (card.has(entity)) {
-			return player.get(card.get(entity).getOwner());
-		}
-		else {
-			throw new IllegalStateException(entity + " is not a player or a card. No idea who the player is.");
-		}
+		Entity playerEntity = Objects.requireNonNull(Players.findOwnerFor(entity), entity + " is not a player or a card. No idea who the player is.");
+		return player.get(playerEntity);
 	}
 
 }

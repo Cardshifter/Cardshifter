@@ -1,29 +1,23 @@
 package com.cardshifter.server.model;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import net.zomis.cardshifter.ecs.usage.PhrancisGame;
-import net.zomis.cardshifter.ecs.usage.PhrancisGameNewAttackSystem;
-
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import com.cardshifter.ai.AIs;
 import com.cardshifter.ai.FakeAIClientTCG;
-import com.cardshifter.ai.ScoringAI;
 import com.cardshifter.api.CardshifterConstants;
 import com.cardshifter.api.ClientIO;
 import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.incoming.StartGameRequest;
+import com.cardshifter.core.game.ModCollection;
 import com.cardshifter.core.game.ServerGame;
 import com.cardshifter.core.game.TCGGame;
-import com.cardshifter.modapi.ai.CardshifterAI;
 import com.cardshifter.server.commands.AICommand;
 import com.cardshifter.server.commands.AICommand.AICommandParameters;
 import com.cardshifter.server.commands.CommandContext;
@@ -31,6 +25,7 @@ import com.cardshifter.server.commands.EntityCommand;
 import com.cardshifter.server.commands.EntityCommand.EntityInspectParameters;
 import com.cardshifter.server.commands.HelpCommand;
 import com.cardshifter.server.commands.HelpCommand.HelpParameters;
+import com.cardshifter.server.model.ReplayCommand.ReplayParameters;
 import com.cardshifter.server.utils.export.DataExporter;
 
 /**
@@ -46,7 +41,7 @@ public class MainServer {
 	 * Server handles incoming messages and passes them to appropriate methods
 	 */
 	private final Server server = new Server();
-	private final Map<String, CardshifterAI> ais = new LinkedHashMap<>();
+	private final ModCollection mods = new ModCollection();
 
 	private Thread consoleThread;
 	
@@ -57,10 +52,6 @@ public class MainServer {
 	 * @return The configured Server object
 	 */
 	public Server start() {
-		ais.put("Loser", new ScoringAI(AIs.loser()));
-		ais.put("Idiot", new ScoringAI(AIs.idiot()));
-		ais.put("Medium", new ScoringAI(AIs.medium()));
-		ais.put("Fighter", new ScoringAI(AIs.fighter()));
 		
 		try {
 			logger.info("Starting Server...");
@@ -75,15 +66,14 @@ public class MainServer {
 			consoleThread = new Thread(console, "Console-Thread");
 			consoleThread.start();
 			
-			ais.entrySet().forEach(entry -> {
+			mods.getAIs().entrySet().forEach(entry -> {
 				ClientIO tcgAI = new FakeAIClientTCG(server, entry.getValue());
 				server.newClient(tcgAI);
 				server.getIncomingHandler().perform(new LoginMessage("AI " + entry.getKey()), tcgAI);
 			});
 			final Supplier<ScheduledExecutorService> aiExecutor = () -> server.getScheduler();
-			server.addGameFactory(CardshifterConstants.VANILLA, (serv, id) -> new TCGGame(aiExecutor, id, new PhrancisGame()));
-			server.addGameFactory("New Attack Style", (serv, id) -> new TCGGame(aiExecutor, id, new PhrancisGameNewAttackSystem()));
-//			server.addGameFactory("SIMPLE", (serv, id) -> new TCGGame(serv, id, new SimpleGame()));
+			
+			mods.getMods().forEach((name, mod) -> server.addGameFactory(name, (serv, id) -> new TCGGame(aiExecutor, id, mod)));
 			
 			logger.info("Started");
 		}
@@ -111,6 +101,7 @@ public class MainServer {
 		commandHandler.addHandler("ai", () -> new AICommandParameters(), new AICommand());
 		commandHandler.addHandler("ent", () -> new EntityInspectParameters(), new EntityCommand());
 		commandHandler.addHandler("threads", cmd -> showAllStackTraces(server, System.out::println));
+		commandHandler.addHandler("replay", () -> new ReplayParameters(), new ReplayCommand());
 	}
 	
 	/**

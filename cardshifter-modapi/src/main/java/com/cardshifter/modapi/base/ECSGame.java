@@ -96,8 +96,8 @@ public final class ECSGame {
 			throw new IllegalStateException("Game is already started");
 		}
 		systems.forEach(sys -> sys.startGame(this));
-		events.executePostEvent(new StartGameEvent(this));
 		gameState = ECSGameState.RUNNING;
+		events.executePostEvent(new StartGameEvent(this));
 	}
 
 	public Random getRandom() {
@@ -144,6 +144,7 @@ public final class ECSGame {
 	}
 
 	public boolean removeSystem(ECSSystem system) {
+		logger.info("Remove system " + system);
 		events.removeListenersWithIdentifier(system);
 		return systems.remove(system);
 	}

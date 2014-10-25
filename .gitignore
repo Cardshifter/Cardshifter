@@ -57,3 +57,4 @@ com_crashlytics_export_strings.xml
 
 # Cardshifter files
 *.deck
+replay-*.json

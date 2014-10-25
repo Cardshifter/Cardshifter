@@ -1,5 +1,9 @@
 package com.cardshifter.core.game;
 
+import java.io.File;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -31,6 +35,7 @@ import com.cardshifter.api.outgoing.UpdateMessage;
 import com.cardshifter.api.outgoing.UseableActionMessage;
 import com.cardshifter.api.outgoing.ZoneChangeMessage;
 import com.cardshifter.api.outgoing.ZoneMessage;
+import com.cardshifter.core.replays.ReplayRecordSystem;
 import com.cardshifter.modapi.actions.ActionComponent;
 import com.cardshifter.modapi.actions.ActionPerformEvent;
 import com.cardshifter.modapi.actions.Actions;
@@ -242,6 +247,10 @@ public class TCGGame extends ServerGame {
 	 */
 	@Override
 	protected void onStart() {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss").withZone(ZoneId.systemDefault());
+		String time = formatter.format(Instant.now());
+		
+		game.addSystem(new ReplayRecordSystem(game, new File("replay-" + getId() + "-" + time + ".json")));
 		mod.declareConfiguration(game);
 		
 		if (this.isConfigNeeded()) {
@@ -413,7 +422,7 @@ public class TCGGame extends ServerGame {
 	}
 
 	/**  
-	 * If all player entities have submitted configs, start the game
+	 * Set the player configuration for a player and then if no more configuration is needed, start the ECSGame.
 	 * 
 	 * @param message The PlayerConfigMessage object
 	 * @param client The client that sent the config
@@ -426,6 +435,10 @@ public class TCGGame extends ServerGame {
 			logger.info("Incoming player config for " + player + ": " + entry.getValue());
 		}
 		config.setConfigured(true);
+		checkStartGame();
+	}
+
+	public void checkStartGame() {
 		if (!this.isConfigNeeded()) {
 			startECSGame();
 		}
@@ -435,7 +448,7 @@ public class TCGGame extends ServerGame {
 	 * 
 	 * @return Returns true if any of the ConfigComponents are not configured
 	 */
-	private boolean isConfigNeeded() {
+	public boolean isConfigNeeded() {
 		Set<Entity> configEntities = game.getEntitiesWithComponent(ConfigComponent.class);
 		return configEntities.stream().map(e -> e.getComponent(ConfigComponent.class)).anyMatch(config -> !config.isConfigured());
 	}

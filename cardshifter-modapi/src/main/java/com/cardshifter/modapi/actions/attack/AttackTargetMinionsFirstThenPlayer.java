@@ -8,11 +8,16 @@ import com.cardshifter.modapi.cards.BattlefieldComponent;
 import com.cardshifter.modapi.cards.CardComponent;
 import com.cardshifter.modapi.cards.Cards;
 import com.cardshifter.modapi.phase.PhaseController;
+import com.cardshifter.modapi.resources.ECSResource;
+import com.cardshifter.modapi.resources.ResourceRetriever;
 
 public class AttackTargetMinionsFirstThenPlayer extends SpecificActionTargetSystem {
 
-	public AttackTargetMinionsFirstThenPlayer() {
+	private final ResourceRetriever attackFirstResource;
+
+	public AttackTargetMinionsFirstThenPlayer(ECSResource requiredResource) {
 		super("Attack");
+		this.attackFirstResource = ResourceRetriever.forResource(requiredResource);
 	}
 	
 	protected void checkTargetable(TargetableCheckEvent event) {
@@ -29,7 +34,7 @@ public class AttackTargetMinionsFirstThenPlayer extends SpecificActionTargetSyst
 			if (target == ComponentRetriever.singleton(target.getGame(), PhaseController.class).getCurrentEntity()) {
 				event.setAllowed(false);
 			}
-			if (!target.getComponent(BattlefieldComponent.class).isEmpty()) {
+			if (target.getComponent(BattlefieldComponent.class).stream().anyMatch(e -> attackFirstResource.getOrDefault(e, 0) > 0)) {
 				event.setAllowed(false);
 			}
 		}
