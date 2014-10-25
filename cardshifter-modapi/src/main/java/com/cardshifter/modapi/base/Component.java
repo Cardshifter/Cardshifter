@@ -18,8 +18,8 @@ public abstract class Component {
 		// TODO: Is it possible to avoid having a Component know about its entity?
 	}
 	
-	protected final void executeEvent(IEvent event) {
-		getGame().getEvents().executePostEvent(event);
+	protected final <T extends IEvent> T executeEvent(T event) {
+		return getGame().getEvents().executePostEvent(event);
 	}
 	
 	private ECSGame getGame() {
@@ -27,8 +27,12 @@ public abstract class Component {
 		return entity.getGame();
 	}
 
-	protected final void executeEvent(IEvent event, Runnable runInBetween) {
-		entity.getGame().executeEvent(event, runInBetween);
+	protected final <T extends IEvent> T executeEvent(T event, Runnable runInBetween) {
+		return entity.getGame().executeEvent(event, runInBetween);
+	}
+	
+	protected final <T extends CancellableEvent> T executeCancellableEvent(T event, Runnable runInBetween) {
+		return entity.getGame().executeCancellableEvent(event, runInBetween);
 	}
 	
 	protected final Entity getEntity() {
