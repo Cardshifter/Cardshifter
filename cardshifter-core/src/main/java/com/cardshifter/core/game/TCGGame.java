@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 
 import com.cardshifter.ai.FakeAIClientTCG;
 import com.cardshifter.api.ClientIO;
+import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.both.PlayerConfigMessage;
 import com.cardshifter.api.incoming.RequestTargetsMessage;
 import com.cardshifter.api.incoming.UseAbilityMessage;
@@ -49,6 +50,7 @@ import com.cardshifter.modapi.base.ECSGameState;
 import com.cardshifter.modapi.base.ECSMod;
 import com.cardshifter.modapi.base.Entity;
 import com.cardshifter.modapi.base.PlayerComponent;
+import com.cardshifter.modapi.base.PlayerEliminatedEvent;
 import com.cardshifter.modapi.cards.CardComponent;
 import com.cardshifter.modapi.cards.ZoneChangeEvent;
 import com.cardshifter.modapi.cards.ZoneComponent;
@@ -263,6 +265,20 @@ public class TCGGame extends ServerGame {
 	}
 	
 	/**
+	 * Listener for when a player is eliminated from the game
+	 * @param event Event about the elimination
+	 */
+	private void playerEliminated(PlayerEliminatedEvent event) {
+		String winStatus = event.isDeclaredWinner() ? "won" : "lost";
+		PlayerComponent player = event.getEntity().getComponent(PlayerComponent.class);
+		this.sendChat(player.getName() + " " + winStatus + " game " + getId());		
+	}
+	
+	public void sendChat(String message) {
+		this.send(new ChatMessage(0, "Server", message));
+	}
+	
+	/**
 	 * Sets up the game based on the mod.
 	 * Events are registered to the game which handle a class and call a method.
 	 * Sends the initial available actions for the game.
@@ -273,6 +289,7 @@ public class TCGGame extends ServerGame {
 		game.getEvents().registerHandlerAfter(this, ResourceValueChange.class, this::broadcast);
 		game.getEvents().registerHandlerAfter(this, ZoneChangeEvent.class, this::zoneChange);
 		game.getEvents().registerHandlerAfter(this, EntityRemoveEvent.class, this::remove);
+		game.getEvents().registerHandlerAfter(this, PlayerEliminatedEvent.class, this::playerEliminated);
 		game.getEvents().registerHandlerAfter(this, GameOverEvent.class, event -> this.endGame());
 		AISystem.setup(game, aiExecutor.get());
 		game.addSystem(game -> game.getEvents().registerHandlerAfter(this, ActionPerformEvent.class, event -> this.sendAvailableActions()));
