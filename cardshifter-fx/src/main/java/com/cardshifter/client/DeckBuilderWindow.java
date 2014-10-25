@@ -45,6 +45,7 @@ public class DeckBuilderWindow {
 	@FXML private AnchorPane nextPage;
 	@FXML private AnchorPane saveDeckButton;
 	@FXML private AnchorPane loadDeckButton;
+	@FXML private AnchorPane clearDeckButton;
 	@FXML private TextField deckNameBox;
 	@FXML private AnchorPane exitButton;
 	@FXML private AnchorPane deleteButton;
@@ -72,6 +73,7 @@ public class DeckBuilderWindow {
 		this.saveDeckButton.setOnMouseClicked(this::saveDeck);
 		this.loadDeckButton.setOnMouseClicked(this::loadDeck);
 		this.deleteButton.setOnMouseClicked(this::deleteDeck);
+		this.clearDeckButton.setOnMouseClicked(this::clearDeck);
 		this.activeDeckBox.setOnDragDropped(e -> this.completeDragToActiveDeck(e, true));
 		this.activeDeckBox.setOnDragOver(e -> this.completeDragToActiveDeck(e, false));
 		
@@ -199,6 +201,12 @@ public class DeckBuilderWindow {
 		this.deckToLoad = deckName;
 	}
 
+	private void clearDeck(MouseEvent event) {		
+		this.activeDeckConfig.clearChosen();
+		this.displayActiveDeck();
+		this.displayCurrentPage();
+	}
+	
 	private void saveDeck(MouseEvent event) {
 		if(!this.deckNameBox.textProperty().get().isEmpty()) {
 			try {
