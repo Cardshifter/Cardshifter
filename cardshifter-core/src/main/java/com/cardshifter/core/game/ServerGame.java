@@ -48,13 +48,9 @@ public abstract class ServerGame {
 	}
 
 	/**
-	 * Checks if the game is already over, sets state if not and sends a message to players
+	 * Sends information to clients that the game has been ended
 	 */
 	public void endGame() {
-		if (game.isGameOver()) {
-			logger.warn("Game was already ended, ignoring second call.", new IllegalStateException("Game can only be ended once"));
-			return;
-		}
 		logger.info("Game Ended: " + this + " with players " + players);
 		this.send(new GameOverMessage());
 		this.active = Instant.now();
