@@ -245,6 +245,7 @@ public class PhrancisGame implements ECSMod {
 		
 		// General setup
 		game.addSystem(new GameOverIfNoHealth(PhrancisResources.HEALTH));
+		game.addSystem(new LastPlayersStandingEndsGame());
 		game.addSystem(new RemoveDeadEntityFromZoneSystem());
 		game.addSystem(new PerformerMustBeCurrentPlayer());
 		
