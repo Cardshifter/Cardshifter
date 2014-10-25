@@ -73,6 +73,13 @@ public final class DirectoryModLoader implements ModLoader {
 		return loadedModsCopy;
 	}
 
+	/**
+	 * Returns all mods that are available for play.
+	 * 
+	 * This method will return the names of all directories in the root modloader directory.
+	 * 
+	 * @return	A list containing the names of all available mods
+	 */
 	@Override
 	public List<String> getAvailableMods() {
 		try {
