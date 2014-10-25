@@ -20,7 +20,7 @@ public class FakeAIClientTCG extends ClientIO {
 	
 	@Override
 	protected void onSendToClient(Message data) {
-		logger.info(data);
+		logger.debug(data);
 	}
 
 	@Override
