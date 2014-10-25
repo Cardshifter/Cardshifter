@@ -444,6 +444,7 @@ public class GameClientController {
 	private void clearSavedActions() {
 		this.savedMessages.clear();
 		this.actionBox.getChildren().clear();
+		this.zoneViewMap.get(this.playerBattlefieldId).removeActiveAllCards();
 	}
 	
 	public void cancelAction() {
