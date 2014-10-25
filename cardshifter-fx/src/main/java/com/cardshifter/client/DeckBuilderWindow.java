@@ -73,7 +73,7 @@ public class DeckBuilderWindow {
 		this.saveDeckButton.setOnMouseClicked(this::saveDeck);
 		this.loadDeckButton.setOnMouseClicked(this::loadDeck);
 		this.deleteButton.setOnMouseClicked(this::deleteDeck);
-		this.clearDeckButton.setOnMouseClicked(this::clearDeck);
+		this.clearDeckButton.setOnMouseClicked(this::clickedClearDeckButton);
 		this.activeDeckBox.setOnDragDropped(e -> this.completeDragToActiveDeck(e, true));
 		this.activeDeckBox.setOnDragOver(e -> this.completeDragToActiveDeck(e, false));
 		
@@ -81,8 +81,8 @@ public class DeckBuilderWindow {
 		Collections.sort(sortedCardList, Comparator.comparingInt(msg -> msg.getId()));
 		this.pageList = listSplitter(sortedCardList, CARDS_PER_PAGE);
 		
-		this.displayCurrentPage();
 		this.displaySavedDecks();
+		this.clearDeck();
 	}
 	
 	public void disableGameStart() {
@@ -200,8 +200,12 @@ public class DeckBuilderWindow {
 	public void setDeckToLoad(String deckName) {
 		this.deckToLoad = deckName;
 	}
+	
+	private void clickedClearDeckButton(MouseEvent event) {
+		this.clearDeck();
+	}
 
-	private void clearDeck(MouseEvent event) {		
+	private void clearDeck() {		
 		this.activeDeckConfig.clearChosen();
 		this.displayActiveDeck();
 		this.displayCurrentPage();
