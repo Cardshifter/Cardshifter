@@ -6,9 +6,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import net.zomis.cardshifter.ecs.usage.PhrancisGame;
-import net.zomis.cardshifter.ecs.usage.PhrancisGameNewAttackSystem;
-
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -28,6 +25,7 @@ import com.cardshifter.server.commands.EntityCommand;
 import com.cardshifter.server.commands.EntityCommand.EntityInspectParameters;
 import com.cardshifter.server.commands.HelpCommand;
 import com.cardshifter.server.commands.HelpCommand.HelpParameters;
+import com.cardshifter.server.model.ReplayCommand.ReplayParameters;
 import com.cardshifter.server.utils.export.DataExporter;
 
 /**
@@ -103,6 +101,7 @@ public class MainServer {
 		commandHandler.addHandler("ai", () -> new AICommandParameters(), new AICommand());
 		commandHandler.addHandler("ent", () -> new EntityInspectParameters(), new EntityCommand());
 		commandHandler.addHandler("threads", cmd -> showAllStackTraces(server, System.out::println));
+		commandHandler.addHandler("replay", () -> new ReplayParameters(), new ReplayCommand());
 	}
 	
 	/**
