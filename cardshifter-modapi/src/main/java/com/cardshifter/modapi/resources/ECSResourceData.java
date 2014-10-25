@@ -41,7 +41,7 @@ public class ECSResourceData {
 			entity.getGame().executeEvent(new ResourceValueChange(entity, resource, get(), current, value),
 					() -> {
 						this.current = value;
-						logger.info("Modified resource " + resource + " for " + entity + " to " + value);
+						logger.debug("Modified " + resource + " for " + entity + " to " + value);
 					});
 		}
 	}
