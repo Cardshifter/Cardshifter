@@ -36,7 +36,6 @@ public abstract class ServerGame {
 	/**
 	 * Initializes the player collection, sets the initial game state
 	 * 
-	 * @param server Server where the game is located
 	 * @param id ID of the game
 	 * @param game ECS Game object
 	 */
