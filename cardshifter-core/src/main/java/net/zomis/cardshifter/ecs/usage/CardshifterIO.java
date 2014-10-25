@@ -1,5 +1,7 @@
 package net.zomis.cardshifter.ecs.usage;
 
+import net.zomis.cardshifter.ecs.config.DeckConfig;
+
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;

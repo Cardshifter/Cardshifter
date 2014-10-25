@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import net.zomis.cardshifter.ecs.usage.EffectComponent;
+import net.zomis.cardshifter.ecs.effects.EffectComponent;
 
 import com.cardshifter.api.outgoing.CardInfoMessage;
 import com.cardshifter.modapi.base.Component;

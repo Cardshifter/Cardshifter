@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.Set;
 
-import net.zomis.cardshifter.ecs.usage.ConfigComponent;
+import net.zomis.cardshifter.ecs.config.ConfigComponent;
 
 import com.cardshifter.api.both.PlayerConfigMessage;
 import com.cardshifter.core.game.ServerGame;

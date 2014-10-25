@@ -26,8 +26,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import net.zomis.cardshifter.ecs.config.DeckConfig;
 import net.zomis.cardshifter.ecs.usage.CardshifterIO;
-import net.zomis.cardshifter.ecs.usage.DeckConfig;
 
 import com.cardshifter.api.outgoing.CardInfoMessage;
 import com.cardshifter.client.buttons.GenericButton;

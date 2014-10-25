@@ -14,8 +14,8 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import net.zomis.cardshifter.ecs.EntitySerialization;
-import net.zomis.cardshifter.ecs.usage.ConfigComponent;
-import net.zomis.cardshifter.ecs.usage.DeckConfig;
+import net.zomis.cardshifter.ecs.config.ConfigComponent;
+import net.zomis.cardshifter.ecs.config.DeckConfig;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;

@@ -1,4 +1,4 @@
-package net.zomis.cardshifter.ecs.usage;
+package net.zomis.cardshifter.ecs.effects;
 
 import com.cardshifter.modapi.base.Component;
 import com.cardshifter.modapi.resources.ECSResource;

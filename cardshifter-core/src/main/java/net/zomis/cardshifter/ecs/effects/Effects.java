@@ -1,9 +1,11 @@
-package net.zomis.cardshifter.ecs.usage;
+package net.zomis.cardshifter.ecs.effects;
 
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.IntUnaryOperator;
+
+import net.zomis.cardshifter.ecs.usage.ScrapSystem;
 
 import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.ECSSystem;

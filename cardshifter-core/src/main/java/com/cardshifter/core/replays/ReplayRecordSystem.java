@@ -12,8 +12,8 @@ import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
+import net.zomis.cardshifter.ecs.config.ConfigComponent;
 import net.zomis.cardshifter.ecs.usage.CardshifterIO;
-import net.zomis.cardshifter.ecs.usage.ConfigComponent;
 
 import com.cardshifter.api.both.PlayerConfigMessage;
 import com.cardshifter.modapi.actions.ActionPerformEvent;

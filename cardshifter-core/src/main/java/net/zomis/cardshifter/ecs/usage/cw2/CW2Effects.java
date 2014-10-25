@@ -1,7 +1,7 @@
 package net.zomis.cardshifter.ecs.usage.cw2;
 
+import net.zomis.cardshifter.ecs.effects.EffectComponent;
 import net.zomis.cardshifter.ecs.usage.CW2Game.Resources;
-import net.zomis.cardshifter.ecs.usage.EffectComponent;
 
 import com.cardshifter.modapi.base.Component;
 import com.cardshifter.modapi.resources.ECSResource;
