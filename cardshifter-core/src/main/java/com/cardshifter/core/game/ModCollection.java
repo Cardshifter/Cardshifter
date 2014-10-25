@@ -28,7 +28,7 @@ public class ModCollection {
 		ais.put("Fighter", new ScoringAI(AIs.fighter()));
 		
 		mods.put(CardshifterConstants.VANILLA, new PhrancisGame());
-		mods.put("New Attack Style", new PhrancisGameNewAttackSystem());
+		mods.put("New_Attack_Style", new PhrancisGameNewAttackSystem());
 		mods.put("With spells", new PhrancisGameWithSpells());
 	}
 	
