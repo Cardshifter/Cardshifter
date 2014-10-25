@@ -4,7 +4,7 @@ package com.cardshifter.modapi.base;
 public class PlayerComponent extends Component {
 
 	private final int index;
-	private final String name;
+	private String name;
 
 	public PlayerComponent(int index, String name) {
 		this.index = index;
@@ -13,6 +13,10 @@ public class PlayerComponent extends Component {
 	
 	public String getName() {
 		return name;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 	public int getIndex() {

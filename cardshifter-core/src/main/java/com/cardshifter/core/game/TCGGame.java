@@ -281,6 +281,7 @@ public class TCGGame extends ServerGame {
 		this.getPlayers().stream().forEach(pl -> {
 			Entity playerEntity = playerFor(pl);
 			PlayerComponent plData = playerEntity.get(playerData);
+			plData.setName(pl.getName());
 			this.send(new PlayerMessage(playerEntity.getId(), plData.getIndex(), plData.getName(), Resources.map(playerEntity)));
 		});
 		this.game.findEntities(e -> true).stream().flatMap(e -> e.getSuperComponents(ZoneComponent.class).stream()).forEach(this::sendZone);

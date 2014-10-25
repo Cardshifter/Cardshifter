@@ -56,7 +56,7 @@
 		
 		<!-- Opponent Stat Box -->
 		<VBox fx:id="opponentStatBox" alignment="TOP_CENTER" layoutX="1064.0" layoutY="109.0" prefHeight="200.0" prefWidth="100.0" />
-	  	<Label layoutX="1066.0" layoutY="88.0" text="Opponent" textAlignment="CENTER" underline="true">
+	  	<Label fx:id="opponentName" layoutX="1066.0" layoutY="88.0" text="Opponent" textAlignment="CENTER" underline="true">
 			<font>
 				<Font size="20.0" />
 			</font>
@@ -64,7 +64,7 @@
 			
 		<!-- Player Stat Box -->
 		<VBox fx:id="playerStatBox" alignment="TOP_CENTER" layoutX="1063.0" layoutY="334.0" prefHeight="200.0" prefWidth="100.0" />
-		<Label layoutX="1084.0" layoutY="309.0" text="Player" textAlignment="CENTER" underline="true">
+		<Label fx:id="playerName" layoutX="1084.0" layoutY="309.0" text="Player" textAlignment="CENTER" underline="true">
 			<font>
 				<Font size="20.0" />
 			</font>

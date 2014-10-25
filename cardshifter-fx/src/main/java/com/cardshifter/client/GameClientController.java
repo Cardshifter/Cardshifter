@@ -67,6 +67,9 @@ public class GameClientController {
 	@FXML private Pane playerDeckPane;
 	@FXML private Label playerDeckLabel;
 	
+	@FXML private Label playerName;
+	@FXML private Label opponentName;
+	
 	private int gameId;
 	private int playerIndex;
 	
@@ -124,7 +127,7 @@ public class GameClientController {
 		} else if (message instanceof WaitMessage) {
 			Platform.runLater(() -> loginMessage.setText(message.toString()));
 		} else if (message instanceof PlayerMessage) {
-			this.processPlayerMessage((PlayerMessage)message);
+			Platform.runLater(() -> this.processPlayerMessage((PlayerMessage)message));
 		} else if (message instanceof ZoneMessage) {
 			this.assignZoneIdForZoneMessage((ZoneMessage)message);
 		} else if (message instanceof CardInfoMessage) {
@@ -153,11 +156,13 @@ public class GameClientController {
 	private void processPlayerMessage(PlayerMessage message) {
 		if (message.getIndex() == this.playerIndex) {
 			this.playerId = message.getId();
+			this.playerName.setText(message.getName());
 			this.processPlayerMessageForPlayer(message, playerStatBox, playerStatBoxMap);
 		} else {
 			this.opponentId = message.getId();
+			this.opponentName.setText(message.getName());
 			this.processPlayerMessageForPlayer(message, opponentStatBox, opponentStatBoxMap);
-			Platform.runLater(() -> this.loginMessage.setText("Opponent Connected"));
+			this.loginMessage.setText("Opponent Connected");
 		}
 	}
 	private void processPlayerMessageForPlayer(PlayerMessage message, Pane statBox, Map<String, Integer> playerMap) {
