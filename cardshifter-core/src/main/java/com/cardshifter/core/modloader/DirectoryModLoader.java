@@ -1,6 +1,8 @@
 
 package com.cardshifter.core.modloader;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -8,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -70,8 +73,22 @@ public final class DirectoryModLoader implements ModLoader {
 		return loadedModsCopy;
 	}
 
+	/**
+	 * Returns all mods that are available for play.
+	 * 
+	 * This method will return the names of all directories in the root modloader directory.
+	 * 
+	 * @return	A list containing the names of all available mods
+	 */
 	@Override
 	public List<String> getAvailableMods() {
-		throw new UnsupportedOperationException();
+		try {
+			return Files.list(modsDirectory)
+				.filter(Files::isDirectory)
+				.map(path -> path.getFileName().toString())
+				.collect(Collectors.toList());
+		} catch (IOException ex) {
+			throw new UncheckedIOException(ex);
+		}
 	}
 }
