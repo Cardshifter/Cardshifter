@@ -88,7 +88,7 @@ public class DeckBuilderWindow {
 	}
 	
 	private void startGame(MouseEvent event) {
-		if (this.activeDeckConfig.getTotal() == this.activeDeckConfig.getMaxSize()) {
+		if (this.activeDeckConfig.total() == this.activeDeckConfig.getMaxSize()) {
 			this.configCallback.accept(this.activeDeckConfig);
 			this.closeWindow();
 		}
@@ -153,11 +153,11 @@ public class DeckBuilderWindow {
 			cardPane.setOnMouseClicked(e -> {this.removeCardFromDeck(e, cardId);});
 			this.activeDeckBox.getChildren().add(cardPane);
 		}
-		this.cardCountLabel.setText(String.format("%d / %d", this.activeDeckConfig.getTotal(), this.activeDeckConfig.getMaxSize()));
+		this.cardCountLabel.setText(String.format("%d / %d", this.activeDeckConfig.total(), this.activeDeckConfig.getMaxSize()));
 	}
 
 	private void addCardToActiveDeck(MouseEvent event, CardInfoMessage message) {
-		if (this.activeDeckConfig.getTotal() < this.activeDeckConfig.getMaxSize()) {
+		if (this.activeDeckConfig.total() < this.activeDeckConfig.getMaxSize()) {
 			if(this.activeDeckConfig.getChosen().get(message.getId()) == null) {
 				this.activeDeckConfig.setChosen(message.getId(), 1);
 			} else {
