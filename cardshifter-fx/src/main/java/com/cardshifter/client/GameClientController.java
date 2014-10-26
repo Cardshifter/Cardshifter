@@ -12,6 +12,7 @@ import java.util.function.Consumer;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.AnchorPane;
@@ -20,6 +21,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.Stage;
+
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.incoming.RequestTargetsMessage;
@@ -46,10 +51,10 @@ import com.cardshifter.client.views.CardHandDocumentController;
 import com.cardshifter.client.views.CardView;
 import com.cardshifter.client.views.PlayerHandZoneView;
 import com.cardshifter.client.views.ZoneView;
-import javafx.scene.Node;
-import javafx.stage.Stage;
 
 public class GameClientController {
+	
+	private static final Logger logger = LogManager.getLogger(GameClientController.class);
 	
 	@FXML private AnchorPane rootPane;
 	@FXML private Label loginMessage;
@@ -95,7 +100,7 @@ public class GameClientController {
 		// this is passed into this object after it is automatically created by the FXML document
 		this.playerIndex = message.getPlayerIndex();
 		this.gameId = message.getGameId();
-		System.out.println(String.format("You are player: %d", this.playerIndex));
+		logger.info(String.format("You are player: %d", this.playerIndex));
 		this.sender = sender;
 	}
 
@@ -120,7 +125,7 @@ public class GameClientController {
 		serverMessages.getItems().add(message.toString());
 		
 		//this is for diagnostics so I can copy paste the messages to know their format
-		System.out.println(message.toString());
+		logger.info(message);
 		
 		if (message instanceof WelcomeMessage) {
 			Platform.runLater(() -> loginMessage.setText(message.toString()));
@@ -251,7 +256,7 @@ public class GameClientController {
 	
 	private void processUseableActionMessage(UseableActionMessage message) {
 		ZoneView<?> zoneView = getZoneViewForCard(message.getId());
-		System.out.println("Usable message: " + message + " inform zone " + zoneView);
+		logger.info("Usable message: " + message + " inform zone " + zoneView);
 		if (zoneView == null) {
 			this.createActionButton(message);
 			return;
@@ -334,7 +339,7 @@ public class GameClientController {
 	}
 	
 	private void addCardToDeck(int zoneId, int cardId) {
-		System.out.println("Add card to deck " + zoneId + " card " + cardId);
+		logger.info("Add card to deck " + zoneId + " card " + cardId);
 		Set<Integer> set = this.deckEntityIds.get(zoneId);
 		set.add(cardId);
 		this.repaintDeckLabels();
@@ -395,7 +400,7 @@ public class GameClientController {
 		}
 		
 		if (chosenTargets.size() >= targetInfo.getMax()) {
-			System.out.println("Cannot add more targets");
+			logger.info("Cannot add more targets");
 			return false;
 		}
 		
