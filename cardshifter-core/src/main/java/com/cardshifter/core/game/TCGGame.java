@@ -44,6 +44,7 @@ import com.cardshifter.modapi.actions.ECSAction;
 import com.cardshifter.modapi.actions.TargetSet;
 import com.cardshifter.modapi.ai.AIComponent;
 import com.cardshifter.modapi.ai.AISystem;
+import com.cardshifter.modapi.ai.CardshifterAI;
 import com.cardshifter.modapi.base.ComponentRetriever;
 import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.ECSGameState;
@@ -319,7 +320,11 @@ public class TCGGame extends ServerGame {
 				PlayerConfigMessage configMessage = new PlayerConfigMessage(getId(), playerEntity.getComponent(ConfigComponent.class).getConfigs());
 				io.sendToClient(configMessage);
 				if (io instanceof FakeAIClientTCG) {
-					generateRandomDeck(io, configMessage);
+					FakeAIClientTCG aiClient = (FakeAIClientTCG) io;
+					CardshifterAI ai = aiClient.getAI();
+					ai.configure(playerEntity, playerEntity.getComponent(ConfigComponent.class));
+					playerEntity.getComponent(ConfigComponent.class).setConfigured(true);
+//					generateRandomDeck(io, configMessage);
 				}
 				else {
 					sent = true;

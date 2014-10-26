@@ -2,14 +2,9 @@ package com.cardshifter.ai;
 
 import java.util.Collection;
 import java.util.Random;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import com.cardshifter.modapi.actions.ActionComponent;
-import com.cardshifter.modapi.actions.ECSAction;
-import com.cardshifter.modapi.ai.CardshifterAI;
-import com.cardshifter.modapi.base.ECSGame;
-import com.cardshifter.modapi.base.Entity;
 
 import net.zomis.aiscores.FieldScoreProducer;
 import net.zomis.aiscores.FieldScores;
@@ -19,14 +14,28 @@ import net.zomis.aiscores.ScoreParameters;
 import net.zomis.aiscores.ScoreStrategy;
 import net.zomis.aiscores.extra.ParamAndField;
 import net.zomis.aiscores.extra.ScoreUtils;
+import net.zomis.cardshifter.ecs.config.ConfigComponent;
+
+import com.cardshifter.modapi.actions.ActionComponent;
+import com.cardshifter.modapi.actions.ECSAction;
+import com.cardshifter.modapi.ai.CardshifterAI;
+import com.cardshifter.modapi.base.ECSGame;
+import com.cardshifter.modapi.base.Entity;
 
 public class ScoringAI implements CardshifterAI, ScoreStrategy<Entity, ECSAction> {
 	
 	private final Random random = new Random(42);
 	private final ScoreConfig<Entity, ECSAction> config;
+	private final BiConsumer<Entity, ConfigComponent> entityConfigurer;
+	
+	public ScoringAI(ScoreConfigFactory<Entity, ECSAction> config, BiConsumer<Entity, ConfigComponent> configuration) {
+		this.config = config.build();
+		this.entityConfigurer = configuration;
+	}
 	
 	public ScoringAI(ScoreConfigFactory<Entity, ECSAction> config) {
 		this.config = config.build();
+		this.entityConfigurer = (e, comp) -> {};
 	}
 	
 	public FieldScores<Entity, ECSAction> calculateFullScore(Entity player) {
@@ -60,6 +69,11 @@ public class ScoringAI implements CardshifterAI, ScoreStrategy<Entity, ECSAction
 			.stream()
 			.flatMap(entity -> entity.getComponent(ActionComponent.class)
 				.getECSActions().stream());
+	}
+	
+	@Override
+	public void configure(Entity entity, ConfigComponent config) {
+		this.entityConfigurer.accept(entity, config);
 	}
 	
 }
