@@ -107,7 +107,7 @@ public class DeckBuilderWindow {
 			if (this.activeDeckConfig.getChosen().get(message.getId()) != null) {
 				numChosenCards = this.activeDeckConfig.getChosen().get(message.getId());
 			}
-			Label numberOfCardsLabel = new Label(String.format("%d / %d", numChosenCards, this.activeDeckConfig.getMaxPerCard()));
+			Label numberOfCardsLabel = new Label(String.format("%d / %d", numChosenCards, this.activeDeckConfig.getMaxFor(message.getId())));
 			numberOfCardsLabel.setTextFill(Color.WHITE);
 			numberOfCardsBox.relocate(cardPane.getPrefWidth()/2.6, cardPane.getPrefHeight() - cardPane.getPrefHeight()/18);
 			numberOfCardsLabel.relocate(cardPane.getPrefWidth()/2.3, cardPane.getPrefHeight() - cardPane.getPrefHeight()/18);
@@ -161,8 +161,8 @@ public class DeckBuilderWindow {
 			if(this.activeDeckConfig.getChosen().get(message.getId()) == null) {
 				this.activeDeckConfig.setChosen(message.getId(), 1);
 			} else {
-				if (this.activeDeckConfig.getChosen().get(message.getId()) < this.activeDeckConfig.getMaxPerCard()) {
-					this.activeDeckConfig.setChosen(message.getId(), this.activeDeckConfig.getChosen().get(message.getId()) + 1);
+				if (this.activeDeckConfig.getChosen().get(message.getId()) < this.activeDeckConfig.getMaxFor(message.getId())) {
+					this.activeDeckConfig.add(message.getId());
 				}
 			}
 		}

@@ -88,7 +88,8 @@ public class DeckConfig {
 		Random random = new Random();
 		List<Integer> ids = new ArrayList<>(this.getCardData().keySet());
 		while (this.total() < this.getMinSize()) {
-			this.setChosen(ids.get(random.nextInt(ids.size())), this.getMaxPerCard());
+			int randomId = ids.get(random.nextInt(ids.size()));
+			this.setChosen(randomId, this.getMaxFor(randomId));
 		}
 	}
 	
