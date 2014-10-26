@@ -95,5 +95,9 @@ public class DeckConfig {
 	public void add(int cardId) {
 		chosen.merge(cardId, 1, (a, b) -> a + b);
 	}
+	
+	public int getMaxFor(int id) {
+		return this.max.getOrDefault(id, maxPerCard);
+	}
 
 }
