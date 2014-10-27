@@ -7,8 +7,7 @@ import static net.zomis.cardshifter.ecs.usage.CW2Game.Resources.CRYSTALS;
 
 import java.util.function.Consumer;
 
-import net.zomis.cardshifter.ecs.usage.CW2Game;
-import net.zomis.cardshifter.ecs.usage.CostComponent;
+import net.zomis.cardshifter.ecs.effects.CostComponent;
 import net.zomis.cardshifter.ecs.usage.CW2Game.Resources;
 
 import com.cardshifter.modapi.base.Component;

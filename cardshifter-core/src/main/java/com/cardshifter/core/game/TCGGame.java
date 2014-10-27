@@ -14,14 +14,14 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import net.zomis.cardshifter.ecs.EntitySerialization;
-import net.zomis.cardshifter.ecs.usage.ConfigComponent;
-import net.zomis.cardshifter.ecs.usage.DeckConfig;
+import net.zomis.cardshifter.ecs.config.ConfigComponent;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import com.cardshifter.ai.FakeAIClientTCG;
 import com.cardshifter.api.ClientIO;
+import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.both.PlayerConfigMessage;
 import com.cardshifter.api.incoming.RequestTargetsMessage;
 import com.cardshifter.api.incoming.UseAbilityMessage;
@@ -43,12 +43,14 @@ import com.cardshifter.modapi.actions.ECSAction;
 import com.cardshifter.modapi.actions.TargetSet;
 import com.cardshifter.modapi.ai.AIComponent;
 import com.cardshifter.modapi.ai.AISystem;
+import com.cardshifter.modapi.ai.CardshifterAI;
 import com.cardshifter.modapi.base.ComponentRetriever;
 import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.ECSGameState;
 import com.cardshifter.modapi.base.ECSMod;
 import com.cardshifter.modapi.base.Entity;
 import com.cardshifter.modapi.base.PlayerComponent;
+import com.cardshifter.modapi.base.PlayerEliminatedEvent;
 import com.cardshifter.modapi.cards.CardComponent;
 import com.cardshifter.modapi.cards.ZoneChangeEvent;
 import com.cardshifter.modapi.cards.ZoneComponent;
@@ -251,15 +253,41 @@ public class TCGGame extends ServerGame {
 		String time = formatter.format(Instant.now());
 		
 		game.addSystem(new ReplayRecordSystem(game, new File("replay-" + getId() + "-" + time + ".json")));
+		
+		if (!preStartForConfiguration()) {
+			this.startECSGame();
+			this.setupAIPlayers();
+		}
+	}
+	
+	/**
+	 * Pre-start the game to ask for configuration 
+	 * 
+	 * @return
+	 */
+	public boolean preStartForConfiguration() {
 		mod.declareConfiguration(game);
 		
 		if (this.isConfigNeeded()) {
 			this.setupAIPlayers();
 			this.requestPlayerConfig();
-			return;
+			return true;
 		}
-		this.startECSGame();
-		this.setupAIPlayers();
+		return false;
+	}
+	
+	/**
+	 * Listener for when a player is eliminated from the game
+	 * @param event Event about the elimination
+	 */
+	private void playerEliminated(PlayerEliminatedEvent event) {
+		String winStatus = event.isDeclaredWinner() ? "won" : "lost";
+		PlayerComponent player = event.getEntity().getComponent(PlayerComponent.class);
+		this.sendChat(player.getName() + " " + winStatus + " game " + getId());		
+	}
+	
+	public void sendChat(String message) {
+		this.send(new ChatMessage(0, "Server", message));
 	}
 	
 	/**
@@ -273,6 +301,7 @@ public class TCGGame extends ServerGame {
 		game.getEvents().registerHandlerAfter(this, ResourceValueChange.class, this::broadcast);
 		game.getEvents().registerHandlerAfter(this, ZoneChangeEvent.class, this::zoneChange);
 		game.getEvents().registerHandlerAfter(this, EntityRemoveEvent.class, this::remove);
+		game.getEvents().registerHandlerAfter(this, PlayerEliminatedEvent.class, this::playerEliminated);
 		game.getEvents().registerHandlerAfter(this, GameOverEvent.class, event -> this.endGame());
 		AISystem.setup(game, aiExecutor.get());
 		game.addSystem(game -> game.getEvents().registerHandlerAfter(this, ActionPerformEvent.class, event -> this.sendAvailableActions()));
@@ -281,6 +310,7 @@ public class TCGGame extends ServerGame {
 		this.getPlayers().stream().forEach(pl -> {
 			Entity playerEntity = playerFor(pl);
 			PlayerComponent plData = playerEntity.get(playerData);
+			plData.setName(pl.getName());
 			this.send(new PlayerMessage(playerEntity.getId(), plData.getIndex(), plData.getName(), Resources.map(playerEntity)));
 		});
 		this.game.findEntities(e -> true).stream().flatMap(e -> e.getSuperComponents(ZoneComponent.class).stream()).forEach(this::sendZone);
@@ -301,7 +331,10 @@ public class TCGGame extends ServerGame {
 				PlayerConfigMessage configMessage = new PlayerConfigMessage(getId(), playerEntity.getComponent(ConfigComponent.class).getConfigs());
 				io.sendToClient(configMessage);
 				if (io instanceof FakeAIClientTCG) {
-					generateRandomDeck(io, configMessage);
+					FakeAIClientTCG aiClient = (FakeAIClientTCG) io;
+					CardshifterAI ai = aiClient.getAI();
+					ai.configure(playerEntity, playerEntity.getComponent(ConfigComponent.class));
+					playerEntity.getComponent(ConfigComponent.class).setConfigured(true);
 				}
 				else {
 					sent = true;
@@ -310,25 +343,6 @@ public class TCGGame extends ServerGame {
 		}
 		
 		return sent;
-	}
-
-	/**
-	 * Takes the configuration of the client and modifies its DeckConfig to produce a random deck.
-	 * 
-	 * @param client Target client for the random deck
-	 * @param configMessage Original configuration of the client
-	 */
-	private void generateRandomDeck(ClientIO client, PlayerConfigMessage configMessage) {
-		Map<String, Object> configs = configMessage.getConfigs();
-		for (Entry<String, Object> entry : configs.entrySet()) {
-			Object value = entry.getValue();
-			if (value instanceof DeckConfig) {
-				DeckConfig deckConfig = (DeckConfig) value;
-				deckConfig.generateRandom();
-			}
-		}
-		PlayerConfigMessage finalConfig = new PlayerConfigMessage(configMessage.getGameId(), configs);
-		this.incomingPlayerConfig(finalConfig, client);
 	}
 
 	/**

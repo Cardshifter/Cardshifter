@@ -3,6 +3,13 @@ package net.zomis.cardshifter.ecs.usage;
 import java.util.Map.Entry;
 import java.util.function.UnaryOperator;
 
+import net.zomis.cardshifter.ecs.config.ConfigComponent;
+import net.zomis.cardshifter.ecs.config.DeckConfig;
+import net.zomis.cardshifter.ecs.effects.EffectActionSystem;
+import net.zomis.cardshifter.ecs.effects.EffectComponent;
+import net.zomis.cardshifter.ecs.effects.EffectTargetFilterSystem;
+import net.zomis.cardshifter.ecs.effects.FilterComponent;
+
 import com.cardshifter.modapi.actions.ActionComponent;
 import com.cardshifter.modapi.actions.ECSAction;
 import com.cardshifter.modapi.actions.UseCostSystem;
@@ -175,7 +182,7 @@ public class PhrancisGame implements ECSMod {
 			
 			ConfigComponent config = player.getComponent(ConfigComponent.class);
 			DeckConfig deckConf = config.getConfig(DeckConfig.class);
-			if (deckConf.getTotal() < deckConf.getMinSize()) {
+			if (deckConf.total() < deckConf.getMinSize()) {
 				deckConf.generateRandom();
 			}
 			
@@ -245,6 +252,7 @@ public class PhrancisGame implements ECSMod {
 		
 		// General setup
 		game.addSystem(new GameOverIfNoHealth(PhrancisResources.HEALTH));
+		game.addSystem(new LastPlayersStandingEndsGame());
 		game.addSystem(new RemoveDeadEntityFromZoneSystem());
 		game.addSystem(new PerformerMustBeCurrentPlayer());
 		

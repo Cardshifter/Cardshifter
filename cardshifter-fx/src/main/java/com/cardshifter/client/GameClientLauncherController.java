@@ -24,7 +24,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import net.zomis.cardshifter.ecs.usage.DeckConfig;
+import net.zomis.cardshifter.ecs.config.DeckConfig;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame;
 
 import com.cardshifter.ai.FakeAIClientTCG;

@@ -1,18 +1,15 @@
-package com.cardshifter.server.model;
+package com.cardshifter.core.replays;
 
 import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Random;
 import java.util.Map.Entry;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 
-import net.zomis.cardshifter.ecs.usage.ConfigComponent;
+import net.zomis.cardshifter.ecs.config.ConfigComponent;
 
 import com.cardshifter.api.both.PlayerConfigMessage;
-import com.cardshifter.core.game.ServerGame;
-import com.cardshifter.core.replays.ReplayAction;
-import com.cardshifter.core.replays.ReplayRecordSystem;
 import com.cardshifter.modapi.actions.ActionAllowedCheckEvent;
 import com.cardshifter.modapi.actions.ActionComponent;
 import com.cardshifter.modapi.actions.ActionPerformEvent;
@@ -35,13 +32,16 @@ public class ReplayPlaybackSystem implements ECSSystem {
 	private final ReplayRecordSystem replayData;
 	private int currentActionIndex;
 
-	public ReplayPlaybackSystem(ServerGame game, ReplayRecordSystem replay) {
+	private final ECSGame game;
+
+	public ReplayPlaybackSystem(ECSGame game, ReplayRecordSystem replay) {
 		this.replayData = replay;
+		this.game = game;
 		applySeed(game, replay.getSeed());
 	}
 
-	private void applySeed(ServerGame game, long newSeed) {
-		Random random = game.getGameModel().getRandom();
+	private void applySeed(ECSGame game, long newSeed) {
+		Random random = game.getRandom();
 		try {
 			Field field = random.getClass().getDeclaredField("seed");
 			field.setAccessible(true);
@@ -63,8 +63,9 @@ public class ReplayPlaybackSystem implements ECSSystem {
 	}
 	
 	private void onStart(StartGameEvent event, ECSGame game) {
-		 game.findSystemsOfClass(AISystem.class).forEach(game::removeSystem);
-		 game.addSystem(new NextStepReplayActionSystem());
+		game.findSystemsOfClass(ReplayRecordSystem.class).forEach(game::removeSystem);
+		game.findSystemsOfClass(AISystem.class).forEach(game::removeSystem);
+		game.addSystem(new NextStepReplayActionSystem());
 	}
 	
 	private static class NextStepReplayActionSystem extends SpecificActionSystem {
@@ -92,15 +93,22 @@ public class ReplayPlaybackSystem implements ECSSystem {
 	}
 	
 	private void nextStep(ECSAction replayAction) {
-		if (currentActionIndex >= replayData.getActionInformation().size()) {
+		if (isReplayFinished()) {
 			return;
 		}
+		nextStep();
+	}
+
+	public boolean isReplayFinished() {
+		return currentActionIndex >= replayData.getActionInformation().size();
+	}
+
+	public void nextStep() {
 		ReplayAction step = replayData.getActionInformation().get(currentActionIndex);
-		ECSGame game = replayAction.getOwner().getGame();
 		Entity entity = game.getEntity(step.getEntity());
 		ECSAction action = Actions.getAction(entity, step.getActionName());
 		if (action.getTargetSets().size() != step.getTargets().size()) {
-			throw new RuntimeException("Replay targetsets does not match actual");
+			throw new ReplayException("Number of targetsets does not match for action " + action + " at action index " + currentActionIndex);
 		}
 		
 		for (int i = 0; i < action.getTargetSets().size(); i++) {
@@ -109,13 +117,17 @@ public class ReplayPlaybackSystem implements ECSSystem {
 			
 			targetSet.clearTargets();
 			for (int target : targets) {
-				targetSet.addTarget(game.getEntity(target));
+				Entity targetEntity = game.getEntity(target);
+				if (targetEntity == null) {
+					throw new ReplayException("Target " + target + " not found when performing " + action + " at action index " + currentActionIndex);
+				}
+				targetSet.addTarget(targetEntity);
 			}
 		}
 		
 		boolean performSuccess = action.perform(game.getEntity(step.getPerformer()));
 		if (!performSuccess) {
-			System.out.println("WARNING: Replay action not correctly performed " + action);
+			throw new ReplayException("Replay action not correctly performed " + action + " at action index " + currentActionIndex);
 		}
 		currentActionIndex++;
 	}

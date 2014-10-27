@@ -35,8 +35,8 @@ public class ModCollection {
 	public ModCollection() {
 		ais.put("Loser", new ScoringAI(AIs.loser()));
 		ais.put("Idiot", new ScoringAI(AIs.idiot()));
-		ais.put("Medium", new ScoringAI(AIs.medium()));
-		ais.put("Fighter", new ScoringAI(AIs.fighter()));
+		ais.put("Medium", new ScoringAI(AIs.medium(), AIs::mediumDeck));
+		ais.put("Fighter", new ScoringAI(AIs.fighter(), AIs::fighterDeck));
 		
 		mods.put(CardshifterConstants.VANILLA, new PhrancisGame());
 		mods.put("New_Attack_Style", new PhrancisGameNewAttackSystem());

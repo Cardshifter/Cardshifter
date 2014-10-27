@@ -32,8 +32,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import net.zomis.cardshifter.ecs.config.DeckConfig;
 import net.zomis.cardshifter.ecs.usage.CardshifterIO;
-import net.zomis.cardshifter.ecs.usage.DeckConfig;
 
 import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.both.InviteRequest;
@@ -215,19 +215,7 @@ public class GameClientLobby implements Initializable {
 	}
 	
 	private void openDeckBuilderWindowWithoutGame(MouseEvent event) {
-		if (this.currentPlayerConfig != null) {
-			Map<String, Object> configs = this.currentPlayerConfig.getConfigs();
-		
-			for (Entry<String, Object> entry : configs.entrySet()) {
-				Object value = entry.getValue();
-				if (value instanceof DeckConfig) {
-					DeckConfig deckConfig = (DeckConfig) value;
-					this.showDeckBuilderWindow(deckConfig, false);
-				}
-			}		
-		} else {
-			//get the player config from the server?
-		}
+		this.send(new ServerQueryMessage(Request.DECK_BUILDER, selectedGameType));
 	}
 	
 	private void showDeckBuilderWindow(DeckConfig deckConfig, boolean startingGame) {

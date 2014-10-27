@@ -26,8 +26,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import net.zomis.cardshifter.ecs.config.DeckConfig;
 import net.zomis.cardshifter.ecs.usage.CardshifterIO;
-import net.zomis.cardshifter.ecs.usage.DeckConfig;
 
 import com.cardshifter.api.outgoing.CardInfoMessage;
 import com.cardshifter.client.buttons.GenericButton;
@@ -88,7 +88,7 @@ public class DeckBuilderWindow {
 	}
 	
 	private void startGame(MouseEvent event) {
-		if (this.activeDeckConfig.getTotal() == this.activeDeckConfig.getMaxSize()) {
+		if (this.activeDeckConfig.total() == this.activeDeckConfig.getMaxSize()) {
 			this.configCallback.accept(this.activeDeckConfig);
 			this.closeWindow();
 		}
@@ -107,7 +107,7 @@ public class DeckBuilderWindow {
 			if (this.activeDeckConfig.getChosen().get(message.getId()) != null) {
 				numChosenCards = this.activeDeckConfig.getChosen().get(message.getId());
 			}
-			Label numberOfCardsLabel = new Label(String.format("%d / %d", numChosenCards, this.activeDeckConfig.getMaxPerCard()));
+			Label numberOfCardsLabel = new Label(String.format("%d / %d", numChosenCards, this.activeDeckConfig.getMaxFor(message.getId())));
 			numberOfCardsLabel.setTextFill(Color.WHITE);
 			numberOfCardsBox.relocate(cardPane.getPrefWidth()/2.6, cardPane.getPrefHeight() - cardPane.getPrefHeight()/18);
 			numberOfCardsLabel.relocate(cardPane.getPrefWidth()/2.3, cardPane.getPrefHeight() - cardPane.getPrefHeight()/18);
@@ -153,16 +153,16 @@ public class DeckBuilderWindow {
 			cardPane.setOnMouseClicked(e -> {this.removeCardFromDeck(e, cardId);});
 			this.activeDeckBox.getChildren().add(cardPane);
 		}
-		this.cardCountLabel.setText(String.format("%d / %d", this.activeDeckConfig.getTotal(), this.activeDeckConfig.getMaxSize()));
+		this.cardCountLabel.setText(String.format("%d / %d", this.activeDeckConfig.total(), this.activeDeckConfig.getMaxSize()));
 	}
 
 	private void addCardToActiveDeck(MouseEvent event, CardInfoMessage message) {
-		if (this.activeDeckConfig.getTotal() < this.activeDeckConfig.getMaxSize()) {
+		if (this.activeDeckConfig.total() < this.activeDeckConfig.getMaxSize()) {
 			if(this.activeDeckConfig.getChosen().get(message.getId()) == null) {
 				this.activeDeckConfig.setChosen(message.getId(), 1);
 			} else {
-				if (this.activeDeckConfig.getChosen().get(message.getId()) < this.activeDeckConfig.getMaxPerCard()) {
-					this.activeDeckConfig.setChosen(message.getId(), this.activeDeckConfig.getChosen().get(message.getId()) + 1);
+				if (this.activeDeckConfig.getChosen().get(message.getId()) < this.activeDeckConfig.getMaxFor(message.getId())) {
+					this.activeDeckConfig.add(message.getId());
 				}
 			}
 		}
