@@ -88,11 +88,6 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.cardshifter</groupId>
-			<artifactId>cardshifter-api</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.cardshifter</groupId>
 			<artifactId>cardshifter-modapi</artifactId>
 			<version>${project.version}</version>
 		</dependency>

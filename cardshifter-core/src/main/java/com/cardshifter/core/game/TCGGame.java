@@ -15,7 +15,6 @@ import java.util.stream.Stream;
 
 import net.zomis.cardshifter.ecs.EntitySerialization;
 import net.zomis.cardshifter.ecs.config.ConfigComponent;
-import net.zomis.cardshifter.ecs.config.DeckConfig;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -44,6 +43,7 @@ import com.cardshifter.modapi.actions.ECSAction;
 import com.cardshifter.modapi.actions.TargetSet;
 import com.cardshifter.modapi.ai.AIComponent;
 import com.cardshifter.modapi.ai.AISystem;
+import com.cardshifter.modapi.ai.CardshifterAI;
 import com.cardshifter.modapi.base.ComponentRetriever;
 import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.ECSGameState;
@@ -319,7 +319,10 @@ public class TCGGame extends ServerGame {
 				PlayerConfigMessage configMessage = new PlayerConfigMessage(getId(), playerEntity.getComponent(ConfigComponent.class).getConfigs());
 				io.sendToClient(configMessage);
 				if (io instanceof FakeAIClientTCG) {
-					generateRandomDeck(io, configMessage);
+					FakeAIClientTCG aiClient = (FakeAIClientTCG) io;
+					CardshifterAI ai = aiClient.getAI();
+					ai.configure(playerEntity, playerEntity.getComponent(ConfigComponent.class));
+					playerEntity.getComponent(ConfigComponent.class).setConfigured(true);
 				}
 				else {
 					sent = true;
@@ -328,25 +331,6 @@ public class TCGGame extends ServerGame {
 		}
 		
 		return sent;
-	}
-
-	/**
-	 * Takes the configuration of the client and modifies its DeckConfig to produce a random deck.
-	 * 
-	 * @param client Target client for the random deck
-	 * @param configMessage Original configuration of the client
-	 */
-	private void generateRandomDeck(ClientIO client, PlayerConfigMessage configMessage) {
-		Map<String, Object> configs = configMessage.getConfigs();
-		for (Entry<String, Object> entry : configs.entrySet()) {
-			Object value = entry.getValue();
-			if (value instanceof DeckConfig) {
-				DeckConfig deckConfig = (DeckConfig) value;
-				deckConfig.generateRandom();
-			}
-		}
-		PlayerConfigMessage finalConfig = new PlayerConfigMessage(configMessage.getGameId(), configs);
-		this.incomingPlayerConfig(finalConfig, client);
 	}
 
 	/**

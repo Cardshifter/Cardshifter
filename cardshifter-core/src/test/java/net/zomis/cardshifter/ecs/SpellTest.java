@@ -7,6 +7,7 @@ import net.zomis.cardshifter.ecs.effects.FilterComponent;
 import net.zomis.cardshifter.ecs.effects.Filters;
 import net.zomis.cardshifter.ecs.usage.EntityCannotUseSystem;
 import net.zomis.cardshifter.ecs.usage.OpponentCannotUseSystem;
+import net.zomis.cardshifter.ecs.usage.PhrancisEffects;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame.PhrancisResources;
 import net.zomis.cardshifter.ecs.usage.UntilEndOfOwnerTurnSystem;
@@ -55,7 +56,7 @@ public class SpellTest extends GameTest {
 	@Test
 	public void scrapAll() {
 		assertNotNull(currentPlayer());
-		Effects eff = new Effects();
+		PhrancisEffects eff = new PhrancisEffects();
 		scrap.resFor(currentPlayer()).set(2);
 		scrap.resFor(getOpponent()).set(3);
 		assertResource(currentPlayer(), PhrancisResources.SCRAP, 2);

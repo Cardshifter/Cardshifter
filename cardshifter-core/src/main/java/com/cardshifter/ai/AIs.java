@@ -5,6 +5,8 @@ import net.zomis.aiscores.ScoreConfigFactory;
 import net.zomis.aiscores.scorers.PredicateScorer;
 import net.zomis.aiscores.scorers.Scorers;
 import net.zomis.aiscores.scorers.SimpleScorer;
+import net.zomis.cardshifter.ecs.config.ConfigComponent;
+import net.zomis.cardshifter.ecs.config.DeckConfig;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame;
 
 import com.cardshifter.ai.phrancis.AttackAnalyze;
@@ -49,4 +51,39 @@ public class AIs {
 		return config;
 	}
 
+	public static void mediumDeck(Entity entity, ConfigComponent config) {
+		DeckConfig deck = config.getConfig(DeckConfig.class);
+		createDeckFullWith(deck, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12); // All B0Ts
+	}
+	
+	private static void createDeckFullWith(DeckConfig deck, int... ids) {
+		if (deck == null) {
+			return;
+		}
+		for (int id : ids) {
+			if (deck.total() >= deck.getMaxSize()) {
+				return;
+			}
+			deck.setChosen(id, deck.getMaxFor(id));
+		}
+	}
+
+	public static void fighterDeck(Entity entity, ConfigComponent config) {
+		DeckConfig deck = config.getConfig(DeckConfig.class);
+		createDeckFullWith(deck, 4, 7, 8, 12, 16, 18, 24, 26, 27);
+		deckAdd(deck, 9, 9, 19);
+	}
+
+	private static void deckAdd(DeckConfig deck, int... ids) {
+		if (deck == null) {
+			return;
+		}
+		for (int id : ids) {
+			if (deck.total() >= deck.getMaxSize()) {
+				return;
+			}
+			deck.add(id);
+		}
+	}
+	
 }

@@ -182,7 +182,7 @@ public class PhrancisGame implements ECSMod {
 			
 			ConfigComponent config = player.getComponent(ConfigComponent.class);
 			DeckConfig deckConf = config.getConfig(DeckConfig.class);
-			if (deckConf.getTotal() < deckConf.getMinSize()) {
+			if (deckConf.total() < deckConf.getMinSize()) {
 				deckConf.generateRandom();
 			}
 			
