@@ -48,7 +48,7 @@ public class ReplayCommand implements CommandHandle<ReplayParameters> {
 			throw new RuntimeException("Error loading replay: " + e1.getMessage(), e1);
 		}
 		
-		ReplayPlaybackSystem playback = new ReplayPlaybackSystem(game, replay);
+		ReplayPlaybackSystem playback = new ReplayPlaybackSystem(game.getGameModel(), replay);
 		game.getGameModel().addSystem(playback);
 		game.start(Arrays.asList(command.getClient(), new FakeClient(command.getServer(), e -> {})));
 		System.out.println("Game state is " + game.getState());
