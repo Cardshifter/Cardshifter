@@ -166,6 +166,13 @@ public class MainServer {
 	 * @param parameters Unused parameter
 	 */
 	private void shutdown(CommandContext command, Object parameters) {
+		shutdown();
+	}
+	
+	/**
+	 * Shutdown everything
+	 */
+	public void shutdown() {
 		server.stop();
 		
 		try {
