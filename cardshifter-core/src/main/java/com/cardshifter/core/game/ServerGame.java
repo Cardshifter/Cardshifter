@@ -73,7 +73,7 @@ public abstract class ServerGame {
 		if (game.getGameState() != ECSGameState.NOT_STARTED) {
 			throw new IllegalStateException("Game can only be started once");
 		}
-		this.players.addAll(players);
+		players.forEach(this::addPlayer);
 		for (ClientIO player : players) {
 			player.sendToClient(new NewGameMessage(this.id, players.indexOf(player)));
 		}
@@ -138,6 +138,10 @@ public abstract class ServerGame {
 	 */
 	public boolean hasPlayer(ClientIO client) {
 		return players.contains(client);
+	}
+
+	public void addPlayer(ClientIO client) {
+		 this.players.add(client);
 	}
 	
 }

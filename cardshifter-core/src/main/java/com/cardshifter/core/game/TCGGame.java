@@ -253,15 +253,27 @@ public class TCGGame extends ServerGame {
 		String time = formatter.format(Instant.now());
 		
 		game.addSystem(new ReplayRecordSystem(game, new File("replay-" + getId() + "-" + time + ".json")));
+		
+		if (!preStartForConfiguration()) {
+			this.startECSGame();
+			this.setupAIPlayers();
+		}
+	}
+	
+	/**
+	 * Pre-start the game to ask for configuration 
+	 * 
+	 * @return
+	 */
+	public boolean preStartForConfiguration() {
 		mod.declareConfiguration(game);
 		
 		if (this.isConfigNeeded()) {
 			this.setupAIPlayers();
 			this.requestPlayerConfig();
-			return;
+			return true;
 		}
-		this.startECSGame();
-		this.setupAIPlayers();
+		return false;
 	}
 	
 	/**

@@ -215,19 +215,7 @@ public class GameClientLobby implements Initializable {
 	}
 	
 	private void openDeckBuilderWindowWithoutGame(MouseEvent event) {
-		if (this.currentPlayerConfig != null) {
-			Map<String, Object> configs = this.currentPlayerConfig.getConfigs();
-		
-			for (Entry<String, Object> entry : configs.entrySet()) {
-				Object value = entry.getValue();
-				if (value instanceof DeckConfig) {
-					DeckConfig deckConfig = (DeckConfig) value;
-					this.showDeckBuilderWindow(deckConfig, false);
-				}
-			}		
-		} else {
-			//get the player config from the server?
-		}
+		this.send(new ServerQueryMessage(Request.DECK_BUILDER, selectedGameType));
 	}
 	
 	private void showDeckBuilderWindow(DeckConfig deckConfig, boolean startingGame) {
