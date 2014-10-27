@@ -374,6 +374,7 @@ public class GameClientController {
 					zoneView.setCardTargetable(target);
 				}
 			} else {
+				//Create the target box and action for self/opponent targeting
 				UseableActionMessage newMessage = new UseableActionMessage(message.getEntity(), message.getAction(), false, target);
 				this.highlightPlayerTargetRectangle(target, newMessage);
 			}

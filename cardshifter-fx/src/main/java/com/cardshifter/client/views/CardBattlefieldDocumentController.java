@@ -184,6 +184,8 @@ public final class CardBattlefieldDocumentController extends CardView implements
 				strength.setTextFill(Color.ORANGE);
 			} else if ((int)message.getValue() > this.cardValues.get(message.getKey().toString())) {
 				strength.setTextFill(Color.GREENYELLOW);
+			} else {
+				strength.setTextFill(Color.WHITE);
 			}
 		} else if (message.getKey().equals("HEALTH")) {
 			health.setText(String.format("%d", message.getValue()));
@@ -191,6 +193,8 @@ public final class CardBattlefieldDocumentController extends CardView implements
 				health.setTextFill(Color.ORANGE);
 			} else if ((int)message.getValue() > this.cardValues.get(message.getKey().toString())) {
 				health.setTextFill(Color.GREENYELLOW);
+			} else {
+				health.setTextFill(Color.WHITE);
 			}
 		} else if (message.getKey().equals("creatureType")) {
 			creatureType.setText(String.valueOf(message.getValue()));
