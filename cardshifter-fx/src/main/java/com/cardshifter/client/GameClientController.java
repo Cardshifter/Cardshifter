@@ -125,14 +125,13 @@ public class GameClientController {
 		serverMessages.getItems().add(message.toString());
 		
 		//this is for diagnostics so I can copy paste the messages to know their format
-		logger.info(message);
 		
 		if (message instanceof WelcomeMessage) {
 			Platform.runLater(() -> loginMessage.setText(message.toString()));
 		} else if (message instanceof WaitMessage) {
 			Platform.runLater(() -> loginMessage.setText(message.toString()));
 		} else if (message instanceof PlayerMessage) {
-			Platform.runLater(() -> this.processPlayerMessage((PlayerMessage)message));
+			this.processPlayerMessage((PlayerMessage)message);
 		} else if (message instanceof ZoneMessage) {
 			this.assignZoneIdForZoneMessage((ZoneMessage)message);
 		} else if (message instanceof CardInfoMessage) {
@@ -161,13 +160,13 @@ public class GameClientController {
 	private void processPlayerMessage(PlayerMessage message) {
 		if (message.getIndex() == this.playerIndex) {
 			this.playerId = message.getId();
-			this.playerName.setText(message.getName());
+			Platform.runLater(() -> this.playerName.setText(message.getName()));
 			this.processPlayerMessageForPlayer(message, playerStatBox, playerStatBoxMap);
 		} else {
 			this.opponentId = message.getId();
-			this.opponentName.setText(message.getName());
+			Platform.runLater(() -> this.opponentName.setText(message.getName()));
 			this.processPlayerMessageForPlayer(message, opponentStatBox, opponentStatBoxMap);
-			this.loginMessage.setText("Opponent Connected");
+			Platform.runLater(() -> this.loginMessage.setText("Opponent Connected"));
 		}
 	}
 	private void processPlayerMessageForPlayer(PlayerMessage message, Pane statBox, Map<String, Integer> playerMap) {
@@ -176,9 +175,11 @@ public class GameClientController {
 		playerMap.putAll(sortedMap);
 		for (Map.Entry<String, Integer> entry : sortedMap.entrySet()) {
 			String key = entry.getKey();
-			statBox.getChildren().add(new Label(key));
 			int value = entry.getValue();
-			statBox.getChildren().add(new Label(String.format("%d",value)));
+			Platform.runLater(() -> {
+				statBox.getChildren().add(new Label(key));
+				statBox.getChildren().add(new Label(String.format("%d",value)));
+			});
 		}
 	}
 	
@@ -235,6 +236,8 @@ public class GameClientController {
 			this.addCardToPlayerBattlefieldPane(message);
 		} else if (targetZone == playerHandId) {
 			this.addCardToPlayerHandPane(message);
+		} else {
+			logger.warn("No known target Zone for " + message);
 		}
 	}	
 	private void addCardToOpponentBattlefieldPane(CardInfoMessage message) {
