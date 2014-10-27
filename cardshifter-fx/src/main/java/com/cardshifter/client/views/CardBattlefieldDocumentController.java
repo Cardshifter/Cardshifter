@@ -189,7 +189,7 @@ public final class CardBattlefieldDocumentController extends CardView implements
 			}
 		} else if (message.getKey().equals("HEALTH")) {
 			health.setText(String.format("%d", message.getValue()));
-			if ((int)message.getValue() < this.cardValues.get(message.getKey().toString())) {
+			if ((int)message.getValue() < this.cardValues.get("MAX_HEALTH")) {
 				health.setTextFill(Color.ORANGE);
 			} else if ((int)message.getValue() > this.cardValues.get(message.getKey().toString())) {
 				health.setTextFill(Color.GREENYELLOW);
