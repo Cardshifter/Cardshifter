@@ -5,12 +5,14 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 import net.zomis.cardshifter.ecs.config.ConfigComponent;
 import net.zomis.cardshifter.ecs.usage.CardshifterIO;
@@ -20,6 +22,7 @@ import com.cardshifter.modapi.actions.ActionPerformEvent;
 import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.ECSSystem;
 import com.cardshifter.modapi.base.Entity;
+import com.cardshifter.modapi.base.PlayerComponent;
 import com.cardshifter.modapi.events.GameOverEvent;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -37,14 +40,20 @@ public class ReplayRecordSystem implements ECSSystem {
 	
 	private final long seed;
 	private final File file;
+
+	private List<String> playerNames;
+
+	private final String modName;
 	
 	ReplayRecordSystem(@JsonProperty("seed") long seed) {
 		this.seed = seed;
+		this.modName = null;
 		this.file = null;
 	}
 	
-	public ReplayRecordSystem(ECSGame game, File output) {
+	public ReplayRecordSystem(ECSGame game, String modName, File output) {
 		this.seed = fetchSeed(game.getRandom());
+		this.modName = modName;
 		this.file = output;
 	}
 
@@ -81,6 +90,12 @@ public class ReplayRecordSystem implements ECSSystem {
 	}
 	
 	private void saveReplay(GameOverEvent event) {
+		List<PlayerComponent> players = event.getGame().getEntitiesWithComponent(PlayerComponent.class)
+				.stream().map(pl -> pl.getComponent(PlayerComponent.class))
+				.collect(Collectors.toList());
+		players.sort(Comparator.comparing(PlayerComponent::getIndex));
+		this.playerNames = players.stream().map(pl -> pl.getName()).collect(Collectors.toList());
+		
 		try {
 			CardshifterIO.mapper().writeValue(file, this);
 		} catch (IOException e) {
@@ -98,6 +113,14 @@ public class ReplayRecordSystem implements ECSSystem {
 	
 	public Map<Integer, PlayerConfigMessage> getEntityConfigs() {
 		return Collections.unmodifiableMap(entityConfigs);
+	}
+	
+	public List<String> getPlayerNames() {
+		return playerNames;
+	}
+	
+	public String getModName() {
+		return modName;
 	}
 	
 }

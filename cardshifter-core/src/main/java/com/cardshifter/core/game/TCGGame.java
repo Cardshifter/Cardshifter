@@ -76,15 +76,18 @@ public class TCGGame extends ServerGame {
 	 */
 	private final ECSMod mod;
 	private final Supplier<ScheduledExecutorService> aiExecutor;
+	private final String modName;
 	
 	/**
 	 * 
 	 * @param aiExecutor AI action scheduler
+	 * @param name Mod name
 	 * @param id The game id
 	 * @param mod The mod that the game will run
 	 */
-	public TCGGame(Supplier<ScheduledExecutorService> aiExecutor, int id, ECSMod mod) {
+	public TCGGame(Supplier<ScheduledExecutorService> aiExecutor, String name, int id, ECSMod mod) {
 		super(id, new ECSGame());
+		this.modName = name;
 		this.aiExecutor = aiExecutor;
 		this.mod = mod;
 	}
@@ -252,7 +255,7 @@ public class TCGGame extends ServerGame {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss").withZone(ZoneId.systemDefault());
 		String time = formatter.format(Instant.now());
 		
-		game.addSystem(new ReplayRecordSystem(game, new File("replay-" + getId() + "-" + time + ".json")));
+		game.addSystem(new ReplayRecordSystem(game, modName, new File("replay-" + getId() + "-" + time + ".json")));
 		
 		if (!preStartForConfiguration()) {
 			this.startECSGame();

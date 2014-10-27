@@ -25,9 +25,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import net.zomis.cardshifter.ecs.config.DeckConfig;
-import net.zomis.cardshifter.ecs.usage.PhrancisGame;
 
 import com.cardshifter.ai.FakeAIClientTCG;
+import com.cardshifter.api.CardshifterConstants;
 import com.cardshifter.api.ClientIO;
 import com.cardshifter.api.ClientServerInterface;
 import com.cardshifter.api.both.PlayerConfigMessage;
@@ -59,8 +59,10 @@ public final class GameClientLauncherController implements Initializable {
 	private AIComponent aiChoice;
 	private final Preferences settings = Preferences.userNodeForPackage(GameClientLauncherController.class);
 	private ClientIO human;
+	private final ModCollection mods = new ModCollection();
 	
 	private static final String CONF_NAME = "name";
+	private static final String DEFAULT_MOD = CardshifterConstants.VANILLA;
 
 	private String getCharactersFromTextField(TextField textField) {
 		return textField.getCharacters().toString();
@@ -108,7 +110,6 @@ public final class GameClientLauncherController implements Initializable {
 	}	
 	
 	private void createAIChoices() {
-		ModCollection mods = new ModCollection();
 		mods.getAIs().forEach((name, ai) -> aiChoices.put(name, new AIComponent(ai)));
 		localGameButton.setOnAction(this::localGameStart);
 		this.createAIButtons();
@@ -134,9 +135,9 @@ public final class GameClientLauncherController implements Initializable {
 	}
 	
 	private void localGameStart(ActionEvent event) {
-		ECSMod mod = new PhrancisGame();
+		ECSMod mod = mods.getMods().get(DEFAULT_MOD);
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
-		TCGGame game = new TCGGame(() -> executor, 1, mod);
+		TCGGame game = new TCGGame(() -> executor, DEFAULT_MOD, 1, mod);
 		ClientServerInterface singlePlayerHandler = new ClientServerInterface() {
 			@Override
 			public void performIncoming(Message message, ClientIO clientIO) {

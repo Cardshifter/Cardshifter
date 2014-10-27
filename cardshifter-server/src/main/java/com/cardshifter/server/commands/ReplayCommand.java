@@ -28,19 +28,12 @@ public class ReplayCommand implements CommandHandle<ReplayParameters> {
 	
 	@Override
 	public void handle(CommandContext command, ReplayParameters parameters) {
-		GameFactory factory = command.getServer().getGameFactories().get(parameters.mod);
-		if (factory == null) {
-			command.sendChatResponse("Invalid mod: " + parameters.mod);
-			return;
-		}
-		
 		File file = new File(parameters.file);
 		if (!file.exists()) {
 			command.sendChatResponse("File does not exist: " + file);
 			return;
 		}
 		
-		TCGGame game = (TCGGame) command.getServer().createGame(parameters.mod);
 		ReplayRecordSystem replay;
 		try {
 			replay = CardshifterIO.mapper().readValue(file, ReplayRecordSystem.class);
@@ -48,8 +41,18 @@ public class ReplayCommand implements CommandHandle<ReplayParameters> {
 			throw new RuntimeException("Error loading replay: " + e1.getMessage(), e1);
 		}
 		
+		String actualMod = replay.getModName() != null ? replay.getModName() : parameters.mod;
+		GameFactory factory = command.getServer().getGameFactories().get(actualMod);
+		if (factory == null) {
+			command.sendChatResponse("Invalid mod: " + actualMod);
+			return;
+		}
+		
+		TCGGame game = (TCGGame) command.getServer().createGame(actualMod);
 		ReplayPlaybackSystem playback = new ReplayPlaybackSystem(game.getGameModel(), replay);
 		game.getGameModel().addSystem(playback);
+
+		
 		game.start(Arrays.asList(command.getClient(), new FakeClient(command.getServer(), e -> {})));
 		System.out.println("Game state is " + game.getState());
 		if (game.getState() == ECSGameState.NOT_STARTED) {

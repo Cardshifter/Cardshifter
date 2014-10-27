@@ -1,10 +1,10 @@
 package com.cardshifter.core.replays;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 import net.zomis.cardshifter.ecs.config.ConfigComponent;
@@ -58,8 +58,18 @@ public class ReplayPlaybackSystem implements ECSSystem {
 		game.getEntitiesWithComponent(AIComponent.class).forEach(e -> e.getComponent(AIComponent.class).setPaused(true));
 		game.getEvents().registerHandlerAfter(this, StartGameEvent.class, e -> this.onStart(e, game));
 		
-		Set<Entity> players = game.getEntitiesWithComponent(PlayerComponent.class);
+		List<Entity> players = new ArrayList<>(game.getEntitiesWithComponent(PlayerComponent.class));
+//		players.sort(Comparator.comparing(pl -> pl.getComponent(PlayerComponent.class).getIndex()));
+		players.forEach(this::setPlayerName);
 		players.forEach(this::giveReplayControls);
+	}
+	
+	private void setPlayerName(Entity playerEntity) {
+		PlayerComponent playerInfo = playerEntity.getComponent(PlayerComponent.class);
+		int index = playerInfo.getIndex();
+		if (this.replayData.getPlayerNames() != null) {
+			playerInfo.setName(this.replayData.getPlayerNames().get(index));
+		}
 	}
 	
 	private void onStart(StartGameEvent event, ECSGame game) {

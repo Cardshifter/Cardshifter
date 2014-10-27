@@ -54,7 +54,6 @@ public class ReplayAllCommand implements CommandHandle<ReplayAllParameters> {
 	}
 
 	private boolean checkReplay(Server server, File file, String mod) {
-		TCGGame game = (TCGGame) server.createGame(mod);
 		ReplayRecordSystem replay;
 		try {
 			replay = CardshifterIO.mapper().readValue(file, ReplayRecordSystem.class);
@@ -62,6 +61,8 @@ public class ReplayAllCommand implements CommandHandle<ReplayAllParameters> {
 			throw new RuntimeException("Error loading replay: " + e1.getMessage(), e1);
 		}
 		
+		String actualMod = replay.getModName() != null ? replay.getModName() : mod;
+		TCGGame game = (TCGGame) server.createGame(actualMod);
 		ReplayPlaybackSystem playback = new ReplayPlaybackSystem(game.getGameModel(), replay);
 		game.getGameModel().addSystem(playback);
 		FakeClient fake1 = new FakeClient(server, e -> {});
