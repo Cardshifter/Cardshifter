@@ -6,6 +6,8 @@ import com.cardshifter.api.outgoing.UseableActionMessage;
 import com.cardshifter.client.GameClientController;
 
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.ResourceBundle;
 
@@ -37,6 +39,8 @@ public final class CardBattlefieldDocumentController extends CardView implements
 	private final GameClientController controller;
 	private UseableActionMessage message;
 	
+	private Map<String, Integer> cardValues = new HashMap<>();
+	
     public CardBattlefieldDocumentController(CardInfoMessage message, GameClientController controller) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("CardBattlefieldDocument.fxml"));
@@ -63,6 +67,14 @@ public final class CardBattlefieldDocumentController extends CardView implements
 		for (Entry<String, Object> entry : this.card.getProperties().entrySet()) {
 			Object value = entry.getValue();
 			String stringValue = String.valueOf(entry.getValue());
+			String key = entry.getKey();
+			
+			try {
+				this.cardValues.put(key, Integer.parseInt(stringValue));
+			} catch (NumberFormatException e) {
+				System.out.println("Not a number");
+			}
+						
 			switch (entry.getKey()) {
 				case "SICKNESS":
 					int sicknessValue = (Integer) value;
@@ -139,6 +151,7 @@ public final class CardBattlefieldDocumentController extends CardView implements
 		sicknessCircle.setVisible(false);
 	}
 	
+	@Override
 	public void removeCardScrappable() {
 		this.message = null;
 		this.background.setFill(Color.BLACK);
@@ -167,8 +180,18 @@ public final class CardBattlefieldDocumentController extends CardView implements
 	public void updateFields(UpdateMessage message) {
 		if (message.getKey().equals("ATTACK")) {
 			strength.setText(String.format("%d", message.getValue()));
+			if ((int)message.getValue() < this.cardValues.get(message.getKey().toString())) {
+				strength.setTextFill(Color.ORANGE);
+			} else if ((int)message.getValue() > this.cardValues.get(message.getKey().toString())) {
+				strength.setTextFill(Color.GREENYELLOW);
+			}
 		} else if (message.getKey().equals("HEALTH")) {
 			health.setText(String.format("%d", message.getValue()));
+			if ((int)message.getValue() < this.cardValues.get(message.getKey().toString())) {
+				health.setTextFill(Color.ORANGE);
+			} else if ((int)message.getValue() > this.cardValues.get(message.getKey().toString())) {
+				health.setTextFill(Color.GREENYELLOW);
+			}
 		} else if (message.getKey().equals("creatureType")) {
 			creatureType.setText(String.valueOf(message.getValue()));
 		} else if (message.getKey().equals("SICKNESS")) {
