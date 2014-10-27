@@ -25,6 +25,7 @@ public class BattlefieldZoneView extends ZoneView<CardBattlefieldDocumentControl
 		card.setCardTargetable();
 	}
 	
+	@Override
 	public void setCardScrappable(int cardId, UseableActionMessage message) {
 		CardBattlefieldDocumentController card = getCard(cardId);
 		card.setCardScrappable(message);

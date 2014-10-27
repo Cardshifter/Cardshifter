@@ -47,6 +47,7 @@ import com.cardshifter.client.views.CardView;
 import com.cardshifter.client.views.PlayerHandZoneView;
 import com.cardshifter.client.views.ZoneView;
 import javafx.scene.Node;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 public class GameClientController {
@@ -59,10 +60,12 @@ public class GameClientController {
 	@FXML private HBox actionBox;
 	
 	@FXML private HBox opponentHandPane;
+	@FXML private Rectangle opponentTargetRectangle;
 	@FXML private HBox opponentBattlefieldPane;
 	@FXML private Pane opponentDeckPane;
 	@FXML private Label opponentDeckLabel;
 	@FXML private HBox playerHandPane;
+	@FXML private Rectangle playerTargetRectangle;
 	@FXML private HBox playerBattlefieldPane;
 	@FXML private Pane playerDeckPane;
 	@FXML private Label playerDeckLabel;
@@ -143,6 +146,7 @@ public class GameClientController {
 		} else if (message instanceof ResetAvailableActionsMessage) {
 			//this.processResetAvailableActionsMessage((ResetAvailableActionsMessage)message);
 			this.clearSavedActions();
+			this.unhighlightPlayerTargetRectangles();
 		} else if (message instanceof ClientDisconnectedMessage) {
 			this.processClientDisconnectedMessage((ClientDisconnectedMessage)message);
 		} else if (message instanceof GameOverMessage) {
@@ -370,9 +374,8 @@ public class GameClientController {
 					zoneView.setCardTargetable(target);
 				}
 			} else {
-				// automatically target opponent
 				UseableActionMessage newMessage = new UseableActionMessage(message.getEntity(), message.getAction(), false, target);
-				this.createAndSendMessage(newMessage);
+				this.highlightPlayerTargetRectangle(target, newMessage);
 			}
 		}
 		this.createCancelActionsButton();
@@ -449,6 +452,7 @@ public class GameClientController {
 	
 	public void cancelAction() {
 		this.clearActiveFromAllCards();
+		this.unhighlightPlayerTargetRectangles();
 		this.actionBox.getChildren().clear();
 		
 		for (UseableActionMessage message : this.savedMessages) {
@@ -480,6 +484,25 @@ public class GameClientController {
 		if (this.deckEntityIds.containsKey(playerDeckId)) {
 			this.playerDeckLabel.setText(String.format("%d", this.deckEntityIds.get(playerDeckId).size()));
 		}
+	}
+	
+	private void highlightPlayerTargetRectangle(int playerId, UseableActionMessage message) {
+		if (playerId == this.playerId) {
+			this.playerTargetRectangle.setVisible(true);
+			this.playerTargetRectangle.setOnMouseClicked(e -> this.clickToTargetPlayer(e, message));
+		} else if (playerId == this.opponentId) {
+			this.opponentTargetRectangle.setVisible(true);
+			this.opponentTargetRectangle.setOnMouseClicked(e -> this.clickToTargetPlayer(e, message));
+		}
+	}
+	
+	private void unhighlightPlayerTargetRectangles() {
+		this.playerTargetRectangle.setVisible(false);
+		this.opponentTargetRectangle.setVisible(false);
+	}
+	
+	private void clickToTargetPlayer(MouseEvent e, UseableActionMessage message) {
+		this.createAndSendMessage(message);
 	}
 	
 	private void createOpponentHand(ZoneMessage message) {
