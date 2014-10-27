@@ -46,7 +46,7 @@ public class ReplayAllCommand implements CommandHandle<ReplayAllParameters> {
 				}
 			}
 			catch (RuntimeException ex) {
-				command.sendChatResponse("Error checking replay " + file + " with mod " + mod + ": " + ex.getMessage());
+				command.sendChatResponse("Error checking replay " + file + " with mod " + mod + ": " + ex);
 				LogManager.getLogger(getClass()).error("Error checking replay " + file + " with mod " + mod, ex);
 			}
 		}

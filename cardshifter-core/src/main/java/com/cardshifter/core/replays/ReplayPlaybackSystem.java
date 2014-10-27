@@ -108,7 +108,7 @@ public class ReplayPlaybackSystem implements ECSSystem {
 		Entity entity = game.getEntity(step.getEntity());
 		ECSAction action = Actions.getAction(entity, step.getActionName());
 		if (action.getTargetSets().size() != step.getTargets().size()) {
-			throw new RuntimeException("Replay targetsets does not match actual");
+			throw new ReplayException("Number of targetsets does not match for action " + action + " at action index " + currentActionIndex);
 		}
 		
 		for (int i = 0; i < action.getTargetSets().size(); i++) {
@@ -117,13 +117,17 @@ public class ReplayPlaybackSystem implements ECSSystem {
 			
 			targetSet.clearTargets();
 			for (int target : targets) {
-				targetSet.addTarget(game.getEntity(target));
+				Entity targetEntity = game.getEntity(target);
+				if (targetEntity == null) {
+					throw new ReplayException("Target " + target + " not found when performing " + action + " at action index " + currentActionIndex);
+				}
+				targetSet.addTarget(targetEntity);
 			}
 		}
 		
 		boolean performSuccess = action.perform(game.getEntity(step.getPerformer()));
 		if (!performSuccess) {
-			System.out.println("WARNING: Replay action not correctly performed " + action);
+			throw new ReplayException("Replay action not correctly performed " + action + " at action index " + currentActionIndex);
 		}
 		currentActionIndex++;
 	}
