@@ -51,8 +51,11 @@ public class Retrievers {
 			while (clazz != Object.class);
 			return result;
 		});
-		fields.stream().filter(field -> field.getAnnotation(Retriever.class) != null).forEach(field -> injectField(object, field, game));
-		fields.stream().filter(field -> field.getAnnotation(RetrieverSingleton.class) != null).forEach(field -> injectSingleton(object, field, game));
+		AccessController.doPrivileged((PrivilegedAction<Void>)() -> {
+			fields.stream().filter(field -> field.getAnnotation(Retriever.class) != null).forEach(field -> injectField(object, field, game));
+			fields.stream().filter(field -> field.getAnnotation(RetrieverSingleton.class) != null).forEach(field -> injectSingleton(object, field, game));
+			return null;
+		});
 	}
 
 	private static void injectSingleton(Object obj, Field field, ECSGame game) {

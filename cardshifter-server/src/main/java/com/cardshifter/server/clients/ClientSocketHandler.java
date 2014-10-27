@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 import net.zomis.cardshifter.ecs.usage.CardshifterIO;
 
@@ -42,6 +44,10 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 	
 	@Override
 	public void onSendToClient(Message message) {
+		AccessController.doPrivileged((PrivilegedAction<Void>)() -> this.realSend(message));
+	}
+	
+	private Void realSend(Message message) {
 		try {
 			mapper.writeValue(out, message);
 		} catch (JsonProcessingException e) {
@@ -53,6 +59,7 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 			logger.fatal(error, e);
 //			this.disconnected(); // Possibly mark client as disconnected here
 		}
+		return null;
 	}
 
 	@Override
