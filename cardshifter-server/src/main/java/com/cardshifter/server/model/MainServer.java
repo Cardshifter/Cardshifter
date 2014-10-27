@@ -22,10 +22,12 @@ import com.cardshifter.server.commands.AICommand;
 import com.cardshifter.server.commands.AICommand.AICommandParameters;
 import com.cardshifter.server.commands.CommandContext;
 import com.cardshifter.server.commands.EntityCommand;
-import com.cardshifter.server.commands.ReplayCommand;
 import com.cardshifter.server.commands.EntityCommand.EntityInspectParameters;
 import com.cardshifter.server.commands.HelpCommand;
 import com.cardshifter.server.commands.HelpCommand.HelpParameters;
+import com.cardshifter.server.commands.ReplayAllCommand;
+import com.cardshifter.server.commands.ReplayAllCommand.ReplayAllParameters;
+import com.cardshifter.server.commands.ReplayCommand;
 import com.cardshifter.server.commands.ReplayCommand.ReplayParameters;
 import com.cardshifter.server.utils.export.DataExporter;
 
@@ -103,6 +105,7 @@ public class MainServer {
 		commandHandler.addHandler("ent", () -> new EntityInspectParameters(), new EntityCommand());
 		commandHandler.addHandler("threads", cmd -> showAllStackTraces(server, System.out::println));
 		commandHandler.addHandler("replay", () -> new ReplayParameters(), new ReplayCommand());
+		commandHandler.addHandler("allreplays", () -> new ReplayAllParameters(), new ReplayAllCommand());
 	}
 	
 	/**
