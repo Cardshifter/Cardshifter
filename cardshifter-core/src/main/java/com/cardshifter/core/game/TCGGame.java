@@ -256,7 +256,8 @@ public class TCGGame extends ServerGame {
 		
 		if (!preStartForConfiguration()) {
 			this.startECSGame();
-			this.setupAIPlayers();
+			this.setupAIPlayers(); // PlayerComponents needs to be setup first
+			AISystem.call(game);
 		}
 	}
 	
