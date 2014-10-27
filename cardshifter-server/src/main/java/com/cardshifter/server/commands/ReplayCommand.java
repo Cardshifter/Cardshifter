@@ -1,4 +1,4 @@
-package com.cardshifter.server.model;
+package com.cardshifter.server.commands;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,11 +9,13 @@ import net.zomis.cardshifter.ecs.usage.CardshifterIO;
 import com.beust.jcommander.Parameter;
 import com.cardshifter.core.game.FakeClient;
 import com.cardshifter.core.game.TCGGame;
+import com.cardshifter.core.replays.ReplayPlaybackSystem;
 import com.cardshifter.core.replays.ReplayRecordSystem;
 import com.cardshifter.modapi.base.ECSGameState;
-import com.cardshifter.server.commands.CommandContext;
+import com.cardshifter.server.commands.ReplayCommand.ReplayParameters;
+import com.cardshifter.server.model.CommandHandler;
+import com.cardshifter.server.model.GameFactory;
 import com.cardshifter.server.model.CommandHandler.CommandHandle;
-import com.cardshifter.server.model.ReplayCommand.ReplayParameters;
 
 public class ReplayCommand implements CommandHandle<ReplayParameters> {
 

@@ -22,10 +22,11 @@ import com.cardshifter.server.commands.AICommand;
 import com.cardshifter.server.commands.AICommand.AICommandParameters;
 import com.cardshifter.server.commands.CommandContext;
 import com.cardshifter.server.commands.EntityCommand;
+import com.cardshifter.server.commands.ReplayCommand;
 import com.cardshifter.server.commands.EntityCommand.EntityInspectParameters;
 import com.cardshifter.server.commands.HelpCommand;
 import com.cardshifter.server.commands.HelpCommand.HelpParameters;
-import com.cardshifter.server.model.ReplayCommand.ReplayParameters;
+import com.cardshifter.server.commands.ReplayCommand.ReplayParameters;
 import com.cardshifter.server.utils.export.DataExporter;
 
 /**

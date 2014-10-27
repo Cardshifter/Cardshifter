@@ -1,4 +1,4 @@
-package com.cardshifter.server.model;
+package com.cardshifter.core.replays;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -11,8 +11,6 @@ import net.zomis.cardshifter.ecs.config.ConfigComponent;
 
 import com.cardshifter.api.both.PlayerConfigMessage;
 import com.cardshifter.core.game.ServerGame;
-import com.cardshifter.core.replays.ReplayAction;
-import com.cardshifter.core.replays.ReplayRecordSystem;
 import com.cardshifter.modapi.actions.ActionAllowedCheckEvent;
 import com.cardshifter.modapi.actions.ActionComponent;
 import com.cardshifter.modapi.actions.ActionPerformEvent;
