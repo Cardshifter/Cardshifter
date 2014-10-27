@@ -2,17 +2,11 @@
 package com.cardshifter.core.integration;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
-import static org.junit.Assert.*;
+import org.junit.Ignore;
 import org.junit.Test;
 
-import com.cardshifter.core.modloader.LuaMod;
-import com.cardshifter.core.modloader.Mod;
 import com.cardshifter.core.modloader.ModNotLoadableException;
-import com.cardshifter.core.modloader.DirectoryModLoader;
-import org.junit.Ignore;
 
 /**
  *
