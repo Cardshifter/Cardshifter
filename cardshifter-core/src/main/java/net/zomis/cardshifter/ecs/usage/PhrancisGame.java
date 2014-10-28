@@ -17,6 +17,7 @@ import com.cardshifter.modapi.actions.attack.AttackDamageYGO;
 import com.cardshifter.modapi.actions.attack.AttackOnBattlefield;
 import com.cardshifter.modapi.actions.attack.AttackSickness;
 import com.cardshifter.modapi.actions.attack.AttackTargetMinionsFirstThenPlayer;
+import com.cardshifter.modapi.actions.attack.TrampleSystem;
 import com.cardshifter.modapi.actions.enchant.EnchantPerform;
 import com.cardshifter.modapi.actions.enchant.EnchantTargetCreatureTypes;
 import com.cardshifter.modapi.base.Component;
@@ -48,13 +49,11 @@ import com.cardshifter.modapi.resources.ECSResource;
 import com.cardshifter.modapi.resources.ECSResourceMap;
 import com.cardshifter.modapi.resources.GameOverIfNoHealth;
 import com.cardshifter.modapi.resources.ResourceRetriever;
-import com.cardshifter.modapi.resources.Resources;
 import com.cardshifter.modapi.resources.RestoreResourcesToSystem;
 
 public class PhrancisGame implements ECSMod {
 
 	public enum PhrancisResources implements ECSResource {
-		TRAMPLE,
 		MAX_HEALTH,
 		SNIPER,
 		DOUBLE_ATTACK,
@@ -219,12 +218,13 @@ public class PhrancisGame implements ECSMod {
 		game.addSystem(new AttackOnBattlefield());
 		game.addSystem(new AttackSickness(PhrancisResources.SICKNESS));
 		game.addSystem(new AttackTargetMinionsFirstThenPlayer(PhrancisResources.TAUNT));
-		game.addSystem(new AttackDamageYGO(PhrancisResources.ATTACK, PhrancisResources.HEALTH, e -> Resources.getOrDefault(e, PhrancisResources.TRAMPLE, 0) >= 1));
+		game.addSystem(new AttackDamageYGO(PhrancisResources.ATTACK, PhrancisResources.HEALTH));
 		game.addSystem(new UseCostSystem(ATTACK_ACTION, PhrancisResources.ATTACK_AVAILABLE, entity -> 1, entity -> entity));
 		game.addSystem(new RestoreResourcesToSystem(entity -> entity.hasComponent(CreatureTypeComponent.class) 
 				&& Cards.isOnZone(entity, BattlefieldComponent.class), PhrancisResources.ATTACK_AVAILABLE, entity -> 1));
 		game.addSystem(new RestoreResourcesToSystem(entity -> entity.hasComponent(CreatureTypeComponent.class)
 				&& Cards.isOnZone(entity, BattlefieldComponent.class), PhrancisResources.SICKNESS, entity -> 0));
+		game.addSystem(new TrampleSystem(PhrancisResources.HEALTH));
 		
 		// Actions - Enchant
 		game.addSystem(new PlayFromHandSystem(ENCHANT_ACTION));

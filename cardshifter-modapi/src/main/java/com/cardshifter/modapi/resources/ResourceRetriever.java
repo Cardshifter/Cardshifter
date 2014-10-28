@@ -2,6 +2,7 @@ package com.cardshifter.modapi.resources;
 
 import java.util.Objects;
 
+import com.cardshifter.modapi.base.Component;
 import com.cardshifter.modapi.base.Entity;
 
 public class ResourceRetriever {
@@ -22,8 +23,11 @@ public class ResourceRetriever {
 
 	private ECSResourceMap resMap(Entity entity) {
 		Objects.requireNonNull(entity, "Cannot retrieve resource map for null entity");
+		if (entity.isRemoved()) {
+			throw new IllegalArgumentException(entity + " has been marked for removal.");
+		}
 		ECSResourceMap map = entity.getComponent(ECSResourceMap.class);
-		return Objects.requireNonNull(map, entity + " does not have a resource component");
+		return Objects.requireNonNull(map, entity + " does not have a resource component: " + entity.getSuperComponents(Component.class));
 	}
 	
 	public boolean has(Entity entity) {
