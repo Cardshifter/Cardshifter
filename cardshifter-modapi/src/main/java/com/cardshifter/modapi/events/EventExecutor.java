@@ -27,7 +27,7 @@ public class EventExecutor implements EventExecution {
 		this.bindings = new HashMap<Class<? extends IEvent>, Collection<EventHandler<?>>>();
 	}
 	
-	private <T extends IEvent> T executeEvent(T event, Predicate<EventHandler<?>> predicate) {
+	private <T extends IEvent> T executeEventInternal(T event, Predicate<EventHandler<?>> predicate) {
 		Collection<EventHandler<?>> handlers = this.bindings.get(event.getClass());
 		if (handlers != null) {
 			List<EventHandler<?>> interestedHandlers = handlers.stream().filter(predicate).collect(Collectors.toList());
@@ -45,13 +45,13 @@ public class EventExecutor implements EventExecution {
 	@Override
 	public <T extends IEvent> T executePostEvent(T event) {
 		logger.debug("Execute pre event " + event);
-		return executeEvent(event, eh -> eh.isAfter());
+		return executeEventInternal(event, eh -> eh.isAfter());
 	}
 
 	@Override
 	public <T extends IEvent> T executePreEvent(T event) {
 		logger.debug("Execute post event " + event);
-		return executeEvent(event, eh -> !eh.isAfter());
+		return executeEventInternal(event, eh -> !eh.isAfter());
 	}
 
 	/**
@@ -65,6 +65,13 @@ public class EventExecutor implements EventExecution {
 	public <T extends IEvent> T executeEvent(T event, Runnable runInBetween) {
 		executePreEvent(event);
 		runInBetween.run();
+		executePostEvent(event);
+		return event;
+	}
+	
+	public <T extends IEvent> T executeEvent(T event, Consumer<T> runInBetween) {
+		executePreEvent(event);
+		runInBetween.accept(event);
 		executePostEvent(event);
 		return event;
 	}
