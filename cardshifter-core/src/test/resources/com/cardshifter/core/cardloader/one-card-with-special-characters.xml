@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Cards>
+	<Card>
+		<Name>Test #1 Test @2 3. Test's</Name>
+		<Image>test.jpg</Image>
+		<CardType>testcard</CardType>
+		<TR1>5</TR1>
+		<TR2>-6</TR2>
+	</Card>
+</Cards>
