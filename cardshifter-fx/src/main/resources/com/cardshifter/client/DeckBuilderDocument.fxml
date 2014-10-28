@@ -127,11 +127,21 @@
 		<AnchorPane prefHeight="60.0" prefWidth="852.0">
 			<children>
 				<Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="60.0" stroke="BLACK" strokeType="INSIDE" width="852.0" />
-					<Label layoutX="197.0" layoutY="8.0" text="Cardshifter Deck Builder" textFill="WHITE">
-						<font>
-							<Font name="System Bold" size="36.0" />
-						</font>
-					</Label>
+				<Label layoutX="197.0" layoutY="8.0" text="Cardshifter Deck Builder" textFill="WHITE">
+					<font>
+						<Font name="System Bold" size="36.0" />
+					</font>
+				</Label>
+				<AnchorPane fx:id="deckInfoButton" layoutX="724.0" layoutY="8.0" prefHeight="44.0" prefWidth="114.0">
+					<children>
+						<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fcffb2" height="46.0" stroke="BLACK" strokeType="INSIDE" width="114.0" />
+						<Label layoutX="13.0" layoutY="12.0" text="Deck Info">
+							<font>
+								<Font name="System Bold" size="18.0" />
+							</font>
+						</Label>
+					</children>
+				</AnchorPane>
 			</children>
 		</AnchorPane>
 		
@@ -167,6 +177,21 @@
 						<Font name="System Bold" size="18.0" />
 					</font>
 				</Label>
+			</children>
+		</AnchorPane>
+		
+		<AnchorPane fx:id="deckInfoBox" layoutX="570.0" layoutY="59.0" prefHeight="380.0" prefWidth="281.0" visible="false">
+			<children>
+				<ScrollPane prefHeight="380.0" prefWidth="281.0">
+					<content>
+						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="507.0" prefWidth="279.0">
+							<children>
+								<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fcffb2" height="511.0" stroke="BLACK" strokeType="INSIDE" width="281.0" />
+								<VBox fx:id="deckInfoLabelBox" layoutX="5.0" layoutY="6.0" prefHeight="456.0" prefWidth="253.0" />
+							</children>
+						</AnchorPane>
+					</content>
+				</ScrollPane>
 			</children>
 		</AnchorPane>
 	  
