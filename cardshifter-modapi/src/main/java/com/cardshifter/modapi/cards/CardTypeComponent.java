@@ -19,4 +19,9 @@ public class CardTypeComponent extends Component {
 	public String getCardType() {
 		return cardType;
 	}
+	
+	@Override
+	public String toString() {
+		return "CardType: " + cardType;
+	}
 }

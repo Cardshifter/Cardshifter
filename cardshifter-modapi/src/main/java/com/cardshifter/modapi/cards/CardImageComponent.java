@@ -19,4 +19,9 @@ public class CardImageComponent extends Component {
 	public String getCardImage() {
 		return cardImage;
 	}
+	
+	@Override
+	public String toString() {
+		return "CardImage: " + cardImage;
+	}
 }
