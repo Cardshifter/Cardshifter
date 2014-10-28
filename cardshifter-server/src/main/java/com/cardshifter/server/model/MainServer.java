@@ -41,6 +41,9 @@ public class MainServer {
 	 * Server handles incoming messages and passes them to appropriate methods
 	 */
 	private final Server server = new Server();
+	/**
+	 * ModCollection is where the Phrancis mods are initialized
+	 */
 	private final ModCollection mods = new ModCollection();
 
 	private Thread consoleThread;
