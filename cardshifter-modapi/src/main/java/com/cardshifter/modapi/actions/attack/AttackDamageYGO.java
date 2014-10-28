@@ -5,6 +5,7 @@ import java.util.function.Predicate;
 import com.cardshifter.modapi.actions.ActionAllowedCheckEvent;
 import com.cardshifter.modapi.actions.ActionPerformEvent;
 import com.cardshifter.modapi.actions.SpecificActionSystem;
+import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.Entity;
 import com.cardshifter.modapi.base.PlayerComponent;
 import com.cardshifter.modapi.cards.CardComponent;
@@ -35,29 +36,33 @@ public class AttackDamageYGO extends SpecificActionSystem {
 	protected void onPerform(ActionPerformEvent event) {
 		Entity source = event.getEntity();
 		Entity target = event.getAction().getTargetSets().get(0).getChosenTargets().get(0);
+		ECSGame game = event.getEntity().getGame();
 		
 		int attackDamage = attack.getFor(source);
 		int defenseDamage = attack.getFor(target);
 		
 		if (target.hasComponent(PlayerComponent.class)) {
-			damage(attackDamage, target);
+			damage(attackDamage, target, source, game);
 			destroyOrNothing(defenseDamage, source);
 		}
 		else {
 			Entity player = target.getComponent(CardComponent.class).getOwner();
 			int overflowDamage = destroyOrNothing(attackDamage, target);
 			if (overflowDamage > 0 && trample.test(source)) {
-				damage(overflowDamage, player);
+				damage(overflowDamage, player, source, game);
 			}
 			destroyOrNothing(defenseDamage, source);
 		}
 	}
 
-	private void damage(int damage, Entity target) {
-		if (damage <= 0) {
+	private void damage(int damage, Entity target, Entity damagedBy, ECSGame game) {
+		if (damage == 0) {
+			return;
+		}
+		if (damage < 0) {
 			throw new IllegalArgumentException("damage must be positive");
 		}
-		health.resFor(target).change(-damage);
+		game.getEvents().executeEvent(new DamageEvent(target, damagedBy, damage), e -> health.resFor(target).change(-e.getDamage()));
 	}
 
 	private int destroyOrNothing(int damage, Entity target) {
