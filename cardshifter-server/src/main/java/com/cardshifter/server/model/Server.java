@@ -32,8 +32,8 @@ import com.cardshifter.api.outgoing.ServerErrorMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage.Status;
 import com.cardshifter.core.game.ServerGame;
+import com.cardshifter.core.messages.IncomingHandler;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-
 
 /**
  * Handles different parts of the server operations, such as message handling, chat room, game creation, current games
@@ -67,7 +67,7 @@ public class Server implements ClientServerInterface {
 	private final ChatArea mainChat;
 
 	public Server() {
-		this.incomingHandler = new IncomingHandler(this);
+		this.incomingHandler = new IncomingHandler();
 		this.commandHandler = new CommandHandler(this);
 		this.scheduler = Executors.newScheduledThreadPool(2, new ThreadFactoryBuilder().setNameFormat("ai-thread-%d").build());
 		mainChat = this.newChatRoom("Main");

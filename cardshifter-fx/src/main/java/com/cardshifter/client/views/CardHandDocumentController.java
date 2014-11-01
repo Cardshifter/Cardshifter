@@ -33,6 +33,8 @@ public final class CardHandDocumentController extends CardView {
 	private final GameClientController controller;
 	private UseableActionMessage message;
 	
+	//private Map<String, Integer> cardValues = new HashMap<>();
+	
     public CardHandDocumentController(CardInfoMessage message, GameClientController controller) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("CardHandDocument.fxml"));
@@ -92,6 +94,17 @@ public final class CardHandDocumentController extends CardView {
 		for (Entry<String, Object> entry : this.card.getProperties().entrySet()) {
 			String key = entry.getKey();
 			String value = String.valueOf(entry.getValue());
+			
+			//Use this in conjunction with updateFields once the values for cards in hand can be
+			//modified by spells
+			/*
+			try {
+				this.cardValues.put(key, Integer.parseInt(value));
+			} catch (NumberFormatException e) {
+				System.out.println("Not a number");
+			}
+			*/
+			
 			if (key.equals("MANA_COST")) {
 				manaCost.setText(String.format("Mana Cost = %s", value));
 			} else if (key.equals("ATTACK")) {

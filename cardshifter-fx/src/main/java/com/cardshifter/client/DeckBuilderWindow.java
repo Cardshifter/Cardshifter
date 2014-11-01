@@ -45,10 +45,14 @@ public class DeckBuilderWindow {
 	@FXML private AnchorPane nextPage;
 	@FXML private AnchorPane saveDeckButton;
 	@FXML private AnchorPane loadDeckButton;
+	@FXML private AnchorPane clearDeckButton;
 	@FXML private TextField deckNameBox;
 	@FXML private AnchorPane exitButton;
 	@FXML private AnchorPane deleteButton;
 	@FXML private Label cardCountLabel;
+	@FXML private AnchorPane deckInfoBox;
+	@FXML private AnchorPane deckInfoButton;
+	@FXML private VBox deckInfoLabelBox;
 	
 	private static final int CARDS_PER_PAGE = 12;
 	private int currentPage = 0;
@@ -69,9 +73,11 @@ public class DeckBuilderWindow {
 		this.previousPage.setOnMouseClicked(this::goToPreviousPage);
 		this.nextPage.setOnMouseClicked(this::goToNextPage);
 		this.exitButton.setOnMouseClicked(this::startGame);
+		this.deckInfoButton.setOnMouseClicked(this::toggleDeckInfoBox);
 		this.saveDeckButton.setOnMouseClicked(this::saveDeck);
 		this.loadDeckButton.setOnMouseClicked(this::loadDeck);
 		this.deleteButton.setOnMouseClicked(this::deleteDeck);
+		this.clearDeckButton.setOnMouseClicked(this::clickedClearDeckButton);
 		this.activeDeckBox.setOnDragDropped(e -> this.completeDragToActiveDeck(e, true));
 		this.activeDeckBox.setOnDragOver(e -> this.completeDragToActiveDeck(e, false));
 		
@@ -79,8 +85,8 @@ public class DeckBuilderWindow {
 		Collections.sort(sortedCardList, Comparator.comparingInt(msg -> msg.getId()));
 		this.pageList = listSplitter(sortedCardList, CARDS_PER_PAGE);
 		
-		this.displayCurrentPage();
 		this.displaySavedDecks();
+		this.clearDeck();
 	}
 	
 	public void disableGameStart() {
@@ -198,7 +204,89 @@ public class DeckBuilderWindow {
 	public void setDeckToLoad(String deckName) {
 		this.deckToLoad = deckName;
 	}
+	
+	private void clickedClearDeckButton(MouseEvent event) {
+		this.clearDeck();
+	}
+	
+	private void toggleDeckInfoBox(MouseEvent event) {
+		if (this.deckInfoBox.isVisible()) {
+			this.deckInfoBox.setVisible(false);
+		} else {
+			this.deckInfoBox.setVisible(true);
+			this.buildDeckInfoBox();
+		}
+	}
+	
+	private void buildDeckInfoBox() {
+		this.deckInfoLabelBox.getChildren().clear();
+		
+		Map<Integer, Integer> manaCostValues = new HashMap<>();
+		Map<Integer, Integer> scrapCostValues = new HashMap<>();
+		Map<String, Integer> creatureTypes = new HashMap<>();
+		
+		for (int cardId : this.activeDeckConfig.getChosen().keySet()) {
+			
+			CardInfoMessage card = this.cardList.get(cardId);
+			int cardCount = this.activeDeckConfig.getChosen().get(cardId);
+			
+			for (Map.Entry<String, Object> entry : card.getProperties().entrySet()) {
+				String key = entry.getKey();
+				String value = String.valueOf(entry.getValue());
+			
+				//The value is used as the key for the new map
+				//increment the number of cards and put it back in the map
+				if (key.equals("creatureType")) {
+					if (creatureTypes.get(value) == null) {
+						creatureTypes.put(value, cardCount);
+					} else {
+						int creatureCount = creatureTypes.get(value);
+						int newCreatureCount = creatureCount + cardCount;
+						creatureTypes.put(value, newCreatureCount);
+					}
+				} else if (key.equals("MANA_COST")) {
+					if (manaCostValues.get(Integer.parseInt(value)) == null) {
+						manaCostValues.put(Integer.parseInt(value), cardCount);
+					} else {
+						int manaCostCount = manaCostValues.get(Integer.parseInt(value));
+						int newManaCostCount = manaCostCount + cardCount;
+						manaCostValues.put(Integer.parseInt(value), newManaCostCount);
+					}
+				} else if (key.equals("SCRAP_COST")) {
+					if (scrapCostValues.get(Integer.parseInt(value)) == null) {
+						scrapCostValues.put(Integer.parseInt(value), cardCount);
+					} else {
+						int scrapCostCount = scrapCostValues.get(Integer.parseInt(value));
+						int newScrapCostCount = scrapCostCount + cardCount;
+						scrapCostValues.put(Integer.parseInt(value), newScrapCostCount);
+					}
+				}
+			}
+		}
+		
+		for (int manaCost : manaCostValues.keySet()) {
+			Label manaCostLabel = new Label();
+			manaCostLabel.setText(String.format("Mana Cost = %d, Count = %d", manaCost, manaCostValues.get(manaCost)));
+			this.deckInfoLabelBox.getChildren().add(manaCostLabel);
+		}
+		for (int scrapCost : scrapCostValues.keySet()) {
+			Label scrapCostLabel = new Label();
+			scrapCostLabel.setText(String.format("Scrap Cost = %d, Count = %d", scrapCost, scrapCostValues.get(scrapCost)));
+			this.deckInfoLabelBox.getChildren().add(scrapCostLabel);
+		}
+		for (String creatureType : creatureTypes.keySet()) {
+			Label creatureTypeLabel = new Label();
+			creatureTypeLabel.setText(String.format("Creature Type %s, Count = %d", creatureType, creatureTypes.get(creatureType)));
+			this.deckInfoLabelBox.getChildren().add(creatureTypeLabel);
+		}
+	}
 
+	private void clearDeck() {		
+		this.activeDeckConfig.clearChosen();
+		this.displayActiveDeck();
+		this.displayCurrentPage();
+	}
+	
 	private void saveDeck(MouseEvent event) {
 		if(!this.deckNameBox.textProperty().get().isEmpty()) {
 			try {

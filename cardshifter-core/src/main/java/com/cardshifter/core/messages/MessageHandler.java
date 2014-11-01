@@ -1,4 +1,4 @@
-package com.cardshifter.server.model;
+package com.cardshifter.core.messages;
 
 import com.cardshifter.api.ClientIO;
 import com.cardshifter.api.messages.Message;

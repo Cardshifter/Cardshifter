@@ -67,6 +67,10 @@ public class DeckConfig {
 		return Collections.unmodifiableMap(chosen);
 	}
 	
+	public void clearChosen() {
+		chosen.clear();
+	}
+	
 	public Map<Integer, Integer> getMax() {
 		return new HashMap<>(max);
 	}

@@ -25,13 +25,28 @@ import com.cardshifter.core.modloader.ModNotLoadableException;
 import com.cardshifter.modapi.ai.CardshifterAI;
 import com.cardshifter.modapi.base.ECSMod;
 
+/**
+ * Class where the Mods and AIs are initialized.
+ * 
+ * @author Simon Forsberg
+ */
 public class ModCollection {
 
 	private static final Logger logger = LogManager.getLogger(ModCollection.class);
 	
+	/**
+	 * All the AIs to initialize.
+	 */
 	private final Map<String, CardshifterAI> ais = new LinkedHashMap<>();
+	
+	/**
+	 * All the mods to initialize.
+	 */
 	private final Map<String, ECSMod> mods = new HashMap<>();
 	
+	/**
+	 * Initializes the AIs and Mods and puts them in the collections.
+	 */
 	public ModCollection() {
 		ais.put("Loser", new ScoringAI(AIs.loser()));
 		ais.put("Idiot", new ScoringAI(AIs.idiot()));
@@ -43,6 +58,11 @@ public class ModCollection {
 		mods.put("With spells", new PhrancisGameWithSpells());
 	}
 	
+	/**
+	 * Load all the external mods inside a directory
+	 * 
+	 * @param directory The directory to search for more mods.
+	 */
 	public void loadExternal(Path directory) {
 		if (!Files.isDirectory(directory)) {
 			logger.warn(directory + " not found. No external mods loaded");
@@ -60,10 +80,18 @@ public class ModCollection {
 		}
 	}
 	
+	/**
+	 * 
+	 * @return The CardshifterAI objects.
+	 */
 	public Map<String, CardshifterAI> getAIs() {
 		return Collections.unmodifiableMap(ais);
 	}
 	
+	/**
+	 * 
+	 * @return The ECSMod objects.
+	 */
 	public Map<String, ECSMod> getMods() {
 		return Collections.unmodifiableMap(mods);
 	}
