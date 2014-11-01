@@ -51,7 +51,7 @@ To send a request for starting a game, use [`StartGameRequest`](https://github.c
 Running cardshifter-server from within the IDE
 ----------------------------------------------
 
-In order to run the cardshifter-server module from within your IDE, you will need to run it with JVM arguments `-Djava.security.manager -Djava.security.policy==server.policy`.
+In order to run the cardshifter-server module from within your IDE, you will need to run it with JVM arguments `-Djava.security.manager -Djava.security.policy==server.policy`. For Netbeans, open up the Project Properties for the cardshifter-server project.  Then go to Run, and add the above JVM arguments to the VM Options box.
 
 Running cardshifter-server standalone
 -------------------------------------
