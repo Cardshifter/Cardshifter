@@ -21,6 +21,7 @@ import com.cardshifter.api.outgoing.UserStatusMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage.Status;
 import com.cardshifter.api.outgoing.WaitMessage;
 import com.cardshifter.api.outgoing.WelcomeMessage;
+import com.cardshifter.core.game.FakeClient;
 import com.cardshifter.core.game.ServerGame;
 import com.cardshifter.core.game.TCGGame;
 
@@ -39,6 +40,21 @@ public class Handlers {
 				for (ClientIO cl : server.getClients().values()) {
 					client.sendToClient(new UserStatusMessage(cl.getId(), cl.getName(), Status.ONLINE));
 				}
+				break;
+			case DECK_BUILDER:
+				GameFactory factory = server.getGameFactories().get(message.getMessage());
+				if (factory == null) {
+					client.sendToClient(new ServerErrorMessage("No such game factory found"));
+					return;
+				}
+				
+				TCGGame game = (TCGGame) server.createGame(message.getMessage());
+				game.addPlayer(client);
+				game.addPlayer(new FakeClient(server, e -> {}));
+				if (!game.preStartForConfiguration()) {
+					client.sendToClient(new ServerErrorMessage("There is no configuration required for mod " + message.getMessage()));
+				}
+				
 				break;
 			default:
 				client.sendToClient(new ServerErrorMessage("No such query request"));

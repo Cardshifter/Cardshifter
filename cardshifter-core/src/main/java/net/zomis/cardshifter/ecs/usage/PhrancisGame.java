@@ -3,6 +3,13 @@ package net.zomis.cardshifter.ecs.usage;
 import java.util.Map.Entry;
 import java.util.function.UnaryOperator;
 
+import net.zomis.cardshifter.ecs.config.ConfigComponent;
+import net.zomis.cardshifter.ecs.config.DeckConfig;
+import net.zomis.cardshifter.ecs.effects.EffectActionSystem;
+import net.zomis.cardshifter.ecs.effects.EffectComponent;
+import net.zomis.cardshifter.ecs.effects.EffectTargetFilterSystem;
+import net.zomis.cardshifter.ecs.effects.FilterComponent;
+
 import com.cardshifter.modapi.actions.ActionComponent;
 import com.cardshifter.modapi.actions.ECSAction;
 import com.cardshifter.modapi.actions.UseCostSystem;
@@ -10,6 +17,7 @@ import com.cardshifter.modapi.actions.attack.AttackDamageYGO;
 import com.cardshifter.modapi.actions.attack.AttackOnBattlefield;
 import com.cardshifter.modapi.actions.attack.AttackSickness;
 import com.cardshifter.modapi.actions.attack.AttackTargetMinionsFirstThenPlayer;
+import com.cardshifter.modapi.actions.attack.TrampleSystem;
 import com.cardshifter.modapi.actions.enchant.EnchantPerform;
 import com.cardshifter.modapi.actions.enchant.EnchantTargetCreatureTypes;
 import com.cardshifter.modapi.base.Component;
@@ -41,13 +49,11 @@ import com.cardshifter.modapi.resources.ECSResource;
 import com.cardshifter.modapi.resources.ECSResourceMap;
 import com.cardshifter.modapi.resources.GameOverIfNoHealth;
 import com.cardshifter.modapi.resources.ResourceRetriever;
-import com.cardshifter.modapi.resources.Resources;
 import com.cardshifter.modapi.resources.RestoreResourcesToSystem;
 
 public class PhrancisGame implements ECSMod {
 
 	public enum PhrancisResources implements ECSResource {
-		TRAMPLE,
 		MAX_HEALTH,
 		SNIPER,
 		DOUBLE_ATTACK,
@@ -175,7 +181,7 @@ public class PhrancisGame implements ECSMod {
 			
 			ConfigComponent config = player.getComponent(ConfigComponent.class);
 			DeckConfig deckConf = config.getConfig(DeckConfig.class);
-			if (deckConf.getTotal() < deckConf.getMinSize()) {
+			if (deckConf.total() < deckConf.getMinSize()) {
 				deckConf.generateRandom();
 			}
 			
@@ -212,12 +218,13 @@ public class PhrancisGame implements ECSMod {
 		game.addSystem(new AttackOnBattlefield());
 		game.addSystem(new AttackSickness(PhrancisResources.SICKNESS));
 		game.addSystem(new AttackTargetMinionsFirstThenPlayer(PhrancisResources.TAUNT));
-		game.addSystem(new AttackDamageYGO(PhrancisResources.ATTACK, PhrancisResources.HEALTH, e -> Resources.getOrDefault(e, PhrancisResources.TRAMPLE, 0) >= 1));
+		game.addSystem(new AttackDamageYGO(PhrancisResources.ATTACK, PhrancisResources.HEALTH));
 		game.addSystem(new UseCostSystem(ATTACK_ACTION, PhrancisResources.ATTACK_AVAILABLE, entity -> 1, entity -> entity));
 		game.addSystem(new RestoreResourcesToSystem(entity -> entity.hasComponent(CreatureTypeComponent.class) 
 				&& Cards.isOnZone(entity, BattlefieldComponent.class), PhrancisResources.ATTACK_AVAILABLE, entity -> 1));
 		game.addSystem(new RestoreResourcesToSystem(entity -> entity.hasComponent(CreatureTypeComponent.class)
 				&& Cards.isOnZone(entity, BattlefieldComponent.class), PhrancisResources.SICKNESS, entity -> 0));
+		game.addSystem(new TrampleSystem(PhrancisResources.HEALTH));
 		
 		// Actions - Enchant
 		game.addSystem(new PlayFromHandSystem(ENCHANT_ACTION));
@@ -245,6 +252,7 @@ public class PhrancisGame implements ECSMod {
 		
 		// General setup
 		game.addSystem(new GameOverIfNoHealth(PhrancisResources.HEALTH));
+		game.addSystem(new LastPlayersStandingEndsGame());
 		game.addSystem(new RemoveDeadEntityFromZoneSystem());
 		game.addSystem(new PerformerMustBeCurrentPlayer());
 		

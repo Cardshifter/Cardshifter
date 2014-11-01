@@ -1,4 +1,4 @@
-package net.zomis.cardshifter.ecs.usage;
+package net.zomis.cardshifter.ecs.config;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,12 +11,7 @@ import net.zomis.cardshifter.ecs.EntitySerialization;
 
 import com.cardshifter.api.outgoing.CardInfoMessage;
 import com.cardshifter.modapi.base.Entity;
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
-@JsonAutoDetect(fieldVisibility = Visibility.ANY)
 public class DeckConfig {
 
 	private final Map<Integer, CardInfoMessage> cardData = new HashMap<>();
@@ -26,7 +21,6 @@ public class DeckConfig {
 	private final int maxSize;
 	private final int maxPerCard;
 	
-	@JsonCreator
 	DeckConfig() {
 		this(0, 0, new ArrayList<>(), 0);
 	}
@@ -85,8 +79,7 @@ public class DeckConfig {
 		return maxPerCard;
 	}
 	
-	@JsonIgnore
-	public int getTotal() {
+	public int total() {
 		return chosen.values().stream().mapToInt(i -> i).sum();
 	}
 	
@@ -98,13 +91,18 @@ public class DeckConfig {
 	public void generateRandom() {
 		Random random = new Random();
 		List<Integer> ids = new ArrayList<>(this.getCardData().keySet());
-		while (this.getTotal() < this.getMinSize()) {
-			this.setChosen(ids.get(random.nextInt(ids.size())), this.getMaxPerCard());
+		while (this.total() < this.getMinSize()) {
+			int randomId = ids.get(random.nextInt(ids.size()));
+			this.setChosen(randomId, this.getMaxFor(randomId));
 		}
 	}
 	
 	public void add(int cardId) {
 		chosen.merge(cardId, 1, (a, b) -> a + b);
+	}
+	
+	public int getMaxFor(int id) {
+		return this.max.getOrDefault(id, maxPerCard);
 	}
 
 }

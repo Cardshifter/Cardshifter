@@ -8,14 +8,15 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import net.zomis.cardshifter.ecs.usage.ConfigComponent;
-import net.zomis.cardshifter.ecs.usage.DeckConfig;
+import net.zomis.cardshifter.ecs.config.ConfigComponent;
+import net.zomis.cardshifter.ecs.config.DeckConfig;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame.PhrancisResources;
 
 import org.junit.Test;
 
 import com.cardshifter.modapi.actions.ECSAction;
+import com.cardshifter.modapi.actions.attack.TrampleSystem;
 import com.cardshifter.modapi.base.ComponentRetriever;
 import com.cardshifter.modapi.base.CreatureTypeComponent;
 import com.cardshifter.modapi.base.ECSGame;
@@ -175,7 +176,7 @@ public class PhrancisTest extends GameTest {
 	@Test
 	public void trample() {
 		Entity attacker = mod.createCreature(0, field.get(currentPlayer()), 10, 1, "B0T", 0);
-		Resources.retriever(PhrancisResources.TRAMPLE).resFor(attacker).set(1);
+		Resources.retriever(TrampleSystem.trample).resFor(attacker).set(1);
 		
 		Entity defender = mod.createCreature(0, field.get(opponent()), 3, 3, "Bio", 0);
 		nextPhase();

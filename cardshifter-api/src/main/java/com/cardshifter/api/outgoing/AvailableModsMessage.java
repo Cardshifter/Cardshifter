@@ -20,4 +20,9 @@ public class AvailableModsMessage extends Message {
 		return Arrays.copyOf(mods, mods.length);
 	}
 
+	@Override
+	public String toString() {
+		return "AvailableModsMessage [mods=" + Arrays.toString(mods) + "]";
+	}
+	
 }

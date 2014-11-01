@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
+import net.zomis.cardshifter.ecs.effects.EffectActionSystem;
 import net.zomis.cardshifter.ecs.usage.cw2.CrystalCards;
 import net.zomis.cardshifter.ecs.usage.cw2.DiscardExchangeSystem;
 

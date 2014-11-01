@@ -1,4 +1,4 @@
-package net.zomis.cardshifter.ecs.usage;
+package net.zomis.cardshifter.ecs.effects;
 
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
@@ -9,8 +9,6 @@ import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.ECSSystem;
 import com.cardshifter.modapi.base.Entity;
 import com.cardshifter.modapi.cards.BattlefieldComponent;
-import com.cardshifter.modapi.cards.CardComponent;
-import com.cardshifter.modapi.cards.Cards;
 import com.cardshifter.modapi.cards.ZoneChangeEvent;
 import com.cardshifter.modapi.events.EntityRemoveEvent;
 import com.cardshifter.modapi.events.IEvent;
@@ -43,17 +41,6 @@ public class Effects {
 		return new EffectComponent("For each " + filter + ", " + consumer, effect);
 	}
 	
-	public EffectComponent scrapAll() {
-		GameEffect effect = event -> event.getEntity().getGame()
-			.findEntities(e -> e.hasComponent(CardComponent.class) && Cards.isOnZone(e, BattlefieldComponent.class))
-			.forEach(e -> forceScrap(e));
-		return new EffectComponent("Scrap ALL Minions", effect);
-	}
-	
-	private void forceScrap(Entity entity) {
-		entity.getGame().findSystemsOfClass(ScrapSystem.class).forEach(sys -> sys.forceScrap(entity));
-	}
-
 	public EffectComponent giveTarget(ECSResource resource, int value) {
 		ResourceRetriever res = ResourceRetriever.forResource(resource);
 		GameEffect effect = event -> event.getAction().getAllTargets().forEach(e -> res.resFor(e).change(value));

@@ -1,4 +1,4 @@
-package net.zomis.cardshifter.ecs.usage;
+package net.zomis.cardshifter.ecs.config;
 
 import java.util.HashMap;
 import java.util.Map;

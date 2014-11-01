@@ -51,18 +51,24 @@ public class Retrievers {
 			while (clazz != Object.class);
 			return result;
 		});
-		fields.stream().filter(field -> field.getAnnotation(Retriever.class) != null).forEach(field -> injectField(object, field, game));
-		fields.stream().filter(field -> field.getAnnotation(RetrieverSingleton.class) != null).forEach(field -> injectSingleton(object, field, game));
+		AccessController.doPrivileged((PrivilegedAction<Void>)() -> {
+			fields.stream().filter(field -> field.getAnnotation(Retriever.class) != null).forEach(field -> injectField(object, field, game));
+			fields.stream().filter(field -> field.getAnnotation(RetrieverSingleton.class) != null).forEach(field -> injectSingleton(object, field, game));
+			return null;
+		});
 	}
 
 	private static void injectSingleton(Object obj, Field field, ECSGame game) {
 		Class<? extends Component> clazz = field.getType().asSubclass(Component.class);
-		field.setAccessible(true);
-		try {
-			field.set(obj, Retrievers.singleton(game, clazz));
-		} catch (IllegalArgumentException | IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
+		AccessController.doPrivileged((PrivilegedAction<Void>)() -> {
+			field.setAccessible(true);
+			try {
+				field.set(obj, Retrievers.singleton(game, clazz));
+			} catch (IllegalArgumentException | IllegalAccessException e) {
+				throw new RuntimeException(e);
+			}
+			return null;
+		});
 	}
 
 	private static void injectField(Object obj, Field field, ECSGame game) {

@@ -48,13 +48,9 @@ public abstract class ServerGame {
 	}
 
 	/**
-	 * Checks if the game is already over, sets state if not and sends a message to players
+	 * Sends information to clients that the game has been ended
 	 */
 	public void endGame() {
-		if (game.isGameOver()) {
-			logger.warn("Game was already ended, ignoring second call.", new IllegalStateException("Game can only be ended once"));
-			return;
-		}
 		logger.info("Game Ended: " + this + " with players " + players);
 		this.send(new GameOverMessage());
 		this.active = Instant.now();
@@ -77,7 +73,7 @@ public abstract class ServerGame {
 		if (game.getGameState() != ECSGameState.NOT_STARTED) {
 			throw new IllegalStateException("Game can only be started once");
 		}
-		this.players.addAll(players);
+		players.forEach(this::addPlayer);
 		for (ClientIO player : players) {
 			player.sendToClient(new NewGameMessage(this.id, players.indexOf(player)));
 		}
@@ -142,6 +138,10 @@ public abstract class ServerGame {
 	 */
 	public boolean hasPlayer(ClientIO client) {
 		return players.contains(client);
+	}
+
+	public void addPlayer(ClientIO client) {
+		 this.players.add(client);
 	}
 	
 }

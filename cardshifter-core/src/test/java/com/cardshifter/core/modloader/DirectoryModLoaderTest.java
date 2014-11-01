@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Properties;
 
 import org.junit.Test;
@@ -50,5 +52,13 @@ public class DirectoryModLoaderTest {
 		assertTrue(modLoader.getLoadedMods().containsKey(MOD_NAME));
 		
 		assertEquals(mod, modLoader.getLoadedMods().get(MOD_NAME));
+	}
+	
+	@Test
+	public void testGetAvailableMods() throws URISyntaxException {
+		Path testResourcesPath = Paths.get(getClass().getClassLoader().getResource("com/cardshifter/core/integration/").toURI());
+		ModLoader modLoader = new DirectoryModLoader(testResourcesPath);
+		
+		assertEquals(Arrays.asList(MOD_NAME), modLoader.getAvailableMods());
 	}
 }
