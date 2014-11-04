@@ -44,18 +44,18 @@ public class XmlCardLoader implements CardLoader<Path> {
 			Cards cards = xmlMapper.readValue(path.toFile(), Cards.class);
 			
 			Map<String, ECSResource> ecsResourcesMap = Arrays.stream(resources)
-				.collect(Collectors.toMap(ECSResource::toString, i -> i));
+				.collect(Collectors.toMap(ecsResource -> CardLoaderHelper.sanitizeTag(ecsResource.toString()), i -> i));
 			
 			return cards.getCards().stream()
 				.map(card -> {
 					Entity entity = entitySupplier.get();
 					ECSResourceMap resourceMap = ECSResourceMap.createFor(entity);
 
-					card.getResources().forEach((name, value) -> {
-						if (!ecsResourcesMap.containsKey(name)) {
-							throw new UncheckedCardLoadingException("Resource " + name + " has not been found in the supplied resource mapping");
+					card.getResources().forEach((sanitizedName, value) -> {
+						if (!ecsResourcesMap.containsKey(sanitizedName)) {
+							throw new UncheckedCardLoadingException("Resource " + sanitizedName + " has not been found in the supplied resource mapping");
 						}
-						resourceMap.set(ecsResourcesMap.get(name), value);
+						resourceMap.set(ecsResourcesMap.get(sanitizedName), value);
 					});
 					
 					if (card.getName() != null) {
@@ -110,11 +110,12 @@ public class XmlCardLoader implements CardLoader<Path> {
 
 		@JsonAnySetter
 		private void addResource(final String name, final Object value) {
-			if (resources.containsKey(name)) {
+			String sanitizedName = CardLoaderHelper.sanitizeTag(name);
+			if (resources.containsKey(sanitizedName)) {
 				duplicateResources = true;
-				duplicateResourceNames.add(name);
+				duplicateResourceNames.add(sanitizedName);
 			}
-			resources.put(name, Integer.parseInt(value.toString()));
+			resources.put(sanitizedName, Integer.parseInt(value.toString()));
 		}
 
 		public String getName() {

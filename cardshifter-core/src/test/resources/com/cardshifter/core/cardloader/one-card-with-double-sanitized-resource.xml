@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Cards>
+	<Card>
+		<Name>Test 1</Name>
+		<MAX_HEALTH>10</MAX_HEALTH>
+		<MaxHealth>10</MaxHealth>
+	</Card>
+</Cards>
