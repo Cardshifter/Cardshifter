@@ -44,7 +44,13 @@ public class XmlCardLoader implements CardLoader<Path> {
 			Cards cards = xmlMapper.readValue(path.toFile(), Cards.class);
 			
 			Map<String, ECSResource> ecsResourcesMap = Arrays.stream(resources)
-				.collect(Collectors.toMap(ecsResource -> CardLoaderHelper.sanitizeTag(ecsResource.toString()), i -> i));
+				.collect(Collectors.toMap(
+					ecsResource -> CardLoaderHelper.sanitizeTag(ecsResource.toString()), 
+					i -> i,
+					(v1, v2) -> {
+						throw new UncheckedCardLoadingException("Duplicate sanitized resources have been found in the supplied ECSResources.");
+					}
+				));
 			
 			return cards.getCards().stream()
 				.map(card -> {

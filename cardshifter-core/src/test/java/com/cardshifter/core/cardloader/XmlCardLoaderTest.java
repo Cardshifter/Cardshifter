@@ -30,6 +30,10 @@ public class XmlCardLoaderTest {
 		MAX_HEALTH;
 	}
 	
+	private static enum DuplicateHealthResources implements ECSResource {
+		MAX_HEALTH, MAXHEALTH, maxhealth;
+	}
+	
 	@Test
 	public void testLoadNoCards() throws URISyntaxException, CardLoadingException {
 		Path xmlFile = Paths.get(getClass().getResource("no-cards.xml").toURI());
@@ -185,6 +189,16 @@ public class XmlCardLoaderTest {
 		Entity card4 = findEntityWithName(entities, "Test 4");
 		assertEquals("Test 4", card4.getComponent(NameComponent.class).getName());
 		assertEquals(10, card4.getComponent(ECSResourceMap.class).getResource(HealthResources.MAX_HEALTH).get());
+	}
+	
+	@Test(expected = CardLoadingException.class)
+	public void testLoadFourCardsSanitizedIncorrectHealthResourcesMapping() throws URISyntaxException, CardLoadingException {
+		Path xmlFile = Paths.get(getClass().getResource("four-cards-sanitized.xml").toURI());
+		
+		ECSGame game = new ECSGame();
+		
+		XmlCardLoader xmlCardLoader = new XmlCardLoader();
+		xmlCardLoader.loadCards(xmlFile, game::newEntity, DuplicateHealthResources.values());
 	}
 	
 	@Test(expected = CardLoadingException.class)
