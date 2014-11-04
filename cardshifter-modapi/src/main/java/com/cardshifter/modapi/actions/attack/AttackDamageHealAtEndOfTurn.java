@@ -12,6 +12,12 @@ import com.cardshifter.modapi.phase.PhaseEndEvent;
 import com.cardshifter.modapi.resources.ECSResource;
 import com.cardshifter.modapi.resources.ResourceRetriever;
 
+/**
+ * Return the health of all units on the battlefield to full at
+ * the end of the turn.
+ * 
+ * @author Simon Forsberg
+ */
 public class AttackDamageHealAtEndOfTurn implements ECSSystem {
 
 	private final ResourceRetriever health;
@@ -22,11 +28,22 @@ public class AttackDamageHealAtEndOfTurn implements ECSSystem {
 		this.maxHealth = ResourceRetriever.forResource(maxHealth);
 	}
 	
+	/**
+	 * Registers with PhaseEndEvent.
+	 * 
+	 * @param game The game to register with
+	 */
 	@Override
 	public void startGame(ECSGame game) {
 		game.getEvents().registerHandlerAfter(this, PhaseEndEvent.class, this::heal);
 	}
 	
+	/**
+	 * Gets all the entities of the owner of the supplied event that are on the battlefield;
+	 * If the maxHealth resource has the card entity, its health is set to the maxHealth value.
+	 * 
+	 * @param event The PhaseEndEvent object
+	 */
 	private void heal(PhaseEndEvent event) {
 		Entity owner = event.getOldPhase().getOwner();
 		if (owner == null) {
