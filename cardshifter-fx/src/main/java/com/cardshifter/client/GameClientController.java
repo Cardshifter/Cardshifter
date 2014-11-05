@@ -127,6 +127,7 @@ public class GameClientController {
 		return incomingHandler;
 	}
 	public void performIncoming(Message message) {
+		//functionality not yet complete
 		getIncomingHandler().perform(message, null);
 	}
 
@@ -152,7 +153,7 @@ public class GameClientController {
 		//for diagnostics in console
 		System.out.println(message.toString());
 
-		this.performIncoming(message);
+		//this.performIncoming(message);
 		
 		if (message instanceof WelcomeMessage) {
 			Platform.runLater(() -> loginMessage.setText(message.toString()));
