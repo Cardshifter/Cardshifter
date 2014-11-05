@@ -187,6 +187,24 @@ public class XmlCardLoaderTest {
 		assertEquals(10, HealthResources.MAX_HEALTH.getFor(card4));
 	}
 	
+	@Test
+	public void testLoadTwoCardsVerifyIntegerAttribute() throws URISyntaxException, CardLoadingException {
+		Path xmlFile = Paths.get(getClass().getResource("two-cards-verify-integer-attribute.xml").toURI());
+		
+		ECSGame game = new ECSGame();
+		
+		XmlCardLoader xmlCardLoader = new XmlCardLoader();
+		Collection<Entity> entities = xmlCardLoader.loadCards(xmlFile, game::newEntity, null, NameAttributes.values());
+		
+		Entity card = findEntityWithId(entities, "1");
+		assertEquals("1", card.getComponent(IdComponent.class).getId());
+		assertEquals("Test", NameAttributes.NAME.getFor(card));
+		
+		Entity card2 = findEntityWithId(entities, "2");
+		assertEquals("2", card2.getComponent(IdComponent.class).getId());
+		assertEquals("666", NameAttributes.NAME.getFor(card2));
+	}
+	
 	@Test(expected = CardLoadingException.class)
 	public void testLoadFourCardsSanitizedIncorrectHealthResourcesMapping() throws URISyntaxException, CardLoadingException {
 		Path xmlFile = Paths.get(getClass().getResource("four-cards-sanitized.xml").toURI());

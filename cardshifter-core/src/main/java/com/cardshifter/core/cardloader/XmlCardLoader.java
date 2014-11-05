@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -42,14 +41,14 @@ public class XmlCardLoader implements CardLoader<Path> {
 		Objects.requireNonNull(path, "path");
 		Objects.requireNonNull(entitySupplier, "entitySupplier");
 		
-		ECSResource[] resourcesCopy = (resources == null) ? new ECSResource[0] : resources;
-		ECSAttribute[] attributesCopy = (attributes == null) ? new ECSAttribute[0] : attributes;
+		List<ECSResource> resourcesList = (resources == null) ? Arrays.asList() : Arrays.asList(resources);
+		List<ECSAttribute> attributesList = (attributes == null) ? Arrays.asList() : Arrays.asList(attributes);
 		
 		try {
 			ObjectMapper xmlMapper = new XmlMapper();
 			Cards cards = xmlMapper.readValue(path.toFile(), Cards.class);
 			
-			List<String> tags = Stream.concat(Arrays.stream(resourcesCopy), Arrays.stream(attributesCopy))
+			List<String> tags = Stream.concat(resourcesList.stream(), attributesList.stream())
 				.map(ecsElement -> sanitizeTag(ecsElement.toString()))
 				.collect(Collectors.toList());
 			
@@ -69,10 +68,10 @@ public class XmlCardLoader implements CardLoader<Path> {
 				throw new UncheckedCardLoadingException("Tags " + duplicateTags + " have been input multiple times, this is not allowed.");
 			}
 			
-			Map<String, ECSResource> ecsResourcesMap = Arrays.stream(resourcesCopy)
+			Map<String, ECSResource> ecsResourcesMap = resourcesList.stream()
 				.collect(Collectors.toMap(ecsResource -> sanitizeTag(ecsResource.toString()), i -> i));
 			
-			Map<String, ECSAttribute> ecsAttributesMap = Arrays.stream(attributesCopy)
+			Map<String, ECSAttribute> ecsAttributesMap = attributesList.stream()
 				.collect(Collectors.toMap(ecsAttribute -> sanitizeTag(ecsAttribute.toString()), i -> i));
 			
 			List<Card> cardList = cards.getCards();
@@ -97,18 +96,16 @@ public class XmlCardLoader implements CardLoader<Path> {
 					ECSResourceMap resourceMap = ECSResourceMap.createFor(entity);
 					ECSAttributeMap attributeMap = ECSAttributeMap.createFor(entity);
 					
-					card.getResources().forEach((sanitizedTag, value) -> {
-						if (!ecsResourcesMap.containsKey(sanitizedTag)) {
-							throw new UncheckedCardLoadingException("Resource " + sanitizedTag + " has not been found in the supplied resource mapping");
+					card.getElements().forEach((sanitizedTag, value) -> {
+						if (ecsResourcesMap.containsKey(sanitizedTag)) {
+							resourceMap.set(ecsResourcesMap.get(sanitizedTag), Integer.parseInt(value.toString()));
 						}
-						resourceMap.set(ecsResourcesMap.get(sanitizedTag), value);
-					});
-
-					card.getAttributes().forEach((sanitizedTag, value) -> {
-						if (!ecsAttributesMap.containsKey(sanitizedTag)) {
-							throw new UncheckedCardLoadingException("Attribute " + sanitizedTag + " has not been found in the supplied attribute mapping");
+						else if (ecsAttributesMap.containsKey(sanitizedTag)) {
+							attributeMap.set(ecsAttributesMap.get(sanitizedTag), value.toString());
 						}
-						attributeMap.set(ecsAttributesMap.get(sanitizedTag), value);
+						else {
+							throw new UncheckedCardLoadingException("Element " + sanitizedTag + " has not been found in the supplied resource and attribute mappings");
+						}
 					});
 					
 					return entity;
@@ -138,17 +135,12 @@ public class XmlCardLoader implements CardLoader<Path> {
 	
 	private static class Card {
 		private String id;
-		
 		private boolean duplicateId = false;
-
-		private final Map<String, Integer> resources = new HashMap<>();
-		private final Map<String, String> attributes = new HashMap<>();
-
-		private boolean duplicateResources = false;
-		private final List<String> duplicateResourceTags = new ArrayList<>();
-
-		private boolean duplicateAttributes = false;
-		private final List<String> duplicateAttributeTags = new ArrayList<>();
+		
+		private final Map<String, Object> elements = new HashMap<>();
+		
+		private boolean duplicateElements = false;
+		private final List<String> duplicateElementTags = new ArrayList<>();
 
 		@JsonAnySetter
 		private void addElement(final String tag, final Object value) {
@@ -162,32 +154,14 @@ public class XmlCardLoader implements CardLoader<Path> {
 					id = value.toString();
 					break;
 				default:
-					try {
-						int intValue = Integer.parseInt(value.toString());
-						addResource(sanitizedTag, intValue);
-					} catch (NumberFormatException ex) {
-						addAttribute(sanitizedTag, value.toString());
+					if (elements.containsKey(sanitizedTag)) {
+						duplicateElements = true;
+						duplicateElementTags.add(sanitizedTag);
+						return;
 					}
+					elements.put(sanitizedTag, value);
 					break;
 			}
-		}
-		
-		private void addResource(final String sanitizedTag, final int value) {
-			if (resources.containsKey(sanitizedTag)) {
-				duplicateResources = true;
-				duplicateResourceTags.add(sanitizedTag);
-				return;
-			}
-			resources.put(sanitizedTag, value);
-		}
-		
-		private void addAttribute(final String sanitizedTag, final String value) {
-			if (attributes.containsKey(sanitizedTag)) {
-				duplicateAttributes = true;
-				duplicateAttributeTags.add(sanitizedTag);
-				return;
-			}
-			attributes.put(sanitizedTag, value);
 		}
 		
 		public String getId() {
@@ -199,21 +173,13 @@ public class XmlCardLoader implements CardLoader<Path> {
 			}
 			return id;
 		}
-
+		
 		@JsonAnyGetter
-		public Map<String, Integer> getResources() {
-			if (duplicateResources) {
-				throw new UncheckedCardLoadingException("Resources " + duplicateResourceTags + " have duplicate entries");
+		public Map<String, Object> getElements() {
+			if (duplicateElements) {
+				throw new UncheckedCardLoadingException("Elements " + duplicateElementTags + " have duplicate entries");
 			}
-			return new HashMap<>(resources);
-		}
-
-		@JsonAnyGetter
-		public Map<String, String> getAttributes() {
-			if (duplicateAttributes) {
-				throw new UncheckedCardLoadingException("Attributes " + duplicateAttributeTags + " have duplicate entries");
-			}
-			return new HashMap<>(attributes);
+			return new HashMap<>(elements);
 		}
 	}
 }
