@@ -8,10 +8,15 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import static com.cardshifter.core.cardloader.CardLoaderHelper.*;
+import com.cardshifter.modapi.attributes.ECSAttribute;
+import com.cardshifter.modapi.attributes.ECSAttributeMap;
 import com.cardshifter.modapi.base.Entity;
 import com.cardshifter.modapi.base.NameComponent;
 import com.cardshifter.modapi.cards.CardImageComponent;
@@ -34,34 +39,61 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
  */
 public class XmlCardLoader implements CardLoader<Path> {
 	@Override
-	public Collection<Entity> loadCards(final Path path, final Supplier<Entity> entitySupplier, final ECSResource[] resources) throws CardLoadingException {
+	public Collection<Entity> loadCards(final Path path, final Supplier<Entity> entitySupplier, final ECSResource[] resources, final ECSAttribute[] attributes) throws CardLoadingException {
 		Objects.requireNonNull(path, "path");
 		Objects.requireNonNull(entitySupplier, "entitySupplier");
-		Objects.requireNonNull(resources, "resources");
+		
+		ECSResource[] resourcesCopy = (resources == null) ? new ECSResource[0] : resources;
+		ECSAttribute[] attributesCopy = (attributes == null) ? new ECSAttribute[0] : attributes;
 		
 		try {
 			ObjectMapper xmlMapper = new XmlMapper();
 			Cards cards = xmlMapper.readValue(path.toFile(), Cards.class);
 			
-			Map<String, ECSResource> ecsResourcesMap = Arrays.stream(resources)
-				.collect(Collectors.toMap(
-					ecsResource -> CardLoaderHelper.sanitizeTag(ecsResource.toString()), 
-					i -> i,
-					(v1, v2) -> {
-						throw new UncheckedCardLoadingException("Duplicate sanitized resources have been found in the supplied ECSResources.");
-					}
-				));
+			List<String> tags = Stream.concat(Arrays.stream(resourcesCopy), Arrays.stream(attributesCopy))
+				.map(ecsElement -> sanitizeTag(ecsElement.toString()))
+				.collect(Collectors.toList());
+			
+			if (requiredTags().stream().anyMatch(requiredTag -> tags.contains(requiredTag))) {
+				throw new UncheckedCardLoadingException("Tags " + requiredTags() + " are required by default you cannot submit them in the resources or attributes.");
+			}
+			
+			List<String> duplicateTags = tags.stream()
+				.collect(Collectors.groupingBy(i -> i))
+				.entrySet()
+				.stream()
+				.filter(entry -> entry.getValue().size() > 1)
+				.map(Entry::getKey)
+				.collect(Collectors.toList());
+			
+			if (!duplicateTags.isEmpty()) {
+				throw new UncheckedCardLoadingException("Tags " + duplicateTags + " have been input multiple times, this is not allowed.");
+			}
+			
+			Map<String, ECSResource> ecsResourcesMap = Arrays.stream(resourcesCopy)
+				.collect(Collectors.toMap(ecsResource -> sanitizeTag(ecsResource.toString()), i -> i));
+			
+			Map<String, ECSAttribute> ecsAttributesMap = Arrays.stream(attributesCopy)
+				.collect(Collectors.toMap(ecsAttribute -> sanitizeTag(ecsAttribute.toString()), i -> i));
 			
 			return cards.getCards().stream()
 				.map(card -> {
 					Entity entity = entitySupplier.get();
 					ECSResourceMap resourceMap = ECSResourceMap.createFor(entity);
+					ECSAttributeMap attributeMap = ECSAttributeMap.createFor(entity);
 
-					card.getResources().forEach((sanitizedName, value) -> {
-						if (!ecsResourcesMap.containsKey(sanitizedName)) {
-							throw new UncheckedCardLoadingException("Resource " + sanitizedName + " has not been found in the supplied resource mapping");
+					card.getResources().forEach((sanitizedTag, value) -> {
+						if (!ecsResourcesMap.containsKey(sanitizedTag)) {
+							throw new UncheckedCardLoadingException("Resource " + sanitizedTag + " has not been found in the supplied resource mapping");
 						}
-						resourceMap.set(ecsResourcesMap.get(sanitizedName), value);
+						resourceMap.set(ecsResourcesMap.get(sanitizedTag), value);
+					});
+
+					card.getAttributes().forEach((sanitizedTag, value) -> {
+						if (!ecsAttributesMap.containsKey(sanitizedTag)) {
+							throw new UncheckedCardLoadingException("Attribute " + sanitizedTag + " has not been found in the supplied attribute mapping");
+						}
+						attributeMap.set(ecsAttributesMap.get(sanitizedTag), value);
 					});
 					
 					if (card.getName() != null) {
@@ -110,18 +142,40 @@ public class XmlCardLoader implements CardLoader<Path> {
 		private String cardType;
 
 		private final Map<String, Integer> resources = new HashMap<>();
+		private final Map<String, String> attributes = new HashMap<>();
 
 		private boolean duplicateResources = false;
-		private final List<String> duplicateResourceNames = new ArrayList<>();
+		private final List<String> duplicateResourceTags = new ArrayList<>();
+
+		private boolean duplicateAttributes = false;
+		private final List<String> duplicateAttributeTags = new ArrayList<>();
 
 		@JsonAnySetter
-		private void addResource(final String name, final Object value) {
-			String sanitizedName = CardLoaderHelper.sanitizeTag(name);
-			if (resources.containsKey(sanitizedName)) {
-				duplicateResources = true;
-				duplicateResourceNames.add(sanitizedName);
+		private void addElement(final String name, final Object value) {
+			try {
+				int intValue = Integer.parseInt(value.toString());
+				addResource(name, intValue);
+			} catch (NumberFormatException ex) {
+				addAttribute(name, value.toString());
 			}
-			resources.put(sanitizedName, Integer.parseInt(value.toString()));
+		}
+		
+		private void addResource(final String name, final int value) {
+			String sanitizedTag = sanitizeTag(name);
+			if (resources.containsKey(sanitizedTag)) {
+				duplicateResources = true;
+				duplicateResourceTags.add(sanitizedTag);
+			}
+			resources.put(sanitizedTag, value);
+		}
+		
+		private void addAttribute(final String name, final String value) {
+			String sanitizedTag = sanitizeTag(name);
+			if (attributes.containsKey(sanitizedTag)) {
+				duplicateAttributes = true;
+				duplicateAttributeTags.add(sanitizedTag);
+			}
+			attributes.put(sanitizedTag, value);
 		}
 
 		public String getName() {
@@ -139,9 +193,17 @@ public class XmlCardLoader implements CardLoader<Path> {
 		@JsonAnyGetter
 		public Map<String, Integer> getResources() {
 			if (duplicateResources) {
-				throw new UncheckedCardLoadingException("Resources " + duplicateResourceNames + " have duplicate entries");
+				throw new UncheckedCardLoadingException("Resources " + duplicateResourceTags + " have duplicate entries");
 			}
 			return new HashMap<>(resources);
+		}
+
+		@JsonAnyGetter
+		public Map<String, String> getAttributes() {
+			if (duplicateAttributes) {
+				throw new UncheckedCardLoadingException("Attributes " + duplicateAttributeTags + " have duplicate entries");
+			}
+			return new HashMap<>(attributes);
 		}
 	}
 }

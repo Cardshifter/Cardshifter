@@ -41,7 +41,7 @@ public class XmlCardLoaderTest {
 		ECSGame game = new ECSGame();
 		
 		XmlCardLoader xmlCardLoader = new XmlCardLoader();
-		Collection<Entity> entities = xmlCardLoader.loadCards(xmlFile, game::newEntity, new ECSResource[0]);
+		Collection<Entity> entities = xmlCardLoader.loadCards(xmlFile, game::newEntity, new ECSResource[0], null);
 		
 		assertEquals(0, entities.size());
 	}
@@ -53,7 +53,7 @@ public class XmlCardLoaderTest {
 		ECSGame game = new ECSGame();
 		
 		XmlCardLoader xmlCardLoader = new XmlCardLoader();
-		Collection<Entity> entities = xmlCardLoader.loadCards(xmlFile, game::newEntity, TestResources.values());
+		Collection<Entity> entities = xmlCardLoader.loadCards(xmlFile, game::newEntity, TestResources.values(), null);
 		
 		Entity card = findEntityWithName(entities, "Test 1");
 		assertEquals("Test 1", card.getComponent(NameComponent.class).getName());
@@ -83,7 +83,7 @@ public class XmlCardLoaderTest {
 		};
 		
 		XmlCardLoader xmlCardLoader = new XmlCardLoader();
-		Collection<Entity> entities = xmlCardLoader.loadCards(xmlFile, game::newEntity, new ECSResource[] { tr1, tr2 });
+		Collection<Entity> entities = xmlCardLoader.loadCards(xmlFile, game::newEntity, new ECSResource[] { tr1, tr2 }, null);
 		
 		
 		Entity card = findEntityWithName(entities, "Test 1");
@@ -101,7 +101,7 @@ public class XmlCardLoaderTest {
 		ECSGame game = new ECSGame();
 		
 		XmlCardLoader xmlCardLoader = new XmlCardLoader();
-		Collection<Entity> entities = xmlCardLoader.loadCards(xmlFile, game::newEntity, TestResources.values());
+		Collection<Entity> entities = xmlCardLoader.loadCards(xmlFile, game::newEntity, TestResources.values(), null);
 		
 		Entity card = findEntityWithName(entities, "Test 1");
 		assertEquals("Test 1", card.getComponent(NameComponent.class).getName());
@@ -116,7 +116,7 @@ public class XmlCardLoaderTest {
 		ECSGame game = new ECSGame();
 		
 		XmlCardLoader xmlCardLoader = new XmlCardLoader();
-		Collection<Entity> entities = xmlCardLoader.loadCards(xmlFile, game::newEntity, TestResources.values());
+		Collection<Entity> entities = xmlCardLoader.loadCards(xmlFile, game::newEntity, TestResources.values(), null);
 		
 		Entity card = findEntityWithName(entities, "Test #1 Test @2 3. Test's");
 		assertEquals("Test #1 Test @2 3. Test's", card.getComponent(NameComponent.class).getName());
@@ -133,7 +133,7 @@ public class XmlCardLoaderTest {
 		ECSGame game = new ECSGame();
 		
 		XmlCardLoader xmlCardLoader = new XmlCardLoader();
-		Collection<Entity> entities = xmlCardLoader.loadCards(xmlFile, game::newEntity, TestResources.values());
+		Collection<Entity> entities = xmlCardLoader.loadCards(xmlFile, game::newEntity, TestResources.values(), null);
 		
 		Entity card = findEntityWithName(entities, "Test 1");
 		assertEquals("Test 1", card.getComponent(NameComponent.class).getName());
@@ -148,7 +148,7 @@ public class XmlCardLoaderTest {
 		ECSGame game = new ECSGame();
 		
 		XmlCardLoader xmlCardLoader = new XmlCardLoader();
-		Collection<Entity> entities = xmlCardLoader.loadCards(xmlFile, game::newEntity, TestResources.values());
+		Collection<Entity> entities = xmlCardLoader.loadCards(xmlFile, game::newEntity, TestResources.values(), null);
 		
 		Entity card1 = findEntityWithName(entities, "Test 1");
 		assertEquals("Test 1", card1.getComponent(NameComponent.class).getName());
@@ -172,7 +172,7 @@ public class XmlCardLoaderTest {
 		ECSGame game = new ECSGame();
 		
 		XmlCardLoader xmlCardLoader = new XmlCardLoader();
-		Collection<Entity> entities = xmlCardLoader.loadCards(xmlFile, game::newEntity, HealthResources.values());
+		Collection<Entity> entities = xmlCardLoader.loadCards(xmlFile, game::newEntity, HealthResources.values(), null);
 		
 		Entity card1 = findEntityWithName(entities, "Test 1");
 		assertEquals("Test 1", card1.getComponent(NameComponent.class).getName());
@@ -198,7 +198,7 @@ public class XmlCardLoaderTest {
 		ECSGame game = new ECSGame();
 		
 		XmlCardLoader xmlCardLoader = new XmlCardLoader();
-		xmlCardLoader.loadCards(xmlFile, game::newEntity, DuplicateHealthResources.values());
+		xmlCardLoader.loadCards(xmlFile, game::newEntity, DuplicateHealthResources.values(), null);
 	}
 	
 	@Test(expected = CardLoadingException.class)
@@ -208,7 +208,7 @@ public class XmlCardLoaderTest {
 		ECSGame game = new ECSGame();
 		
 		XmlCardLoader xmlCardLoader = new XmlCardLoader();
-		xmlCardLoader.loadCards(xmlFile, game::newEntity, TestResources.values());
+		xmlCardLoader.loadCards(xmlFile, game::newEntity, TestResources.values(), null);
 	}
 	
 	@Test(expected = CardLoadingException.class)
@@ -218,7 +218,7 @@ public class XmlCardLoaderTest {
 		ECSGame game = new ECSGame();
 		
 		XmlCardLoader xmlCardLoader = new XmlCardLoader();
-		xmlCardLoader.loadCards(xmlFile, game::newEntity, TestResources.values());
+		xmlCardLoader.loadCards(xmlFile, game::newEntity, TestResources.values(), null);
 	}
 	
 	@Test(expected = CardLoadingException.class)
@@ -228,7 +228,7 @@ public class XmlCardLoaderTest {
 		ECSGame game = new ECSGame();
 		
 		XmlCardLoader xmlCardLoader = new XmlCardLoader();
-		xmlCardLoader.loadCards(xmlFile, game::newEntity, HealthResources.values());
+		xmlCardLoader.loadCards(xmlFile, game::newEntity, HealthResources.values(), null);
 	}
 	
 	private Entity findEntityWithName(final Collection<Entity> entities, final String name) {

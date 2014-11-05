@@ -1,6 +1,8 @@
 
 package com.cardshifter.core.cardloader;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -22,5 +24,14 @@ final class CardLoaderHelper {
 	 */
 	static String sanitizeTag(final String tag) {
 		return tag.toLowerCase(Locale.ENGLISH).trim().replace("_", "");
+	}
+	
+	/**
+	 * Returns the tags that are required when loading cards.
+	 * 
+	 * @return	The required tags
+	 */
+	static List<String> requiredTags() {
+		return Arrays.asList("name", "id");
 	}
 }
