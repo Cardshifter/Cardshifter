@@ -227,6 +227,16 @@ public class XmlCardLoaderTest {
 		xmlCardLoader.loadCards(xmlFile, game::newEntity, HealthResources.values(), NameAttributes.values());
 	}
 	
+	@Test(expected = CardLoadingException.class)
+	public void testLoadTwoCardsWithDuplicateIds() throws URISyntaxException, CardLoadingException {
+		Path xmlFile = Paths.get(getClass().getResource("two-cards-with-duplicate-ids.xml").toURI());
+		
+		ECSGame game = new ECSGame();
+		
+		XmlCardLoader xmlCardLoader = new XmlCardLoader();
+		xmlCardLoader.loadCards(xmlFile, game::newEntity, null, null);
+	}
+	
 	private Entity findEntityWithId(final Collection<Entity> entities, final String id) {
 		return entities.stream()
 			.filter(entity -> entity.getComponent(IdComponent.class).getId().equals(id))

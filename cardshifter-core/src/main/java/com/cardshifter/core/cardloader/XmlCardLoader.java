@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -74,7 +75,20 @@ public class XmlCardLoader implements CardLoader<Path> {
 			Map<String, ECSAttribute> ecsAttributesMap = Arrays.stream(attributesCopy)
 				.collect(Collectors.toMap(ecsAttribute -> sanitizeTag(ecsAttribute.toString()), i -> i));
 			
-			return cards.getCards().stream()
+			List<Card> cardList = cards.getCards();
+			List<String> duplicateIds = cardList.stream()
+				.collect(Collectors.groupingBy(Card::getId))
+				.entrySet()
+				.stream()
+				.filter(entry -> entry.getValue().size() > 1)
+				.map(Entry::getKey)
+				.collect(Collectors.toList());
+			
+			if (!duplicateIds.isEmpty()) {
+				throw new UncheckedCardLoadingException("Card ids " + duplicateIds + " are duplicaties, this is not allowed.");
+			}
+			
+			return cardList.stream()
 				.map(card -> {
 					Entity entity = entitySupplier.get();
 					
