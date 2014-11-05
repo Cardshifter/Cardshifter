@@ -8,11 +8,21 @@ import com.cardshifter.modapi.base.Entity;
 import com.cardshifter.modapi.base.Retriever;
 import com.cardshifter.modapi.cards.CardComponent;
 
+/**
+ * If the card is not known to the entity performing the event,
+ * 
+ * @author Simon Forsberg
+ */
 public class CannotUseUnknownCards implements ECSSystem {
 
 	@Retriever
 	private ComponentRetriever<CardComponent> card;
 	
+	/**
+	 * Registers this system with ActionAllowedCheckEvent.
+	 * 
+	 * @param game The game to register the system to.
+	 */
 	@Override
 	public void startGame(ECSGame game) {
 		game.getEvents().registerHandlerAfter(this, ActionAllowedCheckEvent.class, this::denyUnknownCards);

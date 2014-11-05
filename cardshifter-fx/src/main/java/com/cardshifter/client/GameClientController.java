@@ -51,6 +51,7 @@ import com.cardshifter.client.views.CardHandDocumentController;
 import com.cardshifter.client.views.CardView;
 import com.cardshifter.client.views.PlayerHandZoneView;
 import com.cardshifter.client.views.ZoneView;
+import com.cardshifter.core.messages.IncomingHandler;
 import javafx.scene.input.MouseEvent;
 
 public class GameClientController {
@@ -94,10 +95,12 @@ public class GameClientController {
 	private final Map<String, Integer> playerStatBoxMap = new HashMap<>();
 	private final Map<String, Integer> opponentStatBoxMap = new HashMap<>();
 	private final Map<Integer, ZoneView<?>> zoneViewMap = new HashMap<>();
-	private List<UseableActionMessage> savedMessages = new ArrayList<>();
+	private final List<UseableActionMessage> savedMessages = new ArrayList<>();
 	private final Set<Integer> chosenTargets = new HashSet<>();
 	private AvailableTargetsMessage targetInfo;
 	private Consumer<Message> sender;
+	
+	private IncomingHandler incomingHandler;
 	
 	public void acceptConnectionSettings(NewGameMessage message, Consumer<Message> sender) {
 		// this is passed into this object after it is automatically created by the FXML document
@@ -105,6 +108,27 @@ public class GameClientController {
 		this.gameId = message.getGameId();
 		logger.info(String.format("You are player: %d", this.playerIndex));
 		this.sender = sender;
+		this.setUpMessageHandling();
+	}
+	
+	private void setUpMessageHandling() {
+		this.incomingHandler = new IncomingHandler();
+		
+		//incomingHandler.addHandler("login", LoginMessage.class, handlers::loginMessage);
+		//incomingHandler.addHandler("chat", ChatMessage.class, handlers::chat);
+		//incomingHandler.addHandler("startgame", StartGameRequest.class, handlers::play);
+	}
+	
+	/**
+	 * 
+	 * @return Returns the IncomingHandler for use
+	 */
+	public IncomingHandler getIncomingHandler() {
+		return incomingHandler;
+	}
+	public void performIncoming(Message message) {
+		//functionality not yet complete
+		getIncomingHandler().perform(message, null);
 	}
 
 	public void createAndSendMessage(UseableActionMessage action) {
@@ -124,10 +148,12 @@ public class GameClientController {
 	}
 	
 	public void processMessageFromServer(Message message) {
-		
+		//for diagnostics in client
 		serverMessages.getItems().add(message.toString());
-		
-		//this is for diagnostics so I can copy paste the messages to know their format
+		//for diagnostics in console
+		System.out.println(message.toString());
+
+		//this.performIncoming(message);
 		
 		if (message instanceof WelcomeMessage) {
 			Platform.runLater(() -> loginMessage.setText(message.toString()));
