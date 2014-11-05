@@ -118,7 +118,8 @@ public final class CardHandDocumentController extends CardView {
 			} else if (key.equals("SCRAP")) {
 				scrapValue.setText(String.format("Scrap val = %s", value));
 			} else if (key.equals("effect")) {
-				abilityText.setText(value);
+				String truncatedString = value.substring(0, Math.min(value.length(), 14));
+				abilityText.setText(truncatedString);
 			}
 		}
     }
