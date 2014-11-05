@@ -26,7 +26,7 @@ public final class Attributes {
 	}
 
 	public static String getOrDefault(Entity entity, ECSAttribute attribute, String defaultValue) {
-		return AttributeRetriever.forResource(attribute).getOrDefault(entity, defaultValue);
+		return AttributeRetriever.forAttribute(attribute).getOrDefault(entity, defaultValue);
 	}
 
 }

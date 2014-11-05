@@ -15,21 +15,21 @@ public class ECSAttributeMap extends Component implements CopyableComponent {
 	private ECSAttributeMap() {
 	}
 
-	public ECSAttributeMap set(ECSAttribute res, String value) {
-		ECSAttributeData data = getAttribute(res);
+	public ECSAttributeMap set(ECSAttribute attr, String value) {
+		ECSAttributeData data = getAttribute(attr);
 		data.set(value);
 		return this;
 	}
 
-	public ECSAttributeData getAttribute(ECSAttribute res) {
-		map.computeIfAbsent(res, r -> new ECSAttributeData(getEntity(), r));
-		return map.get(res);
+	public ECSAttributeData getAttribute(ECSAttribute attr) {
+		map.computeIfAbsent(attr, r -> new ECSAttributeData(getEntity(), r));
+		return map.get(attr);
 	}
 
 	public static ECSAttributeMap createFor(Entity entity) {
-		ECSAttributeMap res = new ECSAttributeMap();
-		entity.addComponent(res);
-		return res;
+		ECSAttributeMap attr = new ECSAttributeMap();
+		entity.addComponent(attr);
+		return attr;
 	}
 	
 	@Override
