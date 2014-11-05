@@ -117,6 +117,8 @@ public final class CardHandDocumentController extends CardView {
 				creatureType.setText(value);
 			} else if (key.equals("SCRAP")) {
 				scrapValue.setText(String.format("Scrap val = %s", value));
+			} else if (key.equals("effect")) {
+				abilityText.setText(value);
 			}
 		}
     }
