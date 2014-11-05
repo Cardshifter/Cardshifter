@@ -27,7 +27,7 @@ public class ECSAttributeData {
 	
 	public String get() {
 		String result = strategy == null ? current : strategy.getAttribute(entity, current);
-		if (!previousGet.equals(result)) {
+		if (!Objects.equals(previousGet, result)) {
 			// Execute an event for UIs to update their values, or for other entities to react
 			entity.getGame().getEvents().executePostEvent(new AttributeViewUpdate(entity, attribute, result));
 		}
@@ -37,7 +37,7 @@ public class ECSAttributeData {
 	
 	public void set(String value) {
 		// Execute change event (for taking changing creature type, description, etc...).
-		if (!this.current.equals(value)) {
+		if (!Objects.equals(this.current, value)) {
 			entity.getGame().executeEvent(new AttributeValueChange(entity, attribute, get(), current, value),
 					() -> {
 						this.current = value;
