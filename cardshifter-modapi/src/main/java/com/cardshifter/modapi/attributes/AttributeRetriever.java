@@ -13,15 +13,15 @@ public class AttributeRetriever {
 		this.attribute = attribute;
 	}
 	
-	public static AttributeRetriever forResource(ECSAttribute attribute) {
+	public static AttributeRetriever forAttribute(ECSAttribute attribute) {
 		return new AttributeRetriever(attribute);
 	}
 
 	public String getFor(Entity entity) {
-		return resMap(entity).getAttribute(attribute).get();
+		return attrMap(entity).getAttribute(attribute).get();
 	}
 
-	private ECSAttributeMap resMap(Entity entity) {
+	private ECSAttributeMap attrMap(Entity entity) {
 		Objects.requireNonNull(entity, "Cannot retrieve attribute map for null entity");
 		if (entity.isRemoved()) {
 			throw new IllegalArgumentException(entity + " has been marked for removal.");
@@ -33,14 +33,14 @@ public class AttributeRetriever {
 	public boolean has(Entity entity) {
 		Objects.requireNonNull(entity, "Cannot retrieve attribute map for null entity");
 		ECSAttributeMap map = entity.getComponent(ECSAttributeMap.class);
-		return map != null && resFor(entity) != null;
+		return map != null && attrFor(entity) != null;
 	}
 
-	public ECSAttributeData resFor(Entity entity) {
-		return resMap(entity).getAttribute(attribute);
+	public ECSAttributeData attrFor(Entity entity) {
+		return attrMap(entity).getAttribute(attribute);
 	}
 
-	public ECSAttribute getResource() {
+	public ECSAttribute getAttribute() {
 		return attribute;
 	}
 
@@ -50,8 +50,8 @@ public class AttributeRetriever {
 		if (map == null) {
 			return defaultValue;
 		}
-		ECSAttributeData resData = map.getAttribute(attribute);
-		return resData == null ? defaultValue : resData.get();
+		ECSAttributeData attrData = map.getAttribute(attribute);
+		return attrData == null ? defaultValue : attrData.get();
 	}
 	
 }
