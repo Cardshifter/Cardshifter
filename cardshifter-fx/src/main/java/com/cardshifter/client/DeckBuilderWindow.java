@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import javafx.fxml.FXML;
@@ -230,38 +231,12 @@ public class DeckBuilderWindow {
 			CardInfoMessage card = this.cardList.get(cardId);
 			int cardCount = this.activeDeckConfig.getChosen().get(cardId);
 			
-			for (Map.Entry<String, Object> entry : card.getProperties().entrySet()) {
-				String key = entry.getKey();
-				String value = String.valueOf(entry.getValue());
-			
-				//The value is used as the key for the new map
-				//increment the number of cards and put it back in the map
-				if (key.equals("creatureType")) {
-					if (creatureTypes.get(value) == null) {
-						creatureTypes.put(value, cardCount);
-					} else {
-						int creatureCount = creatureTypes.get(value);
-						int newCreatureCount = creatureCount + cardCount;
-						creatureTypes.put(value, newCreatureCount);
-					}
-				} else if (key.equals("MANA_COST")) {
-					if (manaCostValues.get(Integer.parseInt(value)) == null) {
-						manaCostValues.put(Integer.parseInt(value), cardCount);
-					} else {
-						int manaCostCount = manaCostValues.get(Integer.parseInt(value));
-						int newManaCostCount = manaCostCount + cardCount;
-						manaCostValues.put(Integer.parseInt(value), newManaCostCount);
-					}
-				} else if (key.equals("SCRAP_COST")) {
-					if (scrapCostValues.get(Integer.parseInt(value)) == null) {
-						scrapCostValues.put(Integer.parseInt(value), cardCount);
-					} else {
-						int scrapCostCount = scrapCostValues.get(Integer.parseInt(value));
-						int newScrapCostCount = scrapCostCount + cardCount;
-						scrapCostValues.put(Integer.parseInt(value), newScrapCostCount);
-					}
-				}
-			}
+			Optional.ofNullable(card.getProperties().get("creatureType"))
+				.ifPresent(obj -> increase(creatureTypes, (String) obj, cardCount));
+			Optional.ofNullable(card.getProperties().get("MANA_COST"))
+				.ifPresent(obj -> increase(manaCostValues, (Integer) obj, cardCount));
+			Optional.ofNullable(card.getProperties().get("SCRAP_COST"))
+				.ifPresent(obj -> increase(scrapCostValues, (Integer) obj, cardCount));
 		}
 		
 		for (int manaCost : manaCostValues.keySet()) {
@@ -279,6 +254,10 @@ public class DeckBuilderWindow {
 			creatureTypeLabel.setText(String.format("Creature Type %s, Count = %d", creatureType, creatureTypes.get(creatureType)));
 			this.deckInfoLabelBox.getChildren().add(creatureTypeLabel);
 		}
+	}
+
+	private <T> void increase(Map<T, Integer> map, T key, int cardCount) {
+		map.merge(key, cardCount, (a, b) -> a + b);
 	}
 
 	private void clearDeck() {		
