@@ -2,5 +2,7 @@
 <Cards>
 	<Card>
 		<Id>1</Id>
+		<DoubleElement>5</DoubleElement>
+		<DoubleElement>test</DoubleElement>
 	</Card>
 </Cards>

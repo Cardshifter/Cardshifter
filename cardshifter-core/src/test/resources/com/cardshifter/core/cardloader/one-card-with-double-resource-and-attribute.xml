@@ -3,9 +3,9 @@
 	<Card>
 		<Id>1</Id>
 		<Name>Test 1</Name>
+		<Name>Test 2</Name>
 		<Image>test.jpg</Image>
 		<CardType>testcard</CardType>
-		<ExtraAttribute>test</ExtraAttribute>
 		<TR1>5</TR1>
 		<TR2>-6</TR2>
 	</Card>

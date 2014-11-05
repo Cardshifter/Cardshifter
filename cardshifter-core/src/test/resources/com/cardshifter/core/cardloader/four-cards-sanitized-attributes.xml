@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Cards>
+	<Card>
+		<Id>1</Id>
+		<Name>Test 1</Name>
+		<CREATURE_TYPE>test</CREATURE_TYPE>
+	</Card>
+	<Card>
+		<Id>2</Id>
+		<Name>Test 2</Name>
+		<CREATURETYPE>test</CREATURETYPE>
+	</Card>
+	<Card>
+		<Id>3</Id>
+		<Name>Test 3</Name>
+		<creaturetype>test</creaturetype>
+	</Card>
+	<Card>
+		<Id>4</Id>
+		<Name>Test 4</Name>
+		<CreatureType>test</CreatureType>
+	</Card>
+</Cards>

@@ -40,6 +40,30 @@ public class XmlCardLoaderTest {
 		MAX_HEALTH, MAXHEALTH, maxhealth;
 	}
 	
+	private static enum CreatureTypeAttributes implements ECSAttribute {
+		NAME, CREATURE_TYPE;
+	}
+	
+	private static enum DuplicateCreatureTypeAttributes implements ECSAttribute {
+		NAME, CREATURE_TYPE, CREATURETYPE, creaturetype;
+	}
+	
+	private static enum IdResources implements ECSResource {
+		ID;
+	}
+	
+	private static enum IdAttributes implements ECSAttribute {
+		ID;
+	}
+	
+	private static enum DoubleResourceAndAttributeResources implements ECSResource {
+		DOUBLE_ELEMENT;
+	}
+	
+	private static enum DoubleResourceAndAttributeAttributes implements ECSAttribute {
+		DOUBLE_ELEMENT;
+	}
+	
 	@Test
 	public void testLoadNoCards() throws URISyntaxException, CardLoadingException {
 		Path xmlFile = Paths.get(getClass().getResource("no-cards.xml").toURI());
@@ -48,6 +72,18 @@ public class XmlCardLoaderTest {
 		
 		XmlCardLoader xmlCardLoader = new XmlCardLoader();
 		Collection<Entity> entities = xmlCardLoader.loadCards(xmlFile, game::newEntity, new ECSResource[0], new ECSAttribute[0]);
+		
+		assertEquals(0, entities.size());
+	}
+	
+	@Test
+	public void testLoadNoCardsNullResourcesAndAttributes() throws URISyntaxException, CardLoadingException {
+		Path xmlFile = Paths.get(getClass().getResource("no-cards.xml").toURI());
+		
+		ECSGame game = new ECSGame();
+		
+		XmlCardLoader xmlCardLoader = new XmlCardLoader();
+		Collection<Entity> entities = xmlCardLoader.loadCards(xmlFile, game::newEntity, null, null);
 		
 		assertEquals(0, entities.size());
 	}
@@ -71,7 +107,7 @@ public class XmlCardLoaderTest {
 	}
 	
 	@Test
-	public void testLoadOneCardWithoutUsingECSResource() throws URISyntaxException, CardLoadingException {
+	public void testLoadOneCardWithoutUsingECSResourceOrECSAttribute() throws URISyntaxException, CardLoadingException {
 		Path xmlFile = Paths.get(getClass().getResource("one-card.xml").toURI());
 		
 		ECSGame game = new ECSGame();
@@ -89,20 +125,39 @@ public class XmlCardLoaderTest {
 			}
 		};
 		
+		ECSAttribute name = new ECSAttribute() {
+			@Override
+			public String toString() {
+				return "NAME";
+			}
+		};
+		ECSAttribute image = new ECSAttribute() {
+			@Override
+			public String toString() {
+				return "IMAGE";
+			}
+		};
+		ECSAttribute cardType = new ECSAttribute() {
+			@Override
+			public String toString() {
+				return "CARD_TYPE";
+			}
+		};
+		
 		XmlCardLoader xmlCardLoader = new XmlCardLoader();
-		Collection<Entity> entities = xmlCardLoader.loadCards(xmlFile, game::newEntity, new ECSResource[] { tr1, tr2 }, TestAttributes.values());
+		Collection<Entity> entities = xmlCardLoader.loadCards(xmlFile, game::newEntity, new ECSResource[] { tr1, tr2 }, new ECSAttribute[] { name, image, cardType });
 		
 		Entity card = findEntityWithId(entities, "1");
 		assertEquals("1", card.getComponent(IdComponent.class).getId());
-		assertEquals("Test 1", TestAttributes.NAME.getFor(card));
-		assertEquals("test.jpg", TestAttributes.IMAGE.getFor(card));
-		assertEquals("testcard", TestAttributes.CARDTYPE.getFor(card));
+		assertEquals("Test 1", name.getFor(card));
+		assertEquals("test.jpg", image.getFor(card));
+		assertEquals("testcard", cardType.getFor(card));
 		assertEquals(5, tr1.getFor(card));
 		assertEquals(-6, tr2.getFor(card));
 	}
 	
 	@Test
-	public void testLoadOneCardNoResources() throws URISyntaxException, CardLoadingException {
+	public void testLoadOneCardNoResourcesOrAttributes() throws URISyntaxException, CardLoadingException {
 		Path xmlFile = Paths.get(getClass().getResource("one-card-no-resources.xml").toURI());
 		
 		ECSGame game = new ECSGame();
@@ -112,9 +167,6 @@ public class XmlCardLoaderTest {
 		
 		Entity card = findEntityWithId(entities, "1");
 		assertEquals("1", card.getComponent(IdComponent.class).getId());
-		assertEquals("Test 1", TestAttributes.NAME.getFor(card));
-		assertEquals("test.jpg", TestAttributes.IMAGE.getFor(card));
-		assertEquals("testcard", TestAttributes.CARDTYPE.getFor(card));
 	}
 	
 	@Test
@@ -162,8 +214,8 @@ public class XmlCardLoaderTest {
 	}
 	
 	@Test
-	public void testLoadFourCardsSanitized() throws URISyntaxException, CardLoadingException {
-		Path xmlFile = Paths.get(getClass().getResource("four-cards-sanitized.xml").toURI());
+	public void testLoadFourCardsSanitizedResources() throws URISyntaxException, CardLoadingException {
+		Path xmlFile = Paths.get(getClass().getResource("four-cards-sanitized-resources.xml").toURI());
 		
 		ECSGame game = new ECSGame();
 		
@@ -188,6 +240,32 @@ public class XmlCardLoaderTest {
 	}
 	
 	@Test
+	public void testLoadFourCardsSanitizedAttributes() throws URISyntaxException, CardLoadingException {
+		Path xmlFile = Paths.get(getClass().getResource("four-cards-sanitized-attributes.xml").toURI());
+		
+		ECSGame game = new ECSGame();
+		
+		XmlCardLoader xmlCardLoader = new XmlCardLoader();
+		Collection<Entity> entities = xmlCardLoader.loadCards(xmlFile, game::newEntity, null, CreatureTypeAttributes.values());
+		
+		Entity card1 = findEntityWithId(entities, "1");
+		assertEquals("Test 1", CreatureTypeAttributes.NAME.getFor(card1));
+		assertEquals("test", CreatureTypeAttributes.CREATURE_TYPE.getFor(card1));
+		
+		Entity card2 = findEntityWithId(entities, "2");
+		assertEquals("Test 2", CreatureTypeAttributes.NAME.getFor(card2));
+		assertEquals("test", CreatureTypeAttributes.CREATURE_TYPE.getFor(card2));
+		
+		Entity card3 = findEntityWithId(entities, "3");
+		assertEquals("Test 3", CreatureTypeAttributes.NAME.getFor(card3));
+		assertEquals("test", CreatureTypeAttributes.CREATURE_TYPE.getFor(card3));
+		
+		Entity card4 = findEntityWithId(entities, "4");
+		assertEquals("Test 4", CreatureTypeAttributes.NAME.getFor(card4));
+		assertEquals("test", CreatureTypeAttributes.CREATURE_TYPE.getFor(card4));
+	}
+	
+	@Test
 	public void testLoadTwoCardsVerifyIntegerAttribute() throws URISyntaxException, CardLoadingException {
 		Path xmlFile = Paths.get(getClass().getResource("two-cards-verify-integer-attribute.xml").toURI());
 		
@@ -206,13 +284,23 @@ public class XmlCardLoaderTest {
 	}
 	
 	@Test(expected = CardLoadingException.class)
-	public void testLoadFourCardsSanitizedIncorrectHealthResourcesMapping() throws URISyntaxException, CardLoadingException {
-		Path xmlFile = Paths.get(getClass().getResource("four-cards-sanitized.xml").toURI());
+	public void testLoadFourCardsSanitizedResourcesIncorrectHealthResourcesMapping() throws URISyntaxException, CardLoadingException {
+		Path xmlFile = Paths.get(getClass().getResource("four-cards-sanitized-resources.xml").toURI());
 		
 		ECSGame game = new ECSGame();
 		
 		XmlCardLoader xmlCardLoader = new XmlCardLoader();
 		xmlCardLoader.loadCards(xmlFile, game::newEntity, DuplicateHealthResources.values(), NameAttributes.values());
+	}
+	
+	@Test(expected = CardLoadingException.class)
+	public void testLoadFourCardsSanitizedAttributesIncorrectCreatureTypeAttributesMapping() throws URISyntaxException, CardLoadingException {
+		Path xmlFile = Paths.get(getClass().getResource("four-cards-sanitized-attributes.xml").toURI());
+		
+		ECSGame game = new ECSGame();
+		
+		XmlCardLoader xmlCardLoader = new XmlCardLoader();
+		xmlCardLoader.loadCards(xmlFile, game::newEntity, null, DuplicateCreatureTypeAttributes.values());
 	}
 	
 	@Test(expected = CardLoadingException.class)
@@ -226,8 +314,38 @@ public class XmlCardLoaderTest {
 	}
 	
 	@Test(expected = CardLoadingException.class)
+	public void testLoadOneCardWithDoubleAttribute() throws URISyntaxException, CardLoadingException {
+		Path xmlFile = Paths.get(getClass().getResource("one-card-with-double-attribute.xml").toURI());
+		
+		ECSGame game = new ECSGame();
+		
+		XmlCardLoader xmlCardLoader = new XmlCardLoader();
+		xmlCardLoader.loadCards(xmlFile, game::newEntity, TestResources.values(), TestAttributes.values());
+	}
+	
+	@Test(expected = CardLoadingException.class)
+	public void testLoadOneCardWithDoubleResourceAndAttribute() throws URISyntaxException, CardLoadingException {
+		Path xmlFile = Paths.get(getClass().getResource("one-card-with-double-resource-and-attribute.xml").toURI());
+		
+		ECSGame game = new ECSGame();
+		
+		XmlCardLoader xmlCardLoader = new XmlCardLoader();
+		xmlCardLoader.loadCards(xmlFile, game::newEntity, DoubleResourceAndAttributeResources.values(), DoubleResourceAndAttributeAttributes.values());
+	}
+	
+	@Test(expected = CardLoadingException.class)
 	public void testLoadOneCardResourceNotFound() throws URISyntaxException, CardLoadingException {
 		Path xmlFile = Paths.get(getClass().getResource("one-card-resource-not-found.xml").toURI());
+		
+		ECSGame game = new ECSGame();
+		
+		XmlCardLoader xmlCardLoader = new XmlCardLoader();
+		xmlCardLoader.loadCards(xmlFile, game::newEntity, TestResources.values(), TestAttributes.values());
+	}
+	
+	@Test(expected = CardLoadingException.class)
+	public void testLoadOneCardAttributeNotFound() throws URISyntaxException, CardLoadingException {
+		Path xmlFile = Paths.get(getClass().getResource("one-card-attribute-not-found.xml").toURI());
 		
 		ECSGame game = new ECSGame();
 		
@@ -246,6 +364,16 @@ public class XmlCardLoaderTest {
 	}
 	
 	@Test(expected = CardLoadingException.class)
+	public void testLoadOneCardWithDoubleSanitizedAttributes() throws URISyntaxException, CardLoadingException {
+		Path xmlFile = Paths.get(getClass().getResource("one-card-with-double-sanitized-attribute.xml").toURI());
+		
+		ECSGame game = new ECSGame();
+		
+		XmlCardLoader xmlCardLoader = new XmlCardLoader();
+		xmlCardLoader.loadCards(xmlFile, game::newEntity, null, CreatureTypeAttributes.values());
+	}
+	
+	@Test(expected = CardLoadingException.class)
 	public void testLoadTwoCardsWithDuplicateIds() throws URISyntaxException, CardLoadingException {
 		Path xmlFile = Paths.get(getClass().getResource("two-cards-with-duplicate-ids.xml").toURI());
 		
@@ -253,6 +381,26 @@ public class XmlCardLoaderTest {
 		
 		XmlCardLoader xmlCardLoader = new XmlCardLoader();
 		xmlCardLoader.loadCards(xmlFile, game::newEntity, null, null);
+	}
+	
+	@Test(expected = CardLoadingException.class)
+	public void testLoadNoCardsWithIdResource() throws URISyntaxException, CardLoadingException {
+		Path xmlFile = Paths.get(getClass().getResource("no-cards.xml").toURI());
+		
+		ECSGame game = new ECSGame();
+		
+		XmlCardLoader xmlCardLoader = new XmlCardLoader();
+		xmlCardLoader.loadCards(xmlFile, game::newEntity, IdResources.values(), null);
+	}
+	
+	@Test(expected = CardLoadingException.class)
+	public void testLoadNoCardsWithIdAttribute() throws URISyntaxException, CardLoadingException {
+		Path xmlFile = Paths.get(getClass().getResource("no-cards.xml").toURI());
+		
+		ECSGame game = new ECSGame();
+		
+		XmlCardLoader xmlCardLoader = new XmlCardLoader();
+		xmlCardLoader.loadCards(xmlFile, game::newEntity, null, IdAttributes.values());
 	}
 	
 	private Entity findEntityWithId(final Collection<Entity> entities, final String id) {
