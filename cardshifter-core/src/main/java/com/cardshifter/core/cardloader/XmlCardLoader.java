@@ -52,7 +52,7 @@ public class XmlCardLoader implements CardLoader<Path> {
 				.map(ecsElement -> sanitizeTag(ecsElement.toString()))
 				.collect(Collectors.toList());
 			
-			if (requiredTags().stream().anyMatch(requiredTag -> tags.contains(requiredTag))) {
+			if (requiredTags().stream().anyMatch(tags::contains)) {
 				throw new UncheckedCardLoadingException("Tags " + requiredTags() + " are required by default you cannot submit them in the resources or attributes.");
 			}
 			
@@ -104,7 +104,7 @@ public class XmlCardLoader implements CardLoader<Path> {
 							attributeMap.set(ecsAttributesMap.get(sanitizedTag), value.toString());
 						}
 						else {
-							throw new UncheckedCardLoadingException("Element " + sanitizedTag + " has not been found in the supplied resource and attribute mappings");
+							throw new UncheckedCardLoadingException("Element " + sanitizedTag + " has not been found in the supplied resource and attribute mappings where card id = " + card.getId());
 						}
 					});
 					
@@ -177,7 +177,7 @@ public class XmlCardLoader implements CardLoader<Path> {
 		@JsonAnyGetter
 		public Map<String, Object> getElements() {
 			if (duplicateElements) {
-				throw new UncheckedCardLoadingException("Elements " + duplicateElementTags + " have duplicate entries");
+				throw new UncheckedCardLoadingException("Elements " + duplicateElementTags + " have duplicate entries where card id = " + id);
 			}
 			return new HashMap<>(elements);
 		}
