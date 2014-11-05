@@ -32,6 +32,6 @@ final class CardLoaderHelper {
 	 * @return	The required tags
 	 */
 	static List<String> requiredTags() {
-		return Arrays.asList("name", "id");
+		return Arrays.asList("id");
 	}
 }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Cards>
 	<Card>
+		<Id>1</Id>
 		<Name>Test 1</Name>
 		<Image>test.jpg</Image>
 		<CardType>testcard</CardType>

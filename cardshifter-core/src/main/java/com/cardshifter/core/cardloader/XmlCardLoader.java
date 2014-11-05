@@ -18,9 +18,7 @@ import static com.cardshifter.core.cardloader.CardLoaderHelper.*;
 import com.cardshifter.modapi.attributes.ECSAttribute;
 import com.cardshifter.modapi.attributes.ECSAttributeMap;
 import com.cardshifter.modapi.base.Entity;
-import com.cardshifter.modapi.base.NameComponent;
-import com.cardshifter.modapi.cards.CardImageComponent;
-import com.cardshifter.modapi.cards.CardTypeComponent;
+import com.cardshifter.modapi.cards.IdComponent;
 import com.cardshifter.modapi.resources.ECSResource;
 import com.cardshifter.modapi.resources.ECSResourceMap;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
@@ -79,9 +77,12 @@ public class XmlCardLoader implements CardLoader<Path> {
 			return cards.getCards().stream()
 				.map(card -> {
 					Entity entity = entitySupplier.get();
+					
+					entity.addComponent(new IdComponent(card.getId()));
+					
 					ECSResourceMap resourceMap = ECSResourceMap.createFor(entity);
 					ECSAttributeMap attributeMap = ECSAttributeMap.createFor(entity);
-
+					
 					card.getResources().forEach((sanitizedTag, value) -> {
 						if (!ecsResourcesMap.containsKey(sanitizedTag)) {
 							throw new UncheckedCardLoadingException("Resource " + sanitizedTag + " has not been found in the supplied resource mapping");
@@ -95,16 +96,6 @@ public class XmlCardLoader implements CardLoader<Path> {
 						}
 						attributeMap.set(ecsAttributesMap.get(sanitizedTag), value);
 					});
-					
-					if (card.getName() != null) {
-						entity.addComponent(new NameComponent(card.getName()));
-					}
-					if (card.getCardType() != null) {
-						entity.addComponent(new CardTypeComponent(card.getCardType()));
-					}
-					if (card.getImage() != null) {
-						entity.addComponent(new CardImageComponent(card.getImage()));
-					}
 					
 					return entity;
 				})
@@ -132,14 +123,9 @@ public class XmlCardLoader implements CardLoader<Path> {
 	}
 	
 	private static class Card {
-		@JacksonXmlProperty(localName = "Name")
-		private String name;
-
-		@JacksonXmlProperty(localName = "Image")
-		private String image;
-
-		@JacksonXmlProperty(localName = "CardType")
-		private String cardType;
+		private String id;
+		
+		private boolean duplicateId = false;
 
 		private final Map<String, Integer> resources = new HashMap<>();
 		private final Map<String, String> attributes = new HashMap<>();
@@ -151,43 +137,53 @@ public class XmlCardLoader implements CardLoader<Path> {
 		private final List<String> duplicateAttributeTags = new ArrayList<>();
 
 		@JsonAnySetter
-		private void addElement(final String name, final Object value) {
-			try {
-				int intValue = Integer.parseInt(value.toString());
-				addResource(name, intValue);
-			} catch (NumberFormatException ex) {
-				addAttribute(name, value.toString());
+		private void addElement(final String tag, final Object value) {
+			String sanitizedTag = sanitizeTag(tag);
+			switch (sanitizedTag) {
+				case "id":
+					if (id != null) {
+						duplicateId = true;
+						return;
+					}
+					id = value.toString();
+					break;
+				default:
+					try {
+						int intValue = Integer.parseInt(value.toString());
+						addResource(sanitizedTag, intValue);
+					} catch (NumberFormatException ex) {
+						addAttribute(sanitizedTag, value.toString());
+					}
+					break;
 			}
 		}
 		
-		private void addResource(final String name, final int value) {
-			String sanitizedTag = sanitizeTag(name);
+		private void addResource(final String sanitizedTag, final int value) {
 			if (resources.containsKey(sanitizedTag)) {
 				duplicateResources = true;
 				duplicateResourceTags.add(sanitizedTag);
+				return;
 			}
 			resources.put(sanitizedTag, value);
 		}
 		
-		private void addAttribute(final String name, final String value) {
-			String sanitizedTag = sanitizeTag(name);
+		private void addAttribute(final String sanitizedTag, final String value) {
 			if (attributes.containsKey(sanitizedTag)) {
 				duplicateAttributes = true;
 				duplicateAttributeTags.add(sanitizedTag);
+				return;
 			}
 			attributes.put(sanitizedTag, value);
 		}
-
-		public String getName() {
-			return name;
-		}
-
-		public String getImage() {
-			return image;
-		}
-
-		public String getCardType() {
-			return cardType;
+		
+		public String getId() {
+			if (duplicateId) {
+				throw new UncheckedCardLoadingException("Element id has duplicate entries");
+			}
+			if (id == null) {
+				throw new UncheckedCardLoadingException("Required element id has not been set");
+			}
+			return id;
 		}
 
 		@JsonAnyGetter
