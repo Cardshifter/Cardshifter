@@ -53,8 +53,6 @@ public class XmlCardLoader implements CardLoader<Path> {
 			
 			XMLOutputter xmlOutputter = new XMLOutputter(Format.getCompactFormat().setExpandEmptyElements(true));
 			String unformattedXmlString = xmlOutputter.outputString(document);
-			System.out.println("unformattedXmlString = " + unformattedXmlString);
-			System.out.println();
 			
 			JacksonXmlModule xmlModule = new JacksonXmlModule();
 			xmlModule.setDefaultUseWrapper(false);
@@ -88,9 +86,6 @@ public class XmlCardLoader implements CardLoader<Path> {
 			Map<String, ECSAttribute> ecsAttributesMap = attributesList.stream()
 				.collect(Collectors.toMap(ecsAttribute -> sanitizeTag(ecsAttribute.toString()), i -> i));
 			
-			System.out.println("cardInfo = " + cardInfo);
-			System.out.println("cardInfo.getCards() = " + cardInfo.getCards());
-			System.out.println("cardInfo.getCards().getCards() = " + cardInfo.getCards().getCards());
 			List<Card> cardList = cardInfo.getCards().getCards();
 			List<String> duplicateIds = cardList.stream()
 				.collect(Collectors.groupingBy(Card::getId))
