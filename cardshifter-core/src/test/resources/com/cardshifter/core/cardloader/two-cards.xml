@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Cards>
-	<Card>
-		<Id>1</Id>
-		<Name>Test 1</Name>
-		<Image>test1.jpg</Image>
-		<CardType>testcard</CardType>
-		<TR1>5</TR1>
-		<TR2>-6</TR2>
-	</Card>
-	<Card>
-		<Id>2</Id>
-		<Name>Test 2</Name>
-		<Image>test2.jpg</Image>
-		<CardType>testcard2</CardType>
-		<TR1>3</TR1>
-		<TR2>-8</TR2>
-	</Card>
-</Cards>
+<CardInfo>
+	<Cards>
+		<Card>
+			<Id>1</Id>
+			<Name>Test 1</Name>
+			<Image>test1.jpg</Image>
+			<CardType>testcard</CardType>
+			<TR1>5</TR1>
+			<TR2>-6</TR2>
+		</Card>
+		<Card>
+			<Id>2</Id>
+			<Name>Test 2</Name>
+			<Image>test2.jpg</Image>
+			<CardType>testcard2</CardType>
+			<TR1>3</TR1>
+			<TR2>-8</TR2>
+		</Card>
+	</Cards>
+</CardInfo>

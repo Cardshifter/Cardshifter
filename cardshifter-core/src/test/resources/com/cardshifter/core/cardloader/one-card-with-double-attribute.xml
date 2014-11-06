@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Cards>
-	<Card>
-		<Id>1</Id>
-		<DoubleElement>5</DoubleElement>
-		<DoubleElement>test</DoubleElement>
-	</Card>
-</Cards>
+<CardInfo>
+	<Cards>
+		<Card>
+			<Id>1</Id>
+			<DoubleElement>5</DoubleElement>
+			<DoubleElement>test</DoubleElement>
+		</Card>
+	</Cards>
+</CardInfo>
