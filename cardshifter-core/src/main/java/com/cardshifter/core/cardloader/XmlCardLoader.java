@@ -65,7 +65,7 @@ public class XmlCardLoader implements CardLoader<Path> {
 				.collect(Collectors.toList());
 			
 			if (requiredTags().stream().anyMatch(tags::contains)) {
-				throw new UncheckedCardLoadingException("Tags " + requiredTags() + " are required by default you cannot submit them in the resources or attributes.");
+				throw new UncheckedCardLoadingException("Tags " + requiredTags() + " are required by default, you cannot submit them in the resource or attribute fields.");
 			}
 			
 			List<String> duplicateTags = tags.stream()
@@ -96,7 +96,7 @@ public class XmlCardLoader implements CardLoader<Path> {
 				.collect(Collectors.toList());
 			
 			if (!duplicateIds.isEmpty()) {
-				throw new UncheckedCardLoadingException("Card ids " + duplicateIds + " are duplicaties, this is not allowed.");
+				throw new UncheckedCardLoadingException("Card ids " + duplicateIds + " are duplicates, this is not allowed.");
 			}
 			
 			return cardList.stream()
