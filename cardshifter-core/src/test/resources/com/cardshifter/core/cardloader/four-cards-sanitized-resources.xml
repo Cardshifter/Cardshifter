@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Cards>
-	<Card>
-		<Id>1</Id>
-		<Name>Test 1</Name>
-		<MAX_HEALTH>10</MAX_HEALTH>
-	</Card>
-	<Card>
-		<Id>2</Id>
-		<Name>Test 2</Name>
-		<MAXHEALTH>10</MAXHEALTH>
-	</Card>
-	<Card>
-		<Id>3</Id>
-		<Name>Test 3</Name>
-		<maxhealth>10</maxhealth>
-	</Card>
-	<Card>
-		<Id>4</Id>
-		<Name>Test 4</Name>
-		<MaxHealth>10</MaxHealth>
-	</Card>
-</Cards>
+<CardInfo>
+	<Cards>
+		<Card>
+			<Id>1</Id>
+			<Name>Test 1</Name>
+			<MAX_HEALTH>10</MAX_HEALTH>
+		</Card>
+		<Card>
+			<Id>2</Id>
+			<Name>Test 2</Name>
+			<MAXHEALTH>10</MAXHEALTH>
+		</Card>
+		<Card>
+			<Id>3</Id>
+			<Name>Test 3</Name>
+			<maxhealth>10</maxhealth>
+		</Card>
+		<Card>
+			<Id>4</Id>
+			<Name>Test 4</Name>
+			<MaxHealth>10</MaxHealth>
+		</Card>
+	</Cards>
+</CardInfo>

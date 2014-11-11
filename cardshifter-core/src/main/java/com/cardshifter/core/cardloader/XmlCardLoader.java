@@ -14,6 +14,11 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.jdom2.Document;
+import org.jdom2.input.SAXBuilder;
+import org.jdom2.output.Format;
+import org.jdom2.output.XMLOutputter;
+
 import static com.cardshifter.core.cardloader.CardLoaderHelper.*;
 import com.cardshifter.modapi.attributes.ECSAttribute;
 import com.cardshifter.modapi.attributes.ECSAttributeMap;
@@ -23,12 +28,10 @@ import com.cardshifter.modapi.resources.ECSResource;
 import com.cardshifter.modapi.resources.ECSResourceMap;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 /**
  * A card loader to load cards from XML files.
@@ -45,15 +48,24 @@ public class XmlCardLoader implements CardLoader<Path> {
 		List<ECSAttribute> attributesList = (attributes == null) ? Arrays.asList() : Arrays.asList(attributes);
 		
 		try {
-			ObjectMapper xmlMapper = new XmlMapper();
-			Cards cards = xmlMapper.readValue(path.toFile(), Cards.class);
+			SAXBuilder saxBuilder = new SAXBuilder();
+			Document document = saxBuilder.build(path.toFile());
+			
+			XMLOutputter xmlOutputter = new XMLOutputter(Format.getCompactFormat().setExpandEmptyElements(true));
+			String unformattedXmlString = xmlOutputter.outputString(document);
+			
+			JacksonXmlModule xmlModule = new JacksonXmlModule();
+			xmlModule.setDefaultUseWrapper(false);
+			ObjectMapper xmlMapper = new XmlMapper(xmlModule);
+			
+			CardInfo cardInfo = xmlMapper.readValue(unformattedXmlString, CardInfo.class);
 			
 			List<String> tags = Stream.concat(resourcesList.stream(), attributesList.stream())
 				.map(ecsElement -> sanitizeTag(ecsElement.toString()))
 				.collect(Collectors.toList());
 			
 			if (requiredTags().stream().anyMatch(tags::contains)) {
-				throw new UncheckedCardLoadingException("Tags " + requiredTags() + " are required by default you cannot submit them in the resources or attributes.");
+				throw new UncheckedCardLoadingException("Tags " + requiredTags() + " are required by default, you cannot submit them in the resource or attribute fields.");
 			}
 			
 			List<String> duplicateTags = tags.stream()
@@ -74,7 +86,7 @@ public class XmlCardLoader implements CardLoader<Path> {
 			Map<String, ECSAttribute> ecsAttributesMap = attributesList.stream()
 				.collect(Collectors.toMap(ecsAttribute -> sanitizeTag(ecsAttribute.toString()), i -> i));
 			
-			List<Card> cardList = cards.getCards();
+			List<Card> cardList = cardInfo.getCards().getCards();
 			List<String> duplicateIds = cardList.stream()
 				.collect(Collectors.groupingBy(Card::getId))
 				.entrySet()
@@ -84,7 +96,7 @@ public class XmlCardLoader implements CardLoader<Path> {
 				.collect(Collectors.toList());
 			
 			if (!duplicateIds.isEmpty()) {
-				throw new UncheckedCardLoadingException("Card ids " + duplicateIds + " are duplicaties, this is not allowed.");
+				throw new UncheckedCardLoadingException("Card ids " + duplicateIds + " are duplicates, this is not allowed.");
 			}
 			
 			return cardList.stream()
@@ -117,14 +129,23 @@ public class XmlCardLoader implements CardLoader<Path> {
 			throw new CardLoadingException(ex);
 		}
 	}
-
-	@JacksonXmlRootElement(localName = "Cards")
-	@JsonIgnoreProperties(ignoreUnknown = true)
+	
+	private static class CardInfo {
+		@JacksonXmlProperty(localName = "Cards")
+		private Cards cards;
+		
+		public Cards getCards() {
+			if (cards == null) {
+				cards = new Cards();	//fix for Cards instance being null on empty cards list
+			}
+			return cards;
+		}
+	}
+	
 	private static class Cards {
 		@JacksonXmlProperty(localName = "Card")
-		@JacksonXmlElementWrapper(useWrapping = false)
 		private Card[] cards;
-
+		
 		public List<Card> getCards() {
 			if (cards == null) {
 				cards = new Card[0];
