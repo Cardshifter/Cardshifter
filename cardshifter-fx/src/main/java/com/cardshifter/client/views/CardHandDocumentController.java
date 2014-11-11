@@ -91,6 +91,7 @@ public final class CardHandDocumentController extends CardView {
 	}
 
     private void setCardLabels() {
+        this.abilityText.setText("");
 		for (Entry<String, Object> entry : this.card.getProperties().entrySet()) {
 			String key = entry.getKey();
 			String value = String.valueOf(entry.getValue());
@@ -120,6 +121,11 @@ public final class CardHandDocumentController extends CardView {
 			} else if (key.equals("effect")) {
 				String truncatedString = value.substring(0, Math.min(value.length(), 14));
 				abilityText.setText(truncatedString);
+			} else if (key.equals("name")) {
+				// TODO: This is a temporary fix until a real name label is added
+				if (abilityText.getText().isEmpty()) {
+					abilityText.setText(value);
+				}
 			}
 		}
     }
