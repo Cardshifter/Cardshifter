@@ -92,7 +92,7 @@ public class PhrancisTest extends GameTest {
 	
 	@Test
 	public void cannotPlayCardFromDeck() {
-		Entity entity = findCardInDeck(isCreature.and(manaCost(1)));
+		Entity entity = mod.createCreature(0, deck.get(currentPlayer()), 1, 1, "B0T", 1);
 		useFail(entity, PhrancisGame.PLAY_ACTION);
 	}
 	
