@@ -13,7 +13,7 @@ import com.cardshifter.modapi.cards.CardComponent;
  * 
  * @author Simon Forsberg
  */
-public class CannotUseUnknownCards implements ECSSystem {
+public class CannotUseUnknownCardsSystem implements ECSSystem {
 
 	@Retriever
 	private ComponentRetriever<CardComponent> card;
