@@ -10,10 +10,11 @@ import java.util.function.Consumer;
 import net.zomis.cardshifter.ecs.effects.CostComponent;
 import net.zomis.cardshifter.ecs.usage.CW2Game.Resources;
 
+import com.cardshifter.modapi.attributes.Attributes;
+import com.cardshifter.modapi.attributes.ECSAttributeMap;
 import com.cardshifter.modapi.base.Component;
 import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.Entity;
-import com.cardshifter.modapi.base.NameComponent;
 import com.cardshifter.modapi.resources.ECSResource;
 
 public class CrystalCards implements Consumer<ECSGame> {
@@ -40,7 +41,7 @@ public class CrystalCards implements Consumer<ECSGame> {
 
 	private void addCard(ECSGame game, String name, Component... components) {
 		Entity entity = game.newEntity();
-		entity.addComponent(new NameComponent(name));
+		ECSAttributeMap.createFor(entity).set(Attributes.NAME, name);
 		
 		for (Component comp : components) {
 			entity.addComponent(comp);

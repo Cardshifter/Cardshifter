@@ -20,6 +20,8 @@ import com.cardshifter.modapi.actions.attack.AttackTargetMinionsFirstThenPlayer;
 import com.cardshifter.modapi.actions.attack.TrampleSystem;
 import com.cardshifter.modapi.actions.enchant.EnchantPerform;
 import com.cardshifter.modapi.actions.enchant.EnchantTargetCreatureTypes;
+import com.cardshifter.modapi.attributes.Attributes;
+import com.cardshifter.modapi.attributes.ECSAttributeMap;
 import com.cardshifter.modapi.base.Component;
 import com.cardshifter.modapi.base.CreatureTypeComponent;
 import com.cardshifter.modapi.base.ECSGame;
@@ -93,50 +95,56 @@ public class PhrancisGame implements ECSMod {
 	public void addCards(ZoneComponent zone) {
 		// Create card models that should be possible to choose from
 		// B0Ts
-		createCreature(0, zone, 0, 1, "B0T", 1);
-		createCreature(1, zone, 1, 1, "B0T", 1);
-		createCreature(2, zone, 2, 1, "B0T", 1);
-		createCreature(2, zone, 1, 2, "B0T", 1);
-		createCreature(3, zone, 3, 3, "B0T", 2);
-		createCreature(3, zone, 2, 4, "B0T", 2);
-		createCreature(3, zone, 4, 2, "B0T", 2);
-		createCreature(5, zone, 3, 1, "B0T", 3);
-		createCreature(5, zone, 1, 3, "B0T", 3);
-		createCreature(5, zone, 4, 4, "B0T", 3);
+		createCreature(0, zone, 0, 1, "B0T", 3, "Scrap Mech");
+		
+		createCreature(1, zone, 1, 1, "B0T", 1, "BalanceMech-1");
+		createCreature(2, zone, 2, 1, "B0T", 1, "AttackMech-1");
+		createCreature(2, zone, 1, 2, "B0T", 1, "DefenceMech-1");
+		
+		createCreature(3, zone, 3, 3, "B0T", 2, "BalancheMech-2");
+		createCreature(3, zone, 4, 2, "B0T", 2, "AttackMech-2");
+		createCreature(3, zone, 2, 4, "B0T", 2, "DefenceMech-2");
+		
+		createCreature(5, zone, 3, 5, "B0T", 3, "DefenceMech-3");
+		createCreature(5, zone, 5, 3, "B0T", 3, "AttackMech-3");
+		createCreature(5, zone, 4, 4, "B0T", 3, "BalanceMech-3");
 		
 		// Bios
-		createCreature(3, zone, 3, 2, "Bio", 0);
-		createCreature(4, zone, 2, 3, "Bio", 0);
-		createCreature(5, zone, 3, 3, "Bio", 0);
-		createCreature(6, zone, 4, 4, "Bio", 0);
-		createCreature(6, zone, 5, 3, "Bio", 0);
-		createCreature(6, zone, 3, 5, "Bio", 0);
-		createCreature(8, zone, 5, 5, "Bio", 0);
-		createCreature(10, zone, 6, 6, "Bio", 0);
+		createCreature(3, zone, 3, 2, "Bio", 0, "Street Punk");
+		createCreature(4, zone, 2, 3, "Bio", 0, "Street Thug");
+		createCreature(5, zone, 3, 3, "Bio", 0, "Fighter");
+		createCreature(6, zone, 4, 4, "Bio", 0, "Retired Soldier");
+		createCreature(6, zone, 5, 3, "Bio", 0, "Sniper");
+		createCreature(6, zone, 3, 5, "Bio", 0, "Bodyguard");
+		createCreature(7, zone, 5, 5, "Bio", 0, "Gang Leader");
+		createCreature(8, zone, 6, 6, "Bio", 0, "Elite Commando");
 		
 		// Enchantments: (deck), attack effect, health effect, scrap cost
-		createEnchantment(zone, 1, 0, 1);
-		createEnchantment(zone, 0, 1, 1);
-		createEnchantment(zone, 1, 1, 1);
-		createEnchantment(zone, 2, 1, 2);
-		createEnchantment(zone, 3, 0, 2);
-		createEnchantment(zone, 0, 3, 2);
-		createEnchantment(zone, 2, 2, 3);
+		createEnchantment(zone, 2, 0, 1, "Bionic Arms");
+		createEnchantment(zone, 0, 2, 1, "Body Armor");
+		createEnchantment(zone, 1, 1, 1, "Adrenalin Injection");
+		createEnchantment(zone, 2, 1, 2, "Steroid Implants");
+		createEnchantment(zone, 1, 2, 2, "Reinforced Cranial Implants");
+		createEnchantment(zone, 3, 0, 2, "Cybernetic Arm Cannon");
+		createEnchantment(zone, 0, 3, 2, "Exoskeleton");
+		createEnchantment(zone, 2, 2, 3, "Artificial Intelligence Implants");
+		createEnchantment(zone, 3, 3, 5, "Full-body Cybernetics Upgrade");
 	}
 
-	public Entity createTargetSpell(ZoneComponent zone, int manaCost, int scrapCost, EffectComponent effect, FilterComponent filter) {
-		return createSpellWithTargets(1, zone, manaCost, scrapCost, effect, filter);
+	public Entity createTargetSpell(String name, ZoneComponent zone, int manaCost, int scrapCost, EffectComponent effect, FilterComponent filter) {
+		return createSpellWithTargets(name, 1, zone, manaCost, scrapCost, effect, filter);
 	}
 
-	public Entity createSpell(ZoneComponent zone, int manaCost, int scrapCost, EffectComponent effect) {
-		return createSpellWithTargets(0, zone, manaCost, scrapCost, effect);
+	public Entity createSpell(String name, ZoneComponent zone, int manaCost, int scrapCost, EffectComponent effect) {
+		return createSpellWithTargets(name, 0, zone, manaCost, scrapCost, effect);
 	}
 
-	private Entity createSpellWithTargets(int targets, ZoneComponent zone, int manaCost, int scrapCost, Component... components) {
+	private Entity createSpellWithTargets(String name, int targets, ZoneComponent zone, int manaCost, int scrapCost, Component... components) {
 		Entity entity = zone.getOwner().getGame().newEntity();
 		ECSResourceMap.createFor(entity)
 			.set(PhrancisResources.SCRAP_COST, scrapCost)
 			.set(PhrancisResources.MANA_COST, manaCost);
+		ECSAttributeMap.createFor(entity).set(Attributes.NAME, name);
 		entity.addComponent(new ActionComponent().addAction(spellAction(entity, targets)));
 		entity.addComponents(components);
 		zone.addOnBottom(entity);
@@ -272,13 +280,14 @@ public class PhrancisGame implements ECSMod {
 		}
 	}
 
-	public Entity createEnchantment(ZoneComponent deck, int strength, int health, int cost) {
+	public Entity createEnchantment(ZoneComponent deck, int strength, int health, int cost, String name) {
 		Entity entity = deck.getOwner().getGame().newEntity();
 		ECSResourceMap.createFor(entity)
 			.set(PhrancisResources.HEALTH, health)
 			.set(PhrancisResources.MAX_HEALTH, health)
 			.set(PhrancisResources.SCRAP_COST, cost)
 			.set(PhrancisResources.ATTACK, strength);
+		ECSAttributeMap.createFor(entity).set(Attributes.NAME, name);
 		entity.addComponent(new ActionComponent().addAction(enchantAction(entity)));
 		deck.addOnBottom(entity);
 		return entity;
@@ -290,6 +299,11 @@ public class PhrancisGame implements ECSMod {
 
 	public Entity createCreature(int cost, ZoneComponent deck, int strength,
 			int health, String creatureType, int scrapValue) {
+		return createCreature(cost, deck, strength, health, creatureType, scrapValue, "Untitled");
+	}
+	
+	public Entity createCreature(int cost, ZoneComponent deck, int strength,
+			int health, String creatureType, int scrapValue, String name) {
 		Entity entity = deck.getOwner().getGame().newEntity();
 		ECSResourceMap.createFor(entity)
 			.set(PhrancisResources.HEALTH, health)
@@ -301,6 +315,7 @@ public class PhrancisGame implements ECSMod {
 			.set(PhrancisResources.TAUNT, 1)
 //			.set(PhrancisResources.TRAMPLE, 1)
 			.set(PhrancisResources.ATTACK_AVAILABLE, 1);
+		ECSAttributeMap.createFor(entity).set(Attributes.NAME, name);
 		entity.addComponent(new CreatureTypeComponent(creatureType));
 		deck.addOnBottom(entity);
 		

@@ -28,23 +28,23 @@ public class PhrancisGameWithSpells extends PhrancisGameNewAttackSystem {
 //		createTargetSpell(zone, 1, 3, effects.giveTarget(PhrancisResources.SNIPER, 1).and(effects.giveTarget(PhrancisResources.ATTACK, -2, attackLimit)),
 //				targetSupplier.get());
 		
-		createTargetSpell(zone, 4, 2, effects.giveTarget(e -> new UntilEndOfOwnerTurnSystem(e, new EntityCannotUseSystem(e, PhrancisGame.ATTACK_ACTION))),
+		createTargetSpell("", zone, 4, 2, effects.giveTarget(e -> new UntilEndOfOwnerTurnSystem(e, new EntityCannotUseSystem(e, PhrancisGame.ATTACK_ACTION))),
 				new FilterComponent(new Filters().isCreatureOnBattlefield()));
 		
-		createTargetSpell(zone, 4, 4, effects.giveTarget(effects.triggerSystem(PhaseEndEvent.class,
+		createTargetSpell("", zone, 4, 4, effects.giveTarget(effects.triggerSystem(PhaseEndEvent.class,
 				(me, event) -> Players.findOwnerFor(me) == event.getOldPhase().getOwner(),
 				(me, event) -> DrawStartCards.drawCard(event.getOldPhase().getOwner()))),
 				targetSupplier.get());
 		
 		ResourceRetriever health = ResourceRetriever.forResource(PhrancisResources.HEALTH);
-		createSpell(zone, 0, 0, effects.forEach((src, dst) -> dst.hasComponent(PlayerComponent.class), (src, dst) -> health.resFor(dst).change(10)));
+		createSpell("Heal All Players", zone, 0, 0, effects.forEach((src, dst) -> dst.hasComponent(PlayerComponent.class), (src, dst) -> health.resFor(dst).change(10)));
 //		createTargetSpell(zone, 2, 2, effects.giveTarget(PhrancisResources.DOUBLE_ATTACK, 1).and(effects.giveTarget(PhrancisResources.ATTACK, -2, attackLimit)),
 //				targetSupplier.get());
 //		createTargetSpell(zone, 2, 2, effects.systemWhileOnBattlefield(e -> new HealAfterAttackSystem(e, PhrancisResources.HEALTH, PhrancisResources.MAX_HEALTH))
 //				.and(effects.giveTarget(PhrancisResources.ATTACK, -2, attackLimit)),
 //				targetSupplier.get());
-		createTargetSpell(zone, 2, 2, effects.giveTarget(PhrancisResources.HEALTH, -2, healthLimit), targetSupplier.get());
-		createTargetSpell(zone, 2, 2, effects.giveTarget(PhrancisResources.ATTACK, -2, attackLimit), targetSupplier.get());
+		createTargetSpell("Decrease Health", zone, 2, 2, effects.giveTarget(PhrancisResources.HEALTH, -2, healthLimit), targetSupplier.get());
+		createTargetSpell("Decrease Attack", zone, 2, 2, effects.giveTarget(PhrancisResources.ATTACK, -2, attackLimit), targetSupplier.get());
 		
 //		createSpell(zone, 0, 0, effects.system(e -> new OpponentCannotUseSystem(e, ATTACK_ACTION)));
 //		createSpell(zone, 2, 2, effects.giveTarget(new SpecificActionSystem(ATTACK_ACTION) {

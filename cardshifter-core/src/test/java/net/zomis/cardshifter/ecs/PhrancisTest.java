@@ -32,6 +32,7 @@ import com.cardshifter.modapi.resources.Resources;
 public class PhrancisTest extends GameTest {
 
 	private static final int originalLife = 30;
+	private static final String NO_NAME = "No name";
 	private final ResourceRetriever mana = ResourceRetriever.forResource(PhrancisResources.MANA);
 	private final ResourceRetriever manaCost = ResourceRetriever.forResource(PhrancisResources.MANA_COST);
 	private final ResourceRetriever health = ResourceRetriever.forResource(PhrancisResources.HEALTH);
@@ -188,7 +189,7 @@ public class PhrancisTest extends GameTest {
 	
 	@Test
 	public void cannotEnchantPlayer() {
-		Entity enchantment = mod.createEnchantment(hand.get(currentPlayer()), 4, 4, 0);
+		Entity enchantment = mod.createEnchantment(hand.get(currentPlayer()), 4, 4, 0, NO_NAME);
 		useActionWithFailedTarget(enchantment, PhrancisGame.ENCHANT_ACTION, currentPlayer());
 	}
 	
@@ -197,7 +198,7 @@ public class PhrancisTest extends GameTest {
 		Entity attackerPlayer = currentPlayer();
 		Entity enchantedCreature = mod.createCreature(0, field.get(currentPlayer()), 4, 4, "Bio", 0);
 		Entity defender = mod.createCreature(0, field.get(opponent()), 3, 3, "Bio", 0);
-		Entity enchantment = mod.createEnchantment(hand.get(currentPlayer()), 0, 1, 0);
+		Entity enchantment = mod.createEnchantment(hand.get(currentPlayer()), 0, 1, 0, NO_NAME);
 		
 		useActionWithFailedTarget(enchantment, PhrancisGame.ENCHANT_ACTION, attackerPlayer);
 		assertResource(enchantedCreature, PhrancisResources.ATTACK, 4);

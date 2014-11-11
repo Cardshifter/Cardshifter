@@ -22,6 +22,8 @@ import com.cardshifter.modapi.resources.ResourceRetriever;
 
 public class SpellTest extends GameTest {
 	
+	private static final String NO_NAME = "No name";
+
 	private PhrancisGame mod;
 	
 	private ResourceRetriever scrap = ResourceRetriever.forResource(PhrancisResources.SCRAP);
@@ -30,7 +32,7 @@ public class SpellTest extends GameTest {
 	public void preventOpponentAction() {
 		assertNotNull(currentPlayer());
 		Effects eff = new Effects();
-		Entity spell = mod.createSpell(hand.get(currentPlayer()), 0, 0, eff.addSystem(e -> new OpponentCannotUseSystem(Players.findOwnerFor(e), PhrancisGame.END_TURN_ACTION)));
+		Entity spell = mod.createSpell(NO_NAME, hand.get(currentPlayer()), 0, 0, eff.addSystem(e -> new OpponentCannotUseSystem(Players.findOwnerFor(e), PhrancisGame.END_TURN_ACTION)));
 		useAction(spell, PhrancisGame.USE_ACTION);
 		assertTrue(spell.isRemoved());
 		nextPhase();
@@ -42,7 +44,7 @@ public class SpellTest extends GameTest {
 		assertNotNull(currentPlayer());
 		Effects eff = new Effects();
 		Entity freezeTarget = mod.createCreature(0, field.get(getOpponent()), 1, 1, "B0T", 0);
-		Entity spell = mod.createTargetSpell(hand.get(currentPlayer()), 0, 0, eff.giveTarget(e -> new UntilEndOfOwnerTurnSystem(e, new EntityCannotUseSystem(e, PhrancisGame.ATTACK_ACTION))),
+		Entity spell = mod.createTargetSpell(NO_NAME, hand.get(currentPlayer()), 0, 0, eff.giveTarget(e -> new UntilEndOfOwnerTurnSystem(e, new EntityCannotUseSystem(e, PhrancisGame.ATTACK_ACTION))),
 			new FilterComponent(new Filters().isCreatureOnBattlefield()));
 		useActionWithTarget(spell, PhrancisGame.USE_ACTION, freezeTarget);
 		assertTrue(spell.isRemoved());
@@ -65,7 +67,7 @@ public class SpellTest extends GameTest {
 		mod.createCreature(0, field.get(currentPlayer()), 0, 1, "Temp", 4);
 		mod.createCreature(0, field.get(getOpponent()), 0, 1, "Temp", 2);
 		mod.createCreature(0, field.get(getOpponent()), 0, 1, "Temp", 1);
-		Entity spell = mod.createSpell(hand.get(currentPlayer()), 0, 0, eff.scrapAll());
+		Entity spell = mod.createSpell(NO_NAME, hand.get(currentPlayer()), 0, 0, eff.scrapAll());
 		useAction(spell, PhrancisGame.USE_ACTION);
 		assertTrue(spell.isRemoved());
 		

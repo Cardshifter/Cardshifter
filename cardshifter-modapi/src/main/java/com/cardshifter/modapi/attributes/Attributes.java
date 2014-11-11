@@ -7,6 +7,9 @@ import java.util.function.Consumer;
 import com.cardshifter.modapi.base.Entity;
 
 public final class Attributes {
+	public static final ECSAttribute NAME = new ECSAttributeDefault("name");
+	public static final ECSAttribute FLAVOR = new ECSAttributeDefault("flavor");
+	
 	private Attributes() {
 		throw new UnsupportedOperationException();
 	}
