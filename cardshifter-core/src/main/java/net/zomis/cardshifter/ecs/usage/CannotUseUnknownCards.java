@@ -32,7 +32,10 @@ public class CannotUseUnknownCards implements ECSSystem {
 		Entity actionEntity = event.getEntity();
 		if (card.has(actionEntity)) {
 			CardComponent cardData = card.get(actionEntity);
-			cardData.getCurrentZone().isKnownTo(event.getPerformer());
+			boolean known = cardData.getCurrentZone().isKnownTo(event.getPerformer());
+			if (!known) {
+				event.setAllowed(false);
+			}
 		}
 	}
 
