@@ -10,11 +10,15 @@ import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Predicate;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.messages.MessageTypeIdResolver;
 import com.cardshifter.server.clients.serial.FieldsCollection;
 
 public class ByteTransformer implements CommunicationTransformer {
+	private static final Logger logger = LogManager.getLogger(ByteTransformer.class);
 
 	public byte[] transform(Message message) throws IOException {
 		FieldsCollection<Message> fields = FieldsCollection.gather(message);
@@ -27,6 +31,7 @@ public class ByteTransformer implements CommunicationTransformer {
 		// 1. find Fields to serialize
 		// 2. order Fields, pre-process
 		// 3. serialize
+		logger.info("byte send " + message);
 		FieldsCollection<Message> fields = FieldsCollection.gather(message);
 		fields = fields.orderByName().putFirst("command");
 		byte[] b = fields.serialize(message);
@@ -36,7 +41,9 @@ public class ByteTransformer implements CommunicationTransformer {
 	@Override
 	public void read(InputStream in, Predicate<Message> onReceived) throws IOException {
 		try {
+			logger.info("Started reading " + this);
 			Message message = readOnce(in);
+			logger.info("byte recieve " + message);
 			if (!onReceived.test(message)) {
 				return;
 			}
@@ -51,6 +58,7 @@ public class ByteTransformer implements CommunicationTransformer {
 	  IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		DataInputStream data = new DataInputStream(in);
 		int numBytes = data.readInt();
+		logger.info("bytes received " + numBytes);
 		byte[] actualData = new byte[numBytes];
 		data.read(actualData);
 		data = new DataInputStream(new ByteArrayInputStream(actualData));

@@ -65,6 +65,7 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 
 	@Override
 	public void run() {
+		logger.info("Listening for messages using " + transformer);
 		while (socket != null && socket.isConnected()) {
 			try {
 				transformer.read(in, mess -> incomingMess(mess));
@@ -97,6 +98,7 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 		logger.info("Received from " + this + ": " + mess);
 		if (mess instanceof TransformerMessage) {
 			TransformerMessage transformMess = (TransformerMessage) mess;
+			logger.info("Tranform mess " + transformMess.getType());
 			switch (transformMess.getType()) {
 				case TransformerMessage.TRANSFORM_JSON:
 					this.transformer = new JsonSerialization(mapper);
