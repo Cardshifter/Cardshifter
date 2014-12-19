@@ -9,6 +9,9 @@ public class TransformerMessage extends Message {
 	
 	private final int type;
 	
+	TransformerMessage() {
+		this(0);
+	}
 	public TransformerMessage(int type) {
 		super("serial");
 		this.type = type;

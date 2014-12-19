@@ -75,7 +75,7 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 			} catch (JsonProcessingException e) {
 				this.sendToClient(new ServerErrorMessage("Error processing input: " + e.getMessage()));
 				logger.error(e.getMessage(), e);
-			} catch (IOException e) {
+			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 				this.close();
 			}
@@ -95,7 +95,6 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 
 	private boolean incomingMess(Message mess) {
 		logger.info("Received from " + this + ": " + mess);
-		this.sentToServer(mess);
 		if (mess instanceof TransformerMessage) {
 			TransformerMessage transformMess = (TransformerMessage) mess;
 			switch (transformMess.getType()) {
@@ -110,6 +109,7 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 			}
 			return false;
 		}
+		this.sentToServer(mess);
 		return true;
 	}
 
