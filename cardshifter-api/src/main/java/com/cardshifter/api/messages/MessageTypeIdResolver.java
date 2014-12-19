@@ -11,6 +11,7 @@ import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.incoming.RequestTargetsMessage;
 import com.cardshifter.api.incoming.ServerQueryMessage;
 import com.cardshifter.api.incoming.StartGameRequest;
+import com.cardshifter.api.incoming.TransformerMessage;
 import com.cardshifter.api.incoming.UseAbilityMessage;
 import com.cardshifter.api.outgoing.AvailableModsMessage;
 import com.cardshifter.api.outgoing.AvailableTargetsMessage;
@@ -40,6 +41,8 @@ public class MessageTypeIdResolver implements TypeIdResolver {
 	private static final Map<String, Class<? extends Message>> clazzes = new HashMap<>();
 	
 	static {
+		clazzes.put("serial", TransformerMessage.class);
+		
 		clazzes.put("chat", ChatMessage.class);
 		clazzes.put("login", LoginMessage.class);
 		clazzes.put("startgame", StartGameRequest.class);

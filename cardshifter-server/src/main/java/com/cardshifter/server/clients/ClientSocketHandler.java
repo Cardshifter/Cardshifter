@@ -13,6 +13,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import com.cardshifter.api.ClientIO;
+import com.cardshifter.api.incoming.TransformerMessage;
 import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.outgoing.ServerErrorMessage;
 import com.cardshifter.server.model.Server;
@@ -66,10 +67,7 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 	public void run() {
 		while (socket != null && socket.isConnected()) {
 			try {
-				transformer.read(in, mess -> {
-					logger.info("Received from " + this + ": " + mess);
-					this.sentToServer(mess);
-				});
+				transformer.read(in, mess -> incomingMess(mess));
 			} catch (JsonParseException e) {
 				this.sendToClient(new ServerErrorMessage("Error reading input: " + e.getMessage()));
 				logger.error(e.getMessage(), e);
@@ -93,6 +91,26 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 			}
 		}
 		logger.info("End of run method for " + this);
+	}
+
+	private boolean incomingMess(Message mess) {
+		logger.info("Received from " + this + ": " + mess);
+		this.sentToServer(mess);
+		if (mess instanceof TransformerMessage) {
+			TransformerMessage transformMess = (TransformerMessage) mess;
+			switch (transformMess.getType()) {
+				case TransformerMessage.TRANSFORM_JSON:
+					this.transformer = new JsonSerialization(mapper);
+					break;
+				case TransformerMessage.TRANSFORM_BYTE:
+					this.transformer = new ByteTransformer();
+					break;
+				default:
+					throw new IllegalArgumentException("Not a known transformer: " + transformMess.getType());
+			}
+			return false;
+		}
+		return true;
 	}
 
 	@Override
