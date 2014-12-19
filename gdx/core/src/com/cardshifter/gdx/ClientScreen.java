@@ -6,22 +6,29 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
 import com.badlogic.gdx.utils.Json;
+import com.cardshifter.gdx.api.incoming.LoginMessage;
+import com.cardshifter.gdx.api.messages.Message;
 
 import java.io.IOException;
 
 /**
  * Created by Zomis on 2014-11-11.
  */
-public class ClientScreen implements Screen {
-    private final Socket socket;
+public class ClientScreen implements Screen, CardshifterMessageHandler {
+    private final CardshifterClient client;
 
     public ClientScreen(CardshifterGame game, String host, int port) {
-        socket = Gdx.net.newClientSocket(Net.Protocol.TCP, host, port, new SocketHints());
-        try {
-            socket.getOutputStream().write("{ \"command\": \"login\", \"username\": \"LibGDX\" }".getBytes());
-        } catch (IOException e) {
-            Gdx.app.log("client", "Error sending data.", e);
-        }
+        client = new CardshifterClient(host, port, this);
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                }
+                client.send(new LoginMessage("Zomis_GDX"));
+            }
+        });
     }
 
     @Override
@@ -57,5 +64,10 @@ public class ClientScreen implements Screen {
     @Override
     public void dispose() {
 
+    }
+
+    @Override
+    public void handle(Message message) {
+        Gdx.app.log("Client", "Received " + message);
     }
 }
