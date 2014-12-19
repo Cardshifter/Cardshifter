@@ -16,12 +16,10 @@ import com.cardshifter.api.ClientIO;
 import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.outgoing.ServerErrorMessage;
 import com.cardshifter.server.model.Server;
-import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ClientSocketHandler extends ClientIO implements Runnable {
@@ -32,12 +30,14 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 	private final OutputStream out;
 	
 	private final ObjectMapper mapper = CardshifterIO.mapper();
+	private CommunicationTransformer transformer;
 
 	public ClientSocketHandler(Server server, Socket socket) throws IOException {
 		super(server);
 		this.socket = socket;
 		mapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, false);
 		mapper.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
+		transformer = new JsonSerialization(mapper);
 		in = socket.getInputStream();
 		out = socket.getOutputStream();
 	}
@@ -49,7 +49,7 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 	
 	private Void realSend(Message message) {
 		try {
-			mapper.writeValue(out, message);
+			transformer.send(message, out);
 		} catch (JsonProcessingException e) {
 			String error = "Error occured when serializing message " + message;
 			logger.fatal(error, e);
@@ -66,13 +66,10 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 	public void run() {
 		while (socket != null && socket.isConnected()) {
 			try {
-				MappingIterator<Message> values;
-				values = mapper.readValues(new JsonFactory().createParser(this.in), Message.class);
-				while (values.hasNextValue()) {
-					Message message = values.next();
-					logger.info("Received from " + this + ": " + message);
-					this.sentToServer(message);
-				}
+				transformer.read(in, mess -> {
+					logger.info("Received from " + this + ": " + mess);
+					this.sentToServer(mess);
+				});
 			} catch (JsonParseException e) {
 				this.sendToClient(new ServerErrorMessage("Error reading input: " + e.getMessage()));
 				logger.error(e.getMessage(), e);
