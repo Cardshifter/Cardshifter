@@ -75,6 +75,10 @@ public class MessageTypeIdResolver implements TypeIdResolver {
 	}
 	
 	private JavaType mBaseType;
+	
+	public static Class<?> typeFor(String id) {
+		return clazzes.get(id);
+	}
 
 	@Override
 	public void init(JavaType baseType) {
