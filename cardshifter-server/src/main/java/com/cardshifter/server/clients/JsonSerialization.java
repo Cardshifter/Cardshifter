@@ -3,9 +3,10 @@ package com.cardshifter.server.clients;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.function.Predicate;
 
 import com.cardshifter.api.messages.Message;
+import com.cardshifter.api.serial.CommunicationTransformer;
+import com.cardshifter.api.serial.MessageHandler;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,12 +25,12 @@ public class JsonSerialization implements CommunicationTransformer {
 	}
 
 	@Override
-	public void read(InputStream in, Predicate<Message> onReceived) throws IOException {
+	public void read(InputStream in, MessageHandler onReceived) throws IOException {
 		MappingIterator<Message> values;
 		values = mapper.readValues(new JsonFactory().createParser(in), Message.class);
 		while (values.hasNextValue()) {
 			Message message = values.next();
-			if (!onReceived.test(message)) {
+			if (!onReceived.messageReceived(message)) {
 				return;
 			}
 		}

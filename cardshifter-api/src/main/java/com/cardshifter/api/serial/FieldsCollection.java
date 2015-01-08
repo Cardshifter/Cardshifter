@@ -1,4 +1,4 @@
-package com.cardshifter.server.clients.serial;
+package com.cardshifter.api.serial;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -80,17 +80,21 @@ public class FieldsCollection<T> {
 		}
 	}
 
-	private void serialize(Field field, T obj, DataOutputStream out) throws IOException, IllegalArgumentException, IllegalAccessException {
-		field.setAccessible(true);
-		Class<?> type = field.getType();
-		Object value = field.get(obj);
-		if (type == int.class) {
-			out.writeInt(field.getInt(obj));
+	private void serialize(Class<?> type, Object value, DataOutputStream out) throws IOException, IllegalArgumentException, IllegalAccessException {
+		if (type == int.class || type == Integer.class) {
+			out.writeInt((Integer) value);
 		}
 		else if (type == String.class) {
 			String str = (String) value;
 			out.writeInt(str.length());
 			out.writeChars(str);
+		}
+		else if (type == String[].class) {
+			String[] arr = (String[]) value;
+			out.write(arr.length);
+			for (int i = 0; i < arr.length; i++) {
+				serialize(String.class, arr[i], out);
+			}
 		}
 //		else if (Enum.class.isAssignableFrom(type)) {
 //		}
@@ -98,25 +102,32 @@ public class FieldsCollection<T> {
 			throw new IOException("unknown type " + type);
 		}
 	}
+	
+	private void serialize(Field field, T obj, DataOutputStream out) throws IOException, IllegalArgumentException, IllegalAccessException {
+		field.setAccessible(true);
+		Class<?> type = field.getType();
+		Object value = field.get(obj);
+		serialize(type, value, out);
+	}
 
 	public FieldsCollection<T> orderByName() {
-		List<Field> myFields = new ArrayList<>(fields);
-		myFields.sort(new Comparator<Field>() {
+		List<Field> myFields = new ArrayList<Field>(fields);
+		Collections.sort(myFields, new Comparator<Field>() {
 			@Override
 			public int compare(Field o1, Field o2) {
 				return o1.getName().compareTo(o2.getName());
 			}
 		});
-		return new FieldsCollection<>(myFields);
+		return new FieldsCollection<T>(myFields);
 	}
 
 	public FieldsCollection<T> putFirst(String fieldName) {
-		List<Field> myFields = new ArrayList<>(fields);
+		List<Field> myFields = new ArrayList<Field>(fields);
 		for (Field field : myFields) {
 			if (field.getName().equals(fieldName)) {
 				myFields.remove(field);
 				myFields.add(0, field);
-				return new FieldsCollection<>(myFields);
+				return new FieldsCollection<T>(myFields);
 			}
 		}
 		throw new IllegalArgumentException("Field name not found: " + fieldName);
@@ -133,10 +144,10 @@ public class FieldsCollection<T> {
 		}
 	}
 
-	public FieldsCollection<Message> skipFirst() {
-		List<Field> myFields = new ArrayList<>(fields);
+	public FieldsCollection<T> skipFirst() {
+		List<Field> myFields = new ArrayList<Field>(fields);
 		myFields.remove(0);
-		return new FieldsCollection<>(myFields);
+		return new FieldsCollection<T>(myFields);
 	}
 
 }

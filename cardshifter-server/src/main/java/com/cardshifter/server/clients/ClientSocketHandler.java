@@ -16,6 +16,8 @@ import com.cardshifter.api.ClientIO;
 import com.cardshifter.api.incoming.TransformerMessage;
 import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.outgoing.ServerErrorMessage;
+import com.cardshifter.api.serial.ByteTransformer;
+import com.cardshifter.api.serial.CommunicationTransformer;
 import com.cardshifter.server.model.Server;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParseException;

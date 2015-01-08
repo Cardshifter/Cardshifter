@@ -1,4 +1,4 @@
-package com.cardshifter.server.clients;
+package com.cardshifter.api.serial;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -8,14 +8,12 @@ import java.io.OutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
-import java.util.function.Predicate;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.messages.MessageTypeIdResolver;
-import com.cardshifter.server.clients.serial.FieldsCollection;
 
 public class ByteTransformer implements CommunicationTransformer {
 	private static final Logger logger = LogManager.getLogger(ByteTransformer.class);
@@ -39,12 +37,12 @@ public class ByteTransformer implements CommunicationTransformer {
 	}
 
 	@Override
-	public void read(InputStream in, Predicate<Message> onReceived) throws IOException {
+	public void read(InputStream in, MessageHandler onReceived) throws IOException {
 		try {
 			logger.info("Started reading " + this);
 			Message message = readOnce(in);
 			logger.info("byte recieve " + message);
-			if (!onReceived.test(message)) {
+			if (!onReceived.messageReceived(message)) {
 				return;
 			}
 		} catch (IOException e) {

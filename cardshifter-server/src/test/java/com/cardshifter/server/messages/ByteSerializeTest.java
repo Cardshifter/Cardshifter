@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.messages.Message;
-import com.cardshifter.server.clients.ByteTransformer;
+import com.cardshifter.api.serial.ByteTransformer;
 
 public class ByteSerializeTest {
 	
