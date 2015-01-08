@@ -26,7 +26,7 @@ public class PlayerConfigMessage extends Message {
 	}
 	
 	public Map<String, Object> getConfigs() {
-		return new HashMap<>(configs);
+		return new HashMap<String, Object>(configs);
 	}
 	
 	public int getGameId() {

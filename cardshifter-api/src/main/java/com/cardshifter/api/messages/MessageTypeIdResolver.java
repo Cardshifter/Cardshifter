@@ -38,7 +38,7 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 
 public class MessageTypeIdResolver implements TypeIdResolver {
 	
-	private static final Map<String, Class<? extends Message>> clazzes = new HashMap<>();
+	private static final Map<String, Class<? extends Message>> clazzes = new HashMap<String, Class<? extends Message>>();
 	
 	static {
 		clazzes.put("serial", TransformerMessage.class);
