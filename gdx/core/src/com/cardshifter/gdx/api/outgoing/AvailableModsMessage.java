@@ -8,7 +8,11 @@ public class AvailableModsMessage extends Message {
 
 	private final String[] mods;
 
-	public AvailableModsMessage(String[] mods) {
+    public AvailableModsMessage() {
+        this(new String[]{ "test" });
+    }
+
+    public AvailableModsMessage(String[] mods) {
 		super("availableMods");
 		this.mods = Arrays.copyOf(mods, mods.length);
 	}
