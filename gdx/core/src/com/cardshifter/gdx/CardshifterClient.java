@@ -11,10 +11,9 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.spi.LoggingEvent;
 
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
+import java.util.Arrays;
+import java.util.Map;
 
 public class CardshifterClient implements Runnable {
 
@@ -63,20 +62,28 @@ public class CardshifterClient implements Runnable {
             DataInputStream dataIn = new DataInputStream(input);
             while (true) {
                 Gdx.app.log("Client", "listening for input");
-                byte[] bytes = new byte[1024];
                 try {
+                    Gdx.app.log("Client", "reading x bytes");
+                    Message message = transformer.readOnce(dataIn);
+/*
                     int read = dataIn.readInt();
+                    Gdx.app.log("Client", "reading " + read + " bytes");
                     dataIn.read(bytes, 0, read);
-                    Message message = transformer.readOnce(input);
+                    Gdx.app.log("Client", "received: " + Arrays.toString(bytes));
+                    Message message = transformer.readOnce(new ByteArrayInputStream(bytes, 0, read));
+*/
+                    Gdx.app.log("Client", "transformed into: " + message);
                     handler.handle(message);
+                    Gdx.app.log("Client", "handled complete: " + message);
                 } catch (Exception e) {
+                    Gdx.app.log("Client", "Error inside read loop", e);
                     e.printStackTrace();
                     break;
                 }
             }
         }
         catch (Exception ex) {
-            ex.printStackTrace();
+            Gdx.app.log("Client", "Error outside read loop", ex);
         }
         Gdx.app.log("Client", "Stopped listening");
     }
