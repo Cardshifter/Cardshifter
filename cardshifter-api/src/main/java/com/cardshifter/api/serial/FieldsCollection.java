@@ -11,10 +11,15 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import com.cardshifter.api.messages.Message;
 
 public class FieldsCollection<T> {
 
+	private static final Logger logger = LogManager.getLogger(FieldsCollection.class);
+	
 	private final List<Field> fields;
 
 	public FieldsCollection(List<Field> fields) {
@@ -63,19 +68,23 @@ public class FieldsCollection<T> {
 	}
 
 	private Object deserialize(Class<?> type, DataInputStream data) throws IOException {
+		logger.debug("deserialize " + type);
 		if (type == int.class || type == Integer.class) {
 			return (Integer) data.readInt();
 		}
 		else if (type == String[].class) {
 			int count = data.readInt();
 			String[] str = new String[count];
+			logger.debug("String array length " + count);
 			for (int i = 0; i < str.length; i++) {
 				str[i] = (String) deserialize(String.class, data);
+				logger.debug("String read " + i + ": " + str[i]);
 			}
 			return str;
 		}
 		else if (type == String.class) {
 			int length = data.readInt();
+			logger.debug("String length " + length);
 			StringBuilder str = new StringBuilder(length);
 			for (int i = 0; i < length; i++) {
 				str.append(data.readChar());
@@ -90,6 +99,7 @@ public class FieldsCollection<T> {
 	}
 	
 	private void deserialize(Field field, Message message, DataInputStream data) throws IllegalArgumentException, IllegalAccessException, IOException {
+		logger.debug("read field " + field + " for " + message);
 		field.setAccessible(true);
 		Class<?> type = field.getType();
 		field.set(message, deserialize(type, data));
