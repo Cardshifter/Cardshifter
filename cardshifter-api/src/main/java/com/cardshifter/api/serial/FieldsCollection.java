@@ -5,6 +5,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -32,7 +33,9 @@ public class FieldsCollection<T> {
 
 	private static void addFields(List<Field> fields, Class<?> clazz) {
 		for (Field field : clazz.getDeclaredFields()) {
-			fields.add(field);
+			if (!Modifier.isStatic(field.getModifiers())) {
+				fields.add(field);
+			}
 		}
 	}
 	
