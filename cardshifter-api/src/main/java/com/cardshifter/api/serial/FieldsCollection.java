@@ -62,11 +62,17 @@ public class FieldsCollection<T> {
 		return baos.toByteArray();
 	}
 
-	private void deserialize(Field field, Message message, DataInputStream data) throws IllegalArgumentException, IllegalAccessException, IOException {
-		field.setAccessible(true);
-		Class<?> type = field.getType();
-		if (type == int.class) {
-			field.setInt(message, data.readInt());
+	private Object deserialize(Class<?> type, DataInputStream data) throws IOException {
+		if (type == int.class || type == Integer.class) {
+			return (Integer) data.readInt();
+		}
+		else if (type == String[].class) {
+			int count = data.readInt();
+			String[] str = new String[count];
+			for (int i = 0; i < str.length; i++) {
+				str[i] = (String) deserialize(String.class, data);
+			}
+			return str;
 		}
 		else if (type == String.class) {
 			int length = data.readInt();
@@ -74,13 +80,19 @@ public class FieldsCollection<T> {
 			for (int i = 0; i < length; i++) {
 				str.append(data.readChar());
 			}
-			field.set(message, str.toString());
+			return str.toString();
 		}
 //		else if (Enum.class.isAssignableFrom(type)) {
 //		}
 		else {
 			throw new IOException("unknown type " + type);
 		}
+	}
+	
+	private void deserialize(Field field, Message message, DataInputStream data) throws IllegalArgumentException, IllegalAccessException, IOException {
+		field.setAccessible(true);
+		Class<?> type = field.getType();
+		field.set(message, deserialize(type, data));
 	}
 
 	private void serialize(Class<?> type, Object value, DataOutputStream out) throws IOException, IllegalArgumentException, IllegalAccessException {
@@ -94,7 +106,7 @@ public class FieldsCollection<T> {
 		}
 		else if (type == String[].class) {
 			String[] arr = (String[]) value;
-			out.write(arr.length);
+			out.writeInt(arr.length);
 			for (int i = 0; i < arr.length; i++) {
 				serialize(String.class, arr[i], out);
 			}
