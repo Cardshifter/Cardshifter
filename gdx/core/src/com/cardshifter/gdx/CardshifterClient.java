@@ -6,6 +6,10 @@ import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
 import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.serial.ByteTransformer;
+import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.spi.LoggingEvent;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -30,6 +34,22 @@ public class CardshifterClient implements Runnable {
             output.write("{ \"command\": \"serial\", \"type\": \"1\" }".getBytes());
             output.flush();
             Gdx.app.log("Client", "Sent serial type");
+            LogManager.getRootLogger().addAppender(new AppenderSkeleton() {
+                @Override
+                protected void append(LoggingEvent event) {
+                    Gdx.app.log(event.getLoggerName(), String.valueOf(event.getMessage()));
+                }
+
+                @Override
+                public void close() {
+
+                }
+
+                @Override
+                public boolean requiresLayout() {
+                    return false;
+                }
+            });
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
