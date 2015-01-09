@@ -1,14 +1,8 @@
 package com.cardshifter.gdx.api.messages;
 
-public class Message {
+public class Message extends com.cardshifter.api.messages.Message {
 
-    private final String command;
-
-    public Message(String command) {
-        this.command = command;
-    }
-
-    public String getCommand() {
-        return command;
+    public Message(String string) {
+        super(string);
     }
 }

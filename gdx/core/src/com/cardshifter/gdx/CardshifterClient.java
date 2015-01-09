@@ -4,8 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
-import com.badlogic.gdx.utils.Json;
-import com.cardshifter.gdx.api.messages.Message;
+import com.cardshifter.api.messages.Message;
+import com.cardshifter.api.serial.ByteTransformer;
 
 import java.io.DataInputStream;
 import java.io.IOException;

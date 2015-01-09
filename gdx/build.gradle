@@ -17,6 +17,7 @@ allprojects {
     version = '1.0'
     ext {
         appName = 'cardshifter-gdx'
+        cardshifterVersion = '0.5-SNAPSHOT'
         gdxVersion = '1.4.1'
         roboVMVersion = '1.0.0-alpha-04'
         box2DLightsVersion = '1.3'
@@ -26,6 +27,7 @@ allprojects {
 
     repositories {
         mavenCentral()
+        mavenLocal()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
     }
@@ -91,6 +93,7 @@ project(":core") {
 
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+        compile "com.cardshifter:cardshifter-api:$cardshifterVersion"
     }
 }
 

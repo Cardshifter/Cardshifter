@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+@Deprecated
 public class FieldsCollection<T> {
 
 	private final List<Field> fields;

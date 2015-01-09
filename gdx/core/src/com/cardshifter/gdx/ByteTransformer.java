@@ -13,6 +13,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Predicate;
 
+@Deprecated
 public class ByteTransformer {
 
 	public byte[] transform(Message message) throws IOException {
