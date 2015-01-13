@@ -2,13 +2,16 @@ package com.cardshifter.gdx;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.incoming.LoginMessage;
+import com.cardshifter.api.incoming.ServerQueryMessage;
 import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.outgoing.AvailableModsMessage;
+import com.cardshifter.api.outgoing.UserStatusMessage;
 
+import java.text.DateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,6 +24,7 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
     private final Table table;
     private final HorizontalGroup mods;
     private final CardshifterGame game;
+    private final TextArea chatMessages;
 
     public ClientScreen(final CardshifterGame game, String host, int port) {
         this.game = game;
@@ -28,7 +32,10 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
         table = new Table(game.skin);
         table.setFillParent(true);
         mods = new HorizontalGroup();
-        table.add(mods).bottom().expand().fill();
+        chatMessages = new TextArea("", game.skin);
+        table.add(new ScrollPane(chatMessages)).top().expand().fill();
+        table.row();
+        table.add(mods).bottom().expandX().fill();
         table.setDebug(true, true);
         handlerMap.put(AvailableModsMessage.class, new SpecificHandler<AvailableModsMessage>() {
             @Override
@@ -37,6 +44,14 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
                 for (String mod : message.getMods()) {
                     mods.addActor(new TextButton(mod, game.skin));
                 }
+            }
+        });
+        handlerMap.put(ChatMessage.class, new SpecificHandler<ChatMessage>() {
+            @Override
+            public void handle(ChatMessage message) {
+                DateFormat format = DateFormat.getDateInstance();
+                String append = "\n" + "[" + format.format(Calendar.getInstance().getTime()) + "] " + message.getFrom() + ": " + message.getMessage();
+                chatMessages.setText(chatMessages.getText() + append);
             }
         });
         Gdx.app.postRunnable(new Runnable() {
