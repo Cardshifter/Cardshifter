@@ -25,6 +25,7 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
     private final HorizontalGroup mods;
     private final CardshifterGame game;
     private final TextArea chatMessages;
+    private final Table users;
 
     public ClientScreen(final CardshifterGame game, String host, int port) {
         this.game = game;
@@ -33,17 +34,19 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
         table.setFillParent(true);
         mods = new HorizontalGroup();
         chatMessages = new TextArea("", game.skin);
+        users = new Table(game.skin);
         table.add(new ScrollPane(chatMessages)).top().expand().fill();
+        table.add(users).right().expandY().fill();
         table.row();
         table.add(mods).bottom().expandX().fill();
         table.setDebug(true, true);
         handlerMap.put(AvailableModsMessage.class, new SpecificHandler<AvailableModsMessage>() {
             @Override
             public void handle(AvailableModsMessage message) {
-                Gdx.app.log("handle", "handle " + message);
                 for (String mod : message.getMods()) {
                     mods.addActor(new TextButton(mod, game.skin));
                 }
+                client.send(new ServerQueryMessage(ServerQueryMessage.Request.USERS));
             }
         });
         handlerMap.put(ChatMessage.class, new SpecificHandler<ChatMessage>() {
@@ -54,6 +57,13 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
                 chatMessages.setText(chatMessages.getText() + append);
             }
         });
+        handlerMap.put(UserStatusMessage.class, new SpecificHandler<UserStatusMessage>() {
+            @Override
+            public void handle(UserStatusMessage message) {
+                users.add(message.getName()).expandX().fill().row();
+            }
+        });
+
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
