@@ -91,8 +91,11 @@ public class FieldsCollection<T> {
 			}
 			return str.toString();
 		}
-//		else if (Enum.class.isAssignableFrom(type)) {
-//		}
+		else if (Enum.class.isAssignableFrom(type)) {
+			Object[] values = type.getEnumConstants();
+			int ordinal = data.readInt();
+			return values[ordinal];
+		}
 		else {
 			throw new IOException("unknown type " + type);
 		}
@@ -121,8 +124,10 @@ public class FieldsCollection<T> {
 				serialize(String.class, arr[i], out);
 			}
 		}
-//		else if (Enum.class.isAssignableFrom(type)) {
-//		}
+		else if (Enum.class.isAssignableFrom(type)) {
+			Enum<?> enumValue = (Enum<?>) value;
+			out.writeInt(enumValue.ordinal());
+		}
 		else {
 			throw new IOException("unknown type " + type);
 		}
