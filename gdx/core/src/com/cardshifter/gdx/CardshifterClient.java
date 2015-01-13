@@ -7,13 +7,10 @@ import com.badlogic.gdx.net.SocketHints;
 import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.serial.ByteTransformer;
 import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.spi.LoggingEvent;
 
 import java.io.*;
-import java.util.Arrays;
-import java.util.Map;
 
 public class CardshifterClient implements Runnable {
 

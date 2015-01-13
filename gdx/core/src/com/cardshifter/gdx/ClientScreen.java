@@ -2,13 +2,17 @@ package com.cardshifter.gdx;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.incoming.ServerQueryMessage;
+import com.cardshifter.api.incoming.StartGameRequest;
 import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.outgoing.AvailableModsMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage;
+import com.cardshifter.gdx.ui.UsersList;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -26,7 +30,8 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
     private final HorizontalGroup mods;
     private final CardshifterGame game;
     private final TextArea chatMessages;
-    private final Table users;
+    private final UsersList usersList;
+    private String[] availableMods;
 
     public ClientScreen(final CardshifterGame game, String host, int port) {
         this.game = game;
@@ -35,18 +40,24 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
         table.setFillParent(true);
         mods = new HorizontalGroup();
         chatMessages = new TextArea("", game.skin);
-        users = new Table(game.skin);
+        usersList = new UsersList(game.skin);
         table.add(new ScrollPane(chatMessages)).top().expand().fill();
-        table.add(users).right().expandY().fill();
+        table.add(usersList.getTable()).right().expandY().fill();
         table.row();
         table.add(mods).bottom().expandX().fill();
+        TextButton inviteButton = new TextButton("Invite", game.skin);
+        inviteButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                usersList.inviteSelected(availableMods, game.stage, client);
+            }
+        });
+        table.add(inviteButton).right().expand().fill();
         table.setDebug(true, true);
         handlerMap.put(AvailableModsMessage.class, new SpecificHandler<AvailableModsMessage>() {
             @Override
             public void handle(AvailableModsMessage message) {
-                for (String mod : message.getMods()) {
-                    mods.addActor(new TextButton(mod, game.skin));
-                }
+                availableMods = message.getMods();
                 client.send(new ServerQueryMessage(ServerQueryMessage.Request.USERS));
             }
         });
@@ -61,7 +72,7 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
         handlerMap.put(UserStatusMessage.class, new SpecificHandler<UserStatusMessage>() {
             @Override
             public void handle(UserStatusMessage message) {
-                users.add(message.getName()).expandX().fill().row();
+                usersList.handleUserStatus(message);
             }
         });
 
