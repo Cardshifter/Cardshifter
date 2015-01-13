@@ -11,6 +11,7 @@ import com.cardshifter.api.outgoing.AvailableModsMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -52,7 +53,7 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
         handlerMap.put(ChatMessage.class, new SpecificHandler<ChatMessage>() {
             @Override
             public void handle(ChatMessage message) {
-                DateFormat format = DateFormat.getDateInstance();
+                DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String append = "\n" + "[" + format.format(Calendar.getInstance().getTime()) + "] " + message.getFrom() + ": " + message.getMessage();
                 chatMessages.setText(chatMessages.getText() + append);
             }
