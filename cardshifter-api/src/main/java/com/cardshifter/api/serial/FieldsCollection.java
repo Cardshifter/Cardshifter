@@ -64,7 +64,9 @@ public class FieldsCollection<T> {
 	private Object deserialize(Class<?> type, DataInputStream data, Field field) throws IOException {
 		logger.debug("deserialize " + type);
 		if (type == int.class || type == Integer.class) {
-			return (Integer) data.readInt();
+			int value = data.readInt();
+			logger.debug("Deserialized int: " + value);
+			return value;
 		}
 		else if (type == String[].class) {
 			int count = data.readInt();
@@ -83,6 +85,7 @@ public class FieldsCollection<T> {
 			for (int i = 0; i < length; i++) {
 				str.append(data.readChar());
 			}
+			logger.debug("Deserialized string: " + str);
 			return str.toString();
 		}
 		else if (Enum.class.isAssignableFrom(type)) {
@@ -117,7 +120,9 @@ public class FieldsCollection<T> {
 			String clazzName = (String) deserialize(String.class, data, null);
 			try {
 				Class<?> clazz = Class.forName(clazzName);
-				return deserialize(clazz, data, field);
+				Object obj = deserialize(clazz, data, field);
+				logger.debug("Deserialized object: " + obj);
+				return obj;
 			} catch (ClassNotFoundException e) {
 				throw new IOException(e);
 			}
@@ -148,6 +153,7 @@ public class FieldsCollection<T> {
 
 	private void serialize(Class<?> type, Object value, DataOutputStream out, Field field)
 			throws IOException, IllegalArgumentException, IllegalAccessException {
+		logger.info("Serializing " + type + ": " + value);
 		if (type == int.class || type == Integer.class) {
 			out.writeInt((Integer) value);
 		}

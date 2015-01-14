@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -33,6 +34,7 @@ public class ByteTransformer implements CommunicationTransformer {
 		FieldsCollection<Message> fields = FieldsCollection.gather(message);
 		fields = fields.orderByName().putFirst("command");
 		byte[] b = fields.serialize(message);
+		logger.info("byte send " + Arrays.toString(b));
 		out.write(b);
 	}
 
@@ -64,6 +66,7 @@ public class ByteTransformer implements CommunicationTransformer {
 			read += data.read(actualData, read, numBytes - read);
 		}
 
+		logger.info("bytes data received " + Arrays.toString(actualData));
 		data = new DataInputStream(new ByteArrayInputStream(actualData));
 		
 		int typeLength = data.readInt();
