@@ -58,7 +58,12 @@ public class ByteTransformer implements CommunicationTransformer {
 		int numBytes = data.readInt();
 		logger.info("bytes received " + numBytes);
 		byte[] actualData = new byte[numBytes];
-		data.read(actualData);
+
+		int read = 0;
+		while (read < numBytes) {
+			read += data.read(actualData, read, numBytes - read);
+		}
+
 		data = new DataInputStream(new ByteArrayInputStream(actualData));
 		
 		int typeLength = data.readInt();
