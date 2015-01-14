@@ -1,4 +1,4 @@
-package net.zomis.cardshifter.ecs.config;
+package com.cardshifter.api.config;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,36 +7,29 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import net.zomis.cardshifter.ecs.EntitySerialization;
-
 import com.cardshifter.api.outgoing.CardInfoMessage;
-import com.cardshifter.modapi.base.Entity;
 
 public class DeckConfig {
 
-	private final Map<Integer, CardInfoMessage> cardData = new HashMap<>();
-	private final Map<Integer, Integer> chosen = new HashMap<>();
-	private final Map<Integer, Integer> max = new HashMap<>();
+	private final Map<Integer, CardInfoMessage> cardData;
+	private final Map<Integer, Integer> chosen = new HashMap<Integer, Integer>();
+	private final Map<Integer, Integer> max = new HashMap<Integer, Integer>();
 	private final int minSize;
 	private final int maxSize;
 	private final int maxPerCard;
 	
 	DeckConfig() {
-		this(0, 0, new ArrayList<>(), 0);
+		this(0, 0, new HashMap<Integer, CardInfoMessage>(), 0);
 	}
-	public DeckConfig(int minSize, int maxSize, List<Entity> cardOptions, int maxPerCard) {
+	public DeckConfig(int minSize, int maxSize, Map<Integer, CardInfoMessage> cardData, int maxPerCard) {
 		this.minSize = minSize;
 		this.maxSize = maxSize;
 		this.maxPerCard = maxPerCard;
-		
-		for (Entity card : cardOptions) {
-			cardData.put(card.getId(), EntitySerialization.serialize(0, card));
-		}
-		
+		this.cardData = new HashMap<Integer, CardInfoMessage>(cardData);
 	}
 	
-	public void setMax(Entity entity, int max) {
-		this.max.put(entity.getId(), max);
+	public void setMax(int id, int max) {
+		this.max.put(id, max);
 	}
 	
 	public void setChosen(int id, int chosen) {
@@ -72,7 +65,7 @@ public class DeckConfig {
 	}
 	
 	public Map<Integer, Integer> getMax() {
-		return new HashMap<>(max);
+		return new HashMap<Integer, Integer>(max);
 	}
 	
 	public int getMaxPerCard() {
@@ -80,7 +73,11 @@ public class DeckConfig {
 	}
 	
 	public int total() {
-		return chosen.values().stream().mapToInt(i -> i).sum();
+		int sum = 0;
+		for (Integer ee : chosen.values()) {
+			sum += ee;
+		}
+		return sum;
 	}
 	
 	@Override
@@ -90,7 +87,7 @@ public class DeckConfig {
 	
 	public void generateRandom() {
 		Random random = new Random();
-		List<Integer> ids = new ArrayList<>(this.getCardData().keySet());
+		List<Integer> ids = new ArrayList<Integer>(this.getCardData().keySet());
 		while (this.total() < this.getMinSize()) {
 			int randomId = ids.get(random.nextInt(ids.size()));
 			this.setChosen(randomId, this.getMaxFor(randomId));
@@ -98,11 +95,16 @@ public class DeckConfig {
 	}
 	
 	public void add(int cardId) {
-		chosen.merge(cardId, 1, (a, b) -> a + b);
+		Integer current = chosen.get(cardId);
+		if (current == null) {
+			current = 0;
+		}
+		chosen.put(cardId, current + 1);
 	}
 	
 	public int getMaxFor(int id) {
-		return this.max.getOrDefault(id, maxPerCard);
+		Integer value = this.max.get(id);
+		return value == null ? maxPerCard : value;
 	}
 
 }

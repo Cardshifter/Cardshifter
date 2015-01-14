@@ -4,7 +4,8 @@ import java.util.Map.Entry;
 import java.util.function.UnaryOperator;
 
 import net.zomis.cardshifter.ecs.config.ConfigComponent;
-import net.zomis.cardshifter.ecs.config.DeckConfig;
+import com.cardshifter.api.config.DeckConfig;
+import net.zomis.cardshifter.ecs.config.DeckConfigFactory;
 import net.zomis.cardshifter.ecs.effects.EffectActionSystem;
 import net.zomis.cardshifter.ecs.effects.EffectComponent;
 import net.zomis.cardshifter.ecs.effects.EffectTargetFilterSystem;
@@ -86,7 +87,7 @@ public class PhrancisGame implements ECSMod {
 			Entity entity = game.newEntity();
 			PlayerComponent playerComponent = new PlayerComponent(i, "Player" + (i+1));
 			entity.addComponent(playerComponent);
-			DeckConfig config = new DeckConfig(minSize, maxSize, zone.getCards(), maxCardsPerType);
+			DeckConfig config = DeckConfigFactory.create(minSize, maxSize, zone.getCards(), maxCardsPerType);
 			entity.addComponent(new ConfigComponent().addConfig("Deck", config));
 		}
 		

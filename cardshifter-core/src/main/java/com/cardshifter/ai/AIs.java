@@ -6,7 +6,7 @@ import net.zomis.aiscores.scorers.PredicateScorer;
 import net.zomis.aiscores.scorers.Scorers;
 import net.zomis.aiscores.scorers.SimpleScorer;
 import net.zomis.cardshifter.ecs.config.ConfigComponent;
-import net.zomis.cardshifter.ecs.config.DeckConfig;
+import com.cardshifter.api.config.DeckConfig;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame;
 
 import com.cardshifter.ai.phrancis.AttackAnalyze;

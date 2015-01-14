@@ -32,7 +32,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import net.zomis.cardshifter.ecs.config.DeckConfig;
+import com.cardshifter.api.config.DeckConfig;
 import net.zomis.cardshifter.ecs.usage.CardshifterIO;
 
 import org.apache.log4j.LogManager;
