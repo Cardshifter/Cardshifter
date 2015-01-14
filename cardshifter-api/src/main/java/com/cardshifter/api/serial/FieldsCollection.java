@@ -130,6 +130,7 @@ public class FieldsCollection<T> {
 				Object obj = constructor.newInstance();
 				FieldsCollection<Object> fields = FieldsCollection.gather(obj);
 				fields = fields.orderByName();
+				data.readInt(); // length of upcoming data, ignored on recursive deserialization
 				fields.read(obj, data);
 				return obj;
 			} catch (Exception e) {
