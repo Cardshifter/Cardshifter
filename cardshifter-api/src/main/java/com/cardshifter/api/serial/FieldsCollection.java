@@ -10,8 +10,6 @@ import java.util.*;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import com.cardshifter.api.messages.Message;
-
 public class FieldsCollection<T> {
 
 	private static final Logger logger = LogManager.getLogger(FieldsCollection.class);
@@ -125,7 +123,17 @@ public class FieldsCollection<T> {
 			}
 		}
 		else {
-			throw new IOException("unknown type " + type);
+			logger.info("Using recursive deserialization for " + type);
+			try {
+				Constructor<?> constructor = type.getConstructor();
+				constructor.setAccessible(true);
+				Object obj = constructor.newInstance();
+				FieldsCollection<Object> fields = FieldsCollection.gather(obj);
+				fields.read(obj, data);
+				return obj;
+			} catch (Exception e) {
+				throw new IOException(e);
+			}
 		}
 	}
 	
@@ -184,7 +192,10 @@ public class FieldsCollection<T> {
 			serialize(value.getClass(), value, out, null);
 		}
 		else {
-			throw new IOException("unknown type " + type);
+			logger.info("Using recursive serialization for " + type);
+			FieldsCollection<Object> fields = FieldsCollection.gather(value);
+			byte[] b = fields.serialize(value);
+			out.write(b);
 		}
 	}
 	
