@@ -4,12 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.lang.reflect.*;
+import java.util.*;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -67,7 +63,7 @@ public class FieldsCollection<T> {
 		return baos.toByteArray();
 	}
 
-	private Object deserialize(Class<?> type, DataInputStream data) throws IOException {
+	private Object deserialize(Class<?> type, DataInputStream data, Field field) throws IOException {
 		logger.debug("deserialize " + type);
 		if (type == int.class || type == Integer.class) {
 			return (Integer) data.readInt();
@@ -77,7 +73,7 @@ public class FieldsCollection<T> {
 			String[] str = new String[count];
 			logger.debug("String array length " + count);
 			for (int i = 0; i < str.length; i++) {
-				str[i] = (String) deserialize(String.class, data);
+				str[i] = (String) deserialize(String.class, data, null);
 				logger.debug("String read " + i + ": " + str[i]);
 			}
 			return str;
@@ -96,19 +92,43 @@ public class FieldsCollection<T> {
 			int ordinal = data.readInt();
 			return values[ordinal];
 		}
+		else if (type == Map.class) {
+			if (field == null) {
+				throw new NullPointerException("Field cannot be null when deserializing Map");
+			}
+
+			Type genericFieldType = field.getGenericType();
+			if (!(genericFieldType instanceof ParameterizedType)) {
+				throw new IllegalArgumentException("Cannot deserialize a Map without generics types");
+			}
+			ParameterizedType aType = (ParameterizedType) genericFieldType;
+			Type[] fieldArgTypes = aType.getActualTypeArguments();
+			Class<?> keyClass = (Class<?>) fieldArgTypes[0];
+			Class<?> valueClass = (Class<?>) fieldArgTypes[1];
+
+			Map<Object, Object> map = new HashMap<Object, Object>();
+			int size = data.readInt();
+			for (int i = 0; i < size; i++) {
+				Object key = deserialize(keyClass, data, null);
+				Object value = deserialize(valueClass, data, null);
+				map.put(key, value);
+			}
+			return map;
+		}
 		else {
 			throw new IOException("unknown type " + type);
 		}
 	}
 	
-	private void deserialize(Field field, Message message, DataInputStream data) throws IllegalArgumentException, IllegalAccessException, IOException {
+	private void deserialize(Field field, Object message, DataInputStream data) throws IllegalArgumentException, IllegalAccessException, IOException {
 		logger.debug("read field " + field + " for " + message);
 		field.setAccessible(true);
 		Class<?> type = field.getType();
-		field.set(message, deserialize(type, data));
+		field.set(message, deserialize(type, data, field));
 	}
 
-	private void serialize(Class<?> type, Object value, DataOutputStream out) throws IOException, IllegalArgumentException, IllegalAccessException {
+	private void serialize(Class<?> type, Object value, DataOutputStream out, Field field)
+			throws IOException, IllegalArgumentException, IllegalAccessException {
 		if (type == int.class || type == Integer.class) {
 			out.writeInt((Integer) value);
 		}
@@ -121,12 +141,33 @@ public class FieldsCollection<T> {
 			String[] arr = (String[]) value;
 			out.writeInt(arr.length);
 			for (int i = 0; i < arr.length; i++) {
-				serialize(String.class, arr[i], out);
+				serialize(String.class, arr[i], out, null);
 			}
 		}
 		else if (Enum.class.isAssignableFrom(type)) {
 			Enum<?> enumValue = (Enum<?>) value;
 			out.writeInt(enumValue.ordinal());
+		}
+		else if (type == Map.class) {
+			if (field == null) {
+				throw new NullPointerException("Field cannot be null when serializing Map");
+			}
+
+			Type genericFieldType = field.getGenericType();
+			if (!(genericFieldType instanceof ParameterizedType)) {
+				throw new IllegalArgumentException("Cannot serialize a Map without generics types");
+			}
+			ParameterizedType aType = (ParameterizedType) genericFieldType;
+			Type[] fieldArgTypes = aType.getActualTypeArguments();
+			Class<?> keyClass = (Class<?>) fieldArgTypes[0];
+			Class<?> valueClass = (Class<?>) fieldArgTypes[1];
+
+			Map<Object, Object> map = (Map<Object, Object>) value;
+			out.writeInt(map.size());
+			for (Map.Entry<Object, Object> ee : map.entrySet()) {
+				serialize(keyClass, ee.getKey(), out, null);
+				serialize(valueClass, ee.getValue(), out, null);
+			}
 		}
 		else {
 			throw new IOException("unknown type " + type);
@@ -137,7 +178,7 @@ public class FieldsCollection<T> {
 		field.setAccessible(true);
 		Class<?> type = field.getType();
 		Object value = field.get(obj);
-		serialize(type, value, out);
+		serialize(type, value, out, field);
 	}
 
 	public FieldsCollection<T> orderByName() {
@@ -163,7 +204,7 @@ public class FieldsCollection<T> {
 		throw new IllegalArgumentException("Field name not found: " + fieldName);
 	}
 
-	public void read(Message message, DataInputStream data) throws IOException {
+	public void read(Object message, DataInputStream data) throws IOException {
 		try {
 			for (Field field : fields) {
 				deserialize(field, message, data);
