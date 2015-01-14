@@ -115,6 +115,15 @@ public class FieldsCollection<T> {
 			}
 			return map;
 		}
+		else if (type == Object.class) {
+			String clazzName = (String) deserialize(String.class, data, null);
+			try {
+				Class<?> clazz = Class.forName(clazzName);
+				return deserialize(clazz, data, field);
+			} catch (ClassNotFoundException e) {
+				throw new IOException(e);
+			}
+		}
 		else {
 			throw new IOException("unknown type " + type);
 		}
@@ -168,6 +177,11 @@ public class FieldsCollection<T> {
 				serialize(keyClass, ee.getKey(), out, null);
 				serialize(valueClass, ee.getValue(), out, null);
 			}
+		}
+		else if (type == Object.class) {
+			String clazzName = (String) value.getClass().getName();
+			serialize(String.class, clazzName, out, null);
+			serialize(value.getClass(), value, out, null);
 		}
 		else {
 			throw new IOException("unknown type " + type);
