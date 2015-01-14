@@ -1,6 +1,7 @@
 package com.cardshifter.api.outgoing;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.cardshifter.api.messages.Message;
@@ -12,7 +13,10 @@ public class CardInfoMessage extends Message {
 	private int id;
 
 	private final Map<String, Object> properties;
-	
+
+	CardInfoMessage() {
+		this(0, 0, new HashMap<String, Object>());
+	}
 	public CardInfoMessage(int zoneId, int cardId, Map<String, Object> properties) {
 		super("card");
 		this.zone = zoneId;

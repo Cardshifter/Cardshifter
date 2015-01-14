@@ -125,7 +125,7 @@ public class FieldsCollection<T> {
 		else {
 			logger.info("Using recursive deserialization for " + type);
 			try {
-				Constructor<?> constructor = type.getConstructor();
+				Constructor<?> constructor = type.getDeclaredConstructor();
 				constructor.setAccessible(true);
 				Object obj = constructor.newInstance();
 				FieldsCollection<Object> fields = FieldsCollection.gather(obj);
