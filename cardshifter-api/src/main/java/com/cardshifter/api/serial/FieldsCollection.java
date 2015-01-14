@@ -129,6 +129,7 @@ public class FieldsCollection<T> {
 				constructor.setAccessible(true);
 				Object obj = constructor.newInstance();
 				FieldsCollection<Object> fields = FieldsCollection.gather(obj);
+				fields = fields.orderByName();
 				fields.read(obj, data);
 				return obj;
 			} catch (Exception e) {
@@ -194,6 +195,7 @@ public class FieldsCollection<T> {
 		else {
 			logger.info("Using recursive serialization for " + type);
 			FieldsCollection<Object> fields = FieldsCollection.gather(value);
+			fields = fields.orderByName();
 			byte[] b = fields.serialize(value);
 			out.write(b);
 		}
