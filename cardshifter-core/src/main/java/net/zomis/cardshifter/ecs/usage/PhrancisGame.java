@@ -90,39 +90,48 @@ public class PhrancisGame implements ECSMod {
 		
 	}
 	
-	public void addCards(ZoneComponent zone) {
-		// Create card models that should be possible to choose from
-		// B0Ts
-		createCreature(0, zone, 0, 1, "B0T", 1);
-		createCreature(1, zone, 1, 1, "B0T", 1);
-		createCreature(2, zone, 2, 1, "B0T", 1);
-		createCreature(2, zone, 1, 2, "B0T", 1);
-		createCreature(3, zone, 3, 3, "B0T", 2);
-		createCreature(3, zone, 2, 4, "B0T", 2);
-		createCreature(3, zone, 4, 2, "B0T", 2);
-		createCreature(5, zone, 3, 1, "B0T", 3);
-		createCreature(5, zone, 1, 3, "B0T", 3);
-		createCreature(5, zone, 4, 4, "B0T", 3);
-		
-		// Bios
-		createCreature(3, zone, 3, 2, "Bio", 0);
-		createCreature(4, zone, 2, 3, "Bio", 0);
-		createCreature(5, zone, 3, 3, "Bio", 0);
-		createCreature(6, zone, 4, 4, "Bio", 0);
-		createCreature(6, zone, 5, 3, "Bio", 0);
-		createCreature(6, zone, 3, 5, "Bio", 0);
-		createCreature(8, zone, 5, 5, "Bio", 0);
-		createCreature(10, zone, 6, 6, "Bio", 0);
-		
-		// Enchantments: (deck), attack effect, health effect, scrap cost
-		createEnchantment(zone, 1, 0, 1);
-		createEnchantment(zone, 0, 1, 1);
-		createEnchantment(zone, 1, 1, 1);
-		createEnchantment(zone, 2, 1, 2);
-		createEnchantment(zone, 3, 0, 2);
-		createEnchantment(zone, 0, 3, 2);
-		createEnchantment(zone, 2, 2, 3);
-	}
+        public void addCards(ZoneComponent zone) {
+            // Create card models that should be possible to choose from
+            
+            // Mechs (ManaCost, zone, Attack, Health, "Type", ScrapValue, "CardName")
+            createCreature(0, zone, 0, 1, "Mech", 3, "Spareparts");
+            createCreature(1, zone, 1, 1, "Mech", 1, "Gyrodroid");
+            createCreature(2, zone, 2, 1, "Mech", 1, "The Chopper");
+            createCreature(2, zone, 1, 2, "Mech", 1, "Shieldmech");
+            createCreature(3, zone, 3, 3, "Mech", 2, "Humadroid");
+            createCreature(3, zone, 4, 2, "Mech", 2, "Assassinatrix");
+            createCreature(3, zone, 2, 4, "Mech", 2, "Fortimech");
+            createCreature(3, zone, 5, 1, "Mech", 2, "Scout Mech");
+            createCreature(3, zone, 0, 5, "Mech", 3, "Supply Mech");
+            createCreature(5, zone, 5, 3, "Mech", 3, "Modleg Ambusher");
+            createCreature(5, zone, 3, 6, "Mech", 3, "Heavy Mech");
+            createCreature(5, zone, 4, 4, "Mech", 3, "Waste Runner");
+
+            // Bios(ManaCost, zone, Attack, Health, "Type", ScrapValue, "CardName")
+            createCreature(2, zone, 2, 2, "Bio", 0, "Conscript");
+            createCreature(3, zone, 3, 2, "Bio", 0, "Longshot");
+            createCreature(4, zone, 2, 3, "Bio", 0, "Bodyman");
+            createCreature(5, zone, 3, 3, "Bio", 0, "Vetter");
+            createCreature(5, zone, 1, 5, "Bio", 0, "Field Medic");
+            createCreature(6, zone, 4, 4, "Bio", 0, "Wastelander");
+            createCreature(6, zone, 5, 3, "Bio", 0, "Commander");
+            createCreature(6, zone, 3, 5, "Bio", 0, "Cyberpimp");
+            createCreature(7, zone, 5, 5, "Bio", 0, "Cyborg");
+            createCreature(8, zone, 6, 6, "Bio", 0, "Web Boss");
+            createCreature(8, zone, 2, 6, "Bio", 0, "Inside Man");
+
+            // Enchantments: (zone, AttackModify, HealthModify, ScrapCost, "CardName")
+            createEnchantment(zone, 2, 0, 1, "Bionic Arms");
+            createEnchantment(zone, 0, 2, 1, "Body Armor");
+            createEnchantment(zone, 1, 1, 1, "Adrenalin Injection");
+            createEnchantment(zone, 1, 2, 2, "Reinforced Cranial Implants");
+            createEnchantment(zone, 2, 1, 2, "Steroid Implants");
+            createEnchantment(zone, 3, 0, 2, "Cybernetic Arm Cannon");
+            createEnchantment(zone, 0, 3, 2, "Exoskeleton");
+            createEnchantment(zone, 2, 2, 3, "Artificial Intelligence Implants");
+            createEnchantment(zone, 3, 3, 5, "Full-body Cybernetics");
+        }
+
 
 	public Entity createTargetSpell(ZoneComponent zone, int manaCost, int scrapCost, EffectComponent effect, FilterComponent filter) {
 		return createSpellWithTargets(1, zone, manaCost, scrapCost, effect, filter);
