@@ -53,7 +53,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
+<!--			<plugin>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>2.10.1</version>
 				<executions>
@@ -65,12 +65,13 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin>-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-deploy-plugin</artifactId>
 				<configuration>
 					<skip>false</skip>
+					<updateReleaseInfo>true</updateReleaseInfo>
 				</configuration>
 				<executions>
 					<execution>
