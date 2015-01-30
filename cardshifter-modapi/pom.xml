@@ -71,17 +71,7 @@
 				<artifactId>maven-deploy-plugin</artifactId>
 				<configuration>
 					<skip>false</skip>
-					<updateReleaseInfo>true</updateReleaseInfo>
 				</configuration>
-				<executions>
-					<execution>
-						<id>deploy</id>
-						<phase>deploy</phase>
-						<goals>
-							<goal>deploy</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
