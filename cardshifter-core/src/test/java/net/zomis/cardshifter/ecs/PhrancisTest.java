@@ -39,6 +39,7 @@ public class PhrancisTest extends GameTest {
 	private final ResourceRetriever manaCost = ResourceRetriever.forResource(PhrancisResources.MANA_COST);
 	private final ResourceRetriever health = ResourceRetriever.forResource(PhrancisResources.HEALTH);
 	private final ResourceRetriever attackPoints = ResourceRetriever.forResource(PhrancisResources.ATTACK_AVAILABLE);
+	private final ResourceRetriever attack = ResourceRetriever.forResource(PhrancisResources.ATTACK);
 	private final ResourceRetriever scrapCost = ResourceRetriever.forResource(PhrancisResources.SCRAP_COST);
 	private final ResourceRetriever scrap = ResourceRetriever.forResource(PhrancisResources.SCRAP);
 	
@@ -71,12 +72,27 @@ public class PhrancisTest extends GameTest {
 			addCard(deckConf, isCreature.and(manaCost(1)));
 			addCard(deckConf, isCreatureType("Bio").and(health(4)));
 			addCard(deckConf, hasName("Field Medic"));
+			addCard(deckConf, hasName("Supply Mech"));
 			addCard(deckConf, e -> scrapCost.getFor(e) == 1 && health.getFor(e) == 1);
 		}
 
 		mod.setupGame(game);
 	}
 	
+	@Test
+	public void noAttackCard() {
+		while (mana.getFor(currentPlayer()) < 5) {
+			nextPhase();
+		}
+
+		Entity entity = cardToHand(hasName("Supply Mech"));
+		useAction(entity, PhrancisGame.PLAY_ACTION);
+		nextPhase();
+		nextPhase();
+		attack.resFor(entity).set(10);
+		useFail(entity, PhrancisGame.ATTACK_ACTION);
+	}
+
 	@Test
 	public void healEndOfTurn() {
 		while (mana.getFor(currentPlayer()) < 5) {

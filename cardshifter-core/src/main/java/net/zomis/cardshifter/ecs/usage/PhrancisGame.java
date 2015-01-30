@@ -1,11 +1,13 @@
 package net.zomis.cardshifter.ecs.usage;
 
+import java.util.HashSet;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.function.ToIntFunction;
 import java.util.function.UnaryOperator;
 
+import com.cardshifter.modapi.attributes.AttributeRetriever;
 import com.cardshifter.modapi.phase.*;
 import com.cardshifter.modapi.players.Players;
 import net.zomis.cardshifter.ecs.config.ConfigComponent;
@@ -98,6 +100,9 @@ public class PhrancisGame implements ECSMod {
 		Consumer<Entity> noSickness = e -> sickness.resFor(e).set(0);
 		BiFunction<Entity, Integer, Integer> restoreHealth = (e, value) ->
 				Math.max(Math.min(healthMax.getFor(e) - health.getFor(e), value), 0);
+		AttributeRetriever name = AttributeRetriever.forAttribute(Attributes.NAME);
+		Set<String> noAttackNames = new HashSet<>();
+		Consumer<Entity> noAttack = e -> noAttackNames.add(name.getFor(e));
 
 		// Mechs (ManaCost, zone, Attack, Health, "Type", ScrapValue, "CardName")
 		createCreature(0, zone, 0, 1, "Mech", 3, "Spareparts");
@@ -108,7 +113,7 @@ public class PhrancisGame implements ECSMod {
 		createCreature(3, zone, 4, 2, "Mech", 2, "Assassinatrix");
 		createCreature(3, zone, 2, 4, "Mech", 2, "Fortimech");
 		createCreature(3, zone, 5, 1, "Mech", 2, "Scout Mech").apply(noSickness);
-		createCreature(3, zone, 0, 5, "Mech", 3, "Supply Mech");
+		createCreature(3, zone, 0, 5, "Mech", 3, "Supply Mech").apply(noAttack);
 		createCreature(5, zone, 5, 3, "Mech", 3, "Modleg Ambusher").apply(noSickness);
 		createCreature(5, zone, 3, 6, "Mech", 3, "Heavy Mech");
 		createCreature(5, zone, 4, 4, "Mech", 3, "Waste Runner");
@@ -128,7 +133,7 @@ public class PhrancisGame implements ECSMod {
 		createCreature(6, zone, 3, 5, "Bio", 0, "Cyberpimp");
 		createCreature(7, zone, 5, 5, "Bio", 0, "Cyborg");
 		createCreature(8, zone, 6, 6, "Bio", 0, "Web Boss");
-		createCreature(8, zone, 2, 6, "Bio", 0, "Inside Man");
+		createCreature(8, zone, 2, 6, "Bio", 0, "Inside Man").apply(noAttack);
 
 		// Enchantments: (zone, AttackModify, HealthModify, ScrapCost, "CardName")
 		createEnchantment(zone, 2, 0, 1, "Bionic Arms");
@@ -140,6 +145,9 @@ public class PhrancisGame implements ECSMod {
 		createEnchantment(zone, 0, 3, 2, "Exoskeleton");
 		createEnchantment(zone, 2, 2, 3, "Artificial Intelligence Implants");
 		createEnchantment(zone, 3, 3, 5, "Full-body Cybernetics Upgrade");
+
+		ECSGame game = zone.getComponentEntity().getGame();
+		game.addSystem(new DenyActionForNames(PhrancisGame.ATTACK_ACTION, noAttackNames));
 	}
 
 	public Entity createTargetSpell(String name, ZoneComponent zone, int manaCost, int scrapCost, EffectComponent effect, FilterComponent filter) {
