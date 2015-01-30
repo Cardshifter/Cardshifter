@@ -85,19 +85,21 @@ public class PhrancisTest extends GameTest {
 
 		Entity player = currentPlayer();
 		Entity medic = cardToHand(hasName("Field Medic"));
+		this.health.resFor(player).set(29);
 		int health = this.health.getFor(player);
 		useAction(medic, PhrancisGame.PLAY_ACTION);
-		assertEquals(health, this.health.getFor(player));
+		assertEquals(29, this.health.getFor(player));
 		nextPhase();
 
-		assertEquals(health + 1, this.health.getFor(player));
+		assertEquals(30, this.health.getFor(player));
 		nextPhase();
 
 		assertEquals(player, currentPlayer());
-		assertEquals(health + 1, this.health.getFor(player));
+		assertEquals(30, this.health.getFor(player));
 		nextPhase();
 
-		assertEquals(health + 2, this.health.getFor(player));
+		// Health does not go above HEALTH_MAX
+		assertEquals(30, this.health.getFor(player));
 	}
 
 	private void addCard(DeckConfig config, Predicate<Entity> condition) {

@@ -1,7 +1,9 @@
 package net.zomis.cardshifter.ecs.usage;
 
 import java.util.Map.Entry;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.ToIntFunction;
 import java.util.function.UnaryOperator;
 
 import com.cardshifter.modapi.phase.*;
@@ -92,7 +94,10 @@ public class PhrancisGame implements ECSMod {
 		// Create card models that should be possible to choose from
 		ResourceRetriever sickness = ResourceRetriever.forResource(PhrancisResources.SICKNESS);
 		ResourceRetriever health = ResourceRetriever.forResource(PhrancisResources.HEALTH);
+		ResourceRetriever healthMax = ResourceRetriever.forResource(PhrancisResources.MAX_HEALTH);
 		Consumer<Entity> noSickness = e -> sickness.resFor(e).set(0);
+		BiFunction<Entity, Integer, Integer> restoreHealth = (e, value) ->
+				Math.max(Math.min(healthMax.getFor(e) - health.getFor(e), value), 0);
 
 		// Mechs (ManaCost, zone, Attack, Health, "Type", ScrapValue, "CardName")
 		createCreature(0, zone, 0, 1, "Mech", 3, "Spareparts");
@@ -114,9 +119,10 @@ public class PhrancisGame implements ECSMod {
 		createCreature(4, zone, 2, 3, "Bio", 0, "Bodyman");
 		createCreature(5, zone, 3, 3, "Bio", 0, "Vetter");
 		Effects effects = new Effects();
-		createCreature(5, zone, 1, 5, "Bio", 0, "Field Medic").addComponent(effects.giveSelf(effects.triggerSystem(PhaseEndEvent.class,
-				(me, event) -> Players.findOwnerFor(me) == event.getOldPhase().getOwner(),
-				(me, event) -> Players.findOwnerFor(me).apply(e -> health.resFor(e).change(1))))); // heals player for 1 health at end of turn
+		createCreature(5, zone, 1, 5, "Bio", 0, "Field Medic").addComponent(effects.giveSelf(
+			effects.triggerSystem(PhaseEndEvent.class,
+			(me, event) -> Players.findOwnerFor(me) == event.getOldPhase().getOwner(),
+			(me, event) -> Players.findOwnerFor(me).apply(e -> health.resFor(e).change(restoreHealth.apply(e, 1))))));
 		createCreature(6, zone, 4, 4, "Bio", 0, "Wastelander");
 		createCreature(6, zone, 5, 3, "Bio", 0, "Commander").apply(noSickness);
 		createCreature(6, zone, 3, 5, "Bio", 0, "Cyberpimp");
@@ -184,6 +190,7 @@ public class PhrancisGame implements ECSMod {
 			
 			ECSResourceMap.createFor(player)
 				.set(PhrancisResources.HEALTH, 30)
+				.set(PhrancisResources.MAX_HEALTH, 30)
 				.set(PhrancisResources.MANA, 0)
 				.set(PhrancisResources.SCRAP, 0);
 			
