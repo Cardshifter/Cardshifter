@@ -1,6 +1,7 @@
 package net.zomis.cardshifter.ecs.usage;
 
 import java.util.Map.Entry;
+import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
 import net.zomis.cardshifter.ecs.config.ConfigComponent;
@@ -95,6 +96,8 @@ public class PhrancisGame implements ECSMod {
 	
 	public void addCards(ZoneComponent zone) {
 		// Create card models that should be possible to choose from
+		ResourceRetriever sickness = ResourceRetriever.forResource(PhrancisResources.SICKNESS);
+		Consumer<Entity> noSickness = e -> sickness.resFor(e).set(0);
 
 		// Mechs (ManaCost, zone, Attack, Health, "Type", ScrapValue, "CardName")
 		createCreature(0, zone, 0, 1, "Mech", 3, "Spareparts");
@@ -104,9 +107,9 @@ public class PhrancisGame implements ECSMod {
 		createCreature(3, zone, 3, 3, "Mech", 2, "Humadroid");
 		createCreature(3, zone, 4, 2, "Mech", 2, "Assassinatrix");
 		createCreature(3, zone, 2, 4, "Mech", 2, "Fortimech");
-		createCreature(3, zone, 5, 1, "Mech", 2, "Scout Mech");
+		createCreature(3, zone, 5, 1, "Mech", 2, "Scout Mech").apply(noSickness);
 		createCreature(3, zone, 0, 5, "Mech", 3, "Supply Mech");
-		createCreature(5, zone, 5, 3, "Mech", 3, "Modleg Ambusher");
+		createCreature(5, zone, 5, 3, "Mech", 3, "Modleg Ambusher").apply(noSickness);
 		createCreature(5, zone, 3, 6, "Mech", 3, "Heavy Mech");
 		createCreature(5, zone, 4, 4, "Mech", 3, "Waste Runner");
 
@@ -117,7 +120,7 @@ public class PhrancisGame implements ECSMod {
 		createCreature(5, zone, 3, 3, "Bio", 0, "Vetter");
 		createCreature(5, zone, 1, 5, "Bio", 0, "Field Medic");
 		createCreature(6, zone, 4, 4, "Bio", 0, "Wastelander");
-		createCreature(6, zone, 5, 3, "Bio", 0, "Commander");
+		createCreature(6, zone, 5, 3, "Bio", 0, "Commander").apply(noSickness);
 		createCreature(6, zone, 3, 5, "Bio", 0, "Cyberpimp");
 		createCreature(7, zone, 5, 5, "Bio", 0, "Cyborg");
 		createCreature(8, zone, 6, 6, "Bio", 0, "Web Boss");
