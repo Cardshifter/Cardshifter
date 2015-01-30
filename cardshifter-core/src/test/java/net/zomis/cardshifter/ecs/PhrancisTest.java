@@ -8,6 +8,8 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import com.cardshifter.modapi.attributes.AttributeRetriever;
+import com.cardshifter.modapi.attributes.Attributes;
 import net.zomis.cardshifter.ecs.config.ConfigComponent;
 import com.cardshifter.api.config.DeckConfig;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame;
@@ -43,7 +45,11 @@ public class PhrancisTest extends GameTest {
 	private final ComponentRetriever<BattlefieldComponent> field = ComponentRetriever.retreiverFor(BattlefieldComponent.class);
 	
 	private final Predicate<Entity> isCreature = entity -> entity.hasComponent(CreatureTypeComponent.class);
-	
+	private final Predicate<Entity> hasName(String str) {
+		AttributeRetriever name = AttributeRetriever.forAttribute(Attributes.NAME);
+		return e -> name.getOrDefault(e, "").equals(str);
+	}
+
 	private final PhrancisGame mod = new PhrancisGame();
 	
 	@Override
@@ -64,12 +70,36 @@ public class PhrancisTest extends GameTest {
 			addCard(deckConf, isCreature.and(manaCost(1)));
 			addCard(deckConf, isCreature.and(manaCost(1)));
 			addCard(deckConf, isCreatureType("Bio").and(health(4)));
+			addCard(deckConf, hasName("Field Medic"));
 			addCard(deckConf, e -> scrapCost.getFor(e) == 1 && health.getFor(e) == 1);
 		}
 
 		mod.setupGame(game);
 	}
 	
+	@Test
+	public void healEndOfTurn() {
+		while (mana.getFor(currentPlayer()) < 5) {
+			nextPhase();
+		}
+
+		Entity player = currentPlayer();
+		Entity medic = cardToHand(hasName("Field Medic"));
+		int health = this.health.getFor(player);
+		useAction(medic, PhrancisGame.PLAY_ACTION);
+		assertEquals(health, this.health.getFor(player));
+		nextPhase();
+
+		assertEquals(health + 1, this.health.getFor(player));
+		nextPhase();
+
+		assertEquals(player, currentPlayer());
+		assertEquals(health + 1, this.health.getFor(player));
+		nextPhase();
+
+		assertEquals(health + 2, this.health.getFor(player));
+	}
+
 	private void addCard(DeckConfig config, Predicate<Entity> condition) {
 		Set<Entity> availableCards = game.getEntitiesWithComponent(ZoneComponent.class);
 		ZoneComponent zone = availableCards.iterator().next().getComponent(ZoneComponent.class);

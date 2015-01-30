@@ -4,13 +4,12 @@ import java.util.Map.Entry;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
+import com.cardshifter.modapi.phase.*;
+import com.cardshifter.modapi.players.Players;
 import net.zomis.cardshifter.ecs.config.ConfigComponent;
 import com.cardshifter.api.config.DeckConfig;
 import net.zomis.cardshifter.ecs.config.DeckConfigFactory;
-import net.zomis.cardshifter.ecs.effects.EffectActionSystem;
-import net.zomis.cardshifter.ecs.effects.EffectComponent;
-import net.zomis.cardshifter.ecs.effects.EffectTargetFilterSystem;
-import net.zomis.cardshifter.ecs.effects.FilterComponent;
+import net.zomis.cardshifter.ecs.effects.*;
 
 import com.cardshifter.modapi.actions.ActionComponent;
 import com.cardshifter.modapi.actions.ECSAction;
@@ -44,11 +43,6 @@ import com.cardshifter.modapi.cards.PlayEntersBattlefieldSystem;
 import com.cardshifter.modapi.cards.PlayFromHandSystem;
 import com.cardshifter.modapi.cards.RemoveDeadEntityFromZoneSystem;
 import com.cardshifter.modapi.cards.ZoneComponent;
-import com.cardshifter.modapi.phase.GainResourceSystem;
-import com.cardshifter.modapi.phase.PerformerMustBeCurrentPlayer;
-import com.cardshifter.modapi.phase.Phase;
-import com.cardshifter.modapi.phase.PhaseController;
-import com.cardshifter.modapi.phase.RestoreResourcesSystem;
 import com.cardshifter.modapi.resources.ECSResource;
 import com.cardshifter.modapi.resources.ECSResourceMap;
 import com.cardshifter.modapi.resources.GameOverIfNoHealth;
@@ -97,6 +91,7 @@ public class PhrancisGame implements ECSMod {
 	public void addCards(ZoneComponent zone) {
 		// Create card models that should be possible to choose from
 		ResourceRetriever sickness = ResourceRetriever.forResource(PhrancisResources.SICKNESS);
+		ResourceRetriever health = ResourceRetriever.forResource(PhrancisResources.HEALTH);
 		Consumer<Entity> noSickness = e -> sickness.resFor(e).set(0);
 
 		// Mechs (ManaCost, zone, Attack, Health, "Type", ScrapValue, "CardName")
@@ -118,7 +113,10 @@ public class PhrancisGame implements ECSMod {
 		createCreature(3, zone, 3, 2, "Bio", 0, "Longshot");
 		createCreature(4, zone, 2, 3, "Bio", 0, "Bodyman");
 		createCreature(5, zone, 3, 3, "Bio", 0, "Vetter");
-		createCreature(5, zone, 1, 5, "Bio", 0, "Field Medic");
+		Effects effects = new Effects();
+		createCreature(5, zone, 1, 5, "Bio", 0, "Field Medic").addComponent(effects.giveSelf(effects.triggerSystem(PhaseEndEvent.class,
+				(me, event) -> Players.findOwnerFor(me) == event.getOldPhase().getOwner(),
+				(me, event) -> Players.findOwnerFor(me).apply(e -> health.resFor(e).change(1))))); // heals player for 1 health at end of turn
 		createCreature(6, zone, 4, 4, "Bio", 0, "Wastelander");
 		createCreature(6, zone, 5, 3, "Bio", 0, "Commander").apply(noSickness);
 		createCreature(6, zone, 3, 5, "Bio", 0, "Cyberpimp");
