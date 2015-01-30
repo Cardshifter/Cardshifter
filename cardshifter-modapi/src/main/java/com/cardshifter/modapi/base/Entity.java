@@ -115,8 +115,14 @@ public final class Entity {
 		
 		return copy;
 	}
-	
-	public void apply(Consumer<Entity> consumer) {
-		consumer.accept(this);
+
+	/**
+	 * Apply an effect to this entity
+	 * @param effect Effect to apply
+	 * @return This entity
+	 */
+	public Entity apply(Consumer<Entity> effect) {
+		effect.accept(this);
+		return this;
 	}
 }
