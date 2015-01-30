@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
@@ -60,6 +61,7 @@ public class PhrancisGame implements ECSMod {
 		SNIPER,
 		DOUBLE_ATTACK,
 		TAUNT,
+		DENY_COUNTERATTACK,
 		HEALTH, MANA, MANA_MAX, SCRAP, ATTACK, MANA_COST, SCRAP_COST, ENCHANTMENTS_ACTIVE, SICKNESS, ATTACK_AVAILABLE;
 	}
 
@@ -104,13 +106,16 @@ public class PhrancisGame implements ECSMod {
 		Set<String> noAttackNames = new HashSet<>();
 		Consumer<Entity> noAttack = e -> noAttackNames.add(name.getFor(e));
 
+		ResourceRetriever rangedResource = ResourceRetriever.forResource(PhrancisResources.DENY_COUNTERATTACK);
+		Consumer<Entity> ranged = e -> rangedResource.resFor(e).set(1);
+
 		// Mechs (ManaCost, zone, Attack, Health, "Type", ScrapValue, "CardName")
 		createCreature(0, zone, 0, 1, "Mech", 3, "Spareparts");
-		createCreature(1, zone, 1, 1, "Mech", 1, "Gyrodroid");
+		createCreature(1, zone, 1, 1, "Mech", 1, "Gyrodroid").apply(ranged);
 		createCreature(2, zone, 2, 1, "Mech", 1, "The Chopper");
 		createCreature(2, zone, 1, 2, "Mech", 1, "Shieldmech");
 		createCreature(3, zone, 3, 3, "Mech", 2, "Humadroid");
-		createCreature(3, zone, 4, 2, "Mech", 2, "Assassinatrix");
+		createCreature(3, zone, 4, 2, "Mech", 2, "Assassinatrix").apply(ranged);
 		createCreature(3, zone, 2, 4, "Mech", 2, "Fortimech");
 		createCreature(3, zone, 5, 1, "Mech", 2, "Scout Mech").apply(noSickness);
 		createCreature(3, zone, 0, 5, "Mech", 3, "Supply Mech").apply(noAttack);
@@ -120,7 +125,7 @@ public class PhrancisGame implements ECSMod {
 
 		// Bios(ManaCost, zone, Attack, Health, "Type", ScrapValue, "CardName")
 		createCreature(2, zone, 2, 2, "Bio", 0, "Conscript");
-		createCreature(3, zone, 3, 2, "Bio", 0, "Longshot");
+		createCreature(3, zone, 3, 2, "Bio", 0, "Longshot").apply(ranged);
 		createCreature(4, zone, 2, 3, "Bio", 0, "Bodyman");
 		createCreature(5, zone, 3, 3, "Bio", 0, "Vetter");
 		Effects effects = new Effects();
@@ -243,10 +248,13 @@ public class PhrancisGame implements ECSMod {
 		game.addSystem(new DestroyAfterUseSystem(USE_ACTION));
 		
 		// Actions - Attack
+		ResourceRetriever allowCounterAttackRes = ResourceRetriever.forResource(PhrancisResources.DENY_COUNTERATTACK);
+		BiPredicate<Entity, Entity> allowCounterAttack =
+				(attacker, defender) -> allowCounterAttackRes.getOrDefault(attacker, 0) == 0;
 		game.addSystem(new AttackOnBattlefield());
 		game.addSystem(new AttackSickness(PhrancisResources.SICKNESS));
 		game.addSystem(new AttackTargetMinionsFirstThenPlayer(PhrancisResources.TAUNT));
-		game.addSystem(new AttackDamageYGO(PhrancisResources.ATTACK, PhrancisResources.HEALTH));
+		game.addSystem(new AttackDamageYGO(PhrancisResources.ATTACK, PhrancisResources.HEALTH, allowCounterAttack));
 		game.addSystem(new UseCostSystem(ATTACK_ACTION, PhrancisResources.ATTACK_AVAILABLE, entity -> 1, entity -> entity));
 		game.addSystem(new RestoreResourcesToSystem(entity -> entity.hasComponent(CreatureTypeComponent.class) 
 				&& Cards.isOnZone(entity, BattlefieldComponent.class), PhrancisResources.ATTACK_AVAILABLE, entity -> 1));

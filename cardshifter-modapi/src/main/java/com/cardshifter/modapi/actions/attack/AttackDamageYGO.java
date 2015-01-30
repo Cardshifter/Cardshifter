@@ -9,15 +9,19 @@ import com.cardshifter.modapi.base.PlayerComponent;
 import com.cardshifter.modapi.resources.ECSResource;
 import com.cardshifter.modapi.resources.ResourceRetriever;
 
+import java.util.function.BiPredicate;
+
 public class AttackDamageYGO extends SpecificActionSystem {
 
 	private final ResourceRetriever attack;
 	private final ResourceRetriever health;
-	
-	public AttackDamageYGO(ECSResource attack, ECSResource health) {
+	private final BiPredicate<Entity, Entity> allowCounterAttack;
+
+	public AttackDamageYGO(ECSResource attack, ECSResource health, BiPredicate<Entity, Entity> allowCounterAttack) {
 		super("Attack");
 		this.attack = ResourceRetriever.forResource(attack);
 		this.health = ResourceRetriever.forResource(health);
+		this.allowCounterAttack = allowCounterAttack;
 	}
 
 	@Override
@@ -38,12 +42,15 @@ public class AttackDamageYGO extends SpecificActionSystem {
 		
 		if (target.hasComponent(PlayerComponent.class)) {
 			damage(attackDamage, target, source, game);
-			destroyOrNothing(defenseDamage, source);
 		}
 		else {
 			DamageEvent damageEvent = new DamageEvent(target, source, attackDamage);
-			game.getEvents().executeEvent(damageEvent, e -> {});
+			game.getEvents().executeEvent(damageEvent, e -> {
+			});
 			destroyOrNothing(damageEvent.getDamage(), target);
+		}
+
+		if (allowCounterAttack.test(source, target)) {
 			destroyOrNothing(defenseDamage, source);
 		}
 	}

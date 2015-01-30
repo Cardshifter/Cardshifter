@@ -9,15 +9,20 @@ import com.cardshifter.modapi.base.PlayerComponent;
 import com.cardshifter.modapi.resources.ECSResource;
 import com.cardshifter.modapi.resources.ResourceRetriever;
 
+import java.util.function.BiPredicate;
+
 public class AttackDamageAccumulating extends SpecificActionSystem {
 
 	private final ResourceRetriever attack;
 	private final ResourceRetriever health;
+	private final BiPredicate<Entity, Entity> allowCounterAttack;
 
-	public AttackDamageAccumulating(ECSResource attack, ECSResource health) {
+	public AttackDamageAccumulating(ECSResource attack, ECSResource health,
+		BiPredicate<Entity, Entity> allowCounterAttack) {
 		super("Attack");
 		this.attack = ResourceRetriever.forResource(attack);
 		this.health = ResourceRetriever.forResource(health);
+		this.allowCounterAttack = allowCounterAttack;
 	}
 
 	@Override
@@ -39,8 +44,10 @@ public class AttackDamageAccumulating extends SpecificActionSystem {
 			int defenseDamage = attack.getFor(target);
 			ECSGame game = source.getGame();
 			damage(attackDamage, target, source, game);
-			damage(defenseDamage, source, target, game);
-			
+			if (allowCounterAttack.test(source, target)) {
+				damage(defenseDamage, source, target, game);
+			}
+
 			checkKill(target);
 			checkKill(source);
 		});

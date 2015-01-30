@@ -214,6 +214,22 @@ public class PhrancisTest extends GameTest {
 	}
 	
 	@Test
+	public void attackRanged() {
+		Entity attacker = mod.createCreature(0, field.get(currentPlayer()), 4, 1, "B0T", 0);
+		nextPhase();
+		Entity defender = mod.createCreature(0, field.get(currentPlayer()), 3, 3, "B0T", 0);
+		ResourceRetriever.forResource(PhrancisResources.DENY_COUNTERATTACK).resFor(attacker).set(1);
+		nextPhase();
+
+		assertResource(attacker, PhrancisResources.HEALTH, 1);
+		assertResource(defender, PhrancisResources.HEALTH, 3);
+		useActionWithTarget(attacker, PhrancisGame.ATTACK_ACTION, defender);
+		assertFalse(attacker.isRemoved());
+		assertTrue(defender.isRemoved());
+		assertResource(attacker, PhrancisResources.HEALTH, 1);
+	}
+
+	@Test
 	public void scrap() {
 		Entity scrapped = mod.createCreature(0, field.get(currentPlayer()), 1, 1, "B0T", 4);
 		assertResource(currentPlayer(), PhrancisResources.SCRAP, 0);
