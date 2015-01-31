@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import com.cardshifter.modapi.attributes.AttributeRetriever;
 import com.cardshifter.modapi.attributes.Attributes;
+import com.cardshifter.modapi.players.Players;
 import net.zomis.cardshifter.ecs.config.ConfigComponent;
 import com.cardshifter.api.config.DeckConfig;
 import net.zomis.cardshifter.ecs.effects.Effects;
@@ -275,6 +276,23 @@ public class PhrancisTest extends GameTest {
 		assertResource(opponent(), PhrancisResources.HEALTH, originalLife - 4);
 	}
 	
+	@Test
+	public void summonWhenPlaying() {
+		Effects effects = new Effects();
+		Entity summon = mod.createCreature(0, hand.get(opponent()), 1, 2, "B0T", 0, "Summoned");
+		Entity summoner = mod.createCreature(0, hand.get(currentPlayer()), 2, 6, "Bio", 0, "Summoner")
+			.addComponent(effects.toSelf(e -> {
+			Entity entity = Players.findOwnerFor(e);
+			ZoneComponent field = entity.getComponent(BattlefieldComponent.class);
+			field.addOnBottom(summon.copy());
+			field.addOnBottom(summon.copy());
+		}));
+
+		assertEquals(0, field.get(currentPlayer()).size());
+		useAction(summoner, PhrancisGame.PLAY_ACTION);
+		assertEquals(3, field.get(currentPlayer()).size());
+	}
+
 	@Test
 	public void enchantBio() {
 		Entity attackerPlayer = currentPlayer();

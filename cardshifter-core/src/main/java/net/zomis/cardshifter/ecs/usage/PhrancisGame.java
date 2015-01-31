@@ -126,7 +126,7 @@ public class PhrancisGame implements ECSMod {
 		// Bios(ManaCost, zone, Attack, Health, "Type", ScrapValue, "CardName")
 		createCreature(2, zone, 2, 2, "Bio", 0, "Conscript");
 		createCreature(3, zone, 3, 2, "Bio", 0, "Longshot").apply(ranged);
-		createCreature(4, zone, 2, 3, "Bio", 0, "Bodyman");
+		Entity bodyMan = createCreature(4, zone, 2, 3, "Bio", 0, "Bodyman");
 		createCreature(5, zone, 3, 3, "Bio", 0, "Vetter");
 		Effects effects = new Effects();
 		createCreature(5, zone, 1, 5, "Bio", 0, "Field Medic").addComponent(effects.giveSelf(
@@ -138,7 +138,12 @@ public class PhrancisGame implements ECSMod {
 		createCreature(6, zone, 3, 5, "Bio", 0, "Cyberpimp");
 		createCreature(7, zone, 5, 5, "Bio", 0, "Cyborg");
 		createCreature(8, zone, 6, 6, "Bio", 0, "Web Boss");
-		createCreature(8, zone, 2, 6, "Bio", 0, "Inside Man").apply(noAttack);
+		createCreature(8, zone, 2, 6, "Bio", 0, "Inside Man").apply(noAttack).addComponent(effects.toSelf(e -> {
+			Entity entity = Players.findOwnerFor(e);
+			ZoneComponent field = entity.getComponent(BattlefieldComponent.class);
+			field.addOnBottom(bodyMan.copy());
+			field.addOnBottom(bodyMan.copy());
+		}));
 
 		// Enchantments: (zone, AttackModify, HealthModify, ScrapCost, "CardName")
 		createEnchantment(zone, 2, 0, 1, "Bionic Arms");

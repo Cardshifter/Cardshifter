@@ -1,10 +1,8 @@
 package net.zomis.cardshifter.ecs.effects;
 
-import java.util.function.BiConsumer;
-import java.util.function.BiPredicate;
-import java.util.function.Function;
-import java.util.function.IntUnaryOperator;
+import java.util.function.*;
 
+import com.cardshifter.modapi.base.Component;
 import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.ECSSystem;
 import com.cardshifter.modapi.base.Entity;
@@ -65,6 +63,10 @@ public class Effects {
 	public <T extends IEvent> EffectComponent giveSelf(Function<Entity, ECSSystem> system) {
 		GameEffect effect = event -> event.getEntity().getGame().addSystem(new InGameSystem(event.getEntity(), system.apply(event.getEntity())));
 		return new EffectComponent("Give target " + system, effect);
+	}
+
+	public EffectComponent toSelf(Consumer<Entity> effect) {
+		return new EffectComponent(effect.toString(), event -> effect.accept(event.getEntity()));
 	}
 
 	public static class InGameSystem implements ECSSystem {
