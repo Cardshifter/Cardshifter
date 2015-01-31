@@ -2,7 +2,7 @@ package com.cardshifter.client.views;
 
 import com.cardshifter.api.outgoing.CardInfoMessage;
 import com.cardshifter.api.outgoing.UpdateMessage;
-import com.cardshifter.api.outgoing.UseableActionMessage;
+import com.cardshifter.api.outgoing.UsableActionMessage;
 import com.cardshifter.client.GameClientController;
 
 import java.net.URL;
@@ -37,7 +37,7 @@ public final class CardBattlefieldDocumentController extends CardView implements
 	private boolean isActive;
     private final CardInfoMessage card;
 	private final GameClientController controller;
-	private UseableActionMessage message;
+	private UsableActionMessage message;
 	
 	private Map<String, Integer> cardValues = new HashMap<>();
 	
@@ -111,7 +111,7 @@ public final class CardBattlefieldDocumentController extends CardView implements
 		return this.isActive;
 	}
 	
-	public void setCardAttackActive(UseableActionMessage message) {
+	public void setCardAttackActive(UsableActionMessage message) {
 		this.isActive = true;
 		this.message = message;
 		this.anchorPane.setOnMouseClicked(this::actionOnClick);
@@ -127,14 +127,14 @@ public final class CardBattlefieldDocumentController extends CardView implements
 	}
 	
 	@Override
-	public void setCardScrappable(UseableActionMessage message) {
+	public void setCardScrappable(UsableActionMessage message) {
 		this.message = message;
 		background.setFill(Color.GRAY);
 		this.scrapButton.setVisible(true);
 	}
 
 	@Override
-    public void setCardActive(UseableActionMessage message) {
+    public void setCardActive(UsableActionMessage message) {
 		this.isActive = true;
 		this.message = message;
         background.setFill(Color.YELLOW);
@@ -168,7 +168,7 @@ public final class CardBattlefieldDocumentController extends CardView implements
 	
 	private void scrapButtonAction(MouseEvent event) {
 		scrapButton.setVisible(false);
-		UseableActionMessage scrapMessage = new UseableActionMessage(this.message.getId(), "Scrap", false, 0);
+		UsableActionMessage scrapMessage = new UsableActionMessage(this.message.getId(), "Scrap", false, 0);
 		this.controller.createAndSendMessage(scrapMessage);
 	}
 	

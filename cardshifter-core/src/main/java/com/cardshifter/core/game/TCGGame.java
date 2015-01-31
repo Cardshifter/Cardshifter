@@ -32,7 +32,7 @@ import com.cardshifter.api.outgoing.PlayerMessage;
 import com.cardshifter.api.outgoing.ResetAvailableActionsMessage;
 import com.cardshifter.api.outgoing.ServerErrorMessage;
 import com.cardshifter.api.outgoing.UpdateMessage;
-import com.cardshifter.api.outgoing.UseableActionMessage;
+import com.cardshifter.api.outgoing.UsableActionMessage;
 import com.cardshifter.api.outgoing.ZoneChangeMessage;
 import com.cardshifter.api.outgoing.ZoneMessage;
 import com.cardshifter.core.replays.ReplayRecordSystem;
@@ -376,7 +376,7 @@ public class TCGGame extends ServerGame {
 			}
 			Entity player = playerFor(io);
 			getAllActions(game).filter(action -> action.isAllowed(player))
-				.forEach(action -> io.sendToClient(new UseableActionMessage(action.getOwner().getId(), action.getName(), !action.getTargetSets().isEmpty())));
+				.forEach(action -> io.sendToClient(new UsableActionMessage(action.getOwner().getId(), action.getName(), !action.getTargetSets().isEmpty())));
 		}
 	}
 

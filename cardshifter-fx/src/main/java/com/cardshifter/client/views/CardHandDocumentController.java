@@ -12,7 +12,7 @@ import javafx.scene.shape.Rectangle;
 
 import com.cardshifter.api.outgoing.CardInfoMessage;
 import com.cardshifter.api.outgoing.UpdateMessage;
-import com.cardshifter.api.outgoing.UseableActionMessage;
+import com.cardshifter.api.outgoing.UsableActionMessage;
 import com.cardshifter.client.GameClientController;
 
 public final class CardHandDocumentController extends CardView {
@@ -31,7 +31,7 @@ public final class CardHandDocumentController extends CardView {
 	private boolean isActive;
     private final CardInfoMessage card;
 	private final GameClientController controller;
-	private UseableActionMessage message;
+	private UsableActionMessage message;
 	
 	//private Map<String, Integer> cardValues = new HashMap<>();
 	
@@ -69,7 +69,7 @@ public final class CardHandDocumentController extends CardView {
 	}
 
 	@Override
-    public void setCardActive(UseableActionMessage message) {
+    public void setCardActive(UsableActionMessage message) {
 		this.isActive = true;
 		this.message = message;
 		this.anchorPane.setOnMouseClicked(this::actionOnClick);
@@ -135,7 +135,7 @@ public final class CardHandDocumentController extends CardView {
 	}
 	
 	@Override
-	public void setCardScrappable(UseableActionMessage message) {
+	public void setCardScrappable(UsableActionMessage message) {
 	}
 
 	@Override

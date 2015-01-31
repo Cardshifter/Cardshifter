@@ -25,7 +25,7 @@ import com.cardshifter.api.outgoing.PlayerMessage;
 import com.cardshifter.api.outgoing.ResetAvailableActionsMessage;
 import com.cardshifter.api.outgoing.ServerErrorMessage;
 import com.cardshifter.api.outgoing.UpdateMessage;
-import com.cardshifter.api.outgoing.UseableActionMessage;
+import com.cardshifter.api.outgoing.UsableActionMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage;
 import com.cardshifter.api.outgoing.WaitMessage;
 import com.cardshifter.api.outgoing.WelcomeMessage;
@@ -62,7 +62,7 @@ public class MessageTypeIdResolver implements TypeIdResolver {
 		clazzes.put("card", CardInfoMessage.class);
 		clazzes.put("zone", ZoneMessage.class);
 		clazzes.put("update", UpdateMessage.class);
-		clazzes.put("useable", UseableActionMessage.class);
+		clazzes.put("useable", UsableActionMessage.class);
 		clazzes.put("targets", AvailableTargetsMessage.class);
 		clazzes.put("availableMods", AvailableModsMessage.class);
 		

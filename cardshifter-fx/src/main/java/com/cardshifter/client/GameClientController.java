@@ -39,7 +39,7 @@ import com.cardshifter.api.outgoing.NewGameMessage;
 import com.cardshifter.api.outgoing.PlayerMessage;
 import com.cardshifter.api.outgoing.ResetAvailableActionsMessage;
 import com.cardshifter.api.outgoing.UpdateMessage;
-import com.cardshifter.api.outgoing.UseableActionMessage;
+import com.cardshifter.api.outgoing.UsableActionMessage;
 import com.cardshifter.api.outgoing.WaitMessage;
 import com.cardshifter.api.outgoing.WelcomeMessage;
 import com.cardshifter.api.outgoing.ZoneChangeMessage;
@@ -95,7 +95,7 @@ public class GameClientController {
 	private final Map<String, Integer> playerStatBoxMap = new HashMap<>();
 	private final Map<String, Integer> opponentStatBoxMap = new HashMap<>();
 	private final Map<Integer, ZoneView<?>> zoneViewMap = new HashMap<>();
-	private final List<UseableActionMessage> savedMessages = new ArrayList<>();
+	private final List<UsableActionMessage> savedMessages = new ArrayList<>();
 	private final Set<Integer> chosenTargets = new HashSet<>();
 	private AvailableTargetsMessage targetInfo;
 	private Consumer<Message> sender;
@@ -131,7 +131,7 @@ public class GameClientController {
 		getIncomingHandler().perform(message, null);
 	}
 
-	public void createAndSendMessage(UseableActionMessage action) {
+	public void createAndSendMessage(UsableActionMessage action) {
 		if (action.isTargetRequired()) {
 			this.send(new RequestTargetsMessage(gameId, action.getId(), action.getAction()));
 		} else {
@@ -165,9 +165,9 @@ public class GameClientController {
 			this.assignZoneIdForZoneMessage((ZoneMessage)message);
 		} else if (message instanceof CardInfoMessage) {
 			this.processCardInfoMessage((CardInfoMessage)message);
-		} else if (message instanceof UseableActionMessage) {
-			this.savedMessages.add((UseableActionMessage)message);
-			this.processUseableActionMessage((UseableActionMessage)message);
+		} else if (message instanceof UsableActionMessage) {
+			this.savedMessages.add((UsableActionMessage)message);
+			this.processUseableActionMessage((UsableActionMessage)message);
 		} else if (message instanceof UpdateMessage) {
 			this.processUpdateMessage((UpdateMessage)message);
 		} else if (message instanceof ZoneChangeMessage) {
@@ -287,7 +287,7 @@ public class GameClientController {
 		playerHand.addPane(message.getId(), card);
 	}
 	
-	private void processUseableActionMessage(UseableActionMessage message) {
+	private void processUseableActionMessage(UsableActionMessage message) {
 		ZoneView<?> zoneView = getZoneViewForCard(message.getId());
 		logger.info("Usable message: " + message + " inform zone " + zoneView);
 		if (zoneView == null) {
@@ -414,7 +414,7 @@ public class GameClientController {
 				}
 			} else {
 				//Create the target box and action for self/opponent targeting
-				UseableActionMessage newMessage = new UseableActionMessage(message.getEntity(), message.getAction(), false, target);
+				UsableActionMessage newMessage = new UsableActionMessage(message.getEntity(), message.getAction(), false, target);
 				this.highlightPlayerTargetRectangle(target, newMessage);
 			}
 		}
@@ -428,7 +428,7 @@ public class GameClientController {
 	public boolean addTarget(int id) {
 		if (chosenTargets.isEmpty() && targetInfo.getMax() == 1) {
 			// Only one target, perform that action with target now
-			this.createAndSendMessage(new UseableActionMessage(targetInfo.getEntity(), targetInfo.getAction(), false, id));
+			this.createAndSendMessage(new UsableActionMessage(targetInfo.getEntity(), targetInfo.getAction(), false, id));
 			return false; // Card should not be selected, because we are sending the action directly
 		}
 		
@@ -465,7 +465,7 @@ public class GameClientController {
 		this.repaintDeckLabels();
 	}
 	
-	private void createActionButton(UseableActionMessage message) {
+	private void createActionButton(UsableActionMessage message) {
 		createActionButton(message.getAction(), () -> createAndSendMessage(message));
 	}
 	
@@ -495,7 +495,7 @@ public class GameClientController {
 		this.unhighlightPlayerTargetRectangles();
 		this.actionBox.getChildren().clear();
 		
-		for (UseableActionMessage message : this.savedMessages) {
+		for (UsableActionMessage message : this.savedMessages) {
 			this.processUseableActionMessage(message);
 		}
 	}
@@ -526,7 +526,7 @@ public class GameClientController {
 		}
 	}
 	
-	private void highlightPlayerTargetRectangle(int playerId, UseableActionMessage message) {
+	private void highlightPlayerTargetRectangle(int playerId, UsableActionMessage message) {
 		if (playerId == this.playerId) {
 			this.playerTargetRectangle.setVisible(true);
 			this.playerTargetRectangle.setOnMouseClicked(e -> this.clickToTargetPlayer(e, message));
@@ -541,7 +541,7 @@ public class GameClientController {
 		this.opponentTargetRectangle.setVisible(false);
 	}
 	
-	private void clickToTargetPlayer(MouseEvent e, UseableActionMessage message) {
+	private void clickToTargetPlayer(MouseEvent e, UsableActionMessage message) {
 		this.createAndSendMessage(message);
 	}
 	

@@ -11,7 +11,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 import com.cardshifter.api.outgoing.UpdateMessage;
-import com.cardshifter.api.outgoing.UseableActionMessage;
+import com.cardshifter.api.outgoing.UsableActionMessage;
 
 public class ZoneView<T extends CardView> {
 	
@@ -89,7 +89,7 @@ public class ZoneView<T extends CardView> {
 		}
 	}
 
-	public void setCardActive(int id, UseableActionMessage message) {
+	public void setCardActive(int id, UsableActionMessage message) {
 		T card = getCard(id);
 		card.setCardActive(message);
 	}
@@ -107,7 +107,7 @@ public class ZoneView<T extends CardView> {
 		card.setCardTargetable();
 	}
 	
-	public void setCardScrappable(int target, UseableActionMessage message) {
+	public void setCardScrappable(int target, UsableActionMessage message) {
 		T card = getCard(target);
 		card.setCardScrappable(message);
 	}
