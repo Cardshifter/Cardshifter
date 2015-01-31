@@ -143,10 +143,13 @@ public class PhrancisGame implements ECSMod {
 		// Enchantments: (zone, AttackModify, HealthModify, ScrapCost, "CardName")
 		createEnchantment(zone, 2, 0, 1, "Bionic Arms");
 		createEnchantment(zone, 0, 2, 1, "Body Armor");
-		createEnchantment(zone, 1, 1, 1, "Adrenalin Injection");
+		createEnchantment(zone, 1, 1, 1, "Adrenalin Injection")
+			.addComponent(effects.giveTarget(PhrancisResources.SICKNESS, 0, i -> 0));
 		createEnchantment(zone, 2, 1, 2, "Steroid Implants");
 		createEnchantment(zone, 1, 2, 2, "Reinforced Cranial Implants");
-		createEnchantment(zone, 3, 0, 2, "Cybernetic Arm Cannon");
+		createEnchantment(zone, 3, 0, 2, "Cybernetic Arm Cannon")
+			.addComponent(effects.giveTarget(PhrancisResources.DENY_COUNTERATTACK, 1));
+
 		createEnchantment(zone, 0, 3, 2, "Exoskeleton");
 		createEnchantment(zone, 2, 2, 3, "Artificial Intelligence Implants");
 		createEnchantment(zone, 3, 3, 5, "Full-body Cybernetics Upgrade");
@@ -243,6 +246,7 @@ public class PhrancisGame implements ECSMod {
 		game.addSystem(new UseCostSystem(USE_ACTION, PhrancisResources.SCRAP, scrapCostResource::getFor, owningPlayerPays));
 		game.addSystem(new PlayFromHandSystem(USE_ACTION));
 		game.addSystem(new EffectActionSystem(USE_ACTION));
+		game.addSystem(new EffectActionSystem(ENCHANT_ACTION));
 		game.addSystem(new EffectActionSystem(PLAY_ACTION));
 		game.addSystem(new EffectTargetFilterSystem(USE_ACTION));
 		game.addSystem(new DestroyAfterUseSystem(USE_ACTION));

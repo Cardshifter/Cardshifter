@@ -12,6 +12,7 @@ import com.cardshifter.modapi.attributes.AttributeRetriever;
 import com.cardshifter.modapi.attributes.Attributes;
 import net.zomis.cardshifter.ecs.config.ConfigComponent;
 import com.cardshifter.api.config.DeckConfig;
+import net.zomis.cardshifter.ecs.effects.Effects;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame.PhrancisResources;
 
@@ -255,6 +256,23 @@ public class PhrancisTest extends GameTest {
 	public void cannotEnchantPlayer() {
 		Entity enchantment = mod.createEnchantment(hand.get(currentPlayer()), 4, 4, 0, NO_NAME);
 		useActionWithFailedTarget(enchantment, PhrancisGame.ENCHANT_ACTION, currentPlayer());
+	}
+
+	@Test
+	public void giveAbility() {
+		Effects effects = new Effects();
+		Entity enchantedCreature = mod.createCreature(0, field.get(currentPlayer()), 4, 4, "Bio", 0);
+		Entity enchantment = mod.createEnchantment(hand.get(currentPlayer()), 0, 0, 0, "Adrenalin Injection")
+			.addComponent(effects.giveTarget(PhrancisResources.SICKNESS, 0, i -> 0));
+
+		Entity defender = opponent();
+		int originalLife = health.getFor(defender);
+
+		useFail(enchantedCreature, PhrancisGame.ATTACK_ACTION);
+		useActionWithTarget(enchantment, PhrancisGame.ENCHANT_ACTION, enchantedCreature);
+		assertResource(opponent(), PhrancisResources.HEALTH, originalLife);
+		useActionWithTarget(enchantedCreature, PhrancisGame.ATTACK_ACTION, defender);
+		assertResource(opponent(), PhrancisResources.HEALTH, originalLife - 4);
 	}
 	
 	@Test
