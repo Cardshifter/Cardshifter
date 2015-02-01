@@ -62,29 +62,23 @@ public class FieldsCollection<T> {
 	}
 
 	private Object deserialize(Class<?> type, DataInputStream data, Field field) throws IOException {
-		logger.debug("deserialize " + type);
 		if (type == int.class || type == Integer.class) {
 			int value = data.readInt();
-			logger.debug("Deserialized int: " + value);
 			return value;
 		}
 		else if (type == String[].class) {
 			int count = data.readInt();
 			String[] str = new String[count];
-			logger.debug("String array length " + count);
 			for (int i = 0; i < str.length; i++) {
 				str[i] = (String) deserialize(String.class, data, null);
-				logger.debug("String read " + i + ": " + str[i]);
 			}
 			return str;
 		}
 		else if (type == int[].class) {
 			int count = data.readInt();
 			int[] array = new int[count];
-			logger.debug("int array length " + count);
 			for (int i = 0; i < array.length; i++) {
 				array[i] = (Integer) deserialize(Integer.class, data, null);
-				logger.debug("int read " + i + ": " + array[i]);
 			}
 			return array;
 		}
@@ -102,12 +96,10 @@ public class FieldsCollection<T> {
 		}
 		else if (type == String.class) {
 			int length = data.readInt();
-			logger.debug("String length " + length);
 			StringBuilder str = new StringBuilder(length);
 			for (int i = 0; i < length; i++) {
 				str.append(data.readChar());
 			}
-			logger.debug("Deserialized string: " + str);
 			return str.toString();
 		}
 		else if (Enum.class.isAssignableFrom(type)) {
@@ -175,7 +167,7 @@ public class FieldsCollection<T> {
 
 	private void serialize(Class<?> type, Object value, DataOutputStream out, Field field)
 			throws IOException, IllegalArgumentException, IllegalAccessException {
-		logger.info("Serializing " + type + ": " + value);
+//		logger.info("Serializing " + type + ": " + value);
 		if (type == int.class || type == Integer.class) {
 			out.writeInt((Integer) value);
 		}
