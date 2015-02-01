@@ -135,5 +135,8 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
                 }
             });
         }
+        else {
+            Gdx.app.log("Client", "WARNING: Unable to handle " + message + " of type " + message.getClass());
+        }
     }
 }
