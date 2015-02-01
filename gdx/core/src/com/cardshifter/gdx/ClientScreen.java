@@ -34,6 +34,7 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
     private final TextArea chatMessages;
     private final UsersList usersList;
     private String[] availableMods;
+    private GameScreen gameScreen;
 
     public ClientScreen(final CardshifterGame game, String host, int port) {
         this.game = game;
@@ -75,6 +76,13 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
             @Override
             public void handle(UserStatusMessage message) {
                 usersList.handleUserStatus(message);
+            }
+        });
+        handlerMap.put(NewGameMessage.class, new SpecificHandler<NewGameMessage>() {
+            @Override
+            public void handle(NewGameMessage message) {
+                game.setScreen(gameScreen = new GameScreen(game, client, message));
+                handlerMap.putAll(gameScreen.getHandlers());
             }
         });
         handlerMap.put(PlayerConfigMessage.class, new SpecificHandler<PlayerConfigMessage>() {
