@@ -78,6 +78,28 @@ public class FieldsCollection<T> {
 			}
 			return str;
 		}
+		else if (type == int[].class) {
+			int count = data.readInt();
+			int[] array = new int[count];
+			logger.debug("int array length " + count);
+			for (int i = 0; i < array.length; i++) {
+				array[i] = (Integer) deserialize(Integer.class, data, null);
+				logger.debug("int read " + i + ": " + array[i]);
+			}
+			return array;
+		}
+		else if (type == Boolean.class) {
+			byte boolValue = data.readByte();
+			Boolean bool = null;
+			if (boolValue != 2) {
+				bool = (boolValue == 1);
+			}
+			return bool;
+		}
+		else if (type == boolean.class) {
+			byte boolValue = data.readByte();
+			return boolValue == 1;
+		}
 		else if (type == String.class) {
 			int length = data.readInt();
 			logger.debug("String length " + length);
@@ -162,11 +184,28 @@ public class FieldsCollection<T> {
 			out.writeInt(str.length());
 			out.writeChars(str);
 		}
+		else if (type == Boolean.class) {
+			Boolean bool = (Boolean) value;
+			int boolValue = bool == null ? 2 : bool ? 0 : 1;
+			out.writeByte(boolValue);
+		}
+		else if (type == boolean.class) {
+			boolean bool = (Boolean) value;
+			int boolValue = bool ? 0 : 1;
+			out.writeByte(boolValue);
+		}
 		else if (type == String[].class) {
 			String[] arr = (String[]) value;
 			out.writeInt(arr.length);
 			for (int i = 0; i < arr.length; i++) {
 				serialize(String.class, arr[i], out, null);
+			}
+		}
+		else if (type == int[].class) {
+			int[] array = (int[]) value;
+			out.writeInt(array.length);
+			for (int i = 0; i < array.length; i++) {
+				serialize(int.class, array[i], out, null);
 			}
 		}
 		else if (Enum.class.isAssignableFrom(type)) {
