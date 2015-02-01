@@ -6,11 +6,13 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.cardshifter.api.both.ChatMessage;
+import com.cardshifter.api.both.PlayerConfigMessage;
+import com.cardshifter.api.config.DeckConfig;
 import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.incoming.ServerQueryMessage;
-import com.cardshifter.api.incoming.StartGameRequest;
 import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.outgoing.AvailableModsMessage;
+import com.cardshifter.api.outgoing.NewGameMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage;
 import com.cardshifter.gdx.ui.UsersList;
 
@@ -73,6 +75,16 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
             @Override
             public void handle(UserStatusMessage message) {
                 usersList.handleUserStatus(message);
+            }
+        });
+        handlerMap.put(PlayerConfigMessage.class, new SpecificHandler<PlayerConfigMessage>() {
+            @Override
+            public void handle(PlayerConfigMessage message) {
+                DeckConfig deckConfig = (DeckConfig) message.getConfigs().get("Deck");
+                if (deckConfig != null) {
+                    deckConfig.generateRandom();
+                    client.send(message);
+                }
             }
         });
 
