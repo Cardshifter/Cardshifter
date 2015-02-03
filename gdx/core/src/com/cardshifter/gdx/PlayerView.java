@@ -6,10 +6,15 @@ import com.cardshifter.api.outgoing.PlayerMessage;
 
 public class PlayerView {
 
+    private final int id;
+    private final int index;
     private Table table;
 
-    public PlayerView(CardshifterGame game) {
+    public PlayerView(CardshifterGame game, PlayerMessage message) {
         this.table = new Table(game.skin);
+        this.id = message.getId();
+        this.index = message.getIndex();
+        this.set(message);
     }
 
     public Actor getActor() {
@@ -18,5 +23,9 @@ public class PlayerView {
 
     public void set(PlayerMessage message) {
 
+    }
+
+    public int getIndex() {
+        return index;
     }
 }
