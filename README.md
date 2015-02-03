@@ -16,6 +16,11 @@ The game is cross-platform compatible (Windows, OS X, Linux) and eventually will
 
 - [Official Website](http://www.Cardshifter.com/)
 
+####Playing the game
+--------------------
+
+To play the game, [download the latest release](https://github.com/Cardshifter/Cardshifter/releases). Start the client jar using `java -jar cardshifter-fx-<version>.jar` or by saving to your computer and simply double-clicking `cardshifter-fx-<version>.jar`. There is a server running at `dwarftowers.com` port `4242` that you may connect to and play with other players as well as AI players. If this is your first time playing Cardshifter, you may want to have a look at the [Game Rules](https://github.com/Cardshifter/Cardshifter/wiki/Game-Rules).
+
 ####How can I get involved?
 ---------------------------
 
@@ -31,14 +36,18 @@ If you are interested in helping with the project, there are a number of ways yo
 
 If you are not a developer, you can also help by playing the game and [reporting any bug](http://www.Cardshifter.com/report-bug.html) you find or [requesting new features](http://www.Cardshifter.com/request-feature.html) you'd like to see added to the game. 
 
-####Playing the game
---------------------
-
-To play the game, [download the latest release](https://github.com/Cardshifter/Cardshifter/releases). Start the client jar using `java -jar cardshifter-fx-<version>.jar` or by saving to your computer and simply double-clicking `cardshifter-fx-<version>.jar`. There is a server running at `dwarftowers.com` port `4242` that you may connect to and play with other players as well as AI players. If this is your first time playing Cardshifter, you may want to have a look at the [Game Rules](https://github.com/Cardshifter/Cardshifter/wiki/Game-Rules).
-
-
-
-
+####Submodules: 
+---------------
+ 
+ - `cardshifter-api` - Classes for data being sent between client and server 
+ - `cardshifter-console` - Console client (deprecated / discontinued) 
+ - `cardshifter-core` - Contains our own TCG mod implementation, as well as various features for inclusion in the server and the JavaFX client 
+ - `cardshifter-fx` - JavaFX Client 
+ - `cardshifter-modapi` - Contains the core Entity-Component-System code and several components and systems for some common TCG features 
+ - `cardshifter-server` - Multiplayer Server for the game 
+ - `cardshifter-test` - Code to simplify testing mods 
+ - `gdx / core` - libGDX core game code 
+ - `gdx / android, ios, desktop, html5` - Platform specific libGDX code
 
 
 
