@@ -56,6 +56,7 @@ public class GameScreen implements Screen {
         this.table.add(topTable).row();
         addZoneHolder(this.table, this.playerIndex, "Hand");
 
+        this.table.setFillParent(true);
         this.table.setDebug(true, true);
     }
 
@@ -147,7 +148,6 @@ public class GameScreen implements Screen {
                     container.setActor((Table) zoneView.getActor());
                     zoneViews.put(message.getId(), zoneView);
                     zoneView.apply(message);
-                    table.add(zoneView.getActor()).expandX().fillX().row();
                     table.setDebug(true, true);
                 }
             }
