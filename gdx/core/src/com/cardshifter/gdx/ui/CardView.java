@@ -19,6 +19,7 @@ public class CardView {
         table = new Table(game.skin);
         table.add((String) cardInfo.getProperties().get("name"));
         costs = new HorizontalGroup();
+        costs.addActor(new Label("A", game.skin));
         table.add(costs).row();
         // table.add(image);
         Table textTable = new Table(game.skin);
