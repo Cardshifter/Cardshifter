@@ -8,9 +8,7 @@ import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.outgoing.*;
 import com.cardshifter.gdx.ui.ZoneView;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,7 +22,6 @@ public class GameScreen implements Screen {
     private final int gameId;
 
     private final Table table;
-    private final Map<Integer, PlayerView> playerViews = new HashMap<Integer, PlayerView>();
     private final Map<Integer, ZoneView> zoneViews = new HashMap<Integer, ZoneView>();
     private final Map<Integer, EntityView> entityViews = new HashMap<Integer, EntityView>();
     private final Map<String, Container<Table>> holders = new HashMap<String, Container<Table>>();
@@ -42,8 +39,6 @@ public class GameScreen implements Screen {
         Table rightTable = new Table(game.skin);
         Table centerTable = new Table(game.skin);
 
-//        leftTable.add(playerViews.get(0).getActor()).row();
-//        leftTable.add(playerViews.get(1).getActor()).row();
         leftTable.add("players");
         topTable.add(leftTable).left().width(150).expandY().fillY();
         topTable.add(centerTable).center().expandX().expandY().fill();
@@ -115,13 +110,21 @@ public class GameScreen implements Screen {
                 }
             }
         });
-        handlers.put(EntityRemoveMessage.class, null);
+        handlers.put(EntityRemoveMessage.class, new SpecificHandler<EntityRemoveMessage>() {
+            @Override
+            public void handle(EntityRemoveMessage message) {
+                EntityView view = entityViews.get(message.getEntity());
+                if (view != null) {
+                    view.remove();
+                }
+            }
+        });
         handlers.put(GameOverMessage.class, null);
         handlers.put(PlayerMessage.class, new SpecificHandler<PlayerMessage>() {
             @Override
             public void handle(PlayerMessage message) {
                 PlayerView playerView = new PlayerView(game, message);
-                playerViews.put(message.getId(), playerView);
+                entityViews.put(message.getId(), playerView);
             }
         });
         handlers.put(ResetAvailableActionsMessage.class, null);
@@ -133,7 +136,7 @@ public class GameScreen implements Screen {
                 Gdx.app.log("GameScreen", "Zone " + message);
                 ZoneView zoneView = createZoneView(message);
                 if (zoneView != null) {
-                    PlayerView view = playerViews.get(message.getOwner());
+                    PlayerView view = (PlayerView) entityViews.get(message.getOwner());
                     if (view == null) {
                         Gdx.app.log("GameScreen", "no playerView for " + message.getOwner());
                         return;

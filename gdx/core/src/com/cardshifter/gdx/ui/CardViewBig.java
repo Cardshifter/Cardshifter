@@ -5,8 +5,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.cardshifter.api.outgoing.CardInfoMessage;
 import com.cardshifter.gdx.CardshifterGame;
+import com.cardshifter.gdx.EntityView;
 
-public class CardViewBig {
+public class CardViewBig implements EntityView {
 
     private final Table table;
     private final HorizontalGroup costs;
@@ -33,5 +34,15 @@ public class CardViewBig {
 
     public Table getTable() {
         return table;
+    }
+
+    @Override
+    public void set(Object key, Object value) {
+        
+    }
+
+    @Override
+    public void remove() {
+
     }
 }
