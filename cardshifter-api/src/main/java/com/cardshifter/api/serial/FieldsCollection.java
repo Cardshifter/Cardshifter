@@ -178,12 +178,12 @@ public class FieldsCollection<T> {
 		}
 		else if (type == Boolean.class) {
 			Boolean bool = (Boolean) value;
-			int boolValue = bool == null ? 2 : bool ? 0 : 1;
+			int boolValue = bool == null ? 2 : bool ? 1 : 0;
 			out.writeByte(boolValue);
 		}
 		else if (type == boolean.class) {
 			boolean bool = (Boolean) value;
-			int boolValue = bool ? 0 : 1;
+			int boolValue = bool ? 1 : 0;
 			out.writeByte(boolValue);
 		}
 		else if (type == String[].class) {
