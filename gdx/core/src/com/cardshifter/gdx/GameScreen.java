@@ -45,9 +45,9 @@ public class GameScreen implements Screen {
 //        leftTable.add(playerViews.get(0).getActor()).row();
 //        leftTable.add(playerViews.get(1).getActor()).row();
         leftTable.add("players");
-        topTable.add(leftTable).left().expandY().fillY();
-        topTable.add(centerTable).center().expandY().fillY();
-        topTable.add(rightTable).right().expandY().fillY();
+        topTable.add(leftTable).left().width(150).expandY().fillY();
+        topTable.add(centerTable).center().expandX().expandY().fill();
+        topTable.add(rightTable).right().width(150).expandY().fillY();
 
         addZoneHolder(centerTable, 1 - this.playerIndex, "Hand");
         addZoneHolder(centerTable, 1 - this.playerIndex, "Battlefield");

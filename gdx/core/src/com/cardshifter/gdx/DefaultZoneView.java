@@ -22,7 +22,7 @@ public class DefaultZoneView extends ZoneView {
     @Override
     public void addCard(CardInfoMessage message) {
         CardView view = new CardView(this.game, message);
-        table.add(view.getTable());
+        table.add(view.getTable()).width(120).expandX();
     }
 
     @Override

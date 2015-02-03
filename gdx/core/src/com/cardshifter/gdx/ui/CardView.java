@@ -19,20 +19,18 @@ public class CardView {
         table = new Table(game.skin);
         table.add((String) cardInfo.getProperties().get("name"));
         costs = new HorizontalGroup();
-        table.add(costs);
-        table.row();
+        table.add(costs).row();
         // table.add(image);
         Table textTable = new Table(game.skin);
         textTable.add("Abilities").row();
-        textTable.add("Effect description").row();
+        textTable.add("Effect").row();
         textTable.add("Flavortext").bottom();
-        table.add(textTable);
-        table.add("Type");
+        table.add(textTable).colspan(2).row();
+        table.add("Type").left();
 
         gives = new HorizontalGroup();
         gives.addActor(new Label("ABC", game.skin));
-        gives.addActor(new Label("ABC", game.skin));
-        table.add(gives);
+        table.add(gives).right();
     }
 
     public Table getTable() {
