@@ -6,16 +6,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.cardshifter.api.outgoing.CardInfoMessage;
 import com.cardshifter.gdx.CardshifterGame;
 
-/**
- * Created by Simon on 1/31/2015.
- */
-public class CardView {
+public class CardViewBig {
 
     private final Table table;
     private final HorizontalGroup costs;
     private final HorizontalGroup gives;
 
-    public CardView(CardshifterGame game, CardInfoMessage cardInfo) {
+    public CardViewBig(CardshifterGame game, CardInfoMessage cardInfo) {
         table = new Table(game.skin);
         table.add((String) cardInfo.getProperties().get("name"));
         costs = new HorizontalGroup();
