@@ -22,10 +22,11 @@ public class PlayerView implements EntityView {
         this.id = message.getId();
         this.index = message.getIndex();
         ResViewFactory rvf = new ResViewFactory(game.skin);
-        this.resources = rvf.forFormat(rvf.res("SCRAP"), rvf.res("MANA"), rvf.coloredRes("HEALTH", "MAX_HEALTH"));
+        this.resources = rvf.forFormat(rvf.res("SCRAP"), rvf.str(" "), rvf.res("MANA"), rvf.str(" "), rvf.coloredRes("HEALTH", "MAX_HEALTH"));
         this.properties = new HashMap<String, Integer>(message.getProperties());
         this.table.add(message.getName()).row();
         this.table.add(this.resources.getActor());
+        resources.update(properties);
     }
 
     public Actor getActor() {

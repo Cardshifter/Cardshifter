@@ -49,7 +49,8 @@ public class GameScreen implements Screen {
         Table rightTable = new Table(game.skin);
         Table centerTable = new Table(game.skin);
 
-        leftTable.add("players");
+        addZoneHolder(leftTable, 1 - this.playerIndex, "");
+        addZoneHolder(leftTable, this.playerIndex, "");
         rightTable.add("controls");
         topTable.add(leftTable).left().width(150).expandY().fillY();
         topTable.add(centerTable).center().expandX().expandY().fill();
@@ -140,6 +141,11 @@ public class GameScreen implements Screen {
             public void handle(PlayerMessage message) {
                 PlayerView playerView = new PlayerView(game, message);
                 entityViews.put(message.getId(), playerView);
+
+                Container<Actor> holder = holders.get(String.valueOf(message.getIndex()));
+                if (holder != null) {
+                    holder.setActor(playerView.getActor());
+                }
             }
         });
         handlers.put(ResetAvailableActionsMessage.class, null);
