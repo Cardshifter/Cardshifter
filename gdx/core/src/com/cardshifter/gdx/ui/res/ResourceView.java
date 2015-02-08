@@ -23,7 +23,7 @@ public class ResourceView {
         }
     }
 
-    public void update(final Map<String, Object> properties) {
+    public void update(final Map<String, ? extends Object> properties) {
         for (ResView view : views) {
             view.update(properties);
         }

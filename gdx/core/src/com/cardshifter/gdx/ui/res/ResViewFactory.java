@@ -36,7 +36,7 @@ public class ResViewFactory {
             }
 
             @Override
-            public void update(Map<String, Object> properties) {
+            public void update(Map<String, ? extends Object> properties) {
 
             }
         };

@@ -27,7 +27,7 @@ public class SimpleResView extends ResView {
     }
 
     @Override
-    public void update(Map<String, Object> properties) {
+    public void update(Map<String, ? extends Object> properties) {
         Object value = properties.get(key);
         label.setText(value == null ? "" : start + value);
     }

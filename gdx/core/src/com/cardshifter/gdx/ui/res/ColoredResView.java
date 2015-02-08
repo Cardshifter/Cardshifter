@@ -33,7 +33,7 @@ public class ColoredResView extends ResView {
     }
 
     @Override
-    public void update(Map<String, Object> properties) {
+    public void update(Map<String, ? extends Object> properties) {
         if (originalKey != null) {
             Integer i = (Integer) properties.get(originalKey);
             if (i != null) {

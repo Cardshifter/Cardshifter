@@ -7,6 +7,6 @@ import java.util.Map;
 public abstract class ResView {
 
     public abstract Actor getActor();
-    public abstract void update(Map<String, Object> properties);
+    public abstract void update(Map<String, ? extends Object> properties);
 
 }
