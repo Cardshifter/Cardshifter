@@ -1,5 +1,6 @@
 package com.cardshifter.gdx.ui;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -10,19 +11,29 @@ import com.cardshifter.gdx.EntityView;
 public class CardViewSmall implements EntityView {
 
     private final Table table;
+    private final Label effect;
+    private final Label name;
 
     public CardViewSmall(CardshifterGame game, CardInfoMessage cardInfo) {
         table = new Table(game.skin);
-        Label name = new Label((String) cardInfo.getProperties().get("name"), game.skin);
-        name.setEllipse(true);
+        Gdx.app.log("CardView", "Creating for " + cardInfo.getProperties());
         table.defaults().expand();
+        name = label(game, cardInfo, "name");
         table.add(name).colspan(2).width(100).row();
         // table.add(image);
-        table.add("Effect").colspan(2).row();
+        effect = label(game, cardInfo, "effect");
+        table.add(effect).colspan(2).row();
         table.add("Cost").colspan(2).right().row();
-        table.add("Type").left();
+
+        table.add(label(game, cardInfo, "creatureType")).left();
         table.add("Stats").right();
         table.setDebug(true, true);
+    }
+
+    public static Label label(CardshifterGame game, CardInfoMessage message, String key) {
+        Label label = new Label(String.valueOf(message.getProperties().get(key)), game.skin);
+        label.setEllipse(true);
+        return label;
     }
 
     public Table getTable() {
