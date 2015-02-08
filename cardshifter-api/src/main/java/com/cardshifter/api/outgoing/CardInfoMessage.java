@@ -15,7 +15,7 @@ public class CardInfoMessage extends Message {
 	private final Map<String, Object> properties;
 
 	CardInfoMessage() {
-		this(0, 0, new HashMap<String, Object>());
+		this(0, 0, null);
 	}
 	public CardInfoMessage(int zoneId, int cardId, Map<String, Object> properties) {
 		super("card");
@@ -29,7 +29,7 @@ public class CardInfoMessage extends Message {
 	}
 	
 	public Map<String, Object> getProperties() {
-		return Collections.unmodifiableMap(properties);
+		return properties == null ? null : Collections.unmodifiableMap(properties);
 	}
 	
 	public int getZone() {
