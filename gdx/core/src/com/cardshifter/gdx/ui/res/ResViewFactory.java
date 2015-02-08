@@ -19,6 +19,14 @@ public class ResViewFactory {
         return new SimpleResView(skin, key.substring(0, 1), key);
     }
 
+    public ResView coloredRes(String key, Map<String, Object> properties) {
+        return new ColoredResView(skin, key, properties);
+    }
+
+    public ResView coloredRes(String key, String originalKey) {
+        return new ColoredResView(skin, key, originalKey);
+    }
+
     public ResView str(String s) {
         final Label label = new Label(s, skin);
         return new ResView() {

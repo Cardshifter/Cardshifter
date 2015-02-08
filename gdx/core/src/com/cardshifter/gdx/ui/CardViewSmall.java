@@ -17,6 +17,7 @@ public class CardViewSmall implements EntityView {
     private final Label effect;
     private final Label name;
     private final ResourceView cost;
+    private final ResourceView stats;
     private final Map<String, Object> properties;
 
     public CardViewSmall(CardshifterGame game, CardInfoMessage cardInfo) {
@@ -33,11 +34,13 @@ public class CardViewSmall implements EntityView {
         cost = rvf.forFormat(rvf.res("MANA_COST"), rvf.res("SCRAP_COST"));
         table.add(cost.getActor()).colspan(2).right().row();
 
+        stats = rvf.forFormat(rvf.coloredRes("ATTACK", properties), rvf.str("/"), rvf.coloredRes("HEALTH", "MAX_HEALTH"));
         table.add(label(game, cardInfo, "creatureType")).left();
-        table.add("Stats").right();
+        table.add(stats.getActor()).right();
         table.setDebug(true, true);
 
         cost.update(properties);
+        stats.update(properties);
     }
 
     public static Label label(CardshifterGame game, CardInfoMessage message, String key) {
