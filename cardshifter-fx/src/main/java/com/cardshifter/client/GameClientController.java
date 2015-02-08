@@ -279,7 +279,9 @@ public class GameClientController {
 		// this is unused because *KNOWN* cards don't pop up in opponent hand without reason (at least not now)
 	}
 	private void addCardToPlayerBattlefieldPane(CardInfoMessage message) {
-		// this is unused because cards don't pop up in the battlefield magically, they are *moved* there (at least for now)
+		BattlefieldZoneView playerBattlefield = getZoneView(playerBattlefieldId);
+		CardBattlefieldDocumentController card = new CardBattlefieldDocumentController(message, this);
+		playerBattlefield.addPane(message.getId(), card);
 	}
 	private void addCardToPlayerHandPane(CardInfoMessage message) {
 		PlayerHandZoneView playerHand = getZoneView(playerHandId);

@@ -32,8 +32,10 @@ public class CardComponent extends Component {
 		ZoneChangeEvent event = new ZoneChangeEvent(currentZone, target, card);
 		
 		executeEvent(event);
-		event.getSource().cardMoveFrom(card);
-		
+		if (event.getSource() != null) {
+			event.getSource().cardMoveFrom(card);
+		}
+
 		ZoneComponent dest = event.getDestination();
 		if (dest != null) {
 			if (top) {
