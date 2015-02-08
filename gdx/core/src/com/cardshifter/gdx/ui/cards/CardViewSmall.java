@@ -9,9 +9,10 @@ import com.cardshifter.gdx.ui.EntityView;
 import com.cardshifter.gdx.ui.res.ResourceView;
 import com.cardshifter.gdx.ui.res.ResViewFactory;
 
+import java.util.HashMap;
 import java.util.Map;
 
-public class CardViewSmall implements EntityView {
+public class CardViewSmall implements CardView {
 
     private final Table table;
     private final Label effect;
@@ -21,7 +22,7 @@ public class CardViewSmall implements EntityView {
     private final Map<String, Object> properties;
 
     public CardViewSmall(CardshifterGame game, CardInfoMessage cardInfo) {
-        this.properties = cardInfo.getProperties();
+        this.properties = new HashMap<String, Object>(cardInfo.getProperties());
         table = new Table(game.skin);
         Gdx.app.log("CardView", "Creating for " + cardInfo.getProperties());
         table.defaults().expand();
@@ -56,11 +57,18 @@ public class CardViewSmall implements EntityView {
 
     @Override
     public void set(Object key, Object value) {
-
+        properties.put((String) key, value);
+        cost.update(properties);
+        stats.update(properties);
     }
 
     @Override
     public void remove() {
+        table.remove();
+    }
 
+    @Override
+    public Map<String, Object> getInfo() {
+        return new HashMap<String, Object>(this.properties);
     }
 }

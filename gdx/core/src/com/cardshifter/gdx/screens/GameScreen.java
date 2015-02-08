@@ -12,6 +12,7 @@ import com.cardshifter.gdx.CardshifterGame;
 import com.cardshifter.gdx.ui.EntityView;
 import com.cardshifter.gdx.SpecificHandler;
 import com.cardshifter.gdx.ui.PlayerView;
+import com.cardshifter.gdx.ui.cards.CardView;
 import com.cardshifter.gdx.ui.zones.CompactHiddenZoneView;
 import com.cardshifter.gdx.ui.zones.DefaultZoneView;
 import com.cardshifter.gdx.ui.zones.ZoneView;
@@ -116,6 +117,7 @@ public class GameScreen implements Screen {
             @Override
             public void handle(CardInfoMessage message) {
                 ZoneView zone = getZoneView(message.getZone());
+                removeCard(zone, message.getId());
                 if (zone != null) {
                     zone.addCard(message);
                 }
@@ -127,6 +129,7 @@ public class GameScreen implements Screen {
                 EntityView view = entityViews.get(message.getEntity());
                 if (view != null) {
                     view.remove();
+                    entityViews.remove(message.getEntity());
                 }
             }
         });
@@ -139,8 +142,28 @@ public class GameScreen implements Screen {
             }
         });
         handlers.put(ResetAvailableActionsMessage.class, null);
-        handlers.put(UpdateMessage.class, null);
-        handlers.put(ZoneChangeMessage.class, null);
+        handlers.put(UpdateMessage.class, new SpecificHandler<UpdateMessage>() {
+            @Override
+            public void handle(UpdateMessage message) {
+                EntityView entityView = entityViews.get(message.getId());
+                if (entityView != null) {
+                    entityView.set(message.getKey(), message.getValue());
+                }
+            }
+        });
+        handlers.put(ZoneChangeMessage.class, new SpecificHandler<ZoneChangeMessage>() {
+            @Override
+            public void handle(ZoneChangeMessage message) {
+                ZoneView oldZone = getZoneView(message.getSourceZone()); // can be null
+                ZoneView destinationZone = getZoneView(message.getDestinationZone());
+                int id = message.getEntity();
+                CardView cardView = (CardView) entityViews.get(id); // can be null
+                removeCard(oldZone, id);
+                if (destinationZone != null) {
+                    destinationZone.addCard(new CardInfoMessage(message.getDestinationZone(), id, cardView == null ? null : cardView.getInfo()));
+                }
+            }
+        });
         handlers.put(ZoneMessage.class, new SpecificHandler<ZoneMessage>() {
             @Override
             public void handle(ZoneMessage message) {
@@ -170,13 +193,23 @@ public class GameScreen implements Screen {
         return handlers;
     }
 
+    private void removeCard(ZoneView zone, int id) {
+        if (zone != null) {
+            zone.removeCard(id);
+        }
+        EntityView entityView = entityViews.remove(id);
+        if (entityView != null) {
+            entityView.remove();
+        }
+    }
+
     private ZoneView createZoneView(ZoneMessage message) {
         String type = message.getName();
         if (type.equals("Battlefield")) {
-            return new DefaultZoneView(game, message);
+            return new DefaultZoneView(game, message, this.entityViews);
         }
         if (type.equals("Hand")) {
-            return new DefaultZoneView(game, message);
+            return new DefaultZoneView(game, message, this.entityViews);
         }
         if (type.equals("Deck")) {
             return new CompactHiddenZoneView(game, message);

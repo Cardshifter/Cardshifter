@@ -7,13 +7,18 @@ import com.cardshifter.api.outgoing.CardInfoMessage;
 import com.cardshifter.gdx.CardshifterGame;
 import com.cardshifter.gdx.ui.EntityView;
 
-public class CardViewBig implements EntityView {
+import java.util.HashMap;
+import java.util.Map;
+
+public class CardViewBig implements CardView {
 
     private final Table table;
     private final HorizontalGroup costs;
     private final HorizontalGroup gives;
+    private final HashMap<String, Object> properties;
 
     public CardViewBig(CardshifterGame game, CardInfoMessage cardInfo) {
+        this.properties = new HashMap<String, Object>(cardInfo.getProperties());
         table = new Table(game.skin);
         table.add((String) cardInfo.getProperties().get("name"));
         costs = new HorizontalGroup();
@@ -43,6 +48,11 @@ public class CardViewBig implements EntityView {
 
     @Override
     public void remove() {
+        table.remove();
+    }
 
+    @Override
+    public Map<String, Object> getInfo() {
+        return new HashMap<String, Object>(this.properties);
     }
 }
