@@ -29,7 +29,7 @@ public class CardViewSmall implements EntityView {
         table.add(name).colspan(2).width(100).row();
         // table.add(image);
         effect = label(game, cardInfo, "effect");
-        table.add(effect).colspan(2).row();
+        table.add(effect).colspan(2).width(100).row();
         ResViewFactory rvf = new ResViewFactory(game.skin);
         cost = rvf.forFormat(rvf.res("MANA_COST"), rvf.res("SCRAP_COST"));
         table.add(cost.getActor()).colspan(2).right().row();
