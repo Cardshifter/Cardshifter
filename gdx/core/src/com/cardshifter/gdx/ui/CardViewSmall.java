@@ -44,7 +44,8 @@ public class CardViewSmall implements EntityView {
     }
 
     public static Label label(CardshifterGame game, CardInfoMessage message, String key) {
-        Label label = new Label(String.valueOf(message.getProperties().get(key)), game.skin);
+        Object value = message.getProperties().get(key);
+        Label label = new Label(String.valueOf(value == null ? "" : value), game.skin);
         label.setEllipse(true);
         return label;
     }
