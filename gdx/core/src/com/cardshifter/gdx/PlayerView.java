@@ -8,7 +8,7 @@ public class PlayerView implements EntityView {
 
     private final int id;
     private final int index;
-    private Table table;
+    private final Table table;
 
     public PlayerView(CardshifterGame game, PlayerMessage message) {
         this.table = new Table(game.skin);

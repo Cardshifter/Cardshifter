@@ -2,6 +2,7 @@ package com.cardshifter.gdx;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.cardshifter.api.messages.Message;
@@ -40,25 +41,28 @@ public class GameScreen implements Screen {
         Table centerTable = new Table(game.skin);
 
         leftTable.add("players");
+        rightTable.add("controls");
         topTable.add(leftTable).left().width(150).expandY().fillY();
         topTable.add(centerTable).center().expandX().expandY().fill();
         topTable.add(rightTable).right().width(150).expandY().fillY();
 
-        addZoneHolder(centerTable, 1 - this.playerIndex, "Hand");
+        addZoneHolder(centerTable, 1 - this.playerIndex, "Hand").top();
         addZoneHolder(centerTable, 1 - this.playerIndex, "Battlefield");
-        addZoneHolder(centerTable, this.playerIndex, "Battlefield");
+        addZoneHolder(centerTable, this.playerIndex, "Battlefield").bottom();
 
-        this.table.add(topTable).row();
+        this.table.add(topTable).expandY().fill().row();
         addZoneHolder(this.table, this.playerIndex, "Hand");
 
         this.table.setFillParent(true);
         this.table.setDebug(true, true);
     }
 
-    private void addZoneHolder(Table table, int i, String name) {
+    private Cell<Container<Table>> addZoneHolder(Table table, int i, String name) {
         Container<Table> container = new Container<Table>();
-        table.add(container).expandX().fillX().row();
+        Cell<Container<Table>> cell = table.add(container).expandX().fillX();
+        table.row();
         holders.put(i + name, container);
+        return cell;
     }
 
     @Override

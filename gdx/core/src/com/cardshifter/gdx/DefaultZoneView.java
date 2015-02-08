@@ -15,14 +15,14 @@ public class DefaultZoneView extends ZoneView {
 
     public DefaultZoneView(CardshifterGame game, ZoneMessage message) {
         this.table = new Table(game.skin);
-        this.table.add(message.getName() + '@' + message.getId()).row();
+//        this.table.add(message.getName() + '@' + message.getId()).row();
         this.game = game;
     }
 
     @Override
     public void addCard(CardInfoMessage message) {
         CardViewSmall view = new CardViewSmall(this.game, message);
-        table.add(view.getTable()).width(120).expandX().fill();
+        table.add(view.getTable()).spaceLeft(5).width(100).fill();
     }
 
     @Override

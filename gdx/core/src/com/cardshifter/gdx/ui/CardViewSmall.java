@@ -15,12 +15,14 @@ public class CardViewSmall implements EntityView {
         table = new Table(game.skin);
         Label name = new Label((String) cardInfo.getProperties().get("name"), game.skin);
         name.setEllipse(true);
-        table.add(name).colspan(2).maxWidth(110).expandX().fillX().row();
+        table.defaults().expand();
+        table.add(name).colspan(2).width(100).row();
         // table.add(image);
         table.add("Effect").colspan(2).row();
         table.add("Cost").colspan(2).right().row();
         table.add("Type").left();
         table.add("Stats").right();
+        table.setDebug(true, true);
     }
 
     public Table getTable() {
