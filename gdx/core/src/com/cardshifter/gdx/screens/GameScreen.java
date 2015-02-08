@@ -2,6 +2,7 @@ package com.cardshifter.gdx.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -33,7 +34,7 @@ public class GameScreen implements Screen {
     private final Table table;
     private final Map<Integer, ZoneView> zoneViews = new HashMap<Integer, ZoneView>();
     private final Map<Integer, EntityView> entityViews = new HashMap<Integer, EntityView>();
-    private final Map<String, Container<Table>> holders = new HashMap<String, Container<Table>>();
+    private final Map<String, Container<Actor>> holders = new HashMap<String, Container<Actor>>();
 
     public GameScreen(CardshifterGame game, CardshifterClient client, NewGameMessage message) {
         this.game = game;
@@ -65,9 +66,9 @@ public class GameScreen implements Screen {
         this.table.setDebug(true, true);
     }
 
-    private Cell<Container<Table>> addZoneHolder(Table table, int i, String name) {
-        Container<Table> container = new Container<Table>();
-        Cell<Container<Table>> cell = table.add(container).expandX().fillX();
+    private Cell<Container<Actor>> addZoneHolder(Table table, int i, String name) {
+        Container<Actor> container = new Container<Actor>();
+        Cell<Container<Actor>> cell = table.add(container).expandX().fillX();
         table.row();
         holders.put(i + name, container);
         return cell;
@@ -176,13 +177,13 @@ public class GameScreen implements Screen {
                         return;
                     }
                     String key = view.getIndex() + message.getName();
-                    Container<Table> container = holders.get(key);
+                    Container<Actor> container = holders.get(key);
                     if (container == null) {
                         Gdx.app.log("GameScreen", "no container for " + key);
                         return;
                     }
                     Gdx.app.log("GameScreen", "putting zoneview for " + key);
-                    container.setActor((Table) zoneView.getActor());
+                    container.setActor(zoneView.getActor());
                     zoneViews.put(message.getId(), zoneView);
                     zoneView.apply(message);
                     table.setDebug(true, true);

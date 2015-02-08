@@ -1,6 +1,7 @@
 package com.cardshifter.gdx.ui.zones;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.cardshifter.api.outgoing.CardInfoMessage;
 import com.cardshifter.api.outgoing.ZoneMessage;
@@ -14,11 +15,12 @@ import java.util.Map;
 
 public class DefaultZoneView extends ZoneView {
 
-    private final Table table;
+    private final HorizontalGroup group;
     private final CardshifterGame game;
 
     public DefaultZoneView(CardshifterGame game, ZoneMessage message, Map<Integer, EntityView> viewMap) {
-        this.table = new Table(game.skin);
+        this.group = new HorizontalGroup();
+        this.group.space(5);
 //        this.table.add(message.getName() + '@' + message.getId()).row();
         this.game = game;
         for (int id : message.getEntities()) {
@@ -30,12 +32,12 @@ public class DefaultZoneView extends ZoneView {
     public final CardView addCard(CardInfoMessage message) {
         if (message == null || message.getProperties() == null) {
             CardViewHidden view = new CardViewHidden(this.game);
-            table.add(view.getTable()).spaceLeft(5).width(100).fill();
+            group.addActor(view.getTable()); //.spaceLeft(5).width(100).fill();
             return view;
         }
         else {
             CardViewSmall view = new CardViewSmall(this.game, message);
-            table.add(view.getTable()).spaceLeft(5).width(100).fill();
+            group.addActor(view.getTable()); //.spaceLeft(5).width(100).fill();
             return view;
         }
     }
@@ -46,6 +48,6 @@ public class DefaultZoneView extends ZoneView {
 
     @Override
     public Actor getActor() {
-        return table;
+        return group;
     }
 }
