@@ -1,8 +1,9 @@
-package com.cardshifter.gdx;
+package com.cardshifter.gdx.ui;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.cardshifter.api.outgoing.PlayerMessage;
+import com.cardshifter.gdx.CardshifterGame;
 
 public class PlayerView implements EntityView {
 

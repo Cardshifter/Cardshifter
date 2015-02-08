@@ -1,4 +1,4 @@
-package com.cardshifter.gdx;
+package com.cardshifter.gdx.ui;
 
 public interface EntityView {
     void set(Object key, Object value);

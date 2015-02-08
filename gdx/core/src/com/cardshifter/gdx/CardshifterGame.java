@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.cardshifter.gdx.screens.MenuScreen;
 
 public class CardshifterGame extends Game {
     private static final float STAGE_WIDTH = 800;

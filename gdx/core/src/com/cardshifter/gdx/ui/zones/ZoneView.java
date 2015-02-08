@@ -1,4 +1,4 @@
-package com.cardshifter.gdx.ui;
+package com.cardshifter.gdx.ui.zones;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.cardshifter.api.outgoing.CardInfoMessage;

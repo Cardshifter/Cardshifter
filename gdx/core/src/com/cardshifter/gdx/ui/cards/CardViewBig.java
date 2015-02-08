@@ -1,11 +1,11 @@
-package com.cardshifter.gdx.ui;
+package com.cardshifter.gdx.ui.cards;
 
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.cardshifter.api.outgoing.CardInfoMessage;
 import com.cardshifter.gdx.CardshifterGame;
-import com.cardshifter.gdx.EntityView;
+import com.cardshifter.gdx.ui.EntityView;
 
 public class CardViewBig implements EntityView {
 

@@ -1,4 +1,4 @@
-package com.cardshifter.gdx;
+package com.cardshifter.gdx.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -14,6 +14,7 @@ import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.outgoing.AvailableModsMessage;
 import com.cardshifter.api.outgoing.NewGameMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage;
+import com.cardshifter.gdx.*;
 import com.cardshifter.gdx.ui.UsersList;
 
 import java.text.DateFormat;

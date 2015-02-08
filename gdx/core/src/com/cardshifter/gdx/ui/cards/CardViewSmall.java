@@ -1,11 +1,11 @@
-package com.cardshifter.gdx.ui;
+package com.cardshifter.gdx.ui.cards;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.cardshifter.api.outgoing.CardInfoMessage;
 import com.cardshifter.gdx.CardshifterGame;
-import com.cardshifter.gdx.EntityView;
+import com.cardshifter.gdx.ui.EntityView;
 import com.cardshifter.gdx.ui.res.ResourceView;
 import com.cardshifter.gdx.ui.res.ResViewFactory;
 

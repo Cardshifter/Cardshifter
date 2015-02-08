@@ -1,4 +1,4 @@
-package com.cardshifter.gdx;
+package com.cardshifter.gdx.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -7,7 +7,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.outgoing.*;
-import com.cardshifter.gdx.ui.ZoneView;
+import com.cardshifter.gdx.CardshifterClient;
+import com.cardshifter.gdx.CardshifterGame;
+import com.cardshifter.gdx.ui.EntityView;
+import com.cardshifter.gdx.SpecificHandler;
+import com.cardshifter.gdx.ui.PlayerView;
+import com.cardshifter.gdx.ui.zones.CompactHiddenZoneView;
+import com.cardshifter.gdx.ui.zones.DefaultZoneView;
+import com.cardshifter.gdx.ui.zones.ZoneView;
 
 import java.util.HashMap;
 import java.util.Map;

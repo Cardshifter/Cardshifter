@@ -1,14 +1,12 @@
-package com.cardshifter.gdx;
+package com.cardshifter.gdx.screens;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.net.Socket;
-import com.badlogic.gdx.net.SocketHints;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.cardshifter.gdx.CardshifterGame;
+import com.cardshifter.gdx.screens.ClientScreen;
 
 /**
  * Created by Zomis on 2014-11-11.
