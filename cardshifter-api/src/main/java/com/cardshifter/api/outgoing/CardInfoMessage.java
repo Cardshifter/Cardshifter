@@ -1,10 +1,9 @@
 package com.cardshifter.api.outgoing;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.cardshifter.api.messages.Message;
+
+import java.util.Collections;
+import java.util.Map;
 
 public class CardInfoMessage extends Message {
 //	SERVER: command: card, zone: 3, id: 3, properties: { name: 'Biofsd', power: 3, health: 4, cardType: 'Creature', creatureType: 'B0T' }

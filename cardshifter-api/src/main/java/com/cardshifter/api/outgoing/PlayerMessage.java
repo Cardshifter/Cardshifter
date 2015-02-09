@@ -5,9 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.cardshifter.api.messages.Message;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class PlayerMessage extends Message {
 //	SERVER: command: player, name: 'Bubu', properties: { hp: 23 }
 

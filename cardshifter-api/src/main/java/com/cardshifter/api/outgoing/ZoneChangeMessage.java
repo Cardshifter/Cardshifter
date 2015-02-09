@@ -1,8 +1,6 @@
 package com.cardshifter.api.outgoing;
 
 import com.cardshifter.api.messages.Message;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ZoneChangeMessage extends Message {
 
