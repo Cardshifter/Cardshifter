@@ -1,5 +1,6 @@
 package com.cardshifter.gdx.ui.cards;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.cardshifter.api.outgoing.UsableActionMessage;
 import com.cardshifter.gdx.CardshifterGame;
@@ -20,6 +21,7 @@ public class CardViewHidden implements CardView {
         this.table = new Table(context.getSkin());
         this.table.add("???").expand().fill();
         this.id = id;
+        Gdx.app.log("CardView", "creating hidden " + id);
     }
 
     public Table getTable() {
@@ -38,6 +40,7 @@ public class CardViewHidden implements CardView {
 
     @Override
     public void remove() {
+        Gdx.app.log("CardView", "Removed cardid " + this.id);
         table.remove();
     }
 
