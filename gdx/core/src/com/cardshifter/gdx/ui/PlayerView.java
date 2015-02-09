@@ -16,12 +16,14 @@ public class PlayerView implements EntityView {
     private final Table table;
     private final ResourceView resources;
     private final HashMap<String, Integer> properties;
+    private final CardshifterClientContext context;
 
-    public PlayerView(CardshifterGame game, PlayerMessage message) {
-        this.table = new Table(game.skin);
+    public PlayerView(CardshifterClientContext context, PlayerMessage message) {
+        this.context = context;
+        this.table = new Table(context.getSkin());
         this.id = message.getId();
         this.index = message.getIndex();
-        ResViewFactory rvf = new ResViewFactory(game.skin);
+        ResViewFactory rvf = new ResViewFactory(context.getSkin());
         this.resources = rvf.forFormat(rvf.res("SCRAP"), rvf.str(" "), rvf.res("MANA"), rvf.str(" "), rvf.coloredRes("HEALTH", "MAX_HEALTH"));
         this.properties = new HashMap<String, Integer>(message.getProperties());
         this.table.add(message.getName()).row();

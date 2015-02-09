@@ -8,18 +8,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.outgoing.*;
-import com.cardshifter.gdx.CardshifterClient;
-import com.cardshifter.gdx.CardshifterGame;
+import com.cardshifter.gdx.*;
+import com.cardshifter.gdx.ui.CardshifterClientContext;
 import com.cardshifter.gdx.ui.EntityView;
-import com.cardshifter.gdx.SpecificHandler;
 import com.cardshifter.gdx.ui.PlayerView;
 import com.cardshifter.gdx.ui.cards.CardView;
 import com.cardshifter.gdx.ui.zones.CompactHiddenZoneView;
 import com.cardshifter.gdx.ui.zones.DefaultZoneView;
 import com.cardshifter.gdx.ui.zones.ZoneView;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Simon on 1/31/2015.
@@ -36,11 +34,14 @@ public class GameScreen implements Screen {
     private final Map<Integer, EntityView> entityViews = new HashMap<Integer, EntityView>();
     private final Map<String, Container<Actor>> holders = new HashMap<String, Container<Actor>>();
 
-    public GameScreen(CardshifterGame game, CardshifterClient client, NewGameMessage message) {
+    private final CardshifterClientContext context;
+
+    public GameScreen(final CardshifterGame game, final CardshifterClient client, NewGameMessage message) {
         this.game = game;
         this.client = client;
         this.playerIndex = message.getPlayerIndex();
         this.gameId = message.getGameId();
+        this.context = new CardshifterClientContext(game.skin, message.getGameId(), client);
 
         this.table = new Table(game.skin);
 
@@ -139,7 +140,7 @@ public class GameScreen implements Screen {
         handlers.put(PlayerMessage.class, new SpecificHandler<PlayerMessage>() {
             @Override
             public void handle(PlayerMessage message) {
-                PlayerView playerView = new PlayerView(game, message);
+                PlayerView playerView = new PlayerView(context, message);
                 entityViews.put(message.getId(), playerView);
 
                 Container<Actor> holder = holders.get(String.valueOf(message.getIndex()));
@@ -213,10 +214,10 @@ public class GameScreen implements Screen {
     private ZoneView createZoneView(ZoneMessage message) {
         String type = message.getName();
         if (type.equals("Battlefield")) {
-            return new DefaultZoneView(game, message, this.entityViews);
+            return new DefaultZoneView(context, message, this.entityViews);
         }
         if (type.equals("Hand")) {
-            return new DefaultZoneView(game, message, this.entityViews);
+            return new DefaultZoneView(context, message, this.entityViews);
         }
         if (type.equals("Deck")) {
             return new CompactHiddenZoneView(game, message);

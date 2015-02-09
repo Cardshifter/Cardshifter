@@ -21,22 +21,22 @@ public class CardViewSmall implements CardView {
     private final ResourceView stats;
     private final Map<String, Object> properties;
 
-    public CardViewSmall(CardshifterGame game, CardInfoMessage cardInfo) {
+    public CardViewSmall(CardshifterClientContext context, CardInfoMessage cardInfo) {
         this.properties = new HashMap<String, Object>(cardInfo.getProperties());
-        table = new Table(game.skin);
+        table = new Table(context.getSkin());
         Gdx.app.log("CardView", "Creating for " + cardInfo.getProperties());
         table.defaults().expand();
-        name = label(game, cardInfo, "name");
+        name = label(context, cardInfo, "name");
         table.add(name).colspan(2).width(100).row();
         // table.add(image);
-        effect = label(game, cardInfo, "effect");
+        effect = label(context, cardInfo, "effect");
         table.add(effect).colspan(2).width(100).row();
-        ResViewFactory rvf = new ResViewFactory(game.skin);
+        ResViewFactory rvf = new ResViewFactory(context.getSkin());
         cost = rvf.forFormat(rvf.res("MANA_COST"), rvf.res("SCRAP_COST"));
         table.add(cost.getActor()).colspan(2).right().row();
 
         stats = rvf.forFormat(rvf.coloredRes("ATTACK", properties), rvf.str("/"), rvf.coloredRes("HEALTH", "MAX_HEALTH"));
-        table.add(label(game, cardInfo, "creatureType")).left();
+        table.add(label(context, cardInfo, "creatureType")).left();
         table.add(stats.getActor()).right();
         table.setDebug(true, true);
 
@@ -44,9 +44,9 @@ public class CardViewSmall implements CardView {
         stats.update(properties);
     }
 
-    public static Label label(CardshifterGame game, CardInfoMessage message, String key) {
+    public static Label label(CardshifterClientContext context, CardInfoMessage message, String key) {
         Object value = message.getProperties().get(key);
-        Label label = new Label(String.valueOf(value == null ? "" : value), game.skin);
+        Label label = new Label(String.valueOf(value == null ? "" : value), context.getSkin());
         label.setEllipse(true);
         return label;
     }

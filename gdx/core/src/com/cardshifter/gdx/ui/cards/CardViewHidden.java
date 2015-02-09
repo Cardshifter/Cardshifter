@@ -11,8 +11,8 @@ import java.util.Map;
 public class CardViewHidden implements CardView {
     private final Table table;
 
-    public CardViewHidden(CardshifterGame game) {
-        this.table = new Table(game.skin);
+    public CardViewHidden(CardshifterClientContext context, int id) {
+        this.table = new Table(context.getSkin());
         this.table.add("???").expand().fill();
     }
 
