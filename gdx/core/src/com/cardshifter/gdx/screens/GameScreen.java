@@ -188,7 +188,7 @@ public class GameScreen implements Screen {
                 ZoneView zone = getZoneView(message.getZone());
                 removeCard(zone, message.getId());
                 if (zone != null) {
-                    zone.addCard(message);
+                    entityViews.put(message.getId(), zone.addCard(message));
                 }
             }
         });
@@ -241,7 +241,8 @@ public class GameScreen implements Screen {
                 CardView cardView = (CardView) entityViews.get(id); // can be null
                 removeCard(oldZone, id);
                 if (destinationZone != null) {
-                    destinationZone.addCard(new CardInfoMessage(message.getDestinationZone(), id, cardView == null ? null : cardView.getInfo()));
+                    EntityView newView = destinationZone.addCard(new CardInfoMessage(message.getDestinationZone(), id, cardView == null ? null : cardView.getInfo()));
+                    entityViews.put(id, newView);
                 }
             }
         });
