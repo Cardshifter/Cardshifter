@@ -1,10 +1,17 @@
 package com.cardshifter.gdx.ui.cards;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.cardshifter.api.outgoing.CardInfoMessage;
+import com.cardshifter.api.outgoing.UsableActionMessage;
 import com.cardshifter.gdx.CardshifterGame;
+import com.cardshifter.gdx.TargetStatus;
+import com.cardshifter.gdx.TargetableCallback;
+import com.cardshifter.gdx.ui.CardshifterClientContext;
 import com.cardshifter.gdx.ui.EntityView;
 import com.cardshifter.gdx.ui.res.ResourceView;
 import com.cardshifter.gdx.ui.res.ResViewFactory;
@@ -20,9 +27,11 @@ public class CardViewSmall implements CardView {
     private final ResourceView cost;
     private final ResourceView stats;
     private final Map<String, Object> properties;
+    private final int id;
 
     public CardViewSmall(CardshifterClientContext context, CardInfoMessage cardInfo) {
         this.properties = new HashMap<String, Object>(cardInfo.getProperties());
+        this.id = cardInfo.getId();
         table = new Table(context.getSkin());
         Gdx.app.log("CardView", "Creating for " + cardInfo.getProperties());
         table.defaults().expand();
@@ -42,6 +51,19 @@ public class CardViewSmall implements CardView {
 
         cost.update(properties);
         stats.update(properties);
+
+        table.setTouchable(Touchable.enabled);
+        table.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                CardViewSmall.this.clicked();
+            }
+        });
+    }
+
+    private void clicked() {
+        Gdx.app.log("CardView", "clicked on " + id);
+
     }
 
     public static Label label(CardshifterClientContext context, CardInfoMessage message, String key) {
@@ -65,6 +87,34 @@ public class CardViewSmall implements CardView {
     @Override
     public void remove() {
         table.remove();
+    }
+
+    @Override
+    public void setTargetable(TargetStatus targetable, TargetableCallback callback) {
+        if (targetable == TargetStatus.TARGETABLE) {
+            table.setColor(0, 0, 1, 1);
+        }
+        else if (targetable == TargetStatus.TARGETED) {
+            table.setColor(0, 1, 0, 1);
+        }
+        else {
+            table.setColor(1, 1, 1, 1);
+        }
+    }
+
+    @Override
+    public int getId() {
+        return this.id;
+    }
+
+    @Override
+    public void usableAction(UsableActionMessage message) {
+
+    }
+
+    @Override
+    public void clearUsableActions() {
+
     }
 
     @Override

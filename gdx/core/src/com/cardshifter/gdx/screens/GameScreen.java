@@ -3,9 +3,13 @@ package com.cardshifter.gdx.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.cardshifter.api.incoming.UseAbilityMessage;
 import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.outgoing.*;
 import com.cardshifter.gdx.*;
@@ -33,7 +37,26 @@ public class GameScreen implements Screen {
     private final Map<Integer, ZoneView> zoneViews = new HashMap<Integer, ZoneView>();
     private final Map<Integer, EntityView> entityViews = new HashMap<Integer, EntityView>();
     private final Map<String, Container<Actor>> holders = new HashMap<String, Container<Actor>>();
+    private final List<EntityView> targetsSelected = new ArrayList<EntityView>();
+    private AvailableTargetsMessage targetsAvailable;
+    private final TargetableCallback onTarget = new TargetableCallback() {
+        @Override
+        public boolean addEntity(EntityView view) {
+            if (targetsSelected.contains(view)) {
+                targetsSelected.remove(view);
+                view.setTargetable(TargetStatus.TARGETABLE, this);
+                return false;
+            }
 
+            if (targetsAvailable != null && targetsAvailable.getMax() == 1 && targetsAvailable.getMin() == 1) {
+                client.send(new UseAbilityMessage(gameId, targetsAvailable.getEntity(), targetsAvailable.getAction(), new int[]{ view.getId() }));
+                return false;
+            }
+
+            view.setTargetable(TargetStatus.TARGETED, this);
+            return targetsSelected.add(view);
+        }
+    };
     private final CardshifterClientContext context;
 
     public GameScreen(final CardshifterGame game, final CardshifterClient client, NewGameMessage message) {
@@ -52,7 +75,25 @@ public class GameScreen implements Screen {
 
         addZoneHolder(leftTable, 1 - this.playerIndex, "");
         addZoneHolder(leftTable, this.playerIndex, "");
-        rightTable.add("controls");
+        rightTable.add("controls").row();
+        TextButton actionDone = new TextButton("Done", game.skin);
+        actionDone.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (targetsAvailable != null) {
+                    int selected = targetsSelected.size();
+                    if (selected >= targetsAvailable.getMin() && selected <= targetsAvailable.getMax()) {
+                        int[] targets = new int[targetsSelected.size()];
+                        for (int i = 0; i < targets.length; i++) {
+                            targets[i] = targetsSelected.get(i).getId();
+                        }
+                        UseAbilityMessage message = new UseAbilityMessage(gameId, targetsAvailable.getEntity(), targetsAvailable.getAction(), targets);
+                        client.send(message);
+                    }
+                }
+            }
+        });
+        rightTable.add(actionDone);
         topTable.add(leftTable).left().width(150).expandY().fillY();
         topTable.add(centerTable).center().expandX().expandY().fill();
         topTable.add(rightTable).right().width(150).expandY().fillY();
@@ -115,7 +156,32 @@ public class GameScreen implements Screen {
         Map<Class<? extends Message>, SpecificHandler<?>> handlers =
                 new HashMap<Class<? extends Message>, SpecificHandler<?>>();
 
-        handlers.put(AvailableTargetsMessage.class, null);
+        handlers.put(AvailableTargetsMessage.class, new SpecificHandler<AvailableTargetsMessage>() {
+            @Override
+            public void handle(AvailableTargetsMessage message) {
+                targetsAvailable = message;
+                targetsSelected.clear();
+                for (EntityView view : entityViews.values()) {
+                    view.setTargetable(TargetStatus.NOT_TARGETABLE, onTarget);
+                }
+                for (int id : message.getTargets()) {
+                    EntityView view = entityViews.get(id);
+                    if (view != null) {
+                        view.setTargetable(TargetStatus.TARGETABLE, onTarget);
+                    }
+                }
+            }
+        });
+        handlers.put(UsableActionMessage.class, new SpecificHandler<UsableActionMessage>() {
+            @Override
+            public void handle(UsableActionMessage message) {
+                int id = message.getId();
+                EntityView view = entityViews.get(id);
+                if (view != null) {
+                    view.usableAction(message);
+                }
+            }
+        });
         handlers.put(CardInfoMessage.class, new SpecificHandler<CardInfoMessage>() {
             @Override
             public void handle(CardInfoMessage message) {
@@ -149,7 +215,14 @@ public class GameScreen implements Screen {
                 }
             }
         });
-        handlers.put(ResetAvailableActionsMessage.class, null);
+        handlers.put(ResetAvailableActionsMessage.class, new SpecificHandler<ResetAvailableActionsMessage>() {
+            @Override
+            public void handle(ResetAvailableActionsMessage message) {
+                for (EntityView view : entityViews.values()) {
+                    view.clearUsableActions();
+                }
+            }
+        });
         handlers.put(UpdateMessage.class, new SpecificHandler<UpdateMessage>() {
             @Override
             public void handle(UpdateMessage message) {
