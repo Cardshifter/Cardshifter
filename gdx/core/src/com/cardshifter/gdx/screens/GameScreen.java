@@ -244,6 +244,16 @@ public class GameScreen implements Screen {
                     EntityView newView = destinationZone.addCard(new CardInfoMessage(message.getDestinationZone(), id, cardView == null ? null : cardView.getInfo()));
                     entityViews.put(id, newView);
                 }
+/*
+Send to AI Medium: ZoneChangeMessage [entity=95, sourceZone=72, destinationZone=73]
+Send to AI Medium: CardInfo: 95 in zone 73 - {SCRAP=1, TAUNT=1, MAX_HEALTH=1, SICKNESS=1, MANA_COST=2, name=The Chopper, ATTACK=2, creatureType=Mech, HEALTH=1, ATTACK_AVAILABLE=1}
+Send to Zomis: ZoneChangeMessage [entity=95, sourceZone=72, destinationZone=73]
+
+if card is already known, send ZoneChange only
+if card is not known, send ZoneChange first and then CardInfo
+
+when cards are created from nowhere, ZoneChange with source -1 is sent and then CardInfo
+*/
             }
         });
         handlers.put(ZoneMessage.class, new SpecificHandler<ZoneMessage>() {
