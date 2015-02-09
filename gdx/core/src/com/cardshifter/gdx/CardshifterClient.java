@@ -58,20 +58,10 @@ public class CardshifterClient implements Runnable {
         try {
             DataInputStream dataIn = new DataInputStream(input);
             while (true) {
-                Gdx.app.log("Client", "listening for input");
                 try {
-                    Gdx.app.log("Client", "reading x bytes");
                     Message message = transformer.readOnce(dataIn);
-/*
-                    int read = dataIn.readInt();
-                    Gdx.app.log("Client", "reading " + read + " bytes");
-                    dataIn.read(bytes, 0, read);
-                    Gdx.app.log("Client", "received: " + Arrays.toString(bytes));
-                    Message message = transformer.readOnce(new ByteArrayInputStream(bytes, 0, read));
-*/
-                    Gdx.app.log("Client", "transformed into: " + message);
+                    Gdx.app.log("Client", "Received: " + message);
                     handler.handle(message);
-                    Gdx.app.log("Client", "handled complete: " + message);
                 } catch (Exception e) {
                     Gdx.app.log("Client", "Error inside read loop", e);
                     e.printStackTrace();
