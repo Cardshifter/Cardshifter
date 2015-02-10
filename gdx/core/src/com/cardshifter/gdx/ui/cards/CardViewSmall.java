@@ -127,15 +127,7 @@ public class CardViewSmall implements CardView {
 
     @Override
     public void setTargetable(TargetStatus targetable, TargetableCallback callback) {
-        if (targetable == TargetStatus.TARGETABLE) {
-            table.setColor(0, 0, 1, 1);
-        }
-        else if (targetable == TargetStatus.TARGETED) {
-            table.setColor(0, 1, 0, 1);
-        }
-        else {
-            table.setColor(1, 1, 1, 1);
-        }
+        table.setColor(targetable.getColor());
         this.callback = callback;
     }
 

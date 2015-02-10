@@ -1,11 +1,13 @@
 package com.cardshifter.gdx.ui;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.cardshifter.api.outgoing.PlayerMessage;
 import com.cardshifter.api.outgoing.UsableActionMessage;
-import com.cardshifter.gdx.CardshifterGame;
 import com.cardshifter.gdx.TargetStatus;
 import com.cardshifter.gdx.TargetableCallback;
 import com.cardshifter.gdx.ui.res.ResViewFactory;
@@ -22,6 +24,7 @@ public class PlayerView implements EntityView {
     private final HashMap<String, Integer> properties;
     private final HorizontalGroup actions = new HorizontalGroup();
     private final CardshifterClientContext context;
+    private TargetableCallback callback;
 
     public PlayerView(CardshifterClientContext context, PlayerMessage message) {
         this.context = context;
@@ -34,6 +37,15 @@ public class PlayerView implements EntityView {
         this.table.add(message.getName()).row();
         this.table.add(this.resources.getActor()).row();
         this.table.add(actions);
+        table.setTouchable(Touchable.enabled);
+        table.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (callback != null) {
+                    callback.addEntity(PlayerView.this);
+                }
+            }
+        });
         resources.update(properties);
     }
 
@@ -58,7 +70,8 @@ public class PlayerView implements EntityView {
 
     @Override
     public void setTargetable(TargetStatus targetable, TargetableCallback callback) {
-
+        table.setColor(targetable.getColor());
+        this.callback = callback;
     }
 
     @Override
