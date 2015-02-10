@@ -6,6 +6,8 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.cardshifter.api.both.ChatMessage;
+import com.cardshifter.api.both.InviteRequest;
+import com.cardshifter.api.both.InviteResponse;
 import com.cardshifter.api.both.PlayerConfigMessage;
 import com.cardshifter.api.config.DeckConfig;
 import com.cardshifter.api.incoming.LoginMessage;
@@ -94,6 +96,22 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
                     deckConfig.generateRandom();
                     client.send(message);
                 }
+            }
+        });
+        handlerMap.put(InviteRequest.class, new SpecificHandler<InviteRequest>() {
+            @Override
+            public void handle(final InviteRequest message) {
+                Dialog dialog = new Dialog("Invite", game.skin) {
+                    @Override
+                    protected void result(Object object) {
+                        boolean response = (Boolean) object;
+                        client.send(new InviteResponse(message.getId(), response));
+                    }
+                };
+                dialog.text(message.getName() + " invites you to play " + message.getGameType());
+                dialog.button("Accept", true);
+                dialog.button("Decline", false);
+                dialog.show(game.stage);
             }
         });
 
