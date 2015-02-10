@@ -93,7 +93,9 @@ project(":core") {
 
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
-        compile "com.cardshifter:cardshifter-api:$cardshifterVersion"
+        compile ("com.cardshifter:cardshifter-api:$cardshifterVersion") {
+            exclude group: 'findbugs', module: 'findbugs'
+        }
     }
 }
 
