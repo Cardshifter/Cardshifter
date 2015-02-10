@@ -5,10 +5,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.cardshifter.api.incoming.StartGameRequest;
+import com.cardshifter.api.incoming.UseAbilityMessage;
 import com.cardshifter.api.outgoing.CardInfoMessage;
 import com.cardshifter.api.outgoing.UsableActionMessage;
 import com.cardshifter.gdx.CardshifterGame;
@@ -19,8 +22,7 @@ import com.cardshifter.gdx.ui.EntityView;
 import com.cardshifter.gdx.ui.res.ResourceView;
 import com.cardshifter.gdx.ui.res.ResViewFactory;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class CardViewSmall implements CardView {
 
@@ -31,10 +33,13 @@ public class CardViewSmall implements CardView {
     private final ResourceView stats;
     private final Map<String, Object> properties;
     private final int id;
+    private final CardshifterClientContext context;
     private TargetableCallback callback;
     private final NinePatch patch = new NinePatch(new Texture(Gdx.files.internal("cardbg.png")), 3, 3, 3, 3);
+    private final List<UsableActionMessage> actions = new ArrayList<UsableActionMessage>(5);
 
     public CardViewSmall(CardshifterClientContext context, CardInfoMessage cardInfo) {
+        this.context = context;
         this.properties = new HashMap<String, Object>(cardInfo.getProperties());
         this.id = cardInfo.getId();
         table = new Table(context.getSkin());
@@ -71,6 +76,29 @@ public class CardViewSmall implements CardView {
         Gdx.app.log("CardView", "clicked on " + id);
         if (callback != null) {
             callback.addEntity(this);
+        }
+        else if (!actions.isEmpty()) {
+            if (actions.size() == 1) {
+                UsableActionMessage action = actions.get(0);
+                context.sendAction(action);
+            }
+            else {
+                Dialog dialog = new Dialog("Choose Action", context.getSkin()) {
+                    @Override
+                    protected void result(Object object) {
+                        context.sendAction(actions.get((Integer) object));
+                    }
+                };
+                dialog.text("Which action?");
+                ListIterator<UsableActionMessage> it = actions.listIterator();
+                while (it.hasNext()) {
+                    int i = it.nextIndex();
+                    UsableActionMessage action = it.next();
+                    dialog.button(action.getAction(), i);
+                }
+                dialog.show(context.getStage());
+
+            }
         }
     }
 
@@ -118,12 +146,14 @@ public class CardViewSmall implements CardView {
 
     @Override
     public void usableAction(UsableActionMessage message) {
-
+        table.setColor(1, 1, 1, 1f);
+        actions.add(message);
     }
 
     @Override
     public void clearUsableActions() {
-
+        table.setColor(1, 1, 1, 0.5f);
+        actions.clear();
     }
 
     @Override

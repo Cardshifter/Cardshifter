@@ -67,7 +67,7 @@ public class GameScreen implements Screen {
         this.client = client;
         this.playerIndex = message.getPlayerIndex();
         this.gameId = message.getGameId();
-        this.context = new CardshifterClientContext(game.skin, message.getGameId(), client);
+        this.context = new CardshifterClientContext(game.skin, message.getGameId(), client, game.stage);
 
         this.table = new Table(game.skin);
 
