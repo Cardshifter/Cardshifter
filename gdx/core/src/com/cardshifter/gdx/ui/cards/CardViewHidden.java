@@ -1,7 +1,12 @@
 package com.cardshifter.gdx.ui.cards;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.cardshifter.api.outgoing.UsableActionMessage;
 import com.cardshifter.gdx.CardshifterGame;
 import com.cardshifter.gdx.TargetStatus;
@@ -16,10 +21,12 @@ import java.util.Map;
 public class CardViewHidden implements CardView {
     private final Table table;
     private final int id;
+    private final Texture bg = new Texture(Gdx.files.internal("bg.png"));
 
     public CardViewHidden(CardshifterClientContext context, int id) {
         this.table = new Table(context.getSkin());
-        this.table.add("???").expand().fill();
+        Image img = new Image(bg);
+        this.table.add(img).prefSize(60, 80);
         this.id = id;
         Gdx.app.log("CardView", "creating hidden " + id);
     }
