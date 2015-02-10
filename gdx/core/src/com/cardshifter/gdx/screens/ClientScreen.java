@@ -90,11 +90,16 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
         });
         handlerMap.put(PlayerConfigMessage.class, new SpecificHandler<PlayerConfigMessage>() {
             @Override
-            public void handle(PlayerConfigMessage message) {
+            public void handle(final PlayerConfigMessage message) {
                 DeckConfig deckConfig = (DeckConfig) message.getConfigs().get("Deck");
                 if (deckConfig != null) {
-                    deckConfig.generateRandom();
-                    client.send(message);
+                    game.setScreen(new DeckBuilderScreen(game, message.getGameId(), deckConfig, new Callback<DeckConfig>() {
+                        @Override
+                        public void callback(DeckConfig object) {
+                            game.setScreen(gameScreen);
+                            client.send(message);
+                        }
+                    }));
                 }
             }
         });
