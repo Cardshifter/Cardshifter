@@ -31,6 +31,7 @@ public class CardViewSmall implements CardView {
     private final ResourceView stats;
     private final Map<String, Object> properties;
     private final int id;
+    private TargetableCallback callback;
     private final NinePatch patch = new NinePatch(new Texture(Gdx.files.internal("cardbg.png")), 3, 3, 3, 3);
 
     public CardViewSmall(CardshifterClientContext context, CardInfoMessage cardInfo) {
@@ -68,7 +69,9 @@ public class CardViewSmall implements CardView {
 
     private void clicked() {
         Gdx.app.log("CardView", "clicked on " + id);
-
+        if (callback != null) {
+            callback.addEntity(this);
+        }
     }
 
     public static Label label(CardshifterClientContext context, CardInfoMessage message, String key) {
@@ -105,6 +108,7 @@ public class CardViewSmall implements CardView {
         else {
             table.setColor(1, 1, 1, 1);
         }
+        this.callback = callback;
     }
 
     @Override

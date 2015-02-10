@@ -44,15 +44,18 @@ public class GameScreen implements Screen {
         public boolean addEntity(EntityView view) {
             if (targetsSelected.contains(view)) {
                 targetsSelected.remove(view);
+                Gdx.app.log("GameScreen", "Removing selection " + view.getId());
                 view.setTargetable(TargetStatus.TARGETABLE, this);
                 return false;
             }
 
             if (targetsAvailable != null && targetsAvailable.getMax() == 1 && targetsAvailable.getMin() == 1) {
+                Gdx.app.log("GameScreen", "Sending selection " + view.getId());
                 client.send(new UseAbilityMessage(gameId, targetsAvailable.getEntity(), targetsAvailable.getAction(), new int[]{ view.getId() }));
                 return false;
             }
 
+            Gdx.app.log("GameScreen", "Adding selection " + view.getId());
             view.setTargetable(TargetStatus.TARGETED, this);
             return targetsSelected.add(view);
         }
@@ -219,6 +222,7 @@ public class GameScreen implements Screen {
             @Override
             public void handle(ResetAvailableActionsMessage message) {
                 for (EntityView view : entityViews.values()) {
+                    view.setTargetable(TargetStatus.NOT_TARGETABLE, null);
                     view.clearUsableActions();
                 }
             }
