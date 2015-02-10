@@ -31,14 +31,14 @@ public class DefaultZoneView extends ZoneView {
 
     @Override
     public final CardView addCard(CardInfoMessage message) {
-        if (message == null || message.getProperties() == null) {
+        if (message.getProperties() == null) {
             CardViewHidden view = new CardViewHidden(context, message.getId());
-            group.addActor(view.getTable()); //.spaceLeft(5).width(100).fill();
+            group.addActor(view.getTable());
             return view;
         }
         else {
             CardViewSmall view = new CardViewSmall(context, message);
-            group.addActor(view.getTable()); //.spaceLeft(5).width(100).fill();
+            group.addActor(view.getTable());
             return view;
         }
     }

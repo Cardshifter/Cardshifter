@@ -101,12 +101,12 @@ public class GameScreen implements Screen {
         topTable.add(centerTable).center().expandX().expandY().fill();
         topTable.add(rightTable).right().width(150).expandY().fillY();
 
-        addZoneHolder(centerTable, 1 - this.playerIndex, "Hand").top();
-        addZoneHolder(centerTable, 1 - this.playerIndex, "Battlefield");
-        addZoneHolder(centerTable, this.playerIndex, "Battlefield").bottom();
+        addZoneHolder(centerTable, 1 - this.playerIndex, "Hand").top().height(80);
+        addZoneHolder(centerTable, 1 - this.playerIndex, "Battlefield").height(130);
+        addZoneHolder(centerTable, this.playerIndex, "Battlefield").bottom().height(130);
 
         this.table.add(topTable).expandY().fill().row();
-        addZoneHolder(this.table, this.playerIndex, "Hand");
+        addZoneHolder(this.table, this.playerIndex, "Hand").height(140).fill();
 
         this.table.setFillParent(true);
         this.table.setDebug(true, true);
