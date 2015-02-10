@@ -105,7 +105,7 @@ public class CardViewSmall implements CardView {
     public static Label label(CardshifterClientContext context, CardInfoMessage message, String key) {
         Object value = message.getProperties().get(key);
         Label label = new Label(String.valueOf(value == null ? "" : value), context.getSkin());
-        label.setEllipse(true);
+        label.setEllipsis(true);
         return label;
     }
 
