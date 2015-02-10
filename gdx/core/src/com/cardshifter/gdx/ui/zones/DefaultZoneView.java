@@ -22,7 +22,7 @@ public class DefaultZoneView extends ZoneView {
     public DefaultZoneView(CardshifterClientContext context, ZoneMessage message, Map<Integer, EntityView> viewMap) {
         this.group = new HorizontalGroup();
         this.group.space(5);
-//        this.table.add(message.getName() + '@' + message.getId()).row();
+        this.group.fill();
         this.context = context;
         for (int id : message.getEntities()) {
             viewMap.put(id, addCard(new CardInfoMessage(message.getId(), id, null)));

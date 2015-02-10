@@ -1,11 +1,14 @@
 package com.cardshifter.gdx.ui.cards;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.cardshifter.api.outgoing.CardInfoMessage;
 import com.cardshifter.api.outgoing.UsableActionMessage;
 import com.cardshifter.gdx.CardshifterGame;
@@ -28,11 +31,13 @@ public class CardViewSmall implements CardView {
     private final ResourceView stats;
     private final Map<String, Object> properties;
     private final int id;
+    private final NinePatch patch = new NinePatch(new Texture(Gdx.files.internal("cardbg.png")), 3, 3, 3, 3);
 
     public CardViewSmall(CardshifterClientContext context, CardInfoMessage cardInfo) {
         this.properties = new HashMap<String, Object>(cardInfo.getProperties());
         this.id = cardInfo.getId();
         table = new Table(context.getSkin());
+        table.setBackground(new NinePatchDrawable(patch));
         Gdx.app.log("CardView", "Creating for " + cardInfo.getProperties());
         table.defaults().expand();
         name = label(context, cardInfo, "name");
