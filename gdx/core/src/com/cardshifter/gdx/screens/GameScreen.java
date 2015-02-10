@@ -4,10 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Cell;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.cardshifter.api.incoming.UseAbilityMessage;
 import com.cardshifter.api.messages.Message;
@@ -22,6 +19,7 @@ import com.cardshifter.gdx.ui.zones.DefaultZoneView;
 import com.cardshifter.gdx.ui.zones.ZoneView;
 
 import java.util.*;
+import java.util.List;
 
 /**
  * Created by Simon on 1/31/2015.
@@ -38,6 +36,7 @@ public class GameScreen implements Screen {
     private final Map<Integer, EntityView> entityViews = new HashMap<Integer, EntityView>();
     private final Map<String, Container<Actor>> holders = new HashMap<String, Container<Actor>>();
     private final List<EntityView> targetsSelected = new ArrayList<EntityView>();
+    private final Screen parentScreen;
     private AvailableTargetsMessage targetsAvailable;
     private final TargetableCallback onTarget = new TargetableCallback() {
         @Override
@@ -62,7 +61,8 @@ public class GameScreen implements Screen {
     };
     private final CardshifterClientContext context;
 
-    public GameScreen(final CardshifterGame game, final CardshifterClient client, NewGameMessage message) {
+    public GameScreen(final CardshifterGame game, final CardshifterClient client, NewGameMessage message, final Screen parentScreen) {
+        this.parentScreen = parentScreen;
         this.game = game;
         this.client = client;
         this.playerIndex = message.getPlayerIndex();
@@ -76,8 +76,16 @@ public class GameScreen implements Screen {
         Table rightTable = new Table(game.skin);
         Table centerTable = new Table(game.skin);
 
-        addZoneHolder(leftTable, 1 - this.playerIndex, "");
-        addZoneHolder(leftTable, this.playerIndex, "");
+        TextButton backToMenu = new TextButton("Back to menu", game.skin);
+        backToMenu.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(parentScreen);
+            }
+        });
+        leftTable.add(backToMenu).expandX().fill().row();
+        addZoneHolder(leftTable, 1 - this.playerIndex, "").expandY().fillY();
+        addZoneHolder(leftTable, this.playerIndex, "").expandY().fillY();
         rightTable.add("controls").row();
         TextButton actionDone = new TextButton("Done", game.skin);
         actionDone.addListener(new ClickListener() {
@@ -205,7 +213,19 @@ public class GameScreen implements Screen {
                 }
             }
         });
-        handlers.put(GameOverMessage.class, null);
+        handlers.put(GameOverMessage.class, new SpecificHandler<GameOverMessage>() {
+            @Override
+            public void handle(GameOverMessage message) {
+                Dialog dialog = new Dialog("Game Over!", context.getSkin()) {
+                    @Override
+                    protected void result(Object object) {
+                        game.setScreen(parentScreen);
+                    }
+                };
+                dialog.button("OK");
+                dialog.show(context.getStage());
+            }
+        });
         handlers.put(PlayerMessage.class, new SpecificHandler<PlayerMessage>() {
             @Override
             public void handle(PlayerMessage message) {
