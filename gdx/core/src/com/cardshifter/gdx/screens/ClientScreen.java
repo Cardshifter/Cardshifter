@@ -37,7 +37,7 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
     private String[] availableMods;
     private GameScreen gameScreen;
 
-    public ClientScreen(final CardshifterGame game, String host, int port) {
+    public ClientScreen(final CardshifterGame game, String host, int port, final String username) {
         this.game = game;
         client = new CardshifterClient(host, port, this);
         table = new Table(game.skin);
@@ -104,7 +104,7 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
                 }
-                client.send(new LoginMessage("Zomis_GDX"));
+                client.send(new LoginMessage(username));
             }
         });
     }
