@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.SnapshotArray;
 import com.cardshifter.api.config.DeckConfig;
 import com.cardshifter.api.outgoing.CardInfoMessage;
 import com.cardshifter.gdx.Callback;
@@ -42,7 +43,7 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
     private final Table cardsTable;
     private final CardshifterClientContext context;
     private final Map<Integer, Label> countLabels = new HashMap<Integer, Label>();
-    private final List<String> cardsInDeckList;
+    private final VerticalGroup cardsInDeckList;
     private final List<String> savedDecks;
     private final Label nameLabel;
     private int page;
@@ -81,7 +82,7 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
                 }
             }
         });
-        cardsInDeckList = new List<String>(game.skin);
+        cardsInDeckList = new VerticalGroup();
 
         table.add(nameLabel);
         table.add(totalLabel).row();
@@ -306,9 +307,31 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
 
         config.setChosen(id, newChosen);
         countLabels.get(id).setText(countText(id, newChosen));
+        DeckCardView cardView = labelFor(id);
+        cardView.setCount(newChosen);
         updateLabels();
 
         return true;
+    }
+
+    private DeckCardView labelFor(int id) {
+        SnapshotArray<Actor> children = cardsInDeckList.getChildren();
+        int index = 0;
+        String name = (String) config.getCardData().get(id).getProperties().get("name");
+        for (Actor actor : children) {
+            DeckCardView view = (DeckCardView) actor;
+            if (view.getId() == id) {
+                return view;
+            }
+            if (name.compareTo(view.getName()) < 0) {
+                break;
+            }
+            index++;
+        }
+
+        DeckCardView view = new DeckCardView(game.skin, id, name);
+        cardsInDeckList.addActorAt(index, view);
+        return view;
     }
 
     private void updateLabels() {
