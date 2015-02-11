@@ -1,10 +1,15 @@
 package com.cardshifter.gdx.screens;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.cardshifter.api.config.DeckConfig;
 import com.cardshifter.api.outgoing.CardInfoMessage;
@@ -37,7 +42,10 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
     private final CardshifterClientContext context;
     private final Map<Integer, Label> countLabels = new HashMap<Integer, Label>();
     private final List<String> cardsInDeckList;
+    private final List<String> savedDecks;
     private int page;
+    private String deckName = "unnamed";
+    private FileHandle external;
 
     public DeckBuilderScreen(CardshifterGame game, String modName, int gameId, final DeckConfig deckConfig, final Callback<DeckConfig> callback) {
         this.config = deckConfig;
@@ -70,16 +78,112 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
 
         table.add(cardsTable);
         cardsInDeckList = new List<String>(game.skin);
-        table.add(cardsInDeckList).row();
+        table.add(cardsInDeckList);
+        savedDecks = new List<String>(game.skin);
+        savedDecks.addListener(new ActorGestureListener(){
+            @Override
+            public boolean longPress(Actor actor, float x, float y) {
+                loadDeck(savedDecks.getSelected());
+                return true;
+            }
+        });
+        table.add(savedDecks).row();
 
         HorizontalGroup buttons = new HorizontalGroup();
         addPageButton(buttons, "Previous", -1, game.skin);
         buttons.addActor(doneButton);
         addPageButton(buttons, "Next", 1, game.skin);
 
-        table.add(buttons);
+        scanSavedDecks(game, table, savedDecks, modName);
+
+        table.add(buttons, savedDecks);
 
         displayPage(1);
+    }
+
+    private void scanSavedDecks(final CardshifterGame game, Table table, List<String> savedDecks, String modName) {
+        if (Gdx.files.isExternalStorageAvailable()) {
+            external = Gdx.files.external("Cardshifter/decks/" + modName + "/");
+            external.mkdirs();
+
+            if (!external.exists()) {
+                Gdx.app.log("Files", external.path() + " does not exist.");
+                return;
+            }
+
+            java.util.List<String> list = new ArrayList<String>();
+            for (FileHandle handle : external.list()) {
+                if (!handle.isDirectory()) {
+                    list.add(handle.nameWithoutExtension());
+                }
+            }
+            savedDecks.setItems(list.toArray(new String[list.size()]));
+
+
+            TextButton save = new TextButton("Save", game.skin);
+            save.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    final TextField textField = new TextField(deckName, game.skin);
+                    Dialog dialog = new Dialog("Deck Name", game.skin) {
+                        @Override
+                        protected void result(Object object) {
+                            boolean result = (Boolean) object;
+                            if (!result) {
+                                return;
+                            }
+                            deckName = textField.getText();
+                            saveDeck(deckName);
+                        }
+                    };
+                    dialog.add(textField);
+                    dialog.button("Save", true);
+                    dialog.button("Cancel", false);
+                    dialog.show(game.stage);
+                }
+            });
+            table.addActor(save);
+        }
+    }
+
+    private void saveDeck(String deckName) {
+        FileHandle handle = external.child(deckName + ".deck");
+        StringBuilder str = new StringBuilder();
+        for (Map.Entry<Integer, Integer> entry : config.getChosen().entrySet()) {
+            int count = entry.getValue();
+            int id = entry.getKey();
+            for (int i = 0; i < count; i++) {
+                if (str.length() > 0) {
+                    str.append(',');
+                }
+                str.append(id);
+            }
+        }
+        String deckString = str.toString();
+        savedDecks.getItems().add(deckName);
+        handle.writeString(deckString, false);
+    }
+
+    private void loadDeck(String deckName) {
+        FileHandle handle = external.child(deckName + ".deck");
+        String deckString = handle.readString();
+        config.clearChosen();
+        for (String id : deckString.split(",")) {
+            config.add(Integer.parseInt(id));
+        }
+        for (Map.Entry<Integer, Label> ee : countLabels.entrySet()) {
+            ee.getValue().setText(countText(ee.getKey()));
+        }
+    }
+
+    private String countText(int id) {
+        Integer value = config.getChosen().get(id);
+        return countText(id, value == null ? 0 : value);
+    }
+
+    private String countText(int id, int count) {
+        int max = config.getMaxFor(id);
+        return count + "/" + max;
     }
 
     private void addPageButton(Group table, String text, final int i, Skin skin) {
