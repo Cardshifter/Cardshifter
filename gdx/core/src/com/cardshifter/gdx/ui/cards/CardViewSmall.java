@@ -51,6 +51,7 @@ public class CardViewSmall implements CardView {
         table.add(name).colspan(2).width(100).row();
         // table.add(image);
         effect = label(context, cardInfo, "effect");
+        effect.setText(effect.getText() + stringResources(cardInfo));
         table.add(effect).colspan(2).width(100).row();
         ResViewFactory rvf = new ResViewFactory(context.getSkin());
         cost = rvf.forFormat(rvf.res("MANA_COST"), rvf.res("SCRAP_COST"));
@@ -71,6 +72,18 @@ public class CardViewSmall implements CardView {
                 CardViewSmall.this.clicked();
             }
         });
+    }
+
+    private String stringResources(CardInfoMessage cardInfo) {
+        StringBuilder str = new StringBuilder();
+        Map<String, Object> props = cardInfo.getProperties();
+        if (Integer.valueOf(0).equals(props.get("SICKNESS"))) {
+            str.append(" Rush");
+        }
+        if (Integer.valueOf(1).equals(props.get("DENY_COUNTERATTACK"))) {
+            str.append(" Ranged");
+        }
+        return str.toString();
     }
 
     private void clicked() {
