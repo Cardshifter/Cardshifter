@@ -36,6 +36,11 @@ public class DeckConfig {
 		this.chosen.put(id, chosen);
 	}
 	
+	public int getChosen(int id) {
+		Integer chosen = this.chosen.get(id);
+		return chosen == null ? 0 : chosen;
+	}
+
 	public void removeChosen(int id) {
 		if (this.chosen.get(id) > 1) {
 			this.setChosen(id, this.getChosen().get(id) - 1);
