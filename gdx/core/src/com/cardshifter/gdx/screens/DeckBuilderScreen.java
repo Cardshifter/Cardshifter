@@ -39,7 +39,7 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
     private final List<String> cardsInDeckList;
     private int page;
 
-    public DeckBuilderScreen(CardshifterGame game, int gameId, final DeckConfig deckConfig, final Callback<DeckConfig> callback) {
+    public DeckBuilderScreen(CardshifterGame game, String modName, int gameId, final DeckConfig deckConfig, final Callback<DeckConfig> callback) {
         this.config = deckConfig;
         this.callback = callback;
         this.table = new Table(game.skin);

@@ -38,6 +38,7 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
     private final UsersList usersList;
     private String[] availableMods;
     private GameScreen gameScreen;
+    private String currentModName;
 
     public ClientScreen(final CardshifterGame game, String host, int port, final String username) {
         this.game = game;
@@ -46,7 +47,12 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
         table.setFillParent(true);
         mods = new HorizontalGroup();
         chatMessages = new TextArea("", game.skin);
-        usersList = new UsersList(game.skin);
+        usersList = new UsersList(game.skin, new Callback<String>() {
+            @Override
+            public void callback(String object) {
+                currentModName = object;
+            }
+        });
         table.add(new ScrollPane(chatMessages)).top().expand().fill();
         table.add(usersList.getTable()).right().expandY().fill();
         table.row();
@@ -93,7 +99,7 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
             public void handle(final PlayerConfigMessage message) {
                 DeckConfig deckConfig = (DeckConfig) message.getConfigs().get("Deck");
                 if (deckConfig != null) {
-                    game.setScreen(new DeckBuilderScreen(game, message.getGameId(), deckConfig, new Callback<DeckConfig>() {
+                    game.setScreen(new DeckBuilderScreen(game, currentModName, message.getGameId(), deckConfig, new Callback<DeckConfig>() {
                         @Override
                         public void callback(DeckConfig object) {
                             game.setScreen(gameScreen);
@@ -113,6 +119,7 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
                         client.send(new InviteResponse(message.getId(), response));
                     }
                 };
+                currentModName = message.getGameType();
                 dialog.text(message.getName() + " invites you to play " + message.getGameType());
                 dialog.button("Accept", true);
                 dialog.button("Decline", false);
