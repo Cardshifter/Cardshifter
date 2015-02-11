@@ -53,9 +53,8 @@ public class ModCollection {
 		ais.put("Medium", new ScoringAI(AIs.medium(), AIs::mediumDeck));
 		ais.put("Fighter", new ScoringAI(AIs.fighter(), AIs::fighterDeck));
 		
-		mods.put(CardshifterConstants.VANILLA, new PhrancisGame());
-		mods.put("New_Attack_Style", new PhrancisGameNewAttackSystem());
-		mods.put("With spells", new PhrancisGameWithSpells());
+		mods.put(CardshifterConstants.VANILLA, new PhrancisGameNewAttackSystem());
+		mods.put("Cyborg-Spells", new PhrancisGameWithSpells());
 	}
 	
 	/**
