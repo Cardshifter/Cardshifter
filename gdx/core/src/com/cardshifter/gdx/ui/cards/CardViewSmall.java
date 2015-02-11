@@ -14,6 +14,7 @@ import com.cardshifter.api.incoming.StartGameRequest;
 import com.cardshifter.api.incoming.UseAbilityMessage;
 import com.cardshifter.api.outgoing.CardInfoMessage;
 import com.cardshifter.api.outgoing.UsableActionMessage;
+import com.cardshifter.gdx.CardshifterConstants;
 import com.cardshifter.gdx.CardshifterGame;
 import com.cardshifter.gdx.TargetStatus;
 import com.cardshifter.gdx.TargetableCallback;
@@ -58,7 +59,7 @@ public class CardViewSmall implements CardView {
         stats = rvf.forFormat(rvf.coloredRes("ATTACK", properties), rvf.str("/"), rvf.coloredRes("HEALTH", "MAX_HEALTH"));
         table.add(label(context, cardInfo, "creatureType")).left();
         table.add(stats.getActor()).right();
-        table.setDebug(true, true);
+        table.setDebug(CardshifterConstants.DEBUG_TABLES, true);
 
         cost.update(properties);
         stats.update(properties);

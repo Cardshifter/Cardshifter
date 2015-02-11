@@ -117,7 +117,7 @@ public class GameScreen implements Screen {
         addZoneHolder(this.table, this.playerIndex, "Hand").height(140).fill();
 
         this.table.setFillParent(true);
-        this.table.setDebug(true, true);
+        this.table.setDebug(CardshifterConstants.DEBUG_TABLES, true);
     }
 
     private Cell<Container<Actor>> addZoneHolder(Table table, int i, String name) {
@@ -301,7 +301,6 @@ when cards are created from nowhere, ZoneChange with source -1 is sent and then 
                     container.setActor(zoneView.getActor());
                     zoneViews.put(message.getId(), zoneView);
                     zoneView.apply(message);
-                    table.setDebug(true, true);
                 }
             }
         });
