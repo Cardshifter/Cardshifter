@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
 import com.cardshifter.api.config.DeckConfig;
 import com.cardshifter.api.outgoing.CardInfoMessage;
 import com.cardshifter.gdx.Callback;
@@ -43,9 +44,11 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
     private final Map<Integer, Label> countLabels = new HashMap<Integer, Label>();
     private final List<String> cardsInDeckList;
     private final List<String> savedDecks;
+    private final Label nameLabel;
     private int page;
     private String deckName = "unnamed";
     private FileHandle external;
+    private final Label totalLabel;
 
     public DeckBuilderScreen(CardshifterGame game, String modName, int gameId, final DeckConfig deckConfig, final Callback<DeckConfig> callback) {
         this.config = deckConfig;
@@ -54,6 +57,9 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
         this.table.setFillParent(true);
         this.game = game;
         this.context = new CardshifterClientContext(game.skin, gameId, null, game.stage);
+
+        totalLabel = new Label("0/" + config.getMaxSize(), game.skin);
+        nameLabel = new Label(deckName, game.skin);
 
         Map<Integer, CardInfoMessage> data = deckConfig.getCardData();
         cards = new ArrayList<CardInfoMessage>(data.values());
@@ -75,9 +81,12 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
                 }
             }
         });
+        cardsInDeckList = new List<String>(game.skin);
+
+        table.add(nameLabel);
+        table.add(totalLabel).row();
 
         table.add(cardsTable);
-        cardsInDeckList = new List<String>(game.skin);
         table.add(cardsInDeckList);
         savedDecks = new List<String>(game.skin);
         savedDecks.addListener(new ActorGestureListener(){
@@ -87,38 +96,37 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
                 return true;
             }
         });
-        table.add(savedDecks).row();
 
         HorizontalGroup buttons = new HorizontalGroup();
         addPageButton(buttons, "Previous", -1, game.skin);
         buttons.addActor(doneButton);
         addPageButton(buttons, "Next", 1, game.skin);
 
-        scanSavedDecks(game, table, savedDecks, modName);
-
-        table.add(buttons, savedDecks);
+        table.row();
+        Table savedTable = scanSavedDecks(game, savedDecks, modName);
+        if (savedTable != null) {
+            table.add(buttons);
+            table.add(savedTable);
+        }
+        else {
+            table.add(buttons).colspan(2);
+        }
 
         displayPage(1);
     }
 
-    private void scanSavedDecks(final CardshifterGame game, Table table, List<String> savedDecks, String modName) {
+    private Table scanSavedDecks(final CardshifterGame game, final List<String> savedDecks, String modName) {
         if (Gdx.files.isExternalStorageAvailable()) {
+            Table saveTable = new Table();
             external = Gdx.files.external("Cardshifter/decks/" + modName + "/");
             external.mkdirs();
 
             if (!external.exists()) {
                 Gdx.app.log("Files", external.path() + " does not exist.");
-                return;
+                return null;
             }
 
-            java.util.List<String> list = new ArrayList<String>();
-            for (FileHandle handle : external.list()) {
-                if (!handle.isDirectory()) {
-                    list.add(handle.nameWithoutExtension());
-                }
-            }
-            savedDecks.setItems(list.toArray(new String[list.size()]));
-
+            updateSavedDeckList();
 
             TextButton save = new TextButton("Save", game.skin);
             save.addListener(new ClickListener() {
@@ -142,8 +150,31 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
                     dialog.show(game.stage);
                 }
             });
-            table.addActor(save);
+            saveTable.add(savedDecks).colspan(2).fill().row();
+            TextButton delete = new TextButton("Delete", game.skin);
+            delete.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    FileHandle handle = external.child(savedDecks.getSelected() + ".deck");
+                    handle.delete();
+                    updateSavedDeckList();
+                }
+            });
+            saveTable.add(save);
+            saveTable.add(delete);
+            return saveTable;
         }
+        return null;
+    }
+
+    private void updateSavedDeckList() {
+        java.util.List<String> list = new ArrayList<String>();
+        for (FileHandle handle : external.list()) {
+            if (!handle.isDirectory()) {
+                list.add(handle.nameWithoutExtension());
+            }
+        }
+        savedDecks.setItems(list.toArray(new String[list.size()]));
     }
 
     private void saveDeck(String deckName) {
@@ -162,6 +193,8 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
         String deckString = str.toString();
         savedDecks.getItems().add(deckName);
         handle.writeString(deckString, false);
+        nameLabel.setText(deckName);
+        updateSavedDeckList();
     }
 
     private void loadDeck(String deckName) {
@@ -174,6 +207,8 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
         for (Map.Entry<Integer, Label> ee : countLabels.entrySet()) {
             ee.getValue().setText(countText(ee.getKey()));
         }
+        nameLabel.setText(deckName);
+        updateLabels();
     }
 
     private String countText(int id) {
@@ -214,11 +249,7 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
             CardViewSmall cardView = new CardViewSmall(context, card);
             cardView.setTargetable(TargetStatus.TARGETABLE, this);
             choosableGroup.addActor(cardView.getTable());
-            Integer chosen = config.getChosen().get(card.getId());
-            if (chosen == null) {
-                chosen = 0;
-            }
-            Label label = new Label(chosen + "/" + config.getMaxFor(card.getId()), game.skin);
+            Label label = new Label(countText(card.getId()), game.skin);
             countLabels.put(card.getId(), label);
             choosableGroup.addActor(label);
             cardsTable.add(choosableGroup);
@@ -269,8 +300,19 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
             chosen = 0;
         }
         int newChosen = (chosen + 1) % (max + 1);
+        if (config.total() >= config.getMaxSize() && chosen > 0) {
+            newChosen = 0;
+        }
+
         config.setChosen(id, newChosen);
-        countLabels.get(id).setText(newChosen + "/" + max);
+        countLabels.get(id).setText(countText(id, newChosen));
+        updateLabels();
+
         return true;
+    }
+
+    private void updateLabels() {
+        totalLabel.setText(config.total() + "/" + config.getMaxSize());
+
     }
 }
