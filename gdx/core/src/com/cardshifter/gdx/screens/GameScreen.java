@@ -117,7 +117,6 @@ public class GameScreen implements Screen {
         addZoneHolder(this.table, this.playerIndex, "Hand").height(140).fill();
 
         this.table.setFillParent(true);
-        this.table.setDebug(CardshifterConstants.DEBUG_TABLES, true);
     }
 
     private Cell<Container<Actor>> addZoneHolder(Table table, int i, String name) {

@@ -65,7 +65,6 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
             }
         });
         table.add(inviteButton).right().expand().fill();
-        table.setDebug(CardshifterConstants.DEBUG_TABLES, true);
         handlerMap.put(AvailableModsMessage.class, new SpecificHandler<AvailableModsMessage>() {
             @Override
             public void handle(AvailableModsMessage message) {
