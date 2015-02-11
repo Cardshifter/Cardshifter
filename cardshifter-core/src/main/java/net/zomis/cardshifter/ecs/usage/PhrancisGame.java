@@ -149,11 +149,11 @@ public class PhrancisGame implements ECSMod {
 		createEnchantment(zone, 2, 0, 1, "Bionic Arms");
 		createEnchantment(zone, 0, 2, 1, "Body Armor");
 		createEnchantment(zone, 1, 1, 1, "Adrenalin Injection")
-			.addComponent(effects.giveTarget(PhrancisResources.SICKNESS, 0, i -> 0));
+			.addComponent(effects.described("Give Rush", effects.giveTarget(PhrancisResources.SICKNESS, 0, i -> 0)));
 		createEnchantment(zone, 2, 1, 2, "Steroid Implants");
 		createEnchantment(zone, 1, 2, 2, "Reinforced Cranial Implants");
 		createEnchantment(zone, 3, 0, 2, "Cybernetic Arm Cannon")
-			.addComponent(effects.giveTarget(PhrancisResources.DENY_COUNTERATTACK, 1));
+			.addComponent(effects.described("Give Ranged", effects.giveTarget(PhrancisResources.DENY_COUNTERATTACK, 1)));
 
 		createEnchantment(zone, 0, 3, 2, "Exoskeleton");
 		createEnchantment(zone, 2, 2, 3, "Artificial Intelligence Implants");
