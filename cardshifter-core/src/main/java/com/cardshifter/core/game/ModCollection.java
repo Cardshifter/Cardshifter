@@ -13,6 +13,7 @@ import net.zomis.cardshifter.ecs.usage.PhrancisGame;
 import net.zomis.cardshifter.ecs.usage.PhrancisGameNewAttackSystem;
 import net.zomis.cardshifter.ecs.usage.PhrancisGameWithSpells;
 
+import net.zomis.cardshifter.ecs.usage.TestMod;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -55,6 +56,7 @@ public class ModCollection {
 		
 		mods.put(CardshifterConstants.VANILLA, new PhrancisGameNewAttackSystem());
 		mods.put("Cyborg-Spells", new PhrancisGameWithSpells());
+		mods.put("Test", new TestMod());
 	}
 	
 	/**
