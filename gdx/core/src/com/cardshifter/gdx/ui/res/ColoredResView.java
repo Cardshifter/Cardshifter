@@ -18,7 +18,8 @@ public class ColoredResView extends ResView {
 
     public ColoredResView(Skin skin, String key, Map<String, Object> properties) {
         this(skin, key, (String) null);
-        this.original = (Integer) properties.get(key);
+        Integer value = (Integer) properties.get(key);
+        this.original = value == null ? 0 : value;
     }
 
     public ColoredResView(Skin skin, String key, String originalKey) {
@@ -40,7 +41,10 @@ public class ColoredResView extends ResView {
                 original = i;
             }
         }
-        int value = (Integer) properties.get(key);
+        Integer value = (Integer) properties.get(key);
+        if (value == null) {
+            return;
+        }
         this.label.setText(String.valueOf(value));
         if (value < original) {
             this.label.setColor(1, 0, 0, 1);
