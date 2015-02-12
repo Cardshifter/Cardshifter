@@ -267,19 +267,24 @@ public class GameScreen implements Screen {
                 ZoneView oldZone = getZoneView(message.getSourceZone()); // can be null
                 ZoneView destinationZone = getZoneView(message.getDestinationZone());
                 int id = message.getEntity();
-                CardView cardView = (CardView) entityViews.get(id); // can be null
+                CardView entityView = (CardView) entityViews.remove(id); // can be null
 
                 if (oldZone != null) {
                     oldZone.removeCard(id);
                 }
-                CardView entityView = (CardView) entityViews.remove(id);
 
                 if (destinationZone != null) {
-                    CardView newCardView = destinationZone.addCard(new CardInfoMessage(message.getDestinationZone(), id, cardView == null ? null : cardView.getInfo()));
+                    CardView newCardView = destinationZone.addCard(new CardInfoMessage(message.getDestinationZone(), id,
+                            entityView == null ? null : entityView.getInfo()));
                     if (entityView != null) {
                         entityView.zoneMove(message, destinationZone, newCardView);
                     }
                     entityViews.put(id, newCardView);
+                }
+                else {
+                    if (entityView != null) {
+                        entityView.zoneMove(message, destinationZone, null);
+                    }
                 }
 /*
 Send to AI Medium: ZoneChangeMessage [entity=95, sourceZone=72, destinationZone=73]

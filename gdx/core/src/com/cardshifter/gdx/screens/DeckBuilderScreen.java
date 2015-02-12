@@ -249,7 +249,7 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
             VerticalGroup choosableGroup = new VerticalGroup();
             CardViewSmall cardView = new CardViewSmall(context, card);
             cardView.setTargetable(TargetStatus.TARGETABLE, this);
-            choosableGroup.addActor(cardView.getTable());
+            choosableGroup.addActor(cardView.getActor());
             Label label = new Label(countText(card.getId()), game.skin);
             countLabels.put(card.getId(), label);
             choosableGroup.addActor(label);

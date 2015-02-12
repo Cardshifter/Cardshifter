@@ -2,6 +2,7 @@ package com.cardshifter.gdx.ui.cards;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.cardshifter.api.outgoing.UsableActionMessage;
@@ -16,7 +17,7 @@ import java.util.Map;
 /**
  * Created by Simon on 2/8/2015.
  */
-public class CardViewHidden implements CardView {
+public class CardViewHidden extends DefaultCardView {
     private final Table table;
     private final int id;
     private final Texture bg = new Texture(Gdx.files.internal("bg.png"));
@@ -29,29 +30,19 @@ public class CardViewHidden implements CardView {
         Gdx.app.log("CardView", "creating hidden " + id);
     }
 
-    public Table getTable() {
-        return table;
-    }
-
     @Override
     public Map<String, Object> getInfo() {
         return null;
     }
 
     @Override
-    public void zoneMove(ZoneChangeMessage message, ZoneView destinationZone, CardView newCardView) {
-        remove();
+    public Actor getActor() {
+        return table;
     }
 
     @Override
     public void set(Object key, Object value) {
 
-    }
-
-    @Override
-    public void remove() {
-        Gdx.app.log("CardView", "Removed cardid " + this.id);
-        table.remove();
     }
 
     @Override
@@ -73,8 +64,4 @@ public class CardViewHidden implements CardView {
 
     }
 
-    @Override
-    public void entityRemoved() {
-
-    }
 }

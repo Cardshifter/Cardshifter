@@ -1,5 +1,6 @@
 package com.cardshifter.gdx.ui.cards;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -85,6 +86,11 @@ public class CardViewBig implements CardView {
     @Override
     public Map<String, Object> getInfo() {
         return new HashMap<String, Object>(this.properties);
+    }
+
+    @Override
+    public Actor getActor() {
+        return table;
     }
 
     @Override
