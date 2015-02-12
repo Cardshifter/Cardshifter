@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CardInfo>
+	<Cards>
+		<Card>
+			<Id>1</Id>
+			<Name>Test 1</Name>
+			<CREATURE_TYPE>test</CREATURE_TYPE>
+			<CreatureType>test</CreatureType>
+		</Card>
+	</Cards>
+</CardInfo>

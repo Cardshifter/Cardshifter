@@ -2,7 +2,7 @@ package com.cardshifter.client.views;
 
 import javafx.scene.layout.Pane;
 
-import com.cardshifter.api.outgoing.UseableActionMessage;
+import com.cardshifter.api.outgoing.UsableActionMessage;
 
 public class BattlefieldZoneView extends ZoneView<CardBattlefieldDocumentController> {
 	
@@ -10,7 +10,7 @@ public class BattlefieldZoneView extends ZoneView<CardBattlefieldDocumentControl
 		super(cardId, pane);
 	}
 	
-	public void setCardCanAttack(int cardId, UseableActionMessage message) {
+	public void setCardCanAttack(int cardId, UsableActionMessage message) {
 		CardBattlefieldDocumentController card = super.getCard(cardId);
 		card.setCardAttackActive(message);
 	}
@@ -20,12 +20,13 @@ public class BattlefieldZoneView extends ZoneView<CardBattlefieldDocumentControl
 		card.setCardIsAttacking();
 	}
 	
-	public void setCardTargetable(int cardId, UseableActionMessage message) {
+	public void setCardTargetable(int cardId, UsableActionMessage message) {
 		CardBattlefieldDocumentController card = getCard(cardId);
 		card.setCardTargetable();
 	}
 	
-	public void setCardScrappable(int cardId, UseableActionMessage message) {
+	@Override
+	public void setCardScrappable(int cardId, UsableActionMessage message) {
 		CardBattlefieldDocumentController card = getCard(cardId);
 		card.setCardScrappable(message);
 	}

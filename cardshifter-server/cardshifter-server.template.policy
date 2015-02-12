@@ -1,0 +1,7 @@
+grant codeBase "file:./@artifactId@-@version@.jar" {
+	permission java.security.AllPermission;
+};
+
+grant {
+	//mod permissions
+};

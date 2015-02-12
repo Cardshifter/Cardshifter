@@ -10,6 +10,10 @@ public class AvailableModsMessage extends Message {
 
 	private final String[] mods;
 
+	public AvailableModsMessage() {
+		this(new String[]{ "N/A" });
+	}
+	
 	@JsonCreator
 	public AvailableModsMessage(@JsonProperty("mods") String[] mods) {
 		super("availableMods");
@@ -20,4 +24,9 @@ public class AvailableModsMessage extends Message {
 		return Arrays.copyOf(mods, mods.length);
 	}
 
+	@Override
+	public String toString() {
+		return "AvailableModsMessage [mods=" + Arrays.toString(mods) + "]";
+	}
+	
 }

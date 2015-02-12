@@ -3,7 +3,11 @@ package com.cardshifter.modapi.base;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 public class Retrievers {
@@ -37,19 +41,34 @@ public class Retrievers {
 	}
 
 	public static void inject(Object object, ECSGame game) {
-		Field[] fields = object.getClass().getDeclaredFields();
-		Arrays.stream(fields).filter(field -> field.getAnnotation(Retriever.class) != null).forEach(field -> injectField(object, field, game));
-		Arrays.stream(fields).filter(field -> field.getAnnotation(RetrieverSingleton.class) != null).forEach(field -> injectSingleton(object, field, game));
+		List<Field> fields = AccessController.doPrivileged((PrivilegedAction<List<Field>>)() -> {
+			Class<?> clazz = object.getClass();
+			List<Field> result = new ArrayList<>();
+			do {
+				result.addAll(Arrays.asList(clazz.getDeclaredFields()));
+				clazz = clazz.getSuperclass();
+			}
+			while (clazz != Object.class);
+			return result;
+		});
+		AccessController.doPrivileged((PrivilegedAction<Void>)() -> {
+			fields.stream().filter(field -> field.getAnnotation(Retriever.class) != null).forEach(field -> injectField(object, field, game));
+			fields.stream().filter(field -> field.getAnnotation(RetrieverSingleton.class) != null).forEach(field -> injectSingleton(object, field, game));
+			return null;
+		});
 	}
 
 	private static void injectSingleton(Object obj, Field field, ECSGame game) {
 		Class<? extends Component> clazz = field.getType().asSubclass(Component.class);
-		field.setAccessible(true);
-		try {
-			field.set(obj, Retrievers.singleton(game, clazz));
-		} catch (IllegalArgumentException | IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
+		AccessController.doPrivileged((PrivilegedAction<Void>)() -> {
+			field.setAccessible(true);
+			try {
+				field.set(obj, Retrievers.singleton(game, clazz));
+			} catch (IllegalArgumentException | IllegalAccessException e) {
+				throw new RuntimeException(e);
+			}
+			return null;
+		});
 	}
 
 	private static void injectField(Object obj, Field field, ECSGame game) {
@@ -59,7 +78,7 @@ public class Retrievers {
 
 		Type genericFieldType = field.getGenericType();
 
-		if(genericFieldType instanceof ParameterizedType){
+		if (genericFieldType instanceof ParameterizedType) {
 			ParameterizedType aType = (ParameterizedType) genericFieldType;
 			Type[] fieldArgTypes = aType.getActualTypeArguments();
 			Class<?> fieldArgClass = (Class<?>) fieldArgTypes[0];

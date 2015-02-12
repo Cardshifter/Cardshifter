@@ -32,8 +32,11 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import com.cardshifter.api.config.DeckConfig;
 import net.zomis.cardshifter.ecs.usage.CardshifterIO;
-import net.zomis.cardshifter.ecs.usage.DeckConfig;
+
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.both.InviteRequest;
@@ -56,6 +59,8 @@ import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class GameClientLobby implements Initializable {
+	
+	private static final Logger logger = LogManager.getLogger(GameClientLobby.class);
 	
 	@FXML private AnchorPane rootPane;
 	@FXML private ListView<String> usersOnline;
@@ -100,7 +105,7 @@ public class GameClientLobby implements Initializable {
 			this.listenThread = new Thread(this::listen);
 			this.listenThread.start();
 		} catch (IOException ex) {
-			System.out.println("Connection Failed");
+			logger.info("Connection Failed");
 			return false;
 		}
 		
@@ -138,10 +143,10 @@ public class GameClientLobby implements Initializable {
 	
 	private void send(Message message) {
 		try {
-			System.out.println("Sending: " + this.mapper.writeValueAsString(message));
+			logger.info("Sending: " + this.mapper.writeValueAsString(message));
 			this.mapper.writeValue(out, message);
 		} catch (IOException e) {
-			System.out.println("Error sending message: " + message);
+			logger.info("Error sending message: " + message);
 			throw new RuntimeException(e);
 		}
 	}
@@ -158,7 +163,7 @@ public class GameClientLobby implements Initializable {
 	
 	private void processMessageFromServer(Message message) {	
 		//this is for diagnostics so I can copy paste the messages to know their format
-		System.out.println(message.toString());
+		logger.info(message);
 		
 		for (GameClientController gameController : this.gamesRunning) {
 			gameController.processMessageFromServer(message);
@@ -215,19 +220,7 @@ public class GameClientLobby implements Initializable {
 	}
 	
 	private void openDeckBuilderWindowWithoutGame(MouseEvent event) {
-		if (this.currentPlayerConfig != null) {
-			Map<String, Object> configs = this.currentPlayerConfig.getConfigs();
-		
-			for (Entry<String, Object> entry : configs.entrySet()) {
-				Object value = entry.getValue();
-				if (value instanceof DeckConfig) {
-					DeckConfig deckConfig = (DeckConfig) value;
-					this.showDeckBuilderWindow(deckConfig, false);
-				}
-			}		
-		} else {
-			//get the player config from the server?
-		}
+		this.send(new ServerQueryMessage(Request.DECK_BUILDER, selectedGameType));
 	}
 	
 	private void showDeckBuilderWindow(DeckConfig deckConfig, boolean startingGame) {
@@ -236,7 +229,7 @@ public class GameClientLobby implements Initializable {
 			Parent root = (Parent)loader.load();
 			DeckBuilderWindow controller = loader.<DeckBuilderWindow>getController();
 			
-			controller.acceptDeckConfig(deckConfig, this);
+			controller.acceptDeckConfig(deckConfig, conf -> this.sendDeckAndPlayerConfigToServer(conf));
 			controller.configureWindow();
 			
 			this.openDeckBuilderWindow = controller;
@@ -378,7 +371,7 @@ public class GameClientLobby implements Initializable {
 			this.in.close();
 			this.out.close();
 		} catch (Exception e) {
-			System.out.println("Failed to break connection");
+			logger.info("Failed to break connection");
 		}
 	}
 	

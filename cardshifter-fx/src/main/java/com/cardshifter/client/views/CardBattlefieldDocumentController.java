@@ -2,10 +2,12 @@ package com.cardshifter.client.views;
 
 import com.cardshifter.api.outgoing.CardInfoMessage;
 import com.cardshifter.api.outgoing.UpdateMessage;
-import com.cardshifter.api.outgoing.UseableActionMessage;
+import com.cardshifter.api.outgoing.UsableActionMessage;
 import com.cardshifter.client.GameClientController;
 
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.ResourceBundle;
 
@@ -24,8 +26,10 @@ public final class CardBattlefieldDocumentController extends CardView implements
     
     @FXML private Label strength;
     @FXML private Label health;
-    @FXML private Label cardId;
+	@FXML private Label cardId;
 	@FXML private Label scrapValue;
+	@FXML private Label nameText;
+	@FXML private Label abilityText;
     @FXML private Label creatureType;
 	@FXML private Rectangle background;
 	@FXML private Circle sicknessCircle;
@@ -35,7 +39,9 @@ public final class CardBattlefieldDocumentController extends CardView implements
 	private boolean isActive;
     private final CardInfoMessage card;
 	private final GameClientController controller;
-	private UseableActionMessage message;
+	private UsableActionMessage message;
+	
+	private Map<String, Integer> cardValues = new HashMap<>();
 	
     public CardBattlefieldDocumentController(CardInfoMessage message, GameClientController controller) {
         try {
@@ -58,11 +64,19 @@ public final class CardBattlefieldDocumentController extends CardView implements
         int newId = card.getId();
         cardId.setText(String.format("CardId = %d", newId));
     }
-	
+
     private void setCardLabels() {
 		for (Entry<String, Object> entry : this.card.getProperties().entrySet()) {
 			Object value = entry.getValue();
 			String stringValue = String.valueOf(entry.getValue());
+			String key = entry.getKey();
+			
+			try {
+				this.cardValues.put(key, Integer.parseInt(stringValue));
+			} catch (NumberFormatException e) {
+				System.out.println("Not a number");
+			}
+						
 			switch (entry.getKey()) {
 				case "SICKNESS":
 					int sicknessValue = (Integer) value;
@@ -72,6 +86,12 @@ public final class CardBattlefieldDocumentController extends CardView implements
 					break;
 				case "ATTACK":
 					strength.setText(stringValue);
+					break;
+				case "name":
+					nameText.setText(stringValue);
+					break;
+				case "effect":
+					abilityText.setText(stringValue);
 					break;
 				case "HEALTH":
 					health.setText(stringValue);
@@ -88,6 +108,7 @@ public final class CardBattlefieldDocumentController extends CardView implements
 					break;
 			}
 		}
+		abilityText.setText(abilityText.getText() + CardHelper.stringResources(this.card));
     }
     
 	@Override
@@ -99,7 +120,7 @@ public final class CardBattlefieldDocumentController extends CardView implements
 		return this.isActive;
 	}
 	
-	public void setCardAttackActive(UseableActionMessage message) {
+	public void setCardAttackActive(UsableActionMessage message) {
 		this.isActive = true;
 		this.message = message;
 		this.anchorPane.setOnMouseClicked(this::actionOnClick);
@@ -115,14 +136,14 @@ public final class CardBattlefieldDocumentController extends CardView implements
 	}
 	
 	@Override
-	public void setCardScrappable(UseableActionMessage message) {
+	public void setCardScrappable(UsableActionMessage message) {
 		this.message = message;
 		background.setFill(Color.GRAY);
 		this.scrapButton.setVisible(true);
 	}
 
 	@Override
-    public void setCardActive(UseableActionMessage message) {
+    public void setCardActive(UsableActionMessage message) {
 		this.isActive = true;
 		this.message = message;
         background.setFill(Color.YELLOW);
@@ -139,6 +160,7 @@ public final class CardBattlefieldDocumentController extends CardView implements
 		sicknessCircle.setVisible(false);
 	}
 	
+	@Override
 	public void removeCardScrappable() {
 		this.message = null;
 		this.background.setFill(Color.BLACK);
@@ -155,7 +177,7 @@ public final class CardBattlefieldDocumentController extends CardView implements
 	
 	private void scrapButtonAction(MouseEvent event) {
 		scrapButton.setVisible(false);
-		UseableActionMessage scrapMessage = new UseableActionMessage(this.message.getId(), "Scrap", false, 0);
+		UsableActionMessage scrapMessage = new UsableActionMessage(this.message.getId(), "Scrap", false, 0);
 		this.controller.createAndSendMessage(scrapMessage);
 	}
 	
@@ -167,8 +189,22 @@ public final class CardBattlefieldDocumentController extends CardView implements
 	public void updateFields(UpdateMessage message) {
 		if (message.getKey().equals("ATTACK")) {
 			strength.setText(String.format("%d", message.getValue()));
+			if ((int)message.getValue() < this.cardValues.get(message.getKey().toString())) {
+				strength.setTextFill(Color.ORANGE);
+			} else if ((int)message.getValue() > this.cardValues.get(message.getKey().toString())) {
+				strength.setTextFill(Color.GREENYELLOW);
+			} else {
+				strength.setTextFill(Color.WHITE);
+			}
 		} else if (message.getKey().equals("HEALTH")) {
 			health.setText(String.format("%d", message.getValue()));
+			if ((int)message.getValue() < this.cardValues.get("MAX_HEALTH")) {
+				health.setTextFill(Color.ORANGE);
+			} else if ((int)message.getValue() > this.cardValues.get(message.getKey().toString())) {
+				health.setTextFill(Color.GREENYELLOW);
+			} else {
+				health.setTextFill(Color.WHITE);
+			}
 		} else if (message.getKey().equals("creatureType")) {
 			creatureType.setText(String.valueOf(message.getValue()));
 		} else if (message.getKey().equals("SICKNESS")) {

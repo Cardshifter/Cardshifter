@@ -16,6 +16,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import com.cardshifter.api.ClientIO;
+import com.cardshifter.api.ClientServerInterface;
 import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.both.InviteResponse;
 import com.cardshifter.api.both.PlayerConfigMessage;
@@ -29,16 +31,26 @@ import com.cardshifter.api.outgoing.ClientDisconnectedMessage;
 import com.cardshifter.api.outgoing.ServerErrorMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage.Status;
+import com.cardshifter.core.game.ServerGame;
+import com.cardshifter.core.messages.IncomingHandler;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
-public class Server {
+/**
+ * Handles different parts of the server operations, such as message handling, chat room, game creation, current games
+ * @author Simon Forsberg
+ *
+ */
+
+public class Server implements ClientServerInterface {
 	private static final Logger	logger = LogManager.getLogger(Server.class);
 
-	// Counters for various things
 	private final AtomicInteger clientId = new AtomicInteger(0);
 	private final AtomicInteger roomCounter = new AtomicInteger(0);
 	private final AtomicInteger gameId = new AtomicInteger(0);
 	
+	/**
+	 * The IncomingHandler receives messages and passes them to the correct Handler
+	 */
 	private final IncomingHandler incomingHandler;
 	private final CommandHandler commandHandler;
 	
@@ -55,27 +67,42 @@ public class Server {
 	private final ChatArea mainChat;
 
 	public Server() {
-		this.incomingHandler = new IncomingHandler(this);
+		this.incomingHandler = new IncomingHandler();
 		this.commandHandler = new CommandHandler(this);
 		this.scheduler = Executors.newScheduledThreadPool(2, new ThreadFactoryBuilder().setNameFormat("ai-thread-%d").build());
 		mainChat = this.newChatRoom("Main");
 		
 		Handlers handlers = new Handlers(this);
 		
+		/**
+		 * Add a handler for each type of command, message, and method in Handlers
+		 */
 		incomingHandler.addHandler("login", LoginMessage.class, handlers::loginMessage);
 		incomingHandler.addHandler("chat", ChatMessage.class, handlers::chat);
 		incomingHandler.addHandler("startgame", StartGameRequest.class, handlers::play);
-		incomingHandler.addHandler("use", UseAbilityMessage.class, handlers::useAbility);
-		incomingHandler.addHandler("requestTargets", RequestTargetsMessage.class, handlers::requestTargets);
 		incomingHandler.addHandler("inviteResponse", InviteResponse.class, handlers::inviteResponse);
 		incomingHandler.addHandler("query", ServerQueryMessage.class, handlers::query);
+		
+		// Directly game-related
+		incomingHandler.addHandler("use", UseAbilityMessage.class, handlers::useAbility);
+		incomingHandler.addHandler("requestTargets", RequestTargetsMessage.class, handlers::requestTargets);
 		incomingHandler.addHandler("playerconfig", PlayerConfigMessage.class, handlers::incomingConfig);
 	}
 	
+	/**
+	 * 
+	 * @return This is the master chat room where all clients connecting are automatically added
+	 */
 	ChatArea getMainChat() {
 		return mainChat;
 	}
 	
+	/**
+	 * Creates a ChatArea a given name and assigns an id
+	 * 
+	 * @param name The name of the chat room to create
+	 * @return The room that was created
+	 */
 	public ChatArea newChatRoom(String name) {
 		int id = roomCounter.incrementAndGet();
 		ChatArea room = new ChatArea(id, name);
@@ -83,14 +110,29 @@ public class Server {
 		return room;
 	}
 	
+	/**
+	 * 
+	 * @return A collection of the current clients
+	 */
 	public Map<Integer, ClientIO> getClients() {
 		return Collections.unmodifiableMap(clients);
 	}
 	
+	/**
+	 * 
+	 * @return Returns the IncomingHandler for the Server
+	 */
 	public IncomingHandler getIncomingHandler() {
 		return incomingHandler;
 	}
 
+	/**
+	 * Passes the message to incomingHandler which will parse and perform it
+	 * 
+	 * @param client The client sending the message
+	 * @param json The actual contents of the message
+	 */
+	@Override
 	public void handleMessage(ClientIO client, String json) {
 		Objects.requireNonNull(client, "Cannot handle message from a null client");
 		logger.info("Handle message " + client + ": " + json);
@@ -105,12 +147,22 @@ public class Server {
 		}
 	}
 
-	public void newClient(ClientIO cl) {
-		logger.info("New client: " + cl);
-		cl.setId(clientId.incrementAndGet());
-		clients.put(cl.getId(), cl);
+	/**
+	 * Puts the client in the clients collection
+	 * 
+	 * @param client The client object that will be connecting
+	 */
+	public void newClient(ClientIO client) {
+		logger.info("New client: " + client);
+		clients.put(client.getId(), client);
 	}
 	
+	/**
+	 * Removes client from the clients collection and broadcasts the event
+	 * 
+	 * @param client The client object that was disconnected
+	 */
+	@Override
 	public void onDisconnected(ClientIO client) {
 		logger.info("Client disconnected: " + client);
 		games.values().stream().filter(game -> game.hasPlayer(client))
@@ -120,18 +172,39 @@ public class Server {
 		broadcast(new UserStatusMessage(client.getId(), client.getName(), Status.OFFLINE));
 	}
 
+	/**
+	 * Sends the message to each client in the clients collection
+	 * 
+	 * @param data The message to broadcast
+	 */
 	void broadcast(Message data) {
 		clients.values().forEach(cl -> cl.sendToClient(data));
 	}
 
+	/**
+	 * Puts the game factory into the gameFactories collection
+	 * 
+	 * @param gameType Name of the game type
+	 * @param factory The GameFactory object
+	 */
 	public void addGameFactory(String gameType, GameFactory factory) {
 		this.gameFactories.put(gameType, factory);
 	}
 
+	/**
+	 * 
+	 * @return A collection of the current game factories
+	 */
 	public Map<String, GameFactory> getGameFactories() {
 		return Collections.unmodifiableMap(gameFactories);
 	}
 	
+	/**
+	 * Puts the created game into the games collection unless its factory is invalid
+	 * 
+	 * @param parameter the name of the game factory to use
+	 * @return A reference to the game object
+	 */
 	public ServerGame createGame(String parameter) {
 		GameFactory suppl = gameFactories.get(parameter);
 		if (suppl == null) {
@@ -142,31 +215,59 @@ public class Server {
 		return game;
 	}
 	
+	/**
+	 * 
+	 * @return The available ChatAreas
+	 */
 	public Map<Integer, ChatArea> getChats() {
 		return new HashMap<>(chats);
 	}
 	
+	/**
+	 * 
+	 * @return a new hash map that contains the contents of games
+	 */
 	public Map<Integer, ServerGame> getGames() {
 		return new HashMap<>(games);
 	}
 	
+	/**
+	 * 
+	 * @return The invites ServerHandler object
+	 */
 	public ServerHandler<GameInvite> getInvites() {
 		return invites;
 	}
 
+	/**
+	 * Adds the ConnectionHandler to the handlers set
+	 * 
+	 * @param handler the ConnectionHandler to add
+	 */
 	public void addConnections(ConnectionHandler handler) {
 		handler.start();
 		this.handlers.add(handler);
 	}
 
+	/**
+	 * 
+	 * @return This could be used for randomly pairing up clients
+	 */
 	public AtomicReference<ClientIO> getPlayAny() {
 		return playAny;
 	}
 
+	/**
+	 * 
+	 * @return The scheduler object
+	 */
 	public ScheduledExecutorService getScheduler() {
 		return scheduler;
 	}
 	
+	/**
+	 * Closes all clients, shuts down all handlers, shuts down the scheduler
+	 */
 	public void stop() {
 		for (ClientIO client : new ArrayList<>(clients.values())) {
 			client.close();
@@ -182,8 +283,22 @@ public class Server {
 		this.scheduler.shutdown();
 	}
 	
+	/**
+	 * 
+	 * @return The CommandHandler object
+	 */
 	public CommandHandler getCommandHandler() {
 		return commandHandler;
+	}
+
+	@Override
+	public void performIncoming(Message message, ClientIO client) {
+		getIncomingHandler().perform(message, client);
+	}
+
+	@Override
+	public int newClientId() {
+		return clientId.incrementAndGet();
 	}
 	
 }

@@ -6,8 +6,8 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.java_websocket.WebSocket;
 
+import com.cardshifter.api.ClientIO;
 import com.cardshifter.api.messages.Message;
-import com.cardshifter.server.model.ClientIO;
 import com.cardshifter.server.model.Server;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectWriter;

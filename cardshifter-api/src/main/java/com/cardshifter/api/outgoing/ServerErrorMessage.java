@@ -1,15 +1,16 @@
 package com.cardshifter.api.outgoing;
 
 import com.cardshifter.api.messages.Message;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ServerErrorMessage extends Message {
 
 	private final String message;
 
-	@JsonCreator
-	public ServerErrorMessage(@JsonProperty("message") String message) {
+	ServerErrorMessage() {
+		this("");
+	}
+
+	public ServerErrorMessage(String message) {
 		super("error");
 		this.message = message;
 	}

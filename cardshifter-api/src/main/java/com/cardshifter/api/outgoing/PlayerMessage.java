@@ -1,12 +1,10 @@
 package com.cardshifter.api.outgoing;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.cardshifter.api.messages.Message;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class PlayerMessage extends Message {
 //	SERVER: command: player, name: 'Bubu', properties: { hp: 23 }
 
@@ -15,10 +13,11 @@ public class PlayerMessage extends Message {
 	private final int index;
 	private final int id;
 
-	@JsonCreator
-	public PlayerMessage(@JsonProperty("id") int id, @JsonProperty("index") int index,
-			@JsonProperty("name") String name, 
-			@JsonProperty("properties") Map<String, Integer> properties) {
+	PlayerMessage() {
+		this(0, 0, "", new HashMap<String, Integer>());
+	}
+
+	public PlayerMessage(int id, int index, String name, Map<String, Integer> properties) {
 		super("player");
 		this.index = index;
 		this.id = id;

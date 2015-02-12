@@ -25,7 +25,7 @@
 		</AnchorPane>
 	   
 		<!-- Active Deck -->
-		<AnchorPane layoutX="852.0" prefHeight="640.0" prefWidth="216.0">
+		<AnchorPane layoutX="851.0" prefHeight="640.0" prefWidth="216.0">
 			<children>
 				<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#7d8056" height="60.0" stroke="BLACK" strokeType="INSIDE" width="216.0" />
 				<Label layoutX="35.0" layoutY="8.0" text="Active Deck" textFill="WHITE">
@@ -33,7 +33,7 @@
 						<Font name="System Bold" size="24.0" />
 					</font>
 				</Label>
-				<ScrollPane layoutY="60.0" prefHeight="524.0" prefWidth="216.0">
+				<ScrollPane layoutY="60.0" prefHeight="480.0" prefWidth="216.0">
 					<content>
 						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="608.0" prefWidth="196.0">
 							<children>
@@ -127,11 +127,21 @@
 		<AnchorPane prefHeight="60.0" prefWidth="852.0">
 			<children>
 				<Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="60.0" stroke="BLACK" strokeType="INSIDE" width="852.0" />
-					<Label layoutX="197.0" layoutY="8.0" text="Cardshifter Deck Builder" textFill="WHITE">
-						<font>
-							<Font name="System Bold" size="36.0" />
-						</font>
-					</Label>
+				<Label layoutX="197.0" layoutY="8.0" text="Cardshifter Deck Builder" textFill="WHITE">
+					<font>
+						<Font name="System Bold" size="36.0" />
+					</font>
+				</Label>
+				<AnchorPane fx:id="deckInfoButton" layoutX="724.0" layoutY="8.0" prefHeight="44.0" prefWidth="114.0">
+					<children>
+						<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fcffb2" height="46.0" stroke="BLACK" strokeType="INSIDE" width="114.0" />
+						<Label layoutX="13.0" layoutY="12.0" text="Deck Info">
+							<font>
+								<Font name="System Bold" size="18.0" />
+							</font>
+						</Label>
+					</children>
+				</AnchorPane>
 			</children>
 		</AnchorPane>
 		
@@ -157,7 +167,33 @@
 			</children>
 		</AnchorPane>
 	  
-		<TextField fx:id="deckNameBox" layoutX="855.0" layoutY="585.0" prefHeight="26.0" prefWidth="210.0" promptText="Deck Name" />
+		<TextField fx:id="deckNameBox" layoutX="853.0" layoutY="541.0" prefHeight="26.0" prefWidth="210.0" promptText="Deck Name" />
+		
+		<AnchorPane fx:id="clearDeckButton" layoutX="857.0" layoutY="568.0" prefHeight="36.0" prefWidth="204.0">
+			<children>
+				<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ff4116" height="36.0" stroke="BLACK" strokeType="INSIDE" width="204.0" />
+				<Label layoutX="52.0" layoutY="7.0" text="Clear Deck" textFill="WHITE">
+					<font>
+						<Font name="System Bold" size="18.0" />
+					</font>
+				</Label>
+			</children>
+		</AnchorPane>
+		
+		<AnchorPane fx:id="deckInfoBox" layoutX="570.0" layoutY="59.0" prefHeight="380.0" prefWidth="281.0" visible="false">
+			<children>
+				<ScrollPane prefHeight="380.0" prefWidth="281.0">
+					<content>
+						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="507.0" prefWidth="279.0">
+							<children>
+								<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fcffb2" height="511.0" stroke="BLACK" strokeType="INSIDE" width="281.0" />
+								<VBox fx:id="deckInfoLabelBox" layoutX="5.0" layoutY="6.0" prefHeight="456.0" prefWidth="253.0" />
+							</children>
+						</AnchorPane>
+					</content>
+				</ScrollPane>
+			</children>
+		</AnchorPane>
 	  
 	</children>
 </AnchorPane>

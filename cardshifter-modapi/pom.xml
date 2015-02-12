@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>com.cardshifter</groupId>
 		<artifactId>cardshifter</artifactId>
-		<version>0.4</version>
+		<version>0.5</version>
 	</parent>
 	
 	<artifactId>cardshifter-modapi</artifactId>
@@ -23,12 +23,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	
-	<distributionManagement>
-		<repository>
-			<id>zomisnet</id>
-			<url>ftp://www.zomis.net/public_html/maven</url>
-		</repository>
-	</distributionManagement>
 	<build>
 		<extensions>
 			<extension>
@@ -48,6 +42,7 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-source-plugin</artifactId>
+				<version>2.4</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
@@ -60,6 +55,7 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.10.1</version>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
@@ -71,16 +67,11 @@
 				</executions>
 			</plugin>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-deploy-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>deploy</id>
-						<phase>deploy</phase>
-						<goals>
-							<goal>deploy</goal>
-						</goals>
-					</execution>
-				</executions>
+				<configuration>
+					<skip>false</skip>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -94,6 +85,11 @@
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>1.2.17</version>
+		</dependency>
+		<dependency>
+			<groupId>com.cardshifter</groupId>
+			<artifactId>cardshifter-api</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 </project>

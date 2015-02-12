@@ -5,6 +5,7 @@ import com.cardshifter.modapi.actions.Actions;
 import com.cardshifter.modapi.actions.ECSAction;
 import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.ECSSystem;
+import com.cardshifter.modapi.base.Retrievers;
 
 /**
  * <p>Functionality for automatically ending phase once x cards has been played that turn. (ActionZone cards not included)</p>
@@ -38,8 +39,14 @@ public class LimitedActionsPerTurnSystem implements ECSSystem {
 		}
 		this.cardsPlayedThisTurn++;
 		if (this.cardsPlayedThisTurn >= limit) {
-			ECSAction action = Actions.getAction(event.getPerformer(), actionName);
-			action.perform(event.getPerformer());
+			if (actionName == null) {
+				PhaseController phases = Retrievers.singleton(event.getEntity().getGame(), PhaseController.class);
+				phases.nextPhase();
+			}
+			else {
+				ECSAction action = Actions.getAction(event.getPerformer(), actionName);
+				action.perform(event.getPerformer());
+			}
 			cardsPlayedThisTurn = 0;
 		}
 	}

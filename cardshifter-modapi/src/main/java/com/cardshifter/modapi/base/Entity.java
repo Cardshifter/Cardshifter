@@ -3,6 +3,7 @@ package com.cardshifter.modapi.base;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import com.cardshifter.modapi.events.EntityRemoveEvent;
@@ -114,5 +115,14 @@ public final class Entity {
 		
 		return copy;
 	}
-	
+
+	/**
+	 * Apply an effect to this entity
+	 * @param effect Effect to apply
+	 * @return This entity
+	 */
+	public Entity apply(Consumer<Entity> effect) {
+		effect.accept(this);
+		return this;
+	}
 }

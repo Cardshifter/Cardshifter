@@ -25,7 +25,12 @@ public class LuaMod extends LoadableMod {
 	}
 
 	@Override
-	protected ECSGame createGame0() {
+	protected void createGame0(ECSGame game) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	protected void declareConfiguration0(ECSGame game) {
 		throw new UnsupportedOperationException();
 	}
 }

@@ -56,7 +56,7 @@
 		
 		<!-- Opponent Stat Box -->
 		<VBox fx:id="opponentStatBox" alignment="TOP_CENTER" layoutX="1064.0" layoutY="109.0" prefHeight="200.0" prefWidth="100.0" />
-	  	<Label layoutX="1066.0" layoutY="88.0" text="Opponent" textAlignment="CENTER" underline="true">
+	  	<Label fx:id="opponentName" layoutX="1066.0" layoutY="88.0" text="Opponent" textAlignment="CENTER" underline="true">
 			<font>
 				<Font size="20.0" />
 			</font>
@@ -64,7 +64,7 @@
 			
 		<!-- Player Stat Box -->
 		<VBox fx:id="playerStatBox" alignment="TOP_CENTER" layoutX="1063.0" layoutY="334.0" prefHeight="200.0" prefWidth="100.0" />
-		<Label layoutX="1084.0" layoutY="309.0" text="Player" textAlignment="CENTER" underline="true">
+		<Label fx:id="playerName" layoutX="1084.0" layoutY="309.0" text="Player" textAlignment="CENTER" underline="true">
 			<font>
 				<Font size="20.0" />
 			</font>
@@ -113,18 +113,24 @@
 		<ScrollPane layoutX="11.0" layoutY="386.0" prefHeight="185.0" prefWidth="1045.0">
 			<content>
 				<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="170.0" prefWidth="1451.0">
-					<children>                   
+					<children>
+						<Rectangle fx:id="playerTargetRectangle" arcHeight="5.0" arcWidth="5.0" fill="BLUE" height="168.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="1045.0" />                   
 						<HBox fx:id="playerHandPane" alignment="CENTER" maxHeight="200.0" maxWidth="1230.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="170.0" prefWidth="1045.0" scaleShape="false" spacing="10.0" />
 					</children>
 				</AnchorPane>
 			</content>
 		</ScrollPane>
-		
-		<!-- Opponent Hand -->
-		<HBox fx:id="opponentHandPane" alignment="CENTER" layoutX="225.0" layoutY="14.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="85.0" prefWidth="600.0" scaleShape="false" spacing="10.0" />
       
-		<!-- temporary action box -->
+      	<!-- temporary action box -->
 		<HBox fx:id="actionBox" alignment="CENTER" layoutX="14.0" layoutY="574.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="25.0" prefWidth="1000.0" scaleShape="false" spacing="10" />
+      
+		<!-- Opponent Hand -->
+		<AnchorPane layoutX="228.0" layoutY="3.0" prefHeight="85.0" prefWidth="606.0">
+			<children>		
+				<HBox fx:id="opponentHandPane" alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT" prefHeight="85.0" prefWidth="606.0" scaleShape="false" spacing="10.0" />
+				<Rectangle fx:id="opponentTargetRectangle" arcHeight="5.0" arcWidth="5.0" fill="#0013ff" height="85.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="606.0" />
+			</children>
+		</AnchorPane>
       
     </children>
 </AnchorPane>

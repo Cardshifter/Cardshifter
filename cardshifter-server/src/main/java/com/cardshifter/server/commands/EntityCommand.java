@@ -8,11 +8,11 @@ import java.util.Optional;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
+import com.cardshifter.core.game.ServerGame;
 import com.cardshifter.modapi.base.Component;
 import com.cardshifter.modapi.base.Entity;
 import com.cardshifter.server.commands.EntityCommand.EntityInspectParameters;
 import com.cardshifter.server.model.CommandHandler.CommandHandle;
-import com.cardshifter.server.model.ServerGame;
 
 public class EntityCommand implements CommandHandle<EntityInspectParameters> {
 
@@ -40,8 +40,23 @@ public class EntityCommand implements CommandHandle<EntityInspectParameters> {
 		Objects.requireNonNull(game, "No such game " + parameters.gameId);
 		
 		Entity entity = game.getGameModel().getEntity(parameters.entity);
-		Objects.requireNonNull(entity, "No such entity " + parameters.entity);
-		
+		if (entity == null) {
+			if (parameters.component == null) {
+				command.sendChatResponse("Either entity or component must be specified");
+				return;
+			}
+			Collection<Entity> all = game.getGameModel().findEntities(e -> true);
+			for (Entity en : all) {
+				Collection<Component> components = en.getSuperComponents(Component.class);
+				for (Component comp : components) {
+					if (comp.getClass().getSimpleName().contains(parameters.component)) {
+						command.sendChatResponse(en.getId() + ": " + comp);
+					}
+				}
+			}
+			return;
+		}
+
 		if (parameters.component == null) {
 			Collection<Component> all = entity.getSuperComponents(Component.class);
 			for (Component comp : all) {

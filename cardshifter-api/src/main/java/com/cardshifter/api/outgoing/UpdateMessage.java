@@ -1,8 +1,6 @@
 package com.cardshifter.api.outgoing;
 
 import com.cardshifter.api.messages.Message;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class UpdateMessage extends Message {
 
@@ -10,8 +8,11 @@ public class UpdateMessage extends Message {
 	private final Object key;
 	private final Object value;
 
-	@JsonCreator
-	public UpdateMessage(@JsonProperty("id") int id, @JsonProperty("key") Object key, @JsonProperty("value") Object value) {
+	UpdateMessage() {
+		this(0, "", 0);
+	}
+
+	public UpdateMessage(int id, Object key, Object value) {
 		super("update");
 		this.id = id;
 		this.key = key;

@@ -1,10 +1,9 @@
 package com.cardshifter.api.outgoing;
 
+import com.cardshifter.api.messages.Message;
+
 import java.util.Collections;
 import java.util.Map;
-
-import com.cardshifter.api.messages.Message;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class CardInfoMessage extends Message {
 //	SERVER: command: card, zone: 3, id: 3, properties: { name: 'Biofsd', power: 3, health: 4, cardType: 'Creature', creatureType: 'B0T' }
@@ -13,8 +12,11 @@ public class CardInfoMessage extends Message {
 	private int id;
 
 	private final Map<String, Object> properties;
-	
-	public CardInfoMessage(@JsonProperty("zoneid") int zoneId, @JsonProperty("id") int cardId, @JsonProperty("properties") Map<String, Object> properties) {
+
+	CardInfoMessage() {
+		this(0, 0, null);
+	}
+	public CardInfoMessage(int zoneId, int cardId, Map<String, Object> properties) {
 		super("card");
 		this.zone = zoneId;
 		this.id = cardId;
@@ -26,7 +28,7 @@ public class CardInfoMessage extends Message {
 	}
 	
 	public Map<String, Object> getProperties() {
-		return Collections.unmodifiableMap(properties);
+		return properties == null ? null : Collections.unmodifiableMap(properties);
 	}
 	
 	public int getZone() {

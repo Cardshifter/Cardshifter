@@ -8,6 +8,7 @@ public class PlayerHandZoneView extends ZoneView<CardHandDocumentController> {
 		super(cardId, pane);
 	}
 	
+	@Override
 	public void setCardTargetable(int target) {
 		CardHandDocumentController card = getCard(target);
 		card.setCardTargetable();

@@ -11,6 +11,7 @@ import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.incoming.RequestTargetsMessage;
 import com.cardshifter.api.incoming.ServerQueryMessage;
 import com.cardshifter.api.incoming.StartGameRequest;
+import com.cardshifter.api.incoming.TransformerMessage;
 import com.cardshifter.api.incoming.UseAbilityMessage;
 import com.cardshifter.api.outgoing.AvailableModsMessage;
 import com.cardshifter.api.outgoing.AvailableTargetsMessage;
@@ -24,7 +25,7 @@ import com.cardshifter.api.outgoing.PlayerMessage;
 import com.cardshifter.api.outgoing.ResetAvailableActionsMessage;
 import com.cardshifter.api.outgoing.ServerErrorMessage;
 import com.cardshifter.api.outgoing.UpdateMessage;
-import com.cardshifter.api.outgoing.UseableActionMessage;
+import com.cardshifter.api.outgoing.UsableActionMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage;
 import com.cardshifter.api.outgoing.WaitMessage;
 import com.cardshifter.api.outgoing.WelcomeMessage;
@@ -37,9 +38,11 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 
 public class MessageTypeIdResolver implements TypeIdResolver {
 	
-	private static final Map<String, Class<? extends Message>> clazzes = new HashMap<>();
+	private static final Map<String, Class<? extends Message>> clazzes = new HashMap<String, Class<? extends Message>>();
 	
 	static {
+		clazzes.put("serial", TransformerMessage.class);
+		
 		clazzes.put("chat", ChatMessage.class);
 		clazzes.put("login", LoginMessage.class);
 		clazzes.put("startgame", StartGameRequest.class);
@@ -59,7 +62,7 @@ public class MessageTypeIdResolver implements TypeIdResolver {
 		clazzes.put("card", CardInfoMessage.class);
 		clazzes.put("zone", ZoneMessage.class);
 		clazzes.put("update", UpdateMessage.class);
-		clazzes.put("useable", UseableActionMessage.class);
+		clazzes.put("useable", UsableActionMessage.class);
 		clazzes.put("targets", AvailableTargetsMessage.class);
 		clazzes.put("availableMods", AvailableModsMessage.class);
 		
@@ -72,6 +75,10 @@ public class MessageTypeIdResolver implements TypeIdResolver {
 	}
 	
 	private JavaType mBaseType;
+	
+	public static Class<?> typeFor(String id) {
+		return clazzes.get(id);
+	}
 
 	@Override
 	public void init(JavaType baseType) {

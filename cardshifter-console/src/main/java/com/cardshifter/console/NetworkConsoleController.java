@@ -26,7 +26,7 @@ import com.cardshifter.api.incoming.UseAbilityMessage;
 import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.outgoing.NewGameMessage;
 import com.cardshifter.api.outgoing.ResetAvailableActionsMessage;
-import com.cardshifter.api.outgoing.UseableActionMessage;
+import com.cardshifter.api.outgoing.UsableActionMessage;
 import com.cardshifter.api.outgoing.WaitMessage;
 import com.cardshifter.api.outgoing.WelcomeMessage;
 import com.fasterxml.jackson.core.JsonFactory;
@@ -43,7 +43,7 @@ public class NetworkConsoleController {
 	private final OutputStream out;
 	private final ObjectMapper mapper = CardshifterIO.mapper();
 	private final BlockingQueue<Message> messages = new LinkedBlockingQueue<>();
-	private final List<UseableActionMessage> actions = Collections.synchronizedList(new ArrayList<>());
+	private final List<UsableActionMessage> actions = Collections.synchronizedList(new ArrayList<>());
 	private int gameId;
 	
 	public NetworkConsoleController(String hostname, int port) throws UnknownHostException, IOException {
@@ -100,9 +100,9 @@ public class NetworkConsoleController {
 					if (mess instanceof ResetAvailableActionsMessage) {
 						actions.clear();
 					}
-					if (mess instanceof UseableActionMessage) {
+					if (mess instanceof UsableActionMessage) {
 						System.out.println("New Action Available: " + actions.size() + " - " + mess);
-						actions.add((UseableActionMessage) mess);
+						actions.add((UsableActionMessage) mess);
 					}
 				}
 				System.out.println("End of loop, mess is " + mess);
@@ -139,7 +139,7 @@ public class NetworkConsoleController {
 			
 			try {
 				int actionIndex = Integer.parseInt(inputLine);
-				UseableActionMessage action = actions.get(actionIndex);
+				UsableActionMessage action = actions.get(actionIndex);
 				if (action.isTargetRequired()) {
 					this.send(new RequestTargetsMessage(gameId, action.getId(), action.getAction()));
 				}

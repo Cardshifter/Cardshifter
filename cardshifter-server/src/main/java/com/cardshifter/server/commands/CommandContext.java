@@ -1,7 +1,7 @@
 package com.cardshifter.server.commands;
 
+import com.cardshifter.api.ClientIO;
 import com.cardshifter.api.both.ChatMessage;
-import com.cardshifter.server.model.ClientIO;
 import com.cardshifter.server.model.Command;
 import com.cardshifter.server.model.Server;
 

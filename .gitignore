@@ -4,6 +4,7 @@
 */bin/**
 */target/**
 dependency-reduced-pom.xml
+pom.xml.versionsBackup
 .classpath
 .project
 /target/
@@ -56,3 +57,6 @@ com_crashlytics_export_strings.xml
 
 # Cardshifter files
 *.deck
+replay-*.json
+Server.log
+game-*.xml

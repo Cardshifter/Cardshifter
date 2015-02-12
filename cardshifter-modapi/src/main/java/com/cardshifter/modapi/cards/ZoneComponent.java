@@ -42,8 +42,12 @@ public class ZoneComponent extends Component {
 	}
 
 	public void addOnBottom(Entity entity) {
-		entity.addComponent(new CardComponent(this));
-		cardMoveAtBottom(entity);
+		if (entity.hasComponent(CardComponent.class)) {
+			throw new IllegalArgumentException("Entity " + entity + " already has CardComponent");
+		}
+		CardComponent comp = new CardComponent(null);
+		entity.addComponent(comp);
+		comp.moveToBottom(this);
 	}
 	
 	public void shuffle() {

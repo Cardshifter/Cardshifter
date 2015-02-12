@@ -3,7 +3,6 @@ package com.cardshifter.api.outgoing;
 import java.util.Arrays;
 
 import com.cardshifter.api.messages.Message;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ZoneMessage extends Message {
 //	SERVER: command: zone, name: 'Deck', owner: 0, id: 7, (playerIndex), size: 42, hidden: true
@@ -15,9 +14,11 @@ public class ZoneMessage extends Message {
 	private final boolean known;
 	private final int[] entities;
 
-	public ZoneMessage(@JsonProperty("id") int id, @JsonProperty("name") String name, 
-			@JsonProperty("owner") int owner, @JsonProperty("size") int size, @JsonProperty("known") boolean known,
-			@JsonProperty("entities") int[] entities) {
+	ZoneMessage() {
+		this(0, "", 0, 0, false, new int[]{});
+	}
+
+	public ZoneMessage(int id, String name, int owner, int size, boolean known, int[] entities) {
 		super("zone");
 		this.id = id;
 		this.name = name;

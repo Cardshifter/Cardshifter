@@ -6,7 +6,10 @@ import java.util.function.Consumer;
 
 import com.cardshifter.modapi.base.Entity;
 
-public class Resources {
+public final class Resources {
+	private Resources() {
+		throw new UnsupportedOperationException();
+	}
 
 	public static void processResources(Entity card, Consumer<ECSResourceData> consumer) {
 		card.getComponent(ECSResourceMap.class).getResources().forEach(consumer);

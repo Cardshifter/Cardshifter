@@ -5,7 +5,7 @@
 
 	<groupId>com.cardshifter</groupId>
 	<artifactId>cardshifter</artifactId>
-	<version>0.4</version>
+	<version>0.5</version>
 	<packaging>pom</packaging>
 
 	<name>cardshifter</name>
@@ -13,10 +13,10 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	 <maven.compiler.source>1.8</maven.compiler.source>
-	 <maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
-	
+
 	<modules>
 		<module>cardshifter-fx</module>
 		<module>cardshifter-core</module>
@@ -24,16 +24,28 @@
 		<module>cardshifter-api</module>
 		<module>cardshifter-console</module>
 		<module>cardshifter-modapi</module>
+		<module>cardshifter-test</module>
 	</modules>
-	
+
 	<distributionManagement>
 		<repository>
 			<id>zomisnet</id>
 			<url>ftp://www.zomis.net/public_html/maven</url>
 		</repository>
 	</distributionManagement>
-	
+
 	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>2.7</version>
+				<configuration>
+					<skip>false</skip>
+				</configuration>
+			</plugin>
+		</plugins>
+	
 		<extensions>
 			<extension>
 				<groupId>org.apache.maven.wagon</groupId>
@@ -123,10 +135,18 @@
 						</execution>
 					</executions>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<version>2.7</version>
+					<configuration>
+						<skip>true</skip>
+					</configuration>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>findbugs</groupId>

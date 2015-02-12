@@ -1,10 +1,8 @@
 package com.cardshifter.api.outgoing;
 
-import java.util.Arrays;
-
 import com.cardshifter.api.messages.Message;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.Arrays;
 
 public class AvailableTargetsMessage extends Message {
 
@@ -14,10 +12,11 @@ public class AvailableTargetsMessage extends Message {
 	private final int max;
 	private final int[] targets;
 
-	@JsonCreator
-	public AvailableTargetsMessage(@JsonProperty("entity") int entity, @JsonProperty("action") String action,
-			@JsonProperty("targets") int[] targets, 
-			@JsonProperty("min") int min, @JsonProperty("max") int max) {
+	AvailableTargetsMessage() {
+		this(0, "", new int[0], 0, 0);
+	}
+
+	public AvailableTargetsMessage(int entity, String action, int[] targets, int min, int max) {
 		super("targets");
 		this.entity = entity;
 		this.action = action;
@@ -44,6 +43,13 @@ public class AvailableTargetsMessage extends Message {
 	
 	public int getEntity() {
 		return entity;
+	}
+
+	@Override
+	public String toString() {
+		return "AvailableTargetsMessage [entity=" + entity + ", action="
+				+ action + ", min=" + min + ", max=" + max + ", targets="
+				+ Arrays.toString(targets) + "]";
 	}
 	
 }
