@@ -69,6 +69,10 @@ public class Effects {
 		return new EffectComponent(effect.toString(), event -> effect.accept(event.getEntity()));
 	}
 
+	public Component described(String description, EffectComponent effectComponent) {
+		return new EffectComponent(description, effectComponent.getEffect());
+	}
+
 	public static class InGameSystem implements ECSSystem {
 
 		private final Entity owningEntity;

@@ -13,10 +13,10 @@ public class UseAbilityMessage extends CardMessage {
 	private final int gameId;
 	private final int[] targets;
 
-	@JsonCreator
 	UseAbilityMessage() {
-		this(0, 0, "", new int[]{});
+		this(0, 0, "", new int[0]);
 	}
+
 	public UseAbilityMessage(int gameId, int id, String action, int[] targets) {
 		super("use");
 		this.id = id;

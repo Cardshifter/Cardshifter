@@ -33,4 +33,7 @@ public class EffectComponent extends Component implements CopyableComponent {
 				event -> effect.andThen(next.effect).accept(event));
 	}
 
+	public GameEffect getEffect() {
+		return effect;
+	}
 }

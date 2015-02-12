@@ -2,13 +2,17 @@ package com.cardshifter.gdx;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.cardshifter.gdx.screens.MenuScreen;
 
 public class CardshifterGame extends Game {
     private static final float STAGE_WIDTH = 800;
@@ -34,6 +38,25 @@ public class CardshifterGame extends Game {
         Gdx.input.setInputProcessor(inputMultiplexer);
 
         setScreen(new MenuScreen(this));
+
+        inputMultiplexer.addProcessor(new InputAdapter(){
+            private boolean debugMode;
+
+            @Override
+            public boolean keyTyped(char character) {
+                if (character == 'd') {
+                    debugMode = !debugMode;
+                    for (Actor actor : stage.getActors()) {
+                        if (actor instanceof Table) {
+                            Table table = (Table) actor;
+                            table.setDebug(debugMode, true);
+                        }
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     @Override

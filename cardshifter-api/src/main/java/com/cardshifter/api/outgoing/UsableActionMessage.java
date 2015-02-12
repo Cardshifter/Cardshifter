@@ -43,7 +43,7 @@ public class UsableActionMessage extends Message {
 
 	@Override
 	public String toString() {
-		return "UseableActionMessage [id=" + id + ", action=" + action
+		return "UsableActionMessage [id=" + id + ", action=" + action
 				+ ", targetRequired=" + targetRequired + ", targetId="
 				+ targetId + "]";
 	}

@@ -26,8 +26,10 @@ public final class CardBattlefieldDocumentController extends CardView implements
     
     @FXML private Label strength;
     @FXML private Label health;
-    @FXML private Label cardId;
+	@FXML private Label cardId;
 	@FXML private Label scrapValue;
+	@FXML private Label nameText;
+	@FXML private Label abilityText;
     @FXML private Label creatureType;
 	@FXML private Rectangle background;
 	@FXML private Circle sicknessCircle;
@@ -62,7 +64,7 @@ public final class CardBattlefieldDocumentController extends CardView implements
         int newId = card.getId();
         cardId.setText(String.format("CardId = %d", newId));
     }
-	
+
     private void setCardLabels() {
 		for (Entry<String, Object> entry : this.card.getProperties().entrySet()) {
 			Object value = entry.getValue();
@@ -85,6 +87,12 @@ public final class CardBattlefieldDocumentController extends CardView implements
 				case "ATTACK":
 					strength.setText(stringValue);
 					break;
+				case "name":
+					nameText.setText(stringValue);
+					break;
+				case "effect":
+					abilityText.setText(stringValue);
+					break;
 				case "HEALTH":
 					health.setText(stringValue);
 					break;
@@ -100,6 +108,7 @@ public final class CardBattlefieldDocumentController extends CardView implements
 					break;
 			}
 		}
+		abilityText.setText(abilityText.getText() + CardHelper.stringResources(this.card));
     }
     
 	@Override

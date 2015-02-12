@@ -24,6 +24,7 @@ public final class CardHandDocumentController extends CardView {
     @FXML private Label scrapCost;
 	@FXML private Label scrapValue;
     @FXML private Label creatureType;
+	@FXML private Label nameText;
 	@FXML private Label abilityText;
 	@FXML private Rectangle background;
 	@FXML private AnchorPane anchorPane;
@@ -119,15 +120,13 @@ public final class CardHandDocumentController extends CardView {
 			} else if (key.equals("SCRAP")) {
 				scrapValue.setText(String.format("Scrap val = %s", value));
 			} else if (key.equals("effect")) {
-				String truncatedString = value.substring(0, Math.min(value.length(), 14));
-				abilityText.setText(truncatedString);
+//				String truncatedString = value.substring(0, Math.min(value.length(), 14));
+				abilityText.setText(value); // truncatedString);
 			} else if (key.equals("name")) {
-				// TODO: This is a temporary fix until a real name label is added
-				if (abilityText.getText().isEmpty()) {
-					abilityText.setText(value);
-				}
+				nameText.setText(value);
 			}
 		}
+		abilityText.setText(abilityText.getText() + CardHelper.stringResources(this.card));
     }
 
 	@Override

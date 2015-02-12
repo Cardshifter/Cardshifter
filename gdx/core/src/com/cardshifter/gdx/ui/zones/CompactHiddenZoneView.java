@@ -1,11 +1,13 @@
-package com.cardshifter.gdx;
+package com.cardshifter.gdx.ui.zones;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.IntSet;
 import com.cardshifter.api.outgoing.CardInfoMessage;
 import com.cardshifter.api.outgoing.ZoneMessage;
-import com.cardshifter.gdx.ui.ZoneView;
+import com.cardshifter.gdx.CardshifterGame;
+import com.cardshifter.gdx.ui.cards.CardView;
+import com.cardshifter.gdx.ui.zones.ZoneView;
 
 public class CompactHiddenZoneView extends ZoneView {
 
@@ -25,9 +27,10 @@ public class CompactHiddenZoneView extends ZoneView {
     }
 
     @Override
-    public void addCard(CardInfoMessage message) {
+    public CardView addCard(CardInfoMessage message) {
         entities.add(message.getId());
         update();
+        return null;
     }
 
     private void update() {

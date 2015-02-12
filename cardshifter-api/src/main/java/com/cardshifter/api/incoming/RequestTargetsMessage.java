@@ -9,7 +9,11 @@ public class RequestTargetsMessage extends Message {
 	private final int id;
 	private final String action;
 
-	public RequestTargetsMessage(@JsonProperty("gameId") int gameId, @JsonProperty("id") int id, @JsonProperty("action") String action) {
+	RequestTargetsMessage() {
+		this(0, 0, "");
+	}
+
+	public RequestTargetsMessage(int gameId, int id, String action) {
 		super("requestTargets");
 		this.gameId = gameId;
 		this.id = id;

@@ -1,8 +1,9 @@
-package com.cardshifter.gdx.ui;
+package com.cardshifter.gdx.ui.zones;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.cardshifter.api.outgoing.CardInfoMessage;
 import com.cardshifter.api.outgoing.ZoneMessage;
+import com.cardshifter.gdx.ui.cards.CardView;
 
 public abstract class ZoneView {
 
@@ -15,8 +16,8 @@ public abstract class ZoneView {
 
     public abstract Actor getActor();
 
-    public void addCard(CardInfoMessage message) {
-
+    public CardView addCard(CardInfoMessage message) {
+        return null;
     }
 
     public void removeCard(int id) {

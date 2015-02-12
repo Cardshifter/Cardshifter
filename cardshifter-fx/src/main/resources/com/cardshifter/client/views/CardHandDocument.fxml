@@ -31,7 +31,8 @@
       <Label fx:id="manaCost" layoutX="16.0" layoutY="30.0" text="Mana Cost =" textFill="WHITE" />
       <Label fx:id="scrapCost" layoutX="16.0" layoutY="42.0" text="Scrap Cost =" textFill="WHITE" />
       <Label fx:id="creatureType" layoutX="16.0" layoutY="106.0" textFill="WHITE" />
-      <Label fx:id="abilityText" layoutX="16.0" layoutY="125.0" text="Ability" textFill="WHITE" />
+      <Label fx:id="nameText" layoutX="16.0" layoutY="125.0" text="Name" textFill="WHITE" />
+      <Label fx:id="abilityText" layoutX="16.0" layoutY="150.0" text="Ability" textFill="WHITE" />
       <Label fx:id="scrapValue" layoutX="16.0" layoutY="55.0" text="Scrap Val =" textFill="WHITE" />
       
    </children>

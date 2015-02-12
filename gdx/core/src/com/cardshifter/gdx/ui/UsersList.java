@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.cardshifter.api.incoming.StartGameRequest;
 import com.cardshifter.api.outgoing.UserStatusMessage;
+import com.cardshifter.gdx.Callback;
 import com.cardshifter.gdx.CardshifterClient;
 
 import java.util.HashMap;
@@ -20,10 +21,12 @@ public class UsersList {
     private final Skin skin;
     private final Map<Integer, UserTable> userMap = new HashMap<Integer, UserTable>();
     private UserTable selected;
+    private final Callback<String> callback;
 
-    public UsersList(Skin skin) {
+    public UsersList(Skin skin, Callback<String> callback) {
         this.skin = skin;
         this.table = new Table(skin);
+        this.callback = callback;
     }
 
     public void handleUserStatus(UserStatusMessage message) {
@@ -61,6 +64,7 @@ public class UsersList {
             @Override
             protected void result(Object object) {
                 client.send(new StartGameRequest(selected.getId(), (String) object));
+                callback.callback((String) object);
             }
         };
         dialog.text("Which mod do you want to play?");

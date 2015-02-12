@@ -1,14 +1,16 @@
 package com.cardshifter.api.outgoing;
 
 import com.cardshifter.api.messages.Message;
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class EntityRemoveMessage extends Message {
 
 	private final int entity;
 
-	@JsonCreator
+	EntityRemoveMessage() {
+		this(0);
+	}
+
 	public EntityRemoveMessage(@JsonProperty("entity") int entity) {
 		super("entityRemoved");
 		this.entity = entity;

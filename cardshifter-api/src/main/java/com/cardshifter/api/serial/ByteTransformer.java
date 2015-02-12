@@ -83,9 +83,15 @@ public class ByteTransformer implements CommunicationTransformer {
 	}
 
 	private String readString(DataInputStream data, int numBytes) throws IOException {
-		byte[] bytes = new byte[numBytes * 2];
+		StringBuilder str = new StringBuilder(numBytes);
+		for (int i = 0; i < numBytes; i++) {
+			str.append(data.readChar());
+		}
+		return str.toString();
+
+/*		byte[] bytes = new byte[numBytes * 2];
 		data.read(bytes);
-		return new String(bytes, StandardCharsets.UTF_16);
+		return new String(bytes, StandardCharsets.UTF_16);*/
 	}
 
 }
