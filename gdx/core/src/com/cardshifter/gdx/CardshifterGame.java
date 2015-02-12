@@ -54,6 +54,9 @@ public class CardshifterGame extends Game {
                     }
                     return true;
                 }
+                if (character == 'x') {
+                    Gdx.app.log("XY", Gdx.input.getX() + ", " + Gdx.input.getY());
+                }
                 return false;
             }
         });
