@@ -32,12 +32,7 @@ import java.util.function.UnaryOperator;
  */
 public class TestMod implements ECSMod {
 
-    public static final String PLAY_ACTION = "Play";
-    public static final String ENCHANT_ACTION = "Enchant";
-    public static final String ATTACK_ACTION = "Attack";
-    public static final String SCRAP_ACTION = "Scrap";
     public static final String END_TURN_ACTION = "End Turn";
-    public static final String USE_ACTION = "Use";
 
     @Override
     public void setupGame(ECSGame game) {
@@ -67,28 +62,19 @@ public class TestMod implements ECSMod {
             ZoneComponent hand = new HandComponent(player);
             ZoneComponent battlefield = new BattlefieldComponent(player);
             createCards(hand);
+            createCards(deck);
+            createCards(deck);
+            createCards(deck);
+            createCards(deck);
             player.addComponents(hand, deck, battlefield);
 
             deck.shuffle();
         }
 
-        UnaryOperator<Entity> owningPlayerPays = entity -> entity.getComponent(CardComponent.class).getOwner();
-
-        // Actions - Play
-        game.addSystem(new PlayFromHandSystem(PLAY_ACTION));
-        game.addSystem(new PlayEntersBattlefieldSystem(PLAY_ACTION));
-
-        // Actions - Spell
-        game.addSystem(new PlayFromHandSystem(USE_ACTION));
-        game.addSystem(new EffectActionSystem(USE_ACTION));
-        game.addSystem(new EffectActionSystem(ENCHANT_ACTION));
-        game.addSystem(new EffectActionSystem(PLAY_ACTION));
-        game.addSystem(new EffectTargetFilterSystem(USE_ACTION));
-        game.addSystem(new DestroyAfterUseSystem(USE_ACTION));
-
         // Draw cards
-        game.addSystem(new DrawStartCards(5));
         game.addSystem(new LimitedHandSizeSystem(10, card -> card.getCardToDraw().destroy()));
+        game.addSystem(new DrawCardAtBeginningOfTurnSystem());
+        game.addSystem(new LimitedActionsPerTurnSystem(10, END_TURN_ACTION));
 
         // General setup
         game.addSystem(new LastPlayersStandingEndsGame());
@@ -112,8 +98,19 @@ public class TestMod implements ECSMod {
             action.addAction(moveAction("2-Field", entity, BattlefieldComponent.class, true));
             action.addAction(moveAction("2-Hand", entity, HandComponent.class, true));
             action.addAction(moveAction("2-Deck", entity, DeckComponent.class, true));
+            action.addAction(damageAction(entity));
             hand.addOnBottom(entity);
         }
+    }
+
+    private ECSAction damageAction(Entity entity) {
+        ResourceRetriever health = ResourceRetriever.forResource(PhrancisGame.PhrancisResources.HEALTH);
+        return new ECSAction(entity, "Damage", act -> true, act -> {
+            health.resFor(entity).change(-1);
+            if (health.getFor(entity) == 0) {
+                entity.destroy();
+            }
+        });
     }
 
     private ECSAction moveAction(String name, Entity entity, Class<? extends ZoneComponent> zone, boolean switchPlayer) {
