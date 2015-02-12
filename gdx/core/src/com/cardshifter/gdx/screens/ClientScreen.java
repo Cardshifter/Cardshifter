@@ -89,8 +89,9 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
         handlerMap.put(NewGameMessage.class, new SpecificHandler<NewGameMessage>() {
             @Override
             public void handle(NewGameMessage message) {
-                game.setScreen(gameScreen = new GameScreen(game, client, message, ClientScreen.this));
+                gameScreen = new GameScreen(game, client, message, ClientScreen.this);
                 handlerMap.putAll(gameScreen.getHandlers());
+                game.setScreen(gameScreen);
             }
         });
         handlerMap.put(PlayerConfigMessage.class, new SpecificHandler<PlayerConfigMessage>() {
@@ -175,17 +176,17 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
 
     @Override
     public void handle(final Message message) {
-        final SpecificHandler<Message> handler = (SpecificHandler<Message>) handlerMap.get(message.getClass());
-        if (handler != null) {
-            Gdx.app.postRunnable(new Runnable() {
-                @Override
-                public void run() {
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                final SpecificHandler<Message> handler = (SpecificHandler<Message>) handlerMap.get(message.getClass());
+                if (handler != null) {
                     handler.handle(message);
                 }
-            });
-        }
-        else {
-            Gdx.app.log("Client", "WARNING: Unable to handle " + message + " of type " + message.getClass());
-        }
+                else {
+                    Gdx.app.log("Client", "WARNING: Unable to handle " + message + " of type " + message.getClass());
+                }
+            }
+        });
     }
 }
