@@ -111,16 +111,17 @@ public class GameScreen implements Screen {
 
         addZoneHolder(centerTable, 1 - this.playerIndex, "Hand").top().height(80);
         addZoneHolder(centerTable, 1 - this.playerIndex, "Battlefield").height(130);
-        addZoneHolder(centerTable, this.playerIndex, "Battlefield").bottom().height(130);
+        addZoneHolder(centerTable, this.playerIndex, "Battlefield").bottom().expandX().fill().height(130);
 
         this.table.add(topTable).expandY().fill().row();
-        addZoneHolder(this.table, this.playerIndex, "Hand").height(140).fill();
+        addZoneHolder(this.table, this.playerIndex, "Hand").height(140).expandX().fill();
 
         this.table.setFillParent(true);
     }
 
     private Cell<Container<Actor>> addZoneHolder(Table table, int i, String name) {
         Container<Actor> container = new Container<Actor>();
+//        container.fill();
         Cell<Container<Actor>> cell = table.add(container).expandX().fillX();
         table.row();
         holders.put(i + name, container);
