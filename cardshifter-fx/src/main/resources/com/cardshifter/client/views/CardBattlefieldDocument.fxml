@@ -29,6 +29,8 @@
       <Label fx:id="cardId" layoutX="7.0" layoutY="4.0" text="Card Id =" textFill="WHITE" />
 	  <Label fx:id="scrapValue" layoutX="7.0" layoutY="15.0" text="Scrap =" textFill="WHITE" />
       <Label fx:id="creatureType" layoutX="7.0" layoutY="28.0" textFill="WHITE" />
+      <Label fx:id="nameText" layoutX="7.0" layoutY="60.0" text="Scrap =" textFill="WHITE" />
+      <Label fx:id="abilityText" layoutX="7.0" layoutY="80.0" text="" textFill="WHITE" />
       <Circle fx:id="sicknessCircle" fill="#bfc6cd" layoutX="44.0" layoutY="44.0" opacity="0.56" radius="37.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" visible="false" />
 	 
 	  <!-- Scrap Button -->
