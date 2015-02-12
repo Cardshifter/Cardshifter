@@ -20,9 +20,9 @@ deploy:
   api-key: 
     secure: "CJyVgIoL/G0a233WuqPi14eOAk8JlWdErxqbJZYawGmCt5CBJW9l5+4CO4mJqho+EKHmpr+OgGVFq5HV4zQVqVJNFhL86yEucY52v3uQqqT26UmyJwLEtNOpHzVw0pXKvE5LbBOQdl+/8nNhakd6VwGE3qs05F+0ZYyu9LXaal4="
   file: 
-      - "target/cardshifter-fx-0.4.jar"
-      - "target/cardshifter-server-0.4.jar"
-      - "target/cardshifter-server-0.4.policy"
+      - "target/cardshifter-fx-0.5.jar"
+      - "target/cardshifter-server-0.5.jar"
+      - "target/cardshifter-server-0.5.policy"
   skip_cleanup: true
   on:
     tags: true
