@@ -2,16 +2,14 @@ package com.cardshifter.gdx.ui.cards;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.cardshifter.api.outgoing.UsableActionMessage;
-import com.cardshifter.gdx.CardshifterGame;
+import com.cardshifter.api.outgoing.ZoneChangeMessage;
 import com.cardshifter.gdx.TargetStatus;
 import com.cardshifter.gdx.TargetableCallback;
 import com.cardshifter.gdx.ui.CardshifterClientContext;
+import com.cardshifter.gdx.ui.zones.ZoneView;
 
 import java.util.Map;
 
@@ -41,6 +39,11 @@ public class CardViewHidden implements CardView {
     }
 
     @Override
+    public void zoneMove(ZoneChangeMessage message, ZoneView destinationZone, CardView newCardView) {
+        remove();
+    }
+
+    @Override
     public void set(Object key, Object value) {
 
     }
@@ -67,6 +70,11 @@ public class CardViewHidden implements CardView {
 
     @Override
     public void clearUsableActions() {
+
+    }
+
+    @Override
+    public void entityRemoved() {
 
     }
 }

@@ -5,10 +5,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.cardshifter.api.outgoing.CardInfoMessage;
 import com.cardshifter.api.outgoing.UsableActionMessage;
+import com.cardshifter.api.outgoing.ZoneChangeMessage;
 import com.cardshifter.gdx.CardshifterGame;
 import com.cardshifter.gdx.TargetStatus;
 import com.cardshifter.gdx.TargetableCallback;
-import com.cardshifter.gdx.ui.EntityView;
+import com.cardshifter.gdx.ui.zones.ZoneView;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -77,7 +78,17 @@ public class CardViewBig implements CardView {
     }
 
     @Override
+    public void entityRemoved() {
+
+    }
+
+    @Override
     public Map<String, Object> getInfo() {
         return new HashMap<String, Object>(this.properties);
+    }
+
+    @Override
+    public void zoneMove(ZoneChangeMessage message, ZoneView destinationZone, CardView newCardView) {
+
     }
 }

@@ -196,7 +196,13 @@ public class GameScreen implements Screen {
             @Override
             public void handle(CardInfoMessage message) {
                 ZoneView zone = getZoneView(message.getZone());
-                removeCard(zone, message.getId());
+                if (zone != null) {
+                    zone.removeCard(message.getId());
+                }
+                EntityView entityView = entityViews.remove(message.getId());
+                if (entityView != null) {
+                    entityView.remove();
+                }
                 if (zone != null) {
                     entityViews.put(message.getId(), zone.addCard(message));
                 }
@@ -207,7 +213,7 @@ public class GameScreen implements Screen {
             public void handle(EntityRemoveMessage message) {
                 EntityView view = entityViews.get(message.getEntity());
                 if (view != null) {
-                    view.remove();
+                    view.entityRemoved();
                     entityViews.remove(message.getEntity());
                 }
             }
@@ -262,10 +268,18 @@ public class GameScreen implements Screen {
                 ZoneView destinationZone = getZoneView(message.getDestinationZone());
                 int id = message.getEntity();
                 CardView cardView = (CardView) entityViews.get(id); // can be null
-                removeCard(oldZone, id);
+
+                if (oldZone != null) {
+                    oldZone.removeCard(id);
+                }
+                CardView entityView = (CardView) entityViews.remove(id);
+
                 if (destinationZone != null) {
-                    EntityView newView = destinationZone.addCard(new CardInfoMessage(message.getDestinationZone(), id, cardView == null ? null : cardView.getInfo()));
-                    entityViews.put(id, newView);
+                    CardView newCardView = destinationZone.addCard(new CardInfoMessage(message.getDestinationZone(), id, cardView == null ? null : cardView.getInfo()));
+                    if (entityView != null) {
+                        entityView.zoneMove(message, destinationZone, newCardView);
+                    }
+                    entityViews.put(id, newCardView);
                 }
 /*
 Send to AI Medium: ZoneChangeMessage [entity=95, sourceZone=72, destinationZone=73]
@@ -305,16 +319,6 @@ when cards are created from nowhere, ZoneChange with source -1 is sent and then 
         });
 
         return handlers;
-    }
-
-    private void removeCard(ZoneView zone, int id) {
-        if (zone != null) {
-            zone.removeCard(id);
-        }
-        EntityView entityView = entityViews.remove(id);
-        if (entityView != null) {
-            entityView.remove();
-        }
     }
 
     private ZoneView createZoneView(ZoneMessage message) {

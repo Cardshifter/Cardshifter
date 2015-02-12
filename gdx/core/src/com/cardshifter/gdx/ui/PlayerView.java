@@ -89,4 +89,9 @@ public class PlayerView implements EntityView {
     public void clearUsableActions() {
         actions.clearChildren();
     }
+
+    @Override
+    public void entityRemoved() {
+        remove();
+    }
 }

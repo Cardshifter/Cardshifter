@@ -14,4 +14,5 @@ public interface EntityView {
     void usableAction(UsableActionMessage message);
     void clearUsableActions();
 
+    void entityRemoved();
 }

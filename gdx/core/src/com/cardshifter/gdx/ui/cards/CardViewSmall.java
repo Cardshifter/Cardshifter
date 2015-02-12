@@ -3,20 +3,26 @@ package com.cardshifter.gdx.ui.cards;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.cardshifter.api.outgoing.CardInfoMessage;
 import com.cardshifter.api.outgoing.UsableActionMessage;
+import com.cardshifter.api.outgoing.ZoneChangeMessage;
 import com.cardshifter.gdx.TargetStatus;
 import com.cardshifter.gdx.TargetableCallback;
 import com.cardshifter.gdx.ui.CardshifterClientContext;
 import com.cardshifter.gdx.ui.res.ResourceView;
 import com.cardshifter.gdx.ui.res.ResViewFactory;
+import com.cardshifter.gdx.ui.zones.ZoneView;
 
 import java.util.*;
 
@@ -157,7 +163,34 @@ public class CardViewSmall implements CardView {
     }
 
     @Override
+    public void entityRemoved() {
+        table.addAction(Actions.sequence(Actions.fadeOut(2.0f), Actions.run(new Runnable() {
+            @Override
+            public void run() {
+                table.remove();
+            }
+        })));
+    }
+
+    @Override
     public Map<String, Object> getInfo() {
         return new HashMap<String, Object>(this.properties);
+    }
+
+    @Override
+    public void zoneMove(ZoneChangeMessage message, ZoneView destinationZone, CardView newCardView) {
+        if (destinationZone == null) {
+            remove();
+            return;
+        }
+        final Actor target = destinationZone.getActor();
+        Vector2 pos = new Vector2(0, 0);
+        pos = target.localToStageCoordinates(pos);
+        table.addAction(Actions.sequence(Actions.moveTo(pos.x, pos.y, 2.5f), Actions.run(new Runnable() {
+            @Override
+            public void run() {
+                table.remove();
+            }
+        })));
     }
 }
