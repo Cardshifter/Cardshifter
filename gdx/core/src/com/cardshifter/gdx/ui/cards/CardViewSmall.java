@@ -123,6 +123,26 @@ public class CardViewSmall extends DefaultCardView {
 
     @Override
     public void set(Object key, Object value) {
+        if ("HEALTH".equals(key)) {
+            Integer health = (Integer) value;
+            Integer oldHealth = (Integer) properties.get(key);
+            int diff = health - oldHealth;
+            WidgetGroup grp = (WidgetGroup) table.getParent();
+            grp.layout();
+
+            Vector2 pos = new Vector2(table.getWidth() / 2, table.getHeight() / 2);
+            table.localToStageCoordinates(pos);
+            final Label changeLabel = new Label(String.valueOf(diff), context.getSkin());
+            Gdx.app.log("Anim", "Create health animation at " + pos.x + ", " + pos.y);
+            changeLabel.setPosition(pos.x, pos.y);
+            changeLabel.addAction(Actions.sequence(Actions.moveBy(0, 25, 2), Actions.run(new Runnable() {
+                @Override
+                public void run() {
+                    changeLabel.remove();
+                }
+            })));
+            context.getStage().addActor(changeLabel);
+        }
         properties.put((String) key, value);
         cost.update(properties);
         stats.update(properties);
