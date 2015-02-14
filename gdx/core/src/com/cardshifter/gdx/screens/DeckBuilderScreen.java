@@ -6,6 +6,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
@@ -46,6 +47,8 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
     private final VerticalGroup cardsInDeckList;
     private final List<String> savedDecks;
     private final Label nameLabel;
+    private final TextButton previousPageButton;
+    private final TextButton nextPageButton;
     private int page;
     private String deckName = "unnamed";
     private FileHandle external;
@@ -99,9 +102,9 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
         });
 
         HorizontalGroup buttons = new HorizontalGroup();
-        addPageButton(buttons, "Previous", -1, game.skin);
+        this.previousPageButton = addPageButton(buttons, "Previous", -1, game.skin);
         buttons.addActor(doneButton);
-        addPageButton(buttons, "Next", 1, game.skin);
+        this.nextPageButton = addPageButton(buttons, "Next", 1, game.skin);
 
         table.row();
         Table savedTable = scanSavedDecks(game, savedDecks, modName);
@@ -222,7 +225,7 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
         return count + "/" + max;
     }
 
-    private void addPageButton(Group table, String text, final int i, Skin skin) {
+    private TextButton addPageButton(Group table, String text, final int i, Skin skin) {
         TextButton button = new TextButton(text, skin);
         button.addListener(new ClickListener(){
             @Override
@@ -231,6 +234,7 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
             }
         });
         table.addActor(button);
+        return button;
     }
 
     private void displayPage(int page) {
@@ -254,6 +258,19 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
             countLabels.put(card.getId(), label);
             choosableGroup.addActor(label);
             cardsTable.add(choosableGroup);
+        }
+        setButtonEnabled(previousPageButton, page > 1);
+        setButtonEnabled(nextPageButton, page <= pageCount);
+    }
+
+    private void setButtonEnabled(TextButton button, boolean enabled) {
+        if (enabled) {
+            button.setTouchable(Touchable.enabled);
+            button.setStyle(game.skin.get(TextButton.TextButtonStyle.class));
+        }
+        else {
+            button.setTouchable(Touchable.disabled);
+            button.setStyle(game.skin.get("disabled", TextButton.TextButtonStyle.class));
         }
     }
 
