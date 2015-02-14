@@ -73,6 +73,10 @@ public class PhrancisGame implements ECSMod {
 	public static final String END_TURN_ACTION = "End Turn";
 	public static final String USE_ACTION = "Use";
 	
+	private static final AttributeRetriever name = AttributeRetriever.forAttribute(Attributes.NAME);
+	private final Set<String> noAttackNames = new HashSet<>();
+	private Consumer<Entity> noAttack = e -> noAttackNames.add(name.getFor(e));
+
 	@Override
 	public void declareConfiguration(ECSGame game) {
 		Entity neutral = game.newEntity();
@@ -103,9 +107,6 @@ public class PhrancisGame implements ECSMod {
 		Consumer<Entity> noSickness = e -> sickness.resFor(e).set(0);
 		BiFunction<Entity, Integer, Integer> restoreHealth = (e, value) ->
 				Math.max(Math.min(healthMax.getFor(e) - health.getFor(e), value), 0);
-		AttributeRetriever name = AttributeRetriever.forAttribute(Attributes.NAME);
-		Set<String> noAttackNames = new HashSet<>();
-		Consumer<Entity> noAttack = e -> noAttackNames.add(name.getFor(e));
 
 		ResourceRetriever rangedResource = ResourceRetriever.forResource(PhrancisResources.DENY_COUNTERATTACK);
 		Consumer<Entity> ranged = e -> rangedResource.resFor(e).set(1);
@@ -119,20 +120,6 @@ public class PhrancisGame implements ECSMod {
 		} catch (CardLoadingException e) {
 			throw new RuntimeException(e);
 		}
-
-		// Mechs (ManaCost, zone, Attack, Health, "Type", ScrapValue, "CardName")
-//		createCreature(0, zone, 0, 1, "Mech", 3, "Spareparts");
-		createCreature(1, zone, 1, 1, "Mech", 1, "Gyrodroid").apply(ranged);
-		createCreature(2, zone, 2, 1, "Mech", 1, "The Chopper");
-		createCreature(2, zone, 1, 2, "Mech", 1, "Shieldmech");
-		createCreature(3, zone, 3, 3, "Mech", 2, "Humadroid");
-		createCreature(3, zone, 4, 2, "Mech", 2, "Assassinatrix").apply(ranged);
-		createCreature(3, zone, 2, 4, "Mech", 2, "Fortimech");
-		createCreature(3, zone, 5, 1, "Mech", 2, "Scout Mech").apply(noSickness);
-		createCreature(3, zone, 0, 5, "Mech", 3, "Supply Mech").apply(noAttack);
-		createCreature(5, zone, 5, 3, "Mech", 3, "Modleg Ambusher").apply(noSickness);
-		createCreature(5, zone, 3, 6, "Mech", 3, "Heavy Mech");
-		createCreature(5, zone, 4, 4, "Mech", 3, "Waste Runner");
 
 		// Bios(ManaCost, zone, Attack, Health, "Type", ScrapValue, "CardName")
 		createCreature(2, zone, 2, 2, "Bio", 0, "Conscript");
