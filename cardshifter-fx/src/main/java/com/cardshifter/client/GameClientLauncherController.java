@@ -135,7 +135,7 @@ public final class GameClientLauncherController implements Initializable {
 	}
 	
 	private void localGameStart(ActionEvent event) {
-		ECSMod mod = mods.getMods().get(DEFAULT_MOD);
+		ECSMod mod = mods.getModFor(DEFAULT_MOD);
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 		TCGGame game = new TCGGame(() -> executor, DEFAULT_MOD, 1, mod);
 		ClientServerInterface singlePlayerHandler = new ClientServerInterface() {

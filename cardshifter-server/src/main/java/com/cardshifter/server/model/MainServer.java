@@ -79,7 +79,9 @@ public class MainServer {
 			});
 			final Supplier<ScheduledExecutorService> aiExecutor = () -> server.getScheduler();
 			
-			mods.getMods().forEach((name, mod) -> server.addGameFactory(name, (serv, id) -> new TCGGame(aiExecutor, name, id, mod)));
+			mods.getAvailableMods().forEach(name ->
+				server.addGameFactory(name, (serv, id) ->
+					new TCGGame(aiExecutor, name, id, mods.getModFor(name))));
 			
 			logger.info("Started");
 		}

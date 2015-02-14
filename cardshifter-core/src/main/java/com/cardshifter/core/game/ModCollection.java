@@ -3,11 +3,7 @@ package com.cardshifter.core.game;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import net.zomis.cardshifter.ecs.usage.PhrancisGame;
 import net.zomis.cardshifter.ecs.usage.PhrancisGameNewAttackSystem;
@@ -88,13 +84,23 @@ public class ModCollection {
 	public Map<String, CardshifterAI> getAIs() {
 		return Collections.unmodifiableMap(ais);
 	}
-	
+
 	/**
-	 * 
-	 * @return The ECSMod objects.
+	 *
+	 * @return A set containing the names of available mods
 	 */
-	public Map<String, ECSMod> getMods() {
-		return Collections.unmodifiableMap(mods);
+	public Set<String> getAvailableMods() {
+		return Collections.unmodifiableSet(mods.keySet());
+	}
+
+	/**
+	 * Get a mod object for the specified name
+	 *
+	 * @param name Name of the mod
+	 * @return Mod object
+	 */
+	public ECSMod getModFor(String name) {
+		return mods.get(name);
 	}
 
 	public Path getDefaultModLocation() {
