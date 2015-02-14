@@ -237,7 +237,12 @@ public class PhrancisGame implements ECSMod {
 		
 		// Actions - Scrap
 		ResourceRetriever scrapCostResource = ResourceRetriever.forResource(PhrancisResources.SCRAP_COST);
-		game.addSystem(new ScrapSystem(PhrancisResources.SCRAP));
+		ResourceRetriever attackAvailable = ResourceRetriever.forResource(PhrancisResources.ATTACK_AVAILABLE);
+		ResourceRetriever sickness = ResourceRetriever.forResource(PhrancisResources.SICKNESS);
+		game.addSystem(new ScrapSystem(PhrancisResources.SCRAP,	e ->
+				attackAvailable.getOrDefault(e, 0) > 0 &&
+				sickness.getOrDefault(e, 1) == 0
+		));
 		
 		// Actions - Spell
 		game.addSystem(new UseCostSystem(USE_ACTION, PhrancisResources.MANA, manaCostResource::getFor, owningPlayerPays));

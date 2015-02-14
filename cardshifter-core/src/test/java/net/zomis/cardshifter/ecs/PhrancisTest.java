@@ -235,11 +235,22 @@ public class PhrancisTest extends GameTest {
 	public void scrap() {
 		Entity scrapped = mod.createCreature(0, field.get(currentPlayer()), 1, 1, "B0T", 4);
 		assertResource(currentPlayer(), PhrancisResources.SCRAP, 0);
+		nextPhase();
+		nextPhase();
 		useFail(scrapped, PhrancisGame.SCRAP_ACTION, opponent());
 		useAction(scrapped, PhrancisGame.SCRAP_ACTION);
 		assertResource(currentPlayer(), PhrancisResources.SCRAP, 4);
 	}
 	
+
+	@Test
+	public void noScrapOnSameTurn() {
+		Entity scrapped = mod.createCreature(0, field.get(currentPlayer()), 1, 1, "B0T", 4);
+		assertResource(currentPlayer(), PhrancisResources.SCRAP, 0);
+		useFail(scrapped, PhrancisGame.SCRAP_ACTION, opponent());
+		useFail(scrapped, PhrancisGame.SCRAP_ACTION);
+	}
+
 	@Test
 	public void trample() {
 		Entity attacker = mod.createCreature(0, field.get(currentPlayer()), 10, 1, "B0T", 0);

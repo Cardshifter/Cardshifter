@@ -12,13 +12,17 @@ import com.cardshifter.modapi.cards.Cards;
 import com.cardshifter.modapi.resources.ECSResource;
 import com.cardshifter.modapi.resources.ResourceRetriever;
 
+import java.util.function.Predicate;
+
 public class ScrapSystem extends SpecificActionSystem {
 
 	private final ResourceRetriever resource;
+	private final Predicate<Entity> predicate;
 
-	public ScrapSystem(ECSResource resource) {
+	public ScrapSystem(ECSResource resource, Predicate<Entity> predicate) {
 		super("Scrap");
 		this.resource = ResourceRetriever.forResource(resource);
+		this.predicate = predicate;
 	}
 
 	@Retriever private ComponentRetriever<CardComponent> card;
@@ -32,6 +36,9 @@ public class ScrapSystem extends SpecificActionSystem {
 			event.setAllowed(false);
 		}
 		if (resource.getOrDefault(event.getEntity(), 0) <= 0) {
+			event.setAllowed(false);
+		}
+		if (!predicate.test(event.getEntity())) {
 			event.setAllowed(false);
 		}
 	}
