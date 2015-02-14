@@ -40,6 +40,10 @@ public class ResourceRetriever {
 		return resMap(entity).getResource(resource);
 	}
 
+	public void set(Entity entity, int value) {
+		ECSResourceMap.createOrGetFor(entity).set(resource, value);
+	}
+
 	public ECSResource getResource() {
 		return resource;
 	}
