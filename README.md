@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/Cardshifter/Cardshifter.png?label=ready&title=Ready)](https://waffle.io/Cardshifter/Cardshifter)
 Cardshifter
 ===========
 
