@@ -185,3 +185,71 @@ apply:creature:"Bio"
 apply:noAttack
 apply:summon:2,"Bodyman"
 
+
+# ENCHANTMENTS
+
+[entity]
+name=Bionic Arms
+attack=2
+health=0
+scrapCost=1
+apply:enchantment
+
+[entity]
+name=Body Armor
+attack=0
+health=2
+scrapCost=1
+apply:enchantment
+
+[entity]
+name=Adrenalin Injection
+attack=1
+health=1
+scrapCost=1
+apply:enchantment
+apply:giveRush
+
+[entity]
+name=Steroid Implants
+attack=2
+health=1
+scrapCost=2
+apply:enchantment
+
+[entity]
+name=Reinforced Cranial Implants
+attack=1
+health=2
+scrapCost=2
+apply:enchantment
+
+[entity]
+name=Cybernetic Arm Cannon
+attack=3
+health=0
+scrapCost=2
+apply:enchantment
+apply:giveRanged
+
+[entity]
+name=Exoskeleton
+attack=0
+health=3
+scrapCost=2
+apply:enchantment
+
+[entity]
+name=Artificial Intelligence Implants
+attack=2
+health=3
+scrapCost=3
+apply:enchantment
+
+[entity]
+name=Full-body Cybernetics Upgrade
+attack=3
+health=3
+scrapCost=5
+apply:enchantment
+

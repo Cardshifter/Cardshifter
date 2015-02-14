@@ -126,6 +126,16 @@ public class PhrancisGame implements ECSMod {
 		)));
 	}
 	
+	private Consumer<Entity> giveRush = e -> {
+		Effects effects = new Effects();
+		e.addComponent(effects.described("Give Rush", effects.giveTarget(PhrancisResources.SICKNESS, 0, i -> 0)));
+	};
+
+	private Consumer<Entity> giveRanged = e -> {
+		Effects effects = new Effects();
+		e.addComponent(effects.described("Give Ranged", effects.giveTarget(PhrancisResources.DENY_COUNTERATTACK, 1)));
+	};
+
 	public void addCards(ZoneComponent zone) {
 		// Create card models that should be possible to choose from
 
@@ -141,21 +151,6 @@ public class PhrancisGame implements ECSMod {
 		} catch (CardLoadingException e) {
 			throw new RuntimeException(e);
 		}
-
-		Effects effects = new Effects();
-		// Enchantments: (zone, AttackModify, HealthModify, ScrapCost, "CardName")
-		createEnchantment(zone, 2, 0, 1, "Bionic Arms");
-		createEnchantment(zone, 0, 2, 1, "Body Armor");
-		createEnchantment(zone, 1, 1, 1, "Adrenalin Injection")
-			.addComponent(effects.described("Give Rush", effects.giveTarget(PhrancisResources.SICKNESS, 0, i -> 0)));
-		createEnchantment(zone, 2, 1, 2, "Steroid Implants");
-		createEnchantment(zone, 1, 2, 2, "Reinforced Cranial Implants");
-		createEnchantment(zone, 3, 0, 2, "Cybernetic Arm Cannon")
-			.addComponent(effects.described("Give Ranged", effects.giveTarget(PhrancisResources.DENY_COUNTERATTACK, 1)));
-
-		createEnchantment(zone, 0, 3, 2, "Exoskeleton");
-		createEnchantment(zone, 2, 2, 3, "Artificial Intelligence Implants");
-		createEnchantment(zone, 3, 3, 5, "Full-body Cybernetics Upgrade");
 
 		ECSGame game = zone.getComponentEntity().getGame();
 		game.addSystem(new DenyActionForNames(PhrancisGame.ATTACK_ACTION, noAttackNames));
@@ -315,6 +310,8 @@ public class PhrancisGame implements ECSMod {
 		}
 	}
 
+	private final Consumer<Entity> enchantment = e -> e.addComponent(new ActionComponent().addAction(enchantAction(e)));
+
 	public Entity createEnchantment(ZoneComponent deck, int strength, int health, int cost, String name) {
 		Entity entity = deck.getOwner().getGame().newEntity();
 		ECSResourceMap.createFor(entity)
@@ -323,7 +320,7 @@ public class PhrancisGame implements ECSMod {
 			.set(PhrancisResources.SCRAP_COST, cost)
 			.set(PhrancisResources.ATTACK, strength);
 		ECSAttributeMap.createFor(entity).set(Attributes.NAME, name);
-		entity.addComponent(new ActionComponent().addAction(enchantAction(entity)));
+		enchantment.accept(entity);
 		deck.addOnBottom(entity);
 		return entity;
 	}
