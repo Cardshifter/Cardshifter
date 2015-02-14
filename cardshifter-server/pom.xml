@@ -42,7 +42,7 @@
 				<version>2.17</version>
 				<configuration>
 					<reuseForks>false</reuseForks>
-					<argLine>-Djava.security.manager -Djava.security.policy==${basedir}/src/test/resources/com/cardshifter/server/servertests.policy</argLine>
+					<argLine>-Djava.security.manager -Djava.security.policy==${project.basedir}/src/test/resources/com/cardshifter/server/servertests.policy</argLine>
 				</configuration>
 			</plugin>
 			<plugin>

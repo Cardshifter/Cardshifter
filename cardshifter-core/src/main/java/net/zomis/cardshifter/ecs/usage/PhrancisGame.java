@@ -1,5 +1,8 @@
 package net.zomis.cardshifter.ecs.usage;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -8,7 +11,11 @@ import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
+import com.cardshifter.core.cardloader.CardLoadingException;
+import com.cardshifter.core.cardloader.SimpleCardLoader;
 import com.cardshifter.modapi.attributes.AttributeRetriever;
+import com.cardshifter.modapi.attributes.ECSAttribute;
+import com.cardshifter.modapi.base.*;
 import com.cardshifter.modapi.phase.*;
 import com.cardshifter.modapi.players.Players;
 import net.zomis.cardshifter.ecs.config.ConfigComponent;
@@ -28,12 +35,6 @@ import com.cardshifter.modapi.actions.enchant.EnchantPerform;
 import com.cardshifter.modapi.actions.enchant.EnchantTargetCreatureTypes;
 import com.cardshifter.modapi.attributes.Attributes;
 import com.cardshifter.modapi.attributes.ECSAttributeMap;
-import com.cardshifter.modapi.base.Component;
-import com.cardshifter.modapi.base.CreatureTypeComponent;
-import com.cardshifter.modapi.base.ECSGame;
-import com.cardshifter.modapi.base.ECSMod;
-import com.cardshifter.modapi.base.Entity;
-import com.cardshifter.modapi.base.PlayerComponent;
 import com.cardshifter.modapi.cards.BattlefieldComponent;
 import com.cardshifter.modapi.cards.CardComponent;
 import com.cardshifter.modapi.cards.Cards;
@@ -109,8 +110,18 @@ public class PhrancisGame implements ECSMod {
 		ResourceRetriever rangedResource = ResourceRetriever.forResource(PhrancisResources.DENY_COUNTERATTACK);
 		Consumer<Entity> ranged = e -> rangedResource.resFor(e).set(1);
 
+		Path cardFile = ModHelper.getPath(this, "phrancis-cards.cards");
+		ECSAttribute[] defaultAttributes = new ECSAttribute[]{ Attributes.NAME, Attributes.FLAVOR };
+		try {
+			Collection<Entity> cards = new SimpleCardLoader().loadCards(cardFile, zone.getComponentEntity().getGame(),
+					this, PhrancisResources.values(), defaultAttributes);
+			cards.forEach(c -> zone.addOnBottom(c));
+		} catch (CardLoadingException e) {
+			throw new RuntimeException(e);
+		}
+
 		// Mechs (ManaCost, zone, Attack, Health, "Type", ScrapValue, "CardName")
-		createCreature(0, zone, 0, 1, "Mech", 3, "Spareparts");
+//		createCreature(0, zone, 0, 1, "Mech", 3, "Spareparts");
 		createCreature(1, zone, 1, 1, "Mech", 1, "Gyrodroid").apply(ranged);
 		createCreature(2, zone, 2, 1, "Mech", 1, "The Chopper");
 		createCreature(2, zone, 1, 2, "Mech", 1, "Shieldmech");
@@ -330,6 +341,35 @@ public class PhrancisGame implements ECSMod {
 		return entity;
 	}
 
+	private Consumer<Entity> creature(String creatureType) {
+		return entity -> {
+			ActionComponent actions = new ActionComponent();
+			entity.addComponent(actions);
+
+			actions.addAction(playAction(entity));
+			actions.addAction(attackAction(entity));
+			actions.addAction(scrapAction(entity));
+
+			entity.addComponent(new CreatureTypeComponent(creatureType));
+		};
+	}
+
+	private Consumer<Entity> test = e -> {
+		ECSResourceMap map = ECSResourceMap.createOrGetFor(e);
+		map.set(PhrancisResources.SICKNESS, 1);
+		map.set(PhrancisResources.TAUNT, 1);
+//		map.set(PhrancisResources.TRAMPLE, 1);
+		map.set(PhrancisResources.ATTACK_AVAILABLE, 1);
+	};
+
+	private Consumer<Entity> health(int health) {
+		return e -> {
+			ECSResourceMap map = ECSResourceMap.createOrGetFor(e);
+			map.set(PhrancisResources.HEALTH, health);
+			map.set(PhrancisResources.MAX_HEALTH, health);
+		};
+	}
+
 	private static ECSAction enchantAction(Entity entity) {
 		return new ECSAction(entity, ENCHANT_ACTION, act -> true, act -> {}).addTargetSet(1, 1);
 	}
@@ -353,16 +393,8 @@ public class PhrancisGame implements ECSMod {
 //			.set(PhrancisResources.TRAMPLE, 1)
 			.set(PhrancisResources.ATTACK_AVAILABLE, 1);
 		ECSAttributeMap.createFor(entity).set(Attributes.NAME, name);
-		entity.addComponent(new CreatureTypeComponent(creatureType));
+		creature(creatureType).accept(entity);
 		deck.addOnBottom(entity);
-		
-		ActionComponent actions = new ActionComponent();
-		entity.addComponent(actions);
-		
-		actions.addAction(playAction(entity));
-		actions.addAction(attackAction(entity));
-		actions.addAction(scrapAction(entity));
-		
 		return entity;
 	}
 	

@@ -1,0 +1,8 @@
+[entity]
+name=Spareparts
+apply:test
+apply:creature:"Mech"
+apply:health:1
+attack=0
+scrap=3
+manaCost=0
