@@ -32,6 +32,15 @@ public class ECSAttributeMap extends Component implements CopyableComponent {
 		return attr;
 	}
 	
+	public static ECSAttributeMap createOrGetFor(Entity entity) {
+		ECSAttributeMap attr = entity.getComponent(ECSAttributeMap.class);
+		if (attr == null) {
+			attr = new ECSAttributeMap();
+			entity.addComponent(attr);
+		}
+		return attr;
+	}
+
 	@Override
 	public String toString() {
 		return map.toString();

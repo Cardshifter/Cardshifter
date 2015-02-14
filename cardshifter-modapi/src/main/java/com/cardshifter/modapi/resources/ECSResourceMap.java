@@ -32,6 +32,15 @@ public class ECSResourceMap extends Component implements CopyableComponent {
 		return res;
 	}
 	
+	public static ECSResourceMap createOrGetFor(Entity entity) {
+		ECSResourceMap res = entity.getComponent(ECSResourceMap.class);
+		if (res == null) {
+			res = new ECSResourceMap();
+			entity.addComponent(res);
+		}
+		return res;
+	}
+
 	@Override
 	public String toString() {
 		return map.toString();
