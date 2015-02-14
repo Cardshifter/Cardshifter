@@ -34,7 +34,6 @@ public abstract class DefaultCardView implements CardView {
                 getActor().localToStageCoordinates(oldPos);
 
                 Stage stage = getActor().getStage();
-                getActor().remove();
                 stage.addActor(getActor());
                 getActor().setPosition(oldPos.x, oldPos.y);
 

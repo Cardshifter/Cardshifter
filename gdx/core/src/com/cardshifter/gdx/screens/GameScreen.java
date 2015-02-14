@@ -213,6 +213,11 @@ public class GameScreen implements Screen {
             @Override
             public void handle(EntityRemoveMessage message) {
                 EntityView view = entityViews.get(message.getEntity());
+                for (ZoneView zone : zoneViews.values()) {
+                    if (zone.hasCard(message.getEntity())) {
+                        zone.removeCard(message.getEntity());
+                    }
+                }
                 if (view != null) {
                     view.entityRemoved();
                     entityViews.remove(message.getEntity());
@@ -319,7 +324,6 @@ when cards are created from nowhere, ZoneChange with source -1 is sent and then 
                     Gdx.app.log("GameScreen", "putting zoneview for " + key);
                     container.setActor(zoneView.getActor());
                     zoneViews.put(message.getId(), zoneView);
-                    zoneView.apply(message);
                 }
             }
         });

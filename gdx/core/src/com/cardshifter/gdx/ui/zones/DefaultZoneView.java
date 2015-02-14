@@ -20,6 +20,7 @@ public class DefaultZoneView extends ZoneView {
     private final CardshifterClientContext context;
 
     public DefaultZoneView(CardshifterClientContext context, ZoneMessage message, Map<Integer, EntityView> viewMap) {
+        super(message);
         this.group = new HorizontalGroup();
         this.group.space(5);
         this.group.fill();
@@ -30,7 +31,7 @@ public class DefaultZoneView extends ZoneView {
     }
 
     @Override
-    public final CardView addCard(CardInfoMessage message) {
+    public final CardView onAddCard(CardInfoMessage message) {
         CardView view;
         if (message.getProperties() == null) {
             view = new CardViewHidden(context, message.getId());
@@ -40,10 +41,6 @@ public class DefaultZoneView extends ZoneView {
         }
         group.addActor(view.getActor());
         return view;
-    }
-
-    @Override
-    public void removeCard(int id) {
     }
 
     @Override

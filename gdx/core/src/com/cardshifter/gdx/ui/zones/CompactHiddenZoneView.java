@@ -12,11 +12,10 @@ import com.cardshifter.gdx.ui.zones.ZoneView;
 public class CompactHiddenZoneView extends ZoneView {
 
     private final Label label;
-    private final IntSet entities = new IntSet();
     private final ZoneMessage message;
 
     public CompactHiddenZoneView(CardshifterGame game, ZoneMessage message) {
-        entities.addAll(message.getEntities());
+        super(message);
         this.label = new Label(String.valueOf(entities.size), game.skin);
         this.message = message;
     }
@@ -27,8 +26,7 @@ public class CompactHiddenZoneView extends ZoneView {
     }
 
     @Override
-    public CardView addCard(CardInfoMessage message) {
-        entities.add(message.getId());
+    protected CardView onAddCard(CardInfoMessage message) {
         update();
         return null;
     }
@@ -38,8 +36,7 @@ public class CompactHiddenZoneView extends ZoneView {
     }
 
     @Override
-    public void removeCard(int id) {
-        entities.remove(id);
+    protected void onRemoveCard(int id) {
         update();
     }
 }
