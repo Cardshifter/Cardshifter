@@ -76,10 +76,11 @@ public class PhrancisGame implements ECSMod {
 	private static final AttributeRetriever name = AttributeRetriever.forAttribute(Attributes.NAME);
 	private final Set<String> noAttackNames = new HashSet<>();
 	private Consumer<Entity> noAttack = e -> noAttackNames.add(name.getFor(e));
+	private Entity neutral;
 
 	@Override
 	public void declareConfiguration(ECSGame game) {
-		Entity neutral = game.newEntity();
+		neutral = game.newEntity();
 		ZoneComponent zone = new ZoneComponent(neutral, "Cards");
 		neutral.addComponent(zone);
 		addCards(zone);
@@ -98,15 +99,35 @@ public class PhrancisGame implements ECSMod {
 		}
 		
 	}
+
+	private Consumer<Entity> summon(int count, String creatureName) {
+		Effects effects = new Effects();
+		return en -> en.addComponent(effects.described("Summon " + count + " " + creatureName, effects.toSelf(e -> {
+			Entity entity = Players.findOwnerFor(e);
+			ZoneComponent field = entity.getComponent(BattlefieldComponent.class);
+			Entity summon = neutral.getComponent(ZoneComponent.class).getCards().stream()
+					.filter(card -> name.getFor(card).equals(creatureName)).findAny().get();
+			for (int i = 0; i < count; i++) {
+				field.addOnBottom(summon.copy());
+			}
+		})));
+	}
+
+	private final ResourceRetriever health = ResourceRetriever.forResource(PhrancisResources.HEALTH);
+	private final ResourceRetriever healthMax = ResourceRetriever.forResource(PhrancisResources.MAX_HEALTH);
+	private final BiFunction<Entity, Integer, Integer> restoreHealth = (e, value) ->
+			Math.max(Math.min(healthMax.getFor(e) - health.getFor(e), value), 0);
+	private Consumer<Entity> healTurnEnd(int heal) {
+		Effects effects = new Effects();
+		return en -> en.addComponent(effects.described("Heal 1 at end of turn", effects.giveSelf(
+			effects.triggerSystem(PhaseEndEvent.class,
+			(me, event) -> Players.findOwnerFor(me) == event.getOldPhase().getOwner(),
+			(me, event) -> Players.findOwnerFor(me).apply(e -> health.resFor(e).change(restoreHealth.apply(e, heal))))
+		)));
+	}
 	
 	public void addCards(ZoneComponent zone) {
 		// Create card models that should be possible to choose from
-		ResourceRetriever sickness = ResourceRetriever.forResource(PhrancisResources.SICKNESS);
-		ResourceRetriever health = ResourceRetriever.forResource(PhrancisResources.HEALTH);
-		ResourceRetriever healthMax = ResourceRetriever.forResource(PhrancisResources.MAX_HEALTH);
-		Consumer<Entity> noSickness = e -> sickness.resFor(e).set(0);
-		BiFunction<Entity, Integer, Integer> restoreHealth = (e, value) ->
-				Math.max(Math.min(healthMax.getFor(e) - health.getFor(e), value), 0);
 
 		ResourceRetriever rangedResource = ResourceRetriever.forResource(PhrancisResources.DENY_COUNTERATTACK);
 		Consumer<Entity> ranged = e -> rangedResource.resFor(e).set(1);
@@ -121,28 +142,7 @@ public class PhrancisGame implements ECSMod {
 			throw new RuntimeException(e);
 		}
 
-		// Bios(ManaCost, zone, Attack, Health, "Type", ScrapValue, "CardName")
-		createCreature(2, zone, 2, 2, "Bio", 0, "Conscript");
-		createCreature(3, zone, 3, 2, "Bio", 0, "Longshot").apply(ranged);
-		Entity bodyMan = createCreature(4, zone, 2, 3, "Bio", 0, "Bodyman");
-		createCreature(5, zone, 3, 3, "Bio", 0, "Vetter");
 		Effects effects = new Effects();
-		createCreature(5, zone, 1, 5, "Bio", 0, "Field Medic").addComponent(effects.described("Heal 1 at end of turn", effects.giveSelf(
-			effects.triggerSystem(PhaseEndEvent.class,
-			(me, event) -> Players.findOwnerFor(me) == event.getOldPhase().getOwner(),
-			(me, event) -> Players.findOwnerFor(me).apply(e -> health.resFor(e).change(restoreHealth.apply(e, 1)))))));
-		createCreature(6, zone, 4, 4, "Bio", 0, "Wastelander");
-		createCreature(6, zone, 5, 3, "Bio", 0, "Commander").apply(noSickness);
-		createCreature(6, zone, 3, 5, "Bio", 0, "Cyberpimp");
-		createCreature(7, zone, 5, 5, "Bio", 0, "Cyborg");
-		createCreature(8, zone, 6, 6, "Bio", 0, "Web Boss");
-		createCreature(8, zone, 2, 6, "Bio", 0, "Inside Man").apply(noAttack).addComponent(effects.described("Summon 2 BodyMans", effects.toSelf(e -> {
-			Entity entity = Players.findOwnerFor(e);
-			ZoneComponent field = entity.getComponent(BattlefieldComponent.class);
-			field.addOnBottom(bodyMan.copy());
-			field.addOnBottom(bodyMan.copy());
-		})));
-
 		// Enchantments: (zone, AttackModify, HealthModify, ScrapCost, "CardName")
 		createEnchantment(zone, 2, 0, 1, "Bionic Arms");
 		createEnchantment(zone, 0, 2, 1, "Body Armor");
