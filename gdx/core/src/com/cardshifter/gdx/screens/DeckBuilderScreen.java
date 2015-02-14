@@ -219,6 +219,11 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
             ee.getValue().setText(countText(ee.getKey()));
         }
         nameLabel.setText(deckName);
+
+        for (Map.Entry<Integer, Integer> ee : config.getChosen().entrySet()) {
+            DeckCardView cardView = labelFor(ee.getKey());
+            cardView.setCount(ee.getValue());
+        }
         updateLabels();
     }
 
