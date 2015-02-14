@@ -351,16 +351,14 @@ public class PhrancisGame implements ECSMod {
 			actions.addAction(scrapAction(entity));
 
 			entity.addComponent(new CreatureTypeComponent(creatureType));
+
+			ECSResourceMap map = ECSResourceMap.createOrGetFor(entity);
+			map.set(PhrancisResources.SICKNESS, 1);
+			map.set(PhrancisResources.TAUNT, 1);
+//		map.set(PhrancisResources.TRAMPLE, 1);
+			map.set(PhrancisResources.ATTACK_AVAILABLE, 1);
 		};
 	}
-
-	private Consumer<Entity> test = e -> {
-		ECSResourceMap map = ECSResourceMap.createOrGetFor(e);
-		map.set(PhrancisResources.SICKNESS, 1);
-		map.set(PhrancisResources.TAUNT, 1);
-//		map.set(PhrancisResources.TRAMPLE, 1);
-		map.set(PhrancisResources.ATTACK_AVAILABLE, 1);
-	};
 
 	private Consumer<Entity> health(int health) {
 		return e -> {
