@@ -206,7 +206,14 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
         String deckString = handle.readString();
         config.clearChosen();
         for (String id : deckString.split(",")) {
-            config.add(Integer.parseInt(id));
+            try {
+                int cardId = Integer.parseInt(id);
+                if (config.getCardData().get(cardId) != null) {
+                    config.add(cardId);
+                }
+            }
+            catch (NumberFormatException ex) {
+            }
         }
         for (Map.Entry<Integer, Label> ee : countLabels.entrySet()) {
             ee.getValue().setText(countText(ee.getKey()));
