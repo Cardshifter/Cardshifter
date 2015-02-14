@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.function.Supplier;
 
 import com.cardshifter.modapi.attributes.ECSAttribute;
+import com.cardshifter.modapi.base.ECSGame;
+import com.cardshifter.modapi.base.ECSMod;
 import com.cardshifter.modapi.base.Entity;
 import com.cardshifter.modapi.resources.ECSResource;
 
@@ -21,11 +23,12 @@ public interface CardLoader<I> {
 	 * This is done by mapping the input resources to the given resources.
 	 * 
 	 * @param input	The input resource
-	 * @param entitySupplier	A supplier function that supplies a new entity
+	 * @param game The game to where entities are loaded
+	 * @param mod The mod that is used to load the cards
 	 * @param resources	The resources to be transformed to, may b enull to indicate no resources present
 	 * @param attributes	The attributes to be transformed to, may be null to indicate no attributes present
 	 * @return	A collection of Entity instances
 	 * @throws CardLoadingException		If an error occured while loading the cards or a resource could not be mapped
 	 */
-	Collection<Entity> loadCards(I input, Supplier<Entity> entitySupplier, ECSResource[] resources, ECSAttribute[] attributes) throws CardLoadingException;
+	Collection<Entity> loadCards(I input, ECSGame game, ECSMod mod, ECSResource[] resources, ECSAttribute[] attributes) throws CardLoadingException;
 }

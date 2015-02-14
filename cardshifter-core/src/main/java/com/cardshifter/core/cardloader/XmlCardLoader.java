@@ -14,6 +14,8 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.cardshifter.modapi.base.ECSGame;
+import com.cardshifter.modapi.base.ECSMod;
 import org.jdom2.Document;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
@@ -40,10 +42,11 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
  */
 public class XmlCardLoader implements CardLoader<Path> {
 	@Override
-	public Collection<Entity> loadCards(final Path path, final Supplier<Entity> entitySupplier, final ECSResource[] resources, final ECSAttribute[] attributes) throws CardLoadingException {
+	public Collection<Entity> loadCards(final Path path, final ECSGame game, final ECSMod mod, final ECSResource[] resources, final ECSAttribute[] attributes) throws CardLoadingException {
 		Objects.requireNonNull(path, "path");
-		Objects.requireNonNull(entitySupplier, "entitySupplier");
-		
+		Objects.requireNonNull(game, "game");
+		Objects.requireNonNull(mod, "mod");
+
 		List<ECSResource> resourcesList = (resources == null) ? Arrays.asList() : Arrays.asList(resources);
 		List<ECSAttribute> attributesList = (attributes == null) ? Arrays.asList() : Arrays.asList(attributes);
 		
@@ -101,7 +104,7 @@ public class XmlCardLoader implements CardLoader<Path> {
 			
 			return cardList.stream()
 				.map(card -> {
-					Entity entity = entitySupplier.get();
+					Entity entity = game.newEntity();
 					
 					entity.addComponent(new IdComponent(card.getId()));
 					
