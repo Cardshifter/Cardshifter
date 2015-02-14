@@ -4,6 +4,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.function.Supplier;
 
 import net.zomis.cardshifter.ecs.usage.PhrancisGame;
 import net.zomis.cardshifter.ecs.usage.PhrancisGameNewAttackSystem;
@@ -39,7 +40,7 @@ public class ModCollection {
 	/**
 	 * All the mods to initialize.
 	 */
-	private final Map<String, ECSMod> mods = new HashMap<>();
+	private final Map<String, Supplier<ECSMod>> mods = new HashMap<>();
 	
 	/**
 	 * Initializes the AIs and Mods and puts them in the collections.
@@ -50,9 +51,9 @@ public class ModCollection {
 		ais.put("Medium", new ScoringAI(AIs.medium(), AIs::mediumDeck));
 		ais.put("Fighter", new ScoringAI(AIs.fighter(), AIs::fighterDeck));
 		
-		mods.put(CardshifterConstants.VANILLA, new PhrancisGameNewAttackSystem());
-		mods.put("Cyborg-Spells", new PhrancisGameWithSpells());
-		mods.put("Test", new TestMod());
+		mods.put(CardshifterConstants.VANILLA, () -> new PhrancisGameNewAttackSystem());
+		mods.put("Cyborg-Spells", () -> new PhrancisGameWithSpells());
+		mods.put("Test", () -> new TestMod());
 	}
 	
 	/**
@@ -68,12 +69,15 @@ public class ModCollection {
 		DirectoryModLoader loader = new DirectoryModLoader(directory);
 		List<String> loadableMods = loader.getAvailableMods();
 		for (String modName : loadableMods) {
-			try {
-				Mod mod = loader.load(modName);
-				mods.put(mod.getName(), mod);
-			} catch (ModNotLoadableException e) {
-				logger.warn("Unable to load mod " + modName, e);
-			}
+			mods.put(modName, () -> {
+				try {
+					Mod mod = loader.load(modName);
+					return mod;
+				} catch (ModNotLoadableException e) {
+					logger.warn("Unable to load mod " + modName, e);
+					return null;
+				}
+			});
 		}
 	}
 	
@@ -100,7 +104,8 @@ public class ModCollection {
 	 * @return Mod object
 	 */
 	public ECSMod getModFor(String name) {
-		return mods.get(name);
+		Supplier<ECSMod> supplier = mods.get(name);
+		return supplier == null ? null : supplier.get();
 	}
 
 	public Path getDefaultModLocation() {
