@@ -1,3 +1,81 @@
+##### This file specifies available cards and their values and effects on game start.
+### Last revision: 2015-02-14
+#
+##### General notes
+# - The parser ignores line that begin with # character, so use those for comments.
+# - The cards are loaded by the client at run time, so a change to this file should apply to a new game without a need to restart the server.
+#
+##### Card identity values
+# * These are aesthetic only.
+#
+# - name=Some Name
+# Name of the card as displayed in game. No quotes needed.
+#
+# - flavor=Some text
+# Flavor text of the card as displayed in game. Leave those commented out for now as it is not implemented yet. No quotes needed.
+#
+##### Card property values
+# * These are the core values of cards during gameplay.
+# * DO NOT USE ANY SPACES BETWEEN OPERATORS, VALUES, ETC.
+# * All 'n' values need to be integers.
+#
+# - apply:creature:"Type"
+# Defines the card as a creature, and its creature type.
+# Parameters: "Mech", "Bio".
+#
+# - apply:enchantment
+# Defines the card as an enchantment. 
+#
+# - apply:health:n
+# A creature card's health.
+#
+# - attack=n
+# A creature card's attack power.
+#
+# - manaCost=n
+# A card's casting cost in mana units.
+#
+# - scrap=n
+# A card's reward in scrap units once scrapped.
+#
+# - scrapCost=n
+# A card's casting cost in scrap units.
+#
+# - sickness=0
+# A value of zero (0) specifies the card has "Rush".
+# On casting, card is not subject to sickness and can be used on the same turn.
+#
+# - DENY_COUNTERATTACK=1
+# A value of 1 specifies the card has "Ranged".
+# When a ranged creature attacks, the target's attack value is not applied against this card's health value.
+# A ranged card must "reload" next turn after attacking, making it unable to attack next turn.
+#
+#
+##### Card special effects and related parameters
+### Effective version 0.6-SNAPSHOT, 2015-02-14
+# * Effects documented below can be applied to cards.
+# * The syntax is very strict, avoid all spaces unless specificed otherwise.
+# * The specific effects' Java code can be found on Github following this path:
+#     Cardshifter/cardshifter-core/src/main/java/net/zomis/cardshifter/ecs/usage/PhrancisGame.java
+#   To find effects and related parameter, search the file for: Consumer<Entity>
+#
+# - apply:noAttack
+# Defines the card as unable to attack another card or player.
+#
+# - apply:summon:n,"Creature Name"
+# On casting, summons n creatures of name "Creature Name".
+#
+# - apply:healTurnEnd:n
+# Heals the casting player for n health after each turn the card is in play.
+#
+# - apply:giveRush
+# Card applies the "Rush" effect (sickness=0) onto its target.
+#
+# - apply:giveRanged
+# Card applies the "Ranged" effect onto its target.
+
+### Begin card list
+
 [entity]
 name=Spareparts
 apply:creature:"Mech"
