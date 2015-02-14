@@ -264,11 +264,15 @@ public class PhrancisGame implements ECSMod {
 		game.addSystem(new AttackDamageYGO(PhrancisResources.ATTACK, PhrancisResources.HEALTH, allowCounterAttack));
 		game.addSystem(new UseCostSystem(ATTACK_ACTION, PhrancisResources.ATTACK_AVAILABLE, entity -> 1, entity -> entity));
 		game.addSystem(new RestoreResourcesToSystem(entity -> entity.hasComponent(CreatureTypeComponent.class) 
-				&& Cards.isOnZone(entity, BattlefieldComponent.class), PhrancisResources.ATTACK_AVAILABLE, entity -> 1));
+				&& Cards.isOnZone(entity, BattlefieldComponent.class)
+				&& Cards.isOwnedByCurrentPlayer(entity), PhrancisResources.ATTACK_AVAILABLE, entity -> 1));
 		game.addSystem(new RestoreResourcesToSystem(entity -> entity.hasComponent(CreatureTypeComponent.class)
-				&& Cards.isOnZone(entity, BattlefieldComponent.class), PhrancisResources.SICKNESS, entity -> 0));
+				&& Cards.isOnZone(entity, BattlefieldComponent.class)
+				&& Cards.isOwnedByCurrentPlayer(entity), PhrancisResources.SICKNESS,
+				entity -> Math.max(0, sickness.getFor(entity) - 1)));
 		game.addSystem(new TrampleSystem(PhrancisResources.HEALTH));
-		
+		game.addSystem(new ApplyAfterAttack(e -> allowCounterAttackRes.getFor(e) > 0, e -> sickness.resFor(e).set(2)));
+
 		// Actions - Enchant
 		game.addSystem(new PlayFromHandSystem(ENCHANT_ACTION));
 		game.addSystem(new UseCostSystem(ENCHANT_ACTION, PhrancisResources.SCRAP, scrapCostResource::getFor, owningPlayerPays));

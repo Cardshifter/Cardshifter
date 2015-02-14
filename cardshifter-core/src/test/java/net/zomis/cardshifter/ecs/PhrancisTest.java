@@ -241,7 +241,28 @@ public class PhrancisTest extends GameTest {
 		useAction(scrapped, PhrancisGame.SCRAP_ACTION);
 		assertResource(currentPlayer(), PhrancisResources.SCRAP, 4);
 	}
-	
+
+	@Test
+	public void rangedCausesSickness() {
+		Entity attacker = mod.createCreature(0, field.get(currentPlayer()), 1, 1, "B0T", 0);
+		ResourceRetriever ranged = ResourceRetriever.forResource(PhrancisResources.DENY_COUNTERATTACK);
+		ranged.set(attacker, 1);
+		assertResource(attacker, PhrancisResources.SICKNESS, 1);
+		nextPhase();
+		nextPhase();
+		assertResource(attacker, PhrancisResources.SICKNESS, 0);
+		useActionWithTarget(attacker, PhrancisGame.ATTACK_ACTION, opponent());
+		assertResource(attacker, PhrancisResources.SICKNESS, 2);
+		useFail(attacker, PhrancisGame.ATTACK_ACTION);
+		nextPhase();
+		assertResource(attacker, PhrancisResources.SICKNESS, 2);
+		nextPhase();
+		assertResource(attacker, PhrancisResources.SICKNESS, 1);
+		useFail(attacker, PhrancisGame.ATTACK_ACTION);
+		nextPhase();
+		nextPhase();
+		useActionWithTarget(attacker, PhrancisGame.ATTACK_ACTION, opponent());
+	}
 
 	@Test
 	public void noScrapOnSameTurn() {
