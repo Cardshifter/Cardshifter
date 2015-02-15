@@ -2,8 +2,8 @@
 ### Last revision: 2015-02-14
 #
 ##### General notes
-# - The parser ignores line that begin with # character, so use those for comments.
-# - The cards are loaded by the client at run time, so a change to this file should apply to a new game without a need to restart the server.
+# * The parser ignores line that begin with # character, so use those for comments.
+# * The cards are loaded by the client at run time, so a change to this file should apply to a new game without a need to restart the server.
 #
 ##### Card identity values
 # * These are aesthetic only.
@@ -74,7 +74,9 @@
 # - apply:giveRanged
 # Card applies the "Ranged" effect onto its target.
 
-### Begin card list
+##### Begin card list
+
+### Mechs
 
 [entity]
 name=Spareparts
@@ -83,6 +85,7 @@ attack=0
 apply:health:1
 scrap=3
 manaCost=0
+# flavor=Cobbled together from whatever was lying around at the time.
 
 [entity]
 name=Gyrodroid
@@ -92,6 +95,7 @@ apply:health:1
 scrap=1
 manaCost=1
 DENY_COUNTERATTACK=1
+# flavor=A flying, spherical droid that shoots weak laser beams at nearby targets.
 
 [entity]
 name=The Chopper
@@ -100,6 +104,7 @@ attack=2
 apply:health:1
 scrap=1
 apply:creature:"Mech"
+# flavor=Looks like a flying circular blade with a sphere in the middle.
 
 [entity]
 name=Shieldmech
@@ -108,6 +113,7 @@ attack=1
 apply:health:2
 scrap=1
 apply:creature:"Mech"
+# flavor=A small, flying shield generator droid.
 
 [entity]
 name=Humadroid
@@ -116,6 +122,7 @@ attack=3
 apply:health:3
 scrap=2
 apply:creature:"Mech"
+# flavor=You might mistake it for a human, but it won’t mistake you for a mech.
 
 [entity]
 name=Assassinatrix
@@ -125,6 +132,7 @@ apply:health:2
 scrap=2
 apply:creature:"Mech"
 DENY_COUNTERATTACK=1
+# flavor=Humanoid in form, except for two massive cannons in place of arms.
 
 [entity]
 name=Fortimech
@@ -133,6 +141,7 @@ attack=2
 apply:health:4
 scrap=2
 apply:creature:"Mech"
+# flavor=About the only place that a hume is safe during a firefight is inside one of these.
 
 [entity]
 name=Scout Mech
@@ -142,6 +151,7 @@ apply:health:1
 scrap=2
 apply:creature:"Mech"
 sickness=0
+# flavor=The fastest mech on two legs. You don’t want to see the ones with four.
 
 [entity]
 name=Supply Mech
@@ -151,6 +161,7 @@ apply:health:5
 scrap=3
 apply:creature:"Mech"
 apply:noAttack
+# flavor=Worth more than its weight in scrap, and it is pretty heavy.
 
 [entity]
 name=Modleg Ambusher
@@ -160,6 +171,7 @@ apply:health:3
 scrap=3
 apply:creature:"Mech"
 sickness=0
+# flavor=Uses the legs of other bots to enhance its own speed.
 
 [entity]
 name=Heavy Mech
@@ -169,6 +181,7 @@ apply:health:6
 scrap=3
 apply:creature:"Mech"
 sickness=0
+# flavor=The bigger they are, the harder they fall. Eventually.
 
 [entity]
 name=Waste Runner
@@ -177,16 +190,19 @@ attack=4
 apply:health:4
 scrap=3
 apply:creature:"Mech"
+# flavor=Armored and armed with superior arms.
 
 
 
-# BIOS
+### Bios
+
 [entity]
 name=Conscript
 manaCost=2
 attack=2
 apply:health:2
 apply:creature:"Bio"
+# flavor=He just signed up last week and he is very excited to fight.
 
 [entity]
 name=Longshot
@@ -195,6 +211,7 @@ attack=3
 apply:health:2
 apply:creature:"Bio"
 DENY_COUNTERATTACK=1
+# flavor=Eyes and reflexes augmented for maximum deadliness.
 
 [entity]
 name=Bodyman
@@ -202,6 +219,7 @@ manaCost=4
 attack=2
 apply:health:3
 apply:creature:"Bio"
+# flavor=Strength augmented with mechanical musculature.
 
 [entity]
 name=Vetter
@@ -209,6 +227,7 @@ manaCost=5
 attack=3
 apply:health:3
 apply:creature:"Bio"
+# flavor=A retired conscript with a desire to jack and make some quick creds.
 
 [entity]
 name=Field Medic
@@ -217,6 +236,7 @@ attack=1
 apply:health:5
 apply:creature:"Bio"
 apply:healTurnEnd:1
+# flavor=Unsung hero responsible for keeping countless troops alive.
 
 [entity]
 name=Wastelander
@@ -224,6 +244,7 @@ manaCost=6
 attack=4
 apply:health:4
 apply:creature:"Bio"
+# flavor=Spent his life learning the lessons of the wastelands.
 
 [entity]
 name=Commander
@@ -232,6 +253,7 @@ attack=5
 apply:health:3
 apply:creature:"Bio"
 sickness=0
+# flavor=A professional soldier for the government.
 
 [entity]
 name=Cyberpimp
@@ -239,6 +261,7 @@ manaCost=6
 attack=3
 apply:health:5
 apply:creature:"Bio"
+# flavor=Supersized and heavily augmented.
 
 [entity]
 name=Cyborg
@@ -246,6 +269,7 @@ manaCost=7
 attack=5
 apply:health:5
 apply:creature:"Bio"
+# flavor=He’s more machine than human now.
 
 [entity]
 name=Web Boss
@@ -253,6 +277,7 @@ manaCost=8
 attack=6
 apply:health:6
 apply:creature:"Bio"
+# flavor=Leader of a gang that primarily operates on the web.
 
 [entity]
 name=Inside Man
@@ -262,9 +287,10 @@ apply:health:6
 apply:creature:"Bio"
 apply:noAttack
 apply:summon:2,"Bodyman"
+# flavor=A government official with wider web control. Usually brings friends.
 
 
-# ENCHANTMENTS
+### ENCHANTMENTS
 
 [entity]
 name=Bionic Arms
@@ -272,6 +298,7 @@ attack=2
 health=0
 scrapCost=1
 apply:enchantment
+# flavor=These arms will give strength to even the most puny individual.
 
 [entity]
 name=Body Armor
@@ -279,6 +306,7 @@ attack=0
 health=2
 scrapCost=1
 apply:enchantment
+# flavor=Steel-reinforced armor to absord damage from blows and shots.
 
 [entity]
 name=Adrenalin Injection
@@ -287,6 +315,7 @@ health=1
 scrapCost=1
 apply:enchantment
 apply:giveRush
+# flavor=An injection to increase speed and body function.
 
 [entity]
 name=Steroid Implants
@@ -294,6 +323,7 @@ attack=2
 health=1
 scrapCost=2
 apply:enchantment
+# flavor=Intraveneous implants that feed the body for increased strength.
 
 [entity]
 name=Reinforced Cranial Implants
@@ -301,6 +331,7 @@ attack=1
 health=2
 scrapCost=2
 apply:enchantment
+# flavor=Offers head protection as well as a slight increase in brain activity.
 
 [entity]
 name=Cybernetic Arm Cannon
@@ -309,6 +340,7 @@ health=0
 scrapCost=2
 apply:enchantment
 apply:giveRanged
+# flavor=Replaces the forearm with a powerful firearm for massive damage.
 
 [entity]
 name=Exoskeleton
@@ -316,6 +348,7 @@ attack=0
 health=3
 scrapCost=2
 apply:enchantment
+# flavor=This very invasive operation reinforces bone tissue with titanium.
 
 [entity]
 name=Artificial Intelligence Implants
@@ -323,6 +356,7 @@ attack=2
 health=3
 scrapCost=3
 apply:enchantment
+# flavor=An advanced processor is connected to the subject's brain, replacing personality with extreme intelligence and reflexes.
 
 [entity]
 name=Full-body Cybernetics Upgrade
@@ -330,4 +364,5 @@ attack=3
 health=3
 scrapCost=5
 apply:enchantment
+# flavor=Most of the subject's body is converted to cybernetics, increasing strength and resilience substantially.
 
