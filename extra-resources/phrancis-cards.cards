@@ -17,10 +17,10 @@
 ##### Card property values
 # * These are the core values of cards during gameplay.
 # * DO NOT USE ANY SPACES BETWEEN OPERATORS, VALUES, ETC.
-# * All 'n' values need to be integers.
+# * All 'n' values need to be positive integers. (whole numbers)
 #
 # - apply:creature:"Type"
-# Defines the card as a creature, and its creature type.
+# Defines the card as a creature, and sets its creature type.
 # Parameters: "Mech", "Bio".
 #
 # - apply:enchantment
@@ -35,11 +35,11 @@
 # - manaCost=n
 # A card's casting cost in mana units.
 #
-# - scrap=n
-# A card's reward in scrap units once scrapped.
-#
 # - scrapCost=n
 # A card's casting cost in scrap units.
+#
+# - scrap=n
+# A card's reward in scrap units once scrapped. Only creatures of type "Mech" can be scrapped.
 #
 # - sickness=0
 # A value of zero (0) specifies the card has "Rush".
@@ -48,7 +48,7 @@
 # - DENY_COUNTERATTACK=1
 # A value of 1 specifies the card has "Ranged".
 # When a ranged creature attacks, the target's attack value is not applied against this card's health value.
-# A ranged card must "reload" next turn after attacking, making it unable to attack next turn.
+# A ranged card must "reload" next turn after attacking, making it unable to perform an action next turn.
 #
 #
 ##### Card special effects and related parameters
