@@ -17,10 +17,10 @@
 ##### Card property values
 # * These are the core values of cards during gameplay.
 # * DO NOT USE ANY SPACES BETWEEN OPERATORS, VALUES, ETC.
-# * All 'n' values need to be positive integers. (whole numbers)
+# * All 'n' values need to be integers.
 #
 # - apply:creature:"Type"
-# Defines the card as a creature, and sets its creature type.
+# Defines the card as a creature, and its creature type.
 # Parameters: "Mech", "Bio".
 #
 # - apply:enchantment
@@ -35,11 +35,11 @@
 # - manaCost=n
 # A card's casting cost in mana units.
 #
+# - scrap=n
+# A card's reward in scrap units once scrapped.
+#
 # - scrapCost=n
 # A card's casting cost in scrap units.
-#
-# - scrap=n
-# A card's reward in scrap units once scrapped. Only creatures of type "Mech" can be scrapped.
 #
 # - sickness=0
 # A value of zero (0) specifies the card has "Rush".
@@ -48,7 +48,7 @@
 # - DENY_COUNTERATTACK=1
 # A value of 1 specifies the card has "Ranged".
 # When a ranged creature attacks, the target's attack value is not applied against this card's health value.
-# A ranged card must "reload" next turn after attacking, making it unable to perform an action next turn.
+# A ranged card must "reload" next turn after attacking, making it unable to attack next turn.
 #
 #
 ##### Card special effects and related parameters
@@ -85,6 +85,7 @@ attack=0
 apply:health:1
 scrap=3
 manaCost=0
+sickness=0
 # flavor=Cobbled together from whatever was lying around at the time.
 
 [entity]
@@ -103,6 +104,7 @@ manaCost=2
 attack=2
 apply:health:1
 scrap=1
+sickness=0
 apply:creature:"Mech"
 # flavor=Looks like a flying circular blade with a sphere in the middle.
 
@@ -128,7 +130,7 @@ apply:creature:"Mech"
 name=Assassinatrix
 manaCost=3
 attack=4
-apply:health:2
+apply:health:1
 scrap=2
 apply:creature:"Mech"
 DENY_COUNTERATTACK=1
@@ -159,6 +161,7 @@ manaCost=3
 attack=0
 apply:health:5
 scrap=3
+sickness=0
 apply:creature:"Mech"
 apply:noAttack
 # flavor=Worth more than its weight in scrap, and it is pretty heavy.
@@ -180,7 +183,6 @@ attack=3
 apply:health:6
 scrap=3
 apply:creature:"Mech"
-sickness=0
 # flavor=The bigger they are, the harder they fall. Eventually.
 
 [entity]
@@ -201,6 +203,7 @@ name=Conscript
 manaCost=2
 attack=2
 apply:health:2
+sickness=0
 apply:creature:"Bio"
 # flavor=He just signed up last week and he is very excited to fight.
 
@@ -208,7 +211,7 @@ apply:creature:"Bio"
 name=Longshot
 manaCost=3
 attack=3
-apply:health:2
+apply:health:1
 apply:creature:"Bio"
 DENY_COUNTERATTACK=1
 # flavor=Eyes and reflexes augmented for maximum deadliness.
