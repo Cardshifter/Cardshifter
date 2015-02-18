@@ -63,9 +63,12 @@ public class DeckBuilderWindow {
 	private CardInfoMessage cardBeingDragged;
 	private Consumer<DeckConfig> configCallback;
 	private String deckToLoad;
-	
-	public void acceptDeckConfig(DeckConfig deckConfig, Consumer<DeckConfig> configCallback) {
+	private File deckDirectory;
+
+	public void acceptDeckConfig(DeckConfig deckConfig, String modName, Consumer<DeckConfig> configCallback) {
 		this.configCallback = configCallback;
+		this.deckDirectory = new File("decks", modName);
+		deckDirectory.mkdirs();
 		this.activeDeckConfig = deckConfig;
 		this.cardList = deckConfig.getCardData();
 	}
@@ -129,12 +132,11 @@ public class DeckBuilderWindow {
 
 	private void displaySavedDecks() {
 		this.deckListBox.getChildren().clear();
-		File dir = new File(".");
-		if (dir.listFiles() != null) {
-			for (File file : dir.listFiles()) {
+		if (deckDirectory.listFiles() != null) {
+			for (File file : deckDirectory.listFiles()) {
 				try {
 					if ((CardshifterIO.mapper().readValue(file, DeckConfig.class) instanceof DeckConfig)) {
-						SavedDeckButton deckButton = new SavedDeckButton(this.deckListBox.getPrefWidth(), 40, file.getName(), this);
+						SavedDeckButton deckButton = new SavedDeckButton(this.deckListBox.getPrefWidth(), 40, cleanName(file.getName()), this);
 						this.deckListBox.getChildren().add(deckButton);
 					}
 				} catch (Exception e) {
@@ -145,7 +147,15 @@ public class DeckBuilderWindow {
 			}
 		}
 	}
-	
+
+	private String cleanName(String name) {
+		final String extension = ".deck";
+		if (name.endsWith(extension)) {
+			return name.substring(0, name.length() - extension.length());
+		}
+		return name;
+	}
+
 	private void displayActiveDeck() {
 		this.activeDeckBox.getChildren().clear();
 		List<Integer> sortedKeys = new ArrayList<>(this.activeDeckConfig.getChosen().keySet());
@@ -267,13 +277,13 @@ public class DeckBuilderWindow {
 	}
 	
 	private void saveDeck(MouseEvent event) {
-		if(!this.deckNameBox.textProperty().get().isEmpty()) {
+		if(!this.deckNameBox.getText().isEmpty()) {
 			try {
-				File file = new File(this.deckNameBox.textProperty().get() + ".deck");
+				File file = deckFile(deckNameBox.getText());
 				if (file.isFile()) {
 					System.out.println("Deck already exists");
 				} else {
-					CardshifterIO.mapper().writeValue(new File(this.deckNameBox.textProperty().get() + ".deck"), this.activeDeckConfig);
+					CardshifterIO.mapper().writeValue(deckFile(deckNameBox.getText()), this.activeDeckConfig);
 				}
 			} catch (Exception e) {
 				System.out.println("Deck failed to save");
@@ -285,9 +295,9 @@ public class DeckBuilderWindow {
 	private void loadDeck(MouseEvent event) {
 		if (this.deckToLoad != null) {
 			try {
-				this.activeDeckConfig = CardshifterIO.mapper().readValue(new File(this.deckToLoad), DeckConfig.class);
+				this.activeDeckConfig = CardshifterIO.mapper().readValue(deckFile(this.deckToLoad), DeckConfig.class);
 				String truncatedDeckName = this.deckToLoad.substring(0, this.deckToLoad.length()- 5);
-				this.deckNameBox.textProperty().set(truncatedDeckName);
+				this.deckNameBox.setText(truncatedDeckName);
 			} catch (Exception e) {
 				System.out.println("Deck failed to load");
 			}
@@ -299,7 +309,8 @@ public class DeckBuilderWindow {
 	private void deleteDeck(MouseEvent event) {
 		if(this.deckToLoad != null) {
 			try {
-				File deckToDelete = new File(this.deckToLoad);
+				File deckToDelete = deckFile(this.deckToLoad);
+				System.out.println("deck " + deckToDelete + " exists? " + deckToDelete.exists());
 				if (deckToDelete.exists()) {
 					deckToDelete.delete();
 				}
@@ -308,6 +319,10 @@ public class DeckBuilderWindow {
 			}
 		}
 		this.displaySavedDecks();
+	}
+
+	private File deckFile(String deckName) {
+		return new File(deckDirectory, deckName + ".deck");
 	}
  	
 	public void clearSavedDeckButtons() {

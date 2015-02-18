@@ -80,7 +80,7 @@ public class ReplayRecordSystem implements ECSSystem {
 		Set<Entity> configs = game.getEntitiesWithComponent(ConfigComponent.class);
 		for (Entity configEntity : configs) {
 			ConfigComponent config = configEntity.getComponent(ConfigComponent.class);
-			entityConfigs.put(configEntity.getId(), new PlayerConfigMessage(0, config.getConfigs()));
+			entityConfigs.put(configEntity.getId(), new PlayerConfigMessage(0, modName, config.getConfigs()));
 		}
 		
 	}

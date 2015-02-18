@@ -215,7 +215,7 @@ public final class GameClientLauncherController implements Initializable {
 			Parent root = (Parent)loader.load();
 			DeckBuilderWindow controller = loader.<DeckBuilderWindow>getController();
 			
-			controller.acceptDeckConfig(deckConfig, cnf -> human.sentToServer(incorporateConfig(conf, deckConfig, cnf)));
+			controller.acceptDeckConfig(deckConfig, conf.getModName(), cnf -> human.sentToServer(incorporateConfig(conf, deckConfig, cnf)));
 			controller.configureWindow();
 			
 			if (!startingGame) {
@@ -244,7 +244,7 @@ public final class GameClientLauncherController implements Initializable {
 			}
 		}
 		
-		return new PlayerConfigMessage(conf.getGameId(), configs);
+		return new PlayerConfigMessage(conf.getGameId(), conf.getModName(), configs);
 	}
 
 	@Override

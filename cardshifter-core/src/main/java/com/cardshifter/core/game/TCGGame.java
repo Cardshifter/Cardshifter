@@ -342,7 +342,7 @@ public class TCGGame extends ServerGame {
 		for (ClientIO io : getPlayers()) {
 			Entity playerEntity = playerFor(io);
 			if (configEntities.contains(playerEntity)) {
-				PlayerConfigMessage configMessage = new PlayerConfigMessage(getId(), playerEntity.getComponent(ConfigComponent.class).getConfigs());
+				PlayerConfigMessage configMessage = new PlayerConfigMessage(getId(), modName, playerEntity.getComponent(ConfigComponent.class).getConfigs());
 				io.sendToClient(configMessage);
 				if (io instanceof FakeAIClientTCG) {
 					FakeAIClientTCG aiClient = (FakeAIClientTCG) io;

@@ -200,7 +200,7 @@ public class GameClientLobby implements Initializable {
 			Object value = entry.getValue();
 			if (value instanceof DeckConfig) {
 				DeckConfig deckConfig = (DeckConfig) value;
-				this.showDeckBuilderWindow(deckConfig, true);
+				this.showDeckBuilderWindow(deckConfig, configMessage.getModName(), true);
 			}
 		}		
 	}
@@ -216,20 +216,20 @@ public class GameClientLobby implements Initializable {
 			}
 		}
 		
-		this.send(new PlayerConfigMessage(this.currentPlayerConfig.getGameId(), configs));
+		this.send(new PlayerConfigMessage(this.currentPlayerConfig.getGameId(), currentPlayerConfig.getModName(), configs));
 	}
 	
 	private void openDeckBuilderWindowWithoutGame(MouseEvent event) {
 		this.send(new ServerQueryMessage(Request.DECK_BUILDER, selectedGameType));
 	}
 	
-	private void showDeckBuilderWindow(DeckConfig deckConfig, boolean startingGame) {
+	private void showDeckBuilderWindow(DeckConfig deckConfig, String modName, boolean startingGame) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("DeckBuilderDocument.fxml"));
 			Parent root = (Parent)loader.load();
 			DeckBuilderWindow controller = loader.<DeckBuilderWindow>getController();
 			
-			controller.acceptDeckConfig(deckConfig, conf -> this.sendDeckAndPlayerConfigToServer(conf));
+			controller.acceptDeckConfig(deckConfig, modName, conf -> this.sendDeckAndPlayerConfigToServer(conf));
 			controller.configureWindow();
 			
 			this.openDeckBuilderWindow = controller;

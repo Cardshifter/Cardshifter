@@ -14,14 +14,16 @@ public class PlayerConfigMessage extends Message {
 	private final Map<String, Object> configs;
 	
 	private final int gameId;
-	
+	private final String modName;
+
 	PlayerConfigMessage() {
-		this(0, null);
+		this(0, "", null);
 	}
 
-	public PlayerConfigMessage(int gameId, Map<String, Object> configs) {
+	public PlayerConfigMessage(int gameId, String modName, Map<String, Object> configs) {
 		super("playerconfig");
 		this.gameId = gameId;
+		this.modName = modName;
 		this.configs = configs;
 	}
 	
@@ -32,5 +34,8 @@ public class PlayerConfigMessage extends Message {
 	public int getGameId() {
 		return gameId;
 	}
-	
+
+	public String getModName() {
+		return modName;
+	}
 }
