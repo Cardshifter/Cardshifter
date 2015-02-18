@@ -263,8 +263,9 @@ public class TCGGame extends ServerGame {
 	protected void onStart() {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss").withZone(ZoneId.systemDefault());
 		String time = formatter.format(Instant.now());
-		
-		game.addSystem(new ReplayRecordSystem(game, modName, new File("replay-" + getId() + "-" + time + ".json")));
+		File directory = new File("replays", modName);
+		directory.mkdirs();
+		game.addSystem(new ReplayRecordSystem(game, modName, new File(directory, "replay-" + getId() + "-" + time + ".json")));
 		
 		if (!preStartForConfiguration()) {
 			this.startECSGame();
