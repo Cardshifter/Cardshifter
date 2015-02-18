@@ -131,8 +131,8 @@ public class ServerConnectionTest {
 		assertEquals(2, game.getGameModel().getEntitiesWithComponent(PlayerComponent.class).size());
 		assertTrue(game.hasPlayer(server.getClients().get(userId)));
 		assertTrue(game.hasPlayer(server.getClients().get(2)));
-		game.incomingPlayerConfig(new PlayerConfigMessage(game.getId(), modName, new HashMap<>()), server.getClients().get(2));
-		game.incomingPlayerConfig(new PlayerConfigMessage(game.getId(), modName, new HashMap<>()), server.getClients().get(userId));
+		game.incomingPlayerConfig(new PlayerConfigMessage(game.getId(), TEST_MOD, new HashMap<>()), server.getClients().get(2));
+		game.incomingPlayerConfig(new PlayerConfigMessage(game.getId(), TEST_MOD, new HashMap<>()), server.getClients().get(userId));
 		Thread.sleep(1000);
 		assertEquals(ECSGameState.RUNNING, game.getState());
 	}
@@ -144,7 +144,7 @@ public class ServerConnectionTest {
 		TCGGame game = (TCGGame) server.getGames().get(1);
 		ClientIO io = server.getClients().get(userId);
 		assertEquals(2, game.getGameModel().getEntitiesWithComponent(PlayerComponent.class).size());
-		game.incomingPlayerConfig(new PlayerConfigMessage(game.getId(), modName, new HashMap<>()), io);
+		game.incomingPlayerConfig(new PlayerConfigMessage(game.getId(), TEST_MOD, new HashMap<>()), io);
 		assertEquals(ECSGameState.RUNNING, game.getGameModel().getGameState());
 		Entity human = game.playerFor(io);
 		Entity ai = game.getGameModel().getEntitiesWithComponent(AIComponent.class).stream().findFirst().get();
