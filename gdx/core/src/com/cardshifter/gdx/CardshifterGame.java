@@ -64,7 +64,10 @@ public class CardshifterGame extends Game {
 
     @Override
     public void dispose() {
+        super.dispose();
         batch.dispose();
+        skin.dispose();
+        stage.dispose();
     }
 
     @Override
