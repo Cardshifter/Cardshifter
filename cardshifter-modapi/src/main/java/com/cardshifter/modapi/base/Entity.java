@@ -57,13 +57,13 @@ public final class Entity {
 	/**
 	 * Get all components that are subtypes of a specific class
 	 * 
-	 * @param compoentClass
+	 * @param componentClass
 	 * @return
 	 */
-	public <T extends Component> Collection<T> getSuperComponents(Class<T> compoentClass) {
+	public <T extends Component> Collection<T> getSuperComponents(Class<T> componentClass) {
 		return this.components.entrySet().stream()
-				.filter(entry -> compoentClass.isAssignableFrom(entry.getKey()))
-				.map(entry -> compoentClass.cast(entry.getValue()))
+				.filter(entry -> componentClass.isAssignableFrom(entry.getKey()))
+				.map(entry -> componentClass.cast(entry.getValue()))
 				.collect(Collectors.toList());
 	}
 	
