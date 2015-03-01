@@ -154,11 +154,21 @@ scrap=1
 [entity]
 name=Shieldmech
 apply:creature:"Mech"
-apply:health:2
+apply:health:3
 manaCost=2
 attack=1
 scrap=1
 # flavor=A small, flying shield generator droid.
+# flavor property: https://github.com/Cardshifter/Cardshifter/issues/151
+
+[entity]
+name=Robot Guard
+apply:creature:"Mech"
+apply:health:2
+manacost=2
+attack=2
+scrap=1
+# flavor=Common and inexpensive robot often use for personal protection.
 # flavor property: https://github.com/Cardshifter/Cardshifter/issues/151
 
 [entity]
@@ -213,6 +223,17 @@ manaCost=3
 attack=0
 scrap=3
 # flavor=Worth more than its weight in scrap, and it is pretty heavy.
+# flavor property: https://github.com/Cardshifter/Cardshifter/issues/151
+
+[entity]
+name=F.M.U.
+apply:creature:"Mech"
+apply:health:4
+apply:noAttack
+apply:healTurnEnd:1
+manaCost=4
+scrap=2
+# flavor=The Field Medical Unit is equipped with modern laser surgical tools and a variety of remedy shots.
 # flavor property: https://github.com/Cardshifter/Cardshifter/issues/151
 
 [entity]
@@ -439,5 +460,4 @@ health=3
 scrapCost=5
 # flavor=Most of the subject's body is converted to cybernetics, increasing strength and resilience substantially.
 # flavor property: https://github.com/Cardshifter/Cardshifter/issues/151
-
 
