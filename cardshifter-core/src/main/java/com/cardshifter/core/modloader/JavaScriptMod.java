@@ -38,28 +38,28 @@ public class JavaScriptMod implements ECSMod {
     @Override
     public void declareConfiguration(ECSGame game) {
         if (exception != null) {
-            throw new RuntimeException(exception);
+            throw new RuntimeException("Error initializing mod", exception);
         }
         try {
             invocable.invokeFunction("declareConfiguration", game);
         } catch (ScriptException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error declaring configuration: " + e, e);
         } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error declaring configuration: " + e, e);
         }
     }
 
     @Override
     public void setupGame(ECSGame game) {
         if (exception != null) {
-            throw new RuntimeException(exception);
+            throw new RuntimeException("Error initializing mod", exception);
         }
         try {
             invocable.invokeFunction("setupGame", game);
         } catch (ScriptException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error setting up game", e);
         } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error setting up game", e);
         }
     }
 }
