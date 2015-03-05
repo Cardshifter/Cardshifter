@@ -10,6 +10,7 @@ import javax.script.ScriptException;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Created by Simon on 3/5/2015.
@@ -25,7 +26,7 @@ public class JavaScriptMod implements ECSMod {
         this.invocable = (Invocable) engine;
         Exception exception;
         try {
-            engine.eval(new InputStreamReader(new FileInputStream(name)));
+            engine.eval(new InputStreamReader(new FileInputStream(name), StandardCharsets.UTF_8));
             exception = null;
         } catch (ScriptException e) {
             exception = e;
