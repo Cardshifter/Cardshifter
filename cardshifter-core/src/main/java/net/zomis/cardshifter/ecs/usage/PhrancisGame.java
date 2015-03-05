@@ -1,7 +1,6 @@
 package net.zomis.cardshifter.ecs.usage;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map.Entry;
@@ -334,7 +333,7 @@ public class PhrancisGame implements ECSMod {
 		return entity;
 	}
 
-	private Consumer<Entity> creature(String creatureType) {
+	public Consumer<Entity> creature(String creatureType) {
 		return entity -> {
 			ActionComponent actions = new ActionComponent();
 			entity.addComponent(actions);
