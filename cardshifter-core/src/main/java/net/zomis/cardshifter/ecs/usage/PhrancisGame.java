@@ -126,6 +126,15 @@ public class PhrancisGame implements ECSMod {
 		)));
 	}
 	
+	private Consumer<Entity> damageTurnEnd(int damage) {
+		Effects effects = new Effects();
+		return en -> en.addComponent(effects.described("Heal 1 at end of turn", effects.giveSelf(
+				effects.triggerSystem(PhaseEndEvent.class,
+						(me, event) -> Players.findOwnerFor(me) == event.getOldPhase().getOwner(),
+						(me, event) -> Players.findOwnerFor(me).apply(e -> health.resFor(e).change(Math.min(0, -damage))))
+		)));
+	}
+
 	private Consumer<Entity> giveRush = e -> {
 		Effects effects = new Effects();
 		e.addComponent(effects.described("Give Rush", effects.giveTarget(PhrancisResources.SICKNESS, 0, i -> 0)));
