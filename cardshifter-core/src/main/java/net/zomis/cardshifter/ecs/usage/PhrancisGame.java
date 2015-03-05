@@ -3,6 +3,7 @@ package net.zomis.cardshifter.ecs.usage;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.BiFunction;
@@ -116,6 +117,7 @@ public class PhrancisGame implements ECSMod {
 	private final ResourceRetriever healthMax = ResourceRetriever.forResource(PhrancisResources.MAX_HEALTH);
 	private final BiFunction<Entity, Integer, Integer> restoreHealth = (e, value) ->
 			Math.max(Math.min(healthMax.getFor(e) - health.getFor(e), value), 0);
+
 	private Consumer<Entity> healTurnEnd(int heal) {
 		Effects effects = new Effects();
 		return en -> en.addComponent(effects.described("Heal 1 at end of turn", effects.giveSelf(
@@ -124,8 +126,22 @@ public class PhrancisGame implements ECSMod {
 			(me, event) -> Players.findOwnerFor(me).apply(e -> health.resFor(e).change(restoreHealth.apply(e, heal))))
 		)));
 	}
-	
-	private Consumer<Entity> giveRush = e -> {
+
+    private Consumer<Entity> damageToRandomOpponentAtEndOfTurn(int damage) {
+        Effects effects = new Effects();
+        return en -> en.addComponent(effects.described("Deal 8 damage to random enemy minion at end of turn", effects.giveSelf(
+                effects.triggerSystem(PhaseEndEvent.class,
+                        (me, event) -> Players.findOwnerFor(me) == event.getOldPhase().getOwner(),
+                        (me, event) -> {
+                            Entity opponent = Players.getNextPlayer(Players.findOwnerFor(me));
+                            List<Entity> options = opponent.getComponent(BattlefieldComponent.class).getCards();
+                            int chosenIndex = me.getGame().getRandom().nextInt();
+                            options.get(chosenIndex).apply(e -> health.resFor(e).change(-damage));
+                        }))
+        ));
+    }
+
+    private Consumer<Entity> giveRush = e -> {
 		Effects effects = new Effects();
 		e.addComponent(effects.described("Give Rush", effects.giveTarget(PhrancisResources.SICKNESS, 0, i -> 0)));
 	};
