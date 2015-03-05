@@ -127,17 +127,19 @@ public class PhrancisGame implements ECSMod {
 		)));
 	}
 
-    private Consumer<Entity> damageToRandomOpponentAtEndOfTurn(int damage) {
+    public Consumer<Entity> damageToRandomOpponentAtEndOfTurn(int damage) {
         Effects effects = new Effects();
-        return en -> en.addComponent(effects.described("Deal 8 damage to random enemy minion at end of turn", effects.giveSelf(
-                effects.triggerSystem(PhaseEndEvent.class,
-                        (me, event) -> Players.findOwnerFor(me) == event.getOldPhase().getOwner(),
-                        (me, event) -> {
-                            Entity opponent = Players.getNextPlayer(Players.findOwnerFor(me));
-                            List<Entity> options = opponent.getComponent(BattlefieldComponent.class).getCards();
-                            int chosenIndex = me.getGame().getRandom().nextInt();
-                            options.get(chosenIndex).apply(e -> health.resFor(e).change(-damage));
-                        }))
+        Filters filters = new Filters();
+        return e -> e.addComponent(effects.described("Deal " + damage + " damage to random enemy at end of turn",
+            effects.giveSelf(
+                effects.atEndOfTurn(
+                    effects.toRandom(
+                        TargetFilter.or(filters.enemy().and(filters.isCreatureOnBattlefield()),
+                                filters.enemy().and(filters.isPlayer())),
+                            (src, target) -> effects.modify(target, PhrancisResources.HEALTH, -damage).accept(target)
+                    )
+               )
+            )
         ));
     }
 

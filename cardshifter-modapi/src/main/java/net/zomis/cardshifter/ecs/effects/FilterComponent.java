@@ -19,7 +19,7 @@ public class FilterComponent extends Component implements CopyableComponent {
 	}
 	
 	public boolean check(TargetableCheckEvent event) {
-		return filter.isTargetable(event.getAction().getOwner(), event.getTarget());
+		return filter.test(event.getAction().getOwner(), event.getTarget());
 	}
 
 }

@@ -1,11 +1,9 @@
 package net.zomis.cardshifter.ecs.effects;
 
-import com.cardshifter.modapi.base.ComponentRetriever;
-import com.cardshifter.modapi.base.CreatureTypeComponent;
-import com.cardshifter.modapi.base.Retriever;
-import com.cardshifter.modapi.base.Retrievers;
+import com.cardshifter.modapi.base.*;
 import com.cardshifter.modapi.cards.BattlefieldComponent;
 import com.cardshifter.modapi.cards.Cards;
+import com.cardshifter.modapi.players.Players;
 
 public class Filters {
 
@@ -20,14 +18,18 @@ public class Filters {
 	}
 	
 	public TargetFilter friendly() {
-		return (src, target) -> Cards.isCard(target) && Cards.getOwner(src) == Cards.getOwner(target);
+		return (src, target) -> Cards.getOwner(src) == Cards.getOwner(target);
 	}
 	
 	public TargetFilter enemy() {
-		return (src, target) -> Cards.isCard(target) && Cards.getOwner(src) != Cards.getOwner(target);
+		return (src, target) -> Cards.getOwner(src) != Cards.getOwner(target);
 	}
-	
-	public TargetFilter isCreatureOnBattlefield() {
+
+    public TargetFilter isPlayer() {
+        return (src, target) -> target.hasComponent(PlayerComponent.class);
+    }
+
+    public TargetFilter isCreatureOnBattlefield() {
 		return isCreature().and(isOnBattlefield());
 	}
 	
