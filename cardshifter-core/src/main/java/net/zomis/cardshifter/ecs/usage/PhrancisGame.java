@@ -1,9 +1,9 @@
 package net.zomis.cardshifter.ecs.usage;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.BiFunction;
@@ -117,6 +117,7 @@ public class PhrancisGame implements ECSMod {
 	private final ResourceRetriever healthMax = ResourceRetriever.forResource(PhrancisResources.MAX_HEALTH);
 	private final BiFunction<Entity, Integer, Integer> restoreHealth = (e, value) ->
 			Math.max(Math.min(healthMax.getFor(e) - health.getFor(e), value), 0);
+
 	private Consumer<Entity> healTurnEnd(int heal) {
 		Effects effects = new Effects();
 		return en -> en.addComponent(effects.described("Heal 1 at end of turn", effects.giveSelf(
@@ -125,6 +126,22 @@ public class PhrancisGame implements ECSMod {
 			(me, event) -> Players.findOwnerFor(me).apply(e -> health.resFor(e).change(restoreHealth.apply(e, heal))))
 		)));
 	}
+
+    public Consumer<Entity> damageToRandomOpponentAtEndOfTurn(int damage) {
+        Effects effects = new Effects();
+        Filters filters = new Filters();
+        return e -> e.addComponent(effects.described("Deal " + damage + " damage to random enemy at end of turn",
+            effects.giveSelf(
+                effects.atEndOfTurn(
+                    effects.toRandom(
+                        TargetFilter.or(filters.enemy().and(filters.isCreatureOnBattlefield()),
+                                filters.enemy().and(filters.isPlayer())),
+                            (src, target) -> effects.modify(target, PhrancisResources.HEALTH, -damage).accept(target)
+                    )
+               )
+            )
+        ));
+    }
 	
 	private Consumer<Entity> damageTurnEnd(int damage) {
 		Effects effects = new Effects();
@@ -343,7 +360,7 @@ public class PhrancisGame implements ECSMod {
 		return entity;
 	}
 
-	private Consumer<Entity> creature(String creatureType) {
+	public Consumer<Entity> creature(String creatureType) {
 		return entity -> {
 			ActionComponent actions = new ActionComponent();
 			entity.addComponent(actions);

@@ -264,15 +264,25 @@ public class PhrancisTest extends GameTest {
 		useActionWithTarget(attacker, PhrancisGame.ATTACK_ACTION, opponent());
 	}
 
-	@Test
-	public void noScrapOnSameTurn() {
-		Entity scrapped = mod.createCreature(0, field.get(currentPlayer()), 1, 1, "B0T", 4);
-		assertResource(currentPlayer(), PhrancisResources.SCRAP, 0);
-		useFail(scrapped, PhrancisGame.SCRAP_ACTION, opponent());
-		useFail(scrapped, PhrancisGame.SCRAP_ACTION);
-	}
+    @Test
+    public void noScrapOnSameTurn() {
+        Entity scrapped = mod.createCreature(0, field.get(currentPlayer()), 1, 1, "B0T", 4);
+        assertResource(currentPlayer(), PhrancisResources.SCRAP, 0);
+        useFail(scrapped, PhrancisGame.SCRAP_ACTION, opponent());
+        useFail(scrapped, PhrancisGame.SCRAP_ACTION);
+    }
 
-	@Test
+    @Test
+    public void damageToRandomOpponent() {
+        Entity megaman = mod.createCreature(0, hand.get(currentPlayer()), 1, 1, "B0T", 0);
+        megaman.apply(mod.damageToRandomOpponentAtEndOfTurn(8));
+        useAction(megaman, PhrancisGame.PLAY_ACTION);
+        assertEquals(30, health.getFor(currentPlayer()));
+        nextPhase();
+        assertEquals(22, health.getFor(currentPlayer()));
+    }
+
+    @Test
 	public void trample() {
 		Entity attacker = mod.createCreature(0, field.get(currentPlayer()), 10, 1, "B0T", 0);
 		Resources.retriever(TrampleSystem.trample).resFor(attacker).set(1);

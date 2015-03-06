@@ -2,6 +2,7 @@ package com.cardshifter.modapi.cards;
 
 import com.cardshifter.modapi.base.ComponentRetriever;
 import com.cardshifter.modapi.base.Entity;
+import com.cardshifter.modapi.base.PlayerComponent;
 import com.cardshifter.modapi.phase.PhaseController;
 
 public class Cards {
@@ -25,7 +26,11 @@ public class Cards {
 	}
 
 	public static Entity getOwner(Entity cardEntity) {
-		return card.required(cardEntity).getOwner();
+        if (cardEntity.hasComponent(PlayerComponent.class)) {
+            return cardEntity;
+        }
+        CardComponent cardData = card.get(cardEntity);
+        return cardData == null ? null : cardData.getOwner();
 	}
 
 	public static boolean isCard(Entity target) {

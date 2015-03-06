@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Supplier;
 
+import com.cardshifter.core.modloader.JavaScriptMod;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame;
 import net.zomis.cardshifter.ecs.usage.PhrancisGameNewAttackSystem;
 import net.zomis.cardshifter.ecs.usage.PhrancisGameWithSpells;
@@ -22,6 +23,8 @@ import com.cardshifter.core.modloader.Mod;
 import com.cardshifter.core.modloader.ModNotLoadableException;
 import com.cardshifter.modapi.ai.CardshifterAI;
 import com.cardshifter.modapi.base.ECSMod;
+
+import javax.script.ScriptEngineManager;
 
 /**
  * Class where the Mods and AIs are initialized.
@@ -51,6 +54,8 @@ public class ModCollection {
 		ais.put("Medium", new ScoringAI(AIs.medium(), AIs::mediumDeck));
 		ais.put("Fighter", new ScoringAI(AIs.fighter(), AIs::fighterDeck));
 		
+        ScriptEngineManager scripts = new ScriptEngineManager();
+        mods.put("JS", () -> new JavaScriptMod("test.js", scripts));
 		mods.put(CardshifterConstants.VANILLA, () -> new PhrancisGameNewAttackSystem());
 		mods.put("Cyborg-Spells", () -> new PhrancisGameWithSpells());
 		mods.put("Test", () -> new TestMod());
