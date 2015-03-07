@@ -102,12 +102,14 @@ public class JsEffectsCardLoader implements CardLoader<Path> {
                         }
                         else {
                             //special attribute
-                            //TODO instead of hardcoding, make it possible to attach to any phase(?)
+                            //TODO instead of hardcoding, make it possible to attach to any event
                             if (sanitizedTag.equals("onendofturn")) {
                                 Effects effects = new Effects();
-                                Function<Entity, ECSSystem> effect = effects.atEndOfTurn(innerEntity -> {
-                                    card.callMember("onEndOfTurn", invokeFunction(invocable, "makeJSGame", game));
-                                });
+                                Function<Entity, ECSSystem> effect = effects.triggerSystem(
+                                    PhaseEndEvent.class,
+                                    (innerEntity, phaseEndEvent) -> true,
+                                    (innerEntity, phaseEndEvent) -> card.callMember("onEndOfTurn", invokeFunction(invocable, "makeJSGame", game))
+                                );
                                 game.addSystem(effect.apply(entity));
                             }
                         }
