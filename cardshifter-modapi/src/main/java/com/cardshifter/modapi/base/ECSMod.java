@@ -9,7 +9,7 @@ public interface ECSMod {
 	 * @param game
 	 */
 	default void declareConfiguration(ECSGame game) {
-		
+
 	}
 	
 	/**
@@ -17,4 +17,13 @@ public interface ECSMod {
 	 * @param game The game to setup
 	 */
 	void setupGame(ECSGame game);
+
+    /**
+     * Returns the class that contains the DSL definitions.
+     *
+     * @return  The class that contains the DSL definitions.
+     */
+    default Class<? extends ModDSL> dslClass() {
+        return null;
+    }
 }
