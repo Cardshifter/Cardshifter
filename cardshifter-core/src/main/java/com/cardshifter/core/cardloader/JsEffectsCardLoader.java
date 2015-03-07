@@ -6,6 +6,7 @@ import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.ECSMod;
 import com.cardshifter.modapi.base.ECSSystem;
 import com.cardshifter.modapi.base.Entity;
+import com.cardshifter.modapi.events.IEvent;
 import com.cardshifter.modapi.phase.PhaseEndEvent;
 import com.cardshifter.modapi.resources.ECSResource;
 import com.cardshifter.modapi.resources.ECSResourceMap;
@@ -102,13 +103,22 @@ public class JsEffectsCardLoader implements CardLoader<Path> {
                         }
                         else {
                             //special attribute
-                            //TODO instead of hardcoding, make it possible to attach to any event
-                            if (sanitizedTag.equals("onendofturn")) {
+                            if (sanitizedTag.startsWith("on")) {
+                                String eventClassName = tag.substring(2, tag.length()) + "Event";
+                                Class<?> uncheckedEventClass = mod.getEventMapping().get(eventClassName);
+                                if (uncheckedEventClass == null) {
+                                    throw new UncheckedCardLoadingException("Event " + eventClassName + " has not been found");
+                                }
+                                if (!IEvent.class.isAssignableFrom(uncheckedEventClass)) {
+                                    throw new UncheckedCardLoadingException("Event " + eventClassName + ": " + uncheckedEventClass + " does not implement IEvent");
+                                }
+                                Class<? extends IEvent> eventClass = IEvent.class.getClass().cast(uncheckedEventClass);
+
                                 Effects effects = new Effects();
                                 Function<Entity, ECSSystem> effect = effects.triggerSystem(
-                                    PhaseEndEvent.class,
-                                    (innerEntity, phaseEndEvent) -> true,
-                                    (innerEntity, phaseEndEvent) -> card.callMember("onEndOfTurn", invokeFunction(invocable, "makeJSGame", game))
+                                    eventClass,
+                                    (innerEntity, event) -> true,
+                                    (innerEntity, event) -> card.callMember(tag, invokeFunction(invocable, "makeJSGame", game))
                                 );
                                 game.addSystem(effect.apply(entity));
                             }

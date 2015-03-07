@@ -11,8 +11,10 @@ import com.cardshifter.modapi.base.Retrievers;
 import com.cardshifter.modapi.cards.BattlefieldComponent;
 import com.cardshifter.modapi.cards.CardComponent;
 import com.cardshifter.modapi.cards.ZoneComponent;
+import com.cardshifter.modapi.events.IEvent;
 import com.cardshifter.modapi.phase.Phase;
 import com.cardshifter.modapi.phase.PhaseController;
+import com.cardshifter.modapi.phase.PhaseEndEvent;
 import com.cardshifter.modapi.players.Players;
 import com.cardshifter.modapi.resources.ECSResource;
 import com.cardshifter.modapi.resources.ECSResourceMap;
@@ -26,7 +28,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
@@ -135,6 +139,13 @@ public class JsEffectsCardLoaderTest {
         @Override
         public Class<? extends ModDSL> dslClass() {
             return CustomModDSL.class;
+        }
+
+        @Override
+        public Map<String, Class<?>> getEventMapping() {
+            Map<String, Class<?>> map = new HashMap<>();
+            map.put("PhaseEndEvent", PhaseEndEvent.class);
+            return map;
         }
     }
 }

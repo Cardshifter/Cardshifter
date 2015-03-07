@@ -1,5 +1,10 @@
 package com.cardshifter.modapi.base;
 
+import com.cardshifter.modapi.events.IEvent;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public interface ECSMod {
 	/**
 	 * This method is called before asking each individual player to configure their options.
@@ -26,4 +31,15 @@ public interface ECSMod {
     default Class<? extends ModDSL> dslClass() {
         return null;
     }
+
+	/**
+	 * Returns a map that contains a mapping from event names to their corresponding classes.
+	 *
+	 * As example PhaseEndEvent would map to com.cardshifter.modapi.base.phase.PhaseEndEvent
+	 *
+	 * @return	A map that contains a mapping from event names to their corresponding classes.
+	 */
+	default Map<String, Class<?>> getEventMapping() {
+		return new HashMap<>();
+	}
 }

@@ -4,7 +4,7 @@ function getCards() {
             name: "Ragnaros",
             attack: 8,
             hitpoints: 8,
-            onEndOfTurn: function (game) {
+            onPhaseEnd: function (game) {
                 game.opponent().characters().pickRandom(1).dealDamage(8);
             }
         }
