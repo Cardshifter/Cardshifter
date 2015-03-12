@@ -382,7 +382,7 @@ attack=2
 apply:enchantment
 name=Bionic Arms
 attack=2
-health=0
+apply:health:0
 scrapCost=1
 # flavor=These arms will give strength to even the most puny individual.
 # flavor property: https://github.com/Cardshifter/Cardshifter/issues/151
@@ -391,7 +391,7 @@ scrapCost=1
 name=Body Armor
 apply:enchantment
 attack=0
-health=2
+apply:health:2
 scrapCost=1
 # flavor=Steel-reinforced armor to absord damage from blows and shots.
 # flavor property: https://github.com/Cardshifter/Cardshifter/issues/151
@@ -401,7 +401,7 @@ name=Adrenalin Injection
 apply:enchantment
 apply:giveRush
 attack=1
-health=1
+apply:health:1
 scrapCost=1
 # flavor=An injection to increase speed and body function.
 # flavor property: https://github.com/Cardshifter/Cardshifter/issues/151
@@ -410,7 +410,7 @@ scrapCost=1
 name=Steroid Implants
 apply:enchantment
 attack=2
-health=1
+apply:health:1
 scrapCost=2
 # flavor=Intraveneous implants that feed the body for increased strength.
 # flavor property: https://github.com/Cardshifter/Cardshifter/issues/151
@@ -419,7 +419,7 @@ scrapCost=2
 name=Reinforced Cranial Implants
 apply:enchantment
 attack=1
-health=2
+apply:health:2
 scrapCost=2
 # flavor=Offers head protection as well as a slight increase in brain activity.
 # flavor property: https://github.com/Cardshifter/Cardshifter/issues/151
@@ -429,7 +429,7 @@ name=Cybernetic Arm Cannon
 apply:enchantment
 apply:giveRanged
 attack=3
-health=0
+apply:health:0
 scrapCost=2
 # flavor=Replaces the forearm with a powerful firearm for massive damage.
 # flavor property: https://github.com/Cardshifter/Cardshifter/issues/151
@@ -438,7 +438,7 @@ scrapCost=2
 name=Exoskeleton
 apply:enchantment
 attack=0
-health=3
+apply:health:3
 scrapCost=2
 # flavor=This very invasive operation reinforces bone tissue with titanium.
 # flavor property: https://github.com/Cardshifter/Cardshifter/issues/151
@@ -447,7 +447,7 @@ scrapCost=2
 name=Artificial Intelligence Implants
 apply:enchantment
 attack=2
-health=3
+apply:health:3
 scrapCost=3
 # flavor=An advanced processor is connected to the subject's brain, replacing personality with extreme intelligence and reflexes.
 # flavor property: https://github.com/Cardshifter/Cardshifter/issues/151
@@ -456,7 +456,7 @@ scrapCost=3
 name=Full-body Cybernetics Upgrade
 apply:enchantment
 attack=3
-health=3
+apply:health:3
 scrapCost=5
 # flavor=Most of the subject's body is converted to cybernetics, increasing strength and resilience substantially.
 # flavor property: https://github.com/Cardshifter/Cardshifter/issues/151
