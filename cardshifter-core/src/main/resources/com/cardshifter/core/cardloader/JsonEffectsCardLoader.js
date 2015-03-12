@@ -41,12 +41,11 @@ JSEntities.prototype.__noSuchMethod__ = function() {
     throw new IllegalStateException("Method " + arguments[0] + " does not exist on JSEntities");
 }
 
-function loadDSL(qualifiedDslClassName) {
-    var dslType = Java.type(qualifiedDslClassName);
+function loadDSL(dslClass) {
     var Modifier = Java.type("java.lang.reflect.Modifier");
     var IllegalStateException = Java.type("java.lang.IllegalStateException");
 
-    var methods = dslType.class.getDeclaredMethods();
+    var methods = dslClass.getDeclaredMethods();
     for (var i = 0; i < methods.length; i++) {
         var method = methods[i];
         if (!Modifier.isStatic(method.getModifiers()) || !Modifier.isPublic(method.getModifiers()) || method.isSynthetic() || method.isBridge()) {

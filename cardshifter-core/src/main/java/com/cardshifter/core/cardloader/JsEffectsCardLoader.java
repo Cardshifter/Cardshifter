@@ -78,7 +78,7 @@ public class JsEffectsCardLoader implements CardLoader<Path> {
             scriptEngine.eval(new InputStreamReader(new FileInputStream(path.toFile()), StandardCharsets.UTF_8));
 
             Invocable invocable = (Invocable)scriptEngine;
-            invocable.invokeFunction("loadDSL", mod.dslClass().getName());
+            invocable.invokeFunction("loadDSL", mod.dslClass());
 
             ScriptObjectMirror cards = (ScriptObjectMirror)invocable.invokeFunction("getCards");
             if (cards.isArray()) {
