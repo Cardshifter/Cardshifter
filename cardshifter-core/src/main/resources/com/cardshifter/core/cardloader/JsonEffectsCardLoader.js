@@ -93,32 +93,3 @@ function loadDSL(qualifiedDslClassName) {
         }
     }
 }
-
-function loadDSLManual(qualifiedDslClassName) {
-    //manual -- should be automated
-
-    var dslType = Java.type(qualifiedDslClassName);
-
-    JSGame.prototype.opponent = function() {
-        return new JSEntity(dslType.opponent(this.javaGame));
-    }
-
-    /*JSGame.prototype.opponent = function() {
-        var method = dslType.class.getDeclaredMethod("opponent", Java.type("com.cardshifter.modapi.base.ECSGame").class);
-        var argumentsArray = Array.prototype.slice.call(arguments);
-        argumentsArray.unshift(this.javaGame);
-        return new JSEntity(method.invoke(null, argumentsArray));
-    }*/
-
-    JSEntity.prototype.characters = function() {
-        return new JSEntities(dslType.characters(this.javaEntity));
-    }
-
-    JSEntities.prototype.pickRandom = function(count) {
-        return new JSEntities(dslType.pickRandom(this.javaEntities, count));
-    }
-
-    JSEntities.prototype.dealDamage = function(damage) {
-        dslType.dealDamage(this.javaEntities, damage);
-    }
-}

@@ -7,7 +7,6 @@ import com.cardshifter.modapi.base.ECSMod;
 import com.cardshifter.modapi.base.ECSSystem;
 import com.cardshifter.modapi.base.Entity;
 import com.cardshifter.modapi.events.IEvent;
-import com.cardshifter.modapi.phase.PhaseEndEvent;
 import com.cardshifter.modapi.resources.ECSResource;
 import com.cardshifter.modapi.resources.ECSResourceMap;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
@@ -80,7 +79,6 @@ public class JsEffectsCardLoader implements CardLoader<Path> {
 
             Invocable invocable = (Invocable)scriptEngine;
             invocable.invokeFunction("loadDSL", mod.dslClass().getName());
-//            invocable.invokeFunction("loadDSLManual", mod.dslClass().getName());
 
             ScriptObjectMirror cards = (ScriptObjectMirror)invocable.invokeFunction("getCards");
             if (cards.isArray()) {
