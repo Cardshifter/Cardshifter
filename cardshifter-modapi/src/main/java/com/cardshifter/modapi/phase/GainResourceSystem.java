@@ -7,13 +7,14 @@ import com.cardshifter.modapi.base.ECSSystem;
 import com.cardshifter.modapi.base.Entity;
 import com.cardshifter.modapi.resources.ECSResource;
 import com.cardshifter.modapi.resources.ECSResourceMap;
+import net.zomis.cardshifter.ecs.effects.EntityInt;
 
 public class GainResourceSystem implements ECSSystem {
 
 	private ECSResource resource;
-	private ToIntFunction<Entity> valueGet;
+	private EntityInt valueGet;
 
-	public GainResourceSystem(ECSResource resource, ToIntFunction<Entity> object) {
+	public GainResourceSystem(ECSResource resource, EntityInt object) {
 		this.resource = resource;
 		this.valueGet = object;
 	}
@@ -23,7 +24,7 @@ public class GainResourceSystem implements ECSSystem {
 		game.getEvents().registerHandlerAfter(this, PhaseStartEvent.class, turn -> {
 			Entity entity = turn.getNewPhase().getOwner();
 			ECSResourceMap map = entity.getComponent(ECSResourceMap.class);
-			int value = valueGet.applyAsInt(entity);
+			int value = valueGet.valueFor(entity);
 			map.getResource(resource).change(value);
 		});
 	}

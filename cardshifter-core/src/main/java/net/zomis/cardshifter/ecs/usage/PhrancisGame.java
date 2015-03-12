@@ -3,7 +3,6 @@ package net.zomis.cardshifter.ecs.usage;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.BiFunction;
@@ -13,47 +12,20 @@ import java.util.function.UnaryOperator;
 
 import com.cardshifter.core.cardloader.CardLoadingException;
 import com.cardshifter.core.cardloader.SimpleCardLoader;
-import com.cardshifter.modapi.attributes.AttributeRetriever;
-import com.cardshifter.modapi.attributes.ECSAttribute;
 import com.cardshifter.modapi.base.*;
 import com.cardshifter.modapi.phase.*;
 import com.cardshifter.modapi.players.Players;
-import net.zomis.cardshifter.ecs.config.ConfigComponent;
 import com.cardshifter.api.config.DeckConfig;
-import net.zomis.cardshifter.ecs.config.DeckConfigFactory;
 import net.zomis.cardshifter.ecs.effects.*;
+import net.zomis.cardshifter.ecs.config.ConfigComponent;
+import net.zomis.cardshifter.ecs.config.DeckConfigFactory;
 
-import com.cardshifter.modapi.actions.ActionComponent;
-import com.cardshifter.modapi.actions.ECSAction;
-import com.cardshifter.modapi.actions.UseCostSystem;
-import com.cardshifter.modapi.actions.attack.AttackDamageYGO;
-import com.cardshifter.modapi.actions.attack.AttackOnBattlefield;
-import com.cardshifter.modapi.actions.attack.AttackSickness;
-import com.cardshifter.modapi.actions.attack.AttackTargetMinionsFirstThenPlayer;
-import com.cardshifter.modapi.actions.attack.TrampleSystem;
-import com.cardshifter.modapi.actions.enchant.EnchantPerform;
-import com.cardshifter.modapi.actions.enchant.EnchantTargetCreatureTypes;
-import com.cardshifter.modapi.attributes.Attributes;
-import com.cardshifter.modapi.attributes.ECSAttributeMap;
-import com.cardshifter.modapi.cards.BattlefieldComponent;
-import com.cardshifter.modapi.cards.CardComponent;
-import com.cardshifter.modapi.cards.Cards;
-import com.cardshifter.modapi.cards.DamageConstantWhenOutOfCardsSystem;
-import com.cardshifter.modapi.cards.DeckComponent;
-import com.cardshifter.modapi.cards.DrawCardAtBeginningOfTurnSystem;
-import com.cardshifter.modapi.cards.DrawStartCards;
-import com.cardshifter.modapi.cards.HandComponent;
-import com.cardshifter.modapi.cards.LimitedHandSizeSystem;
-import com.cardshifter.modapi.cards.MulliganSingleCards;
-import com.cardshifter.modapi.cards.PlayEntersBattlefieldSystem;
-import com.cardshifter.modapi.cards.PlayFromHandSystem;
-import com.cardshifter.modapi.cards.RemoveDeadEntityFromZoneSystem;
-import com.cardshifter.modapi.cards.ZoneComponent;
-import com.cardshifter.modapi.resources.ECSResource;
-import com.cardshifter.modapi.resources.ECSResourceMap;
-import com.cardshifter.modapi.resources.GameOverIfNoHealth;
-import com.cardshifter.modapi.resources.ResourceRetriever;
-import com.cardshifter.modapi.resources.RestoreResourcesToSystem;
+import com.cardshifter.modapi.actions.*;
+import com.cardshifter.modapi.actions.attack.*;
+import com.cardshifter.modapi.actions.enchant.*;
+import com.cardshifter.modapi.attributes.*;
+import com.cardshifter.modapi.cards.*;
+import com.cardshifter.modapi.resources.*;
 
 public class PhrancisGame implements ECSMod {
 
@@ -132,11 +104,11 @@ public class PhrancisGame implements ECSMod {
         Filters filters = new Filters();
         return e -> e.addComponent(effects.described("Deal " + damage + " damage to random enemy at end of turn",
             effects.giveSelf(
-                effects.atEndOfTurn(
-                    effects.toRandom(
-                        TargetFilter.or(filters.enemy().and(filters.isCreatureOnBattlefield()),
-                                filters.enemy().and(filters.isPlayer())),
-                            (src, target) -> effects.modify(target, PhrancisResources.HEALTH, -damage).accept(target)
+                    effects.atEndOfTurn(
+                            effects.toRandom(
+                                    TargetFilter.or(filters.enemy().and(filters.isCreatureOnBattlefield()),
+                                            filters.enemy().and(filters.isPlayer())),
+                                    (src, target) -> effects.modify(target, PhrancisResources.HEALTH, -damage).accept(target)
                     )
                )
             )
