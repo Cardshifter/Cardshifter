@@ -60,8 +60,8 @@ function loadDSL(dslClass) {
             newFunction = (function(method) {
                 return function() {
                     var argumentsArray = Array.prototype.slice.call(arguments);
-                    argumentsArray.unshift(this.getJavaObject());;
-                    method.invoke(null, argumentsArray);
+                    argumentsArray.unshift(this.getJavaObject());
+                    method.invoke(null, Java.to(argumentsArray));
                 }
             })(method);
         }
@@ -70,7 +70,7 @@ function loadDSL(dslClass) {
                 return function() {
                     var argumentsArray = Array.prototype.slice.call(arguments);
                     argumentsArray.unshift(this.getJavaObject());
-                    return new JSEntity(method.invoke(null, argumentsArray));
+                    return new JSEntity(method.invoke(null, Java.to(argumentsArray)));
                 }
             })(method);
         }
@@ -79,7 +79,7 @@ function loadDSL(dslClass) {
                 return function() {
                     var argumentsArray = Array.prototype.slice.call(arguments);
                     argumentsArray.unshift(this.getJavaObject());
-                    return new JSEntities(method.invoke(null, argumentsArray));
+                    return new JSEntities(method.invoke(null, Java.to(argumentsArray)));
                 }
             })(method);
         }
