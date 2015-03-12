@@ -26,6 +26,21 @@ JSEntities.prototype.getJavaObject = function() {
     return this.javaEntities;
 }
 
+JSGame.prototype.__noSuchMethod__ = function() {
+    var IllegalStateException = Java.type("java.lang.IllegalStateException");
+    throw new IllegalStateException("Method " + arguments[0] + " does not exist on JSGame");
+}
+
+JSEntity.prototype.__noSuchMethod__ = function() {
+    var IllegalStateException = Java.type("java.lang.IllegalStateException");
+    throw new IllegalStateException("Method " + arguments[0] + " does not exist on JSEntity");
+}
+
+JSEntities.prototype.__noSuchMethod__ = function() {
+    var IllegalStateException = Java.type("java.lang.IllegalStateException");
+    throw new IllegalStateException("Method " + arguments[0] + " does not exist on JSEntities");
+}
+
 function loadDSL(qualifiedDslClassName) {
     var dslType = Java.type(qualifiedDslClassName);
     var Modifier = Java.type("java.lang.reflect.Modifier");
