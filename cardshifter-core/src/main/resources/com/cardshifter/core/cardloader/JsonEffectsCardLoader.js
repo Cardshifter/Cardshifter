@@ -1,44 +1,16 @@
+var global = this;
+
+//TODO refactor to create global objects in a method
+function JSclass__com_cardshifter_modapi_base_ECSGame(javaObject) {
+    this.javaObject = javaObject;
+}
+
+JSclass__com_cardshifter_modapi_base_ECSGame.prototype.__noSuchMethod__ = function() {
+    throw new IllegalStateException("Method " + arguments[0] + " does not exist on JSclass__com_cardshifter_modapi_base_ECSGame");
+}
+
 function makeJSGame(javaGame) {
-    return new JSGame(javaGame);
-}
-
-function JSGame(javaGame) {
-    this.javaGame = javaGame;
-}
-
-function JSEntity(javaEntity) {
-    this.javaEntity = javaEntity;
-}
-
-function JSEntities(javaEntities) {
-    this.javaEntities = javaEntities;
-}
-
-JSGame.prototype.getJavaObject = function() {
-    return this.javaGame;
-}
-
-JSEntity.prototype.getJavaObject = function() {
-    return this.javaEntity;
-}
-
-JSEntities.prototype.getJavaObject = function() {
-    return this.javaEntities;
-}
-
-JSGame.prototype.__noSuchMethod__ = function() {
-    var IllegalStateException = Java.type("java.lang.IllegalStateException");
-    throw new IllegalStateException("Method " + arguments[0] + " does not exist on JSGame");
-}
-
-JSEntity.prototype.__noSuchMethod__ = function() {
-    var IllegalStateException = Java.type("java.lang.IllegalStateException");
-    throw new IllegalStateException("Method " + arguments[0] + " does not exist on JSEntity");
-}
-
-JSEntities.prototype.__noSuchMethod__ = function() {
-    var IllegalStateException = Java.type("java.lang.IllegalStateException");
-    throw new IllegalStateException("Method " + arguments[0] + " does not exist on JSEntities");
+    return new JSclass__com_cardshifter_modapi_base_ECSGame(javaGame);
 }
 
 function loadDSL(dslClass) {
@@ -52,58 +24,51 @@ function loadDSL(dslClass) {
             continue;
         }
         var methodName = method.getName();
-        var returnType = method.getReturnType();
-        var returnTypeName = returnType.getTypeName();
 
-        var newFunction;
-        if (returnTypeName === "void") {
-            newFunction = (function(method) {
+        var returnTypeName = normalizeGenericType(method.getGenericReturnType().toString());
+        if (!global[returnTypeName]) {
+            global[returnTypeName] = function(javaObject) {
+                this.javaObject = javaObject;
+            }
+            global[returnTypeName].prototype.__noSuchMethod__ = (function(method) {
                 return function() {
-                    var argumentsArray = Array.prototype.slice.call(arguments);
-                    argumentsArray.unshift(this.getJavaObject());
-                    method.invoke(null, Java.to(argumentsArray));
+                    throw new IllegalStateException("Method " + arguments[0] + " does not exist on " + method.getGenericReturnType());
                 }
             })(method);
-        }
-        else if (returnTypeName === "com.cardshifter.modapi.base.Entity") {
-            newFunction = (function(method) {
-                return function() {
-                    var argumentsArray = Array.prototype.slice.call(arguments);
-                    argumentsArray.unshift(this.getJavaObject());
-                    return new JSEntity(method.invoke(null, Java.to(argumentsArray)));
-                }
-            })(method);
-        }
-        else if (returnTypeName === "java.util.List") {
-            newFunction = (function(method) {
-                return function() {
-                    var argumentsArray = Array.prototype.slice.call(arguments);
-                    argumentsArray.unshift(this.getJavaObject());
-                    return new JSEntities(method.invoke(null, Java.to(argumentsArray)));
-                }
-            })(method);
-        }
-        else {
-            throw new IllegalStateException("Unsupported return type for method " + methodName + ": " + returnTypeName);
         }
 
-        var parameterTypes = method.getParameterTypes();
-        if (parameterTypes.length == 0) {
+        var newFunction = (function(method, returnTypeName) {
+            return function() {
+                var argumentsArray = Array.prototype.slice.call(arguments);
+                argumentsArray.unshift(this.javaObject);
+                return new global[returnTypeName](method.invoke(null, Java.to(argumentsArray)));
+            }
+        })(method, returnTypeName);
+
+        var genericParameterTypes = method.getGenericParameterTypes();
+        if (genericParameterTypes.length == 0) {
             throw new IllegalStateException("Expected method parameters for method " + methodName + ": none were found");
         }
-        var firstParameterType = parameterTypes[0];
-        var firstParameterTypeName = firstParameterType.getTypeName();
-        if (firstParameterTypeName === "com.cardshifter.modapi.base.ECSGame") {
-            JSGame.prototype[methodName] = newFunction;
+
+        var firstGenericParameterType = genericParameterTypes[0];
+        var firstGenericParameterTypeName = normalizeGenericType(firstGenericParameterType.toString());
+        if (!global[firstGenericParameterTypeName]) {
+            global[firstGenericParameterTypeName] = function(javaObject) {
+                this.javaObject = javaObject;
+            }
+            global[firstGenericParameterTypeName].prototype.__noSuchMethod__ = (function(firstGenericParameterType) {
+                return function() {
+                    throw new IllegalStateException("Method " + arguments[0] + " does not exist on " + firstGenericParameterType);
+                }
+            })(firstGenericParameterType);
         }
-        else if (firstParameterTypeName === "com.cardshifter.modapi.base.Entity") {
-            JSEntity.prototype[methodName] = newFunction;
-        }
-        else if (firstParameterTypeName === "java.util.List") {
-            JSEntities.prototype[methodName] = newFunction;
-        }
-        else {
-            throw new IllegalStateException("Unsupported first parameter type for method " + methodName + ": " + firstParameterTypeName);
-        }
+        global[firstGenericParameterTypeName].prototype[methodName] = newFunction;
     }
+}
+
+function normalizeGenericType(genericType) {
+    return "JS" + genericType
+        .replace(/ /g, "__")
+        .replace(/\./g, "_")
+        .replace(/[<>]/g, "___");
 }
