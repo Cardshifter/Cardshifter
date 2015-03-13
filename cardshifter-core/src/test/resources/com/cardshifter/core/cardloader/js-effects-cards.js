@@ -4,7 +4,7 @@ function getCards() {
             name: "Ragnaros",
             attack: 8,
             hitpoints: 8,
-            cant_attack: 1,
+            keywords: ["cant_attack"],
             onMainPhaseEnd: function (game, event) {
                 game.opponent().characters().pickRandom(1).dealDamage(8);
             }
@@ -47,6 +47,14 @@ function mapCard(card) {
         for (var i = 0; i < functions.length; i++) {
             functions[i](game, event);
         }
+    }
+
+    //resolve keywords array
+    if (card.keywords) {
+        for (var i = 0; i < card.keywords.length; i++) {
+            card[card.keywords[i]] = 1;
+        }
+        delete card.keywords;
     }
 
     return card;

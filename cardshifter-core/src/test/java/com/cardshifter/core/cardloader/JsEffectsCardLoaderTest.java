@@ -11,7 +11,6 @@ import com.cardshifter.modapi.base.Retrievers;
 import com.cardshifter.modapi.cards.BattlefieldComponent;
 import com.cardshifter.modapi.cards.CardComponent;
 import com.cardshifter.modapi.cards.ZoneComponent;
-import com.cardshifter.modapi.events.IEvent;
 import com.cardshifter.modapi.phase.Phase;
 import com.cardshifter.modapi.phase.PhaseController;
 import com.cardshifter.modapi.phase.PhaseEndEvent;
@@ -21,7 +20,6 @@ import com.cardshifter.modapi.resources.ECSResourceMap;
 import com.cardshifter.modapi.resources.ResourceRetriever;
 import net.zomis.cardshifter.ecs.effects.Filters;
 import net.zomis.cardshifter.ecs.effects.TargetFilter;
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.net.URISyntaxException;
