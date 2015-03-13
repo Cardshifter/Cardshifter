@@ -73,7 +73,7 @@ public class JsEffectsCardLoader implements CardLoader<Path> {
                 .collect(Collectors.toMap(ecsAttribute -> sanitizeTag(ecsAttribute.toString()), i -> i));
 
             ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("nashorn");
-            Path jsPath = Paths.get(getClass().getResource("JsonEffectsCardLoader.js").toURI());
+            Path jsPath = Paths.get(getClass().getResource("JsEffectsCardLoader.js").toURI());
             scriptEngine.eval(new InputStreamReader(new FileInputStream(jsPath.toFile()), StandardCharsets.UTF_8));
             scriptEngine.eval(new InputStreamReader(new FileInputStream(path.toFile()), StandardCharsets.UTF_8));
 
