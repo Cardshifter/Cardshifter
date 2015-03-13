@@ -8,7 +8,7 @@ function JSclass__com_cardshifter_modapi_base_ECSGame(javaObject) {
 }
 
 JSclass__com_cardshifter_modapi_base_ECSGame.prototype.__noSuchMethod__ = function() {
-    throw new IllegalStateException("Method " + arguments[0] + " does not exist on class com.cardshifter.modapi.base.ECSGame");
+    throw new IllegalStateException("Method " + arguments[0] + " does not exist on extension of class com.cardshifter.modapi.base.ECSGame");
 }
 
 function makeJSGame(javaGame) {
@@ -62,7 +62,7 @@ function tryCreateGlobalObject(genericType) {
             this.javaObject = javaObject;
         }
         global[genericTypeName].prototype.__noSuchMethod__ = function() {
-            throw new IllegalStateException("Method " + arguments[0] + " does not exist on " + genericType);
+            throw new IllegalStateException("Method " + arguments[0] + " does not exist on extension of " + genericType);
         };
     }
 }
