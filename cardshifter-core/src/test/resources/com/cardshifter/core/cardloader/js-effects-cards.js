@@ -4,8 +4,10 @@ function getCards() {
             name: "Ragnaros",
             attack: 8,
             hitpoints: 8,
-            onPhaseEnd: function (game) {
-                game.opponent().characters().pickRandom(1).dealDamage(8);
+            onPhaseEnd: function (game, event) {
+                if (event.getOldPhase().getName() === "Main") {
+                    game.opponent().characters().pickRandom(1).dealDamage(8);
+                }
             }
         }
     ]

@@ -117,7 +117,7 @@ public class JsEffectsCardLoader implements CardLoader<Path> {
                                 Function<Entity, ECSSystem> effect = effects.triggerSystem(
                                     eventClass,
                                     (innerEntity, event) -> true,
-                                    (innerEntity, event) -> card.callMember(tag, invokeFunction(invocable, "makeJSGame", game))
+                                    (innerEntity, event) -> card.callMember(tag, invokeFunction(invocable, "makeJSGame", game), event)
                                 );
                                 game.addSystem(effect.apply(entity));
                             }
