@@ -1,5 +1,8 @@
 var global = this;
 
+var Modifier = Java.type("java.lang.reflect.Modifier");
+var IllegalStateException = Java.type("java.lang.IllegalStateException");
+
 function JSclass__com_cardshifter_modapi_base_ECSGame(javaObject) {
     this.javaObject = javaObject;
 }
@@ -13,9 +16,6 @@ function makeJSGame(javaGame) {
 }
 
 function loadDSL(dslClass) {
-    var Modifier = Java.type("java.lang.reflect.Modifier");
-    var IllegalStateException = Java.type("java.lang.IllegalStateException");
-
     var methods = dslClass.getDeclaredMethods();
     for (var i = 0; i < methods.length; i++) {
         var method = methods[i];
