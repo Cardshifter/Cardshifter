@@ -49,6 +49,7 @@ public class JsEffectsCardLoaderTest {
             .findFirst().get();
         assertEquals(8, ResourceRetriever.forResource(CustomResources.ATTACK).getFor(ragnaros));
         assertEquals(8, ResourceRetriever.forResource(CustomResources.HITPOINTS).getFor(ragnaros));
+        assertEquals(1, ResourceRetriever.forResource(CustomResources.CANT_ATTACK).getFor(ragnaros));
 
         game.startGame();
 
@@ -65,7 +66,7 @@ public class JsEffectsCardLoaderTest {
     }
 
     public enum CustomResources implements ECSResource {
-        ATTACK, HITPOINTS;
+        ATTACK, HITPOINTS, CANT_ATTACK;
     }
 
     public enum CustomAttributes implements ECSAttribute {
