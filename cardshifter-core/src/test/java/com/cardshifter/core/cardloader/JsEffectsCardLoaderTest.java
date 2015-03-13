@@ -21,6 +21,7 @@ import com.cardshifter.modapi.resources.ECSResourceMap;
 import com.cardshifter.modapi.resources.ResourceRetriever;
 import net.zomis.cardshifter.ecs.effects.Filters;
 import net.zomis.cardshifter.ecs.effects.TargetFilter;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.net.URISyntaxException;
@@ -46,6 +47,8 @@ public class JsEffectsCardLoaderTest {
         Entity ragnaros = game.getEntitiesWithComponent(CardComponent.class).stream()
             .filter(entity -> AttributeRetriever.forAttribute(CustomAttributes.NAME).getOrDefault(entity, "").equals("Ragnaros"))
             .findFirst().get();
+        assertEquals(8, ResourceRetriever.forResource(CustomResources.ATTACK).getFor(ragnaros));
+        assertEquals(8, ResourceRetriever.forResource(CustomResources.HITPOINTS).getFor(ragnaros));
 
         game.startGame();
 
