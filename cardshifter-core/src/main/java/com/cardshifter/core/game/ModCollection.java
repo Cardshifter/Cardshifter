@@ -7,6 +7,7 @@ import java.util.*;
 import java.util.function.Supplier;
 
 import com.cardshifter.core.modloader.JavaScriptMod;
+import net.zomis.cardshifter.ecs.usage.HearthstoneGame;
 import net.zomis.cardshifter.ecs.usage.PhrancisGame;
 import net.zomis.cardshifter.ecs.usage.PhrancisGameNewAttackSystem;
 import net.zomis.cardshifter.ecs.usage.PhrancisGameWithSpells;
@@ -59,6 +60,7 @@ public class ModCollection {
 		mods.put(CardshifterConstants.VANILLA, () -> new PhrancisGameNewAttackSystem());
 		mods.put("Cyborg-Spells", () -> new PhrancisGameWithSpells());
 		mods.put("Test", () -> new TestMod());
+		mods.put("HS", () -> new HearthstoneGame());
 	}
 	
 	/**
