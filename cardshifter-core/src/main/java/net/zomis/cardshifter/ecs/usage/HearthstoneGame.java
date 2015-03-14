@@ -132,7 +132,7 @@ public class HearthstoneGame implements ECSMod {
 
 			ECSResourceMap.createFor(player)
 				.set(HearthstoneResources.HEALTH, 30)
-				.set(HearthstoneResources.MANA, 0);
+				.set(HearthstoneResources.MANA, 1);
 
 			ZoneComponent deck = new DeckComponent(player);
 			ZoneComponent hand = new HandComponent(player);
