@@ -123,6 +123,11 @@ public class JsEffectsCardLoader implements CardLoader<Path> {
                             }
                         }
                     });
+
+                    //extra setup code for the created entity
+                    if (card.hasMember("setupEntity")) {
+                        card.callMember("setupEntity", entity);
+                    }
                 }
             }
 

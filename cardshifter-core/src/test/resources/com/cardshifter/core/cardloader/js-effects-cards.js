@@ -7,6 +7,11 @@ function getCards() {
             keywords: ["cant_attack"],
             onMainPhaseEnd: function (game, event) {
                 game.opponent().characters().pickRandom(1).dealDamage(8);
+            },
+            setupEntity: function (entity) {
+                var ActionComponent = Java.type("com.cardshifter.modapi.actions.ActionComponent");
+                var actionComponent = new ActionComponent();
+                entity.addComponent(actionComponent);
             }
         }
     ].map(mapCard);
@@ -14,6 +19,8 @@ function getCards() {
 
 function mapCard(card) {
     //use regex to match property on on*PhaseEnd
+    var functions = [];
+    var saveObject = {};
     for (var property in card) {
         if (!card.hasOwnProperty(property)) {
             continue;
@@ -22,8 +29,6 @@ function mapCard(card) {
             continue;
         }
 
-        var functions = [];
-        var saveObject = {};
 
         var matches = property.match(/^on(.*)PhaseEnd$/);
         if (matches) {
