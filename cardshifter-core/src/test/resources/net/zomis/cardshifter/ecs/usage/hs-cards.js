@@ -18,8 +18,12 @@ var HearthstoneGame = Java.type("net.zomis.cardshifter.ecs.usage.HearthstoneGame
 function mapCard(card) {
     //setup if type is Minion
     if (card.type === "Minion") {
-        card.attack_available = 1;
-        card.sickness = 1;
+        if (!card.attack_available) {
+            card.attack_available = 1;
+        }
+        if (!card.sickness) {
+            card.sickness = 1;
+        }
 
         card.setupEntity = function (entity) {
             var actionComponent = new ActionComponent();
