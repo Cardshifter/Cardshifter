@@ -1,5 +1,6 @@
 package com.cardshifter.core.cardloader;
 
+import com.cardshifter.modapi.actions.ActionComponent;
 import com.cardshifter.modapi.attributes.AttributeRetriever;
 import com.cardshifter.modapi.attributes.ECSAttribute;
 import com.cardshifter.modapi.base.ECSGame;
@@ -33,6 +34,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class JsEffectsCardLoaderTest {
     @Test
@@ -48,6 +50,7 @@ public class JsEffectsCardLoaderTest {
         assertEquals(8, ResourceRetriever.forResource(CustomResources.ATTACK).getFor(ragnaros));
         assertEquals(8, ResourceRetriever.forResource(CustomResources.HITPOINTS).getFor(ragnaros));
         assertEquals(1, ResourceRetriever.forResource(CustomResources.CANT_ATTACK).getFor(ragnaros));
+        assertTrue(ragnaros.hasComponent(ActionComponent.class));
 
         game.startGame();
 
