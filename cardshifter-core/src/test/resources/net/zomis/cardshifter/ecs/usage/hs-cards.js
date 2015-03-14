@@ -5,7 +5,8 @@ function getCards() {
             attack: 2,
             hitpoints: 1,
             cost: 1,
-            race: "Murloc"
+            race: "Murloc",
+            type: "Minion"
         }
     ];
 }

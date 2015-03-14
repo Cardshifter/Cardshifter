@@ -63,7 +63,7 @@ public class HearthstoneGame implements ECSMod {
 	}
 
 	public enum HearthstoneAttributes implements ECSAttribute {
-		NAME, RACE;
+		NAME, TYPE, RACE;
 	}
 
 	public static final String PLAY_ACTION = "Play";
