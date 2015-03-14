@@ -69,7 +69,7 @@ import java.util.stream.Collectors;
 public class HearthstoneGame implements ECSMod {
 
 	public enum HearthstoneResources implements ECSResource {
-		ATTACK, HEALTH, DAMAGE, MANA, MANA_MAX, COST, SICKNESS, ATTACK_AVAILABLE, DENY_COUNTERATTACK;
+		ATTACK, HITPOINTS, DAMAGE, MANA, MANA_MAX, COST, SICKNESS, ATTACK_AVAILABLE, DENY_COUNTERATTACK;
 	}
 
 	public enum HearthstoneAttributes implements ECSAttribute {
@@ -141,7 +141,7 @@ public class HearthstoneGame implements ECSMod {
 			actions.addAction(endTurnAction);
 
 			ECSResourceMap.createFor(player)
-				.set(HearthstoneResources.HEALTH, 30)
+				.set(HearthstoneResources.HITPOINTS, 30)
 				.set(HearthstoneResources.MANA, 1);
 
 			ZoneComponent deck = new DeckComponent(player);
@@ -184,7 +184,7 @@ public class HearthstoneGame implements ECSMod {
 		game.addSystem(new AttackOnBattlefield());
 		game.addSystem(new AttackSickness(HearthstoneResources.SICKNESS));
 //		game.addSystem(new AttackTargetMinionsFirstThenPlayer(HearthstoneResources.TAUNT));
-		game.addSystem(new AttackDamageYGO(HearthstoneResources.ATTACK, HearthstoneResources.HEALTH, allowCounterAttack));
+		game.addSystem(new AttackDamageYGO(HearthstoneResources.ATTACK, HearthstoneResources.HITPOINTS, allowCounterAttack));
 		game.addSystem(new UseCostSystem(ATTACK_ACTION, HearthstoneResources.ATTACK_AVAILABLE, entity -> 1, entity -> entity));
 		game.addSystem(new RestoreResourcesToSystem(entity -> entity.hasComponent(CreatureTypeComponent.class)
 			&& Cards.isOnZone(entity, BattlefieldComponent.class)
@@ -193,7 +193,7 @@ public class HearthstoneGame implements ECSMod {
 			&& Cards.isOnZone(entity, BattlefieldComponent.class)
 			&& Cards.isOwnedByCurrentPlayer(entity), HearthstoneResources.SICKNESS,
 			entity -> Math.max(0, sickness.getFor(entity) - 1)));
-		game.addSystem(new TrampleSystem(HearthstoneResources.HEALTH));
+		game.addSystem(new TrampleSystem(HearthstoneResources.HITPOINTS));
 		game.addSystem(new ApplyAfterAttack(e -> allowCounterAttackRes.getFor(e) > 0, e -> sickness.resFor(e).set(2)));
 
 		// Resources
@@ -203,14 +203,14 @@ public class HearthstoneGame implements ECSMod {
 		game.addSystem(new DrawStartCards(5));
 		game.addSystem(new MulliganSingleCards(game));
 		game.addSystem(new DrawCardAtBeginningOfTurnSystem());
-		game.addSystem(new DamageConstantWhenOutOfCardsSystem(HearthstoneResources.HEALTH, 1));
+		game.addSystem(new DamageConstantWhenOutOfCardsSystem(HearthstoneResources.HITPOINTS, 1));
 		game.addSystem(new LimitedHandSizeSystem(10, card -> card.getCardToDraw().destroy()));
 
 		// Initial setup
 		// TODO: game.addSystem(new GiveStartCard(game.getPlayers().get(1), "The Coin"));
 
 		// General setup
-		game.addSystem(new GameOverIfNoHealth(HearthstoneResources.HEALTH));
+		game.addSystem(new GameOverIfNoHealth(HearthstoneResources.HITPOINTS));
 		game.addSystem(new LastPlayersStandingEndsGame());
 		game.addSystem(new RemoveDeadEntityFromZoneSystem());
 		game.addSystem(new PerformerMustBeCurrentPlayer());
@@ -271,8 +271,8 @@ public class HearthstoneGame implements ECSMod {
 		}
 
 		public static void dealDamage(final List<Entity> entities, final int damage) {
-			ResourceRetriever healthRetriever = ResourceRetriever.forResource(HearthstoneResources.HEALTH);
-			entities.forEach(entity -> healthRetriever.resFor(entity).change(-damage));
+			ResourceRetriever hitpointsRetriever = ResourceRetriever.forResource(HearthstoneResources.HITPOINTS);
+			entities.forEach(entity -> hitpointsRetriever.resFor(entity).change(-damage));
 		}
 	}
 }
