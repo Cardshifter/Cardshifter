@@ -16,6 +16,7 @@ import com.cardshifter.modapi.base.CreatureTypeComponent;
 import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.ECSMod;
 import com.cardshifter.modapi.base.Entity;
+import com.cardshifter.modapi.base.ModDSL;
 import com.cardshifter.modapi.base.ModHelper;
 import com.cardshifter.modapi.base.PlayerComponent;
 import com.cardshifter.modapi.cards.BattlefieldComponent;
@@ -226,5 +227,14 @@ public class HearthstoneGame implements ECSMod {
 
 	private static ECSAction playAction(Entity entity) {
 		return new ECSAction(entity, PLAY_ACTION, act -> true, act -> {});
+	}
+
+	@Override
+	public Class<? extends ModDSL> dslClass() {
+		return HearthstoneDSL.class;
+	}
+
+	public static class HearthstoneDSL implements ModDSL {
+
 	}
 }
