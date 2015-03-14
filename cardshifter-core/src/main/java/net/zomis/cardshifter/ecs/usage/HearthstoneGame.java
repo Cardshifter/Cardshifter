@@ -12,7 +12,6 @@ import com.cardshifter.modapi.actions.attack.AttackSickness;
 import com.cardshifter.modapi.actions.attack.TrampleSystem;
 import com.cardshifter.modapi.attributes.AttributeRetriever;
 import com.cardshifter.modapi.attributes.ECSAttribute;
-import com.cardshifter.modapi.base.CreatureTypeComponent;
 import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.ECSMod;
 import com.cardshifter.modapi.base.Entity;
@@ -186,10 +185,10 @@ public class HearthstoneGame implements ECSMod {
 //		game.addSystem(new AttackTargetMinionsFirstThenPlayer(HearthstoneResources.TAUNT));
 		game.addSystem(new AttackDamageYGO(HearthstoneResources.ATTACK, HearthstoneResources.HITPOINTS, allowCounterAttack));
 		game.addSystem(new UseCostSystem(ATTACK_ACTION, HearthstoneResources.ATTACK_AVAILABLE, entity -> 1, entity -> entity));
-		game.addSystem(new RestoreResourcesToSystem(entity -> entity.hasComponent(CreatureTypeComponent.class)
+		game.addSystem(new RestoreResourcesToSystem(entity -> isMinion(entity)
 			&& Cards.isOnZone(entity, BattlefieldComponent.class)
 			&& Cards.isOwnedByCurrentPlayer(entity), HearthstoneResources.ATTACK_AVAILABLE, entity -> 1));
-		game.addSystem(new RestoreResourcesToSystem(entity -> entity.hasComponent(CreatureTypeComponent.class)
+		game.addSystem(new RestoreResourcesToSystem(entity -> isMinion(entity)
 			&& Cards.isOnZone(entity, BattlefieldComponent.class)
 			&& Cards.isOwnedByCurrentPlayer(entity), HearthstoneResources.SICKNESS,
 			entity -> Math.max(0, sickness.getFor(entity) - 1)));
@@ -215,6 +214,11 @@ public class HearthstoneGame implements ECSMod {
 		game.addSystem(new RemoveDeadEntityFromZoneSystem());
 		game.addSystem(new PerformerMustBeCurrentPlayer());
 
+	}
+
+	private static boolean isMinion(final Entity entity) {
+		AttributeRetriever typeRetriever = AttributeRetriever.forAttribute(HearthstoneAttributes.TYPE);
+		return typeRetriever.getOrDefault(entity, "").equals("Minion");
 	}
 
 	private void setupDeck(ZoneComponent deck, DeckConfig deckConf) {
