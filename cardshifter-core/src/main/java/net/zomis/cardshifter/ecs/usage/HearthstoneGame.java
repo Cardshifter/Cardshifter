@@ -19,6 +19,7 @@ import com.cardshifter.modapi.base.Entity;
 import com.cardshifter.modapi.base.ModDSL;
 import com.cardshifter.modapi.base.ModHelper;
 import com.cardshifter.modapi.base.PlayerComponent;
+import com.cardshifter.modapi.base.Retrievers;
 import com.cardshifter.modapi.cards.BattlefieldComponent;
 import com.cardshifter.modapi.cards.CardComponent;
 import com.cardshifter.modapi.cards.Cards;
@@ -37,7 +38,9 @@ import com.cardshifter.modapi.phase.GainResourceSystem;
 import com.cardshifter.modapi.phase.PerformerMustBeCurrentPlayer;
 import com.cardshifter.modapi.phase.Phase;
 import com.cardshifter.modapi.phase.PhaseController;
+import com.cardshifter.modapi.phase.PhaseEndEvent;
 import com.cardshifter.modapi.phase.RestoreResourcesSystem;
+import com.cardshifter.modapi.players.Players;
 import com.cardshifter.modapi.resources.ECSResource;
 import com.cardshifter.modapi.resources.ECSResourceMap;
 import com.cardshifter.modapi.resources.GameOverIfNoHealth;
@@ -46,15 +49,22 @@ import com.cardshifter.modapi.resources.RestoreResourcesToSystem;
 import net.zomis.cardshifter.ecs.config.ConfigComponent;
 import net.zomis.cardshifter.ecs.config.DeckConfigFactory;
 import net.zomis.cardshifter.ecs.effects.EffectActionSystem;
+import net.zomis.cardshifter.ecs.effects.Filters;
+import net.zomis.cardshifter.ecs.effects.TargetFilter;
 
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 
 public class HearthstoneGame implements ECSMod {
 
@@ -234,7 +244,35 @@ public class HearthstoneGame implements ECSMod {
 		return HearthstoneDSL.class;
 	}
 
-	public static class HearthstoneDSL implements ModDSL {
+	@Override
+	public Map<String, Class<?>> getEventMapping() {
+		HashMap<String, Class<?>> map = new HashMap<>();
+		map.put("PhaseEndEvent", PhaseEndEvent.class);
+		return map;
+	}
 
+	public static class HearthstoneDSL implements ModDSL {
+		public static Entity opponent(final ECSGame game) {
+			PhaseController phaseController = Retrievers.singleton(game, PhaseController.class);
+			return Players.getNextPlayer(phaseController.getCurrentEntity());
+		}
+
+		public static List<Entity> characters(final Entity playerEntity) {
+			Filters filters = new Filters();
+			TargetFilter targetFilter = filters.friendly().and(TargetFilter.or(filters.isPlayer(), filters.isOnBattlefield()));
+			return playerEntity.getGame().findEntities(entity -> entity.hasComponent(PlayerComponent.class) || entity.hasComponent(CardComponent.class)).stream()
+				.filter(entity -> targetFilter.test(playerEntity, entity))
+				.collect(Collectors.toList());
+		}
+
+		public static List<Entity> pickRandom(final List<Entity> entities, final int count) {
+			Collections.shuffle(entities);
+			return entities.subList(0, count);
+		}
+
+		public static void dealDamage(final List<Entity> entities, final int damage) {
+			ResourceRetriever healthRetriever = ResourceRetriever.forResource(HearthstoneResources.HEALTH);
+			entities.forEach(entity -> healthRetriever.resFor(entity).change(-damage));
+		}
 	}
 }

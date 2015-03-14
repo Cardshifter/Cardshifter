@@ -7,6 +7,17 @@ function getCards() {
             cost: 1,
             race: "Murloc",
             type: "Minion"
+        },
+        {
+            name: "Ragnaros",
+            attack: 8,
+            hitpoints: 8,
+            cost: 8,
+            type: "Minion",
+            attack_available: 0,
+            onMainPhaseEnd: function (game, event) {
+                game.opponent().characters().pickRandom(1).dealDamage(8);
+            }
         }
     ].map(mapCard);
 }
