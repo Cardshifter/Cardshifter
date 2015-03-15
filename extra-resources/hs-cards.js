@@ -78,9 +78,11 @@ function mapCard(card) {
     }
 
     //rewrite zone names
-    if (card.events.battlefield) {
-        card.events.BattlefieldComponent = card.events.battlefield;
-        delete card.events.battlefield;
+    if (card.hasOwnProperty("events")) {
+        if (card.events.hasOwnProperty("battlefield")) {
+            card.events.BattlefieldComponent = card.events.battlefield;
+            delete card.events.battlefield;
+        }
     }
 
     //setup if type is Minion
