@@ -8,7 +8,7 @@ function getCards() {
                 keywords: ["cant_attack"]
             },
             events: {
-                BattlefieldComponent: {
+                battlefield: {
                     onMainPhaseEnd: function (game, event) {
                         game.opponent().characters().pickRandom(1).dealDamage(8);
                     }
@@ -66,6 +66,11 @@ function mapCard(card) {
         }
     }
 
+    //rewrite zone names
+    if (card.events.battlefield) {
+        card.events.BattlefieldComponent = card.events.battlefield;
+        delete card.events.battlefield;
+    }
 
     //resolve keywords array
     if (card.data.keywords) {
