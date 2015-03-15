@@ -87,10 +87,10 @@ function mapCard(card) {
 
     //setup if type is Minion
     if (card.data.type === "Minion") {
-        if (!card.hasOwnProperty("attack_available")) {
+        if (!card.data.hasOwnProperty("attack_available")) {
             card.data.attack_available = 1;
         }
-        if (!card.hasOwnProperty("sickness")) {
+        if (!card.data.hasOwnProperty("sickness")) {
             card.data.sickness = 1;
         }
 
