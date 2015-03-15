@@ -1,22 +1,30 @@
 function getCards() {
     return [
         {
-            name: "Murloc Raider",
-            attack: 2,
-            hitpoints: 1,
-            cost: 1,
-            race: "Murloc",
-            type: "Minion"
+            data: {
+                name: "Murloc Raider",
+                attack: 2,
+                hitpoints: 1,
+                cost: 1,
+                race: "Murloc",
+                type: "Minion"
+            }
         },
         {
-            name: "Ragnaros",
-            attack: 8,
-            hitpoints: 8,
-            cost: 8,
-            type: "Minion",
-            attack_available: 0,
-            onMainPhaseEnd: function (game, event) {
-                game.opponent().characters().pickRandom(1).dealDamage(8);
+            data: {
+                name: "Ragnaros",
+                attack: 8,
+                hitpoints: 8,
+                cost: 8,
+                type: "Minion",
+                attack_available: 0
+            },
+            events: {
+                battlefield: {
+                    onMainPhaseEnd: function (game, event) {
+                        game.opponent().characters().pickRandom(1).dealDamage(8);
+                    }
+                }
             }
         }
     ].map(mapCard);
@@ -30,46 +38,58 @@ function mapCard(card) {
     //use regex to match property on on*PhaseEnd
     var functions = [];
     var saveObject = {};
-    for (var property in card) {
-        if (!card.hasOwnProperty(property)) {
-            continue;
-        }
-        if (typeof card[property] !== "function") {
+    for (var component in card.events) {
+        if (!card.events.hasOwnProperty(component)) {
             continue;
         }
 
+        saveObject[component] = {};
+        for (var property in card.events[component]) {
+            if (!card.events[component].hasOwnProperty(property)) {
+                continue;
+            }
+            if (typeof card.events[component][property] !== "function") {
+                continue;
+            }
 
-        var matches = property.match(/^on(.*)PhaseEnd$/);
-        if (matches) {
-            var phaseName = matches[1];
-            saveObject[property] = card[property];
-            delete card[property];
-            functions.push((function (phaseName, property) {
-                return function (game, event) {
-                    if (event.getOldPhase().getName() === phaseName) {
-                        saveObject[property](game, event);
+            var matches = property.match(/^on(.*)PhaseEnd$/);
+            if (matches) {
+                var phaseName = matches[1];
+                saveObject[component][property] = card.events[component][property];
+                delete card.events[component][property];
+                functions.push((function (phaseName, property, component) {
+                    return function (game, event) {
+                        if (event.getOldPhase().getName() === phaseName) {
+                            saveObject[component][property](game, event);
+                        }
                     }
-                }
-            })(phaseName, property));
+                })(phaseName, property, component));
+            }
+        }
+
+        if (card.events[component].onPhaseEnd) {
+            functions.push(card.events[component].onPhaseEnd);
+        }
+        card.events[component].onPhaseEnd = function(game, event) {
+            for (var i = 0; i < functions.length; i++) {
+                functions[i](game, event);
+            }
         }
     }
 
-    if (card.onPhaseEnd) {
-        functions.push(card.onPhaseEnd);
-    }
-    card.onPhaseEnd = function(game, event) {
-        for (var i = 0; i < functions.length; i++) {
-            functions[i](game, event);
-        }
+    //rewrite zone names
+    if (card.events.battlefield) {
+        card.events.BattlefieldComponent = card.events.battlefield;
+        delete card.events.battlefield;
     }
 
     //setup if type is Minion
-    if (card.type === "Minion") {
+    if (card.data.type === "Minion") {
         if (!card.hasOwnProperty("attack_available")) {
-            card.attack_available = 1;
+            card.data.attack_available = 1;
         }
         if (!card.hasOwnProperty("sickness")) {
-            card.sickness = 1;
+            card.data.sickness = 1;
         }
 
         card.setupEntity = function (entity) {
