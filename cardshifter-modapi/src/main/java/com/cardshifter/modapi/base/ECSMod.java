@@ -1,7 +1,5 @@
 package com.cardshifter.modapi.base;
 
-import com.cardshifter.modapi.events.IEvent;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,6 +38,15 @@ public interface ECSMod {
 	 * @return	A map that contains a mapping from event names to their corresponding classes.
 	 */
 	default Map<String, Class<?>> getEventMapping() {
+		return new HashMap<>();
+	}
+
+	/**
+	 * Returns a map that contains a mapping from zone names to their corresponding classes.
+	 *
+	 * @return	A map that contains a mapping from event names to their corresponding classes.
+	 */
+	default Map<String, Class<?>> getZoneMapping() {
 		return new HashMap<>();
 	}
 }
