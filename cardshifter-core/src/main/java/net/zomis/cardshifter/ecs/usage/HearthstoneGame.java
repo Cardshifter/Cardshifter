@@ -255,6 +255,13 @@ public class HearthstoneGame implements ECSMod {
 		return map;
 	}
 
+	@Override
+	public Map<String, Class<?>> getZoneMapping() {
+		Map<String, Class<?>> map = new HashMap<>();
+		map.put("BattlefieldComponent", BattlefieldComponent.class);
+		return map;
+	}
+
 	public static class HearthstoneDSL implements ModDSL {
 		public static Entity opponent(final ECSGame game) {
 			PhaseController phaseController = Retrievers.singleton(game, PhaseController.class);
