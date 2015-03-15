@@ -6,6 +6,8 @@ import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.ECSMod;
 import com.cardshifter.modapi.base.ECSSystem;
 import com.cardshifter.modapi.base.Entity;
+import com.cardshifter.modapi.cards.Cards;
+import com.cardshifter.modapi.cards.ZoneComponent;
 import com.cardshifter.modapi.events.IEvent;
 import com.cardshifter.modapi.resources.ECSResource;
 import com.cardshifter.modapi.resources.ECSResourceMap;
@@ -86,13 +88,23 @@ public class JsEffectsCardLoader implements CardLoader<Path> {
                 for (int i = 0; i < length; i++) {
                     ScriptObjectMirror card = (ScriptObjectMirror)cards.getSlot(i);
 
+                    if (!card.hasMember("data")) {
+                        throw new CardLoadingException("The data object has been found");
+                    }
+                    ScriptObjectMirror data = (ScriptObjectMirror)card.getMember("data");
+
+                    if (!card.hasMember("events")) {
+                        throw new CardLoadingException("The events object has been found");
+                    }
+                    ScriptObjectMirror events = (ScriptObjectMirror)card.getMember("events");
+
                     Entity entity = game.newEntity();
                     entities.add(entity);
 
                     ECSResourceMap resourceMap = ECSResourceMap.createFor(entity);
                     ECSAttributeMap attributeMap = ECSAttributeMap.createFor(entity);
 
-                    card.forEach((tag, value) -> {
+                    data.forEach((tag, value) -> {
                         String sanitizedTag = sanitizeTag(tag);
                         if (ecsResourcesMap.containsKey(sanitizedTag)) {
                             resourceMap.set(ecsResourcesMap.get(sanitizedTag), Integer.parseInt(value.toString()));
@@ -101,9 +113,16 @@ public class JsEffectsCardLoader implements CardLoader<Path> {
                             attributeMap.set(ecsAttributesMap.get(sanitizedTag), value.toString());
                         }
                         else {
-                            //special attribute
-                            if (sanitizedTag.startsWith("on")) {
-                                String eventClassName = tag.substring(2, tag.length()) + "Event";
+                            throw new UncheckedCardLoadingException("Resource or attribute with name " + sanitizedTag + " has not been found");
+                        }
+                    });
+
+                    events.forEach((componentName, componentValue) -> {
+                        ScriptObjectMirror componentValueMirror = (ScriptObjectMirror)componentValue;
+                        componentValueMirror.forEach((eventName, eventFunction) -> {
+                            String sanitizedEventName = sanitizeTag(eventName);
+                            if (sanitizedEventName.startsWith("on")) {
+                                String eventClassName = eventName.substring(2, eventName.length()) + "Event";
                                 Class<?> uncheckedEventClass = mod.getEventMapping().get(eventClassName);
                                 if (uncheckedEventClass == null) {
                                     throw new UncheckedCardLoadingException("Event " + eventClassName + " has not been found");
@@ -113,15 +132,27 @@ public class JsEffectsCardLoader implements CardLoader<Path> {
                                 }
                                 Class<? extends IEvent> eventClass = IEvent.class.getClass().cast(uncheckedEventClass);
 
+                                Class<?> uncheckedComponentClass = mod.getZoneMapping().get(componentName);
+                                if (uncheckedComponentClass == null) {
+                                    throw new UncheckedCardLoadingException("Zone " + componentName + " has not been found");
+                                }
+                                if (!ZoneComponent.class.isAssignableFrom(uncheckedComponentClass)) {
+                                    throw new UncheckedCardLoadingException("Event " + componentName + ": " + uncheckedComponentClass + " does not extend ZoneComponent");
+                                }
+                                Class<? extends ZoneComponent> componentClass = ZoneComponent.class.getClass().cast(uncheckedComponentClass);
+
                                 Effects effects = new Effects();
                                 Function<Entity, ECSSystem> effect = effects.triggerSystem(
                                     eventClass,
-                                    (innerEntity, event) -> true,
-                                    (innerEntity, event) -> card.callMember(tag, invokeFunction(invocable, "makeJSGame", game), event)
+                                    (innerEntity, event) -> !innerEntity.isRemoved() && Cards.isOnZone(innerEntity, componentClass),
+                                    (innerEntity, event) -> componentValueMirror.callMember(eventName, invokeFunction(invocable, "makeJSGame", game), event)
                                 );
                                 game.addSystem(effect.apply(entity));
                             }
-                        }
+                            else {
+                                throw new UncheckedCardLoadingException("Event for " + sanitizedEventName + " could not be parsed");
+                            }
+                        });
                     });
 
                     //extra setup code for the created entity

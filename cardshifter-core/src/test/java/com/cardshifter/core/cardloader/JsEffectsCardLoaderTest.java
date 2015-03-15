@@ -33,8 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class JsEffectsCardLoaderTest {
     @Test
@@ -54,16 +53,38 @@ public class JsEffectsCardLoaderTest {
 
         game.startGame();
 
+        ResourceRetriever playerHealth = ResourceRetriever.forResource(CustomResources.HITPOINTS);
+
         PhaseController phaseController = Retrievers.singleton(game, PhaseController.class);
 
         Entity currentPlayer = phaseController.getCurrentEntity();
+        assertEquals(30, playerHealth.getFor(currentPlayer));
+
+        phaseController.nextPhase();
+
+        Entity opponentPlayer = phaseController.getCurrentEntity();
+        assertEquals(30, playerHealth.getFor(opponentPlayer));
+
+        phaseController.nextPhase();
+
+        assertEquals(30, playerHealth.getFor(currentPlayer));
+        assertEquals(30, playerHealth.getFor(opponentPlayer));
+
         BattlefieldComponent battlefieldComponent = currentPlayer.getComponent(BattlefieldComponent.class);
         ragnaros.getComponent(CardComponent.class).moveToBottom(battlefieldComponent);
 
         phaseController.nextPhase();
 
-        int currentPlayerHealth = CustomResources.HITPOINTS.getFor(phaseController.getCurrentEntity());
-        assertEquals(22, currentPlayerHealth);
+        assertEquals(30, playerHealth.getFor(currentPlayer));
+        assertEquals(22, playerHealth.getFor(opponentPlayer));
+
+        ragnaros.destroy();
+
+        phaseController.nextPhase();
+        phaseController.nextPhase();
+
+        assertEquals(30, playerHealth.getFor(currentPlayer));
+        assertEquals(22, playerHealth.getFor(opponentPlayer));
     }
 
     public enum CustomResources implements ECSResource {
@@ -150,6 +171,13 @@ public class JsEffectsCardLoaderTest {
         public Map<String, Class<?>> getEventMapping() {
             Map<String, Class<?>> map = new HashMap<>();
             map.put("PhaseEndEvent", PhaseEndEvent.class);
+            return map;
+        }
+
+        @Override
+        public Map<String, Class<?>> getZoneMapping() {
+            Map<String, Class<?>> map = new HashMap<>();
+            map.put("BattlefieldComponent", BattlefieldComponent.class);
             return map;
         }
     }
