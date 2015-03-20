@@ -113,7 +113,7 @@ public class ReplayPlaybackSystem implements ECSSystem {
 		return currentActionIndex >= replayData.getActionInformation().size();
 	}
 
-	public void nextStep() {
+	public ReplayAction nextStep() {
 		ReplayAction step = replayData.getActionInformation().get(currentActionIndex);
 		Entity entity = game.getEntity(step.getEntity());
 		ECSAction action = Actions.getAction(entity, step.getActionName());
@@ -140,6 +140,7 @@ public class ReplayPlaybackSystem implements ECSSystem {
 			throw new ReplayException("Replay action not correctly performed " + action + " at action index " + currentActionIndex);
 		}
 		currentActionIndex++;
+        return step;
 	}
 
 	public void setPlayerConfigs(ECSGame game) {
