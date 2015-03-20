@@ -3,7 +3,12 @@ package com.cardshifter.server.stats;
 import com.cardshifter.ai.AIs;
 import com.cardshifter.ai.ScoringAI;
 import com.cardshifter.api.CardshifterConstants;
+import com.cardshifter.core.game.FakeClient;
 import com.cardshifter.core.game.ModCollection;
+import com.cardshifter.core.game.TCGGame;
+import com.cardshifter.core.replays.ReplayAction;
+import com.cardshifter.core.replays.ReplayPlaybackSystem;
+import com.cardshifter.core.replays.ReplayRecordSystem;
 import com.cardshifter.modapi.actions.ActionPerformEvent;
 import com.cardshifter.modapi.actions.attack.AttackEvent;
 import com.cardshifter.modapi.actions.attack.DamageEvent;
@@ -20,13 +25,19 @@ import com.cardshifter.modapi.phase.PhaseEndEvent;
 import com.cardshifter.modapi.phase.PhaseStartEvent;
 import com.cardshifter.modapi.players.Players;
 import com.cardshifter.modapi.resources.ResourceValueChange;
+import com.cardshifter.server.commands.ReplayCommand;
 import com.cardshifter.server.main.ServerMain;
+import com.cardshifter.server.model.GameFactory;
 import net.zomis.cardshifter.ecs.config.ConfigComponent;
+import net.zomis.cardshifter.ecs.usage.CardshifterIO;
 import net.zomis.fight.statextract.Extractor;
 import net.zomis.fight.statextract.IndexableResults;
 import net.zomis.fight.statextract.InstancePoster;
 import org.apache.log4j.PropertyConfigurator;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -46,10 +57,43 @@ public class RunStats {
 
     private void run() {
         for (int i = 0; i < GAMES; i++) {
-            playGame();
+//            playGame();
+            replayGame("extract-replay.json");
         }
         IndexableResults results = extractor.collectIndexable();
         System.out.println(results.unindexed().getData());
+    }
+
+    private void replayGame(String filename) {
+        ReplayRecordSystem replay;
+        File file = new File(filename);
+        try {
+            replay = CardshifterIO.mapper().readValue(file, ReplayRecordSystem.class);
+        } catch (IOException e1) {
+            throw new RuntimeException("Error loading replay: " + e1.getMessage(), e1);
+        }
+
+        String actualMod = replay.getModName() != null ? replay.getModName() : null;
+        ECSMod mod = mods.getModFor(actualMod);
+        final InstancePoster instance = extractor.postPrimary();
+
+        ECSGame game = new ECSGame();
+        ReplayPlaybackSystem playback = new ReplayPlaybackSystem(game, replay);
+        game.addSystem(playback);
+        registerEvents(game, instance);
+
+        mod.declareConfiguration(game);
+        playback.setPlayerConfigs(game);
+        // is decks configured correctly?
+        mod.setupGame(game);
+
+        game.startGame();
+//        while (!game.isGameOver()) {
+        while (!playback.isReplayFinished()) {
+    //        AISystem.call(game);
+            ReplayAction step = playback.nextStep();
+            System.out.println("next step: " + step);
+        }
     }
 
     private void playGame() {
@@ -57,6 +101,22 @@ public class RunStats {
         final InstancePoster instance = extractor.postPrimary();
         ECSGame game = new ECSGame();
         game.setRandomSeed(42);
+        registerEvents(game, instance);
+        mod.declareConfiguration(game);
+        List<Entity> players = Players.getPlayersInGame(game);
+        players.get(0).addComponent(new AIComponent(new ScoringAI(AIs.medium())));
+        players.get(1).addComponent(new AIComponent(new ScoringAI(AIs.fighter())));
+        for (Entity entity : players) {
+            entity.getComponent(AIComponent.class).getAI().configure(entity, entity.getComponent(ConfigComponent.class));
+        }
+        mod.setupGame(game);
+        game.startGame();
+        while (!game.isGameOver()) {
+            AISystem.call(game);
+        }
+    }
+
+    private void registerEvents(ECSGame game, InstancePoster instance) {
         game.getEvents().registerHandlerAfter(this, GameOverEvent.class, e -> instance.post(e));
         game.getEvents().registerHandlerAfter(this, StartGameEvent.class, e -> instance.post(e));
         game.getEvents().registerHandlerAfter(this, ActionPerformEvent.class, instance::post);
@@ -70,18 +130,6 @@ public class RunStats {
         game.getEvents().registerHandlerAfter(this, PhaseEndEvent.class, instance::post);
         game.getEvents().registerHandlerAfter(this, ResourceValueChange.class, instance::post);
         game.getEvents().registerHandlerAfter(this, ZoneChangeEvent.class, instance::post);
-        mod.declareConfiguration(game);
-        List<Entity> players = Players.getPlayersInGame(game);
-        players.get(0).addComponent(new AIComponent(new ScoringAI(AIs.medium())));
-        players.get(1).addComponent(new AIComponent(new ScoringAI(AIs.fighter())));
-        for (Entity entity : players) {
-            entity.getComponent(AIComponent.class).getAI().configure(entity, entity.getComponent(ConfigComponent.class));
-        }
-        mod.setupGame(game);
-        game.startGame();
-        while (!game.isGameOver()) {
-            AISystem.call(game);
-        }
     }
 
 }
