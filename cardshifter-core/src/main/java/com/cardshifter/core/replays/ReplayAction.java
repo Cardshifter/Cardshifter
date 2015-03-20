@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.cardshifter.modapi.actions.ActionPerformEvent;
-import com.fasterxml.jackson.annotation.JsonCreator;
 
 public class ReplayAction {
 
@@ -14,7 +13,6 @@ public class ReplayAction {
 	private final int performer;
 	private final String actionName;
 	
-	@JsonCreator
 	ReplayAction() {
 		this.entity = 0;
 		this.targets = null;
@@ -48,7 +46,12 @@ public class ReplayAction {
 		return Collections.unmodifiableList(targets);
 	}
 
-	public static ReplayAction forAction(ActionPerformEvent event) {
+    @Override
+    public String toString() {
+        return actionName + " on " + entity + " by " + performer + " with targets " + targets;
+    }
+
+    public static ReplayAction forAction(ActionPerformEvent event) {
 		ReplayAction act = new ReplayAction(event);
 		return act;
 	}
