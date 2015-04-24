@@ -84,14 +84,21 @@ function declareConfiguration(game) {
 		 */
 		var config = DeckConfigFactory.create(minSize, maxSize, zone.getCards(), maxCardsPerType);
 		/**
-		 * @param {Object} ConfigComponent() - Configuration for player entities
+		 * @param {Object} ConfigComponent() - Configuration for player entities.
 		 */
 		entity.addComponent(new ConfigComponent().addConfig("Deck", config));
 	}
 }
 
+/**
+ * @params {Object} zone - Zone to which to add cards & attributes to.
+ */
+
 function addCards(zone) {
 	var entity = zone.getOwner().getGame().newEntity();
+	/**
+	 * @param {Object} entity - Entity to which resources are being mapped.
+	*/
 	ECSResourceMap.createFor(entity)
 		.set(PhrancisResources.HEALTH, 5)
 		.set(PhrancisResources.MAX_HEALTH, 5)
@@ -101,13 +108,26 @@ function addCards(zone) {
 		.set(PhrancisResources.SICKNESS, 1)
 		.set(PhrancisResources.TAUNT, 1)
 		.set(PhrancisResources.ATTACK_AVAILABLE, 1);
+	/**
+	 * @param {Object} entity - Entity to which attributes are being mapped.
+	 * @param {string} name - Name of the attribute.
+	 */
 	ECSAttributeMap.createFor(entity).set(Attributes.NAME, "Testing Thing");
 	var mod = new baseMod();
+	/**
+	 * @param {string} EffectComponent - Determine the effect/creature type of the entity.
+	 *   Currently available: "Mech", "Bio"
+	 */
 	entity.apply(mod.creature("Mech"));
+	/**
+	 * @param {Object} entity - Entity to add to bottom of zone
+	 */
 	zone.addOnBottom(entity);
 	return entity;
 }
-
+/**
+ * @param {Object} game - Game configuration.
+ */
 function setupGame(game) {
 
 }
