@@ -1,16 +1,42 @@
 /**
  * Attempts to replicate the logic located in PhrancisGame.java
+ * This module is to set up all the core game components required to start a game
+ * Location of original Java file:
+ *   cardshifter-core/src/main/java/net/zomis/cardshifter/ecs/usage/PhrancisGame.java 
  * @module PhrancisGame
  */
 
+/** Card zones and owners */
 var ZoneComponent = Java.type("com.cardshifter.modapi.cards.ZoneComponent");
+/** Players & win/lose logic */
 var PlayerComponent = Java.type("com.cardshifter.modapi.base.PlayerComponent");
+/** Build decks using min/max size and cards */
 var DeckConfigFactory = Java.type("net.zomis.cardshifter.ecs.config.DeckConfigFactory");
+/** Potential configurations for players/entities. Primarily stores DeckConfigs */
 var ConfigComponent = Java.type("net.zomis.cardshifter.ecs.config.ConfigComponent");
+/** 
+ * Enum that represents various player resources:
+ * MAX_HEALTH, SNIPER, DOUBLE_ATTACK, TAUNT, DENY_COUNTERATTACK, HEALTH, MANA, MANA_MAX, SCRAP, 
+ * ATTACK, MANA_COST, SCRAP_COST, ENCHANTMENTS_ACTIVE, SICKNESS, ATTACK_AVAILABLE
+ * @implements ECSResource
+*/
 var PhrancisResources = Java.type("net.zomis.cardshifter.ecs.usage.PhrancisGame.PhrancisResources");
+/**
+ * Stores integer value resources for entities
+ * @implements CopyableComponent
+ */
 var ECSResourceMap = Java.type("com.cardshifter.modapi.resources.ECSResourceMap");
+/**
+ * Store attributes for entities
+ * @implements CopyableComponent
+ */
 var ECSAttributeMap = Java.type("com.cardshifter.modapi.attributes.ECSAttributeMap");
+/**
+ * Core class for starting a Cardshifter game
+ * @implements ECSMod
+ */
 var baseMod = Java.type("net.zomis.cardshifter.ecs.usage.PhrancisGame");
+/** Card attributes */
 var Attributes = Java.type("com.cardshifter.modapi.attributes.Attributes");
 
 
