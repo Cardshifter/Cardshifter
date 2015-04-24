@@ -22,7 +22,7 @@ var ConfigComponent = Java.type("net.zomis.cardshifter.ecs.config.ConfigComponen
 */
 var PhrancisResources = Java.type("net.zomis.cardshifter.ecs.usage.PhrancisGame.PhrancisResources");
 /**
- * Stores integer value resources for entities
+ * Stores resources for entities
  * @implements CopyableComponent
  */
 var ECSResourceMap = Java.type("com.cardshifter.modapi.resources.ECSResourceMap");
@@ -39,22 +39,53 @@ var baseMod = Java.type("net.zomis.cardshifter.ecs.usage.PhrancisGame");
 /** Card attributes */
 var Attributes = Java.type("com.cardshifter.modapi.attributes.Attributes");
 
-
+/**
+ * Declare game configuration
+ * @param {Object} game - Game configuration data
+ */
 function declareConfiguration(game) {
-	neutral = game.newEntity();
+	var neutral = game.newEntity();
+	/**
+	 * @param {Object} owner - Owner of the ZoneComponent.
+	 * @param {string} name - Name of the ZoneComponent.
+	 */
 	var zone = new ZoneComponent(neutral, "Cards");
 	neutral.addComponent(zone);
 	addCards(zone);
-		
+	
+	/** Parameters related to DeckConfigFactory */
 	var maxCardsPerType = 3;
 	var minSize = 30;
 	var maxSize = 30;
-		
+	
+	/**
+	 * Create playerComponent 0 & 1, i.e., Player1 & Player2
+	 * Config a deck for each player
+	 */
 	for (var i = 0; i < 2; i++) {
+		/**
+		 * @param {Object} newEntity() - New game entity.
+		 */
 		var entity = game.newEntity();
+		/**
+		 * @param {int} index - Index of the playerComponent.
+		 * @param {string} name - Name of the playerComponent.
+		 */
 		var playerComponent = new PlayerComponent(i, "Player" + (i+1));
+		/**
+		 * @param {Object} playerComponent - Add the playerComponent to the game entity.
+		 */
 		entity.addComponent(playerComponent);
+		/**
+		 * @param {int} minSize - Minimum number of cards per deck.
+		 * @param {int} maxSize - Maximum number of cards per deck.
+		 * @param {Object} getCards() - Card ownership from ZoneComponent class.
+		 * @param {int} maxCardsPerType - Maximum card of each type per deck.
+		 */
 		var config = DeckConfigFactory.create(minSize, maxSize, zone.getCards(), maxCardsPerType);
+		/**
+		 * @param {Object} ConfigComponent() - Configuration for player entities
+		 */
 		entity.addComponent(new ConfigComponent().addConfig("Deck", config));
 	}
 }
