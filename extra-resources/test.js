@@ -1,3 +1,8 @@
+/**
+ * Attempts to replicate the logic located in PhrancisGame.java
+ * @module PhrancisGame
+ */
+
 var ZoneComponent = Java.type("com.cardshifter.modapi.cards.ZoneComponent");
 var PlayerComponent = Java.type("com.cardshifter.modapi.base.PlayerComponent");
 var DeckConfigFactory = Java.type("net.zomis.cardshifter.ecs.config.DeckConfigFactory");
@@ -7,6 +12,7 @@ var ECSResourceMap = Java.type("com.cardshifter.modapi.resources.ECSResourceMap"
 var ECSAttributeMap = Java.type("com.cardshifter.modapi.attributes.ECSAttributeMap");
 var baseMod = Java.type("net.zomis.cardshifter.ecs.usage.PhrancisGame");
 var Attributes = Java.type("com.cardshifter.modapi.attributes.Attributes");
+
 
 function declareConfiguration(game) {
 	neutral = game.newEntity();
