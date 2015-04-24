@@ -10,6 +10,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.prefs.Preferences;
 
+import com.cardshifter.api.LogInterface;
+import com.cardshifter.core.Log4jAdapter;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -168,7 +170,12 @@ public final class GameClientLauncherController implements Initializable {
 			public void handleMessage(ClientIO clientIO, String message) {
 				throw new UnsupportedOperationException();
 			}
-		};
+
+            @Override
+            public LogInterface getLogger() {
+                return new Log4jAdapter();
+            }
+        };
 		
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("ClientDocument.fxml"));

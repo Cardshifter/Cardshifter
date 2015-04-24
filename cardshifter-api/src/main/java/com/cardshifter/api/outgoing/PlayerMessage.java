@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.cardshifter.api.messages.Message;
+
 public class PlayerMessage extends Message {
 //	SERVER: command: player, name: 'Bubu', properties: { hp: 23 }
 
@@ -13,7 +14,7 @@ public class PlayerMessage extends Message {
 	private final int index;
 	private final int id;
 
-	PlayerMessage() {
+	public PlayerMessage() {
 		this(0, 0, "", new HashMap<String, Integer>());
 	}
 
@@ -35,7 +36,7 @@ public class PlayerMessage extends Message {
 	
 	@Override
 	public String toString() {
-		return String.format("Player Info: %s - %s", this.name, this.properties);
+		return "Player Info: " + name + " - " + properties;
 	}
 	
 	public int getIndex() {

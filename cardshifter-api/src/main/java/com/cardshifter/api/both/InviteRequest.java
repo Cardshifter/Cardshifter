@@ -1,7 +1,6 @@
 package com.cardshifter.api.both;
 
 import com.cardshifter.api.messages.Message;
-import com.fasterxml.jackson.annotation.JsonCreator;
 
 public class InviteRequest extends Message {
 
@@ -9,10 +8,10 @@ public class InviteRequest extends Message {
 	private final String name;
 	private final String gameType;
 
-	@JsonCreator
-	InviteRequest() {
+	public InviteRequest() {
 		this(0, "", "");
 	}
+
 	public InviteRequest(int id, String name, String gameType) {
 		super("inviteRequest");
 		this.id = id;

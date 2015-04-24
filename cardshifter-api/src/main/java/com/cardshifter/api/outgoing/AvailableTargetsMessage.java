@@ -1,5 +1,6 @@
 package com.cardshifter.api.outgoing;
 
+import com.cardshifter.api.ArrayUtil;
 import com.cardshifter.api.messages.Message;
 
 import java.util.Arrays;
@@ -12,7 +13,7 @@ public class AvailableTargetsMessage extends Message {
 	private final int max;
 	private final int[] targets;
 
-	AvailableTargetsMessage() {
+	public AvailableTargetsMessage() {
 		this(0, "", new int[0], 0, 0);
 	}
 
@@ -22,7 +23,7 @@ public class AvailableTargetsMessage extends Message {
 		this.action = action;
 		this.min = min;
 		this.max = max;
-		this.targets = Arrays.copyOf(targets, targets.length);
+		this.targets = ArrayUtil.copyOf(targets);
 	}
 	
 	public int getMax() {

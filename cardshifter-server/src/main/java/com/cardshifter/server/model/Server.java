@@ -13,6 +13,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
+import com.cardshifter.api.LogInterface;
+import com.cardshifter.core.Log4jAdapter;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -300,5 +302,10 @@ public class Server implements ClientServerInterface {
 	public int newClientId() {
 		return clientId.incrementAndGet();
 	}
-	
+
+    @Override
+    public LogInterface getLogger() {
+        return new Log4jAdapter();
+    }
+
 }

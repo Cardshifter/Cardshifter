@@ -1,7 +1,6 @@
 package com.cardshifter.api.outgoing;
 
 import com.cardshifter.api.messages.Message;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class WelcomeMessage extends Message {
 
@@ -29,7 +28,6 @@ public class WelcomeMessage extends Message {
 		return status;
 	}
 	
-	@JsonIgnore
 	public boolean isOK() {
 		return this.status == STATUS_OK;
 	}

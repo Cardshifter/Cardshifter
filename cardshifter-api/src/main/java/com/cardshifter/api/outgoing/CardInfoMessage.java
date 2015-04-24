@@ -13,7 +13,7 @@ public class CardInfoMessage extends Message {
 
 	private final Map<String, Object> properties;
 
-	CardInfoMessage() {
+	public CardInfoMessage() {
 		this(0, 0, null);
 	}
 	public CardInfoMessage(int zoneId, int cardId, Map<String, Object> properties) {
@@ -37,7 +37,7 @@ public class CardInfoMessage extends Message {
 	
 	@Override
 	public String toString() {
-		return String.format("CardInfo: %d in zone %d - %s", this.id, this.zone, this.properties);
+		return "CardInfo: " + id + " in zone " + zone + " - " + this.properties;
 	}
 	
 }

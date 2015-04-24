@@ -9,7 +9,7 @@ public class ServerMain {
 	public static void main(String[] args) {
 		if (System.getSecurityManager() == null) {
 			System.out.println("No security manager has been installed, you need to install one to be protected against malicious mods, please refer to the documentation to install a correct security manager.");
-			System.exit(0);
+//			System.exit(0);
 		}
 		PropertyConfigurator.configure(ServerMain.class.getResource("log4j.properties"));
 		new MainServer().start();

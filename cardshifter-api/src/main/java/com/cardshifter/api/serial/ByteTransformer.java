@@ -7,20 +7,23 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import com.cardshifter.api.LogInterface;
 
 import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.messages.MessageTypeIdResolver;
 
 public class ByteTransformer implements CommunicationTransformer {
-	private static final Logger logger = LogManager.getLogger(ByteTransformer.class);
 
-	public byte[] transform(Message message) throws IOException {
-		FieldsCollection<Message> fields = FieldsCollection.gather(message);
+    private final LogInterface logger;
+
+    public ByteTransformer(LogInterface logger) {
+        this.logger = logger;
+    }
+
+    public byte[] transform(Message message) throws IOException {
+		FieldsCollection<Message> fields = FieldsCollection.gather(message, logger);
 		fields = fields.orderByName().putFirst("command");
 		return fields.serialize(message);
 	}
@@ -31,7 +34,7 @@ public class ByteTransformer implements CommunicationTransformer {
 		// 2. order Fields, pre-process
 		// 3. serialize
 		logger.info("byte send " + message);
-		FieldsCollection<Message> fields = FieldsCollection.gather(message);
+		FieldsCollection<Message> fields = FieldsCollection.gather(message, logger);
 		fields = fields.orderByName().putFirst("command");
 		byte[] b = fields.serialize(message);
 		logger.info("byte send " + Arrays.toString(b));
@@ -72,11 +75,11 @@ public class ByteTransformer implements CommunicationTransformer {
 		int typeLength = data.readInt();
 		String str = readString(data, typeLength);
 		System.out.println(str);
-		Class<?> type = MessageTypeIdResolver.typeFor(str);
+		Class<?> type = MessageTypeIdResolver.get(str);
 		Constructor<?> constructor = type.getDeclaredConstructor();
 		constructor.setAccessible(true);
 		Message message = (Message) constructor.newInstance();
-		FieldsCollection<Message> fields = FieldsCollection.gather(message);
+		FieldsCollection<Message> fields = FieldsCollection.gather(message, logger);
 		fields = fields.orderByName().putFirst("command").skipFirst();
 		fields.read(message, data);
 		return message;

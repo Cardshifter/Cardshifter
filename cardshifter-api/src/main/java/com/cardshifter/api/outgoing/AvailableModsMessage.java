@@ -2,9 +2,8 @@ package com.cardshifter.api.outgoing;
 
 import java.util.Arrays;
 
+import com.cardshifter.api.ArrayUtil;
 import com.cardshifter.api.messages.Message;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class AvailableModsMessage extends Message {
 
@@ -14,10 +13,9 @@ public class AvailableModsMessage extends Message {
 		this(new String[]{ "N/A" });
 	}
 	
-	@JsonCreator
-	public AvailableModsMessage(@JsonProperty("mods") String[] mods) {
+	public AvailableModsMessage(String[] mods) {
 		super("availableMods");
-		this.mods = Arrays.copyOf(mods, mods.length);
+		this.mods = ArrayUtil.copyOf(mods);
 	}
 	
 	public String[] getMods() {

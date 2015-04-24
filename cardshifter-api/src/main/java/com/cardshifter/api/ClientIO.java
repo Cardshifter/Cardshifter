@@ -1,22 +1,19 @@
 package com.cardshifter.api;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-
 import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.outgoing.ServerErrorMessage;
 
 public abstract class ClientIO implements IdObject {
 
-	private static final Logger logger = LogManager.getLogger(ClientIO.class);
-	
 	private String name = "";
 	private final ClientServerInterface server;
+    private final LogInterface logger;
 	private int id;
-	
+
 	public ClientIO(ClientServerInterface server) {
 		this.server = server;
 		this.id = server.newClientId();
+        this.logger = server.getLogger();
 	}
 	
 	/**

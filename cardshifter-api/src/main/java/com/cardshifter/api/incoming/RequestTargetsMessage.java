@@ -1,7 +1,6 @@
 package com.cardshifter.api.incoming;
 
 import com.cardshifter.api.messages.Message;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class RequestTargetsMessage extends Message {
 
@@ -9,7 +8,7 @@ public class RequestTargetsMessage extends Message {
 	private final int id;
 	private final String action;
 
-	RequestTargetsMessage() {
+	public RequestTargetsMessage() {
 		this(0, 0, "");
 	}
 

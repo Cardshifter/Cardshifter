@@ -12,4 +12,6 @@ public interface ClientServerInterface {
 
 	int newClientId();
 
+    LogInterface getLogger();
+
 }

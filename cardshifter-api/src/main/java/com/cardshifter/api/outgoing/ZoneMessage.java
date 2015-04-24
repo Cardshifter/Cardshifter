@@ -2,6 +2,7 @@ package com.cardshifter.api.outgoing;
 
 import java.util.Arrays;
 
+import com.cardshifter.api.ArrayUtil;
 import com.cardshifter.api.messages.Message;
 
 public class ZoneMessage extends Message {
@@ -14,7 +15,7 @@ public class ZoneMessage extends Message {
 	private final boolean known;
 	private final int[] entities;
 
-	ZoneMessage() {
+	public ZoneMessage() {
 		this(0, "", 0, 0, false, new int[]{});
 	}
 
@@ -25,7 +26,7 @@ public class ZoneMessage extends Message {
 		this.owner = owner;
 		this.size = size;
 		this.known = known;
-		this.entities = Arrays.copyOf(entities, entities.length);
+		this.entities = ArrayUtil.copyOf(entities);
 	}
 	
 	public int getId() {
@@ -49,7 +50,7 @@ public class ZoneMessage extends Message {
 	}
 	
 	public int[] getEntities() {
-		return Arrays.copyOf(entities, entities.length);
+		return ArrayUtil.copyOf(entities);
 	}
 
 	@Override

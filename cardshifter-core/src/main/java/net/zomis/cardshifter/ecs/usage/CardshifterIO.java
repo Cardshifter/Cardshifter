@@ -1,9 +1,11 @@
 package net.zomis.cardshifter.ecs.usage;
 
+import com.cardshifter.api.both.PlayerConfigMessage;
 import com.cardshifter.api.config.DeckConfig;
 
 import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.outgoing.CardInfoMessage;
+import com.cardshifter.api.outgoing.WelcomeMessage;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.Version;
@@ -20,7 +22,9 @@ public class CardshifterIO {
 		SimpleModule module = new SimpleModule("", new Version(0, 5, 0, "", "com.cardshifter", "cardshifter"));
 		module.setMixInAnnotation(DeckConfig.class, MixinDeckConfig.class);
 		module.setMixInAnnotation(Message.class, MixinMessage.class);
-		module.setMixInAnnotation(CardInfoMessage.class, MixinCardInfoMessage.class);
+        module.setMixInAnnotation(CardInfoMessage.class, MixinCardInfoMessage.class);
+        module.setMixInAnnotation(PlayerConfigMessage.class, MixinPlayerConfigMessage.class);
+        module.setMixInAnnotation(WelcomeMessage.class, MixinWelcomeMessage.class);
 		mapper.registerModule(module);
 	}
 	

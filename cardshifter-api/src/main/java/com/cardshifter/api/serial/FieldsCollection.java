@@ -7,27 +7,26 @@ import java.io.IOException;
 import java.lang.reflect.*;
 import java.util.*;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import com.cardshifter.api.LogInterface;
 
 public class FieldsCollection<T> {
 
-	private static final Logger logger = LogManager.getLogger(FieldsCollection.class);
-	
 	private final List<Field> fields;
+    private final LogInterface logger;
 
-	public FieldsCollection(List<Field> fields) {
+    public FieldsCollection(List<Field> fields, LogInterface logger) {
 		this.fields = Collections.unmodifiableList(fields);
+        this.logger = logger;
 	}
 
-	public static <T> FieldsCollection<T> gather(T object) {
+	public static <T> FieldsCollection<T> gather(T object, LogInterface logger) {
 		List<Field> fields = new ArrayList<Field>();
 		Class<?> clazz = object.getClass();
 		while (clazz != null) {
 			addFields(fields, clazz);
 			clazz = clazz.getSuperclass();
 		}
-		return new FieldsCollection<T>(fields);
+		return new FieldsCollection<T>(fields, logger);
 	}
 
 	private static void addFields(List<Field> fields, Class<?> clazz) {
@@ -135,7 +134,7 @@ public class FieldsCollection<T> {
 			try {
 				Class<?> clazz = Class.forName(clazzName);
 				Object obj = deserialize(clazz, data, field);
-				logger.debug("Deserialized object: " + obj);
+//				logger.debug("Deserialized object: " + obj);
 				return obj;
 			} catch (ClassNotFoundException e) {
 				throw new IOException(e);
@@ -147,7 +146,7 @@ public class FieldsCollection<T> {
 				Constructor<?> constructor = type.getDeclaredConstructor();
 				constructor.setAccessible(true);
 				Object obj = constructor.newInstance();
-				FieldsCollection<Object> fields = FieldsCollection.gather(obj);
+				FieldsCollection<Object> fields = FieldsCollection.gather(obj, logger);
 				fields = fields.orderByName();
 				data.readInt(); // length of upcoming data, ignored on recursive deserialization
 				fields.read(obj, data);
@@ -159,7 +158,7 @@ public class FieldsCollection<T> {
 	}
 	
 	private void deserialize(Field field, Object message, DataInputStream data) throws IllegalArgumentException, IllegalAccessException, IOException {
-		logger.debug("read field " + field + " for " + message);
+//		logger.debug("read field " + field + " for " + message);
 		field.setAccessible(true);
 		Class<?> type = field.getType();
 		field.set(message, deserialize(type, data, field));
@@ -232,7 +231,7 @@ public class FieldsCollection<T> {
 		}
 		else {
 			logger.info("Using recursive serialization for " + type);
-			FieldsCollection<Object> fields = FieldsCollection.gather(value);
+			FieldsCollection<Object> fields = FieldsCollection.gather(value, logger);
 			fields = fields.orderByName();
 			byte[] b = fields.serialize(value);
 			out.write(b);
@@ -254,7 +253,7 @@ public class FieldsCollection<T> {
 				return o1.getName().compareTo(o2.getName());
 			}
 		});
-		return new FieldsCollection<T>(myFields);
+		return new FieldsCollection<T>(myFields, logger);
 	}
 
 	public FieldsCollection<T> putFirst(String fieldName) {
@@ -263,7 +262,7 @@ public class FieldsCollection<T> {
 			if (field.getName().equals(fieldName)) {
 				myFields.remove(field);
 				myFields.add(0, field);
-				return new FieldsCollection<T>(myFields);
+				return new FieldsCollection<T>(myFields, logger);
 			}
 		}
 		throw new IllegalArgumentException("Field name not found: " + fieldName);
@@ -283,7 +282,7 @@ public class FieldsCollection<T> {
 	public FieldsCollection<T> skipFirst() {
 		List<Field> myFields = new ArrayList<Field>(fields);
 		myFields.remove(0);
-		return new FieldsCollection<T>(myFields);
+		return new FieldsCollection<T>(myFields, logger);
 	}
 
 }
