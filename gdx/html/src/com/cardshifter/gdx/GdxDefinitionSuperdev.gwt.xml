@@ -4,6 +4,7 @@
 	<inherits name='com.badlogic.gdx.backends.gdx_backends_gwt' />
 
     <inherits name='CardshifterGame' />
+    <inherits name='com.cardshifter.api' />
 	<entry-point class='com.cardshifter.gdx.client.HtmlLauncher' />
 	
 	<add-linker name="xsiframe"/>

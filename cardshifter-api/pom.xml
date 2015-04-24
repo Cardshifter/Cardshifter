@@ -24,6 +24,16 @@
 	</properties>
 	
 	<build>
+        <resources>
+            <resource>
+                <!-- for GWT -->
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.java</include>
+                    <include>**/*.gwt.xml</include>
+                </includes>
+            </resource>
+        </resources>
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
