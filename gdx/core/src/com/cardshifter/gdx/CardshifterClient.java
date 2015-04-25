@@ -6,9 +6,6 @@ import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
 import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.serial.ByteTransformer;
-import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.spi.LoggingEvent;
 
 import java.io.*;
 
@@ -20,32 +17,17 @@ public class CardshifterClient implements Runnable {
     private final ByteTransformer transformer;
     private final CardshifterMessageHandler handler;
 
-    public CardshifterClient(String host, int port, CardshifterMessageHandler handler) {
+    public CardshifterClient(CardshifterPlatform platform, String host, int port, CardshifterMessageHandler handler) {
         socket = Gdx.net.newClientSocket(Net.Protocol.TCP, host, port, new SocketHints());
         output = socket.getOutputStream();
         input = socket.getInputStream();
-        transformer = new ByteTransformer();
+        transformer = new ByteTransformer(new GdxLogger());
         this.handler = handler;
         try {
             output.write("{ \"command\": \"serial\", \"type\": \"1\" }".getBytes());
             output.flush();
             Gdx.app.log("Client", "Sent serial type");
-            LogManager.getRootLogger().addAppender(new AppenderSkeleton() {
-                @Override
-                protected void append(LoggingEvent event) {
-                    Gdx.app.log(event.getLoggerName(), String.valueOf(event.getMessage()));
-                }
-
-                @Override
-                public void close() {
-
-                }
-
-                @Override
-                public boolean requiresLayout() {
-                    return false;
-                }
-            });
+            platform.setupLogging();
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);

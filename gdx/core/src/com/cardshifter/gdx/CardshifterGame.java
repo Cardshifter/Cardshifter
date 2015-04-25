@@ -17,11 +17,16 @@ import com.cardshifter.gdx.screens.MenuScreen;
 public class CardshifterGame extends Game {
     private static final float STAGE_WIDTH = 800;
     private static final float STAGE_HEIGHT = 480;
+    private final CardshifterPlatform platform;
     private SpriteBatch batch;
     public Skin skin;
     private OrthographicCamera camera;
 
     public Stage stage;
+
+    public CardshifterGame(CardshifterPlatform platform) {
+        this.platform = platform;
+    }
 
     @Override
 	public void create () {
@@ -88,5 +93,9 @@ public class CardshifterGame extends Game {
 
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
+    }
+
+    public CardshifterPlatform getPlatform() {
+        return platform;
     }
 }

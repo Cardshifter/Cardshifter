@@ -42,7 +42,7 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
 
     public ClientScreen(final CardshifterGame game, String host, int port, final String username) {
         this.game = game;
-        client = new CardshifterClient(host, port, this);
+        client = new CardshifterClient(game.getPlatform(), host, port, this);
         table = new Table(game.skin);
         table.setFillParent(true);
         mods = new HorizontalGroup();
