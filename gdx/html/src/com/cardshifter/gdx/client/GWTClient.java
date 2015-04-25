@@ -1,6 +1,7 @@
 package com.cardshifter.gdx.client;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.Base64Coder;
 import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.serial.ByteTransformer;
@@ -53,7 +54,8 @@ public class GWTClient implements CardshifterClient, WebsocketListener {
     public void onMessage(String msg) {
         Gdx.app.log(TAG, "Message: " + msg);
         try {
-            Message message = transformer.readOnce(new ByteArrayInputStream(msg.getBytes()));
+            byte[] bytes = Base64Coder.decode(msg);
+            Message message = transformer.readOnce(new ByteArrayInputStream(bytes));
             handler.handle(message);
         } catch (IOException e) {
             Gdx.app.log(TAG, "Read error", e);
