@@ -1,6 +1,5 @@
 package com.cardshifter.serialization;
 
-import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.serial.ReflectionInterface;
 import com.cardshifter.api.serial.ReflField;
 
@@ -16,7 +15,7 @@ public class NormalReflection implements ReflectionInterface {
     public Object create(Class<?> type) throws Exception {
         Constructor<?> constructor = type.getDeclaredConstructor();
         constructor.setAccessible(true);
-        return (Message) constructor.newInstance();
+        return constructor.newInstance();
     }
 
     @Override

@@ -9,7 +9,9 @@ import java.util.Base64;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.cardshifter.api.CardshifterSerializationException;
 import com.cardshifter.api.serial.ByteTransformer;
+import com.cardshifter.server.clients.Base64Utils;
 import net.zomis.cardshifter.ecs.usage.CardshifterIO;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -71,10 +73,10 @@ public class ServerWeb implements ConnectionHandler {
 				return;
 			}
             try {
-                byte[] bytes = Base64.getDecoder().decode(message);
+                byte[] bytes = Base64Utils.fromBase64(message);
                 logger.info("Connection message from: " + conn + ": " + Arrays.toString(bytes));
                 io.sentToServer(transformer.readOnce(new ByteArrayInputStream(bytes)));
-            } catch (IOException e) {
+            } catch (CardshifterSerializationException e) {
                 throw new RuntimeException(e);
             }
 //			io.sentToServer(message);

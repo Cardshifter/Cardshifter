@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 
+import com.cardshifter.api.CardshifterSerializationException;
 import com.cardshifter.api.LogInterface;
 
 import com.cardshifter.api.messages.Message;
@@ -22,14 +23,14 @@ public class ByteTransformer implements CommunicationTransformer {
         this.refl = refl;
     }
 
-    public byte[] transform(Message message) throws IOException {
+    public byte[] transform(Message message) throws CardshifterSerializationException {
 		FieldsCollection<Message> fields = FieldsCollection.gather(message, logger, refl);
 		fields = fields.orderByName().putFirst("command");
 		return fields.serialize(message);
 	}
 	
 	@Override
-	public void send(Message message, OutputStream out) throws IOException {
+	public void send(Message message, OutputStream out) throws CardshifterSerializationException {
 		// 1. find Fields to serialize
 		// 2. order Fields, pre-process
 		// 3. serialize
@@ -38,11 +39,15 @@ public class ByteTransformer implements CommunicationTransformer {
 		fields = fields.orderByName().putFirst("command");
 		byte[] b = fields.serialize(message);
 		logger.info("byte send " + Arrays.toString(b));
-		out.write(b);
-	}
+        try {
+            out.write(b);
+        } catch (IOException e) {
+            throw new CardshifterSerializationException(e);
+        }
+    }
 
 	@Override
-	public void read(InputStream in, MessageHandler onReceived) throws IOException {
+	public void read(InputStream in, MessageHandler onReceived) throws CardshifterSerializationException {
 		try {
 			logger.info("Started reading " + this);
 			Message message = readOnce(in);
@@ -50,41 +55,43 @@ public class ByteTransformer implements CommunicationTransformer {
 			if (!onReceived.messageReceived(message)) {
 				return;
 			}
-		} catch (IOException e) {
-			throw e;
 		} catch (Exception e) {
-			throw new IOException(e.toString());
+			throw new CardshifterSerializationException(e);
 		}
 	}
 
-	public Message readOnce(InputStream in) throws IOException {
-		DataInputStream data = new DataInputStream(in);
-		int numBytes = data.readInt();
-		logger.info("bytes received " + numBytes);
-		byte[] actualData = new byte[numBytes];
-
-		int read = 0;
-		while (read < numBytes) {
-			read += data.read(actualData, read, numBytes - read);
-		}
-
-		logger.info("bytes data received " + Arrays.toString(actualData));
-		data = new DataInputStream(new ByteArrayInputStream(actualData));
-		
-		int typeLength = data.readInt();
-		String str = readString(data, typeLength);
-		System.out.println(str);
-		Class<?> type = MessageTypeIdResolver.get(str);
-        Message message;
+	public Message readOnce(InputStream in) throws CardshifterSerializationException {
         try {
-            message = (Message) refl.create(type);
-        } catch (Exception e) {
-            throw new IOException(e.toString());
+            DataInputStream data = new DataInputStream(in);
+            int numBytes = data.readInt();
+            logger.info("bytes received " + numBytes);
+            byte[] actualData = new byte[numBytes];
+
+            int read = 0;
+            while (read < numBytes) {
+                read += data.read(actualData, read, numBytes - read);
+            }
+
+            logger.info("bytes data received " + Arrays.toString(actualData));
+            data = new DataInputStream(new ByteArrayInputStream(actualData));
+
+            int typeLength = data.readInt();
+            String str = readString(data, typeLength);
+            System.out.println(str);
+            Class<?> type = MessageTypeIdResolver.get(str);
+            Message message;
+            try {
+                message = (Message) refl.create(type);
+            } catch (Exception e) {
+                throw new CardshifterSerializationException(e);
+            }
+            FieldsCollection<Message> fields = FieldsCollection.gather(message, logger, refl);
+            fields = fields.orderByName().putFirst("command").skipFirst();
+            fields.read(message, data);
+            return message;
+        } catch (IOException ex) {
+            throw new CardshifterSerializationException(ex);
         }
-        FieldsCollection<Message> fields = FieldsCollection.gather(message, logger, refl);
-		fields = fields.orderByName().putFirst("command").skipFirst();
-		fields.read(message, data);
-		return message;
 	}
 
 	private String readString(DataInputStream data, int numBytes) throws IOException {

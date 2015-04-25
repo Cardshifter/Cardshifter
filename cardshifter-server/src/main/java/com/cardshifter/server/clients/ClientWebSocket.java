@@ -1,5 +1,6 @@
 package com.cardshifter.server.clients;
 
+import com.cardshifter.api.CardshifterSerializationException;
 import com.cardshifter.api.serial.ByteTransformer;
 import net.zomis.cardshifter.ecs.usage.CardshifterIO;
 
@@ -39,10 +40,10 @@ public class ClientWebSocket extends ClientIO {
 		String data;
 		try {
             byte[] bytes = transformer.transform(message);
-            data = Base64.getEncoder().encodeToString(bytes);
+            data = Base64Utils.toBase64(bytes);
             logger.info("Sending to client: " + message + " - " + Arrays.toString(bytes));
             conn.send(data);
-		} catch (IOException e) {
+		} catch (CardshifterSerializationException e) {
             throw new RuntimeException(e);
         }
 	}

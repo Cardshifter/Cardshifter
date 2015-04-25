@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import com.cardshifter.api.CardshifterSerializationException;
 import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.serial.CommunicationTransformer;
 import com.cardshifter.api.serial.MessageHandler;
@@ -20,20 +21,28 @@ public class JsonSerialization implements CommunicationTransformer {
 	}
 	
 	@Override
-	public void send(Message message, OutputStream out) throws IOException {
-		mapper.writeValue(out, message);
-	}
+	public void send(Message message, OutputStream out) throws CardshifterSerializationException {
+        try {
+            mapper.writeValue(out, message);
+        } catch (IOException e) {
+            throw new CardshifterSerializationException(e);
+        }
+    }
 
 	@Override
-	public void read(InputStream in, MessageHandler onReceived) throws IOException {
-		MappingIterator<Message> values;
-		values = mapper.readValues(new JsonFactory().createParser(in), Message.class);
-		while (values.hasNextValue()) {
-			Message message = values.next();
-			if (!onReceived.messageReceived(message)) {
-				return;
-			}
-		}
+	public void read(InputStream in, MessageHandler onReceived) throws CardshifterSerializationException {
+        try {
+            MappingIterator<Message> values;
+            values = mapper.readValues(new JsonFactory().createParser(in), Message.class);
+            while (values.hasNextValue()) {
+                Message message = values.next();
+                if (!onReceived.messageReceived(message)) {
+                    return;
+                }
+            }
+        } catch (IOException ex) {
+            throw new CardshifterSerializationException(ex);
+        }
 	}
 
 }

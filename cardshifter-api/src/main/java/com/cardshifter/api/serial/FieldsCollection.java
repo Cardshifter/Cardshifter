@@ -6,6 +6,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.*;
 
+import com.cardshifter.api.CardshifterSerializationException;
 import com.cardshifter.api.LogInterface;
 
 public class FieldsCollection<T> {
@@ -38,30 +39,32 @@ public class FieldsCollection<T> {
 		}
 	}
 	
-	public byte[] serialize(T message) throws IOException {
+	public byte[] serialize(T message) throws CardshifterSerializationException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		DataOutputStream out = new DataOutputStream(baos);
 		try {
 			for (ReflField field : fields) {
 				serialize(field, message, out);
 			}
-		}
-		catch (IOException e) {
-			throw e;
-		}
-		catch (Exception e) {
-			throw new IOException(e.toString());
+		} catch (CardshifterSerializationException e) {
+            throw e;
+        } catch (Exception e) {
+			throw new CardshifterSerializationException(e);
 		}
 		byte[] data = baos.toByteArray();
 		
 		baos = new ByteArrayOutputStream();
 		out = new DataOutputStream(baos);
-		out.writeInt(data.length);
-		baos.write(data);
+        try {
+            out.writeInt(data.length);
+            baos.write(data);
+        } catch (IOException e) {
+            throw new CardshifterSerializationException(e);
+        }
 		return baos.toByteArray();
 	}
 
-	private Object deserialize(Class<?> type, DataInputStream data, ReflField field) throws IOException {
+	private Object deserialize(Class<?> type, DataInputStream data, ReflField field) throws IOException, CardshifterSerializationException {
 		if (type == int.class || type == Integer.class) {
 			int value = data.readInt();
 			return value;
@@ -132,7 +135,7 @@ public class FieldsCollection<T> {
 //				logger.debug("Deserialized object: " + obj);
 				return obj;
 			} catch (Exception e) {
-				throw new IOException(e.toString());
+				throw new CardshifterSerializationException(e);
 			}
 		}
 		else {
@@ -145,7 +148,7 @@ public class FieldsCollection<T> {
 				fields.read(obj, data);
 				return obj;
 			} catch (Exception e) {
-				throw new IOException(e.toString());
+				throw new CardshifterSerializationException(e);
 			}
 		}
 	}
@@ -158,8 +161,7 @@ public class FieldsCollection<T> {
 	}
 
 	private void serialize(Class<?> type, Object value, DataOutputStream out, ReflField field)
-			throws IOException, IllegalArgumentException, IllegalAccessException {
-//		logger.info("Serializing " + type + ": " + value);
+			throws IOException, CardshifterSerializationException, IllegalArgumentException, IllegalAccessException {
 		if (type == int.class || type == Integer.class) {
 			out.writeInt((Integer) value);
 		}
@@ -257,14 +259,14 @@ public class FieldsCollection<T> {
 		throw new IllegalArgumentException("Field name not found: " + fieldName);
 	}
 
-	public void read(Object message, DataInputStream data) throws IOException {
+	public void read(Object message, DataInputStream data) throws CardshifterSerializationException {
 		try {
 			for (ReflField field : fields) {
 				deserialize(field, message, data);
 			}
 		}
 		catch (Exception ex) {
-			throw new IOException(ex.toString());
+			throw new CardshifterSerializationException(ex);
 		}
 	}
 
