@@ -58,4 +58,9 @@ public class JavaReflectField implements ReflField {
     public Object get(Object obj) throws Exception {
         return field.get(obj);
     }
+
+    @Override
+    public String toString() {
+        return field.toString();
+    }
 }

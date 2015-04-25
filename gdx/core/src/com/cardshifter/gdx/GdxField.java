@@ -47,4 +47,9 @@ public class GdxField implements ReflField {
     public Object get(Object o) throws Exception {
         return field.get(o);
     }
+
+    @Override
+    public String toString() {
+        return "Field:" + field.getName();
+    }
 }
