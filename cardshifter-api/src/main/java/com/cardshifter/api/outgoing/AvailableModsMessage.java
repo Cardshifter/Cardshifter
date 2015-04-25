@@ -19,7 +19,7 @@ public class AvailableModsMessage extends Message {
 	}
 	
 	public String[] getMods() {
-		return Arrays.copyOf(mods, mods.length);
+		return ArrayUtil.copyOf(mods);
 	}
 
 	@Override

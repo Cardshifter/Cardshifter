@@ -35,7 +35,7 @@ public class AvailableTargetsMessage extends Message {
 	}
 	
 	public int[] getTargets() {
-		return Arrays.copyOf(targets, targets.length);
+		return ArrayUtil.copyOf(targets);
 	}
 
 	public String getAction() {
