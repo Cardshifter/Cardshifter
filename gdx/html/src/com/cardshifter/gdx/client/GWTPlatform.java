@@ -1,5 +1,7 @@
 package com.cardshifter.gdx.client;
 
+import com.cardshifter.gdx.CardshifterClient;
+import com.cardshifter.gdx.CardshifterMessageHandler;
 import com.cardshifter.gdx.CardshifterPlatform;
 import com.google.gwt.i18n.client.DateTimeFormat;
 
@@ -15,6 +17,11 @@ public class GWTPlatform implements CardshifterPlatform {
     @Override
     public void setupLogging() {
 
+    }
+
+    @Override
+    public CardshifterClient createClient(String host, int port, CardshifterMessageHandler handler) {
+        return new GWTClient(host, port, handler);
     }
 
     @Override

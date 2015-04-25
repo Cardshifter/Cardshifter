@@ -6,7 +6,7 @@ package com.cardshifter.gdx;
 public interface CardshifterPlatform {
 
     void setupLogging();
-
+    CardshifterClient createClient(String host, int port, CardshifterMessageHandler handler);
 
     String getTimeString();
 

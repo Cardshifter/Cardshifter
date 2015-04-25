@@ -32,6 +32,11 @@ public class NonGWTPlatform implements CardshifterPlatform {
     }
 
     @Override
+    public CardshifterClient createClient(String host, int port, CardshifterMessageHandler handler) {
+        return new CardshifterNonGWTClient(this, host, port, handler);
+    }
+
+    @Override
     public String getTimeString() {
         return format.format(Calendar.getInstance().getTime());
     }
