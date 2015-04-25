@@ -4,7 +4,7 @@ import com.cardshifter.api.messages.Message;
 
 public class EntityRemoveMessage extends Message {
 
-	private final int entity;
+	private int entity;
 
 	public EntityRemoveMessage() {
 		this(0);

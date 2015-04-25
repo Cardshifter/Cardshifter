@@ -4,10 +4,10 @@ import com.cardshifter.api.messages.Message;
 
 public class InviteResponse extends Message {
 
-	private final int inviteId;
-	private final boolean accepted;
+	private int inviteId;
+	private boolean accepted;
 	
-	InviteResponse() {
+	public InviteResponse() {
 		this(0, false);
 	}
 

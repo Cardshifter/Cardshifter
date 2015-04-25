@@ -6,11 +6,11 @@ public class WelcomeMessage extends Message {
 
 	private static final int STATUS_OK = 200;
 	
-	private final int status;
-	private final int userId;
-	private final String message;
+	private int status;
+	private int userId;
+	private String message;
 
-	WelcomeMessage() {
+	public WelcomeMessage() {
 		this(-42, true);
 	}
 	public WelcomeMessage(int id, boolean success) {

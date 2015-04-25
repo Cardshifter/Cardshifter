@@ -4,9 +4,9 @@ import com.cardshifter.api.messages.Message;
 
 public class ServerErrorMessage extends Message {
 
-	private final String message;
+	private String message;
 
-	ServerErrorMessage() {
+    public ServerErrorMessage() {
 		this("");
 	}
 

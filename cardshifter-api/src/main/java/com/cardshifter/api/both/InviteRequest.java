@@ -4,9 +4,9 @@ import com.cardshifter.api.messages.Message;
 
 public class InviteRequest extends Message {
 
-	private final int id;
-	private final String name;
-	private final String gameType;
+	private int id;
+	private String name;
+	private String gameType;
 
 	public InviteRequest() {
 		this(0, "", "");

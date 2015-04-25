@@ -8,11 +8,11 @@ public class UserStatusMessage extends Message {
 		OFFLINE, ONLINE;
 	}
 	
-	private final int userId;
-	private final Status status;
-	private final String name;
+	private int userId;
+	private Status status;
+	private String name;
 
-	UserStatusMessage() {
+    public UserStatusMessage() {
 		this(-42, "", Status.OFFLINE);
 	}
 	

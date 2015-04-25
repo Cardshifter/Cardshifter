@@ -4,10 +4,10 @@ import com.cardshifter.api.messages.Message;
 
 public class ClientDisconnectedMessage extends Message {
 
-	private final String name;
-	private final int playerIndex;
+	private String name;
+	private int playerIndex;
 
-	ClientDisconnectedMessage() {
+	public ClientDisconnectedMessage() {
 		this("", 0);
 	}
 

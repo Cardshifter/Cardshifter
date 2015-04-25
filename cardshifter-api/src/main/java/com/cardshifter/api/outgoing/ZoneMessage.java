@@ -8,12 +8,12 @@ import com.cardshifter.api.messages.Message;
 public class ZoneMessage extends Message {
 //	SERVER: command: zone, name: 'Deck', owner: 0, id: 7, (playerIndex), size: 42, hidden: true
 
-	private final int id;
-	private final String name;
-	private final int owner;
-	private final int size;
-	private final boolean known;
-	private final int[] entities;
+	private int id;
+	private String name;
+	private int owner;
+	private int size;
+	private boolean known;
+	private int[] entities;
 
 	public ZoneMessage() {
 		this(0, "", 0, 0, false, new int[]{});

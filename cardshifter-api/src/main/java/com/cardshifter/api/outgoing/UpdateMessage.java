@@ -4,11 +4,11 @@ import com.cardshifter.api.messages.Message;
 
 public class UpdateMessage extends Message {
 
-	private final int id;
-	private final Object key;
-	private final Object value;
+	private int id;
+	private Object key;
+	private Object value;
 
-	UpdateMessage() {
+    public UpdateMessage() {
 		this(0, "", 0);
 	}
 

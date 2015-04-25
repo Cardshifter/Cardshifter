@@ -7,10 +7,10 @@ import com.cardshifter.api.messages.Message;
 
 public class PlayerConfigMessage extends Message {
 
-	private final Map<String, Object> configs;
+	private Map<String, Object> configs;
 	
-	private final int gameId;
-	private final String modName;
+	private int gameId;
+	private String modName;
 
 	public PlayerConfigMessage() {
 		this(0, "", null);

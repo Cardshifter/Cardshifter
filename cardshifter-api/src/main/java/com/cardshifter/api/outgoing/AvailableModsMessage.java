@@ -7,7 +7,7 @@ import com.cardshifter.api.messages.Message;
 
 public class AvailableModsMessage extends Message {
 
-	private final String[] mods;
+	private String[] mods;
 
 	public AvailableModsMessage() {
 		this(new String[]{ "N/A" });

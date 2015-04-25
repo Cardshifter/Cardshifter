@@ -4,10 +4,10 @@ import com.cardshifter.api.messages.Message;
 
 public class NewGameMessage extends Message {
 
-	private final int gameId;
-	private final int playerIndex;
+	private int gameId;
+	private int playerIndex;
 
-	NewGameMessage() {
+	public NewGameMessage() {
 		this(0, 0);
 	}
 

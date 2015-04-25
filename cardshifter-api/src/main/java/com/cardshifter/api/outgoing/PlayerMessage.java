@@ -9,10 +9,10 @@ import com.cardshifter.api.messages.Message;
 public class PlayerMessage extends Message {
 //	SERVER: command: player, name: 'Bubu', properties: { hp: 23 }
 
-	private final String name;
-	private final Map<String, Integer> properties;
-	private final int index;
-	private final int id;
+	private String name;
+	private Map<String, Integer> properties;
+	private int index;
+	private int id;
 
 	public PlayerMessage() {
 		this(0, 0, "", new HashMap<String, Integer>());

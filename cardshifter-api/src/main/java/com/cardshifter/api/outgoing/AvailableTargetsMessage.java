@@ -7,11 +7,11 @@ import java.util.Arrays;
 
 public class AvailableTargetsMessage extends Message {
 
-	private final int entity;
-	private final String action;
-	private final int min;
-	private final int max;
-	private final int[] targets;
+	private int entity;
+	private String action;
+	private int min;
+	private int max;
+	private int[] targets;
 
 	public AvailableTargetsMessage() {
 		this(0, "", new int[0], 0, 0);
