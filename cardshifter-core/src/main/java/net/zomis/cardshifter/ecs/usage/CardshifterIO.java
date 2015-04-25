@@ -6,6 +6,9 @@ import com.cardshifter.api.config.DeckConfig;
 import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.outgoing.CardInfoMessage;
 import com.cardshifter.api.outgoing.WelcomeMessage;
+import com.cardshifter.api.serial.ByteTransformer;
+import com.cardshifter.serialization.NormalReflection;
+import com.cardshifter.core.Log4jAdapter;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.Version;
@@ -34,4 +37,7 @@ public class CardshifterIO {
 		return mapper;
 	}
 	
+    public static ByteTransformer createByteTransformer() {
+        return new ByteTransformer(new Log4jAdapter(), new NormalReflection());
+    }
 }

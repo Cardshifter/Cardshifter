@@ -5,8 +5,6 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 
 import com.cardshifter.api.LogInterface;
@@ -17,13 +15,15 @@ import com.cardshifter.api.messages.MessageTypeIdResolver;
 public class ByteTransformer implements CommunicationTransformer {
 
     private final LogInterface logger;
+    private final ReflectionInterface refl;
 
-    public ByteTransformer(LogInterface logger) {
+    public ByteTransformer(LogInterface logger, ReflectionInterface refl) {
         this.logger = logger;
+        this.refl = refl;
     }
 
     public byte[] transform(Message message) throws IOException {
-		FieldsCollection<Message> fields = FieldsCollection.gather(message, logger);
+		FieldsCollection<Message> fields = FieldsCollection.gather(message, logger, refl);
 		fields = fields.orderByName().putFirst("command");
 		return fields.serialize(message);
 	}
@@ -34,7 +34,7 @@ public class ByteTransformer implements CommunicationTransformer {
 		// 2. order Fields, pre-process
 		// 3. serialize
 		logger.info("byte send " + message);
-		FieldsCollection<Message> fields = FieldsCollection.gather(message, logger);
+		FieldsCollection<Message> fields = FieldsCollection.gather(message, logger, refl);
 		fields = fields.orderByName().putFirst("command");
 		byte[] b = fields.serialize(message);
 		logger.info("byte send " + Arrays.toString(b));
@@ -53,12 +53,11 @@ public class ByteTransformer implements CommunicationTransformer {
 		} catch (IOException e) {
 			throw e;
 		} catch (Exception e) {
-			throw new IOException(e);
+			throw new IOException(e.toString());
 		}
 	}
 
-	public Message readOnce(InputStream in) throws IOException, NoSuchMethodException, SecurityException, InstantiationException, 
-	  IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public Message readOnce(InputStream in) throws IOException {
 		DataInputStream data = new DataInputStream(in);
 		int numBytes = data.readInt();
 		logger.info("bytes received " + numBytes);
@@ -76,10 +75,13 @@ public class ByteTransformer implements CommunicationTransformer {
 		String str = readString(data, typeLength);
 		System.out.println(str);
 		Class<?> type = MessageTypeIdResolver.get(str);
-		Constructor<?> constructor = type.getDeclaredConstructor();
-		constructor.setAccessible(true);
-		Message message = (Message) constructor.newInstance();
-		FieldsCollection<Message> fields = FieldsCollection.gather(message, logger);
+        Message message;
+        try {
+            message = (Message) refl.create(type);
+        } catch (Exception e) {
+            throw new IOException(e.toString());
+        }
+        FieldsCollection<Message> fields = FieldsCollection.gather(message, logger, refl);
 		fields = fields.orderByName().putFirst("command").skipFirst();
 		fields.read(message, data);
 		return message;

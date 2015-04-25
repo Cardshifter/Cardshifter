@@ -21,7 +21,7 @@ public class CardshifterClient implements Runnable {
         socket = Gdx.net.newClientSocket(Net.Protocol.TCP, host, port, new SocketHints());
         output = socket.getOutputStream();
         input = socket.getInputStream();
-        transformer = new ByteTransformer(new GdxLogger());
+        transformer = new ByteTransformer(new GdxLogger(), new GdxReflection());
         this.handler = handler;
         try {
             output.write("{ \"command\": \"serial\", \"type\": \"1\" }".getBytes());

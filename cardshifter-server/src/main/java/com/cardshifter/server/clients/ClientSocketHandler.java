@@ -7,7 +7,6 @@ import java.net.Socket;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
-import com.cardshifter.core.Log4jAdapter;
 import net.zomis.cardshifter.ecs.usage.CardshifterIO;
 
 import org.apache.log4j.LogManager;
@@ -17,7 +16,6 @@ import com.cardshifter.api.ClientIO;
 import com.cardshifter.api.incoming.TransformerMessage;
 import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.outgoing.ServerErrorMessage;
-import com.cardshifter.api.serial.ByteTransformer;
 import com.cardshifter.api.serial.CommunicationTransformer;
 import com.cardshifter.server.model.Server;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -107,7 +105,7 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 					this.transformer = new JsonSerialization(mapper);
 					break;
 				case TransformerMessage.TRANSFORM_BYTE:
-					this.transformer = new ByteTransformer(new Log4jAdapter());
+					this.transformer = CardshifterIO.createByteTransformer();
 					break;
 				default:
 					throw new IllegalArgumentException("Not a known transformer: " + transformMess.getType());
