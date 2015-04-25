@@ -8,4 +8,6 @@ public interface CardshifterPlatform {
     void setupLogging();
 
 
+    String getTimeString();
+
 }

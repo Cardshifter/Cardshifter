@@ -39,6 +39,7 @@ project(":desktop") {
 
 
     dependencies {
+        compile project(":nongwt")
         compile project(":core")
         compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
@@ -52,6 +53,7 @@ project(":android") {
     configurations { natives }
 
     dependencies {
+        compile project(":nongwt")
         compile project(":core")
         compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
@@ -67,6 +69,7 @@ project(":ios") {
     configurations { natives }
 
     dependencies {
+        compile project(":nongwt")
         compile project(":core")
         compile "org.robovm:robovm-rt:${roboVMVersion}"
         compile "org.robovm:robovm-cocoatouch:${roboVMVersion}"
@@ -94,6 +97,16 @@ project(":core") {
 
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+        compile ("com.cardshifter:cardshifter-api:$cardshifterVersion") {
+            exclude group: 'findbugs', module: 'findbugs'
+        }
+    }
+}
+
+project(":nongwt") {
+    apply plugin: "java"
+
+    dependencies {
         compile ("com.cardshifter:cardshifter-api:$cardshifterVersion") {
             exclude group: 'findbugs', module: 'findbugs'
         }

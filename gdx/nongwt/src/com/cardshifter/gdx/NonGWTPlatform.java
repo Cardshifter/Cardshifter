@@ -1,9 +1,15 @@
 package com.cardshifter.gdx;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 /**
  * Created by Simon on 4/25/2015.
  */
 public class NonGWTPlatform implements CardshifterPlatform {
+
+    private final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @Override
     public void setupLogging() {
@@ -23,6 +29,11 @@ public class NonGWTPlatform implements CardshifterPlatform {
                 return false;
             }
         });*/
+    }
+
+    @Override
+    public String getTimeString() {
+        return format.format(Calendar.getInstance().getTime());
     }
 
 }

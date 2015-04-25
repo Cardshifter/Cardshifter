@@ -75,8 +75,8 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
         handlerMap.put(ChatMessage.class, new SpecificHandler<ChatMessage>() {
             @Override
             public void handle(ChatMessage message) {
-                DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                String append = "\n" + "[" + format.format(Calendar.getInstance().getTime()) + "] " + message.getFrom() + ": " + message.getMessage();
+                String time = game.getPlatform().getTimeString();
+                String append = "\n" + "[" + time + "] " + message.getFrom() + ": " + message.getMessage();
                 chatMessages.setText(chatMessages.getText() + append);
             }
         });
