@@ -166,7 +166,9 @@ public class FieldsCollection<T> {
 		else if (type == String.class) {
 			String str = (String) value;
 			out.writeInt(str.length());
-			out.writeChars(str);
+            for (int i = 0; i < str.length(); i++) {
+                out.writeChar(str.charAt(i));
+            }
 		}
 		else if (type == Boolean.class) {
 			Boolean bool = (Boolean) value;
