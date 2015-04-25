@@ -88,6 +88,7 @@ project(":html") {
         compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx:$gdxVersion:sources"
         compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"
+        compile 'com.sksamuel.gwt:gwt-websockets:1.0.4'
     }
 }
 
@@ -107,6 +108,7 @@ project(":nongwt") {
     apply plugin: "java"
 
     dependencies {
+        compile project(":core")
         compile ("com.cardshifter:cardshifter-api:$cardshifterVersion") {
             exclude group: 'findbugs', module: 'findbugs'
         }

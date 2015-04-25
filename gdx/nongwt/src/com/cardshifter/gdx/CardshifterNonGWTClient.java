@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
+import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.serial.ByteTransformer;
 
@@ -20,7 +21,8 @@ public class CardshifterNonGWTClient implements Runnable, CardshifterClient {
     private final ByteTransformer transformer;
     private final CardshifterMessageHandler handler;
 
-    public CardshifterNonGWTClient(CardshifterPlatform platform, String host, int port, CardshifterMessageHandler handler) {
+    public CardshifterNonGWTClient(CardshifterPlatform platform, String host, int port,
+         CardshifterMessageHandler handler, LoginMessage loginMessage) {
         socket = Gdx.net.newClientSocket(Net.Protocol.TCP, host, port, new SocketHints());
         output = socket.getOutputStream();
         input = socket.getInputStream();
@@ -31,6 +33,7 @@ public class CardshifterNonGWTClient implements Runnable, CardshifterClient {
             output.flush();
             Gdx.app.log("Client", "Sent serial type");
             platform.setupLogging();
+            send(loginMessage);
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);

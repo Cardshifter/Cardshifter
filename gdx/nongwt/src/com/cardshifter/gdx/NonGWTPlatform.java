@@ -1,5 +1,7 @@
 package com.cardshifter.gdx;
 
+import com.cardshifter.api.incoming.LoginMessage;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -32,8 +34,8 @@ public class NonGWTPlatform implements CardshifterPlatform {
     }
 
     @Override
-    public CardshifterClient createClient(String host, int port, CardshifterMessageHandler handler) {
-        return new CardshifterNonGWTClient(this, host, port, handler);
+    public CardshifterClient createClient(String host, int port, CardshifterMessageHandler handler, LoginMessage loginMessage) {
+        return new CardshifterNonGWTClient(this, host, port, handler, loginMessage);
     }
 
     @Override

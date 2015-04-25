@@ -1,5 +1,6 @@
 package com.cardshifter.gdx.screens;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
@@ -19,6 +20,7 @@ public class MenuScreen implements Screen {
     private final Table table;
     private final CardshifterGame game;
     private final String[] availableServers = { "stats.zomis.net:4242", "dwarftowers.com:4242" };
+    private final String[] availableWSServers = { "stats.zomis.net:4243", "dwarftowers.com:4243" };
 
     public MenuScreen(final CardshifterGame game) {
         final Preferences prefs = Gdx.app.getPreferences("cardshifter");
@@ -29,11 +31,12 @@ public class MenuScreen implements Screen {
         Table inner = new Table();
 
         final TextField username = new TextField("", game.skin);
-        inner.add(username).expand().fill().colspan(availableServers.length).row();
+        String[] servers = isGWT() ? availableWSServers : availableServers;
+        inner.add(username).expand().fill().colspan(servers.length).row();
         username.setText(prefs.getString("username", "YourUserName"));
 
-        HorizontalGroup servers = new HorizontalGroup();
-        for (final String server : availableServers) {
+        HorizontalGroup serverView = new HorizontalGroup();
+        for (final String server : servers) {
             final String[] serverData = server.split(":");
             TextButton button = new TextButton(serverData[0], game.skin);
             button.addListener(new ClickListener() {
@@ -41,13 +44,18 @@ public class MenuScreen implements Screen {
                 public void clicked(InputEvent event, float x, float y) {
                     prefs.putString("username", username.getText());
                     prefs.flush();
-                    game.setScreen(new ClientScreen(game, serverData[0], Integer.parseInt(serverData[1]), username.getText()));
+                    String hostname = isGWT() ? "ws://" + serverData[0] : serverData[0];
+                    game.setScreen(new ClientScreen(game, hostname, Integer.parseInt(serverData[1]), username.getText()));
                 }
             });
-            servers.addActor(button);
+            serverView.addActor(button);
         }
-        inner.add(servers).expand().fill();
+        inner.add(serverView).expand().fill();
         table.add(inner);
+    }
+
+    private boolean isGWT() {
+        return Gdx.app.getType() == Application.ApplicationType.WebGL;
     }
 
     @Override

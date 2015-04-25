@@ -1,5 +1,6 @@
 package com.cardshifter.gdx.client;
 
+import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.gdx.CardshifterClient;
 import com.cardshifter.gdx.CardshifterMessageHandler;
 import com.cardshifter.gdx.CardshifterPlatform;
@@ -20,8 +21,8 @@ public class GWTPlatform implements CardshifterPlatform {
     }
 
     @Override
-    public CardshifterClient createClient(String host, int port, CardshifterMessageHandler handler) {
-        return new GWTClient(host, port, handler);
+    public CardshifterClient createClient(String host, int port, CardshifterMessageHandler handler, LoginMessage loginMessage) {
+        return new GWTClient(host, port, handler, loginMessage);
     }
 
     @Override

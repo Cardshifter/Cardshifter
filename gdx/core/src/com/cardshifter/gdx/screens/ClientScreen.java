@@ -42,7 +42,7 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
 
     public ClientScreen(final CardshifterGame game, String host, int port, final String username) {
         this.game = game;
-        client = game.getPlatform().createClient(host, port, this);
+        client = game.getPlatform().createClient(host, port, this, new LoginMessage(username));
         table = new Table(game.skin);
         table.setFillParent(true);
         mods = new HorizontalGroup();
@@ -127,7 +127,7 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
             }
         });
 
-        Gdx.app.postRunnable(new Runnable() {
+/*        Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -136,7 +136,7 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
                 }
                 client.send(new LoginMessage(username));
             }
-        });
+        });*/
     }
 
     @Override
