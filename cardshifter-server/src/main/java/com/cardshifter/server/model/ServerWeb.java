@@ -4,6 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -69,7 +71,9 @@ public class ServerWeb implements ConnectionHandler {
 				return;
 			}
             try {
-                io.sentToServer(transformer.readOnce(new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8))));
+                byte[] bytes = Base64.getDecoder().decode(message);
+                logger.info("Connection message from: " + conn + ": " + Arrays.toString(bytes));
+                io.sentToServer(transformer.readOnce(new ByteArrayInputStream(bytes)));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
