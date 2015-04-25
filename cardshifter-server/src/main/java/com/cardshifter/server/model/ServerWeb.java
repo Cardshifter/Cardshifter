@@ -3,6 +3,7 @@ package com.cardshifter.server.model;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -68,7 +69,7 @@ public class ServerWeb implements ConnectionHandler {
 				return;
 			}
             try {
-                io.sentToServer(transformer.readOnce(new ByteArrayInputStream(message.getBytes())));
+                io.sentToServer(transformer.readOnce(new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8))));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
