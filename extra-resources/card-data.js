@@ -11,9 +11,9 @@ function loadCardLibrary() {
                     manaCost: 0
                 },
                 apply: [
-                    applyCreature("Mech"),
-                    applyHealth(1),
-                    applyNoAttack(true)
+                    "applyCreature('Mech')",
+                    "applyHealth(1)",
+                    "applyNoAttack(true)"
                 ]
             },
             {
@@ -25,8 +25,8 @@ function loadCardLibrary() {
                     attack: 3
                 },
                 apply: [
-                    applyCreature("Bio"),
-                    applyHealth(1)
+                    "applyCreature('Bio')",
+                    "applyHealth(1)"
                 ]
             },
             {
@@ -37,10 +37,18 @@ function loadCardLibrary() {
                     scrapCost: 1,
                 },
                 apply: [
-                    applyHealth(0)
+                    "applyHealth(0)"
                 ]
             }
         ]
     };
     return cardLibrary;
 }
+
+/*
+var cardLibrary = loadCardLibrary();
+
+console.log(cardLibrary);
+console.log(cardLibrary.entities[0].values);
+console.log(cardLibrary.entities[0].apply);
+*/
