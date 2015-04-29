@@ -6,6 +6,15 @@
  * @module CardAttributeLoader
  */
  
-function loadCardData(cardLibrary) {
+ /**
+  * Needs implemented using Nashorn
+  */
+var cardLibrary = CardData.loadCardLibrary();
 
+function addCreatures(cardLibrary) {
+    //add code here
+}
+
+function addEnchantments(cardLibrary) {
+    //add code here
 }
