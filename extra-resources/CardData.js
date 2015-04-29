@@ -6,7 +6,6 @@
  * @module CardData
  */
 
-
 function loadCardLibrary() {
     var cardLibrary = {
         entities: [
@@ -51,28 +50,6 @@ function loadCardLibrary() {
     return cardLibrary;
 }
 
-function applyCreature(creatureType) {
-    if (creatureType === "Mech") {
-        return creatureType;
-    } else if (creatureType === "Bio") {
-        return creatureType;
-    } else {
-        console.log("Unknown creature type: " + creatureType);
-    }
-}
-
-function applyHealth(healthAmount) {
-    return healthAmount;
-}
-
-function applyNoAttack(hasNoAttack) {
-    if (hasNoAttack !== true && hasNoAttack !== false) {
-        console.log("applyNoAttack parameter must be either true or false.");
-    }
-    else {
-        return hasNoAttack;
-    }
-}
 
 /*
 var cardLibrary = loadCardLibrary();
