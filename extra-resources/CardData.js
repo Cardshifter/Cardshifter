@@ -12,8 +12,7 @@ function loadCardLibrary() {
             {
                 name: "Spareparts",
                 flavor: "Cobbled together from whatever was lying around at the time.",
-                creature: true,
-                creatureType: "Mech",
+                creature: "Mech",
                 manaCost: 0,
                 health: 1,
                 attack: 0,
@@ -26,8 +25,7 @@ function loadCardLibrary() {
             {
                 name: "Longshot",
                 flavor: "Eyes and reflexes augmented for maximum deadliness.",
-                creature: true,
-                creatureType: "Bio",
+                creature: "Bio",
                 manaCost: 3,
                 health: 1,
                 attack: 3,
