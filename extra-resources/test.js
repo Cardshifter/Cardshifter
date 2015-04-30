@@ -50,30 +50,3 @@ function declareConfiguration(game) {
 		entity.addComponent(new ConfigComponent().addConfig("Deck", config));
 	}
 }
-
-/**
- * @params {Object} zone - Zone to which to add cards & attributes to.
- */
-function addCards(zone) {
-	var entity = zone.getOwner().getGame().newEntity();
-	ECSResourceMap.createFor(entity)
-		.set(PhrancisResources.HEALTH, 5)
-		.set(PhrancisResources.MAX_HEALTH, 5)
-		.set(PhrancisResources.ATTACK, 1)
-		.set(PhrancisResources.SCRAP, 3)
-		.set(PhrancisResources.MANA_COST, 2)
-		.set(PhrancisResources.SICKNESS, 1)
-		.set(PhrancisResources.TAUNT, 1)
-		.set(PhrancisResources.ATTACK_AVAILABLE, 1);
-	ECSAttributeMap.createFor(entity).set(Attributes.NAME, "Testing Thing");
-	var mod = new baseMod();
-	entity.apply(mod.creature("Mech"));
-	zone.addOnBottom(entity);
-	return entity;
-}
-/**
- * @param {Object} game - Game configuration.
- */
-function setupGame(game) {
-
-}
