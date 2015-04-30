@@ -1,0 +1,52 @@
+var effectElements = {
+	triggers: {
+		onEndTurn: {},
+		onStartTurn: {},
+		onStartGame: {},
+		
+		onSelfPlayerDamage: {},
+		onOpponentPlayerDamage: {},
+		onAnyPlayerDamage: {},
+		
+		onSelfCardDamage: {},
+		onSelfCardDeath: {},
+		onOpponentCardDamage: {},
+		onOpponentCardDeath: {},
+		onSelfSpecificCardDeath: {},
+		onOpponentSpecificCardDeath: {}
+	},
+	actions: {
+		damage: {},
+		heal: {},
+		drawCard: {},
+		burnCard: {},
+		
+		addAttack: {},
+		addHealth: {},
+		
+		giveRush: {},
+		giveRanged: {},
+		giveTaunt: {},
+		giveWait: {}
+	},
+	targets: {
+		selfPlayer: {},
+		opponentPlayer: {},
+		allPlayers: {},
+		
+		selfCards: {},
+		opponentCards: {},
+		allCards: {},
+		
+		selfDeck: {},
+		opponentDeck: {},
+		allDecks: {},
+		
+		selfBoard: {},
+		opponentBoard: {},
+		allBoards: {}
+	},
+	others: {
+		random: {}
+	}
+};
