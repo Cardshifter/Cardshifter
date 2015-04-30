@@ -65,16 +65,25 @@ function mapCardData (cardLibrary) {
         var value = undefined;
         
         /** ATTRIBUTES */
+        
         value = entities[entityIndex].name;
-        if (value === undefined) {
+        if (!value) {
             ECSAttributeMap.createFor(entity).set(Attributes.NAME, "no name");
         } else {
             ECSAttributeMap.createFor(entity).set(Attributes.NAME, value);
         }
         
+        value = entities[entityIndex].flavor;
+        if (!value) {
+            ECSAttributeMap.createFor(entity).set(Attributes.FLAVOR, "");
+        } else {
+            ECSAttributeMap.createFor(entity).set(Attributes.FLAVOR, value);
+        }
+        
         /** CREATURE TYPES */
+        
         value = entities[entityIndex].creature.toLowerCase();
-        if (value !== undefined) {
+        if (value) {
             var scrapValue = entities[entityIndex].scrap;
             if (value === "mech") {
                 entity.apply(mod.creature("Mech"));
@@ -86,11 +95,34 @@ function mapCardData (cardLibrary) {
         }
         
         /** BASIC CARD VALUES **/
+        
         value = entities[entityIndex].manaCost;
-        if (value === undefined) {
-            ECSResourceMap.createFor(entity).set(Resources.MANA_COST, 0);
-        } else {
+        if (value) {
             ECSResourceMap.createFor(entity).set(Resources.MANA_COST, value);
+        }
+        
+        value = entities[entityIndex].health;
+        if (value) {
+            ECSResourceMap.createFor(entity).set(Resources.HEALTH, value);
+        }
+        
+        value = entities[entityIndex].attack;
+        if (value) {
+            ECSResourceMap.createFor(entity).set(Resources.ATTACK, value);
+        }
+        
+        value = entities[entityIndex].sickness;
+        if (!value) {
+            ECSResourceMap.createFor(entity).set(Resources.SICKNESS, 1);
+        } else {
+            ECSResourceMap.createFor(entity).set(Resources.SICKNESS, value);
+        }
+        
+        value = entities[entityIndex].noAttack;
+        if (!value) {
+            ECSResourceMap.createFor(entity).set(Resources.ATTACK_AVAILABLE, 1);
+        } else {
+            ECSResourceMap.createFor(entity).set(Resources.ATTACK_AVAILABLE, 0);
         }
     }
     zone.addOnBottom(entity);
