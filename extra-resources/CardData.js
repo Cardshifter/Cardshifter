@@ -17,10 +17,8 @@ function loadCardLibrary() {
                 health: 1,
                 attack: 0,
                 scrap: 3,
-                effects: {
-                    sickness: 0,
-                    noAttack: true
-                }
+                sickness: 0,
+                noAttack: true
             },
             {
                 name: "Longshot",
@@ -29,19 +27,15 @@ function loadCardLibrary() {
                 manaCost: 3,
                 health: 1,
                 attack: 3,
-                effects: {
-                    denyCounterAttack: 1
-                }
+                denyCounterAttack: 1
             },
             {
                 name: "Bionic Arms",
                 flavor: "These arms will give strength to even the most puny individual.",
                 enchantment: true,
                 scrapCost: 1,
-                effects: {
-                    addAttack: 2,
-                    addHealth: 0,
-                },
+                addAttack: 2,
+                addHealth: 0
             }
         ]
     };
