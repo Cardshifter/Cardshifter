@@ -9,6 +9,7 @@
 function loadCardLibrary() {
     var cardLibrary = {
         entities: [
+            /** MECH CREATURES */
             {
                 name: "Spareparts",
                 flavor: "Cobbled together from whatever was lying around at the time.",
@@ -20,6 +21,7 @@ function loadCardLibrary() {
                 sickness: 0,
                 noAttack: true
             },
+            /** BIO CREATURES */
             {
                 name: "Longshot",
                 flavor: "Eyes and reflexes augmented for maximum deadliness.",
@@ -29,6 +31,7 @@ function loadCardLibrary() {
                 attack: 3,
                 denyCounterAttack: 1
             },
+            /** ENCHANTMENTS */
             {
                 name: "Bionic Arms",
                 flavor: "These arms will give strength to even the most puny individual.",
