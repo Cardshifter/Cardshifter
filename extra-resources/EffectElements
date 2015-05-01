@@ -47,6 +47,15 @@ var effectElements = {
 		allBoards: {}
 	},
 	others: {
-		random: {}
+		chance: function (probability) {
+		    if (probability > 1) { probability = 1}
+		    if (probability < 0) { probability = 0}
+		    if ((typeof probability) !== "number" && isNaN(probability)) {
+		        return NaN;
+		    } else { 
+		        var roll = Math.random();
+		        return (roll <= probability);
+		    }
+		}
 	}
 };
