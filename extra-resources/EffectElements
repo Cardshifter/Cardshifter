@@ -48,8 +48,8 @@ var effectElements = {
 	},
 	others: {
 		chance: function (probability) {
-		    if (probability > 1) { probability = 1}
-		    if (probability < 0) { probability = 0}
+		    if (probability > 1) { probability = 1; }
+		    if (probability < 0) { probability = 0; }
 		    if ((typeof probability) !== "number" && isNaN(probability)) {
 		        return NaN;
 		    } else { 
