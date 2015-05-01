@@ -1,53 +1,53 @@
 var effectElements = {
 	triggers: {
-		onEndTurn: {},
-		onStartTurn: {},
-		onStartGame: {},
+		onEndTurn: function() {},
+		onStartTurn: function() {},
+		onStartGame: function() {},
 		
-		onSelfPlayerDamage: {},
-		onOpponentPlayerDamage: {},
-		onAnyPlayerDamage: {},
+		onSelfPlayerDamage: function() {},
+		onOpponentPlayerDamage: function() {},
+		onAnyPlayerDamage: function() {},
 		
-		onSelfCardDamage: {},
-		onSelfCardDeath: {},
-		onOpponentCardDamage: {},
-		onOpponentCardDeath: {},
-		onSelfSpecificCardDeath: {},
-		onOpponentSpecificCardDeath: {}
+		onSelfCardDamage: function() {},
+		onSelfCardDeath: function() {},
+		onOpponentCardDamage: function() {},
+		onOpponentCardDeath: function() {},
+		onSelfSpecificCardDeath: function() {},
+		onOpponentSpecificCardDeath: function() {}
 	},
 	actions: {
-		damage: {},
-		heal: {},
-		drawCard: {},
-		burnCard: {},
+		damage: function() {},
+		heal: function() {},
+		drawCard: function() {},
+		burnCard: function() {},
 		
-		addAttack: {},
-		addHealth: {},
+		addAttack: function() {},
+		addHealth: function() {},
 		
-		giveRush: {},
-		giveRanged: {},
-		giveTaunt: {},
-		giveWait: {}
+		giveRush: function() {},
+		giveRanged: function() {},
+		giveTaunt: function() {},
+		giveWait: function() {}
 	},
 	targets: {
-		selfPlayer: {},
-		opponentPlayer: {},
-		allPlayers: {},
+		selfPlayer: function() {},
+		opponentPlayer: function() {},
+		allPlayers: function() {},
 		
-		selfCards: {},
-		opponentCards: {},
-		allCards: {},
+		selfCards: function() {},
+		opponentCards: function() {},
+		allCards: function() {},
 		
-		selfDeck: {},
-		opponentDeck: {},
-		allDecks: {},
+		selfDeck: function() {},
+		opponentDeck: function() {},
+		allDecks: function() {},
 		
-		selfBoard: {},
-		opponentBoard: {},
-		allBoards: {}
+		selfBoard: function() {},
+		opponentBoard: function() {},
+		allBoards: function() {}
 	},
 	others: {
-		chance: function (probability) {
+		chance: function(probability) {
 		    if (probability > 1) { probability = 1; }
 		    if (probability < 0) { probability = 0; }
 		    if ((typeof probability) !== "number" && isNaN(probability)) {
