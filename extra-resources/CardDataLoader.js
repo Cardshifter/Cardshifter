@@ -33,9 +33,10 @@ var Attributes = Java.type("com.cardshifter.modapi.attributes.Attributes");
  * @param {Object} zone - Zone to which to add cards & attributes to.
  */
 function mapCardData (cardLibrary) {
-    for (var entityIndex in cardLibrary.entities) {
-        var entity = zone.getOwner().getGame().newEntity();
-        var value = undefined;
+    "strict mode";
+    for (let entityIndex in cardLibrary.entities) {
+        let entity = zone.getOwner().getGame().newEntity();
+        let value = undefined;
         
         /** ATTRIBUTES */
         
@@ -57,7 +58,7 @@ function mapCardData (cardLibrary) {
         
         value = entities[entityIndex].creature.toLowerCase();
         if (value) {
-            var scrapValue = entities[entityIndex].scrap;
+            let scrapValue = entities[entityIndex].scrap;
             if (value === "mech") {
                 entity.apply(mod.creature("Mech"));
                 ECSResourceMap.createFor(entity).set(Resources.SCRAP, scrapValue);
