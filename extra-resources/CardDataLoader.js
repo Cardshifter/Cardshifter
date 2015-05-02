@@ -36,7 +36,7 @@ function mapCardData (cardLibrary) {
     "strict mode";
     for (let entityIndex in cardLibrary.entities) {
         let entity = zone.getOwner().getGame().newEntity();
-        let value = undefined;
+        let value;
         
         /** ATTRIBUTES */
         
