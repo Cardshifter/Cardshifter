@@ -7,7 +7,8 @@
  */
 
 function loadCardLibrary() {
-    var cardLibrary = {
+    "strict mode";
+    let cardLibrary = {
         entities: [
             /** MECH CREATURES */
             {
