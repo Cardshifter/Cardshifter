@@ -1,3 +1,4 @@
+var pgres = Java.type("net.zomis.cardshifter.ecs.usage.PhrancisGame").PhrancisResources;
 var keywords = {};
 keywords.cards = {};
 keywords.cards.name = function (entity, obj, value) {
@@ -25,6 +26,40 @@ keywords.cards.creature = function (entity, obj, value) {
 	map.set(pg.PhrancisResources.ATTACK_AVAILABLE, 1);
 
 }
+
+keywords.cards.manaCost = function (entity, obj, value) {
+	com.cardshifter.modapi.resources.ECSResourceMap.createOrGetFor(entity).set(pgres.MANA_COST, value);
+}
+
+keywords.cards.health = function (entity, obj, value) {
+    if (!obj.creature) {
+        throw new Error("expected creature");
+    }
+	com.cardshifter.modapi.resources.ECSResourceMap.createOrGetFor(entity).set(pgres.HEALTH, value);
+	com.cardshifter.modapi.resources.ECSResourceMap.createOrGetFor(entity).set(pgres.MAX_HEALTH, value);
+}
+
+keywords.cards.attack = function (entity, obj, value) {
+    if (!obj.creature) {
+        throw new Error("expected creature");
+    }
+	com.cardshifter.modapi.resources.ECSResourceMap.createOrGetFor(entity).set(pgres.ATTACK, value);
+}
+
+keywords.cards.scrap = function (entity, obj, value) {
+    if (!obj.creature) {
+        throw new Error("expected creature");
+    }
+	com.cardshifter.modapi.resources.ECSResourceMap.createOrGetFor(entity).set(pgres.SCRAP, value);
+}
+
+keywords.cards.sickness = function (entity, obj, value) {
+    if (!obj.creature) {
+        throw new Error("expected creature");
+    }
+	com.cardshifter.modapi.resources.ECSResourceMap.createOrGetFor(entity).set(pgres.SICKNESS, value);
+}
+
 
 function applyEntity(game, card, entity, keyword) {
     print("applyEntity " + card + ": " + entity);
