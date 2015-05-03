@@ -15,7 +15,10 @@ public final class Attributes {
 	}
 
 	public static void processAttributes(Entity card, Consumer<ECSAttributeData> consumer) {
-		card.getComponent(ECSAttributeMap.class).getAttributes().forEach(consumer);
+        ECSAttributeMap attributes = card.getComponent(ECSAttributeMap.class);
+        if (attributes != null) {
+            attributes.getAttributes().forEach(consumer);
+        }
 	}
 
 	public static Map<String, String> map(Entity playerFor) {

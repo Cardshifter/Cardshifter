@@ -12,7 +12,10 @@ public final class Resources {
 	}
 
 	public static void processResources(Entity card, Consumer<ECSResourceData> consumer) {
-		card.getComponent(ECSResourceMap.class).getResources().forEach(consumer);
+        ECSResourceMap resources = card.getComponent(ECSResourceMap.class);
+        if (resources != null) {
+            resources.getResources().forEach(consumer);
+        }
 	}
 
 	public static Map<String, Integer> map(Entity playerFor) {
