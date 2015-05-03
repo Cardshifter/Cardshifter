@@ -55,7 +55,7 @@ public class ModCollection {
 		ais.put("Fighter", new ScoringAI(AIs.fighter(), AIs::fighterDeck));
 		
         ScriptEngineManager scripts = new ScriptEngineManager();
-        mods.put("JS", () -> new JavaScriptMod("test.js", scripts));
+        mods.put("NewJS", () -> new JavaScriptMod("JSGame.js", scripts));
 		mods.put(CardshifterConstants.VANILLA, () -> new PhrancisGameNewAttackSystem());
 		mods.put("Cyborg-Spells", () -> new PhrancisGameWithSpells());
 		mods.put("Test", () -> new TestMod());
