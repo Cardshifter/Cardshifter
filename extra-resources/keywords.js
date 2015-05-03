@@ -8,6 +8,23 @@ keywords.cards.name = function (entity, obj, value) {
 keywords.cards.flavor = function (entity, obj, value) {
     com.cardshifter.modapi.attributes.ECSAttributeMap.createOrGetFor(entity).set(com.cardshifter.modapi.attributes.Attributes.FLAVOR, value);
 }
+keywords.cards.creature = function (entity, obj, value) {
+    var pg = Java.type("net.zomis.cardshifter.ecs.usage.PhrancisGame");
+    var actions = new com.cardshifter.modapi.actions.ActionComponent();
+	entity.addComponent(actions);
+
+	actions.addAction(pg.playAction(entity));
+	actions.addAction(pg.attackAction(entity));
+	actions.addAction(pg.scrapAction(entity));
+
+	entity.addComponent(new com.cardshifter.modapi.base.CreatureTypeComponent(value));
+
+	var map = com.cardshifter.modapi.resources.ECSResourceMap.createOrGetFor(entity);
+	map.set(pg.PhrancisResources.SICKNESS, 1);
+	map.set(pg.PhrancisResources.TAUNT, 1);
+	map.set(pg.PhrancisResources.ATTACK_AVAILABLE, 1);
+
+}
 
 function applyEntity(game, card, entity, keyword) {
     print("applyEntity " + card + ": " + entity);

@@ -387,15 +387,15 @@ public class PhrancisGame implements ECSMod {
 		return entity;
 	}
 	
-	private static ECSAction attackAction(Entity entity) {
+	public static ECSAction attackAction(Entity entity) {
 		return new ECSAction(entity, ATTACK_ACTION, act -> true, act -> {}).addTargetSet(1, 1);
 	}
 
-	private static ECSAction scrapAction(Entity entity) {
+    public static ECSAction scrapAction(Entity entity) {
 		return new ECSAction(entity, SCRAP_ACTION, act -> true, act -> {});
 	}
 
-	private static ECSAction playAction(Entity entity) {
+    public static ECSAction playAction(Entity entity) {
 		return new ECSAction(entity, PLAY_ACTION, act -> true, act -> {});
 	}
 	
