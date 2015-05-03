@@ -62,7 +62,7 @@ function declareConfiguration(game) {
  * @module CardData
  */
 function addCards(game, zone) {
-    java.lang.System.out.println("addCards called");
+    print("addCards called");
 
 
     applyCardKeywords(game, zone, {
