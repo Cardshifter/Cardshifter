@@ -1,4 +1,5 @@
 var pgres = Java.type("net.zomis.cardshifter.ecs.usage.PhrancisGame").PhrancisResources;
+var noAttackCreatures = [];
 var keywords = {};
 keywords.cards = {};
 keywords.cards.name = function (entity, obj, value) {
@@ -60,6 +61,19 @@ keywords.cards.sickness = function (entity, obj, value) {
 	com.cardshifter.modapi.resources.ECSResourceMap.createOrGetFor(entity).set(pgres.SICKNESS, value);
 }
 
+keywords.cards.noAttack = function (entity, obj, value) {
+    if (!obj.creature) {
+        throw new Error("expected creature");
+    }
+	noAttackCreatures.push(obj.name);
+}
+
+keywords.cards.denyCounterAttack = function (entity, obj, value) {
+    if (!obj.creature) {
+        throw new Error("expected creature");
+    }
+	com.cardshifter.modapi.resources.ECSResourceMap.createOrGetFor(entity).set(pgres.DENY_COUNTERATTACK, value);
+}
 
 function applyEntity(game, card, entity, keyword) {
     print("applyEntity " + card + ": " + entity);
