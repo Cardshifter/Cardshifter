@@ -20,7 +20,7 @@ function applyEntity(game, card, entity, keyword) {
                 java.lang.System.out.println("keyword " + property + " is undefined");
                 throw new Error("property " + property + " was found but is not a declared keyword");
             }
-            keyword[property].call(entity, card, value);
+            keyword[property].call(null, entity, card, value);
         }
     }
 
