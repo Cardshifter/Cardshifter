@@ -75,6 +75,16 @@ keywords.cards.denyCounterAttack = function (entity, obj, value) {
 	com.cardshifter.modapi.resources.ECSResourceMap.createOrGetFor(entity).set(pgres.DENY_COUNTERATTACK, value);
 }
 
+keywords.cards.enchantment = function (entity, obj, value) {
+    if (obj.creature) {
+        throw new Error("cannot be both enchantment and creature at once");
+    }
+    var actions = new com.cardshifter.modapi.actions.ActionComponent();
+    var pg = Java.type("net.zomis.cardshifter.ecs.usage.PhrancisGame");
+    actions.addAction(pg.enchantAction(entity));
+	entity.addComponent(actions);
+}
+
 function applyEntity(game, card, entity, keyword) {
     print("applyEntity " + card + ": " + entity);
 

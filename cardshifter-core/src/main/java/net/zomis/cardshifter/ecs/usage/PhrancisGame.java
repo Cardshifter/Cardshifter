@@ -359,7 +359,7 @@ public class PhrancisGame implements ECSMod {
 		};
 	}
 
-	private static ECSAction enchantAction(Entity entity) {
+	public static ECSAction enchantAction(Entity entity) {
 		return new ECSAction(entity, ENCHANT_ACTION, act -> true, act -> {}).addTargetSet(1, 1);
 	}
 
