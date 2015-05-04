@@ -7,7 +7,7 @@ keywords.cards.noAttack = function (entity, obj, value) {
 	noAttackCreatures.add(obj.name);
 }
 
-keywords.afterCards.push(function (game) {
+keywords.afterCards.push(function (game, cardData, cardEntities) {
     var System = Java.type("net.zomis.cardshifter.ecs.usage.DenyActionForNames");
 	game.addSystem(new System(ATTACK_ACTION, noAttackCreatures));
 });

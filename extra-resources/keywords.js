@@ -22,14 +22,16 @@ function applyEntity(game, card, entity, keyword) {
 
 
 function applyCardKeywords(game, zone, data) {
+    var cardEntities = [];
     for (var i = 0; i < data.cards.length; i++) {
         var card = data.cards[i];
         var entity = game.newEntity();
         applyEntity(game, card, entity, keywords.cards);
         zone.addOnBottom(entity);
+        cardEntities.push(entity);
     }
     for (var i = 0; i < keywords.afterCards.length; i++) {
-        keywords.afterCards[i](game);
+        keywords.afterCards[i](game, data, cardEntities);
     }
 }
 
