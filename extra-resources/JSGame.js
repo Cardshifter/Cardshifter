@@ -77,7 +77,12 @@ function addCards(game, zone) {
                 sickness: 0,
                 noAttack: true,
                 onEndOfTurn: {
-                    damage: { value: 1, target: "owner" }
+                    summon: {
+                        count: 1,
+                        card: "Spareparts",
+                        where: "Deck",
+                        who: "opponent"
+                    }
                 },
             },
             /** BIO CREATURES */
