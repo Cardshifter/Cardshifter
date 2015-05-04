@@ -1,6 +1,7 @@
 load('keywords.js');
 load('keywords-creatures.js');
 load('keywords-enchantments.js');
+load('keywords-systems.js');
 
 var PLAY_ACTION = "Play";
 var ENCHANT_ACTION = "Enchant";
