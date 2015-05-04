@@ -12,20 +12,20 @@ keywords.cards.scrapCost = function (entity, obj, value) {
     if (!obj.enchantment) {
         throw new Error("expected enchantment");
     }
-	com.cardshifter.modapi.resources.ECSResourceMap.createOrGetFor(entity).set(SCRAP_COST, value);
+    SCRAP_COST.retriever.set(entity, value);
 }
 
 keywords.cards.addAttack = function (entity, obj, value) {
     if (!obj.enchantment) {
         throw new Error("expected enchantment");
     }
-	com.cardshifter.modapi.resources.ECSResourceMap.createOrGetFor(entity).set(ATTACK, value);
+    ATTACK.retriever.set(entity, value);
 }
 
 keywords.cards.addHealth = function (entity, obj, value) {
     if (!obj.enchantment) {
         throw new Error("expected enchantment");
     }
-	com.cardshifter.modapi.resources.ECSResourceMap.createOrGetFor(entity).set(HEALTH, value);
-	com.cardshifter.modapi.resources.ECSResourceMap.createOrGetFor(entity).set(MAX_HEALTH, value);
+    HEALTH.retriever.set(entity, value);
+    MAX_HEALTH.retriever.set(entity, value);
 }

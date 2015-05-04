@@ -29,36 +29,36 @@ keywords.cards.creature = function (entity, obj, value) {
 }
 
 keywords.cards.manaCost = function (entity, obj, value) {
-	com.cardshifter.modapi.resources.ECSResourceMap.createOrGetFor(entity).set(MANA_COST, value);
+	MANA_COST.retriever.set(entity, value);
 }
 
 keywords.cards.health = function (entity, obj, value) {
     if (!obj.creature) {
         throw new Error("expected creature");
     }
-	com.cardshifter.modapi.resources.ECSResourceMap.createOrGetFor(entity).set(HEALTH, value);
-	com.cardshifter.modapi.resources.ECSResourceMap.createOrGetFor(entity).set(MAX_HEALTH, value);
+	HEALTH.retriever.set(entity, value);
+	MAX_HEALTH.retriever.set(entity, value);
 }
 
 keywords.cards.attack = function (entity, obj, value) {
     if (!obj.creature) {
         throw new Error("expected creature");
     }
-	com.cardshifter.modapi.resources.ECSResourceMap.createOrGetFor(entity).set(ATTACK, value);
+	ATTACK.retriever.set(entity, value);
 }
 
 keywords.cards.scrap = function (entity, obj, value) {
     if (!obj.creature) {
         throw new Error("expected creature");
     }
-	com.cardshifter.modapi.resources.ECSResourceMap.createOrGetFor(entity).set(SCRAP, value);
+	SCRAP.retriever.set(entity, value);
 }
 
 keywords.cards.sickness = function (entity, obj, value) {
     if (!obj.creature) {
         throw new Error("expected creature");
     }
-	com.cardshifter.modapi.resources.ECSResourceMap.createOrGetFor(entity).set(SICKNESS, value);
+	SICKNESS.retriever.set(entity, value);
 }
 
 keywords.cards.noAttack = function (entity, obj, value) {
@@ -72,6 +72,6 @@ keywords.cards.denyCounterAttack = function (entity, obj, value) {
     if (!obj.creature) {
         throw new Error("expected creature");
     }
-	com.cardshifter.modapi.resources.ECSResourceMap.createOrGetFor(entity).set(DENY_COUNTERATTACK, value);
+	DENY_COUNTERATTACK.retriever.set(entity, value);
 }
 
