@@ -58,3 +58,24 @@ keywords.cards.denyCounterAttack = function (entity, obj, value) {
 	DENY_COUNTERATTACK.retriever.set(entity, value);
 }
 
+keywords.cards.onEndOfTurn = function (entity, obj, value) {
+    if (!obj.creature) {
+        throw new Error("expected creature");
+    }
+    var eff = Java.type("net.zomis.cardshifter.ecs.effects.Effects");
+    eff = new eff();
+    var effect = applyEffect(value);
+    entity.addComponent(
+        eff.described(effect.description + " at end of turn",
+            eff.giveSelf(
+                eff.triggerSystem(com.cardshifter.modapi.phase.PhaseEndEvent.class,
+                    function (me, event) {
+                        return com.cardshifter.modapi.players.Players.findOwnerFor(me) == event.getOldPhase().getOwner();
+                    },
+                    effect.action
+                )
+            )
+        )
+    );
+}
+

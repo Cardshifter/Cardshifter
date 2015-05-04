@@ -5,6 +5,44 @@ keywords.cards = {};
 keywords.afterCards = [];
 keywords.moreSystems = [];
 
+keywords.effects = {};
+
+keywords.effects.print = {
+    description: function (obj) {
+        print("calling description: " + obj);
+        return "print " + obj.message.length + " characters";
+    },
+    action: function (obj) {
+        return function (me, event) {
+            print("PrintEffect: " + me + " message: " + obj.message);
+        }
+    }
+};
+
+function applyEffect(obj) {
+    print("applyEffect " + obj);
+
+    var result = null;
+
+    for (var property in obj) {
+        if (obj.hasOwnProperty(property)) {
+            var value = obj[property];
+            print("property found: " + property + " with value " + value + " keyword data is " + keywords.effects[property]);
+            if (keywords.effects[property] === undefined) {
+                print("keyword " + property + " is undefined");
+                throw new Error("property " + property + " was found but is not a declared keyword");
+            }
+            if (result !== null) {
+                throw new Error("currently only supporting one effect");
+            }
+            result = {};
+            result.description = keywords.effects[property].description(value);
+            result.action = keywords.effects[property].action(value);
+        }
+    }
+    return result;
+}
+
 function requireActions(actions) {
     for (var i = 0; i < actions.length; i++) {
         var type = typeof actions[i];
