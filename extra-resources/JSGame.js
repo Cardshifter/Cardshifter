@@ -102,7 +102,11 @@ function addCards(game, zone) {
                 enchantment: true,
                 scrapCost: 1,
                 addAttack: 2,
-                addHealth: 0
+                addHealth: 0,
+                set: {
+                    res: SICKNESS,
+                    value: 0,
+                },
             }
         ]
     });
@@ -196,13 +200,13 @@ function setupGame(game) {
         // Enchant
         { playFromHand: ENCHANT_ACTION },
         new com.cardshifter.modapi.actions.enchant.EnchantTargetCreatureTypes("Bio"),
+        new EffectActionSystem(ENCHANT_ACTION), // needs to be before EnchantPerform, because of entity removal
         new com.cardshifter.modapi.actions.enchant.EnchantPerform(ATTACK, HEALTH, MAX_HEALTH),
 
         // Spell
         { useCost: { action: USE_ACTION, res: MANA, value: { res: MANA_COST }, whoPays: "player" } },
         { playFromHand: USE_ACTION },
         new EffectActionSystem(USE_ACTION),
-        new EffectActionSystem(ENCHANT_ACTION),
         new EffectActionSystem(PLAY_ACTION),
         { targetFilterSystem: USE_ACTION },
         { destroyAfterUse: USE_ACTION },

@@ -23,3 +23,22 @@ keywords.cards.addHealth = function (entity, obj, value) {
     HEALTH.retriever.set(entity, value);
     MAX_HEALTH.retriever.set(entity, value);
 }
+
+keywords.cards.set = function (entity, obj, value) {
+    if (!obj.enchantment) {
+        throw new Error("expected enchantment");
+    }
+    var eff = Java.type("net.zomis.cardshifter.ecs.effects.Effects");
+    eff = new eff();
+
+    entity.addComponent(
+        eff.described("Set " + value.res + " to " + value.value,
+            eff.giveTarget(value.res, 1, function(i) {
+                print("Effect " + value.res + " to " + value.value);
+                return value.value;
+            })
+        )
+    );
+
+}
+
