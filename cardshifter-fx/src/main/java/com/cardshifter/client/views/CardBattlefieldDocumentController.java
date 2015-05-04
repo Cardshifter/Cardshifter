@@ -74,7 +74,7 @@ public final class CardBattlefieldDocumentController extends CardView implements
 			try {
 				this.cardValues.put(key, Integer.parseInt(stringValue));
 			} catch (NumberFormatException e) {
-				System.out.println("Not a number");
+				System.out.println("Not a number: '" + key + "' = '" + stringValue + "'");
 			}
 						
 			switch (entry.getKey()) {
