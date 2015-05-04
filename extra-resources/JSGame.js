@@ -77,7 +77,7 @@ function addCards(game, zone) {
                 sickness: 0,
                 noAttack: true,
                 onEndOfTurn: {
-                    print: { message: "this is just a test" },
+                    damage: { value: 1, target: "owner" }
                 },
             },
             /** BIO CREATURES */

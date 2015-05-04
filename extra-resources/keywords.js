@@ -1,5 +1,6 @@
 "use strict";
 var ECSAction = Java.type("com.cardshifter.modapi.actions.ECSAction");
+var Players = Java.type("com.cardshifter.modapi.players.Players");
 var keywords = {};
 keywords.cards = {};
 keywords.afterCards = [];
@@ -18,6 +19,33 @@ keywords.effects.print = {
         }
     }
 };
+keywords.effects.damage = {
+    description: function(obj) {
+        return "Deal " + obj.value + " damage to " + obj.target;
+    },
+    action: function (obj) {
+        if (obj.value <= 0) {
+            throw new Error("Damage value must be 1 or greater");
+        }
+        return function (me, event) {
+            var target = entityLookup(me, obj.target);
+            HEALTH.retriever.resFor(target).change(-obj.value);
+        }
+    }
+}
+
+function entityLookup(origin, who) {
+    if (who === 'owner') {
+        return Players.findOwnerFor(origin);
+    }
+    if (who === 'opponent') {
+        return Players.getNextPlayer(Players.findOwnerFor(origin));
+    }
+    if (who === 'this') {
+        return origin;
+    }
+    throw new Error("unexpected target for entity lookup: " + who);
+}
 
 function applyEffect(obj) {
     print("applyEffect " + obj);
