@@ -3,6 +3,11 @@ var ECSAction = Java.type("com.cardshifter.modapi.actions.ECSAction");
 var keywords = {};
 keywords.cards = {};
 keywords.afterCards = [];
+keywords.moreSystems = [];
+
+function createResource(name) {
+    return new com.cardshifter.modapi.resources.ECSResourceDefault(name);
+}
 
 function applyEntity(game, card, entity, keyword) {
     print("applyEntity " + card + ": " + entity);
@@ -54,6 +59,10 @@ function applySystem(game, data, keyword) {
 }
 
 function applySystems(game, data) {
+    for (var i = 0; i < keywords.moreSystems.length; i++) {
+        keywords.moreSystems[i](game, data);
+    }
+
     for (var i = 0; i < data.length; i++) {
         var system = data[i];
         if (system instanceof com.cardshifter.modapi.base.ECSSystem) {

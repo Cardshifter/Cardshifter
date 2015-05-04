@@ -1,13 +1,11 @@
 "use strict";
 load('keywords.js');
-load('keywords-creatures.js');
-load('keywords-enchantments.js');
-load('keywords-systems.js');
-load('keyword-noattack.js');
 
-function createResource(name) {
-    return new com.cardshifter.modapi.resources.ECSResourceDefault(name);
-}
+var PLAY_ACTION = "Play";
+var ENCHANT_ACTION = "Enchant";
+var ATTACK_ACTION = "Attack";
+var END_TURN_ACTION = "End Turn";
+var USE_ACTION = "Use";
 
 var ATTACK = createResource("ATTACK");
 var HEALTH = createResource("HEALTH");
@@ -18,17 +16,14 @@ var DENY_COUNTERATTACK = createResource("DENY_COUNTERATTACK");
 var MANA = createResource("MANA");
 var MANA_COST = createResource("MANA_COST");
 var MANA_MAX = createResource("MANA_MAX");
-var SCRAP = createResource("SCRAP");
-var SCRAP_COST = createResource("SCRAP_COST");
 var SICKNESS = createResource("SICKNESS");
 var TAUNT = createResource("TAUNT");
 
-var PLAY_ACTION = "Play";
-var ENCHANT_ACTION = "Enchant";
-var ATTACK_ACTION = "Attack";
-var SCRAP_ACTION = "Scrap";
-var END_TURN_ACTION = "End Turn";
-var USE_ACTION = "Use";
+load('keywords-creatures.js');
+load('keywords-enchantments.js');
+load('keywords-systems.js');
+load('keyword-noattack.js');
+load('keyword-scrap.js');
 
 /**
  * Declare game configuration
@@ -181,7 +176,6 @@ function setupGame(game) {
 
     var LastPlayersStandingEndsGame = Java.type("net.zomis.cardshifter.ecs.usage.LastPlayersStandingEndsGame");
     var EffectActionSystem = Java.type("net.zomis.cardshifter.ecs.effects.EffectActionSystem");
-    var ScrapSystem = Java.type("net.zomis.cardshifter.ecs.usage.ScrapSystem");
     applySystems(game, [
         { gainResource: { res: MANA_MAX, value: 1, untilMax: 10 } },
         { restoreResources: { res: MANA, value: { res: MANA_MAX } } },
@@ -191,21 +185,13 @@ function setupGame(game) {
         { playEntersBattlefield: PLAY_ACTION },
         { useCost: { action: PLAY_ACTION, res: MANA, value: { res: MANA_COST }, whoPays: "player" } },
 
-        // Scrap
-        new ScrapSystem(SCRAP, function (entity) {
-            return ATTACK_AVAILABLE.retriever.getOrDefault(entity, 0) > 0
-             && SICKNESS.retriever.getOrDefault(entity, 1) == 0;
-        }),
-
         // Enchant
         { playFromHand: ENCHANT_ACTION },
-        { useCost: { action: ENCHANT_ACTION, res: SCRAP, value: { res: SCRAP_COST }, whoPays: "player" } },
         new com.cardshifter.modapi.actions.enchant.EnchantTargetCreatureTypes("Bio"),
         new com.cardshifter.modapi.actions.enchant.EnchantPerform(ATTACK, HEALTH, MAX_HEALTH),
 
         // Spell
         { useCost: { action: USE_ACTION, res: MANA, value: { res: MANA_COST }, whoPays: "player" } },
-        { useCost: { action: USE_ACTION, res: SCRAP, value: { res: SCRAP_COST }, whoPays: "player" } },
         { playFromHand: USE_ACTION },
         new EffectActionSystem(USE_ACTION),
         new EffectActionSystem(ENCHANT_ACTION),

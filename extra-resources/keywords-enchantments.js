@@ -9,13 +9,6 @@ keywords.cards.enchantment = function (entity, obj, value) {
 	entity.addComponent(actions);
 }
 
-keywords.cards.scrapCost = function (entity, obj, value) {
-    if (!obj.enchantment) {
-        throw new Error("expected enchantment");
-    }
-    SCRAP_COST.retriever.set(entity, value);
-}
-
 keywords.cards.addAttack = function (entity, obj, value) {
     if (!obj.enchantment) {
         throw new Error("expected enchantment");

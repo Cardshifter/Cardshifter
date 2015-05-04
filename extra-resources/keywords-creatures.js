@@ -11,11 +11,9 @@ keywords.cards.creature = function (entity, obj, value) {
 
     var playAction = new ECSAction(entity, PLAY_ACTION, function (act) { return true; }, function (act) {});
     var attackAction = new ECSAction(entity, ATTACK_ACTION, function (act) { return true; }, function (act) {}).addTargetSet(1, 1);
-    var scrapAction = new ECSAction(entity, SCRAP_ACTION, function (act) { return true; }, function (act) {});
 
 	actions.addAction(playAction);
 	actions.addAction(attackAction);
-	actions.addAction(scrapAction);
 
 	entity.addComponent(new com.cardshifter.modapi.base.CreatureTypeComponent(value));
 
@@ -45,12 +43,6 @@ keywords.cards.attack = function (entity, obj, value) {
 	ATTACK.retriever.set(entity, value);
 }
 
-keywords.cards.scrap = function (entity, obj, value) {
-    if (!obj.creature) {
-        throw new Error("expected creature");
-    }
-	SCRAP.retriever.set(entity, value);
-}
 
 keywords.cards.sickness = function (entity, obj, value) {
     if (!obj.creature) {
