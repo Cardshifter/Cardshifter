@@ -184,126 +184,131 @@ public class PhrancisGame implements ECSMod {
 
 	@Override
 	public void setupGame(ECSGame game) {
-		
-		PhaseController phaseController = new PhaseController();
-		game.newEntity().addComponent(phaseController);
-		
-		for (int i = 0; i < 2; i++) {
-			final int playerIndex = i;
-			Entity player = game.findEntities(e -> e.hasComponent(PlayerComponent.class) && e.getComponent(PlayerComponent.class).getIndex() == playerIndex).get(0);
-			Phase playerPhase = new Phase(player, "Main");
-			phaseController.addPhase(playerPhase);
-			
-			ActionComponent actions = new ActionComponent();
-			player.addComponent(actions);
-			
-			ECSAction endTurnAction = new ECSAction(player, END_TURN_ACTION, act -> phaseController.getCurrentPhase() == playerPhase, act -> phaseController.nextPhase());
-			actions.addAction(endTurnAction);
-			
-			ECSResourceMap.createFor(player)
-				.set(PhrancisResources.HEALTH, 30)
-				.set(PhrancisResources.MAX_HEALTH, 30)
-				.set(PhrancisResources.MANA, 0)
-				.set(PhrancisResources.SCRAP, 0);
-			
-			ZoneComponent deck = new DeckComponent(player);
-			ZoneComponent hand = new HandComponent(player);
-			ZoneComponent battlefield = new BattlefieldComponent(player);
-			player.addComponents(hand, deck, battlefield);
-			
-			ConfigComponent config = player.getComponent(ConfigComponent.class);
-			DeckConfig deckConf = config.getConfig(DeckConfig.class);
-			if (deckConf.total() < deckConf.getMinSize()) {
-				deckConf.generateRandom();
-			}
-			
-			setupDeck(deck, deckConf);
-			
-			deck.shuffle();
-		}
-		
-		ResourceRetriever manaMaxResource = ResourceRetriever.forResource(PhrancisResources.MANA_MAX);
-		ResourceRetriever manaCostResource = ResourceRetriever.forResource(PhrancisResources.MANA_COST);
-		UnaryOperator<Entity> owningPlayerPays = entity -> entity.getComponent(CardComponent.class).getOwner();
-		game.addSystem(new GainResourceSystem(PhrancisResources.MANA_MAX, entity -> Math.min(1, Math.abs(manaMaxResource.getFor(entity) - 10))));
-		game.addSystem(new RestoreResourcesSystem(PhrancisResources.MANA, entity -> manaMaxResource.getFor(entity)));
-		
-		// Actions - Play
-		game.addSystem(new PlayFromHandSystem(PLAY_ACTION));
-		game.addSystem(new PlayEntersBattlefieldSystem(PLAY_ACTION));
-		game.addSystem(new UseCostSystem(PLAY_ACTION, PhrancisResources.MANA, manaCostResource::getFor, owningPlayerPays));
-		
-		// Actions - Scrap
-		ResourceRetriever scrapCostResource = ResourceRetriever.forResource(PhrancisResources.SCRAP_COST);
-		ResourceRetriever attackAvailable = ResourceRetriever.forResource(PhrancisResources.ATTACK_AVAILABLE);
-		ResourceRetriever sickness = ResourceRetriever.forResource(PhrancisResources.SICKNESS);
-		game.addSystem(new ScrapSystem(PhrancisResources.SCRAP,	e ->
-				attackAvailable.getOrDefault(e, 0) > 0 &&
-				sickness.getOrDefault(e, 1) == 0
-		));
-		
-		// Actions - Spell
-		game.addSystem(new UseCostSystem(USE_ACTION, PhrancisResources.MANA, manaCostResource::getFor, owningPlayerPays));
-		game.addSystem(new UseCostSystem(USE_ACTION, PhrancisResources.SCRAP, scrapCostResource::getFor, owningPlayerPays));
-		game.addSystem(new PlayFromHandSystem(USE_ACTION));
-		game.addSystem(new EffectActionSystem(USE_ACTION));
-		game.addSystem(new EffectActionSystem(ENCHANT_ACTION));
-		game.addSystem(new EffectActionSystem(PLAY_ACTION));
-		game.addSystem(new EffectTargetFilterSystem(USE_ACTION));
-		game.addSystem(new DestroyAfterUseSystem(USE_ACTION));
-		
-		// Actions - Attack
-		ResourceRetriever allowCounterAttackRes = ResourceRetriever.forResource(PhrancisResources.DENY_COUNTERATTACK);
-		BiPredicate<Entity, Entity> allowCounterAttack =
-				(attacker, defender) -> allowCounterAttackRes.getOrDefault(attacker, 0) == 0;
-		game.addSystem(new AttackOnBattlefield());
-		game.addSystem(new AttackSickness(PhrancisResources.SICKNESS));
-		game.addSystem(new AttackTargetMinionsFirstThenPlayer(PhrancisResources.TAUNT));
-		game.addSystem(new AttackDamageYGO(PhrancisResources.ATTACK, PhrancisResources.HEALTH, allowCounterAttack));
-		game.addSystem(new UseCostSystem(ATTACK_ACTION, PhrancisResources.ATTACK_AVAILABLE, entity -> 1, entity -> entity));
-		game.addSystem(new RestoreResourcesToSystem(entity -> entity.hasComponent(CreatureTypeComponent.class) 
-				&& Cards.isOnZone(entity, BattlefieldComponent.class)
-				&& Cards.isOwnedByCurrentPlayer(entity), PhrancisResources.ATTACK_AVAILABLE, entity -> 1));
-		game.addSystem(new RestoreResourcesToSystem(entity -> entity.hasComponent(CreatureTypeComponent.class)
-				&& Cards.isOnZone(entity, BattlefieldComponent.class)
-				&& Cards.isOwnedByCurrentPlayer(entity), PhrancisResources.SICKNESS,
-				entity -> Math.max(0, sickness.getFor(entity) - 1)));
-		game.addSystem(new TrampleSystem(PhrancisResources.HEALTH));
-		game.addSystem(new ApplyAfterAttack(e -> allowCounterAttackRes.getFor(e) > 0, e -> sickness.resFor(e).set(2)));
-
-		// Actions - Enchant
-		game.addSystem(new PlayFromHandSystem(ENCHANT_ACTION));
-		game.addSystem(new UseCostSystem(ENCHANT_ACTION, PhrancisResources.SCRAP, scrapCostResource::getFor, owningPlayerPays));
-		game.addSystem(new EnchantTargetCreatureTypes(new String[]{ "Bio" }));
-		game.addSystem(new EnchantPerform(PhrancisResources.ATTACK, PhrancisResources.HEALTH, PhrancisResources.MAX_HEALTH));
-		
-//		game.addSystem(new ConsumeCardSystem());
-		
-		// Resources
-		// TODO: ManaOverloadSystem -- Uses an `OverloadComponent` for both cards and players. Checks for turn start and afterCardPlayed
-		
-		// Draw cards
-		game.addSystem(new DrawStartCards(5));
-		game.addSystem(new MulliganSingleCards(game));
-		game.addSystem(new DrawCardAtBeginningOfTurnSystem());
-		game.addSystem(new DamageConstantWhenOutOfCardsSystem(PhrancisResources.HEALTH, 1));
-//		game.addSystem(new DamageIncreasingWhenOutOfCardsSystem());
-		game.addSystem(new LimitedHandSizeSystem(10, card -> card.getCardToDraw().destroy()));
-//		game.addSystem(new RecreateDeckSystem());
-		
-		// Initial setup
-//		game.addSystem(new CreateDeckOnceFromSourceSystem());
-		// TODO: game.addSystem(new GiveStartCard(game.getPlayers().get(1), "The Coin"));
-		
-		// General setup
-		game.addSystem(new GameOverIfNoHealth(PhrancisResources.HEALTH));
-		game.addSystem(new LastPlayersStandingEndsGame());
-		game.addSystem(new RemoveDeadEntityFromZoneSystem());
-		game.addSystem(new PerformerMustBeCurrentPlayer());
-		
+		playerSetup(game);
+        systemSetup(game);
 	}
 
-	private void setupDeck(ZoneComponent deck, DeckConfig deckConf) {
+    public void systemSetup(ECSGame game) {
+        ResourceRetriever manaMaxResource = ResourceRetriever.forResource(PhrancisResources.MANA_MAX);
+        ResourceRetriever manaCostResource = ResourceRetriever.forResource(PhrancisResources.MANA_COST);
+        UnaryOperator<Entity> owningPlayerPays = entity -> entity.getComponent(CardComponent.class).getOwner();
+        game.addSystem(new GainResourceSystem(PhrancisResources.MANA_MAX, entity -> Math.min(1, Math.abs(manaMaxResource.getFor(entity) - 10))));
+        game.addSystem(new RestoreResourcesSystem(PhrancisResources.MANA, entity -> manaMaxResource.getFor(entity)));
+
+        // Actions - Play
+        game.addSystem(new PlayFromHandSystem(PLAY_ACTION));
+        game.addSystem(new PlayEntersBattlefieldSystem(PLAY_ACTION));
+        game.addSystem(new UseCostSystem(PLAY_ACTION, PhrancisResources.MANA, manaCostResource::getFor, owningPlayerPays));
+
+        // Actions - Scrap
+        ResourceRetriever scrapCostResource = ResourceRetriever.forResource(PhrancisResources.SCRAP_COST);
+        ResourceRetriever attackAvailable = ResourceRetriever.forResource(PhrancisResources.ATTACK_AVAILABLE);
+        ResourceRetriever sickness = ResourceRetriever.forResource(PhrancisResources.SICKNESS);
+        game.addSystem(new ScrapSystem(PhrancisResources.SCRAP,	e ->
+                attackAvailable.getOrDefault(e, 0) > 0 &&
+                        sickness.getOrDefault(e, 1) == 0
+        ));
+
+        // Actions - Spell
+        game.addSystem(new UseCostSystem(USE_ACTION, PhrancisResources.MANA, manaCostResource::getFor, owningPlayerPays));
+        game.addSystem(new UseCostSystem(USE_ACTION, PhrancisResources.SCRAP, scrapCostResource::getFor, owningPlayerPays));
+        game.addSystem(new PlayFromHandSystem(USE_ACTION));
+        game.addSystem(new EffectActionSystem(USE_ACTION));
+        game.addSystem(new EffectActionSystem(ENCHANT_ACTION));
+        game.addSystem(new EffectActionSystem(PLAY_ACTION));
+        game.addSystem(new EffectTargetFilterSystem(USE_ACTION));
+        game.addSystem(new DestroyAfterUseSystem(USE_ACTION));
+
+        // Actions - Attack
+        ResourceRetriever allowCounterAttackRes = ResourceRetriever.forResource(PhrancisResources.DENY_COUNTERATTACK);
+        BiPredicate<Entity, Entity> allowCounterAttack =
+                (attacker, defender) -> allowCounterAttackRes.getOrDefault(attacker, 0) == 0;
+        game.addSystem(new AttackOnBattlefield());
+        game.addSystem(new AttackSickness(PhrancisResources.SICKNESS));
+        game.addSystem(new AttackTargetMinionsFirstThenPlayer(PhrancisResources.TAUNT));
+        game.addSystem(new AttackDamageYGO(PhrancisResources.ATTACK, PhrancisResources.HEALTH, allowCounterAttack));
+        game.addSystem(new UseCostSystem(ATTACK_ACTION, PhrancisResources.ATTACK_AVAILABLE, entity -> 1, entity -> entity));
+        game.addSystem(new RestoreResourcesToSystem(entity -> entity.hasComponent(CreatureTypeComponent.class)
+                && Cards.isOnZone(entity, BattlefieldComponent.class)
+                && Cards.isOwnedByCurrentPlayer(entity), PhrancisResources.ATTACK_AVAILABLE, entity -> 1));
+        game.addSystem(new RestoreResourcesToSystem(entity -> entity.hasComponent(CreatureTypeComponent.class)
+                && Cards.isOnZone(entity, BattlefieldComponent.class)
+                && Cards.isOwnedByCurrentPlayer(entity), PhrancisResources.SICKNESS,
+                entity -> Math.max(0, sickness.getFor(entity) - 1)));
+        game.addSystem(new TrampleSystem(PhrancisResources.HEALTH));
+        game.addSystem(new ApplyAfterAttack(e -> allowCounterAttackRes.getFor(e) > 0, e -> sickness.resFor(e).set(2)));
+
+        // Actions - Enchant
+        game.addSystem(new PlayFromHandSystem(ENCHANT_ACTION));
+        game.addSystem(new UseCostSystem(ENCHANT_ACTION, PhrancisResources.SCRAP, scrapCostResource::getFor, owningPlayerPays));
+        game.addSystem(new EnchantTargetCreatureTypes(new String[]{ "Bio" }));
+        game.addSystem(new EnchantPerform(PhrancisResources.ATTACK, PhrancisResources.HEALTH, PhrancisResources.MAX_HEALTH));
+
+//		game.addSystem(new ConsumeCardSystem());
+
+        // Resources
+        // TODO: ManaOverloadSystem -- Uses an `OverloadComponent` for both cards and players. Checks for turn start and afterCardPlayed
+
+        // Draw cards
+        game.addSystem(new DrawStartCards(5));
+        game.addSystem(new MulliganSingleCards(game));
+        game.addSystem(new DrawCardAtBeginningOfTurnSystem());
+        game.addSystem(new DamageConstantWhenOutOfCardsSystem(PhrancisResources.HEALTH, 1));
+//		game.addSystem(new DamageIncreasingWhenOutOfCardsSystem());
+        game.addSystem(new LimitedHandSizeSystem(10, card -> card.getCardToDraw().destroy()));
+//		game.addSystem(new RecreateDeckSystem());
+
+        // Initial setup
+//		game.addSystem(new CreateDeckOnceFromSourceSystem());
+        // TODO: game.addSystem(new GiveStartCard(game.getPlayers().get(1), "The Coin"));
+
+        // General setup
+        game.addSystem(new GameOverIfNoHealth(PhrancisResources.HEALTH));
+        game.addSystem(new LastPlayersStandingEndsGame());
+        game.addSystem(new RemoveDeadEntityFromZoneSystem());
+        game.addSystem(new PerformerMustBeCurrentPlayer());
+    }
+
+    public void playerSetup(ECSGame game) {
+        PhaseController phaseController = new PhaseController();
+        game.newEntity().addComponent(phaseController);
+
+        for (int i = 0; i < 2; i++) {
+            final int playerIndex = i;
+            Entity player = game.findEntities(e -> e.hasComponent(PlayerComponent.class) && e.getComponent(PlayerComponent.class).getIndex() == playerIndex).get(0);
+            Phase playerPhase = new Phase(player, "Main");
+            phaseController.addPhase(playerPhase);
+
+            ActionComponent actions = new ActionComponent();
+            player.addComponent(actions);
+
+            ECSAction endTurnAction = new ECSAction(player, END_TURN_ACTION, act -> phaseController.getCurrentPhase() == playerPhase, act -> phaseController.nextPhase());
+            actions.addAction(endTurnAction);
+
+            ECSResourceMap.createFor(player)
+                    .set(PhrancisResources.HEALTH, 30)
+                    .set(PhrancisResources.MAX_HEALTH, 30)
+                    .set(PhrancisResources.MANA, 0)
+                    .set(PhrancisResources.SCRAP, 0);
+
+            ZoneComponent deck = new DeckComponent(player);
+            ZoneComponent hand = new HandComponent(player);
+            ZoneComponent battlefield = new BattlefieldComponent(player);
+            player.addComponents(hand, deck, battlefield);
+
+            ConfigComponent config = player.getComponent(ConfigComponent.class);
+            DeckConfig deckConf = config.getConfig(DeckConfig.class);
+            if (deckConf.total() < deckConf.getMinSize()) {
+                deckConf.generateRandom();
+            }
+
+            setupDeck(deck, deckConf);
+
+            deck.shuffle();
+        }
+    }
+
+    private void setupDeck(ZoneComponent deck, DeckConfig deckConf) {
 		ECSGame game = deck.getOwner().getGame();
 		for (Entry<Integer, Integer> chosen : deckConf.getChosen().entrySet()) {
 			int entityId = chosen.getKey();
