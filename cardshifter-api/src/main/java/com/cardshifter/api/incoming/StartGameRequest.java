@@ -1,15 +1,13 @@
 package com.cardshifter.api.incoming;
 
 import com.cardshifter.api.messages.Message;
-import com.fasterxml.jackson.annotation.JsonCreator;
 
 public class StartGameRequest extends Message {
 
 	private final int opponent;
 	private final String gameType;
 	
-	@JsonCreator
-	StartGameRequest() {
+	public StartGameRequest() {
 		this(-1, "");
 	}
 	

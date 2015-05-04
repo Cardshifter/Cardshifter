@@ -1,9 +1,6 @@
 package com.cardshifter.gdx;
 
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -17,15 +14,21 @@ import com.cardshifter.gdx.screens.MenuScreen;
 public class CardshifterGame extends Game {
     private static final float STAGE_WIDTH = 800;
     private static final float STAGE_HEIGHT = 480;
+    private final CardshifterPlatform platform;
     private SpriteBatch batch;
     public Skin skin;
     private OrthographicCamera camera;
 
     public Stage stage;
 
+    public CardshifterGame(CardshifterPlatform platform) {
+        this.platform = platform;
+    }
+
     @Override
 	public void create () {
-		batch = new SpriteBatch();
+        Gdx.app.setLogLevel(Application.LOG_INFO);
+        batch = new SpriteBatch();
         skin = new Skin(Gdx.files.internal("data/uiskin.json"));
         camera = new OrthographicCamera(STAGE_WIDTH, STAGE_HEIGHT);
         camera.setToOrtho(false, STAGE_WIDTH, STAGE_HEIGHT);
@@ -88,5 +91,9 @@ public class CardshifterGame extends Game {
 
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
+    }
+
+    public CardshifterPlatform getPlatform() {
+        return platform;
     }
 }

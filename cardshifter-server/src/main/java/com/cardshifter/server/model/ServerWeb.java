@@ -1,9 +1,18 @@
 package com.cardshifter.server.model;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.cardshifter.api.CardshifterSerializationException;
+import com.cardshifter.api.serial.ByteTransformer;
+import com.cardshifter.server.clients.Base64Utils;
+import net.zomis.cardshifter.ecs.usage.CardshifterIO;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.java_websocket.WebSocket;
@@ -23,8 +32,10 @@ public class ServerWeb implements ConnectionHandler {
 	}
 
 	private static class InnerServer extends WebSocketServer {
-		
-		public InnerServer(Server server, int port) {
+
+        private final ByteTransformer transformer = CardshifterIO.createByteTransformer();
+
+        public InnerServer(Server server, int port) {
 			super(new InetSocketAddress(port));
 			this.webClients = new ConcurrentHashMap<>();
 			this.server = server;
@@ -61,7 +72,14 @@ public class ServerWeb implements ConnectionHandler {
 				logger.error("Message was recieved from unknown ClientIO");
 				return;
 			}
-			io.sentToServer(message);
+            try {
+                byte[] bytes = Base64Utils.fromBase64(message);
+                logger.info("Connection message from: " + conn + ": " + Arrays.toString(bytes));
+                io.sentToServer(transformer.readOnce(new ByteArrayInputStream(bytes)));
+            } catch (CardshifterSerializationException e) {
+                throw new RuntimeException(e);
+            }
+//			io.sentToServer(message);
 		}
 
 		@Override

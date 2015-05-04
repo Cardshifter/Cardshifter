@@ -4,64 +4,67 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.lang.reflect.*;
 import java.util.*;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import com.cardshifter.api.CardshifterSerializationException;
+import com.cardshifter.api.LogInterface;
 
 public class FieldsCollection<T> {
 
-	private static final Logger logger = LogManager.getLogger(FieldsCollection.class);
-	
-	private final List<Field> fields;
+	private final List<ReflField> fields;
+    private final LogInterface logger;
+    private final ReflectionInterface refl;
 
-	public FieldsCollection(List<Field> fields) {
+    public FieldsCollection(List<ReflField> fields, LogInterface logger, ReflectionInterface refl) {
 		this.fields = Collections.unmodifiableList(fields);
+        this.logger = logger;
+        this.refl = refl;
 	}
 
-	public static <T> FieldsCollection<T> gather(T object) {
-		List<Field> fields = new ArrayList<Field>();
+	public static <T> FieldsCollection<T> gather(T object, LogInterface logger, ReflectionInterface refl) {
+		List<ReflField> fields = new ArrayList<ReflField>();
 		Class<?> clazz = object.getClass();
 		while (clazz != null) {
-			addFields(fields, clazz);
+			addFields(refl, fields, clazz);
 			clazz = clazz.getSuperclass();
 		}
-		return new FieldsCollection<T>(fields);
+		return new FieldsCollection<T>(fields, logger, refl);
 	}
 
-	private static void addFields(List<Field> fields, Class<?> clazz) {
-		for (Field field : clazz.getDeclaredFields()) {
-			if (!Modifier.isStatic(field.getModifiers())) {
+	private static void addFields(ReflectionInterface refl, List<ReflField> fields, Class<?> clazz) {
+		for (ReflField field : refl.getFields(clazz)) {
+			if (!field.isStatic()) {
 				fields.add(field);
 			}
 		}
 	}
 	
-	public byte[] serialize(T message) throws IOException {
+	public byte[] serialize(T message) throws CardshifterSerializationException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		DataOutputStream out = new DataOutputStream(baos);
 		try {
-			for (Field field : fields) {
+			for (ReflField field : fields) {
 				serialize(field, message, out);
 			}
-		}
-		catch (IOException e) {
-			throw e;
-		}
-		catch (Exception e) {
-			throw new IOException(e);
+		} catch (CardshifterSerializationException e) {
+            throw e;
+        } catch (Exception e) {
+			throw new CardshifterSerializationException(e);
 		}
 		byte[] data = baos.toByteArray();
 		
 		baos = new ByteArrayOutputStream();
 		out = new DataOutputStream(baos);
-		out.writeInt(data.length);
-		baos.write(data);
+        try {
+            out.writeInt(data.length);
+            baos.write(data);
+        } catch (IOException e) {
+            throw new CardshifterSerializationException(e);
+        }
 		return baos.toByteArray();
 	}
 
-	private Object deserialize(Class<?> type, DataInputStream data, Field field) throws IOException {
+	private Object deserialize(Class<?> type, DataInputStream data, ReflField field) throws IOException, CardshifterSerializationException {
 		if (type == int.class || type == Integer.class) {
 			int value = data.readInt();
 			return value;
@@ -102,7 +105,7 @@ public class FieldsCollection<T> {
 			}
 			return str.toString();
 		}
-		else if (Enum.class.isAssignableFrom(type)) {
+		else if (refl.isEnum(type)) {
 			Object[] values = type.getEnumConstants();
 			int ordinal = data.readInt();
 			return values[ordinal];
@@ -112,14 +115,8 @@ public class FieldsCollection<T> {
 				throw new NullPointerException("Field cannot be null when deserializing Map");
 			}
 
-			Type genericFieldType = field.getGenericType();
-			if (!(genericFieldType instanceof ParameterizedType)) {
-				throw new IllegalArgumentException("Cannot deserialize a Map without generics types");
-			}
-			ParameterizedType aType = (ParameterizedType) genericFieldType;
-			Type[] fieldArgTypes = aType.getActualTypeArguments();
-			Class<?> keyClass = (Class<?>) fieldArgTypes[0];
-			Class<?> valueClass = (Class<?>) fieldArgTypes[1];
+            Class<?> keyClass = field.getGenericType(0);
+            Class<?> valueClass = field.getGenericType(1);
 
 			Map<Object, Object> map = new HashMap<Object, Object>();
 			int size = data.readInt();
@@ -133,48 +130,47 @@ public class FieldsCollection<T> {
 		else if (type == Object.class) {
 			String clazzName = (String) deserialize(String.class, data, null);
 			try {
-				Class<?> clazz = Class.forName(clazzName);
+				Class<?> clazz = refl.forName(clazzName);
 				Object obj = deserialize(clazz, data, field);
-				logger.debug("Deserialized object: " + obj);
+//				logger.debug("Deserialized object: " + obj);
 				return obj;
-			} catch (ClassNotFoundException e) {
-				throw new IOException(e);
+			} catch (Exception e) {
+				throw new CardshifterSerializationException(e);
 			}
 		}
 		else {
 			logger.info("Using recursive deserialization for " + type);
 			try {
-				Constructor<?> constructor = type.getDeclaredConstructor();
-				constructor.setAccessible(true);
-				Object obj = constructor.newInstance();
-				FieldsCollection<Object> fields = FieldsCollection.gather(obj);
+                Object obj = refl.create(type);
+				FieldsCollection<Object> fields = FieldsCollection.gather(obj, logger, refl);
 				fields = fields.orderByName();
 				data.readInt(); // length of upcoming data, ignored on recursive deserialization
 				fields.read(obj, data);
 				return obj;
 			} catch (Exception e) {
-				throw new IOException(e);
+				throw new CardshifterSerializationException(e);
 			}
 		}
 	}
 	
-	private void deserialize(Field field, Object message, DataInputStream data) throws IllegalArgumentException, IllegalAccessException, IOException {
-		logger.debug("read field " + field + " for " + message);
+	private void deserialize(ReflField field, Object message, DataInputStream data) throws Exception {
+//		logger.debug("read field " + field + " for " + message);
 		field.setAccessible(true);
 		Class<?> type = field.getType();
 		field.set(message, deserialize(type, data, field));
 	}
 
-	private void serialize(Class<?> type, Object value, DataOutputStream out, Field field)
-			throws IOException, IllegalArgumentException, IllegalAccessException {
-//		logger.info("Serializing " + type + ": " + value);
+	private void serialize(Class<?> type, Object value, DataOutputStream out, ReflField field)
+			throws IOException, CardshifterSerializationException, IllegalArgumentException, IllegalAccessException {
 		if (type == int.class || type == Integer.class) {
 			out.writeInt((Integer) value);
 		}
 		else if (type == String.class) {
 			String str = (String) value;
 			out.writeInt(str.length());
-			out.writeChars(str);
+            for (int i = 0; i < str.length(); i++) {
+                out.writeChar(str.charAt(i));
+            }
 		}
 		else if (type == Boolean.class) {
 			Boolean bool = (Boolean) value;
@@ -200,7 +196,7 @@ public class FieldsCollection<T> {
 				serialize(int.class, array[i], out, null);
 			}
 		}
-		else if (Enum.class.isAssignableFrom(type)) {
+		else if (refl.isEnum(type)) {
 			Enum<?> enumValue = (Enum<?>) value;
 			out.writeInt(enumValue.ordinal());
 		}
@@ -209,14 +205,8 @@ public class FieldsCollection<T> {
 				throw new NullPointerException("Field cannot be null when serializing Map");
 			}
 
-			Type genericFieldType = field.getGenericType();
-			if (!(genericFieldType instanceof ParameterizedType)) {
-				throw new IllegalArgumentException("Cannot serialize a Map without generics types");
-			}
-			ParameterizedType aType = (ParameterizedType) genericFieldType;
-			Type[] fieldArgTypes = aType.getActualTypeArguments();
-			Class<?> keyClass = (Class<?>) fieldArgTypes[0];
-			Class<?> valueClass = (Class<?>) fieldArgTypes[1];
+			Class<?> keyClass = field.getGenericType(0);
+			Class<?> valueClass = field.getGenericType(1);
 
 			Map<Object, Object> map = (Map<Object, Object>) value;
 			out.writeInt(map.size());
@@ -232,14 +222,14 @@ public class FieldsCollection<T> {
 		}
 		else {
 			logger.info("Using recursive serialization for " + type);
-			FieldsCollection<Object> fields = FieldsCollection.gather(value);
+			FieldsCollection<Object> fields = FieldsCollection.gather(value, logger, refl);
 			fields = fields.orderByName();
 			byte[] b = fields.serialize(value);
 			out.write(b);
 		}
 	}
 	
-	private void serialize(Field field, T obj, DataOutputStream out) throws IOException, IllegalArgumentException, IllegalAccessException {
+	private void serialize(ReflField field, T obj, DataOutputStream out) throws Exception {
 		field.setAccessible(true);
 		Class<?> type = field.getType();
 		Object value = field.get(obj);
@@ -247,43 +237,43 @@ public class FieldsCollection<T> {
 	}
 
 	public FieldsCollection<T> orderByName() {
-		List<Field> myFields = new ArrayList<Field>(fields);
-		Collections.sort(myFields, new Comparator<Field>() {
+		List<ReflField> myFields = new ArrayList<ReflField>(fields);
+		Collections.sort(myFields, new Comparator<ReflField>() {
 			@Override
-			public int compare(Field o1, Field o2) {
+			public int compare(ReflField o1, ReflField o2) {
 				return o1.getName().compareTo(o2.getName());
 			}
 		});
-		return new FieldsCollection<T>(myFields);
+		return new FieldsCollection<T>(myFields, logger, refl);
 	}
 
 	public FieldsCollection<T> putFirst(String fieldName) {
-		List<Field> myFields = new ArrayList<Field>(fields);
-		for (Field field : myFields) {
+		List<ReflField> myFields = new ArrayList<ReflField>(fields);
+		for (ReflField field : myFields) {
 			if (field.getName().equals(fieldName)) {
 				myFields.remove(field);
 				myFields.add(0, field);
-				return new FieldsCollection<T>(myFields);
+				return new FieldsCollection<T>(myFields, logger, refl);
 			}
 		}
 		throw new IllegalArgumentException("Field name not found: " + fieldName);
 	}
 
-	public void read(Object message, DataInputStream data) throws IOException {
+	public void read(Object message, DataInputStream data) throws CardshifterSerializationException {
 		try {
-			for (Field field : fields) {
+			for (ReflField field : fields) {
 				deserialize(field, message, data);
 			}
 		}
 		catch (Exception ex) {
-			throw new IOException(ex);
+			throw new CardshifterSerializationException(ex);
 		}
 	}
 
 	public FieldsCollection<T> skipFirst() {
-		List<Field> myFields = new ArrayList<Field>(fields);
+		List<ReflField> myFields = new ArrayList<ReflField>(fields);
 		myFields.remove(0);
-		return new FieldsCollection<T>(myFields);
+		return new FieldsCollection<T>(myFields, logger, refl);
 	}
 
 }

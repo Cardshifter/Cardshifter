@@ -2,19 +2,20 @@ package com.cardshifter.api.outgoing;
 
 import java.util.Arrays;
 
+import com.cardshifter.api.ArrayUtil;
 import com.cardshifter.api.messages.Message;
 
 public class ZoneMessage extends Message {
 //	SERVER: command: zone, name: 'Deck', owner: 0, id: 7, (playerIndex), size: 42, hidden: true
 
-	private final int id;
-	private final String name;
-	private final int owner;
-	private final int size;
-	private final boolean known;
-	private final int[] entities;
+	private int id;
+	private String name;
+	private int owner;
+	private int size;
+	private boolean known;
+	private int[] entities;
 
-	ZoneMessage() {
+	public ZoneMessage() {
 		this(0, "", 0, 0, false, new int[]{});
 	}
 
@@ -25,7 +26,7 @@ public class ZoneMessage extends Message {
 		this.owner = owner;
 		this.size = size;
 		this.known = known;
-		this.entities = Arrays.copyOf(entities, entities.length);
+		this.entities = ArrayUtil.copyOf(entities);
 	}
 	
 	public int getId() {
@@ -49,7 +50,7 @@ public class ZoneMessage extends Message {
 	}
 	
 	public int[] getEntities() {
-		return Arrays.copyOf(entities, entities.length);
+		return ArrayUtil.copyOf(entities);
 	}
 
 	@Override

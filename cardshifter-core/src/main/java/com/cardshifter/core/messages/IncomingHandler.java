@@ -54,6 +54,9 @@ public class IncomingHandler {
 	public <E extends Message> void perform(E message, ClientIO client) {
 		@SuppressWarnings("unchecked")
 		MessageHandler<E> messagePerform = (MessageHandler<E>) this.consumer.get(message.getClass());
+        if (messagePerform == null) {
+            throw new NullPointerException("No handler for message " + message + " of class " + message.getClass());
+        }
 		messagePerform.handle(message, client);
 	}
 

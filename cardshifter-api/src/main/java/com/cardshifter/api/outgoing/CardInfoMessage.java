@@ -8,12 +8,12 @@ import java.util.Map;
 public class CardInfoMessage extends Message {
 //	SERVER: command: card, zone: 3, id: 3, properties: { name: 'Biofsd', power: 3, health: 4, cardType: 'Creature', creatureType: 'B0T' }
 	
-	private final int zone;
+	private int zone;
 	private int id;
 
-	private final Map<String, Object> properties;
+	private Map<String, Object> properties;
 
-	CardInfoMessage() {
+	public CardInfoMessage() {
 		this(0, 0, null);
 	}
 	public CardInfoMessage(int zoneId, int cardId, Map<String, Object> properties) {
@@ -37,7 +37,7 @@ public class CardInfoMessage extends Message {
 	
 	@Override
 	public String toString() {
-		return String.format("CardInfo: %d in zone %d - %s", this.id, this.zone, this.properties);
+		return "CardInfo: " + id + " in zone " + zone + " - " + this.properties;
 	}
 	
 }

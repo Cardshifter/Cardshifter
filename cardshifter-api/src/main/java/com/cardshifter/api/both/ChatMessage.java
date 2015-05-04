@@ -1,17 +1,14 @@
 package com.cardshifter.api.both;
 
 import com.cardshifter.api.messages.Message;
-import com.fasterxml.jackson.annotation.JsonCreator;
-
 
 public class ChatMessage extends Message {
 
-	private final int chatId;
-	private final String message;
-	private final String from;
+	private int chatId;
+	private String message;
+	private String from;
 	
-	@JsonCreator
-	ChatMessage() {
+	public ChatMessage() {
 		this(0, "", "");
 	}
 	

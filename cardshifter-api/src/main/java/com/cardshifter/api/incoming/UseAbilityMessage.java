@@ -2,9 +2,8 @@ package com.cardshifter.api.incoming;
 
 import java.util.Arrays;
 
+import com.cardshifter.api.ArrayUtil;
 import com.cardshifter.api.abstr.CardMessage;
-import com.fasterxml.jackson.annotation.JsonCreator;
-
 
 public class UseAbilityMessage extends CardMessage {
 
@@ -13,7 +12,7 @@ public class UseAbilityMessage extends CardMessage {
 	private final int gameId;
 	private final int[] targets;
 
-	UseAbilityMessage() {
+	public UseAbilityMessage() {
 		this(0, 0, "", new int[0]);
 	}
 
@@ -22,7 +21,7 @@ public class UseAbilityMessage extends CardMessage {
 		this.id = id;
 		this.action = action;
 		this.gameId = gameId;
-		this.targets = Arrays.copyOf(targets, targets.length);
+		this.targets = ArrayUtil.copyOf(targets);
 	}
 	
 	public UseAbilityMessage(int gameid, int entity, String action, int target) {
@@ -42,7 +41,7 @@ public class UseAbilityMessage extends CardMessage {
 	}
 	
 	public int[] getTargets() {
-		return Arrays.copyOf(targets, targets.length);
+		return ArrayUtil.copyOf(targets);
 	}
 
 	@Override

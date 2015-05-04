@@ -42,7 +42,7 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
 
     public ClientScreen(final CardshifterGame game, String host, int port, final String username) {
         this.game = game;
-        client = new CardshifterClient(host, port, this);
+        client = game.getPlatform().createClient(host, port, this, new LoginMessage(username));
         table = new Table(game.skin);
         table.setFillParent(true);
         mods = new HorizontalGroup();
@@ -75,8 +75,8 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
         handlerMap.put(ChatMessage.class, new SpecificHandler<ChatMessage>() {
             @Override
             public void handle(ChatMessage message) {
-                DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                String append = "\n" + "[" + format.format(Calendar.getInstance().getTime()) + "] " + message.getFrom() + ": " + message.getMessage();
+                String time = game.getPlatform().getTimeString();
+                String append = "\n" + "[" + time + "] " + message.getFrom() + ": " + message.getMessage();
                 chatMessages.setText(chatMessages.getText() + append);
             }
         });
@@ -127,7 +127,7 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
             }
         });
 
-        Gdx.app.postRunnable(new Runnable() {
+/*        Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -136,7 +136,7 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
                 }
                 client.send(new LoginMessage(username));
             }
-        });
+        });*/
     }
 
     @Override

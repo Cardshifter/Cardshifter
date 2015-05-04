@@ -4,11 +4,11 @@ import com.cardshifter.api.messages.Message;
 
 public class ZoneChangeMessage extends Message {
 
-	private final int entity;
-	private final int sourceZone;
-	private final int destinationZone;
+	private int entity;
+	private int sourceZone;
+	private int destinationZone;
 
-	ZoneChangeMessage() {
+    public ZoneChangeMessage() {
 		this(0, 0, 0);
 	}
 

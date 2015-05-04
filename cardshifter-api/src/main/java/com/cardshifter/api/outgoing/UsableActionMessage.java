@@ -4,12 +4,12 @@ import com.cardshifter.api.messages.Message;
 
 public class UsableActionMessage extends Message {
 
-	private final int id;
-	private final String action;
-	private final boolean targetRequired;
-	private final int targetId;
+	private int id;
+	private String action;
+	private boolean targetRequired;
+	private int targetId;
 
-	UsableActionMessage() {
+    public UsableActionMessage() {
 		this(0, "", false, 0);
 	}
 

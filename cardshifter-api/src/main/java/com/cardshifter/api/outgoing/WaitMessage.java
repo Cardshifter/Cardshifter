@@ -4,7 +4,7 @@ import com.cardshifter.api.messages.Message;
 
 public class WaitMessage extends Message {
 
-	private final String message = "Waiting for opponent...";
+	private String message = "Waiting for opponent...";
 	
 	public WaitMessage() {
 		super("wait");

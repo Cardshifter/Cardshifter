@@ -9,11 +9,13 @@ public class HtmlLauncher extends GwtApplication {
 
         @Override
         public GwtApplicationConfiguration getConfig () {
-                return new GwtApplicationConfiguration(480, 320);
+            GwtApplicationConfiguration config = new GwtApplicationConfiguration(640, 480);
+            config.log = null;
+            return config;
         }
 
         @Override
         public ApplicationListener getApplicationListener () {
-                return new CardshifterGame();
+            return new CardshifterGame(new GWTPlatform());
         }
 }

@@ -7,6 +7,7 @@ import java.net.Socket;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
+import com.cardshifter.api.CardshifterSerializationException;
 import net.zomis.cardshifter.ecs.usage.CardshifterIO;
 
 import org.apache.log4j.LogManager;
@@ -16,7 +17,6 @@ import com.cardshifter.api.ClientIO;
 import com.cardshifter.api.incoming.TransformerMessage;
 import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.outgoing.ServerErrorMessage;
-import com.cardshifter.api.serial.ByteTransformer;
 import com.cardshifter.api.serial.CommunicationTransformer;
 import com.cardshifter.server.model.Server;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -53,11 +53,7 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 	private Void realSend(Message message) {
 		try {
 			transformer.send(message, out);
-		} catch (JsonProcessingException e) {
-			String error = "Error occured when serializing message " + message;
-			logger.fatal(error, e);
-			throw new IllegalArgumentException(error, e);
-		} catch (IOException e) {
+		} catch (CardshifterSerializationException e) {
 			String error = "Error occured when sending message " + message;
 			logger.fatal(error, e);
 //			this.disconnected(); // Possibly mark client as disconnected here
@@ -71,14 +67,7 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 		while (socket != null && socket.isConnected()) {
 			try {
 				transformer.read(in, mess -> incomingMess(mess));
-			} catch (JsonParseException e) {
-				this.sendToClient(new ServerErrorMessage("Error reading input: " + e.getMessage()));
-				logger.error(e.getMessage(), e);
-				this.close();
-			} catch (JsonProcessingException e) {
-				this.sendToClient(new ServerErrorMessage("Error processing input: " + e.getMessage()));
-				logger.error(e.getMessage(), e);
-			} catch (Exception e) {
+			} catch (CardshifterSerializationException e) {
 				logger.error(e.getMessage(), e);
 				this.close();
 			}
@@ -106,7 +95,7 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 					this.transformer = new JsonSerialization(mapper);
 					break;
 				case TransformerMessage.TRANSFORM_BYTE:
-					this.transformer = new ByteTransformer();
+					this.transformer = CardshifterIO.createByteTransformer();
 					break;
 				default:
 					throw new IllegalArgumentException("Not a known transformer: " + transformMess.getType());

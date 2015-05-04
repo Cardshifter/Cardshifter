@@ -31,12 +31,8 @@ import com.cardshifter.api.outgoing.WaitMessage;
 import com.cardshifter.api.outgoing.WelcomeMessage;
 import com.cardshifter.api.outgoing.ZoneChangeMessage;
 import com.cardshifter.api.outgoing.ZoneMessage;
-import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.jsontype.TypeIdResolver;
-import com.fasterxml.jackson.databind.type.TypeFactory;
 
-public class MessageTypeIdResolver implements TypeIdResolver {
+public class MessageTypeIdResolver {
 	
 	private static final Map<String, Class<? extends Message>> clazzes = new HashMap<String, Class<? extends Message>>();
 	
@@ -73,45 +69,9 @@ public class MessageTypeIdResolver implements TypeIdResolver {
 		clazzes.put("query", ServerQueryMessage.class);
 		clazzes.put("playerconfig", PlayerConfigMessage.class);
 	}
+
+    public static Class<? extends Message> get(String key) {
+        return clazzes.get(key);
+    }
 	
-	private JavaType mBaseType;
-	
-	public static Class<?> typeFor(String id) {
-		return clazzes.get(id);
-	}
-
-	@Override
-	public void init(JavaType baseType) {
-		mBaseType = baseType;
-	}
-
-	@Override
-	public Id getMechanism() {
-		return Id.CUSTOM;
-	}
-
-	@Override
-	public String idFromValue(Object obj) {
-		return idFromValueAndType(obj, obj.getClass());
-	}
-
-	@Override
-	public String idFromBaseType() {
-		throw new AssertionError("this should never happen");
-	}
-
-	@Override
-	public String idFromValueAndType(Object obj, Class<?> clazz) {
-		Message mess = (Message) obj;
-		return mess.getCommand();
-	}
-
-	@Override
-	public JavaType typeFromId(String type) {
-		Class<?> clazz = clazzes.get(type);
-		if (clazz == null) {
-			throw new UnsupportedOperationException("No such defined type: " + type);
-		}
-		return TypeFactory.defaultInstance().constructSpecializedType(mBaseType, clazz);
-	}
 }

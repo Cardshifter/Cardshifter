@@ -11,14 +11,14 @@ import com.cardshifter.api.outgoing.CardInfoMessage;
 
 public class DeckConfig {
 
-	private final Map<Integer, CardInfoMessage> cardData;
-	private final Map<Integer, Integer> chosen = new HashMap<Integer, Integer>();
-	private final Map<Integer, Integer> max = new HashMap<Integer, Integer>();
-	private final int minSize;
-	private final int maxSize;
-	private final int maxPerCard;
+	private Map<Integer, CardInfoMessage> cardData;
+	private Map<Integer, Integer> chosen = new HashMap<Integer, Integer>();
+	private Map<Integer, Integer> max = new HashMap<Integer, Integer>();
+	private int minSize;
+	private int maxSize;
+	private int maxPerCard;
 	
-	DeckConfig() {
+	public DeckConfig() {
 		this(0, 0, new HashMap<Integer, CardInfoMessage>(), 0);
 	}
 	public DeckConfig(int minSize, int maxSize, Map<Integer, CardInfoMessage> cardData, int maxPerCard) {
