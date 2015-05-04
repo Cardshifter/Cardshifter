@@ -1,7 +1,7 @@
 var SCRAP = createResource("SCRAP");
 var SCRAP_COST = createResource("SCRAP_COST");
 var SCRAP_ACTION = "Scrap";
-// requireActions([ENCHANT_ACTION, USE_ACTION]);
+requireActions([ENCHANT_ACTION, USE_ACTION]);
 
 keywords.cards.scrap = function (entity, obj, value) {
     if (!obj.creature) {

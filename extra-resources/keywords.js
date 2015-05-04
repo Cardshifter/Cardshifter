@@ -5,6 +5,15 @@ keywords.cards = {};
 keywords.afterCards = [];
 keywords.moreSystems = [];
 
+function requireActions(actions) {
+    for (var i = 0; i < actions.length; i++) {
+        var type = typeof actions[i];
+        if (type !== 'string') {
+            throw new Error("A required action constant was not found: index " + i + ", expected String but was " + type);
+        }
+    }
+}
+
 function createResource(name) {
     return new com.cardshifter.modapi.resources.ECSResourceDefault(name);
 }
