@@ -3,6 +3,24 @@ load('keywords-creatures.js');
 load('keywords-enchantments.js');
 load('keywords-systems.js');
 
+function createResource(name) {
+    return new com.cardshifter.modapi.resources.ECSResourceDefault(name);
+}
+
+var ATTACK = createResource("ATTACK");
+var HEALTH = createResource("HEALTH");
+var MAX_HEALTH = createResource("MAX_HEALTH");
+
+var ATTACK_AVAILABLE = createResource("ATTACK_AVAILABLE");
+var DENY_COUNTERATTACK = createResource("DENY_COUNTERATTACK");
+var MANA = createResource("MANA");
+var MANA_COST = createResource("MANA_COST");
+var MANA_MAX = createResource("MANA_MAX");
+var SCRAP = createResource("SCRAP");
+var SCRAP_COST = createResource("SCRAP_COST");
+var SICKNESS = createResource("SICKNESS");
+var TAUNT = createResource("TAUNT");
+
 var PLAY_ACTION = "Play";
 var ENCHANT_ACTION = "Enchant";
 var ATTACK_ACTION = "Attack";
@@ -126,10 +144,10 @@ function playerSetup(game) {
         actions.addAction(endTurnAction);
 
         com.cardshifter.modapi.resources.ECSResourceMap.createFor(player)
-            .set(pgres.HEALTH, 30)
-            .set(pgres.MAX_HEALTH, 30)
-            .set(pgres.MANA, 0)
-            .set(pgres.SCRAP, 0);
+            .set(HEALTH, 30)
+            .set(MAX_HEALTH, 30)
+            .set(MANA, 0)
+            .set(SCRAP, 0);
 
         var deck = new com.cardshifter.modapi.cards.DeckComponent(player);
         var hand = new com.cardshifter.modapi.cards.HandComponent(player);
@@ -169,29 +187,29 @@ function setupGame(game) {
     var EffectActionSystem = Java.type("net.zomis.cardshifter.ecs.effects.EffectActionSystem");
     var ScrapSystem = Java.type("net.zomis.cardshifter.ecs.usage.ScrapSystem");
     applySystems(game, [
-        { gainResource: { res: pgres.MANA_MAX, value: 1, untilMax: 10 } },
-        { restoreResources: { res: pgres.MANA, value: { res: pgres.MANA_MAX } } },
+        { gainResource: { res: MANA_MAX, value: 1, untilMax: 10 } },
+        { restoreResources: { res: MANA, value: { res: MANA_MAX } } },
 
         // Play
         { playFromHand: PLAY_ACTION },
         { playEntersBattlefield: PLAY_ACTION },
-        { useCost: { action: PLAY_ACTION, res: pgres.MANA, value: { res: pgres.MANA_COST }, whoPays: "player" } },
+        { useCost: { action: PLAY_ACTION, res: MANA, value: { res: MANA_COST }, whoPays: "player" } },
 
         // Scrap
-        new ScrapSystem(pgres.SCRAP, function (entity) {
-            return com.cardshifter.modapi.resources.Resources.getOrDefault(entity, pgres.ATTACK_AVAILABLE, 0) > 0
-             && com.cardshifter.modapi.resources.Resources.getOrDefault(entity, pgres.SICKNESS, 1) == 0;
+        new ScrapSystem(SCRAP, function (entity) {
+            return com.cardshifter.modapi.resources.Resources.getOrDefault(entity, ATTACK_AVAILABLE, 0) > 0
+             && com.cardshifter.modapi.resources.Resources.getOrDefault(entity, SICKNESS, 1) == 0;
         }),
 
         // Enchant
         { playFromHand: ENCHANT_ACTION },
-        { useCost: { action: ENCHANT_ACTION, res: pgres.SCRAP, value: { res: pgres.SCRAP_COST }, whoPays: "player" } },
+        { useCost: { action: ENCHANT_ACTION, res: SCRAP, value: { res: SCRAP_COST }, whoPays: "player" } },
         new com.cardshifter.modapi.actions.enchant.EnchantTargetCreatureTypes("Bio"),
-        new com.cardshifter.modapi.actions.enchant.EnchantPerform(pgres.ATTACK, pgres.HEALTH, pgres.MAX_HEALTH),
+        new com.cardshifter.modapi.actions.enchant.EnchantPerform(ATTACK, HEALTH, MAX_HEALTH),
 
         // Spell
-        { useCost: { action: USE_ACTION, res: pgres.MANA, value: { res: pgres.MANA_COST }, whoPays: "player" } },
-        { useCost: { action: USE_ACTION, res: pgres.SCRAP, value: { res: pgres.SCRAP_COST }, whoPays: "player" } },
+        { useCost: { action: USE_ACTION, res: MANA, value: { res: MANA_COST }, whoPays: "player" } },
+        { useCost: { action: USE_ACTION, res: SCRAP, value: { res: SCRAP_COST }, whoPays: "player" } },
         { playFromHand: USE_ACTION },
         new EffectActionSystem(USE_ACTION),
         new EffectActionSystem(ENCHANT_ACTION),
@@ -201,44 +219,44 @@ function setupGame(game) {
 
         // Attack
         new com.cardshifter.modapi.actions.attack.AttackOnBattlefield(),
-        new com.cardshifter.modapi.actions.attack.AttackTargetMinionsFirstThenPlayer(pgres.TAUNT),
-        new com.cardshifter.modapi.actions.attack.AttackSickness(pgres.SICKNESS),
-        { useCost: { action: ATTACK_ACTION, res: pgres.ATTACK_AVAILABLE, value: 1, whoPays: "self" } },
+        new com.cardshifter.modapi.actions.attack.AttackTargetMinionsFirstThenPlayer(TAUNT),
+        new com.cardshifter.modapi.actions.attack.AttackSickness(SICKNESS),
+        { useCost: { action: ATTACK_ACTION, res: ATTACK_AVAILABLE, value: 1, whoPays: "self" } },
 
 
-        new com.cardshifter.modapi.resources.RestoreResourcesToSystem(ownedBattlefieldCreatures, pgres.ATTACK_AVAILABLE,
+        new com.cardshifter.modapi.resources.RestoreResourcesToSystem(ownedBattlefieldCreatures, ATTACK_AVAILABLE,
           function (entity) { return 1; }),
-        new com.cardshifter.modapi.resources.RestoreResourcesToSystem(ownedBattlefieldCreatures, pgres.SICKNESS,
-          function (entity) { return Math.max(0, pgres.SICKNESS.getFor(entity) - 1); }),
-        new com.cardshifter.modapi.actions.attack.TrampleSystem(pgres.HEALTH),
+        new com.cardshifter.modapi.resources.RestoreResourcesToSystem(ownedBattlefieldCreatures, SICKNESS,
+          function (entity) { return Math.max(0, SICKNESS.getFor(entity) - 1); }),
+        new com.cardshifter.modapi.actions.attack.TrampleSystem(HEALTH),
 
         // Draw cards
         { startCards: 5 },
         new com.cardshifter.modapi.cards.DrawCardAtBeginningOfTurnSystem(),
-        new com.cardshifter.modapi.cards.DamageConstantWhenOutOfCardsSystem(pgres.HEALTH, 1),
+        new com.cardshifter.modapi.cards.DamageConstantWhenOutOfCardsSystem(HEALTH, 1),
         new com.cardshifter.modapi.cards.LimitedHandSizeSystem(10, function (card) { card.getCardToDraw().destroy() }),
 
         // General setup
         new com.cardshifter.modapi.cards.MulliganSingleCards(game),
-        new com.cardshifter.modapi.resources.GameOverIfNoHealth(pgres.HEALTH),
+        new com.cardshifter.modapi.resources.GameOverIfNoHealth(HEALTH),
         new LastPlayersStandingEndsGame(),
         new com.cardshifter.modapi.cards.RemoveDeadEntityFromZoneSystem(),
         new com.cardshifter.modapi.phase.PerformerMustBeCurrentPlayer(),
     ]);
 
-	var allowCounterAttackRes = com.cardshifter.modapi.resources.ResourceRetriever.forResource(pgres.DENY_COUNTERATTACK);
+	var allowCounterAttackRes = com.cardshifter.modapi.resources.ResourceRetriever.forResource(DENY_COUNTERATTACK);
     var allowCounterAttack = function (attacker, defender) {
         return allowCounterAttackRes.getOrDefault(attacker, 0) == 0;
     }
 
-    game.addSystem(new com.cardshifter.modapi.actions.attack.AttackDamageAccumulating(pgres.ATTACK, pgres.HEALTH, allowCounterAttack));
-    game.addSystem(new com.cardshifter.modapi.actions.attack.AttackDamageHealAtEndOfTurn(pgres.HEALTH, pgres.MAX_HEALTH));
+    game.addSystem(new com.cardshifter.modapi.actions.attack.AttackDamageAccumulating(ATTACK, HEALTH, allowCounterAttack));
+    game.addSystem(new com.cardshifter.modapi.actions.attack.AttackDamageHealAtEndOfTurn(HEALTH, MAX_HEALTH));
 
     var ApplyAfterAttack = Java.type("net.zomis.cardshifter.ecs.usage.ApplyAfterAttack");
     game.addSystem(new ApplyAfterAttack(function (entity) {
         return allowCounterAttackRes.getFor(entity) > 0;
     }, function (entity) {
-        var sickness = com.cardshifter.modapi.resources.ResourceRetriever.forResource(pgres.SICKNESS);
+        var sickness = com.cardshifter.modapi.resources.ResourceRetriever.forResource(SICKNESS);
         sickness.resFor(entity).set(2)
     }));
 }

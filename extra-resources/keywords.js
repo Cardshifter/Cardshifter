@@ -1,4 +1,4 @@
-var pgres = Java.type("net.zomis.cardshifter.ecs.usage.PhrancisGame").PhrancisResources;
+var ECSAction = Java.type("com.cardshifter.modapi.actions.ECSAction");
 var keywords = {};
 
 function applyEntity(game, card, entity, keyword) {
