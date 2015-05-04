@@ -2,6 +2,7 @@ load('keywords.js');
 load('keywords-creatures.js');
 load('keywords-enchantments.js');
 load('keywords-systems.js');
+load('keyword-noattack.js');
 
 function createResource(name) {
     return new com.cardshifter.modapi.resources.ECSResourceDefault(name);

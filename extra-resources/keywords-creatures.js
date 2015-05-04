@@ -1,6 +1,3 @@
-var noAttackCreatures = [];
-
-keywords.cards = {};
 keywords.cards.name = function (entity, obj, value) {
     com.cardshifter.modapi.attributes.ECSAttributeMap.createOrGetFor(entity).set(com.cardshifter.modapi.attributes.Attributes.NAME, value);
 }
@@ -59,13 +56,6 @@ keywords.cards.sickness = function (entity, obj, value) {
         throw new Error("expected creature");
     }
 	SICKNESS.retriever.set(entity, value);
-}
-
-keywords.cards.noAttack = function (entity, obj, value) {
-    if (!obj.creature) {
-        throw new Error("expected creature");
-    }
-	noAttackCreatures.push(obj.name);
 }
 
 keywords.cards.denyCounterAttack = function (entity, obj, value) {
