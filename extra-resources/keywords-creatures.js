@@ -2,9 +2,7 @@ var noAttackCreatures = [];
 
 keywords.cards = {};
 keywords.cards.name = function (entity, obj, value) {
-    print("before apply: " + entity);
     com.cardshifter.modapi.attributes.ECSAttributeMap.createOrGetFor(entity).set(com.cardshifter.modapi.attributes.Attributes.NAME, value);
-    print("after apply");
 }
 keywords.cards.flavor = function (entity, obj, value) {
     com.cardshifter.modapi.attributes.ECSAttributeMap.createOrGetFor(entity).set(com.cardshifter.modapi.attributes.Attributes.FLAVOR, value);

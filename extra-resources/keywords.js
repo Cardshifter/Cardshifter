@@ -24,7 +24,6 @@ function applyCardKeywords(game, zone, data) {
     for (var i = 0; i < data.cards.length; i++) {
         var card = data.cards[i];
         var entity = game.newEntity();
-        print("entity is " + entity);
         applyEntity(game, card, entity, keywords.cards);
         zone.addOnBottom(entity);
     }
@@ -39,7 +38,7 @@ function applyKeywords(game, data) {
 }
 
 function applySystem(game, data, keyword) {
-    print("applyEntity " + data);
+    print("applySystem " + data);
 
     for (var property in data) {
         if (data.hasOwnProperty(property)) {

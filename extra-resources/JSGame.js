@@ -66,9 +66,6 @@ function declareConfiguration(game) {
  * @module CardData
  */
 function addCards(game, zone) {
-    print("addCards called");
-
-
     applyCardKeywords(game, zone, {
         cards: [
             /** MECH CREATURES */
@@ -130,8 +127,6 @@ function playerSetup(game) {
         function isPhase(phase) {
             return function (act) {
                 var check = phaseController.getCurrentPhase() == phase;
-                print("action allowance check: " + act + " phase " + phaseController + " compare " + phase +
-                 " current " + phaseController.getCurrentPhase() + " equals " + check);
                 return phaseController.getCurrentPhase() == phase;
             }
         }
@@ -140,7 +135,6 @@ function playerSetup(game) {
             isPhase(playerPhase), function (act) {
             phaseController.nextPhase();
         });
-        print("action: " + endTurnAction);
         actions.addAction(endTurnAction);
 
         com.cardshifter.modapi.resources.ECSResourceMap.createFor(player)
