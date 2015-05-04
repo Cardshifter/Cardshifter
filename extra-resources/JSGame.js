@@ -84,87 +84,42 @@ function setupGame(game) {
     var pg = Java.type("net.zomis.cardshifter.ecs.usage.PhrancisGame");
     new pg().playerSetup(game);
 
+    var LastPlayersStandingEndsGame = Java.type("net.zomis.cardshifter.ecs.usage.LastPlayersStandingEndsGame");
     applySystems(game, [
         { gainResource: { res: pgres.MANA_MAX, value: 1, untilMax: 10 } },
         { restoreResources: { res: pgres.MANA, value: { res: pgres.MANA_MAX } } },
+
+        // Play
         { playFromHand: pg.PLAY_ACTION },
-        { playFromHand: pg.SCRAP_ACTION }, // temporary until a real ScrapSystem is added (crashes otherwise)
-        { playFromHand: pg.ENCHANT_ACTION }, // temporary until a real system is added (crashes otherwise)
-        new com.cardshifter.modapi.actions.attack.AttackOnBattlefield(),
-        new com.cardshifter.modapi.actions.attack.AttackSickness(pgres.SICKNESS),
         { playEntersBattlefield: pg.PLAY_ACTION },
         { useCost: { action: pg.PLAY_ACTION, res: pgres.MANA, value: { res: pgres.MANA_COST }, whoPays: "player" } },
+
+        // Scrap
+        { playFromHand: pg.SCRAP_ACTION }, // temporary until a real ScrapSystem is added (crashes otherwise)
+
+        // Enchant
+        { playFromHand: pg.ENCHANT_ACTION }, // temporary until a real system is added (crashes otherwise)
+
+        // Attack
+        new com.cardshifter.modapi.actions.attack.AttackOnBattlefield(),
+        new com.cardshifter.modapi.actions.attack.AttackSickness(pgres.SICKNESS),
         { useCost: { action: pg.ATTACK_ACTION, res: pgres.ATTACK_AVAILABLE, value: 1, whoPays: "self" } },
 
+        // Draw cards
         { startCards: 5 },
+        new com.cardshifter.modapi.cards.DrawCardAtBeginningOfTurnSystem(),
+        new com.cardshifter.modapi.cards.DamageConstantWhenOutOfCardsSystem(pgres.HEALTH, 1),
+        new com.cardshifter.modapi.cards.LimitedHandSizeSystem(10, function (card) { card.getCardToDraw().destroy() }),
 
+        // General setup
         new com.cardshifter.modapi.cards.MulliganSingleCards(game),
         new com.cardshifter.modapi.resources.GameOverIfNoHealth(pgres.HEALTH),
+        new LastPlayersStandingEndsGame(),
         new com.cardshifter.modapi.cards.RemoveDeadEntityFromZoneSystem(),
         new com.cardshifter.modapi.phase.PerformerMustBeCurrentPlayer(),
     ]);
-
-    var LastPlayersStandingEndsGame = Java.type("net.zomis.cardshifter.ecs.usage.LastPlayersStandingEndsGame");
-    game.addSystem(new LastPlayersStandingEndsGame());
-
 }
 /*
-function setupGame2(game) {
-
-    var phaseController = new com.cardshifter.modapi.phase.PhaseController();
-    game.newEntity().addComponent(phaseController);
-
-    var players = com.cardshifter.modapi.players.Players.getPlayersInGame(game);
-    for (var i = 0; i < 2; i++) {
-        var playerIndex = i;
-        Entity player = players.get(i);
-        Phase playerPhase = new Phase(player, "Main");
-        phaseController.addPhase(playerPhase);
-
-        var actions = new com.cardshifter.modapi.actions.ActionComponent();
-        player.addComponent(actions);
-
-        ECSAction endTurnAction = new ECSAction(player, END_TURN_ACTION, function (act) {
-            return phaseController.getCurrentPhase() == playerPhase;
-        }, function (act) {
-            phaseController.nextPhase();
-        });
-        actions.addAction(endTurnAction);
-
-
-        com.cardshifter.modapi.resources.ECSResourceMap.createFor(player)
-            .set(pgres.HEALTH, 30)
-            .set(pgres.MAX_HEALTH, 30)
-            .set(pgres.MANA, 0)
-            .set(pgres.SCRAP, 0);
-
-        var deck = new com.cardshifter.modapi.cards.DeckComponent(player);
-        var hand = new com.cardshifter.modapi.cards.HandComponent(player);
-        var battlefield = new com.cardshifter.modapi.cards.BattlefieldComponent(player);
-        player.addComponents(hand, deck, battlefield);
-
-        var config = player.getComponent(net.zomis.cardshifter.ecs.config.ConfigComponent.class);
-        var deckConf = config.getConfig(com.cardshifter.api.config.DeckConfig.class);
-        if (deckConf.total() < deckConf.getMinSize()) {
-            deckConf.generateRandom();
-        }
-
-        setupDeck(deck, deckConf);
-
-        deck.shuffle();
-    }
-
-    var manaMaxResource = ResourceRetriever.forResource(PhrancisResources.MANA_MAX);
-    var manaCostResource = ResourceRetriever.forResource(PhrancisResources.MANA_COST);
-    UnaryOperator<Entity> owningPlayerPays = entity -> entity.getComponent(CardComponent.class).getOwner();
-    game.addSystem(new GainResourceSystem(PhrancisResources.MANA_MAX, entity -> Math.min(1, Math.abs(manaMaxResource.getFor(entity) - 10))));
-    game.addSystem(new RestoreResourcesSystem(PhrancisResources.MANA, entity -> manaMaxResource.getFor(entity)));
-
-    // Actions - Play
-    game.addSystem(new com.cardshifter.modapi.cards.PlayFromHandSystem(PLAY_ACTION));
-    game.addSystem(new com.cardshifter.modapi.cards.PlayEntersBattlefieldSystem(PLAY_ACTION));
-    game.addSystem(new UseCostSystem(PLAY_ACTION, PhrancisResources.MANA, manaCostResource::getFor, owningPlayerPays));
-
     // Actions - Scrap
     ResourceRetriever scrapCostResource = ResourceRetriever.forResource(PhrancisResources.SCRAP_COST);
     ResourceRetriever attackAvailable = ResourceRetriever.forResource(PhrancisResources.ATTACK_AVAILABLE);
@@ -208,21 +163,4 @@ function setupGame2(game) {
     game.addSystem(new com.cardshifter.modapi.actions.UseCostSystem(ENCHANT_ACTION, pgres.SCRAP, scrapCostResource::getFor, owningPlayerPays));
     game.addSystem(new com.cardshifter.modapi.actions.enchant.EnchantTargetCreatureTypes(new String[]{ "Bio" }));
     game.addSystem(new com.cardshifter.modapi.actions.enchant.EnchantPerform(pgres.ATTACK, pgres.HEALTH, pgres.MAX_HEALTH));
-
-    // Draw cards
-    game.addSystem(new com.cardshifter.modapi.cards.DrawStartCards(5));
-    game.addSystem(new com.cardshifter.modapi.cards.MulliganSingleCards(game));
-    game.addSystem(new com.cardshifter.modapi.cards.DrawCardAtBeginningOfTurnSystem());
-    game.addSystem(new com.cardshifter.modapi.cards.DamageConstantWhenOutOfCardsSystem(PhrancisResources.HEALTH, 1));
-    game.addSystem(new com.cardshifter.modapi.cards.LimitedHandSizeSystem(10, card -> card.getCardToDraw().destroy()));
-
-    // General setup
-    game.addSystem(new com.cardshifter.modapi.resources.GameOverIfNoHealth(PhrancisResources.HEALTH));
-    game.addSystem(new net.zomis.cardshifter.ecs.usage.LastPlayersStandingEndsGame());
-    game.addSystem(new com.cardshifter.modapi.cards.RemoveDeadEntityFromZoneSystem());
-    game.addSystem(new com.cardshifter.modapi.phase.PerformerMustBeCurrentPlayer());
-
-
-
-}
 */
