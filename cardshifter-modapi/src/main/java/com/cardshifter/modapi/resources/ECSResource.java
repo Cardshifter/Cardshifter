@@ -24,4 +24,12 @@ public interface ECSResource {
     default ResourceRetriever retriever() {
         return ResourceRetriever.forResource(this);
     }
+
+    /**
+     * alias for {@link #retriever()}
+     * @return see {@link #retriever()}
+     */
+    default ResourceRetriever getRetriever() {
+        return retriever();
+    }
 }
