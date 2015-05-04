@@ -102,7 +102,11 @@ function applySystem(game, data, keyword) {
 
 function applySystems(game, data) {
     for (var i = 0; i < data.length; i++) {
-        var card = data[i];
-        applySystem(game, card, keywords.systems);
+        var system = data[i];
+        if (system instanceof com.cardshifter.modapi.base.ECSSystem) {
+            game.addSystem(system);
+        } else {
+            applySystem(game, system, keywords.systems);
+        }
     }
 }
