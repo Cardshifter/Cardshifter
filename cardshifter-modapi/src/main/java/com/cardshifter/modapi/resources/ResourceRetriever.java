@@ -1,6 +1,7 @@
 package com.cardshifter.modapi.resources;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import com.cardshifter.modapi.base.Component;
 import com.cardshifter.modapi.base.Entity;
@@ -18,7 +19,7 @@ public class ResourceRetriever {
 	}
 
 	public int getFor(Entity entity) {
-		return resMap(entity).getResource(resource).get();
+        return getOrDefault(entity, 0);
 	}
 
 	private ECSResourceMap resMap(Entity entity) {
@@ -54,8 +55,8 @@ public class ResourceRetriever {
 		if (map == null) {
 			return defaultValue;
 		}
-		ECSResourceData resData = map.getResource(resource);
-		return resData == null ? defaultValue : resData.get();
+		Optional<ECSResourceData> resData = map.get(resource);
+		return !resData.isPresent() ? defaultValue : resData.get().get();
 	}
 	
 }

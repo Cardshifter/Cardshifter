@@ -2,6 +2,7 @@ package com.cardshifter.modapi.resources;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.cardshifter.modapi.base.Component;
@@ -21,7 +22,11 @@ public class ECSResourceMap extends Component implements CopyableComponent {
 		return this;
 	}
 
-	public ECSResourceData getResource(ECSResource res) {
+    public Optional<ECSResourceData> get(ECSResource res) {
+        return Optional.ofNullable(map.get(res));
+    }
+
+    public ECSResourceData getResource(ECSResource res) {
 		map.computeIfAbsent(res, r -> new ECSResourceData(getEntity(), r));
 		return map.get(res);
 	}

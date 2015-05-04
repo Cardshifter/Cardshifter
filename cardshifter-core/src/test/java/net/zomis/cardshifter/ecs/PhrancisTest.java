@@ -81,6 +81,17 @@ public class PhrancisTest extends GameTest {
 		mod.setupGame(game);
 	}
 	
+    @Test
+    public void getOrDefaultNoChange() {
+        Entity creature = mod.createCreature(0, field.get(currentPlayer()), 2, 3, "B0T", 4);
+        ResourceRetriever retriever = ResourceRetriever.forResource(PhrancisResources.DENY_COUNTERATTACK);
+        assertEquals(42, retriever.getOrDefault(creature, 42));
+        assertEquals(0, retriever.getFor(creature));
+        assertEquals(42, retriever.getOrDefault(creature, 42));
+        retriever.set(creature, 21);
+        assertEquals(21, retriever.getOrDefault(creature, 42));
+    }
+
 	@Test
 	public void noAttackCard() {
 		while (mana.getFor(currentPlayer()) < 5) {
