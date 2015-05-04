@@ -193,8 +193,8 @@ function setupGame(game) {
 
         // Scrap
         new ScrapSystem(SCRAP, function (entity) {
-            return com.cardshifter.modapi.resources.Resources.getOrDefault(entity, ATTACK_AVAILABLE, 0) > 0
-             && com.cardshifter.modapi.resources.Resources.getOrDefault(entity, SICKNESS, 1) == 0;
+            return ATTACK_AVAILABLE.retriever.getOrDefault(entity, 0) > 0
+             && SICKNESS.retriever.getOrDefault(entity, 1) == 0;
         }),
 
         // Enchant
@@ -240,7 +240,7 @@ function setupGame(game) {
         new com.cardshifter.modapi.phase.PerformerMustBeCurrentPlayer(),
     ]);
 
-	var allowCounterAttackRes = com.cardshifter.modapi.resources.ResourceRetriever.forResource(DENY_COUNTERATTACK);
+	var allowCounterAttackRes = DENY_COUNTERATTACK.retriever;
     var allowCounterAttack = function (attacker, defender) {
         return allowCounterAttackRes.getOrDefault(attacker, 0) == 0;
     }
@@ -252,7 +252,6 @@ function setupGame(game) {
     game.addSystem(new ApplyAfterAttack(function (entity) {
         return allowCounterAttackRes.getFor(entity) > 0;
     }, function (entity) {
-        var sickness = com.cardshifter.modapi.resources.ResourceRetriever.forResource(SICKNESS);
-        sickness.resFor(entity).set(2)
+        SICKNESS.retriever.set(entity, 2);
     }));
 }
