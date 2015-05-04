@@ -1,4 +1,6 @@
 load('keywords.js');
+load('keywords-creatures.js');
+load('keywords-enchantments.js');
 
 /**
  * Declare game configuration
