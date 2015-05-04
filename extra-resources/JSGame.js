@@ -2,7 +2,12 @@ load('keywords.js');
 load('keywords-creatures.js');
 load('keywords-enchantments.js');
 
-var pg = Java.type("net.zomis.cardshifter.ecs.usage.PhrancisGame");
+var PLAY_ACTION = "Play";
+var ENCHANT_ACTION = "Enchant";
+var ATTACK_ACTION = "Attack";
+var SCRAP_ACTION = "Scrap";
+var END_TURN_ACTION = "End Turn";
+var USE_ACTION = "Use";
 
 /**
  * Declare game configuration
@@ -112,7 +117,7 @@ function playerSetup(game) {
             }
         }
 
-        var endTurnAction = new com.cardshifter.modapi.actions.ECSAction(player, pg.END_TURN_ACTION,
+        var endTurnAction = new com.cardshifter.modapi.actions.ECSAction(player, END_TURN_ACTION,
             isPhase(playerPhase), function (act) {
             phaseController.nextPhase();
         });
@@ -167,9 +172,9 @@ function setupGame(game) {
         { restoreResources: { res: pgres.MANA, value: { res: pgres.MANA_MAX } } },
 
         // Play
-        { playFromHand: pg.PLAY_ACTION },
-        { playEntersBattlefield: pg.PLAY_ACTION },
-        { useCost: { action: pg.PLAY_ACTION, res: pgres.MANA, value: { res: pgres.MANA_COST }, whoPays: "player" } },
+        { playFromHand: PLAY_ACTION },
+        { playEntersBattlefield: PLAY_ACTION },
+        { useCost: { action: PLAY_ACTION, res: pgres.MANA, value: { res: pgres.MANA_COST }, whoPays: "player" } },
 
         // Scrap
         new ScrapSystem(pgres.SCRAP, function (entity) {
@@ -178,26 +183,26 @@ function setupGame(game) {
         }),
 
         // Enchant
-        { playFromHand: pg.ENCHANT_ACTION },
-        { useCost: { action: pg.ENCHANT_ACTION, res: pgres.SCRAP, value: { res: pgres.SCRAP_COST }, whoPays: "player" } },
+        { playFromHand: ENCHANT_ACTION },
+        { useCost: { action: ENCHANT_ACTION, res: pgres.SCRAP, value: { res: pgres.SCRAP_COST }, whoPays: "player" } },
         new com.cardshifter.modapi.actions.enchant.EnchantTargetCreatureTypes("Bio"),
         new com.cardshifter.modapi.actions.enchant.EnchantPerform(pgres.ATTACK, pgres.HEALTH, pgres.MAX_HEALTH),
 
         // Spell
-        { useCost: { action: pg.USE_ACTION, res: pgres.MANA, value: { res: pgres.MANA_COST }, whoPays: "player" } },
-        { useCost: { action: pg.USE_ACTION, res: pgres.SCRAP, value: { res: pgres.SCRAP_COST }, whoPays: "player" } },
-        { playFromHand: pg.USE_ACTION },
-        new EffectActionSystem(pg.USE_ACTION),
-        new EffectActionSystem(pg.ENCHANT_ACTION),
-        new EffectActionSystem(pg.PLAY_ACTION),
-        { targetFilterSystem: pg.USE_ACTION },
-        { destroyAfterUse: pg.USE_ACTION },
+        { useCost: { action: USE_ACTION, res: pgres.MANA, value: { res: pgres.MANA_COST }, whoPays: "player" } },
+        { useCost: { action: USE_ACTION, res: pgres.SCRAP, value: { res: pgres.SCRAP_COST }, whoPays: "player" } },
+        { playFromHand: USE_ACTION },
+        new EffectActionSystem(USE_ACTION),
+        new EffectActionSystem(ENCHANT_ACTION),
+        new EffectActionSystem(PLAY_ACTION),
+        { targetFilterSystem: USE_ACTION },
+        { destroyAfterUse: USE_ACTION },
 
         // Attack
         new com.cardshifter.modapi.actions.attack.AttackOnBattlefield(),
         new com.cardshifter.modapi.actions.attack.AttackTargetMinionsFirstThenPlayer(pgres.TAUNT),
         new com.cardshifter.modapi.actions.attack.AttackSickness(pgres.SICKNESS),
-        { useCost: { action: pg.ATTACK_ACTION, res: pgres.ATTACK_AVAILABLE, value: 1, whoPays: "self" } },
+        { useCost: { action: ATTACK_ACTION, res: pgres.ATTACK_AVAILABLE, value: 1, whoPays: "self" } },
 
 
         new com.cardshifter.modapi.resources.RestoreResourcesToSystem(ownedBattlefieldCreatures, pgres.ATTACK_AVAILABLE,
