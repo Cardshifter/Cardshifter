@@ -15,7 +15,7 @@ public class EnchantTargetCreatureTypes extends SpecificActionTargetSystem {
 	private final String[] allowedCreatureTypes;
 	private final ComponentRetriever<CreatureTypeComponent> type = ComponentRetriever.retreiverFor(CreatureTypeComponent.class);
 
-	public EnchantTargetCreatureTypes(String[] allowedCreatureTypes) {
+	public EnchantTargetCreatureTypes(String... allowedCreatureTypes) {
 		super("Enchant");
 		this.allowedCreatureTypes = Arrays.copyOf(allowedCreatureTypes, allowedCreatureTypes.length);
 	}

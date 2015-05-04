@@ -45,6 +45,14 @@ keywords.systems.useCost = function (game, data, value) {
 keywords.systems.startCards = function (game, data, value) {
     return new com.cardshifter.modapi.cards.DrawStartCards(value);
 }
+keywords.systems.targetFilterSystem = function (game, data, value) {
+    var type = Java.type("net.zomis.cardshifter.ecs.effects.EffectTargetFilterSystem");
+    return new type(value);
+}
+keywords.systems.destroyAfterUse = function (game, data, value) {
+    var type = Java.type("net.zomis.cardshifter.ecs.usage.DestroyAfterUseSystem");
+    return new type(value);
+}
 
 function applyEntity(game, card, entity, keyword) {
     print("applyEntity " + card + ": " + entity);

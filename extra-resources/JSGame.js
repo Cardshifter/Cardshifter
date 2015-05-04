@@ -80,11 +80,20 @@ function addCards(game, zone) {
     });
 }
 
+function ownedBattlefieldCreatures(entity) {
+    var Cards = Java.type("com.cardshifter.modapi.cards.Cards");
+    return entity.hasComponent(com.cardshifter.modapi.base.CreatureTypeComponent.class)
+            && Cards.isOnZone(entity, com.cardshifter.modapi.cards.BattlefieldComponent.class)
+            && Cards.isOwnedByCurrentPlayer(entity)
+}
+
 function setupGame(game) {
     var pg = Java.type("net.zomis.cardshifter.ecs.usage.PhrancisGame");
     new pg().playerSetup(game);
 
     var LastPlayersStandingEndsGame = Java.type("net.zomis.cardshifter.ecs.usage.LastPlayersStandingEndsGame");
+    var EffectActionSystem = Java.type("net.zomis.cardshifter.ecs.effects.EffectActionSystem");
+    var ScrapSystem = Java.type("net.zomis.cardshifter.ecs.usage.ScrapSystem");
     applySystems(game, [
         { gainResource: { res: pgres.MANA_MAX, value: 1, untilMax: 10 } },
         { restoreResources: { res: pgres.MANA, value: { res: pgres.MANA_MAX } } },
@@ -95,15 +104,39 @@ function setupGame(game) {
         { useCost: { action: pg.PLAY_ACTION, res: pgres.MANA, value: { res: pgres.MANA_COST }, whoPays: "player" } },
 
         // Scrap
-        { playFromHand: pg.SCRAP_ACTION }, // temporary until a real ScrapSystem is added (crashes otherwise)
+        new ScrapSystem(pgres.SCRAP, function (entity) {
+            return com.cardshifter.modapi.resources.Resources.getOrDefault(entity, pgres.ATTACK_AVAILABLE, 0) > 0
+             && com.cardshifter.modapi.resources.Resources.getOrDefault(entity, pgres.SICKNESS, 1) == 0;
+        }),
 
         // Enchant
-        { playFromHand: pg.ENCHANT_ACTION }, // temporary until a real system is added (crashes otherwise)
+        { playFromHand: pg.ENCHANT_ACTION },
+        { useCost: { action: pg.ENCHANT_ACTION, res: pgres.SCRAP, value: { res: pgres.SCRAP_COST }, whoPays: "player" } },
+        new com.cardshifter.modapi.actions.enchant.EnchantTargetCreatureTypes("Bio"),
+        new com.cardshifter.modapi.actions.enchant.EnchantPerform(pgres.ATTACK, pgres.HEALTH, pgres.MAX_HEALTH),
+
+        // Spell
+        { useCost: { action: pg.USE_ACTION, res: pgres.MANA, value: { res: pgres.MANA_COST }, whoPays: "player" } },
+        { useCost: { action: pg.USE_ACTION, res: pgres.SCRAP, value: { res: pgres.SCRAP_COST }, whoPays: "player" } },
+        { playFromHand: pg.USE_ACTION },
+        new EffectActionSystem(pg.USE_ACTION),
+        new EffectActionSystem(pg.ENCHANT_ACTION),
+        new EffectActionSystem(pg.PLAY_ACTION),
+        { targetFilterSystem: pg.USE_ACTION },
+        { destroyAfterUse: pg.USE_ACTION },
 
         // Attack
         new com.cardshifter.modapi.actions.attack.AttackOnBattlefield(),
+        new com.cardshifter.modapi.actions.attack.AttackTargetMinionsFirstThenPlayer(pgres.TAUNT),
         new com.cardshifter.modapi.actions.attack.AttackSickness(pgres.SICKNESS),
         { useCost: { action: pg.ATTACK_ACTION, res: pgres.ATTACK_AVAILABLE, value: 1, whoPays: "self" } },
+
+
+        new com.cardshifter.modapi.resources.RestoreResourcesToSystem(ownedBattlefieldCreatures, pgres.ATTACK_AVAILABLE,
+          function (entity) { return 1; }),
+        new com.cardshifter.modapi.resources.RestoreResourcesToSystem(ownedBattlefieldCreatures, pgres.SICKNESS,
+          function (entity) { return Math.max(0, pgres.SICKNESS.getFor(entity) - 1); }),
+        new com.cardshifter.modapi.actions.attack.TrampleSystem(pgres.HEALTH),
 
         // Draw cards
         { startCards: 5 },
@@ -118,49 +151,20 @@ function setupGame(game) {
         new com.cardshifter.modapi.cards.RemoveDeadEntityFromZoneSystem(),
         new com.cardshifter.modapi.phase.PerformerMustBeCurrentPlayer(),
     ]);
+
+	var allowCounterAttackRes = com.cardshifter.modapi.resources.ResourceRetriever.forResource(pgres.DENY_COUNTERATTACK);
+    var allowCounterAttack = function (attacker, defender) {
+        return allowCounterAttackRes.getOrDefault(attacker, 0) == 0;
+    }
+
+    game.addSystem(new com.cardshifter.modapi.actions.attack.AttackDamageAccumulating(pgres.ATTACK, pgres.HEALTH, allowCounterAttack));
+    game.addSystem(new com.cardshifter.modapi.actions.attack.AttackDamageHealAtEndOfTurn(pgres.HEALTH, pgres.MAX_HEALTH));
+
+    var ApplyAfterAttack = Java.type("net.zomis.cardshifter.ecs.usage.ApplyAfterAttack");
+    game.addSystem(new ApplyAfterAttack(function (entity) {
+        return allowCounterAttackRes.getFor(entity) > 0;
+    }, function (entity) {
+        var sickness = com.cardshifter.modapi.resources.ResourceRetriever.forResource(pgres.SICKNESS);
+        sickness.resFor(entity).set(2)
+    }));
 }
-/*
-    // Actions - Scrap
-    ResourceRetriever scrapCostResource = ResourceRetriever.forResource(PhrancisResources.SCRAP_COST);
-    ResourceRetriever attackAvailable = ResourceRetriever.forResource(PhrancisResources.ATTACK_AVAILABLE);
-    ResourceRetriever sickness = ResourceRetriever.forResource(PhrancisResources.SICKNESS);
-    game.addSystem(new ScrapSystem(PhrancisResources.SCRAP,	e ->
-            attackAvailable.getOrDefault(e, 0) > 0 &&
-            sickness.getOrDefault(e, 1) == 0
-    ));
-
-    // Actions - Spell
-    game.addSystem(new com.cardshifter.modapi.actions.UseCostSystem(USE_ACTION, PhrancisResources.MANA, manaCostResource::getFor, owningPlayerPays));
-    game.addSystem(new com.cardshifter.modapi.actions.UseCostSystem(USE_ACTION, PhrancisResources.SCRAP, scrapCostResource::getFor, owningPlayerPays));
-    game.addSystem(new com.cardshifter.modapi.cards.PlayFromHandSystem(USE_ACTION));
-    game.addSystem(new EffectActionSystem(USE_ACTION));
-    game.addSystem(new EffectActionSystem(ENCHANT_ACTION));
-    game.addSystem(new EffectActionSystem(PLAY_ACTION));
-    game.addSystem(new EffectTargetFilterSystem(USE_ACTION));
-    game.addSystem(new DestroyAfterUseSystem(USE_ACTION));
-
-    // Actions - Attack
-    ResourceRetriever allowCounterAttackRes = ResourceRetriever.forResource(PhrancisResources.DENY_COUNTERATTACK);
-    BiPredicate<Entity, Entity> allowCounterAttack =
-            (attacker, defender) -> allowCounterAttackRes.getOrDefault(attacker, 0) == 0;
-    game.addSystem(new com.cardshifter.modapi.actions.attack.AttackOnBattlefield());
-    game.addSystem(new com.cardshifter.modapi.actions.attack.AttackSickness(PhrancisResources.SICKNESS));
-    game.addSystem(new com.cardshifter.modapi.actions.attack.AttackTargetMinionsFirstThenPlayer(PhrancisResources.TAUNT));
-    game.addSystem(new com.cardshifter.modapi.actions.attack.AttackDamageYGO(PhrancisResources.ATTACK, PhrancisResources.HEALTH, allowCounterAttack));
-    game.addSystem(new com.cardshifter.modapi.actions.UseCostSystem(ATTACK_ACTION, PhrancisResources.ATTACK_AVAILABLE, entity -> 1, entity -> entity));
-    game.addSystem(new RestoreResourcesToSystem(entity -> entity.hasComponent(CreatureTypeComponent.class)
-            && Cards.isOnZone(entity, BattlefieldComponent.class)
-            && Cards.isOwnedByCurrentPlayer(entity), PhrancisResources.ATTACK_AVAILABLE, entity -> 1));
-    game.addSystem(new RestoreResourcesToSystem(entity -> entity.hasComponent(CreatureTypeComponent.class)
-            && Cards.isOnZone(entity, BattlefieldComponent.class)
-            && Cards.isOwnedByCurrentPlayer(entity), PhrancisResources.SICKNESS,
-            entity -> Math.max(0, sickness.getFor(entity) - 1)));
-    game.addSystem(new TrampleSystem(pgres.HEALTH));
-    game.addSystem(new ApplyAfterAttack(e -> allowCounterAttackRes.getFor(e) > 0, e -> sickness.resFor(e).set(2)));
-
-    // Actions - Enchant
-    game.addSystem(new com.cardshifter.modapi.cards.PlayFromHandSystem(ENCHANT_ACTION));
-    game.addSystem(new com.cardshifter.modapi.actions.UseCostSystem(ENCHANT_ACTION, pgres.SCRAP, scrapCostResource::getFor, owningPlayerPays));
-    game.addSystem(new com.cardshifter.modapi.actions.enchant.EnchantTargetCreatureTypes(new String[]{ "Bio" }));
-    game.addSystem(new com.cardshifter.modapi.actions.enchant.EnchantPerform(pgres.ATTACK, pgres.HEALTH, pgres.MAX_HEALTH));
-*/
