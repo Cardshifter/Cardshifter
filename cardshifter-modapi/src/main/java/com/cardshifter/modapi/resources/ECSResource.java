@@ -15,4 +15,13 @@ public interface ECSResource {
 	default int getFor(final Entity entity) {
 		return ResourceRetriever.forResource(this).getFor(entity);
 	}
+
+    /**
+     * Create a resource retriever for this resource
+     *
+     * @return a resource retriever for this resource
+     */
+    default ResourceRetriever retriever() {
+        return ResourceRetriever.forResource(this);
+    }
 }
