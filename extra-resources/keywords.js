@@ -33,6 +33,20 @@ keywords.effects.damage = {
         }
     }
 }
+keywords.effects.heal = {
+    description: function(obj) {
+        return "Heal " + obj.value + " damage to " + obj.target;
+    },
+    action: function (obj) {
+        if (obj.value <= 0) {
+            throw new Error("Heal value must be 1 or greater");
+        }
+        return function (me, event) {
+            var target = entityLookup(me, obj.target);
+            HEALTH.retriever.resFor(target).change(obj.value);
+        }
+    }
+}
 
 function entityLookup(origin, who) {
     if (who === 'owner') {
