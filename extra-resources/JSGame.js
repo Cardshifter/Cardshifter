@@ -82,11 +82,31 @@ function addCards(game, zone) {
 
 function setupGame(game) {
     var pg = Java.type("net.zomis.cardshifter.ecs.usage.PhrancisGame");
-    new pg().setupGame(game);
+    new pg().playerSetup(game);
 
     applySystems(game, [
-        { gainResource: { res: pgres.SCRAP, value: 1, untilMax: 10 } },
+        { gainResource: { res: pgres.MANA_MAX, value: 1, untilMax: 10 } },
+        { restoreResources: { res: pgres.MANA, value: { res: pgres.MANA_MAX } } },
+        { playFromHand: pg.PLAY_ACTION },
+        { playFromHand: pg.SCRAP_ACTION }, // temporary until a real ScrapSystem is added (crashes otherwise)
+        { playFromHand: pg.ENCHANT_ACTION }, // temporary until a real system is added (crashes otherwise)
+        { playEntersBattlefield: pg.PLAY_ACTION },
+        { useCost: { action: pg.PLAY_ACTION, res: pgres.MANA, value: { res: pgres.MANA_COST }, whoPays: "player" } },
+        { useCost: { action: pg.ATTACK_ACTION, res: pgres.ATTACK_AVAILABLE, value: 1, whoPays: "self" } },
+
+        { startCards: 5 },
     ]);
+    game.addSystem(new com.cardshifter.modapi.actions.attack.AttackOnBattlefield());
+    game.addSystem(new com.cardshifter.modapi.actions.attack.AttackSickness(pgres.SICKNESS));
+
+    game.addSystem(new com.cardshifter.modapi.cards.MulliganSingleCards(game));
+
+    game.addSystem(new com.cardshifter.modapi.resources.GameOverIfNoHealth(pgres.HEALTH));
+    var LastPlayersStandingEndsGame = Java.type("net.zomis.cardshifter.ecs.usage.LastPlayersStandingEndsGame");
+    game.addSystem(new LastPlayersStandingEndsGame());
+    game.addSystem(new com.cardshifter.modapi.cards.RemoveDeadEntityFromZoneSystem());
+    game.addSystem(new com.cardshifter.modapi.phase.PerformerMustBeCurrentPlayer());
+
 }
 /*
 function setupGame2(game) {

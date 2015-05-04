@@ -1,7 +1,5 @@
 package com.cardshifter.modapi.phase;
 
-import java.util.function.ToIntFunction;
-
 import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.ECSSystem;
 import com.cardshifter.modapi.base.Entity;
