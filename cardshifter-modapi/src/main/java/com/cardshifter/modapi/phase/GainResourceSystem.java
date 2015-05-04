@@ -1,7 +1,5 @@
 package com.cardshifter.modapi.phase;
 
-import java.util.function.ToIntFunction;
-
 import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.ECSSystem;
 import com.cardshifter.modapi.base.Entity;
@@ -11,8 +9,8 @@ import net.zomis.cardshifter.ecs.effects.EntityInt;
 
 public class GainResourceSystem implements ECSSystem {
 
-	private ECSResource resource;
-	private EntityInt valueGet;
+	private final ECSResource resource;
+	private final EntityInt valueGet;
 
 	public GainResourceSystem(ECSResource resource, EntityInt object) {
 		this.resource = resource;

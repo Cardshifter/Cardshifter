@@ -83,6 +83,10 @@ function addCards(game, zone) {
 function setupGame(game) {
     var pg = Java.type("net.zomis.cardshifter.ecs.usage.PhrancisGame");
     new pg().setupGame(game);
+
+    applySystems(game, [
+        { gainResource: { res: pgres.SCRAP, value: 1, untilMax: 10 } },
+    ]);
 }
 /*
 function setupGame2(game) {
