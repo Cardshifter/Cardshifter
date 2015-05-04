@@ -2,6 +2,8 @@ load('keywords.js');
 load('keywords-creatures.js');
 load('keywords-enchantments.js');
 
+var pg = Java.type("net.zomis.cardshifter.ecs.usage.PhrancisGame");
+
 /**
  * Declare game configuration
  * @param {Object} game - Game configuration data
@@ -87,9 +89,75 @@ function ownedBattlefieldCreatures(entity) {
             && Cards.isOwnedByCurrentPlayer(entity)
 }
 
+function playerSetup(game) {
+    var phaseController = new com.cardshifter.modapi.phase.PhaseController();
+    game.newEntity().addComponent(phaseController);
+
+    var players = com.cardshifter.modapi.players.Players.getPlayersInGame(game);
+    for (var i = 0; i < 2; i++) {
+        var playerIndex = i;
+        var player = players.get(i);
+        var playerPhase = new com.cardshifter.modapi.phase.Phase(player, "Main");
+        phaseController.addPhase(playerPhase);
+
+        var actions = new com.cardshifter.modapi.actions.ActionComponent();
+        player.addComponent(actions);
+
+        function isPhase(phase) {
+            return function (act) {
+                var check = phaseController.getCurrentPhase() == phase;
+                print("action allowance check: " + act + " phase " + phaseController + " compare " + phase +
+                 " current " + phaseController.getCurrentPhase() + " equals " + check);
+                return phaseController.getCurrentPhase() == phase;
+            }
+        }
+
+        var endTurnAction = new com.cardshifter.modapi.actions.ECSAction(player, pg.END_TURN_ACTION,
+            isPhase(playerPhase), function (act) {
+            phaseController.nextPhase();
+        });
+        print("action: " + endTurnAction);
+        actions.addAction(endTurnAction);
+
+        com.cardshifter.modapi.resources.ECSResourceMap.createFor(player)
+            .set(pgres.HEALTH, 30)
+            .set(pgres.MAX_HEALTH, 30)
+            .set(pgres.MANA, 0)
+            .set(pgres.SCRAP, 0);
+
+        var deck = new com.cardshifter.modapi.cards.DeckComponent(player);
+        var hand = new com.cardshifter.modapi.cards.HandComponent(player);
+        var battlefield = new com.cardshifter.modapi.cards.BattlefieldComponent(player);
+        player.addComponents(hand, deck, battlefield);
+
+        var ConfigComponent = Java.type("net.zomis.cardshifter.ecs.config.ConfigComponent");
+        var config = player.getComponent(ConfigComponent.class);
+        var deckConf = config.getConfig(com.cardshifter.api.config.DeckConfig.class);
+        if (deckConf.total() < deckConf.getMinSize()) {
+            deckConf.generateRandom();
+        }
+        setupDeck(deck, deckConf);
+        deck.shuffle();
+    }
+}
+
+function setupDeck(deck, deckConf) {
+    var game = deck.owner.game;
+    for each (var chosen in deckConf.chosen.entrySet()) {
+        var entityId = chosen.key;
+        var count = chosen.value;
+
+        for (var i = 0; i < count; i++) {
+            var existing = game.getEntity(entityId);
+            var copy = existing.copy();
+            deck.addOnBottom(copy);
+        }
+    }
+}
+
+
 function setupGame(game) {
-    var pg = Java.type("net.zomis.cardshifter.ecs.usage.PhrancisGame");
-    new pg().playerSetup(game);
+    playerSetup(game);
 
     var LastPlayersStandingEndsGame = Java.type("net.zomis.cardshifter.ecs.usage.LastPlayersStandingEndsGame");
     var EffectActionSystem = Java.type("net.zomis.cardshifter.ecs.effects.EffectActionSystem");
