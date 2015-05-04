@@ -1,3 +1,4 @@
+"use strict";
 var noAttackCreatures = new java.util.HashSet();
 
 keywords.cards.noAttack = function (entity, obj, value) {

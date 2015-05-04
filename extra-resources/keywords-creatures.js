@@ -1,3 +1,4 @@
+"use strict";
 keywords.cards.name = function (entity, obj, value) {
     com.cardshifter.modapi.attributes.ECSAttributeMap.createOrGetFor(entity).set(com.cardshifter.modapi.attributes.Attributes.NAME, value);
 }

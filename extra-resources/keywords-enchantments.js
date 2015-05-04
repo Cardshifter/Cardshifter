@@ -1,3 +1,4 @@
+"use strict";
 keywords.cards.enchantment = function (entity, obj, value) {
     if (obj.creature) {
         throw new Error("cannot be both enchantment and creature at once");

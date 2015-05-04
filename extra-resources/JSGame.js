@@ -1,3 +1,4 @@
+"use strict";
 load('keywords.js');
 load('keywords-creatures.js');
 load('keywords-enchantments.js');
@@ -125,7 +126,7 @@ function playerSetup(game) {
         var actions = new com.cardshifter.modapi.actions.ActionComponent();
         player.addComponent(actions);
 
-        function isPhase(phase) {
+        var isPhase = function (phase) {
             return function (act) {
                 var check = phaseController.getCurrentPhase() == phase;
                 return phaseController.getCurrentPhase() == phase;

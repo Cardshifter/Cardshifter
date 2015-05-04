@@ -1,3 +1,4 @@
+"use strict";
 keywords.systems = {};
 keywords.systems.gainResource = function (game, data, value) {
     var retriever = com.cardshifter.modapi.resources.ResourceRetriever.forResource(value.res);

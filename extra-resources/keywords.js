@@ -1,3 +1,4 @@
+"use strict";
 var ECSAction = Java.type("com.cardshifter.modapi.actions.ECSAction");
 var keywords = {};
 keywords.cards = {};
