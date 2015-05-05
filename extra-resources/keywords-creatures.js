@@ -62,6 +62,9 @@ keywords.cards.onEndOfTurn = function (entity, obj, value) {
     if (!obj.creature) {
         throw new Error("expected creature");
     }
+    if (obj.afterPlay) {
+        throw new Error("afterPlay and onEndOfTurn can't co-exist at the moment");
+    }
     var eff = Java.type("net.zomis.cardshifter.ecs.effects.Effects");
     eff = new eff();
     var effect = applyEffect(value);
@@ -74,6 +77,24 @@ keywords.cards.onEndOfTurn = function (entity, obj, value) {
                     },
                     effect.action
                 )
+            )
+        )
+    );
+}
+
+keywords.cards.afterPlay = function (entity, obj, value) {
+    if (obj.onEndOfTurn) {
+        throw new Error("afterPlay and onEndOfTurn can't co-exist at the moment");
+    }
+    var eff = Java.type("net.zomis.cardshifter.ecs.effects.Effects");
+    eff = new eff();
+    var effect = applyEffect(value);
+    entity.addComponent(
+        eff.described(effect.description,
+            eff.toSelf(
+                function (me) {
+                    effect.action(me, null);
+                }
             )
         )
     );
