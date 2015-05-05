@@ -24,41 +24,43 @@ keywords.effects.damage = {
         return "Deal " + obj.value + " damage to " + obj.target;
     },
     action: function (obj) {
-        if (obj.value <= 0) {
-            throw new Error("Damage value must be 1 or greater");
-        }
         return function (me, event) {
             var target = entityLookup(me, obj.target);
-            HEALTH.retriever.resFor(target).change(-obj.value);
+            var value = valueLookup(me, obj.value);
+            if (value < 0) {
+                throw new Error("Damage value cannot be negative, was " + value);
+            }
+            HEALTH.retriever.resFor(target).change(-value);
         }
     }
-}
+};
 keywords.effects.heal = {
     description: function(obj) {
         return "Heal " + obj.value + " damage to " + obj.target;
     },
     action: function (obj) {
-        if (obj.value <= 0) {
-            throw new Error("Heal value must be 1 or greater");
-        }
         return function (me, event) {
             var target = entityLookup(me, obj.target);
-            HEALTH.retriever.resFor(target).change(obj.value);
+            var value = valueLookup(me, obj.value);
+            if (value < 0) {
+                throw new Error("Heal value cannot be negative, was " + value);
+            }
+            HEALTH.retriever.resFor(target).change(value);
         }
     }
-}
+};
 keywords.effects.summon = {
     description: function(obj) {
         return "Summon " + obj.count + " " + obj.card + " at " + obj.who + " " + obj.where;
     },
     action: function (obj) {
-        if (obj.count <= 0) {
-            throw new Error("Summon count must be 1 or greater");
-        }
         return function (me, event) {
             var target = entityLookup(me, obj.who);
             var zone = zoneLookup(target, obj.where);
             var count = valueLookup(me, obj.count);
+            if (count < 0) {
+                throw new Error("count cannot be negative, was " + count);
+            }
             var name = com.cardshifter.modapi.attributes.Attributes.NAME;
             name = com.cardshifter.modapi.attributes.AttributeRetriever.forAttribute(name);
 
@@ -81,7 +83,7 @@ keywords.effects.summon = {
             }
         }
     }
-}
+};
 
 function zoneLookup(entity, zoneName) {
     return entity.getSuperComponents(com.cardshifter.modapi.cards.ZoneComponent.class).stream()
