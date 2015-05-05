@@ -49,7 +49,9 @@ Usage:
         creature: "Bio",
     },
 
-###Common properties
+---
+
+##Common properties
 
 ####`health`
 
@@ -80,4 +82,30 @@ A card with `n` scrapCost requires spending `n` player scrap points in order to 
 ####`denyCounterAttack`
 
 A card with `denyCounterAttack: 1` will not be subject to the counter-attack mechanic. By default, the counter-attack mechanic makes it so that if a creature attacks another creature, and the target creature has `n` attack, the attacking creature will take `n` damage as a consequence. Setting this to `1` or `true` will override this mechanic. Usage: `denyCounterAttack: 1`
+
+---
+
+##Enchantments
+
+Enchantments are cards that can be cast upon cards which are in play. They modify the target creature card's properties.
+
+####`enchantment`
+
+When set to `true`, the card is viewed as an enchantment. Note that a card cannot be both a Creature and an Enchantment. Usage: `enchantment: true`
+
+####`addHealth`
+
+Add `n` health to the target card. Usage: `addHealth: n`
+
+####`addHealth`
+
+Add `n` attack to the target card. Usage: `addAttack: n`
+
+_Note: More advanced Enchantment effects are described below in **Card effects**._
+
+---
+
+##Card effects
+
+Card effects give special behavior to a card. Various elements can be combined flexibly in order to make cards behave in very specific ways. Please read this section very carefully before attempting to make new card effects, as the syntax is very particular. 
 
