@@ -32,10 +32,10 @@ keywords.cards.set = function (entity, obj, value) {
     eff = new eff();
 
     entity.addComponent(
-        eff.described("Set " + value.res + " to " + value.value,
+        eff.described("Set " + value.res + " to " + valueDescription(value.value),
             eff.giveTarget(value.res, 1, function(i) {
-                print("Effect " + value.res + " to " + value.value);
-                return value.value;
+                var val = valueLookup(value.value);
+                return val;
             })
         )
     );

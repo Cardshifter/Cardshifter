@@ -295,7 +295,7 @@ function addCards(game, zone) {
                             count: 1,
                             card: "Bodyman",
                             where: "Battlefield",
-                            who: "self"
+                            who: "owner"
                         }
                     },
                     // apply:summon:2,"Bodyman",

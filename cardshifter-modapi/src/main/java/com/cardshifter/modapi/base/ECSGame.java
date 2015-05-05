@@ -126,6 +126,10 @@ public final class ECSGame {
 		events.executePostEvent(new StartGameEvent(this));
 	}
 
+    public int randomRange(int min, int max) {
+        return random.nextInt(max - min + 1) + min;
+    }
+
 	/**
 	 * 
 	 * @return A random number from Random() class

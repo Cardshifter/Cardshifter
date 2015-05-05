@@ -21,7 +21,7 @@ keywords.effects.print = {
 };
 keywords.effects.damage = {
     description: function(obj) {
-        return "Deal " + obj.value + " damage to " + obj.target;
+        return "Deal " + valueDescription(obj.value) + " damage to " + obj.target;
     },
     action: function (obj) {
         return function (me, event) {
@@ -36,7 +36,7 @@ keywords.effects.damage = {
 };
 keywords.effects.heal = {
     description: function(obj) {
-        return "Heal " + obj.value + " damage to " + obj.target;
+        return "Heal " + valueDescription(obj.value) + " damage to " + obj.target;
     },
     action: function (obj) {
         return function (me, event) {
@@ -51,7 +51,7 @@ keywords.effects.heal = {
 };
 keywords.effects.summon = {
     description: function(obj) {
-        return "Summon " + obj.count + " " + obj.card + " at " + obj.who + " " + obj.where;
+        return "Summon " + valueDescription(obj.count) + " " + obj.card + " at " + obj.who + " " + obj.where;
     },
     action: function (obj) {
         return function (me, event) {
@@ -93,8 +93,30 @@ function zoneLookup(entity, zoneName) {
         });
 }
 
+function valueDescription(value) {
+    if (typeof value === 'number') {
+        return value;
+    } else if (typeof value === 'object') {
+        if (value.func && value.description) {
+            return "X (where X is " + value.description + ")";
+        }
+        return value.min + " to " + value.max;
+    } else {
+        throw new Error("Unknown type for value: " + value + " with type " + typeof value);
+    }
+}
+
 function valueLookup(entity, value) {
-    return value;
+    if (typeof value === 'number') {
+        return value;
+    } else if (typeof value === 'object') {
+        if (value.func && value.description) {
+            return value.func(entity);
+        }
+        return entity.game.randomRange(value.min, value.max);
+    } else {
+        throw new Error("Unknown type for value: " + value + " with type " + typeof value);
+    }
 }
 
 function entityLookup(origin, who) {
