@@ -1,3 +1,9 @@
+##### IMPORTANT #####
+# 2015-05-05: THIS FILE IS NO LONGER USED FOR CARD DATA BUT KEPT FOR COMPATIBILITY WITH
+# ORIGINAL PhrancisGame.java IMPLEMENTATION. THIS WILL BE DELETED AT A FUTURE DATE.
+# CARD DATA IS NOW JSON IN JSGame.js 
+#####################
+#
 ##### This file specifies available cards and their values and effects on game start.
 ### Last revision: 2015-02-26
 ### Applies to version: 0.6-snapshot and above
