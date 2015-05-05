@@ -21,8 +21,6 @@ var TAUNT = createResource("TAUNT");
 
 load('keywords-creatures.js');
 load('keywords-enchantments.js');
-load('keywords-systems.js');
-load('keywords-effects.js');
 load('keyword-noattack.js');
 load('keyword-scrap.js');
 
