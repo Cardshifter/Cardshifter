@@ -2,12 +2,11 @@ package com.cardshifter.modapi.resources;
 
 import java.util.Objects;
 
+import com.cardshifter.modapi.base.ComponentRetriever;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import com.cardshifter.modapi.base.Entity;
-
-
 
 public class ECSResourceData {
 
@@ -23,6 +22,7 @@ public class ECSResourceData {
 	public ECSResourceData(Entity entity, ECSResource resource) {
 		this.entity = Objects.requireNonNull(entity, "Entity cannot be null. Make sure that ResourceMap is added to an entity.");
 		this.resource = Objects.requireNonNull(resource, "Resource cannot be null.");
+        this.strategy = ComponentRetriever.singletonOptional(entity.getGame(), ResourceModifierComponent.class);
 	}
 	
 	public int get() {

@@ -32,7 +32,9 @@ load('keyword-scrap.js');
  */
 function declareConfiguration(game) {
 	var neutral = game.newEntity();
+    neutral.addComponent(new com.cardshifter.modapi.resources.ResourceModifierComponent());
 	var zone = new com.cardshifter.modapi.cards.ZoneComponent(neutral, "Cards");
+
 	neutral.addComponent(zone);
 	addCards(game, zone);
 
