@@ -26,7 +26,7 @@ public class ECSResourceData {
 	}
 	
 	public int get() {
-		int result = strategy == null ? current : strategy.getResource(entity, current);
+		int result = strategy == null ? current : strategy.getResource(entity, resource, current);
 		if (previousGet != result) {
 			// Execute an event for UIs to update their values, or for other entities to react
 			entity.getGame().getEvents().executePostEvent(new ResourceViewUpdate(entity, resource, result));
