@@ -104,7 +104,7 @@
     creature: "Mech",
     health: 4,
     attack: 0,
-    apply:healTurnEnd:1,
+    healTurnEnd: 1,
     manaCost: 4,
     scrap: 2,
     flavor: "The Field Medical Unit is equipped with modern laser surgical tools and a variety of remedy shots."
@@ -141,110 +141,99 @@
 // Bio creatures
 
 {
-    name: "Conscript
-    creature: "Bio"
-    health: 2
-    sickness: 0
-    manaCost: 2
-    attack: 2
-    flavor: "He just signed up last week and he is very excited to fight.
+    name: "Conscript",
+    creature: "Bio",
+    health: 2,
+    sickness: 0,
+    manaCost: 2,
+    attack: 2,
+    flavor: "He just signed up last week and he is very excited to fight."
 },
-
 {
-    name: "Longshot
-    creature: "Bio"
-    health: 1
-    denyCounterAttack: 1
-    manaCost: 3
-    attack: 3
-    flavor: "Eyes and reflexes augmented for maximum deadliness.
+    name: "Longshot",
+    creature: "Bio",
+    health: 1,
+    denyCounterAttack: 1,
+    manaCost: 3,
+    attack: 3,
+    flavor: "Eyes and reflexes augmented for maximum deadliness."
 },
-
 {
-    name: "Bodyman
-    creature: "Bio"
-    manaCost: 4
-    attack: 2
-    health: 3
-    flavor: "Strength augmented with mechanical musculature.
+    name: "Bodyman",
+    creature: "Bio",
+    manaCost: 4,
+    attack: 2,
+    health: 3,
+    flavor: "Strength augmented with mechanical musculature."
 },
-
 {
-    name: "Vetter
-    creature: "Bio"
-    health: 3
-    manaCost: 5
-    attack: 3
-    flavor: "A retired conscript with a desire to jack and make some quick creds.
+    name: "Vetter",
+    creature: "Bio",
+    health: 3,
+    manaCost: 5,
+    attack: 3,
+    flavor: "A retired conscript with a desire to jack and make some quick creds."
 },
-
 {
-    name: "Field Medic
-    creature: "Bio"
-    health: 5
-    apply:healTurnEnd:1
-    manaCost: 5
-    attack: 1
-    flavor: "Unsung hero responsible for keeping countless troops alive.
+    name: "Field Medic",
+    creature: "Bio",
+    health: 5,
+    healTurnEnd: 1,
+    manaCost: 5,
+    attack: 1,
+    flavor: "Unsung hero responsible for keeping countless troops alive."
 },
-
 {
-    name: "Wastelander
-    creature: "Bio"
-    health: 4
-    manaCost: 6
-    attack: 4
-    flavor: "Spent his life learning the lessons of the wastelands.
+    name: "Wastelander",
+    creature: "Bio",
+    health: 4,
+    manaCost: 6,
+    attack: 4,
+    flavor: "Spent his life learning the lessons of the wastelands."
 },
-
 {
-    name: "Commander
-    creature: "Bio"
-    health: 3
-    sickness: 0
-    manaCost: 6
-    attack: 5
-    flavor: "A professional soldier for the government.
+    name: "Commander",
+    creature: "Bio",
+    health: 3,
+    sickness: 0,
+    manaCost: 6,
+    attack: 5,
+    flavor: "A professional soldier for the government."
 },
-
 {
-    name: "Cyberpimp
-    creature: "Bio"
-    health: 5
-    manaCost: 6
-    attack: 3
-    flavor: "Supersized and heavily augmented.
+    name: "Cyberpimp",
+    creature: "Bio",
+    health: 5,
+    manaCost: 6,
+    attack: 3,
+    flavor: "Supersized and heavily augmented."
 },
-
 {
-    name: "Cyborg
-    creature: "Bio"
-    health: 5
-    manaCost: 7
-    attack: 5
-    flavor: "He’s more machine than human now.
+    name: "Cyborg",
+    creature: "Bio",
+    health: 5,
+    manaCost: 7,
+    attack: 5,
+    flavor: "He’s more machine than human now."
 },
-
 {
-    name: "Web Boss
-    creature: "Bio"
-    health: 6
-    manaCost: 8
-    attack: 6
-    flavor: "Leader of a gang that primarily operates on the web.
+    name: "Web Boss",
+    creature: "Bio",
+    health: 6,
+    manaCost: 8,
+    attack: 6,
+    flavor: "Leader of a gang that primarily operates on the web."
 },
-
 {
-    name: "Inside Man
-    creature: "Bio"
-    health: 6
-    attack: 0
-    apply:summon:2,"Bodyman"
-    manaCost: 8
-    attack: 2
-    flavor: "A government official with wider web control. Usually brings friends.
+    name: "Inside Man",
+    creature: "Bio",
+    health: 6,
+    attack: 0,
+    apply:summon:2,"Bodyman",
+    manaCost: 8,
+    attack: 2,
+    flavor: "A government official with wider web control. Usually brings friends."
 },
-
 
 // Enchantments
 
