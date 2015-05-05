@@ -237,7 +237,15 @@ function loadCardLibrary() {
                 creature: "Bio",
                 health: 6,
                 attack: 0,
-                apply:summon:2,"Bodyman",
+                onCast: {
+                    summon: {
+                        count: 1,
+                        card: "Bodyman",
+                        where: "Board",
+                        who: "self"
+                    }
+                }
+                // apply:summon:2,"Bodyman",
                 manaCost: 8,
                 attack: 2,
                 flavor: "A government official with wider web control. Usually brings friends."
