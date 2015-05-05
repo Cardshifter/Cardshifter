@@ -74,10 +74,10 @@ public final class ECSGame {
 	 * 
 	 * @param <T> The component type to create
 	 * @param class1 Creates and returns the requested component type
-	 * @return 
+	 * @return A Component Retriever of the specified class
 	 */
 	public <T extends Component> ComponentRetriever<T> componentRetreiver(Class<T> class1) {
-		return new ComponentRetriever<T>(class1);
+		return new ComponentRetriever<>(class1);
 	}
 	
 	/**
@@ -126,6 +126,13 @@ public final class ECSGame {
 		events.executePostEvent(new StartGameEvent(this));
 	}
 
+    /**
+     * Randomize a number
+     *
+     * @param min Lower bound (inclusive)
+     * @param max Upper bound (inclusive)
+     * @return A random number in the inclusive range min - max
+     */
     public int randomRange(int min, int max) {
         return random.nextInt(max - min + 1) + min;
     }

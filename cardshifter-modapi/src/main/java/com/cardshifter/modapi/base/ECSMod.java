@@ -6,7 +6,7 @@ public interface ECSMod {
 	 * 
 	 * If functionality such as Deck-building is desired, this method needs to setup `PlayerComponents` to entities, and add a `ConfigComponent` to those entities
 	 *   
-	 * @param game
+	 * @param game The game to apply the mod to
 	 */
 	default void declareConfiguration(ECSGame game) {
 		

@@ -28,7 +28,7 @@ public class ActionPerformEvent implements IEvent {
 	
 	/**
 	 * Get the entity that activated this Action (normally a Player)
-	 * @return
+	 * @return The entity that activated the action
 	 */
 	public Entity getPerformer() {
 		return performer;
