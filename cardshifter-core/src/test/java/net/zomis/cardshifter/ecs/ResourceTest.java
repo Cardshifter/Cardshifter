@@ -64,7 +64,7 @@ public class ResourceTest {
 		Entity enchanter = game.newEntity();
 		ECSResourceMap.createFor(enchanter);
 		ECSResourceData bonusResource = resMapper.get(enchanter).getResource(TestResource.TEST_B);
-		resA.setStrategy((ent, value) -> value + bonusResource.get());
+		resA.setStrategy((ent, res, value) -> value + bonusResource.get());
 		
 		assertEquals(0, bonusResource.get());
 		assertEquals(5, resA.get());
