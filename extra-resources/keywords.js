@@ -1,11 +1,64 @@
 "use strict";
 var ECSAction = Java.type("com.cardshifter.modapi.actions.ECSAction");
 var Players = Java.type("com.cardshifter.modapi.players.Players");
+var Cards = Java.type("com.cardshifter.modapi.cards.Cards");
+var ComponentRetriever = Java.type("com.cardshifter.modapi.base.ComponentRetriever");
 var keywords = {};
 keywords.cards = {};
 keywords.afterCards = [];
 keywords.moreSystems = [];
 keywords.effects = {};
+
+function resolveFilter(entity, filter) {
+    return function (source, target) {
+        var result = true;
+        if (filter.samePlayer) {
+            result = result && Players.findOwnerFor(source) == Players.findOwnerFor(target);
+        }
+        if (filter.zone) {
+            var card = ComponentRetriever.retreiverFor(com.cardshifter.modapi.cards.CardComponent.class);
+            var targetCard = card.get(target);
+            if (!targetCard) {
+                return false;
+            }
+            result = result && targetCard.currentZone.name === filter.zone;
+        }
+        if (filter.creature) {
+            result = result && target.hasComponent(com.cardshifter.modapi.base.CreatureTypeComponent.class);
+        }
+        return result;
+    };
+}
+
+function resolveModifier(entity, data) {
+    var priority = data.priority;
+    var res = data.res;
+
+    var change = data.change;
+    var appliesTo = resolveFilter(entity, data.filter);
+    var active = function (entity) {
+        return !entity.removed;
+    };
+    var amount = function (source, target, resource, actualValue) {
+        return actualValue + data.change;
+    };
+
+    print("EntityModifier " + entity + " prio " + priority + " applies " + appliesTo + " amount " + amount);
+    var obj = new com.cardshifter.modapi.resources.EntityModifier(entity, priority, active, appliesTo, amount);
+    return obj;
+
+}
+
+function resolveModifiers(entity, data) {
+    var result = [];
+    for (var i = 0; i < data.length; i++) {
+        var modifierData = data[i];
+
+        var modifier = resolveModifier(entity, modifierData);
+        result.push({ res: modifierData.res, object: modifier });
+    }
+    return result;
+}
 
 function zoneLookup(entity, zoneName) {
     return entity.getSuperComponents(com.cardshifter.modapi.cards.ZoneComponent.class).stream()

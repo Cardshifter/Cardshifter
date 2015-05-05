@@ -58,6 +58,30 @@ keywords.cards.denyCounterAttack = function (entity, obj, value) {
 	DENY_COUNTERATTACK.retriever.set(entity, value);
 }
 
+keywords.cards.whilePresent = function (entity, obj, value) {
+    if (obj.afterPlay || obj.onEndOfTurn) {
+        throw new Error("whilePresent cannot exist together with afterPlay or onEndOfTurn at the moment");
+    }
+
+    var eff = Java.type("net.zomis.cardshifter.ecs.effects.Effects");
+    eff = new eff();
+    entity.addComponent(
+        eff.described("CHANGE RES",
+            eff.toSelf(
+                function (me) {
+                    var resMod = com.cardshifter.modapi.resources.ResourceModifierComponent.class;
+                    var resModifierObject = com.cardshifter.modapi.base.ComponentRetriever.singleton(entity.game, resMod);
+
+                    var modifiers = resolveModifiers(me, value);
+                    for each (var modifier in modifiers) {
+                        resModifierObject.addModifier(modifier.res, modifier.object);
+                    }
+                }
+            )
+        )
+    );
+};
+
 keywords.cards.onEndOfTurn = function (entity, obj, value) {
     if (!obj.creature) {
         throw new Error("expected creature");
