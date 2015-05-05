@@ -9,7 +9,7 @@ import com.cardshifter.modapi.base.Retrievers;
 
 /**
  * <p>Functionality for automatically ending phase once x cards has been played that turn. (ActionZone cards not included)</p>
- * <p>Listens for {@link CardPlayedEvent} and {@link PhaseChangeEvent}</p>
+ * <p>Listens for {@link com.cardshifter.modapi.actions.ActionPerformEvent} and {@link PhaseChangeEvent}</p>
  */
 public class LimitedActionsPerTurnSystem implements ECSSystem {
 

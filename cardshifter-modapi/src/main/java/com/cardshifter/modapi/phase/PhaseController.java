@@ -101,7 +101,7 @@ public class PhaseController extends Component {
 	
 	/**
 	 * Get the individual phase number. Increased with each call to {@link #nextPhase()}
-	 * @return
+	 * @return The phase number of the current phase
 	 */
 	public int getPhaseNumber() {
 		return phaseNumber;
@@ -109,7 +109,7 @@ public class PhaseController extends Component {
 	
 	/**
 	 * Return the number of loops that has been made. Increased whenever {@link #nextPhase()} starts on the first permanent phase.
-	 * @return
+	 * @return Number of times the upcomingPhases has been recreated from the list of permanentPhases
 	 */
 	public int getRecreateCount() {
 		return recreateCount;
