@@ -54,4 +54,12 @@ public class ComponentRetriever<T extends Component> {
 		return all.iterator().next().getComponent(class1);
 	}
 
+    public static <T extends Component> T singletonOptional(ECSGame game, Class<T> class1) {
+        Set<Entity> all = game.getEntitiesWithComponent(class1);
+        if (all.size() > 1) {
+            throw new IllegalStateException("Expected to find exactly one " + class1.getSimpleName() + ", found " + all.size());
+        }
+        return all.isEmpty() ? null : all.iterator().next().getComponent(class1);
+    }
+
 }
