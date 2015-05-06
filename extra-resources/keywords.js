@@ -185,6 +185,8 @@ function applySystems(game, data) {
         var system = data[i];
         if (system instanceof com.cardshifter.modapi.base.ECSSystem) {
             game.addSystem(system);
+        } else if (typeof system === 'function') {
+            game.addSystem(system);
         } else {
             applySystem(game, system, keywords.systems);
         }
