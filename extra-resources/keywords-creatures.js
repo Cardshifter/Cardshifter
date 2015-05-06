@@ -1,10 +1,30 @@
 "use strict";
+
+/**
+ * Sets card name atrributes.
+ * @param {Object} entity - The card entity.
+ * @param {Object} obj - The applicable card object.
+ * @param {string} value - The card's NAME. 
+ */
 keywords.cards.name = function (entity, obj, value) {
     com.cardshifter.modapi.attributes.ECSAttributeMap.createOrGetFor(entity).set(com.cardshifter.modapi.attributes.Attributes.NAME, value);
 }
+/**
+ * Sets card flavor text atrributes.
+ * @param {Object} entity - The card entity.
+ * @param {Object} obj - The applicable card object.
+ * @param {string} value - The card's FLAVOR text. 
+ */
 keywords.cards.flavor = function (entity, obj, value) {
     com.cardshifter.modapi.attributes.ECSAttributeMap.createOrGetFor(entity).set(com.cardshifter.modapi.attributes.Attributes.FLAVOR, value);
 }
+/**
+ * Sets card as a creature, as well as its creature type atrributes, 
+ *  and related Actions.
+ * @param {Object} entity - The card entity.
+ * @param {Object} obj - The applicable card object.
+ * @param {string} value - The card's creature type. 
+ */
 keywords.cards.creature = function (entity, obj, value) {
     var actions = new com.cardshifter.modapi.actions.ActionComponent();
 	entity.addComponent(actions);
@@ -24,10 +44,22 @@ keywords.cards.creature = function (entity, obj, value) {
 
 }
 
+/**
+ * Sets card mana cost atrributes.
+ * @param {Object} entity - The card entity.
+ * @param {Object} obj - The applicable card object.
+ * @param {int} value - The card's MANA_COST. 
+ */
 keywords.cards.manaCost = function (entity, obj, value) {
 	MANA_COST.retriever.set(entity, value);
 }
 
+/**
+ * Checks whether the card is not a creature, otherwise sets card health atrributes.
+ * @param {Object} entity - The card entity.
+ * @param {Object} obj - The applicable card object.
+ * @param {int} value - The card's HEALTH. 
+ */
 keywords.cards.health = function (entity, obj, value) {
     if (!obj.creature) {
         throw new Error("expected creature");
@@ -36,14 +68,24 @@ keywords.cards.health = function (entity, obj, value) {
 	MAX_HEALTH.retriever.set(entity, value);
 }
 
+/**
+ * Checks whether the card is not a creature, otherwise sets card attack atrributes.
+ * @param {Object} entity - The card entity.
+ * @param {Object} obj - The applicable card object.
+ * @param {int} value - The card's ATTACK. 
+ */
 keywords.cards.attack = function (entity, obj, value) {
     if (!obj.creature) {
         throw new Error("expected creature");
     }
 	ATTACK.retriever.set(entity, value);
 }
-
-
+/**
+ * Checks whether the card is not a creature, otherwise sets card sickness atrributes.
+ * @param {Object} entity - The card entity.
+ * @param {Object} obj - The applicable card object.
+ * @param {int} value - The card's SICKNESS. 
+ */
 keywords.cards.sickness = function (entity, obj, value) {
     if (!obj.creature) {
         throw new Error("expected creature");
@@ -51,6 +93,12 @@ keywords.cards.sickness = function (entity, obj, value) {
 	SICKNESS.retriever.set(entity, value);
 }
 
+/**
+ * Checks whether the card is not a creature, otherwise sets card denyCounterAttack atrributes.
+ * @param {Object} entity - The card entity.
+ * @param {Object} obj - The applicable card object.
+ * @param {int} value - The card's DENY_COUNTERATTACK. 
+ */
 keywords.cards.denyCounterAttack = function (entity, obj, value) {
     if (!obj.creature) {
         throw new Error("expected creature");
@@ -58,6 +106,13 @@ keywords.cards.denyCounterAttack = function (entity, obj, value) {
 	DENY_COUNTERATTACK.retriever.set(entity, value);
 }
 
+/**
+ * Checks whether it has conflicting triggers to onEndOfTurn, 
+ *  otherwise sets card onEndOfTurn atrributes.
+ * @param {Object} entity - The card entity.
+ * @param {Object} obj - The applicable card object.
+ * @param {Object} value - The card's onEndOfTurn properties. 
+ */
 keywords.cards.whilePresent = function (entity, obj, value) {
     if (obj.afterPlay || obj.onEndOfTurn) {
         throw new Error("whilePresent cannot exist together with afterPlay or onEndOfTurn at the moment");
@@ -82,6 +137,14 @@ keywords.cards.whilePresent = function (entity, obj, value) {
     );
 };
 
+/**
+ * Checks whether the card is a creature, 
+ *  whether it has conflicting triggers to onEndOfTurn, 
+ *  otherwise sets card onEndOfTurn atrributes.
+ * @param {Object} entity - The card entity.
+ * @param {Object} obj - The applicable card object.
+ * @param {Object} value - The card's onEndOfTurn properties. 
+ */
 keywords.cards.onEndOfTurn = function (entity, obj, value) {
     if (!obj.creature) {
         throw new Error("expected creature");
@@ -106,6 +169,13 @@ keywords.cards.onEndOfTurn = function (entity, obj, value) {
     );
 }
 
+/**
+ * Checks whether it has conflicting triggers to afterPlay, 
+ *  otherwise sets card afterPlay atrributes.
+ * @param {Object} entity - The card entity.
+ * @param {Object} obj - The applicable card object.
+ * @param {Object} value - The card's afterPlay properties. 
+ */
 keywords.cards.afterPlay = function (entity, obj, value) {
     if (obj.onEndOfTurn) {
         throw new Error("afterPlay and onEndOfTurn can't co-exist at the moment");
@@ -123,4 +193,3 @@ keywords.cards.afterPlay = function (entity, obj, value) {
         )
     );
 }
-
