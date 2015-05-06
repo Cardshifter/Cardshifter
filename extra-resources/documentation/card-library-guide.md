@@ -250,42 +250,42 @@ Usage:
 
 These use the same keywords as the Common Properties.
 
-####`give`
+####`set`
 
-Give some amount of a specific resource to targets.
+Set some amount of a specific resource to targets. This property can only be set on Enchantments.
 
 Example usages:
 
-#####Give `denyCounterAttack`
+#####Set `denyCounterAttack`
 
     {
         name: "my card",
         //some trigger: {
-            give: {
+            set: {
                 target: "owner",
                 denyCounterAttack: 1, // or denyCounterAttack: true
             },
         },
     },
     
-#####Give `attack: 1`
+#####Set `attack: 1`
 
     {
         name: "my card",
         //some trigger: {
-            give: {
+            set: {
                 target: "owner",
                 attack: 1,
             },
         },
     },
     
-#####Give `health: 1`
+#####Set `health: 1`
 
     {
         name: "my card",
         //some trigger: {
-            give: {
+            set: {
                 target: "owner",
                 health: 1,
             },
