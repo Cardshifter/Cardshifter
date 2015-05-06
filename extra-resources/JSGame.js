@@ -132,6 +132,23 @@ function setupGame(game) {
 
     var LastPlayersStandingEndsGame = Java.type("net.zomis.cardshifter.ecs.usage.LastPlayersStandingEndsGame");
     var EffectActionSystem = Java.type("net.zomis.cardshifter.ecs.effects.EffectActionSystem");
+
+    var removeDead = function (game) {
+		game.events.registerHandlerAfter(this, com.cardshifter.modapi.actions.ActionPerformEvent.class,
+		    function (event) {
+		        var battlefield = com.cardshifter.modapi.cards.BattlefieldComponent.class;
+		        var remove = event.entity.game.getEntitiesWithComponent(battlefield)
+		            .stream().flatMap(function(entity) entity.getComponent(battlefield).stream())
+		            .peek(function(e) print(e + " has " + HEALTH.getFor(e)))
+		            .filter(function(e) HEALTH.getFor(e) <= 0)
+		            .collect(java.util.stream.Collectors.toList());
+                for each (var e in remove) {
+                    e.destroy();
+                }
+		    }
+		);
+    }
+
     applySystems(game, [
         { gainResource: { res: MANA_MAX, value: 1, untilMax: 10 } },
         { restoreResources: { res: MANA, value: { res: MANA_MAX } } },
@@ -180,6 +197,7 @@ function setupGame(game) {
         new LastPlayersStandingEndsGame(),
         new com.cardshifter.modapi.cards.RemoveDeadEntityFromZoneSystem(),
         new com.cardshifter.modapi.phase.PerformerMustBeCurrentPlayer(),
+        removeDead,
     ]);
 
 	var allowCounterAttackRes = DENY_COUNTERATTACK.retriever;
