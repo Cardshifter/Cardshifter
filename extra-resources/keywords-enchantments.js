@@ -1,4 +1,11 @@
 "use strict";
+
+/**
+ * Checks if a card is a valid Enchantment, and adds the enchantment property.
+ * @param entity {Object} - The applicable card entity.
+ * @param obj {Object} - The applicable card object.
+ * @param value {boolean} - Whether the card is an Enchantment.
+ */
 keywords.cards.enchantment = function (entity, obj, value) {
     if (obj.creature) {
         throw new Error("cannot be both enchantment and creature at once");
@@ -9,6 +16,12 @@ keywords.cards.enchantment = function (entity, obj, value) {
 	entity.addComponent(actions);
 }
 
+/**
+ * Checks for and enables addAttack property.
+ * @param entity {Object} - The applicable card entity.
+ * @param obj {Object} - The applicable card object.
+ * @param value {int} - The attack value to be added to the target.
+ */
 keywords.cards.addAttack = function (entity, obj, value) {
     if (!obj.enchantment) {
         throw new Error("expected enchantment");
@@ -16,6 +29,12 @@ keywords.cards.addAttack = function (entity, obj, value) {
     ATTACK.retriever.set(entity, value);
 }
 
+/**
+ * Checks for and enables addHealth property.
+ * @param entity {Object} - The applicable card entity.
+ * @param obj {Object} - The applicable card object.
+ * @param value {int} - The health value to be added to the target.
+ */
 keywords.cards.addHealth = function (entity, obj, value) {
     if (!obj.enchantment) {
         throw new Error("expected enchantment");
@@ -24,6 +43,12 @@ keywords.cards.addHealth = function (entity, obj, value) {
     MAX_HEALTH.retriever.set(entity, value);
 }
 
+/**
+ * Applies Enchantment to target.
+ * @param entity {Object} - The applicable card entity.
+ * @param obj {Object} - The applicable card object.
+ * @param value {Object} - The value to be added to the target.
+ */
 keywords.cards.set = function (entity, obj, value) {
     if (!obj.enchantment) {
         throw new Error("expected enchantment");
