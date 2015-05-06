@@ -51,6 +51,7 @@ keywords.filters.owner = {
                 return Players.findOwnerFor(target) !== phaseController.currentPhase.owner;
             }
         }
+        throw new Error("Unknown filter value for owner: " + filter);
     }
 };
 
@@ -139,7 +140,11 @@ function resolveFilter(entity, filter) {
                 throw new Error("property " + property + " was found but is not a declared keyword");
             }
             description += keywords.filters[property].description(value);
-            functions.push(keywords.filters[property].func(entity, value));
+            var func = keywords.filters[property].func(entity, value);
+            if (func === undefined) {
+                throw new Error("Filter failure: " + filter);
+            }
+            functions.push(func);
         }
     }
     return function (source, target) {
