@@ -99,7 +99,9 @@ keywords.cards.onEndOfTurn = function (entity, obj, value) {
                     function (me, event) {
                         return com.cardshifter.modapi.players.Players.findOwnerFor(me) == event.getOldPhase().getOwner();
                     },
-                    effect.action
+                    function (source, event) {
+                        effect.action(source, source);
+                    }
                 )
             )
         )
@@ -116,8 +118,8 @@ keywords.cards.afterPlay = function (entity, obj, value) {
     entity.addComponent(
         eff.described(effect.description,
             eff.toSelf(
-                function (me) {
-                    effect.action(me, null);
+                function (source) {
+                    effect.action(source, null);
                 }
             )
         )
