@@ -4,6 +4,7 @@ import com.cardshifter.modapi.base.Component;
 import com.cardshifter.modapi.base.Entity;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 public class ResourceModifierComponent extends Component implements ECSResourceStrategy {
 
@@ -14,6 +15,10 @@ public class ResourceModifierComponent extends Component implements ECSResourceS
         List<EntityModifier> list = this.strategies.get(resource);
         list.add(modifier);
         list.sort(Comparator.comparingInt(em -> em.getPriority()));
+    }
+
+    public Stream<ECSResource> getModifiedResources() {
+        return strategies.keySet().stream();
     }
 
     @Override
@@ -35,5 +40,9 @@ public class ResourceModifierComponent extends Component implements ECSResourceS
     @Override
     public String toString() {
         return getClass().getSimpleName() + ": " + strategies;
+    }
+
+    public int getModifiedResourcesCount() {
+        return strategies.size();
     }
 }
