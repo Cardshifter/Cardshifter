@@ -1,7 +1,21 @@
+/**
+ * Defines filters applicable to effect keywords. 
+ * @module keywords-filter
+ */
+
 keywords.filters.owner = {
+    /** 
+     * Build owner filter description.
+     * @param {Object} value - The applicable card object along with related properties/values.
+     */ 
     description: function (value) {
         return "owned by " + value;
     },
+    /**
+     * Declares applicable owner filter.
+     * @param {Object} entity - The applicable card entity.
+     * @param {string} filter - The owner declared by the filter.
+     */
     func: function (entity, filter) {
         if (filter === "owner") {
             return function (source, target) {
@@ -41,9 +55,18 @@ keywords.filters.owner = {
 };
 
 keywords.filters.zone = {
+    /** 
+     * Build zone filter description.
+     * @param {Object} value - The applicable card object along with related properties/values.
+     */ 
     description: function (value) {
         return "on " + value;
     },
+    /**
+     * Declares applicable zone filter.
+     * @param {Object} entity - The applicable card entity.
+     * @param {string} filter - The zone declared by the filter.
+     */
     func: function (entity, filter) {
         return function (source, target) {
             if (!target.hasComponent(com.cardshifter.modapi.cards.CardComponent.class)) {
@@ -57,9 +80,18 @@ keywords.filters.zone = {
 };
 
 keywords.filters.creature = {
+    /** 
+     * Build creature filter description.
+     * @param {Object} value - The applicable card object along with related properties/values.
+     */
     description: function (value) {
         return "creature";
     },
+    /**
+     * Declares applicable creature filter.
+     * @param {Object} entity - The applicable card entity.
+     * @param {string} filter - The creature declared by the filter.
+     */
     func: function (entity, filter) {
         return function (source, target) {
             return target.hasComponent(com.cardshifter.modapi.base.CreatureTypeComponent.class);
@@ -68,9 +100,18 @@ keywords.filters.creature = {
 };
 
 keywords.filters.creatureType = {
+    /** 
+     * Build creatureType filter description
+     * @param {Object} value - The applicable card object along with related properties/values.
+     */
     description: function (value) {
         return value + " creatures";
     },
+    /**
+     * Declares applicable creatureType filter.
+     * @param {Object} entity - The applicable card entity.
+     * @param {string} filter - The creatureType declared by the filter.
+     */
     func: function (entity, filter) {
         return function (source, target) {
             return filter === target.getComponent(com.cardshifter.modapi.base.CreatureTypeComponent.class).creatureType;
@@ -78,6 +119,12 @@ keywords.filters.creatureType = {
     }
 };
 
+/**
+ * 
+ * @param entity {Object} - Applicable card entity.
+ * @param filter {Object} - Applicable card object.
+ * @returns {Function} - Returns if the source and target make a valid function. 
+ */
 function resolveFilter(entity, filter) {
     var description = "";
     var functions = [];

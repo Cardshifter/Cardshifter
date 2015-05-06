@@ -6,7 +6,10 @@
 "use strict";
 
 keywords.effects.print = {
-    /** Build action description */
+    /** 
+     * Build action description
+     * @param {Object} obj - The applicable card object along with related properties/values.
+     */ 
     description: function (obj) {
         print("calling description: " + obj);
         return "print " + obj.message.length + " characters";
@@ -24,7 +27,10 @@ keywords.effects.print = {
 };
 
 keywords.effects.damage = {
-    /** Build action description */
+    /** 
+     * Build action description
+     * @param {Object} obj - The applicable card object along with related properties/values.
+     */ 
     description: function(obj) {
         return "Deal " + valueDescription(obj.value) + " damage to " + obj.target;
     },
@@ -45,7 +51,10 @@ keywords.effects.damage = {
 };
 
 keywords.effects.heal = {
-    /** Build action description */
+    /** 
+     * Build action description
+     * @param {Object} obj - The applicable card object along with related properties/values.
+     */ 
     description: function(obj) {
         return "Heal " + valueDescription(obj.value) + " damage to " + obj.target;
     },
@@ -66,7 +75,12 @@ keywords.effects.heal = {
 };
 
 keywords.effects.summon = {
-    /** Build action description */ 
+    /** 
+     * Build action description
+     * @param {Object} obj - The applicable card object along with related properties/values.
+     */ 
+     * @param {Object} obj - The applicable card object along with related properties/values.
+     */ 
     description: function(obj) {
         return "Summon " + valueDescription(obj.count) + " " + obj.card + " at " + obj.who + " " + obj.where;
     },
