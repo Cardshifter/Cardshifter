@@ -14,7 +14,7 @@ keywords.filters.owner = {
     /**
      * Declares applicable owner filter.
      * @param {Object} entity - The applicable card entity.
-     * @param {string} filter - The owner declared by the filter.
+     * @param {string} filter - The declared filter.
      */
     func: function (entity, filter) {
         if (filter === "owner") {

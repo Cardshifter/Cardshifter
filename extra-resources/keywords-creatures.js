@@ -107,7 +107,7 @@ keywords.cards.denyCounterAttack = function (entity, obj, value) {
 }
 
 /**
- * Checks whether it has conflicting triggers to onEndOfTurn, 
+ * Checks whether it has conflicting triggers to whilePresent, 
  *  otherwise sets card onEndOfTurn atrributes.
  * @param {Object} entity - The card entity.
  * @param {Object} obj - The applicable card object.

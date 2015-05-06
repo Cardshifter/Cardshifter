@@ -8,6 +8,8 @@ Creating and modifying the available cards is the quickest and easiest way to cu
 
 The card library uses JavaScript Objects to store card information. This is not to be confused with typical JSON, which uses quotation marks for all field identifiers and values. JavaScript Objects only use quotation marks for String data, e.g., `"Hello, Cardshifter!"`. All identifiers, as well as numeric and boolean (`true/false`) values should be written with no quotation marks.
 
+---
+
 ##General attributes
 
 ####`name`
@@ -113,3 +115,180 @@ _Note: More advanced Enchantment effects are described below in **Card effects**
 
 Card effects give special behavior to a card. Various elements can be combined flexibly in order to make cards behave in very specific ways. Please read this section very carefully before attempting to make new card effects, as the syntax is very particular. 
 
+###Triggers
+
+Various triggers are available for actions to be applied on. 
+
+####`whilePresent`
+
+Applies the contained effects while the card is present in battle. 
+
+Usage:
+
+    {
+        name: "my card",
+        whilePresent {
+            // do something
+        },
+    },
+    
+####`onEndOfTurn`
+
+Applies the contained effects at the end of a player's turn. 
+
+Usage:
+
+    {
+        name: "my card",
+        onEndOfTurn {
+            // do something
+        },
+    },
+    
+####`afterPlay`
+
+Applies the contained effects after a card is played.
+
+Usage:
+
+    {
+        name: "my card",
+        afterPlay {
+            // do something
+        },
+    },
+    
+###Targets / Filters
+
+These are used to filter the effect to a particular set of targets. 
+
+####`"owner"`
+
+Applies to the owner of the affected cards.
+
+Usage:
+
+    {
+        name: "my card",
+        //some trigger: {
+            // do something,
+            target: "owner",
+        },
+    },
+    
+####`"opponent"`
+
+Applies to the opponent of the owner of the affected cards.
+
+Usage:
+
+    {
+        name: "my card",
+        //some trigger: {
+            // do something,
+            target: "opponent",
+        },
+    },
+    
+####`"next"`
+
+Applies to the next player.
+
+Usage:
+
+    {
+        name: "my card",
+        //some trigger: {
+            // do something,
+            target: "next",
+        },
+    },
+
+####`"none"`
+
+Applies to cards with no owner. 
+
+Usage:
+
+    {
+        name: "my card",
+        //some trigger: {
+            // do something,
+            target: "none",
+        },
+    },
+    
+####`"active"`
+
+Applies to active owner. 
+
+Usage:
+
+    {
+        name: "my card",
+        //some trigger: {
+            // do something,
+            target: "active",
+        },
+    },
+
+####`"inactive"`
+
+Applies to inactive owner. 
+
+Usage:
+
+    {
+        name: "my card",
+        //some trigger: {
+            // do something,
+            target: "inactive",
+        },
+    },
+
+###Actions
+
+These use the same keywords as the Common Properties.
+
+####`give`
+
+Give some amount of a specific resource to targets.
+
+Example usages:
+
+#####Give `denyCounterAttack`
+
+    {
+        name: "my card",
+        //some trigger: {
+            target: "owner",
+            give: {
+                denyCounterAttack: 1,
+            },
+        },
+    },
+    
+#####Give `attack: 1`
+
+    {
+        name: "my card",
+        //some trigger: {
+            target: "owner",
+            give: {
+                attack: 1,
+            },
+        },
+    },
+    
+#####Give `health: 1`
+
+    {
+        name: "my card",
+        //some trigger: {
+            target: "owner",
+            give: {
+                health: 1,
+            },
+        },
+    },
+    
