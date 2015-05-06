@@ -31,4 +31,9 @@ public class ResourceModifierComponent extends Component implements ECSResourceS
         }
         return value;
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + ": " + strategies;
+    }
 }
