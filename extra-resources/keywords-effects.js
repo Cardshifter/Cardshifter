@@ -82,9 +82,7 @@ keywords.effects.summon = {
     /** 
      * Build action description
      * @param obj {Object} - The applicable card object along with related properties/values.
-     */ 
-     * @param obj {Object} - The applicable card object along with related properties/values.
-     */ 
+     */
     description: function(obj) {
         return "Summon " + valueDescription(obj.count) + " " + obj.card + " at " + obj.who + " " + obj.where;
     },
