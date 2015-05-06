@@ -13,6 +13,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import com.cardshifter.modapi.resources.ResourceViewUpdate;
 import net.zomis.cardshifter.ecs.EntitySerialization;
 import net.zomis.cardshifter.ecs.config.ConfigComponent;
 
@@ -138,8 +139,46 @@ public class TCGGame extends ServerGame {
 	private void remove(EntityRemoveEvent event) {
 		this.send(new EntityRemoveMessage(event.getEntity().getId()));
 	}
-	
-	/**
+
+    /**
+     * Send a message to all players that should be informed about a change to an entity
+     *
+     * @param entity The changed entity
+     * @param update The update message
+     */
+    private void broadcast(Entity entity, UpdateMessage update) {
+        if (card.has(entity)) {
+            CardComponent cardData = card.get(entity);
+            for (ClientIO io : this.getPlayers()) {
+                Entity player = playerFor(io);
+                if (cardData.getCurrentZone().isKnownTo(player)) {
+                    io.sendToClient(update);
+                }
+            }
+        }
+        else {
+            // Player, Zone, or Game
+            this.send(update);
+        }
+    }
+
+    /**
+     * Broadcast information about the value returned by a resource for an entity.
+     *
+     * @param event The ResourceViewUpdate event
+     */
+    private void broadcast(ResourceViewUpdate event) {
+        if (game.getGameState() == ECSGameState.NOT_STARTED) {
+            // let the most information be sent when actually starting the game
+            return;
+        }
+
+        Entity entity = event.getEntity();
+        UpdateMessage updateEvent = new UpdateMessage(entity.getId(), event.getResource().toString(), event.getNewValue());
+        broadcast(entity, updateEvent);
+    }
+
+    /**
 	 * If the event is a for a player, zone, or game, an UpdateMessage is sent to all players.
 	 * For cards it is only sent to players who have knowledge of the card zone
 	 * 
@@ -153,20 +192,7 @@ public class TCGGame extends ServerGame {
 		
 		Entity entity = event.getEntity();
 		UpdateMessage updateEvent = new UpdateMessage(entity.getId(), event.getResource().toString(), event.getNewValue());
-		
-		if (card.has(entity)) {
-			CardComponent cardData = card.get(entity);
-			for (ClientIO io : this.getPlayers()) {
-				Entity player = playerFor(io);
-				if (cardData.getCurrentZone().isKnownTo(player)) {
-					io.sendToClient(updateEvent);
-				}
-			}
-		}
-		else {
-			// Player, Zone, or Game
-			this.send(updateEvent);
-		}
+		broadcast(entity, updateEvent);
 	}
 	
 	/**
@@ -313,6 +339,7 @@ public class TCGGame extends ServerGame {
 		mod.setupGame(game);
 		
 		game.getEvents().registerHandlerAfter(this, ResourceValueChange.class, this::broadcast);
+        game.getEvents().registerHandlerAfter(this, ResourceViewUpdate.class, this::broadcast);
 		game.getEvents().registerHandlerAfter(this, ZoneChangeEvent.class, this::zoneChange);
 		game.getEvents().registerHandlerAfter(this, EntityRemoveEvent.class, this::remove);
 		game.getEvents().registerHandlerAfter(this, PlayerEliminatedEvent.class, this::playerEliminated);
