@@ -40,8 +40,8 @@ Usage:
 - Any present value declares that the card is a creature. This means that the card can be played onto the battlefield, and will be destroyed into the discard pile upon becoming `health <= 0` or otherwise being destroyed by another mechanic.
 - It also displays the creature type of the card. This does not alter card behavior.
 - For reference, the most common creature types are:
-- - `"Bio"`: Standard creature with no particular/unique behavior, other than the specified effects. 
-- - `"Mech"`: Creature that can be sacrificed for scrap resource. See related `scrap` section. This property requires that `scrap > 0` in order to take effect, the `"Mech"` creature type does not alter its behavior per se.
+- - `"Bio"`: Creature which can have Enchantments played on it. See Enchantments section below for details. 
+- - `"Mech"`: Creature which can _not_ have Enchantments played on it. Mechs often have the characteristic that they can be sacrificed for scrap resource. See related `scrap` section. This property requires that `scrap > 0` in order to take effect.
 
 Usage:
 
