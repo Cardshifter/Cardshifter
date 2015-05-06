@@ -47,7 +47,7 @@ keywords.cards.addHealth = function (entity, obj, value) {
  * Applies Enchantment to target.
  * @param {Object} entity - The applicable card entity.
  * @param {Object} obj - The applicable card object.
- * @param {boolean} value - The value to be added to the target.
+ * @param {Object} value - The value to be added to the target.
  */
 keywords.cards.set = function (entity, obj, value) {
     if (!obj.enchantment) {

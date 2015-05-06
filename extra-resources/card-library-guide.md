@@ -1,4 +1,4 @@
-###Cardshifter modding documentation
+**Cardshifter modding documentation**
 
 ---
 
@@ -39,7 +39,7 @@ Usage:
 - It also displays the creature type of the card. This does not alter card behavior.
 - For reference, the most common creature types are:
 - - `"Bio"`: Standard creature with no particular/unique behavior, other than the specified effects. 
-- - `"Mech"`: Creature that can be sacrificed for scrap resource. See related `scrap` section. This property requires that `scrap > 0` in order to take effect, the `"Mech"` creature type does not alter its behavior per se. 
+- - `"Mech"`: Creature that can be sacrificed for scrap resource. See related `scrap` section. This property requires that `scrap > 0` in order to take effect, the `"Mech"` creature type does not alter its behavior per se.
 
 Usage:
 
@@ -79,6 +79,10 @@ A card with `n` manaCost requires spending `n` player mana points in order to pl
 
 A card with `n` scrapCost requires spending `n` player scrap points in order to play it. Usage: `scrapCost: n`
 
+####`noAttack`
+
+Declares that a creature card cannot attack. Usage: `noAttack: 1`
+
 ####`denyCounterAttack`
 
 A card with `denyCounterAttack: 1` will not be subject to the counter-attack mechanic. By default, the counter-attack mechanic makes it so that if a creature attacks another creature, and the target creature has `n` attack, the attacking creature will take `n` damage as a consequence. Setting this to `1` or `true` will override this mechanic. Usage: `denyCounterAttack: 1`
@@ -97,7 +101,7 @@ When set to `true`, the card is viewed as an enchantment. Note that a card canno
 
 Add `n` health to the target card. Usage: `addHealth: n`
 
-####`addHealth`
+####`addAttack`
 
 Add `n` attack to the target card. Usage: `addAttack: n`
 
