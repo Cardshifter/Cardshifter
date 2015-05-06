@@ -57,21 +57,21 @@ Usage:
 
 ####`health`
 
-A card with `n` health can take `n` damage while it is in battle, and it is destroyed into the discard pile if the health reaches `0` or less. Usage: `health: n`
+A creature card with `n` health can take `n` damage while it is in battle, and it is destroyed into the discard pile if the health reaches `0` or less. If you set `health: 0`, your card should die immediately after being played, save some effect(s) modify health. Usage: `health: n`
 
 _Note: by default setting, Cardshifter cards will gain their health back after each turn._
 
 ####`attack`
 
-A card with `n` attack can cause `n` damage  to a target card or player while it is in battle. Usage: `attack: n`
+A creature card with `n` attack can cause `n` damage  to a target card or player while it is in battle. Usage: `attack: n`
 
 ####`scrap`
 
-A card with `n` scrap value can be sacrificed from battle after exhausting its casting `sickness`, in exchange for `n` scrap resource to the player. All cards with `scrap > 0` can be sacrificed. `scrap` resource can be used for various things which have a `scrapCost`, including most Enchantments. See the Enchantments section for details. Usage: `scrap: n`
+A creature card with `n` scrap value can be sacrificed from battle after exhausting its casting `sickness`, in exchange for `n` scrap resource to the player. All cards with `scrap > 0` can be sacrificed. `scrap` resource can be used for various things which have a `scrapCost`, including most Enchantments. See the Enchantments section for details. Usage: `scrap: n`
 
 ####`sickness`
 
-A card with `n` sickness must wait `n` turns after being played before it can perform an action. A creature with `0` sickness is often referenced as having "Rush" or immediate action. Usage: `sickness: n`
+A creature card with `n` sickness must wait `n` turns after being played before it can perform an action. A creature with `0` sickness is often referenced as having "Rush" or immediate action. Usage: `sickness: n`
 
 ####`manaCost`
 
@@ -83,11 +83,11 @@ A card with `n` scrapCost requires spending `n` player scrap points in order to 
 
 ####`noAttack`
 
-Declares that a creature card cannot attack. Usage: `noAttack: 1`
+Declares that a creature card cannot attack. Usage: `noAttack: 1` **or** `noAttack: true`
 
 ####`denyCounterAttack`
 
-A card with `denyCounterAttack: 1` will not be subject to the counter-attack mechanic. By default, the counter-attack mechanic makes it so that if a creature attacks another creature, and the target creature has `n` attack, the attacking creature will take `n` damage as a consequence. Setting this to `1` or `true` will override this mechanic. Usage: `denyCounterAttack: 1`
+A card with `denyCounterAttack: 1` will not be subject to the counter-attack mechanic. By default, the counter-attack mechanic makes it so that if a creature attacks another creature, and the target creature has `n` attack, the attacking creature will take `n` damage as a consequence. Setting this to `1` or `true` will override this mechanic. Usage: `denyCounterAttack: 1` **or** `denyCounterAttack: true`
 
 ---
 
@@ -263,7 +263,7 @@ Example usages:
         //some trigger: {
             give: {
                 target: "owner",
-                denyCounterAttack: 1,
+                denyCounterAttack: 1, // or denyCounterAttack: true
             },
         },
     },
