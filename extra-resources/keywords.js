@@ -37,6 +37,9 @@ function resolveModifiers(entity, data) {
         var modifier = resolveModifier(entity, modifierData);
         result.push({ res: modifierData.res, object: modifier });
     }
+    if (result.length === 0) {
+        throw new Error("resolveModifiers expected at least one modifier, none found.");
+    }
     return result;
 }
 
