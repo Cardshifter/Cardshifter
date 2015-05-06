@@ -8,7 +8,7 @@
 keywords.effects.print = {
     /** 
      * Build action description
-     * @param {Object} obj - The applicable card object along with related properties/values.
+     * @param obj {Object} - The applicable card object along with related properties/values.
      */ 
     description: function (obj) {
         print("calling description: " + obj);
@@ -17,7 +17,7 @@ keywords.effects.print = {
     /**
      * Prints a message to the console. Mostly used for debugging.
      *  Has no effect on the game behavior at all. 
-     * @param {Object} obj - The applicable card object along with related properties/values.
+     * @param obj {Object} - The applicable card object along with related properties/values.
      */
     action: function (obj) {
         return function (me, event) {
@@ -29,14 +29,14 @@ keywords.effects.print = {
 keywords.effects.damage = {
     /** 
      * Build action description
-     * @param {Object} obj - The applicable card object along with related properties/values.
+     * @param obj {Object} - The applicable card object along with related properties/values.
      */ 
     description: function(obj) {
         return "Deal " + valueDescription(obj.value) + " damage to " + obj.target;
     },
     /**
      * Deals damage to a target.
-     * @param {Object} obj - The applicable card object along with related properties/values.
+     * @param obj {Object} - The applicable card object along with related properties/values.
      */
     action: function (obj) {
         return function (me, event) {
@@ -53,14 +53,14 @@ keywords.effects.damage = {
 keywords.effects.heal = {
     /** 
      * Build action description
-     * @param {Object} obj - The applicable card object along with related properties/values.
+     * @param obj {Object} - The applicable card object along with related properties/values.
      */ 
     description: function(obj) {
         return "Heal " + valueDescription(obj.value) + " damage to " + obj.target;
     },
     /**
      * Heals damage from a target. 
-     * @param {Object} obj - The applicable card object along with related properties/values.
+     * @param obj {Object} - The applicable card object along with related properties/values.
      */
     action: function (obj) {
         return function (me, event) {
@@ -77,16 +77,16 @@ keywords.effects.heal = {
 keywords.effects.summon = {
     /** 
      * Build action description
-     * @param {Object} obj - The applicable card object along with related properties/values.
+     * @param obj {Object} - The applicable card object along with related properties/values.
      */ 
-     * @param {Object} obj - The applicable card object along with related properties/values.
+     * @param obj {Object} - The applicable card object along with related properties/values.
      */ 
     description: function(obj) {
         return "Summon " + valueDescription(obj.count) + " " + obj.card + " at " + obj.who + " " + obj.where;
     },
     /**
      * Summon other card(s) to the battlefield. 
-     * @param {Object} obj - The applicable card object along with related properties/values.
+     * @param obj {Object} - The applicable card object along with related properties/values.
      */
     action: function (obj) {
         return function (me, event) {

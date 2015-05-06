@@ -3,9 +3,9 @@ var noAttackCreatures = new java.util.HashSet();
 
 /**
  * Checks if a card has a valid noAttack property and is a creature.
- * @param {Object} entity - The card entity.
- * @param {Object} obj - The applicable card object.
- * @param {boolean} value - Whether the card has noAttack.
+ * @param entity {Object} - The card entity.
+ * @param obj {Object} - The applicable card object.
+ * @param value {bool} - Whether the card has noAttack.
  */
 keywords.cards.noAttack = function (entity, obj, value) {
     if (!obj.creature) {
@@ -16,9 +16,9 @@ keywords.cards.noAttack = function (entity, obj, value) {
 
 /**
  * Adds the noAttack property to applicable cards.
- * @param {Object} game - The game entity.
- * @param {Object} cardData - The applicable card data.
- * @param {Object} cardEntities - The applicable cardEntities.
+ * @param game {Object} - The game entity.
+ * @param cardData {Object} - The applicable card data.
+ * @param cardEntities {Object} - The applicable cardEntities.
  */
 keywords.afterCards.push(function (game, cardData, cardEntities) {
     var System = Java.type("net.zomis.cardshifter.ecs.usage.DenyActionForNames");

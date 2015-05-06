@@ -6,15 +6,15 @@
 keywords.filters.owner = {
     /** 
      * Build owner filter description.
-     * @param {Object} value - The applicable card object along with related properties/values.
+     * @param value {Object} - The applicable card object along with related properties/values.
      */ 
     description: function (value) {
         return "owned by " + value;
     },
     /**
      * Declares applicable owner filter.
-     * @param {Object} entity - The applicable card entity.
-     * @param {string} filter - The declared filter.
+     * @param entity {Object} - The applicable card entity.
+     * @param filter {string} - The declared filter.
      */
     func: function (entity, filter) {
         if (filter === "owner") {
@@ -57,15 +57,15 @@ keywords.filters.owner = {
 keywords.filters.zone = {
     /** 
      * Build zone filter description.
-     * @param {Object} value - The applicable card object along with related properties/values.
+     * @param value {Object} - The applicable card object along with related properties/values.
      */ 
     description: function (value) {
         return "on " + value;
     },
     /**
      * Declares applicable zone filter.
-     * @param {Object} entity - The applicable card entity.
-     * @param {string} filter - The zone declared by the filter.
+     * @param entity {Object} - The applicable card entity.
+     * @param filter {string} - The zone declared by the filter.
      */
     func: function (entity, filter) {
         return function (source, target) {
@@ -82,15 +82,15 @@ keywords.filters.zone = {
 keywords.filters.creature = {
     /** 
      * Build creature filter description.
-     * @param {Object} value - The applicable card object along with related properties/values.
+     * @param value {Object} - The applicable card object along with related properties/values.
      */
     description: function (value) {
         return "creature";
     },
     /**
      * Declares applicable creature filter.
-     * @param {Object} entity - The applicable card entity.
-     * @param {string} filter - The creature declared by the filter.
+     * @param entity {Object} - The applicable card entity.
+     * @param filter {string} - The creature declared by the filter.
      */
     func: function (entity, filter) {
         return function (source, target) {
@@ -102,15 +102,15 @@ keywords.filters.creature = {
 keywords.filters.creatureType = {
     /** 
      * Build creatureType filter description
-     * @param {Object} value - The applicable card object along with related properties/values.
+     * @param value {Object} - The applicable card object along with related properties/values.
      */
     description: function (value) {
         return value + " creatures";
     },
     /**
      * Declares applicable creatureType filter.
-     * @param {Object} entity - The applicable card entity.
-     * @param {string} filter - The creatureType declared by the filter.
+     * @param entity {Object} - The applicable card entity.
+     * @param filter {string} - The creatureType declared by the filter.
      */
     func: function (entity, filter) {
         return function (source, target) {

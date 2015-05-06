@@ -2,9 +2,9 @@
 
 /**
  * Checks if a card is a valid Enchantment, and adds the enchantment property.
- * @param {Object} entity - The applicable card entity.
- * @param {Object} obj - The applicable card object.
- * @param {boolean} value - Whether the card is an Enchantment.
+ * @param entity {Object} - The applicable card entity.
+ * @param obj {Object} - The applicable card object.
+ * @param value {boolean} - Whether the card is an Enchantment.
  */
 keywords.cards.enchantment = function (entity, obj, value) {
     if (obj.creature) {
@@ -18,9 +18,9 @@ keywords.cards.enchantment = function (entity, obj, value) {
 
 /**
  * Checks for and enables addAttack property.
- * @param {Object} entity - The applicable card entity.
- * @param {Object} obj - The applicable card object.
- * @param {int} value - The attack value to be added to the target.
+ * @param entity {Object} - The applicable card entity.
+ * @param obj {Object} - The applicable card object.
+ * @param value {int} - The attack value to be added to the target.
  */
 keywords.cards.addAttack = function (entity, obj, value) {
     if (!obj.enchantment) {
@@ -31,9 +31,9 @@ keywords.cards.addAttack = function (entity, obj, value) {
 
 /**
  * Checks for and enables addHealth property.
- * @param {Object} entity - The applicable card entity.
- * @param {Object} obj - The applicable card object.
- * @param {int} value - The health value to be added to the target.
+ * @param entity {Object} - The applicable card entity.
+ * @param obj {Object} - The applicable card object.
+ * @param value {int} - The health value to be added to the target.
  */
 keywords.cards.addHealth = function (entity, obj, value) {
     if (!obj.enchantment) {
@@ -45,9 +45,9 @@ keywords.cards.addHealth = function (entity, obj, value) {
 
 /**
  * Applies Enchantment to target.
- * @param {Object} entity - The applicable card entity.
- * @param {Object} obj - The applicable card object.
- * @param {Object} value - The value to be added to the target.
+ * @param entity {Object} - The applicable card entity.
+ * @param obj {Object} - The applicable card object.
+ * @param value {Object} - The value to be added to the target.
  */
 keywords.cards.set = function (entity, obj, value) {
     if (!obj.enchantment) {
