@@ -32,13 +32,13 @@ Usage:
 
     {
         name: "My new card",
-        flavor: "This is my favorite card of all. -Phrancis",
+        flavor: "This is my favorite card of all.",
     },
     
 ####`creature`
 
 - Any present value declares that the card is a creature. This means that the card can be played onto the battlefield, and will be destroyed into the discard pile upon becoming `health <= 0` or otherwise being destroyed by another mechanic.
-- It also displays the creature type of the card. This does not alter card behavior.
+- It also displays the creature type of the card.
 - For reference, the most common creature types are:
 - - `"Bio"`: Creature which can have Enchantments played on it. See Enchantments section below for details. 
 - - `"Mech"`: Creature which can _not_ have Enchantments played on it. Mechs often have the characteristic that they can be sacrificed for scrap resource. See related `scrap` section. This property requires that `scrap > 0` in order to take effect.
