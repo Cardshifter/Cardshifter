@@ -261,8 +261,8 @@ Example usages:
     {
         name: "my card",
         //some trigger: {
-            target: "owner",
             give: {
+                target: "owner",
                 denyCounterAttack: 1,
             },
         },
@@ -273,8 +273,8 @@ Example usages:
     {
         name: "my card",
         //some trigger: {
-            target: "owner",
             give: {
+                target: "owner",
                 attack: 1,
             },
         },
@@ -285,8 +285,8 @@ Example usages:
     {
         name: "my card",
         //some trigger: {
-            target: "owner",
             give: {
+                target: "owner",
                 health: 1,
             },
         },
