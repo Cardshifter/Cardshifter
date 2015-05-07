@@ -102,7 +102,7 @@ The resulting affected cards would be as such:
 **But**, if instead of `change`, you played a `set` card like this:
 
     {
-        name: "change health -1",
+        name: "set health 1",
         afterPlay: {
             res: HEALTH,
             set: 1,
@@ -124,7 +124,7 @@ Then, the resulting cards would be like this:
 And if you you played a `set` card like this:
 
     {
-        name: "change health -1",
+        name: "set health -1",
         afterPlay: {
             res: HEALTH,
             set: -1,
