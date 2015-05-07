@@ -40,7 +40,7 @@ Many effects manipulate resources (or `res:`). Following is a list of the differ
 - `change` takes account of the current value of a resource, and changes it accordingly, in a positive or negative manner.
 - `change` is generally more natural to gameplay, and therefore most frequently used.
 - `set` _ignores_ the current value of a resource, and sets applicable resource values to an arbitrary value.
-- `set` can be used for interesting effects, but can also drastically skew the game balance, and should be used with care.
+- `set` can be used for interesting effects, but can also drastically skew the game balance, and should be used with caution.
 
 ####Examples:
 
@@ -140,7 +140,7 @@ Then, the resulting cards would be like this:
     },
     {
         name: "card 2",
-        health: -1  // destroyer
+        health: -1  // destroyed
     }
     
 Therefore, be careful to use the correct keyword, `change` or `set`, according to your intentions. 
