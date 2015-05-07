@@ -20,7 +20,7 @@ import com.cardshifter.modapi.base.PlayerComponent;
 import com.cardshifter.modapi.cards.ZoneComponent;
 import com.cardshifter.modapi.phase.PhaseController;
 
-import net.zomis.cardshifter.ecs.usage.PhrancisGame;
+import net.zomis.cardshifter.ecs.usage.CyborgChroniclesGame;
 
 public class ConsoleControllerECS {
 	private final ECSGame game;
@@ -157,7 +157,7 @@ public class ConsoleControllerECS {
 	}
 	
 	public static void main(String[] args) {
-		ECSMod mod = new PhrancisGame();
+		ECSMod mod = new CyborgChroniclesGame();
 		ECSGame newgame = new ECSGame();
 		mod.declareConfiguration(newgame);
 		mod.setupGame(newgame);

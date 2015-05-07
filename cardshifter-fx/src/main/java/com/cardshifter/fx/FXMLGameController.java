@@ -12,8 +12,8 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import net.zomis.cardshifter.ecs.usage.PhrancisGame;
-import net.zomis.cardshifter.ecs.usage.PhrancisGame.PhrancisResources;
+import net.zomis.cardshifter.ecs.usage.CyborgChroniclesGame;
+import net.zomis.cardshifter.ecs.usage.CyborgChroniclesGame.CyborgChroniclesResources;
 
 import com.cardshifter.ai.CompleteIdiot;
 import com.cardshifter.modapi.actions.ActionComponent;
@@ -60,14 +60,14 @@ public class FXMLGameController {
 	public ECSAction nextAction;
    
 	private final CardshifterAI opponent = new CompleteIdiot();
-	private final ECSMod mod = new PhrancisGame();
+	private final ECSMod mod = new CyborgChroniclesGame();
 	private ECSGame game;
 
 	private PhaseController phases;
-	private final ResourceRetriever health = ResourceRetriever.forResource(PhrancisResources.HEALTH);
-	private final ResourceRetriever mana = ResourceRetriever.forResource(PhrancisResources.MANA);
-	private final ResourceRetriever manaMax = ResourceRetriever.forResource(PhrancisResources.MANA_MAX);
-	private final ResourceRetriever scrap = ResourceRetriever.forResource(PhrancisResources.SCRAP);
+	private final ResourceRetriever health = ResourceRetriever.forResource(CyborgChroniclesResources.HEALTH);
+	private final ResourceRetriever mana = ResourceRetriever.forResource(CyborgChroniclesResources.MANA);
+	private final ResourceRetriever manaMax = ResourceRetriever.forResource(CyborgChroniclesResources.MANA_MAX);
+	private final ResourceRetriever scrap = ResourceRetriever.forResource(CyborgChroniclesResources.SCRAP);
 	
 	private boolean gameHasStarted = false; // hack to make the buttons work properly
 

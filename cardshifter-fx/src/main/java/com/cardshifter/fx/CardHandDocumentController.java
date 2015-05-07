@@ -18,7 +18,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import net.zomis.cardshifter.ecs.usage.PhrancisGame.PhrancisResources;
+import net.zomis.cardshifter.ecs.usage.CyborgChroniclesGame.CyborgChroniclesResources;
 
 public final class CardHandDocumentController implements Initializable {
     
@@ -84,13 +84,13 @@ public final class CardHandDocumentController implements Initializable {
         	ECSResource resource = string.getResource();
         	int value = string.get();
         	
-            if (resource == PhrancisResources.HEALTH) {
+            if (resource == CyborgChroniclesResources.HEALTH) {
                 health.setText(String.valueOf(string.get()));
-            } else if (resource == PhrancisResources.ATTACK) {
+            } else if (resource == CyborgChroniclesResources.ATTACK) {
                 strength.setText(String.valueOf(string.get()));
-            } else if (resource == PhrancisResources.MANA_COST) {
+            } else if (resource == CyborgChroniclesResources.MANA_COST) {
                 manaCost.setText(String.format("Mana Cost = %d", string.get()));
-            } else if (resource == PhrancisResources.SCRAP_COST) {
+            } else if (resource == CyborgChroniclesResources.SCRAP_COST) {
                 scrapCost.setText(String.format("Scrap Cost = %d", value));
             }
 //            } else if (resource == PhrancisResources.st string.equals("enchStrength")) {

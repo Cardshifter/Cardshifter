@@ -1,27 +1,15 @@
 package net.zomis.cardshifter.ecs;
 
-import com.cardshifter.api.config.DeckConfig;
-import com.cardshifter.modapi.actions.ECSAction;
-import com.cardshifter.modapi.actions.attack.TrampleSystem;
 import com.cardshifter.modapi.attributes.AttributeRetriever;
 import com.cardshifter.modapi.attributes.Attributes;
 import com.cardshifter.modapi.base.*;
 import com.cardshifter.modapi.cards.BattlefieldComponent;
 import com.cardshifter.modapi.cards.HandComponent;
-import com.cardshifter.modapi.cards.ZoneComponent;
-import com.cardshifter.modapi.players.Players;
-import com.cardshifter.modapi.resources.ResourceRetriever;
-import com.cardshifter.modapi.resources.Resources;
-import net.zomis.cardshifter.ecs.config.ConfigComponent;
-import net.zomis.cardshifter.ecs.effects.Effects;
-import net.zomis.cardshifter.ecs.usage.PhrancisGame;
-import net.zomis.cardshifter.ecs.usage.PhrancisGame.PhrancisResources;
 import net.zomis.cardshifter.ecs.usage.TestMod;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 

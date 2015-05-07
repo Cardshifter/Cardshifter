@@ -10,7 +10,7 @@ import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.Entity;
 import com.cardshifter.modapi.resources.ResourceRetriever;
 
-public class PhrancisGameNewAttackSystem extends PhrancisGame {
+public class CyborgChroniclesGameNewAttackSystem extends CyborgChroniclesGame {
 
 	@Override
 	public void setupGame(ECSGame game) {
@@ -18,13 +18,13 @@ public class PhrancisGameNewAttackSystem extends PhrancisGame {
 		List<AttackDamageYGO> attackSystems = game.findSystemsOfClass(AttackDamageYGO.class);
 		game.removeSystem(attackSystems.get(0));
 
-		ResourceRetriever allowCounterAttackRes = ResourceRetriever.forResource(PhrancisResources.DENY_COUNTERATTACK);
+		ResourceRetriever allowCounterAttackRes = ResourceRetriever.forResource(CyborgChroniclesResources.DENY_COUNTERATTACK);
 		BiPredicate<Entity, Entity> allowCounterAttack =
 				(attacker, defender) -> allowCounterAttackRes.getOrDefault(attacker, 0) == 0;
 
-		game.addSystem(new AttackDamageAccumulating(PhrancisResources.ATTACK, PhrancisResources.HEALTH,
+		game.addSystem(new AttackDamageAccumulating(CyborgChroniclesResources.ATTACK, CyborgChroniclesResources.HEALTH,
 				allowCounterAttack));
-		game.addSystem(new AttackDamageHealAtEndOfTurn(PhrancisResources.HEALTH, PhrancisResources.MAX_HEALTH));
+		game.addSystem(new AttackDamageHealAtEndOfTurn(CyborgChroniclesResources.HEALTH, CyborgChroniclesResources.MAX_HEALTH));
 	}
 
 }

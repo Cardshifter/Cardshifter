@@ -7,9 +7,8 @@ import java.util.*;
 import java.util.function.Supplier;
 
 import com.cardshifter.core.modloader.JavaScriptMod;
-import net.zomis.cardshifter.ecs.usage.PhrancisGame;
-import net.zomis.cardshifter.ecs.usage.PhrancisGameNewAttackSystem;
-import net.zomis.cardshifter.ecs.usage.PhrancisGameWithSpells;
+import net.zomis.cardshifter.ecs.usage.CyborgChroniclesGameNewAttackSystem;
+import net.zomis.cardshifter.ecs.usage.CyborgChroniclesGameWithSpells;
 
 import net.zomis.cardshifter.ecs.usage.TestMod;
 import org.apache.log4j.LogManager;
@@ -56,8 +55,8 @@ public class ModCollection {
 		
         ScriptEngineManager scripts = new ScriptEngineManager();
         mods.put("NewJS", () -> new JavaScriptMod("JSGame.js", scripts));
-		mods.put(CardshifterConstants.VANILLA, () -> new PhrancisGameNewAttackSystem());
-		mods.put("Cyborg-Spells", () -> new PhrancisGameWithSpells());
+		mods.put(CardshifterConstants.VANILLA, () -> new CyborgChroniclesGameNewAttackSystem());
+		mods.put("Cyborg-Spells", () -> new CyborgChroniclesGameWithSpells());
 		mods.put("Test", () -> new TestMod());
 	}
 	

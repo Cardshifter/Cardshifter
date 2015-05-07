@@ -1,12 +1,7 @@
 package net.zomis.cardshifter.ecs.usage;
 
-import com.cardshifter.api.config.DeckConfig;
 import com.cardshifter.modapi.actions.ActionComponent;
 import com.cardshifter.modapi.actions.ECSAction;
-import com.cardshifter.modapi.actions.UseCostSystem;
-import com.cardshifter.modapi.actions.attack.*;
-import com.cardshifter.modapi.actions.enchant.EnchantPerform;
-import com.cardshifter.modapi.actions.enchant.EnchantTargetCreatureTypes;
 import com.cardshifter.modapi.attributes.Attributes;
 import com.cardshifter.modapi.attributes.ECSAttributeMap;
 import com.cardshifter.modapi.base.*;
@@ -14,18 +9,9 @@ import com.cardshifter.modapi.cards.*;
 import com.cardshifter.modapi.phase.*;
 import com.cardshifter.modapi.players.Players;
 import com.cardshifter.modapi.resources.ECSResourceMap;
-import com.cardshifter.modapi.resources.GameOverIfNoHealth;
 import com.cardshifter.modapi.resources.ResourceRetriever;
-import com.cardshifter.modapi.resources.RestoreResourcesToSystem;
-import net.zomis.cardshifter.ecs.config.ConfigComponent;
-import net.zomis.cardshifter.ecs.config.DeckConfigFactory;
-import net.zomis.cardshifter.ecs.effects.EffectActionSystem;
-import net.zomis.cardshifter.ecs.effects.EffectTargetFilterSystem;
 
-import java.util.List;
 import java.util.Set;
-import java.util.function.BiPredicate;
-import java.util.function.UnaryOperator;
 
 /**
  * Created by Simon on 2/12/2015.
@@ -55,8 +41,8 @@ public class TestMod implements ECSMod {
             actions.addAction(endTurnAction);
 
             ECSResourceMap.createFor(player)
-                    .set(PhrancisGame.PhrancisResources.HEALTH, 30)
-                    .set(PhrancisGame.PhrancisResources.MAX_HEALTH, 30);
+                    .set(CyborgChroniclesGame.CyborgChroniclesResources.HEALTH, 30)
+                    .set(CyborgChroniclesGame.CyborgChroniclesResources.MAX_HEALTH, 30);
 
             ZoneComponent deck = new DeckComponent(player);
             ZoneComponent hand = new HandComponent(player);
@@ -86,8 +72,8 @@ public class TestMod implements ECSMod {
         for (int i = 0; i < 5; i++) {
             Entity entity = hand.getOwner().getGame().newEntity();
             ECSResourceMap.createFor(entity)
-                    .set(PhrancisGame.PhrancisResources.HEALTH, 3)
-                    .set(PhrancisGame.PhrancisResources.MAX_HEALTH, 3);
+                    .set(CyborgChroniclesGame.CyborgChroniclesResources.HEALTH, 3)
+                    .set(CyborgChroniclesGame.CyborgChroniclesResources.MAX_HEALTH, 3);
             ECSAttributeMap.createFor(entity).set(Attributes.NAME, "Test");
             ActionComponent action = new ActionComponent();
             entity.addComponent(action);
@@ -104,7 +90,7 @@ public class TestMod implements ECSMod {
     }
 
     private ECSAction damageAction(Entity entity) {
-        ResourceRetriever health = ResourceRetriever.forResource(PhrancisGame.PhrancisResources.HEALTH);
+        ResourceRetriever health = ResourceRetriever.forResource(CyborgChroniclesGame.CyborgChroniclesResources.HEALTH);
         return new ECSAction(entity, "Damage", act -> true, act -> {
             health.resFor(entity).change(-1);
             if (health.getFor(entity) == 0) {

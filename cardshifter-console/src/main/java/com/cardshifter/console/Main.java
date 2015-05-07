@@ -9,7 +9,7 @@ import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
-import net.zomis.cardshifter.ecs.usage.PhrancisGame;
+import net.zomis.cardshifter.ecs.usage.CyborgChroniclesGame;
 
 import org.apache.log4j.PropertyConfigurator;
 
@@ -43,7 +43,7 @@ public class Main {
 				startLuaGame(options);
 			}
 			else {
-				ECSMod mod = new PhrancisGame();
+				ECSMod mod = new CyborgChroniclesGame();
 				ECSGame newgame = new ECSGame();
 				mod.declareConfiguration(newgame);
 				mod.setupGame(newgame);
