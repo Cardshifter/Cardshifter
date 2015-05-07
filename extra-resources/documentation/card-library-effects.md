@@ -82,7 +82,7 @@ Example:
 
 - Only works on creature cards. 
 - Applies the contained effects at the end of each of the owner's turns.
-- It is `EFFECT` (single effect) or array of `MODIFIER` (multiple effects) sent to the server's resource map. 
+- It is `EFFECT` (single effect) or array of `EFFECT` (multiple effects) sent to the server's resource map. 
 - Note the use of square brackets `[]` is required for this to work correctly with multiple effects.
 - Note that an array of `onEndOfTurn` must be used if multiple effects apply on end of turn. It is also OK to use array syntax for a single effect. 
 
@@ -114,7 +114,7 @@ Example:
             heal: { value: 1, target: "owner" } 
         },
     },
-        {
+    {
         name: "my other card",
         onEndOfTurn: [
             { // heal self by 1
@@ -132,7 +132,7 @@ Example:
 
 - Works on all cards.
 - Applies the contained effects after a card is played.
-- It is `EFFECT` (single effect) or array of `MODIFIER` (multiple effects) sent to the server's resource map. 
+- It is `EFFECT` (single effect) or array of `EFFECT` (multiple effects) sent to the server's resource map. 
 - Note the use of square brackets `[]` is required for this to work correctly with multiple effects.
 - Note that an array of `afterPlay` must be used if multiple effects apply on end of turn. It is also OK to use array syntax for a single effect. 
 
@@ -182,15 +182,17 @@ Example:
         ]
     }
     
-#`HERE BE DRAGONS`
 
-###Targets / Filters
+##Filters
 
-These are used to filter the effect to a particular set of targets. 
+- These are used to filter the effects to a particular set of targets. 
+- A filter is an object containing any of those keys. `owner`, `zone`, `creature` and `creatureType`. 
 
-####`"owner"`
+---
 
-Applies to the owner of the affected cards.
+###`owner` filters
+
+- A variety of filters are available for effects, and will be explained in detail below.
 
 Usage:
 
@@ -198,83 +200,48 @@ Usage:
         name: "my card",
         //some trigger: {
             // do something,
-            target: "owner",
+            filter: {
+                // filters here
+                owner: "foo",           // some owner
+                zone: "foo",            // some zone
+                creature: "foo",        // some creature
+                creatureType: "foo",    // some creature type
         },
     },
     
-####`"opponent"`
+####`owner`
 
-Applies to the opponent of the owner of the affected cards.
+This is a list of possible owners with descriptions. Note that owner values are String values, and therefore need to be contained in quotation marks. 
 
-Usage:
+- `"self"`: Cards that you, the player, own.
+- `"opponent"`: Cards that your opponent owns. 
+- `"next"`: Cards that are owned by the next player. Synonymous to `"opponent"` unless your mod supports more than 2 players. 
+- `"active"`: Cards owned by the active player. Synonymous to `"self"` unless your mod supports more than 2 players. 
+- `"inactive"`: Cards owned by the inactive player(s). Synonymous to `"opponent"` unless your mod supports more than 2 players. 
+- `"none"`: Cards owner by no player. There are no current game mechanics that use this. 
 
-    {
-        name: "my card",
-        //some trigger: {
-            // do something,
-            target: "opponent",
-        },
-    },
-    
-####`"next"`
 
-Applies to the next player.
+####`zone`
 
-Usage:
+This is a list of possible zones with descriptions. Note that zone values are String values, and therefore need to be contained in quotation marks. 
 
-    {
-        name: "my card",
-        //some trigger: {
-            // do something,
-            target: "next",
-        },
-    },
+- `"Battlefield"`: Creature cards that are currently in active play, i.e., in battle or on the battlefield. 
+- `"Hand"`: Cards in a player's hand, not played yet.
+- `"Discard"`: Cards which have been discarded from battle. Sometimes also referred to as graveyard. 
+- `"Exile"`: Not currently used. Cards which are exiled, which may vary depending on the mod implementation.  
+- `"Cards"`: All available cards. Not currently used as it is too meta.
 
-####`"none"`
+####`creature`
 
-Applies to cards with no owner. 
+A specific creature card. Make sure to use the exact `name` of the target creature, otherwise it likely won't work correctly. 
 
-Usage:
+####`creatureType`
 
-    {
-        name: "my card",
-        //some trigger: {
-            // do something,
-            target: "none",
-        },
-    },
-    
-####`"active"`
+A specific `creature` type, for example `"Mech"` or `"Bio"`. Affects all creature cards of that type. 
 
-Applies to active owner. 
+---
 
-Usage:
-
-    {
-        name: "my card",
-        //some trigger: {
-            // do something,
-            target: "active",
-        },
-    },
-
-####`"inactive"`
-
-Applies to inactive owner. 
-
-Usage:
-
-    {
-        name: "my card",
-        //some trigger: {
-            // do something,
-            target: "inactive",
-        },
-    },
-
-###Actions
-
-These use the same keywords as the Common Properties.
+#HERE BE DRAGONS
 
 ####`set`
 
