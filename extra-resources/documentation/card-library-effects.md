@@ -6,7 +6,7 @@
 
 Creating and modifying the available cards is the quickest and easiest way to customize your game modification _[mod]_. This guide will explain how to create custom effects for cards. Please make sure you have read the `card-library-basics` guide before proceeding. 
 
-Card effects give special behavior to a card. Various elements can be combined flexibly in order to make cards behave in very specific ways. Please read this section very carefully before attempting to make new card effects, as the syntax is very particular. Note that `// code comments` are used throughout the examples, but the comments are not needed in the actual card data. 
+Card effects give special behavior to a card. Various elements can be combined flexibly in order to make cards behave in very specific ways. Please read this section very carefully before attempting to make new card effects, as the syntax is very particular. Note that `// code comments` (and occasional `/* inline code comments */`) are used throughout the examples, to help understand the application of the syntax. 
 
 ---
 
@@ -30,6 +30,120 @@ Many effects manipulate resources (or `res:`). Following is a list of the differ
 - `ATTACK_AVAILABLE`
 - `DENY_COUNTERATTACK`
 - `TAUNT`
+
+---
+
+##`change` vs. `set`
+
+**It is very important to define the distinction between "changing" and "setting" the resource value of a card.** 
+
+- `change` takes account of the current value of a resource, and changes it accordingly, in a positive or negative manner.
+- `change` is generally more natural to gameplay, and therefore most frequently used.
+- `set` _ignores_ the current value of a resource, and sets applicable resource values to an arbitrary value.
+- `set` can be used for interesting effects, but can also drastically skew the game balance, and should be used with care.
+
+####Examples:
+
+Say you have the following cards as targets (according to your `filter`):
+
+    {
+        name: "card 1",
+        health: 3
+    },
+    {
+        name: "card 2",
+        health: 1
+    }
+
+And you played a card with this `change` effect:
+
+    {
+        name: "change health +1",
+        afterPlay: {
+            res: HEALTH,
+            change: 1,
+            filter: { /* some applicable filter */ }
+        }
+    }
+
+The resulting affected cards would be as such:
+
+    {
+        name: "card 1",
+        health: 4
+    },
+    {
+        name: "card 2",
+        health: 2
+    }
+    
+Likewise, if you played a card with this `change` effect:
+
+    {
+        name: "change health -1",
+        afterPlay: {
+            res: HEALTH,
+            change: -1,
+            filter: { /* some applicable filter */ }
+        }
+    }
+
+The resulting affected cards would be as such:
+
+    {
+        name: "card 1",
+        health: 2
+    },
+    {
+        name: "card 2",
+        health: 0   // destroyed
+    }
+    
+**But**, if instead of `change`, you played a `set` card like this:
+
+    {
+        name: "change health -1",
+        afterPlay: {
+            res: HEALTH,
+            set: 1,
+            filter: { /* some applicable filter */ }
+        }
+    }
+    
+Then, the resulting cards would be like this: 
+
+    {
+        name: "card 1",
+        health: 1
+    },
+    {
+        name: "card 2",
+        health: 1
+    }
+    
+And if you you played a `set` card like this:
+
+    {
+        name: "change health -1",
+        afterPlay: {
+            res: HEALTH,
+            set: -1,
+            filter: { /* some applicable filter */ }
+        }
+    }
+    
+Then, the resulting cards would be like this: 
+
+    {
+        name: "card 1",
+        health: -1  // destroyed
+    },
+    {
+        name: "card 2",
+        health: -1  // destroyer
+    }
+    
+Therefore, be careful to use the correct keyword, `change` or `set`, according to your intentions. 
 
 ---
 
@@ -182,16 +296,12 @@ Example:
         ]
     }
     
+---
 
 ##Filters
 
 - These are used to filter the effects to a particular set of targets. 
 - A filter is an object containing any of those keys. `owner`, `zone`, `creature` and `creatureType`. 
-
----
-
-###`owner` filters
-
 - A variety of filters are available for effects, and will be explained in detail below.
 
 Usage:
@@ -204,8 +314,8 @@ Usage:
                 // filters here
                 owner: "foo",           // some owner
                 zone: "foo",            // some zone
-                creature: "foo",        // some creature
                 creatureType: "foo",    // some creature type
+                creature: "foo",        // some creature
         },
     },
     
@@ -231,57 +341,16 @@ This is a list of possible zones with descriptions. Note that zone values are St
 - `"Exile"`: Not currently used. Cards which are exiled, which may vary depending on the mod implementation.  
 - `"Cards"`: All available cards. Not currently used as it is too meta.
 
-####`creature`
-
-A specific creature card. Make sure to use the exact `name` of the target creature, otherwise it likely won't work correctly. 
-
 ####`creatureType`
 
 A specific `creature` type, for example `"Mech"` or `"Bio"`. Affects all creature cards of that type. 
 
+####`creature`
+
+A specific creature card. Make sure to use the exact `name` of the target creature, otherwise it likely won't work correctly. 
+
 ---
 
-#HERE BE DRAGONS
+##`priority`
 
-####`set`
-
-Set some amount of a specific resource to targets. This property can only be set on Enchantments.
-
-Example usages:
-
-#####Set `denyCounterAttack`
-
-    {
-        name: "my card",
-        //some trigger: {
-            set: {
-                target: "owner",
-                denyCounterAttack: 1, // or denyCounterAttack: true
-            },
-        },
-    },
-    
-#####Set `attack: 1`
-
-    {
-        name: "my card",
-        //some trigger: {
-            set: {
-                target: "owner",
-                attack: 1,
-            },
-        },
-    },
-    
-#####Set `health: 1`
-
-    {
-        name: "my card",
-        //some trigger: {
-            set: {
-                target: "owner",
-                health: 1,
-            },
-        },
-    },
-    
+This defines which effects get applied in what order. In many cases, setting `priority: 1` on all effects of a specific card is fine. In cases where one effect is intended to be applied logically before another is, then `priority` can be used to determine that order. `priority` is executed/applied from lower to higher number. It supports negative values as well, although we don't recommend using them, to keep intentions clear. 
