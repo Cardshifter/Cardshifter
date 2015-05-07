@@ -29,7 +29,7 @@ public class ExportTest {
 		DataExportCommand exporter = new DataExportCommand();
         DataExportCommand.DataExportParameters params = new DataExportCommand.DataExportParameters();
         params.gameId = 1;
-		exporter.handle(new CommandContext(server, new Command(fakeClient, null), fakeClient), params);
+		exporter.handle(new CommandContext(server, new Command(fakeClient, "-game 1"), fakeClient), params);
 		
 		server.stop();
 	}
