@@ -347,7 +347,7 @@ A specific `creature` type, for example `"Mech"` or `"Bio"`. Affects all creatur
 
 ####`creature`
 
-A specific creature card. Make sure to use the exact `name` of the target creature, otherwise it likely won't work correctly. 
+Whether a card is a `creature`. The `creatureType` does not matter in this case.
 
 ---
 
