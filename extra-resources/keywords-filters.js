@@ -122,9 +122,34 @@ keywords.filters.creatureType = {
 };
 
 /**
- * 
+ * Transform a JS filter object into a String description.
+ * @param filter {Object} - filter object.
+ * @returns {Function} - Returns if the source and target make a valid function.
+ */
+function resolveFilterDescription(filter) {
+    var descriptions = [];
+
+    for (var property in filter) {
+        if (filter.hasOwnProperty(property)) {
+            var value = filter[property];
+            print("property found: " + property + " with value " + value + " keyword data is " + keywords.effects[property]);
+            if (keywords.filters[property] === undefined) {
+                print("keyword " + property + " is undefined");
+                throw new Error("property " + property + " was found but is not a declared keyword");
+            }
+            descriptions.push(keywords.filters[property].description(value));
+        }
+    }
+    if (descriptions.length === 0) {
+        return "everything";
+    }
+    return descriptions.join(" and ");
+}
+
+/**
+ * Transform a JS data object to a JS filter function.
  * @param entity {Object} - Applicable card entity.
- * @param filter {Object} - Applicable card object.
+ * @param filter {Object} - filter object.
  * @returns {Function} - Returns if the source and target make a valid function. 
  */
 function resolveFilter(entity, filter) {

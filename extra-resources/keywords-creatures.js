@@ -119,8 +119,9 @@ keywords.cards.whilePresent = function (entity, obj, value) {
 
     var eff = Java.type("net.zomis.cardshifter.ecs.effects.Effects");
     eff = new eff();
+    var description = resolveModifierDescriptions(value);
     entity.addComponent(
-        eff.described("CHANGE RES",
+        eff.described(description,
             eff.toSelf(
                 function (me) {
                     var resMod = com.cardshifter.modapi.resources.ResourceModifierComponent.class;
