@@ -6,7 +6,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Supplier;
 
-import com.cardshifter.core.modloader.JavaScriptMod;
+import com.cardshifter.core.modloader.*;
 import net.zomis.cardshifter.ecs.usage.CyborgChroniclesGameNewAttackSystem;
 import net.zomis.cardshifter.ecs.usage.CyborgChroniclesGameWithSpells;
 
@@ -17,9 +17,6 @@ import org.apache.log4j.Logger;
 import com.cardshifter.ai.AIs;
 import com.cardshifter.ai.ScoringAI;
 import com.cardshifter.api.CardshifterConstants;
-import com.cardshifter.core.modloader.DirectoryModLoader;
-import com.cardshifter.core.modloader.Mod;
-import com.cardshifter.core.modloader.ModNotLoadableException;
 import com.cardshifter.modapi.ai.CardshifterAI;
 import com.cardshifter.modapi.base.ECSMod;
 
@@ -56,8 +53,9 @@ public class ModCollection {
         ScriptEngineManager scripts = new ScriptEngineManager();
         mods.put("NewJS", () -> new JavaScriptMod("JSGame.js", scripts));
 		mods.put(CardshifterConstants.VANILLA, () -> new CyborgChroniclesGameNewAttackSystem());
-		mods.put("Cyborg-Spells", () -> new CyborgChroniclesGameWithSpells());
-		mods.put("Test", () -> new TestMod());
+        mods.put("Groovy", () -> new GroovyMod("groovy/game.groovy", scripts));
+//		mods.put("Cyborg-Spells", () -> new CyborgChroniclesGameWithSpells());
+//		mods.put("Test", () -> new TestMod());
 	}
 	
 	/**
