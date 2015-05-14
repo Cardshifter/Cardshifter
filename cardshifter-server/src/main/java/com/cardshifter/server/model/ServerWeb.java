@@ -1,11 +1,8 @@
 package com.cardshifter.server.model;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
