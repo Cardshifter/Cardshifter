@@ -33,4 +33,8 @@ public class ServerQueryMessage extends Message {
 		return message;
 	}
 	
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + ": Request " + request + " message: " + message;
+    }
 }

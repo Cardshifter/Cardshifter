@@ -13,6 +13,7 @@ import com.cardshifter.api.messages.Message;
 import com.cardshifter.server.model.Server;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import org.java_websocket.exceptions.WebsocketNotConnectedException;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -37,6 +38,10 @@ public class ClientWebSocket extends ClientIO {
 
 	@Override
 	protected void onSendToClient(Message message) {
+        if (!conn.isOpen()) {
+            this.disconnected();
+            return;
+        }
 		String data;
 		try {
             byte[] bytes = transformer.transform(message);
@@ -45,6 +50,9 @@ public class ClientWebSocket extends ClientIO {
             conn.send(data);
 		} catch (CardshifterSerializationException e) {
             throw new RuntimeException(e);
+        } catch (WebsocketNotConnectedException ex) {
+            this.disconnected();
+            logger.error("Websocket not connected: " + this, ex);
         }
 	}
 

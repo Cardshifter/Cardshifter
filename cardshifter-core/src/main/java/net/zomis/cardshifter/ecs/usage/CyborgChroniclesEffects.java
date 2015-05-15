@@ -8,7 +8,7 @@ import com.cardshifter.modapi.cards.BattlefieldComponent;
 import com.cardshifter.modapi.cards.CardComponent;
 import com.cardshifter.modapi.cards.Cards;
 
-public class PhrancisEffects {
+public class CyborgChroniclesEffects {
 
 	public EffectComponent scrapAll() {
 		GameEffect effect = event -> event.getEntity().getGame()

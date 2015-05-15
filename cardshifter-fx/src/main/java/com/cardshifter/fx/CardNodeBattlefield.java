@@ -17,7 +17,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import net.zomis.cardshifter.ecs.usage.PhrancisGame.PhrancisResources;
+import net.zomis.cardshifter.ecs.usage.CyborgChroniclesGame.CyborgChroniclesResources;
 
 public class CardNodeBattlefield extends Group {
 	
@@ -29,9 +29,9 @@ public class CardNodeBattlefield extends Group {
 	private final boolean isPlayer;
 	private final Entity performer;
 	
-	private static final ResourceRetriever resHealth = ResourceRetriever.forResource(PhrancisResources.HEALTH);
-	private static final ResourceRetriever resAttack = ResourceRetriever.forResource(PhrancisResources.ATTACK);
-	private static final ResourceRetriever resManaCost = ResourceRetriever.forResource(PhrancisResources.MANA_COST);
+	private static final ResourceRetriever resHealth = ResourceRetriever.forResource(CyborgChroniclesResources.HEALTH);
+	private static final ResourceRetriever resAttack = ResourceRetriever.forResource(CyborgChroniclesResources.ATTACK);
+	private static final ResourceRetriever resManaCost = ResourceRetriever.forResource(CyborgChroniclesResources.MANA_COST);
 	private static final ComponentRetriever<ActionComponent> actions = ComponentRetriever.retreiverFor(ActionComponent.class);
 	
 	public CardNodeBattlefield (Pane pane, int numCards, String name, Entity card, FXMLGameController controller, boolean isPlayer) {

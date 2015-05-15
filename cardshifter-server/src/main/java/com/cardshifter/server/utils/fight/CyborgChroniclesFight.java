@@ -5,9 +5,9 @@ import com.cardshifter.modapi.events.EntityRemoveEvent;
 import com.cardshifter.modapi.events.GameOverEvent;
 import com.cardshifter.modapi.events.StartGameEvent;
 
-public class PhrancisFight<A> {
+public class CyborgChroniclesFight<A> {
 
-	public PhrancisFight() {
+	public CyborgChroniclesFight() {
 		
 	}
 	

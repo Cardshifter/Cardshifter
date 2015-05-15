@@ -20,17 +20,17 @@ import com.cardshifter.modapi.cards.ZoneComponent;
 import com.cardshifter.modapi.resources.ResourceRetriever;
 
 import net.zomis.aiscores.ScoreParameters;
-import net.zomis.cardshifter.ecs.usage.PhrancisGame;
-import net.zomis.cardshifter.ecs.usage.PhrancisGame.PhrancisResources;
+import net.zomis.cardshifter.ecs.usage.CyborgChroniclesGame;
+import net.zomis.cardshifter.ecs.usage.CyborgChroniclesGame.CyborgChroniclesResources;
 
 public class AttackAnalyze {
 
-	private static final ResourceRetriever health = ResourceRetriever.forResource(PhrancisResources.HEALTH);
-	private static final ResourceRetriever attack = ResourceRetriever.forResource(PhrancisResources.ATTACK);
-	private static final ResourceRetriever scrapCost = ResourceRetriever.forResource(PhrancisResources.SCRAP_COST);
+	private static final ResourceRetriever health = ResourceRetriever.forResource(CyborgChroniclesResources.HEALTH);
+	private static final ResourceRetriever attack = ResourceRetriever.forResource(CyborgChroniclesResources.ATTACK);
+	private static final ResourceRetriever scrapCost = ResourceRetriever.forResource(CyborgChroniclesResources.SCRAP_COST);
 	
 	public static double attackScore(ECSAction action, ScoreParameters<Entity> params) {
-		if (!action.getName().equals(PhrancisGame.ATTACK_ACTION)) {
+		if (!action.getName().equals(CyborgChroniclesGame.ATTACK_ACTION)) {
 			return 0;
 		}
 		
@@ -77,7 +77,7 @@ public class AttackAnalyze {
 	}
 	
 	public static double scrapNeeded(ECSAction action, ScoreParameters<Entity> params) {
-		if (!action.getName().equals(PhrancisGame.SCRAP_ACTION)) {
+		if (!action.getName().equals(CyborgChroniclesGame.SCRAP_ACTION)) {
 			return 0;
 		}
 		
@@ -89,7 +89,7 @@ public class AttackAnalyze {
 	}
 	
 	public static double scrapIfCanGetKilled(ECSAction action, ScoreParameters<Entity> params) {
-		if (!action.getName().equals(PhrancisGame.SCRAP_ACTION)) {
+		if (!action.getName().equals(CyborgChroniclesGame.SCRAP_ACTION)) {
 			return 0;
 		}
 		
@@ -120,7 +120,7 @@ public class AttackAnalyze {
 	}
 	
 	public static double scrapScore(ECSAction action, ScoreParameters<Entity> params) {
-		if (!action.getName().equals(PhrancisGame.SCRAP_ACTION)) {
+		if (!action.getName().equals(CyborgChroniclesGame.SCRAP_ACTION)) {
 			return 0;
 		}
 		
@@ -151,7 +151,7 @@ public class AttackAnalyze {
 	}
 	
 	public static double enchantScore(ECSAction action, ScoreParameters<Entity> params) {
-		if (!action.getName().equals(PhrancisGame.ENCHANT_ACTION)) {
+		if (!action.getName().equals(CyborgChroniclesGame.ENCHANT_ACTION)) {
 			return 0;
 		}
 		

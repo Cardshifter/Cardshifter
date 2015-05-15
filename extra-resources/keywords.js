@@ -10,6 +10,28 @@ keywords.moreSystems = [];
 keywords.effects = {};
 keywords.filters = {};
 
+function resolveModifierDescription(data) {
+    var priority = data.priority;
+    var res = data.res;
+
+    var change = data.change;
+    var appliesTo = resolveFilterDescription(data.filter);
+    var amount = data.change;
+
+    return "Give " + resolveFilterDescription(data.filter) + " " + data.change + " " + data.res;
+}
+
+function resolveModifierDescriptions(data) {
+    if (data instanceof Array) {
+        var descriptions = [];
+        for (var i = 0; i < data.length; i++) {
+            descriptions.push(resolveModifierDescription(data[i]));
+        }
+        return descriptions.join(". ");
+    }
+    return resolveModifierDescription(data);
+}
+
 function resolveModifier(entity, data) {
     var priority = data.priority;
     var res = data.res;
@@ -26,7 +48,6 @@ function resolveModifier(entity, data) {
     print("EntityModifier " + entity + " prio " + priority + " applies " + appliesTo + " amount " + amount);
     var obj = new com.cardshifter.modapi.resources.EntityModifier(entity, priority, active, appliesTo, amount);
     return obj;
-
 }
 
 function resolveModifiers(entity, data) {

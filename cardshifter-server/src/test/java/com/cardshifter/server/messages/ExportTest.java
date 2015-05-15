@@ -2,6 +2,9 @@ package com.cardshifter.server.messages;
 
 import java.util.Arrays;
 
+import com.cardshifter.server.commands.CommandContext;
+import com.cardshifter.server.model.Command;
+import com.cardshifter.server.utils.export.DataExportCommand;
 import org.apache.log4j.PropertyConfigurator;
 import org.junit.Test;
 
@@ -11,7 +14,6 @@ import com.cardshifter.core.game.ServerGame;
 import com.cardshifter.server.main.ServerMain;
 import com.cardshifter.server.model.MainServer;
 import com.cardshifter.server.model.Server;
-import com.cardshifter.server.utils.export.DataExporter;
 
 public class ExportTest {
 
@@ -22,9 +24,12 @@ public class ExportTest {
 		Server server = new MainServer().start();
 		
 		ServerGame game = server.createGame(CardshifterConstants.VANILLA);
-		game.start(Arrays.asList(new FakeClient(server, e -> {}), new FakeClient(server, e -> {})));
-		DataExporter exporter = new DataExporter();
-		exporter.export(server, new String[]{ "--gameid", "1" });
+        FakeClient fakeClient = new FakeClient(server, e -> {});
+		game.start(Arrays.asList(fakeClient, new FakeClient(server, e -> {})));
+		DataExportCommand exporter = new DataExportCommand();
+        DataExportCommand.DataExportParameters params = new DataExportCommand.DataExportParameters();
+        params.gameId = 1;
+		exporter.handle(new CommandContext(server, new Command(fakeClient, "-game 1"), fakeClient), params);
 		
 		server.stop();
 	}

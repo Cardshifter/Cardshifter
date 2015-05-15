@@ -6,6 +6,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import com.cardshifter.server.utils.export.DataExportCommand;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -29,7 +30,6 @@ import com.cardshifter.server.commands.ReplayAllCommand;
 import com.cardshifter.server.commands.ReplayAllCommand.ReplayAllParameters;
 import com.cardshifter.server.commands.ReplayCommand;
 import com.cardshifter.server.commands.ReplayCommand.ReplayParameters;
-import com.cardshifter.server.utils.export.DataExporter;
 
 /**
  *Starts the Server object, sets up the AIs and GameFactories, and controls other functions of Server
@@ -98,8 +98,9 @@ public class MainServer {
 	 */
 	private void initializeCommands(CommandHandler commandHandler) {
 		commandHandler.addHandler("exit", () -> new Object(), this::shutdown);
-		commandHandler.addHandler("help", () -> new HelpParameters(), new HelpCommand(commandHandler));
-		commandHandler.addHandler("export", this::export);
+        commandHandler.addHandler("help", () -> new HelpParameters(), new HelpCommand(commandHandler));
+        commandHandler.addHandler("export", () -> new DataExportCommand.DataExportParameters(),
+                new DataExportCommand());
 		commandHandler.addHandler("users", this::users);
 		commandHandler.addHandler("play", this::play);
 		commandHandler.addHandler("say", this::say);
@@ -209,18 +210,6 @@ public class MainServer {
 		int userId = command.getParameterInt(1);
 		ClientIO client = server.getClients().get(userId);
 		server.getIncomingHandler().perform(new StartGameRequest(-1, CardshifterConstants.VANILLA), client);
-	}
-	
-	/**
-	 * Send createGame to the Server for CardshifterConstants.VANILLA. 
-	 * Exports the Server along with the full command
-	 * 
-	 * @param command The command object
-	 */
-	private void export(Command command) {
-		server.createGame(CardshifterConstants.VANILLA);
-		DataExporter exporter = new DataExporter();
-		exporter.export(server, command.getAllParameters());
 	}
 	
 	/**

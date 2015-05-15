@@ -27,9 +27,9 @@ import com.cardshifter.modapi.attributes.*;
 import com.cardshifter.modapi.cards.*;
 import com.cardshifter.modapi.resources.*;
 
-public class PhrancisGame implements ECSMod {
+public class CyborgChroniclesGame implements ECSMod {
 
-	public enum PhrancisResources implements ECSResource {
+	public enum CyborgChroniclesResources implements ECSResource {
 		MAX_HEALTH,
 		TAUNT,
 		DENY_COUNTERATTACK,
@@ -83,8 +83,8 @@ public class PhrancisGame implements ECSMod {
 		})));
 	}
 
-	private final ResourceRetriever health = ResourceRetriever.forResource(PhrancisResources.HEALTH);
-	private final ResourceRetriever healthMax = ResourceRetriever.forResource(PhrancisResources.MAX_HEALTH);
+	private final ResourceRetriever health = ResourceRetriever.forResource(CyborgChroniclesResources.HEALTH);
+	private final ResourceRetriever healthMax = ResourceRetriever.forResource(CyborgChroniclesResources.MAX_HEALTH);
 	private final BiFunction<Entity, Integer, Integer> restoreHealth = (e, value) ->
 			Math.max(Math.min(healthMax.getFor(e) - health.getFor(e), value), 0);
 
@@ -106,8 +106,8 @@ public class PhrancisGame implements ECSMod {
                             effects.toRandom(
                                     TargetFilter.or(filters.enemy().and(filters.isCreatureOnBattlefield()),
                                             filters.enemy().and(filters.isPlayer())),
-                                    (src, target) -> effects.modify(target, PhrancisResources.HEALTH, -damage).accept(target)
-                    )
+                                    (src, target) -> effects.modify(target, CyborgChroniclesResources.HEALTH, -damage).accept(target)
+                            )
                )
             )
         ));
@@ -124,32 +124,32 @@ public class PhrancisGame implements ECSMod {
 
 	private Consumer<Entity> giveRush = e -> {
 		Effects effects = new Effects();
-		e.addComponent(effects.described("Give Rush", effects.giveTarget(PhrancisResources.SICKNESS, 0, i -> 0)));
+		e.addComponent(effects.described("Give Rush", effects.giveTarget(CyborgChroniclesResources.SICKNESS, 0, i -> 0)));
 	};
 
 	private Consumer<Entity> giveRanged = e -> {
 		Effects effects = new Effects();
-		e.addComponent(effects.described("Give Ranged", effects.giveTarget(PhrancisResources.DENY_COUNTERATTACK, 1)));
+		e.addComponent(effects.described("Give Ranged", effects.giveTarget(CyborgChroniclesResources.DENY_COUNTERATTACK, 1)));
 	};
 
 	public void addCards(ZoneComponent zone) {
 		// Create card models that should be possible to choose from
 
-		ResourceRetriever rangedResource = ResourceRetriever.forResource(PhrancisResources.DENY_COUNTERATTACK);
+		ResourceRetriever rangedResource = ResourceRetriever.forResource(CyborgChroniclesResources.DENY_COUNTERATTACK);
 		Consumer<Entity> ranged = e -> rangedResource.resFor(e).set(1);
 
 		Path cardFile = ModHelper.getPath(this, "phrancis-cards.cards");
 		ECSAttribute[] defaultAttributes = new ECSAttribute[]{ Attributes.NAME, Attributes.FLAVOR };
 		try {
 			Collection<Entity> cards = new SimpleCardLoader().loadCards(cardFile, zone.getComponentEntity().getGame(),
-					this, PhrancisResources.values(), defaultAttributes);
+					this, CyborgChroniclesResources.values(), defaultAttributes);
 			cards.forEach(c -> zone.addOnBottom(c));
 		} catch (CardLoadingException e) {
 			throw new RuntimeException(e);
 		}
 
 		ECSGame game = zone.getComponentEntity().getGame();
-		game.addSystem(new DenyActionForNames(PhrancisGame.ATTACK_ACTION, noAttackNames));
+		game.addSystem(new DenyActionForNames(CyborgChroniclesGame.ATTACK_ACTION, noAttackNames));
 	}
 
 	public Entity createTargetSpell(String name, ZoneComponent zone, int manaCost, int scrapCost, EffectComponent effect, FilterComponent filter) {
@@ -163,8 +163,8 @@ public class PhrancisGame implements ECSMod {
 	private Entity createSpellWithTargets(String name, int targets, ZoneComponent zone, int manaCost, int scrapCost, Component... components) {
 		Entity entity = zone.getOwner().getGame().newEntity();
 		ECSResourceMap.createFor(entity)
-			.set(PhrancisResources.SCRAP_COST, scrapCost)
-			.set(PhrancisResources.MANA_COST, manaCost);
+			.set(CyborgChroniclesResources.SCRAP_COST, scrapCost)
+			.set(CyborgChroniclesResources.MANA_COST, manaCost);
 		ECSAttributeMap.createFor(entity).set(Attributes.NAME, name);
 		entity.addComponent(new ActionComponent().addAction(spellAction(entity, targets)));
 		entity.addComponents(components);
@@ -187,29 +187,29 @@ public class PhrancisGame implements ECSMod {
 	}
 
     public void systemSetup(ECSGame game) {
-        ResourceRetriever manaMaxResource = ResourceRetriever.forResource(PhrancisResources.MANA_MAX);
-        ResourceRetriever manaCostResource = ResourceRetriever.forResource(PhrancisResources.MANA_COST);
+        ResourceRetriever manaMaxResource = ResourceRetriever.forResource(CyborgChroniclesResources.MANA_MAX);
+        ResourceRetriever manaCostResource = ResourceRetriever.forResource(CyborgChroniclesResources.MANA_COST);
         UnaryOperator<Entity> owningPlayerPays = entity -> entity.getComponent(CardComponent.class).getOwner();
-        game.addSystem(new GainResourceSystem(PhrancisResources.MANA_MAX, entity -> Math.min(1, Math.abs(manaMaxResource.getFor(entity) - 10))));
-        game.addSystem(new RestoreResourcesSystem(PhrancisResources.MANA, entity -> manaMaxResource.getFor(entity)));
+        game.addSystem(new GainResourceSystem(CyborgChroniclesResources.MANA_MAX, entity -> Math.min(1, Math.abs(manaMaxResource.getFor(entity) - 10))));
+        game.addSystem(new RestoreResourcesSystem(CyborgChroniclesResources.MANA, entity -> manaMaxResource.getFor(entity)));
 
         // Actions - Play
         game.addSystem(new PlayFromHandSystem(PLAY_ACTION));
         game.addSystem(new PlayEntersBattlefieldSystem(PLAY_ACTION));
-        game.addSystem(new UseCostSystem(PLAY_ACTION, PhrancisResources.MANA, manaCostResource::getFor, owningPlayerPays));
+        game.addSystem(new UseCostSystem(PLAY_ACTION, CyborgChroniclesResources.MANA, manaCostResource::getFor, owningPlayerPays));
 
         // Actions - Scrap
-        ResourceRetriever scrapCostResource = ResourceRetriever.forResource(PhrancisResources.SCRAP_COST);
-        ResourceRetriever attackAvailable = ResourceRetriever.forResource(PhrancisResources.ATTACK_AVAILABLE);
-        ResourceRetriever sickness = ResourceRetriever.forResource(PhrancisResources.SICKNESS);
-        game.addSystem(new ScrapSystem(PhrancisResources.SCRAP,	e ->
+        ResourceRetriever scrapCostResource = ResourceRetriever.forResource(CyborgChroniclesResources.SCRAP_COST);
+        ResourceRetriever attackAvailable = ResourceRetriever.forResource(CyborgChroniclesResources.ATTACK_AVAILABLE);
+        ResourceRetriever sickness = ResourceRetriever.forResource(CyborgChroniclesResources.SICKNESS);
+        game.addSystem(new ScrapSystem(CyborgChroniclesResources.SCRAP,	e ->
                 attackAvailable.getOrDefault(e, 0) > 0 &&
                         sickness.getOrDefault(e, 1) == 0
         ));
 
         // Actions - Spell
-        game.addSystem(new UseCostSystem(USE_ACTION, PhrancisResources.MANA, manaCostResource::getFor, owningPlayerPays));
-        game.addSystem(new UseCostSystem(USE_ACTION, PhrancisResources.SCRAP, scrapCostResource::getFor, owningPlayerPays));
+        game.addSystem(new UseCostSystem(USE_ACTION, CyborgChroniclesResources.MANA, manaCostResource::getFor, owningPlayerPays));
+        game.addSystem(new UseCostSystem(USE_ACTION, CyborgChroniclesResources.SCRAP, scrapCostResource::getFor, owningPlayerPays));
         game.addSystem(new PlayFromHandSystem(USE_ACTION));
         game.addSystem(new EffectActionSystem(USE_ACTION));
         game.addSystem(new EffectActionSystem(ENCHANT_ACTION));
@@ -218,29 +218,29 @@ public class PhrancisGame implements ECSMod {
         game.addSystem(new DestroyAfterUseSystem(USE_ACTION));
 
         // Actions - Attack
-        ResourceRetriever allowCounterAttackRes = ResourceRetriever.forResource(PhrancisResources.DENY_COUNTERATTACK);
+        ResourceRetriever allowCounterAttackRes = ResourceRetriever.forResource(CyborgChroniclesResources.DENY_COUNTERATTACK);
         BiPredicate<Entity, Entity> allowCounterAttack =
                 (attacker, defender) -> allowCounterAttackRes.getOrDefault(attacker, 0) == 0;
         game.addSystem(new AttackOnBattlefield());
-        game.addSystem(new AttackSickness(PhrancisResources.SICKNESS));
-        game.addSystem(new AttackTargetMinionsFirstThenPlayer(PhrancisResources.TAUNT));
-        game.addSystem(new AttackDamageYGO(PhrancisResources.ATTACK, PhrancisResources.HEALTH, allowCounterAttack));
-        game.addSystem(new UseCostSystem(ATTACK_ACTION, PhrancisResources.ATTACK_AVAILABLE, entity -> 1, entity -> entity));
+        game.addSystem(new AttackSickness(CyborgChroniclesResources.SICKNESS));
+        game.addSystem(new AttackTargetMinionsFirstThenPlayer(CyborgChroniclesResources.TAUNT));
+        game.addSystem(new AttackDamageYGO(CyborgChroniclesResources.ATTACK, CyborgChroniclesResources.HEALTH, allowCounterAttack));
+        game.addSystem(new UseCostSystem(ATTACK_ACTION, CyborgChroniclesResources.ATTACK_AVAILABLE, entity -> 1, entity -> entity));
         game.addSystem(new RestoreResourcesToSystem(entity -> entity.hasComponent(CreatureTypeComponent.class)
                 && Cards.isOnZone(entity, BattlefieldComponent.class)
-                && Cards.isOwnedByCurrentPlayer(entity), PhrancisResources.ATTACK_AVAILABLE, entity -> 1));
+                && Cards.isOwnedByCurrentPlayer(entity), CyborgChroniclesResources.ATTACK_AVAILABLE, entity -> 1));
         game.addSystem(new RestoreResourcesToSystem(entity -> entity.hasComponent(CreatureTypeComponent.class)
                 && Cards.isOnZone(entity, BattlefieldComponent.class)
-                && Cards.isOwnedByCurrentPlayer(entity), PhrancisResources.SICKNESS,
+                && Cards.isOwnedByCurrentPlayer(entity), CyborgChroniclesResources.SICKNESS,
                 entity -> Math.max(0, sickness.getFor(entity) - 1)));
-        game.addSystem(new TrampleSystem(PhrancisResources.HEALTH));
+        game.addSystem(new TrampleSystem(CyborgChroniclesResources.HEALTH));
         game.addSystem(new ApplyAfterAttack(e -> allowCounterAttackRes.getFor(e) > 0, e -> sickness.resFor(e).set(2)));
 
         // Actions - Enchant
         game.addSystem(new PlayFromHandSystem(ENCHANT_ACTION));
-        game.addSystem(new UseCostSystem(ENCHANT_ACTION, PhrancisResources.SCRAP, scrapCostResource::getFor, owningPlayerPays));
+        game.addSystem(new UseCostSystem(ENCHANT_ACTION, CyborgChroniclesResources.SCRAP, scrapCostResource::getFor, owningPlayerPays));
         game.addSystem(new EnchantTargetCreatureTypes(new String[]{ "Bio" }));
-        game.addSystem(new EnchantPerform(PhrancisResources.ATTACK, PhrancisResources.HEALTH, PhrancisResources.MAX_HEALTH));
+        game.addSystem(new EnchantPerform(CyborgChroniclesResources.ATTACK, CyborgChroniclesResources.HEALTH, CyborgChroniclesResources.MAX_HEALTH));
 
 //		game.addSystem(new ConsumeCardSystem());
 
@@ -251,7 +251,7 @@ public class PhrancisGame implements ECSMod {
         game.addSystem(new DrawStartCards(5));
         game.addSystem(new MulliganSingleCards(game));
         game.addSystem(new DrawCardAtBeginningOfTurnSystem());
-        game.addSystem(new DamageConstantWhenOutOfCardsSystem(PhrancisResources.HEALTH, 1));
+        game.addSystem(new DamageConstantWhenOutOfCardsSystem(CyborgChroniclesResources.HEALTH, 1));
 //		game.addSystem(new DamageIncreasingWhenOutOfCardsSystem());
         game.addSystem(new LimitedHandSizeSystem(10, card -> card.getCardToDraw().destroy()));
 //		game.addSystem(new RecreateDeckSystem());
@@ -261,7 +261,7 @@ public class PhrancisGame implements ECSMod {
         // TODO: game.addSystem(new GiveStartCard(game.getPlayers().get(1), "The Coin"));
 
         // General setup
-        game.addSystem(new GameOverIfNoHealth(PhrancisResources.HEALTH));
+        game.addSystem(new GameOverIfNoHealth(CyborgChroniclesResources.HEALTH));
         game.addSystem(new LastPlayersStandingEndsGame());
         game.addSystem(new RemoveDeadEntityFromZoneSystem());
         game.addSystem(new PerformerMustBeCurrentPlayer());
@@ -284,10 +284,10 @@ public class PhrancisGame implements ECSMod {
             actions.addAction(endTurnAction);
 
             ECSResourceMap.createFor(player)
-                    .set(PhrancisResources.HEALTH, 30)
-                    .set(PhrancisResources.MAX_HEALTH, 30)
-                    .set(PhrancisResources.MANA, 0)
-                    .set(PhrancisResources.SCRAP, 0);
+                    .set(CyborgChroniclesResources.HEALTH, 30)
+                    .set(CyborgChroniclesResources.MAX_HEALTH, 30)
+                    .set(CyborgChroniclesResources.MANA, 0)
+                    .set(CyborgChroniclesResources.SCRAP, 0);
 
             ZoneComponent deck = new DeckComponent(player);
             ZoneComponent hand = new HandComponent(player);
@@ -325,10 +325,10 @@ public class PhrancisGame implements ECSMod {
 	public Entity createEnchantment(ZoneComponent deck, int strength, int health, int cost, String name) {
 		Entity entity = deck.getOwner().getGame().newEntity();
 		ECSResourceMap.createFor(entity)
-			.set(PhrancisResources.HEALTH, health)
-			.set(PhrancisResources.MAX_HEALTH, health)
-			.set(PhrancisResources.SCRAP_COST, cost)
-			.set(PhrancisResources.ATTACK, strength);
+			.set(CyborgChroniclesResources.HEALTH, health)
+			.set(CyborgChroniclesResources.MAX_HEALTH, health)
+			.set(CyborgChroniclesResources.SCRAP_COST, cost)
+			.set(CyborgChroniclesResources.ATTACK, strength);
 		ECSAttributeMap.createFor(entity).set(Attributes.NAME, name);
 		enchantment.accept(entity);
 		deck.addOnBottom(entity);
@@ -347,18 +347,18 @@ public class PhrancisGame implements ECSMod {
 			entity.addComponent(new CreatureTypeComponent(creatureType));
 
 			ECSResourceMap map = ECSResourceMap.createOrGetFor(entity);
-			map.set(PhrancisResources.SICKNESS, 1);
-			map.set(PhrancisResources.TAUNT, 1);
+			map.set(CyborgChroniclesResources.SICKNESS, 1);
+			map.set(CyborgChroniclesResources.TAUNT, 1);
 //		map.set(PhrancisResources.TRAMPLE, 1);
-			map.set(PhrancisResources.ATTACK_AVAILABLE, 1);
+			map.set(CyborgChroniclesResources.ATTACK_AVAILABLE, 1);
 		};
 	}
 
 	private Consumer<Entity> health(int health) {
 		return e -> {
 			ECSResourceMap map = ECSResourceMap.createOrGetFor(e);
-			map.set(PhrancisResources.HEALTH, health);
-			map.set(PhrancisResources.MAX_HEALTH, health);
+			map.set(CyborgChroniclesResources.HEALTH, health);
+			map.set(CyborgChroniclesResources.MAX_HEALTH, health);
 		};
 	}
 
@@ -375,15 +375,15 @@ public class PhrancisGame implements ECSMod {
 			int health, String creatureType, int scrapValue, String name) {
 		Entity entity = deck.getOwner().getGame().newEntity();
 		ECSResourceMap.createFor(entity)
-			.set(PhrancisResources.HEALTH, health)
-			.set(PhrancisResources.MAX_HEALTH, health)
-			.set(PhrancisResources.ATTACK, strength)
-			.set(PhrancisResources.SCRAP, scrapValue)
-			.set(PhrancisResources.MANA_COST, cost)
-			.set(PhrancisResources.SICKNESS, 1)
-			.set(PhrancisResources.TAUNT, 1)
+			.set(CyborgChroniclesResources.HEALTH, health)
+			.set(CyborgChroniclesResources.MAX_HEALTH, health)
+			.set(CyborgChroniclesResources.ATTACK, strength)
+			.set(CyborgChroniclesResources.SCRAP, scrapValue)
+			.set(CyborgChroniclesResources.MANA_COST, cost)
+			.set(CyborgChroniclesResources.SICKNESS, 1)
+			.set(CyborgChroniclesResources.TAUNT, 1)
 //			.set(PhrancisResources.TRAMPLE, 1)
-			.set(PhrancisResources.ATTACK_AVAILABLE, 1);
+			.set(CyborgChroniclesResources.ATTACK_AVAILABLE, 1);
 		ECSAttributeMap.createFor(entity).set(Attributes.NAME, name);
 		creature(creatureType).accept(entity);
 		deck.addOnBottom(entity);
