@@ -43,6 +43,7 @@ public class ECSResourceData {
 						this.current = value;
 						logger.debug("Modified " + resource + " for " + entity + " to " + value);
 					});
+            get(); // do a ResourceViewUpdate check
 		}
 	}
 	

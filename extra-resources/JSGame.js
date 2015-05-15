@@ -198,6 +198,7 @@ function setupGame(game) {
         new com.cardshifter.modapi.cards.RemoveDeadEntityFromZoneSystem(),
         new com.cardshifter.modapi.phase.PerformerMustBeCurrentPlayer(),
         removeDead,
+        new com.cardshifter.modapi.resources.ResourceRecountSystem(),
     ]);
 
 	var allowCounterAttackRes = DENY_COUNTERATTACK.retriever;

@@ -114,7 +114,8 @@ keywords.filters.creatureType = {
      */
     func: function (entity, filter) {
         return function (source, target) {
-            return filter === target.getComponent(com.cardshifter.modapi.base.CreatureTypeComponent.class).creatureType;
+            var comp = target.getComponent(com.cardshifter.modapi.base.CreatureTypeComponent.class);
+            return comp !== null && filter === comp.creatureType;
         }
     }
 };
