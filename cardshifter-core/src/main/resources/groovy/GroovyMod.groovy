@@ -1,6 +1,45 @@
 import com.cardshifter.modapi.base.ECSMod;
 import com.cardshifter.modapi.base.ECSGame;
-import com.cardshifter.modapi.base.Entity;
+import com.cardshifter.modapi.base.Entity
+import com.cardshifter.modapi.cards.ZoneComponent
+import net.zomis.cardshifter.ecs.config.DeckConfigFactory;
+
+class CardDelegate {
+    Entity entity
+
+    def propertyMissing(String name, value) {
+        println "Missing property: Cannot set $name to $value"
+    }
+
+    def propertyMissing(String name) {
+        println 'Missing property: ' + name
+    }
+
+    def methodMissing(String name, args) {
+        println 'Missing method: ' + name
+    }
+}
+
+class ZoneDelegate {
+    Entity entity
+    ZoneComponent zone
+
+    def cards(Closure<?> closure) {
+        closure.delegate = this
+        closure.call()
+    }
+
+    def card(String name, Closure<?> closure) {
+        closure.delegate = new CardDelegate(entity: entity.game.newEntity())
+        closure.setResolveStrategy(Closure.DELEGATE_ONLY)
+        closure.call()
+    }
+
+    def card(Closure<?> closure) {
+        closure.delegate = new CardDelegate(entity: entity.game.newEntity())
+        closure.call()
+    }
+}
 
 class NeutralDelegate {
     Entity entity
@@ -10,24 +49,54 @@ class NeutralDelegate {
     }
 
     def zone(String name, Closure<?> closure) {
-        println "Zone $name $closure"
+        def zone = new ZoneComponent(entity, name)
+        entity.addComponent(zone)
+        println "Zone $name"
+        closure.delegate = new ZoneDelegate(entity: entity, zone: zone)
+        closure.call(closure)
     }
     def addCards() {
         println 'Add cards'
     }
 }
 
-class PlayersDelegate {
+class DeckDelegate {
+    int minSize, maxSize, maxCardsPerType
+    String zoneName
+
+    def minSize(int value) {
+        this.minSize = value
+    }
+    def maxSize(int value) {
+        this.maxSize = value
+    }
+    def maxCardsPerType(int value) {
+        this.maxCardsPerType = value
+    }
+    def zone(String value) {
+        this.zoneName = value
+    }
+}
+
+class PlayerDelegate {
+    Entity entity
+
     def config(Closure<?> closure) {
         println "Config closure"
+        closure.setDelegate(this)
+        closure.call()
     }
-    def deck(Closure<?> closure) {
 
+    def deck(Closure<?> closure) {
+        def deckConfig = new DeckDelegate()
+        closure.delegate = deckConfig
+        closure.call()
+        List cardList = entity.game.findEntities({en -> en.hasComponent(ZoneComponent)})
+        assert cardList.size() == 0
+        ZoneComponent zone = cardList.get(0).getComponent(ZoneComponent)
+        assert zone.name == deckConfig.zoneName
+        DeckConfigFactory.create(deckConfig.minSize, deckConfig.maxSize, zone.cards, deckConfig.maxCardsPerType)
     }
-    def minSize(int value) {}
-    def maxSize(int value) {}
-    def minCardsPerType(int value) {}
-    def zone(String value) {}
 }
 
 public abstract class GroovyMod implements ECSMod {
@@ -39,19 +108,21 @@ public abstract class GroovyMod implements ECSMod {
     def enableMeta() {
         ECSGame.class.metaClass.neutral << {Closure closure ->
             println 'Neutral closure'
-            def cl = closure.rehydrate(new NeutralDelegate(entity: game.newEntity()), null, null)
+            def cl = closure.rehydrate(new NeutralDelegate(entity: game.newEntity()), this, this)
             cl.call()
         }
         ECSGame.class.metaClass.players << {int count, Closure closure ->
             println 'Players closure'
-            def cl = closure.rehydrate(new PlayersDelegate(), null, null)
-            cl.call()
+            for (int i = 0; i < count; i++) {
+                def cl = closure.rehydrate(new PlayerDelegate(entity: game.newEntity()), null, null)
+                cl.call()
+            }
         }
     }
 
     void declareConfiguration(ECSGame game) {
-        enableMeta()
         this.game = game
+        enableMeta()
         config()
     }
 

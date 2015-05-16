@@ -1,4 +1,5 @@
 import GroovyMod;
+import Cards
 
 class MyGame extends GroovyMod {
 
@@ -7,8 +8,8 @@ class MyGame extends GroovyMod {
             println 'Game Closure!'
             neutral {
                 resourceModifier()
-                zone 'Cards', {
-                    addCards()
+                zone 'Cards', {Closure cl ->
+                    new Cards().addCards(cl)
                 }
             }
 

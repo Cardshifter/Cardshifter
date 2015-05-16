@@ -6,8 +6,8 @@ public class Cards {
      * @param game {Object} - An instance of the game.
      * @param zone {Object} - Zone to where the cards should be added.
      */
-    void addCards(game, zone) {
-        cards(game, zone) {
+    void addCards(Closure<?> closure) {
+        closure.delegate.cards {
             card('Spareparts') {
                 creature 'Mech'
                 health = 1
@@ -18,7 +18,7 @@ public class Cards {
                 manaCost 0
                 flavor 'Cobbled together from whatever was lying around at the time.'
             }
-            card 'Gyrodroid' {
+            card('Gyrodroid') {
                 creature "Mech"
                 health 1
                 denyCounterAttack 1
@@ -27,7 +27,7 @@ public class Cards {
                 scrap 1
                 flavor "A flying, spherical droid that shoots weak laser beams at nearby targets."
             }
-            card 'The Chopper' {
+            card('The Chopper') {
                 creature "Mech"
                 health 1
                 sickness 0
@@ -36,7 +36,7 @@ public class Cards {
                 scrap 1
                 flavor "Looks like a flying circular blade with a sphere in the middle."
             }
-            card 'Shieldmech' {
+            card('Shieldmech') {
                 creature "Mech"
                 health 3
                 manaCost 2
@@ -44,7 +44,7 @@ public class Cards {
                 scrap 1
                 flavor "A small, flying shield generator droid."
             }
-            card 'Robot Guard' {
+            card('Robot Guard') {
                 creature "Mech"
                 health 2
                 manaCost 2
@@ -52,7 +52,7 @@ public class Cards {
                 scrap 1
                 flavor "Common and inexpensive robot often use for personal protection."
             }
-            card 'Humadroid' {
+            card('Humadroid') {
                 creature "Mech"
                 health 3
                 manaCost 3
@@ -61,7 +61,7 @@ public class Cards {
                 flavor "You might mistake it for a human, but it won’t mistake you for a mech."
 
             }
-            card 'Assassinatrix' {
+            card('Assassinatrix') {
                 creature "Mech"
                 health 1
                 denyCounterAttack 1
@@ -70,7 +70,7 @@ public class Cards {
                 scrap 2
                 flavor "Humanoid in form, except for two massive cannons in place of arms."
             }
-            card 'Fortimech' {
+            card('Fortimech') {
                 creature "Mech"
                 health 4
                 manaCost 3
@@ -78,7 +78,7 @@ public class Cards {
                 scrap 2
                 flavor "About the only place that a person is safe during a firefight is inside one of these."
             }
-            card 'Scout Mech' {
+            card('Scout Mech') {
                 creature "Mech"
                 health 1
                 sickness 0
@@ -87,7 +87,7 @@ public class Cards {
                 scrap 2
                 flavor "The fastest mech on two legs. You don’t want to see the ones with four."
             }
-            card 'Supply Mech' {
+            card('Supply Mech') {
                 creature "Mech"
                 health 5
                 attack 0
@@ -98,7 +98,7 @@ public class Cards {
                 flavor "Worth more than its weight in scrap, and it is pretty heavy."
 
             }
-            card 'F.M.U.' {
+            card('F.M.U.') {
                 creature "Mech"
                 health 4
                 attack 0
@@ -114,7 +114,7 @@ public class Cards {
                 flavor "The Field Medical Unit is equipped with modern laser surgical tools and a variety of remedy shots."
 
             }
-            card 'Modleg Ambusher' {
+            card('Modleg Ambusher') {
                 creature "Mech"
                 health 3
                 sickness 0
@@ -123,7 +123,7 @@ public class Cards {
                 scrap 3
                 flavor "Uses the legs of other bots to enhance its own speed."
             }
-            card 'Heavy Mech' {
+            card('Heavy Mech') {
                 creature "Mech"
                 health 6
                 manaCost 5
@@ -132,7 +132,7 @@ public class Cards {
                 flavor "The bigger they are, the harder they fall. Eventually."
 
             }
-            card 'Waste Runner' {
+            card('Waste Runner') {
                 creature "Mech"
                 manaCost 5
                 attack 4
@@ -143,7 +143,7 @@ public class Cards {
             }
 
             // Bio Creatures
-            card 'Conscript' {
+            card('Conscript') {
                 creature "Bio"
                 health 2
                 sickness 0
@@ -151,7 +151,7 @@ public class Cards {
                 attack 2
                 flavor "He just signed up last week and he is very excited to fight."
             }
-            card 'Longshot' {
+            card('Longshot') {
                 creature "Bio"
                 health 1
                 denyCounterAttack 1
@@ -159,21 +159,21 @@ public class Cards {
                 attack 3
                 flavor "Eyes and reflexes augmented for maximum deadliness."
             }
-            card 'Bodyman' {
+            card('Bodyman') {
                 creature "Bio"
                 manaCost 4
                 attack 2
                 health 3
                 flavor "Strength augmented with mechanical musculature."
             }
-            card 'Vetter' {
+            card('Vetter') {
                 creature "Bio"
                 health 3
                 manaCost 5
                 attack 3
                 flavor "A retired conscript with a desire to jack and make some quick creds."
             }
-            card 'Field Medic' {
+            card('Field Medic') {
                 creature "Bio"
                 health 5
                 onEndOfTurn {
@@ -186,7 +186,7 @@ public class Cards {
                 attack 1
                 flavor "Unsung hero responsible for keeping countless troops alive."
             }
-            card 'Wastelander' {
+            card('Wastelander') {
                 creature "Bio"
                 health 4
                 manaCost 6
@@ -194,7 +194,7 @@ public class Cards {
                 flavor "Spent his life learning the lessons of the wastelands."
 
             }
-            card 'Commander' {
+            card('Commander') {
                 creature "Bio"
                 health 3
                 sickness 0
@@ -203,7 +203,7 @@ public class Cards {
                 flavor "A professional soldier for the government."
 
             }
-            card 'Cyberpimp' {
+            card('Cyberpimp') {
                 creature "Bio"
                 health 5
                 manaCost 6
@@ -211,7 +211,7 @@ public class Cards {
                 flavor "Supersized and heavily augmented."
 
             }
-            card 'Cyborg' {
+            card('Cyborg') {
                 creature "Bio"
                 health 5
                 manaCost 7
@@ -219,7 +219,7 @@ public class Cards {
                 flavor "He’s more machine than human now."
 
             }
-            card 'Web Boss' {
+            card('Web Boss') {
                 creature "Bio"
                 health 6
                 manaCost 8
@@ -227,7 +227,7 @@ public class Cards {
                 flavor "Leader of a gang that primarily operates on the web."
 
             }
-            card 'Inside Man' {
+            card('Inside Man') {
                 creature "Bio"
                 health 6
                 attack 2
@@ -246,21 +246,21 @@ public class Cards {
             }
 
             // Enchantments
-            card 'Bionic Arms' {
+            card('Bionic Arms') {
                 enchantment true
                 addAttack 2
                 scrapCost 1
                 flavor "These arms will give strength to even the most puny individual."
 
             }
-            card 'Body Armor' {
+            card('Body Armor') {
                 enchantment true
                 addHealth 2
                 scrapCost 1
                 flavor "Steel-reinforced armor to absord damage from blows and shots."
 
             }
-            card 'Adrenalin Injection' {
+            card('Adrenalin Injection') {
                 enchantment true
                 set {
                     res SICKNESS
@@ -271,21 +271,21 @@ public class Cards {
                 scrapCost 1
                 flavor "An injection to increase speed and body function."
             }
-            card 'Steroid Implants' {
+            card('Steroid Implants') {
                 enchantment true
                 addAttack 2
                 addHealth 1
                 scrapCost 2
                 flavor "Intraveneous implants that feed the body for increased strength."
             }
-            card 'Reinforced Cranial Implants' {
+            card('Reinforced Cranial Implants') {
                 enchantment true
                 addAttack 1
                 addHealth 2
                 scrapCost 2
                 flavor "Offers head protection as well as a slight increase in brain activity."
             }
-            card 'Cybernetic Arm Cannon' {
+            card('Cybernetic Arm Cannon') {
                 enchantment true
                 set {
                     res DENY_COUNTERATTACK
@@ -296,20 +296,20 @@ public class Cards {
                 scrapCost 2
                 flavor "Replaces the forearm with a powerful firearm for massive damage."
             }
-            card 'Exoskeleton' {
+            card('Exoskeleton') {
                 enchantment true
                 addHealth 3
                 scrapCost 2
                 flavor "This very invasive operation reinforces bone tissue with titanium."
             }
-            card 'Artificial Intelligence Implants' {
+            card('Artificial Intelligence Implants') {
                 enchantment true
                 addAttack 2
                 addHealth 3
                 scrapCost 3
                 flavor "An advanced processor is connected to the subject's brain, replacing personality with extreme intelligence and reflexes."
             }
-            card 'Full-body Cybernetics Upgrade' {
+            card('Full-body Cybernetics Upgrade') {
                 enchantment true
                 addAttack 3
                 addHealth 3
