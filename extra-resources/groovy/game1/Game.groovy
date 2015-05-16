@@ -3,17 +3,33 @@ import Cards
 
 class MyGame extends GroovyMod {
 
+    def ATTACK = createResource('ATTACK')
+    def HEALTH = createResource("HEALTH")
+    def MAX_HEALTH = createResource("MAX_HEALTH")
+
+    def ATTACK_AVAILABLE = createResource("ATTACK_AVAILABLE")
+    def DENY_COUNTERATTACK = createResource("DENY_COUNTERATTACK")
+    def MANA = createResource("MANA")
+    def MANA_COST = createResource("MANA_COST")
+    def MANA_MAX = createResource("MANA_MAX")
+    def SICKNESS = createResource("SICKNESS")
+    def TAUNT = createResource("TAUNT")
+
     def config() {
+        resources([ATTACK, HEALTH, MAX_HEALTH, ATTACK_AVAILABLE, DENY_COUNTERATTACK, MANA, MANA_COST, MANA_MAX,
+                SICKNESS, TAUNT])
         game {
             println 'Game Closure!'
             neutral {
                 resourceModifier()
+                phases()
                 zone 'Cards', {Closure cl ->
                     new Cards().addCards(cl)
                 }
             }
 
             players(2) {
+                phase 'Main'
                 config {
                     deck {
                         minSize 30
@@ -40,18 +56,6 @@ def ENCHANT_ACTION = "Enchant";
 def ATTACK_ACTION = "Attack";
 def END_TURN_ACTION = "End Turn";
 def USE_ACTION = "Use";
-
-def ATTACK = createResource("ATTACK");
-def HEALTH = createResource("HEALTH");
-def MAX_HEALTH = createResource("MAX_HEALTH");
-
-def ATTACK_AVAILABLE = createResource("ATTACK_AVAILABLE");
-def DENY_COUNTERATTACK = createResource("DENY_COUNTERATTACK");
-def MANA = createResource("MANA");
-def MANA_COST = createResource("MANA_COST");
-def MANA_MAX = createResource("MANA_MAX");
-def SICKNESS = createResource("SICKNESS");
-def TAUNT = createResource("TAUNT");
 
 def ownedBattlefieldCreatures = {entity ->
     def Cards = Java.type("com.cardshifter.modapi.cards.Cards");

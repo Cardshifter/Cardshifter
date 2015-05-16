@@ -1,11 +1,17 @@
 import com.cardshifter.modapi.attributes.Attributes
 import com.cardshifter.modapi.attributes.ECSAttributeMap
+import com.cardshifter.modapi.base.ComponentRetriever
 import com.cardshifter.modapi.base.ECSMod;
 import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.Entity
 import com.cardshifter.modapi.base.PlayerComponent
 import com.cardshifter.modapi.cards.ZoneComponent
+import com.cardshifter.modapi.phase.Phase
+import com.cardshifter.modapi.phase.PhaseController
+import com.cardshifter.modapi.resources.ECSResource
+import com.cardshifter.modapi.resources.ECSResourceDefault
 import com.cardshifter.modapi.resources.ECSResourceMap
+import com.cardshifter.modapi.resources.ResourceModifierComponent
 import net.zomis.cardshifter.ecs.config.ConfigComponent
 import net.zomis.cardshifter.ecs.config.DeckConfigFactory;
 
@@ -14,6 +20,10 @@ class CardDelegate {
 
     def propertyMissing(String name, value) {
         println "Missing property: Cannot set $name to $value"
+        ECSResource res = entity.game.resource(name)
+        if (res) {
+            res.retriever.set(entity, (int) value)
+        }
     }
 
     def propertyMissing(String name) {
@@ -22,6 +32,10 @@ class CardDelegate {
 
     def methodMissing(String name, args) {
         println 'Missing method: ' + name
+        ECSResource res = entity.game.resource(name)
+        if (res) {
+            res.retriever.set(entity, (int) args[0])
+        }
     }
 }
 
@@ -53,7 +67,11 @@ class NeutralDelegate {
     Entity entity
 
     def resourceModifier() {
-        entity.addComponent(new com.cardshifter.modapi.resources.ResourceModifierComponent());
+        entity.addComponent(new ResourceModifierComponent());
+    }
+
+    def phases() {
+        entity.addComponent(new PhaseController())
     }
 
     def zone(String name, Closure<?> closure) {
@@ -95,13 +113,18 @@ class PlayerDelegate {
         entity.addComponent(config);
     }
 
+    def phase(String name) {
+        def controller = ComponentRetriever.singleton(entity.game, PhaseController)
+        controller.addPhase(new Phase(entity, name))
+    }
+
     def config(Closure<?> closure) {
         println "Config closure"
         closure.setDelegate(this)
         closure.call()
     }
 
-    def deck(Closure<?> closure) {
+    def deck(@DelegatesTo(DeckDelegate) Closure<?> closure) {
         def deckConfig = new DeckDelegate()
         closure.delegate = deckConfig
         closure.call()
@@ -120,14 +143,24 @@ public abstract class GroovyMod implements ECSMod {
     abstract def setup()
     abstract def config()
 
-    def enableMeta() {
+    ECSResource createResource(String name) {
+        return new ECSResourceDefault(name)
+    }
+
+    void resources(List<ECSResource> resources) {
+        def map = [:]
+        for (ECSResource res in resources) {
+            map.put(res.toString().toUpperCase(), res)
+        }
+        game.metaClass.resource << {String name -> map[name.toUpperCase()]}
+    }
+
+    private def enableMeta() {
         ECSGame.class.metaClass.neutral << {Closure closure ->
-            println 'Neutral closure'
             def cl = closure.rehydrate(new NeutralDelegate(entity: game.newEntity()), this, this)
             cl.call()
         }
         ECSGame.class.metaClass.players << {int count, Closure closure ->
-            println 'Players closure'
             for (int i = 0; i < count; i++) {
                 Entity player = game.newEntity()
                 def cl = closure.rehydrate(new PlayerDelegate(player), null, null)
