@@ -32,20 +32,6 @@ public class GroovyMod {
     private def enableMeta() {
         GeneralSystems.setup()
         GeneralSystems.cardSystems()
-        ECSGame.class.metaClass.neutral << {Closure closure ->
-            def cl = closure.rehydrate(new NeutralDelegate(entity: game.newEntity()), this, this)
-            cl.call()
-        }
-        ECSGame.class.metaClass.players << {int count, Closure closure ->
-            for (int i = 0; i < count; i++) {
-                println 'Creating player ' + i
-                Entity player = game.newEntity()
-                def cl = closure.rehydrate(new PlayerDelegate(player), this, this)
-                player.addComponent(new PlayerComponent(i, "Player $i"))
-                cl.setResolveStrategy(Closure.DELEGATE_FIRST)
-                cl.call()
-            }
-        }
     }
 
     private Closure<?> configClosure
@@ -54,7 +40,7 @@ public class GroovyMod {
     void declareConfiguration(ECSGame game) {
         this.game = game
         enableMeta()
-        def cl = configClosure.rehydrate(game, this, this)
+        def cl = configClosure.rehydrate(new ConfigDelegate(game: game), this, this)
         cl.setResolveStrategy(Closure.DELEGATE_FIRST)
         cl.call()
     }
@@ -74,7 +60,26 @@ public class GroovyMod {
     void config(Closure<?> closure) {
         this.configClosure = closure
     }
+}
 
+class ConfigDelegate {
+    ECSGame game
+
+    def neutral(Closure closure) {
+        def cl = closure.rehydrate(new NeutralDelegate(entity: game.newEntity()), this, this)
+        cl.call()
+    }
+
+    def players(int count, Closure closure) {
+        for (int i = 0; i < count; i++) {
+            println 'Creating player ' + i
+            Entity player = game.newEntity()
+            def cl = closure.rehydrate(new PlayerDelegate(player), this, this)
+            player.addComponent(new PlayerComponent(i, "Player $i"))
+            cl.setResolveStrategy(Closure.DELEGATE_FIRST)
+            cl.call()
+        }
+    }
 }
 
 class SetupDelegate {
