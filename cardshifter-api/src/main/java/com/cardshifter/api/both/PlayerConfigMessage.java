@@ -34,4 +34,13 @@ public class PlayerConfigMessage extends Message {
 	public String getModName() {
 		return modName;
 	}
+
+    @Override
+    public String toString() {
+        return "PlayerConfigMessage{" +
+                "configs=" + configs +
+                ", gameId=" + gameId +
+                ", modName='" + modName + '\'' +
+                '}';
+    }
 }
