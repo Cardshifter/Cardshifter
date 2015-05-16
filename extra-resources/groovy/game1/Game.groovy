@@ -24,6 +24,8 @@ def ATTACK_ACTION = "Attack";
 def END_TURN_ACTION = "End Turn";
 def USE_ACTION = "Use";
 
+include 'creatures'
+
 config {
     resources([ATTACK, HEALTH, MAX_HEALTH, ATTACK_AVAILABLE, DENY_COUNTERATTACK, MANA, MANA_COST, MANA_MAX,
                SICKNESS, TAUNT, SCRAP])
@@ -66,7 +68,7 @@ setup {
             def battlefield = com.cardshifter.modapi.cards.BattlefieldComponent.class;
             def remove = event.entity.game.getEntitiesWithComponent(battlefield)
                     .stream().flatMap({entity -> entity.getComponent(battlefield).stream()})
-                    .peek({e -> print(e + " has " + HEALTH.getFor(e))})
+                    .peek({e -> println("$e has ${HEALTH.getFor(e)}")})
                     .filter({e -> HEALTH.getFor(e) <= 0})
                     .collect(java.util.stream.Collectors.toList());
             for (def e in remove) {

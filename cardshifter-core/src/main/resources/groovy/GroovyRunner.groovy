@@ -5,12 +5,12 @@ import org.codehaus.groovy.control.CompilerConfiguration
 public class MyGroovyMod implements ECSMod {
 
     String name
-    GroovyMod groovyMod = new GroovyMod()
+    GroovyMod groovyMod
 
     MyGroovyMod(String name, ClassLoader cl) {
         this.name = name
+        this.groovyMod = new GroovyMod(loader: cl)
         File file = new File("groovy/" + name + "/Game.groovy")
-
         CompilerConfiguration cc = new CompilerConfiguration()
         cc.setScriptBaseClass(DelegatingScript.class.getName())
         GroovyShell sh = new GroovyShell(cl, new Binding(), cc)

@@ -1,3 +1,4 @@
+import com.cardshifter.modapi.actions.ActionComponent
 import com.cardshifter.modapi.attributes.Attributes
 import com.cardshifter.modapi.attributes.ECSAttributeMap
 import com.cardshifter.modapi.base.Entity
@@ -7,6 +8,10 @@ import com.cardshifter.modapi.resources.ECSResourceMap
 
 class CardDelegate {
     Entity entity
+
+    Entity entity() {
+        entity
+    }
 
     def propertyMissing(String name, value) {
         ECSResource res = entity.game.resource(name)
@@ -44,6 +49,7 @@ class ZoneDelegate {
         def card = entity.game.newEntity()
         ECSAttributeMap.createFor(card).set(Attributes.NAME, name)
         ECSResourceMap.createFor(card)
+        card.addComponent(new ActionComponent())
         closure.delegate = new CardDelegate(entity: card)
         closure.setResolveStrategy(Closure.DELEGATE_ONLY)
         closure.call()

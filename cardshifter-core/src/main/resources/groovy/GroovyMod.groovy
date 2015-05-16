@@ -14,10 +14,17 @@ import systems.GeneralSystems;
 
 public class GroovyMod {
 
+    ClassLoader loader
     protected ECSGame game
 
     ECSResource createResource(String name) {
         return new ECSResourceDefault(name)
+    }
+
+    void include(String fileName) {
+        GroovyShell sh = new GroovyShell(loader, new Binding())
+        Object script = sh.run(new File("groovy/${fileName}.groovy"), [])
+        println "Include $fileName resulted in $script"
     }
 
     void resources(List<ECSResource> resources) {
@@ -29,8 +36,8 @@ public class GroovyMod {
         game.metaClass.resource << {String name -> map[name.toUpperCase()]}
     }
 
-    private def enableMeta() {
-        GeneralSystems.setup()
+    private def enableMeta(ECSGame game) {
+        GeneralSystems.setup(game)
         GeneralSystems.cardSystems()
     }
 
@@ -39,7 +46,7 @@ public class GroovyMod {
 
     void declareConfiguration(ECSGame game) {
         this.game = game
-        enableMeta()
+        enableMeta(game)
         def cl = configClosure.rehydrate(new ConfigDelegate(game: game), this, this)
         cl.setResolveStrategy(Closure.DELEGATE_FIRST)
         cl.call()
@@ -66,8 +73,8 @@ class ConfigDelegate {
     ECSGame game
 
     def neutral(Closure closure) {
-        def cl = closure.rehydrate(new NeutralDelegate(entity: game.newEntity()), this, this)
-        cl.call()
+        closure.delegate = new NeutralDelegate(entity: game.newEntity())
+        closure.call()
     }
 
     def players(int count, Closure closure) {

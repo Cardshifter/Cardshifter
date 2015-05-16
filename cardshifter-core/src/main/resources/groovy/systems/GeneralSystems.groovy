@@ -1,6 +1,9 @@
 package systems;
 
 import SystemsDelegate
+import com.cardshifter.modapi.actions.attack.AttackOnBattlefield
+import com.cardshifter.modapi.base.ECSGame
+import com.cardshifter.modapi.base.ECSSystem
 import com.cardshifter.modapi.cards.DamageConstantWhenOutOfCardsSystem
 import com.cardshifter.modapi.cards.DrawCardAtBeginningOfTurnSystem
 import com.cardshifter.modapi.cards.DrawCardEvent
@@ -14,15 +17,35 @@ import net.zomis.cardshifter.ecs.usage.DestroyAfterUseSystem
 
 import java.util.function.Consumer;
 
+class AttackSystemDelegate {
+    ECSGame game
+
+    def zone(String name) {
+        assert name == 'Battlefield' // Only supported right now
+        addSystem(new AttackOnBattlefield())
+    }
+
+    def methodMissing(String name, args) {
+        println 'AttackSystems missing method ' + name
+    }
+
+    def addSystem(ECSSystem system) {
+        game.addSystem(system)
+    }
+}
+
 public class GeneralSystems {
-    static def setup() {
+    static def setup(ECSGame game) {
         SystemsDelegate.metaClass.PerformerMustBeCurrentPlayer << {
             addSystem(new PerformerMustBeCurrentPlayer())
         }
         SystemsDelegate.metaClass.startCards << {int count ->
             addSystem(new DrawStartCards(count))
         }
-
+        SystemsDelegate.metaClass.attackSystem << {Closure clos ->
+            clos.delegate = new AttackSystemDelegate(game: game)
+            clos.call()
+        }
     }
 
     static def cardSystems() {
