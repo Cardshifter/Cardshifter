@@ -22,6 +22,7 @@ import com.cardshifter.modapi.resources.ResourceModifierComponent
 import net.zomis.cardshifter.ecs.config.ConfigComponent
 import net.zomis.cardshifter.ecs.config.DeckConfigFactory;
 import SystemsDelegate;
+import systems.GeneralSystems;
 
 class CardDelegate {
     Entity entity
@@ -192,6 +193,7 @@ public abstract class GroovyMod implements ECSMod {
     }
 
     private def enableMeta() {
+        GeneralSystems.setup()
         ECSGame.class.metaClass.neutral << {Closure closure ->
             def cl = closure.rehydrate(new NeutralDelegate(entity: game.newEntity()), this, this)
             cl.call()
