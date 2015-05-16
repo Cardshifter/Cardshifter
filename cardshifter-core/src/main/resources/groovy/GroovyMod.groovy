@@ -1,7 +1,12 @@
+import com.cardshifter.modapi.attributes.Attributes
+import com.cardshifter.modapi.attributes.ECSAttributeMap
 import com.cardshifter.modapi.base.ECSMod;
 import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.Entity
+import com.cardshifter.modapi.base.PlayerComponent
 import com.cardshifter.modapi.cards.ZoneComponent
+import com.cardshifter.modapi.resources.ECSResourceMap
+import net.zomis.cardshifter.ecs.config.ConfigComponent
 import net.zomis.cardshifter.ecs.config.DeckConfigFactory;
 
 class CardDelegate {
@@ -30,14 +35,17 @@ class ZoneDelegate {
     }
 
     def card(String name, Closure<?> closure) {
-        closure.delegate = new CardDelegate(entity: entity.game.newEntity())
+        def card = entity.game.newEntity()
+        ECSAttributeMap.createFor(card).set(Attributes.NAME, name)
+        ECSResourceMap.createFor(card)
+        closure.delegate = new CardDelegate(entity: card)
         closure.setResolveStrategy(Closure.DELEGATE_ONLY)
         closure.call()
+        zone.addOnBottom(card)
     }
 
     def card(Closure<?> closure) {
-        closure.delegate = new CardDelegate(entity: entity.game.newEntity())
-        closure.call()
+        card('', closure)
     }
 }
 
@@ -80,6 +88,12 @@ class DeckDelegate {
 
 class PlayerDelegate {
     Entity entity
+    def config = new ConfigComponent()
+
+    PlayerDelegate(Entity entity) {
+        this.entity = entity
+        entity.addComponent(config);
+    }
 
     def config(Closure<?> closure) {
         println "Config closure"
@@ -92,10 +106,11 @@ class PlayerDelegate {
         closure.delegate = deckConfig
         closure.call()
         List cardList = entity.game.findEntities({en -> en.hasComponent(ZoneComponent)})
-        assert cardList.size() == 0
+        assert cardList.size() == 1
         ZoneComponent zone = cardList.get(0).getComponent(ZoneComponent)
         assert zone.name == deckConfig.zoneName
-        DeckConfigFactory.create(deckConfig.minSize, deckConfig.maxSize, zone.cards, deckConfig.maxCardsPerType)
+        def deck = DeckConfigFactory.create(deckConfig.minSize, deckConfig.maxSize, zone.cards, deckConfig.maxCardsPerType)
+        config.addConfig("Deck", deck)
     }
 }
 
@@ -114,7 +129,9 @@ public abstract class GroovyMod implements ECSMod {
         ECSGame.class.metaClass.players << {int count, Closure closure ->
             println 'Players closure'
             for (int i = 0; i < count; i++) {
-                def cl = closure.rehydrate(new PlayerDelegate(entity: game.newEntity()), null, null)
+                Entity player = game.newEntity()
+                def cl = closure.rehydrate(new PlayerDelegate(player), null, null)
+                player.addComponent(new PlayerComponent(i, "Player $i"))
                 cl.call()
             }
         }
