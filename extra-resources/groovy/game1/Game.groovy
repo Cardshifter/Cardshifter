@@ -1,12 +1,31 @@
-import com.cardshifter.modapi.base.ECSMod;
-import com.cardshifter.modapi.base.ECSGame;
+import GroovyMod;
 
-class MyGame implements ECSMod {
-    void declareConfiguration(ECSGame game) {
+class MyGame extends GroovyMod {
 
+    def config() {
+        game {
+            println 'Game Closure!'
+            neutral {
+                resourceModifier()
+                zone 'Cards', {
+                    addCards()
+                }
+            }
+
+            players(2) {
+                config {
+                    deck {
+                        minSize 30
+                        maxSize 30
+                        maxCardsPerType 3
+                        zone 'Cards'
+                    }
+                }
+            }
+        }
     }
 
-    void setupGame(ECSGame game) {
+    def setup() {
         println 'setup game called ' + game
     }
 
@@ -32,30 +51,6 @@ def MANA_COST = createResource("MANA_COST");
 def MANA_MAX = createResource("MANA_MAX");
 def SICKNESS = createResource("SICKNESS");
 def TAUNT = createResource("TAUNT");
-
-def declareConfiguration2(game) {
-
-    game {
-        neutral {
-            resourceModifier()
-            zone {
-                name 'Cards'
-                addCards()
-            }
-        }
-
-        players(2) {
-            config {
-                deck {
-                    minSize 30
-                    maxSize 30
-                    maxCardsPerType 3
-                    zone 'Cards'
-                }
-            }
-        }
-    }
-}
 
 def ownedBattlefieldCreatures = {entity ->
     def Cards = Java.type("com.cardshifter.modapi.cards.Cards");
