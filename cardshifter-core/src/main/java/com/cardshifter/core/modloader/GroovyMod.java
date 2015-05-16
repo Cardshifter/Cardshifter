@@ -28,7 +28,9 @@ public class GroovyMod implements ECSMod {
             scriptEngine = new GroovyScriptEngine(new URL[]{file.toURI().toURL(), groovyURL});
             CompilerConfiguration config = new CompilerConfiguration();
             scriptEngine.setConfig(config);
-            this.script = (ECSMod) scriptEngine.run("Game.groovy", binding);
+            binding.setVariable("script", name);
+            binding.setVariable("cl", scriptEngine.getGroovyClassLoader());
+            script = (ECSMod) scriptEngine.run("GroovyRunner.groovy", binding);
             ex = null;
         } catch (Exception e) { // MalformedURLException | ResourceException | groovy.util.ScriptException |
             scriptEngine = null;
@@ -45,7 +47,6 @@ public class GroovyMod implements ECSMod {
         }
         try {
             script.declareConfiguration(game);
-            System.out.println("declare config complete");
         } catch (Exception | AssertionError ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);

@@ -151,7 +151,9 @@ class PlayerDelegate {
 
     def phase(String name) {
         def controller = ComponentRetriever.singleton(entity.game, PhaseController)
-        controller.addPhase(new Phase(entity, name))
+        def phase = new Phase(entity, name)
+        controller.addPhase(phase)
+        println "Added phase $phase"
     }
 
     def config(Closure<?> closure) {
@@ -161,6 +163,7 @@ class PlayerDelegate {
     }
 
     def deck(@DelegatesTo(DeckDelegate) Closure<?> closure) {
+        println 'Deck config creation'
         def deckConfig = new DeckDelegate()
         closure.delegate = deckConfig
         closure.call()
@@ -174,17 +177,16 @@ class PlayerDelegate {
     }
 }
 
-public abstract class GroovyMod implements ECSMod {
+public class GroovyMod {
 
     protected ECSGame game
-    abstract def gameSetup()
-    abstract def gameConfig()
 
     ECSResource createResource(String name) {
         return new ECSResourceDefault(name)
     }
 
     void resources(List<ECSResource> resources) {
+        println "Adding ${resources.size()} resources"
         def map = [:]
         for (ECSResource res in resources) {
             map.put(res.toString().toUpperCase(), res)
@@ -200,38 +202,41 @@ public abstract class GroovyMod implements ECSMod {
         }
         ECSGame.class.metaClass.players << {int count, Closure closure ->
             for (int i = 0; i < count; i++) {
+                println 'Creating player ' + i
                 Entity player = game.newEntity()
                 def cl = closure.rehydrate(new PlayerDelegate(player), this, this)
                 player.addComponent(new PlayerComponent(i, "Player $i"))
+                cl.setResolveStrategy(Closure.DELEGATE_FIRST)
                 cl.call()
             }
         }
     }
 
+    private Closure<?> configClosure
+    private Closure<?> setupClosure
+
     void declareConfiguration(ECSGame game) {
         this.game = game
         enableMeta()
-        gameConfig()
+        def cl = configClosure.rehydrate(game, this, this)
+        cl.setResolveStrategy(Closure.DELEGATE_FIRST)
+        cl.call()
     }
 
     void setupGame(ECSGame game) {
         this.game = game
-        gameSetup()
+        println 'Creating setup delegate'
+        def cl = setupClosure.rehydrate(new SetupDelegate(this, game), this, this)
+        cl.setResolveStrategy(Closure.DELEGATE_ONLY)
+        cl.call()
     }
 
     void setup(Closure<?> closure) {
-        def cl = closure.rehydrate(new SetupDelegate(this, game), this, this)
-        cl.call()
+        this.setupClosure = closure
     }
 
-    void game(Closure<?> closure) {
-        def cl = closure.rehydrate(game, this, this)
-        cl.call()
-    }
-
-    void systems(Closure<?> closure) {
-        def cl = closure.rehydrate(new SystemsDelegate(game: game), this, this);
-        cl.call()
+    void config(Closure<?> closure) {
+        this.configClosure = closure
     }
 
 }
@@ -241,11 +246,17 @@ class SetupDelegate {
     ECSGame game
 
     SetupDelegate(GroovyMod mod, ECSGame game) {
+        println 'Creating setup delegate 2'
         this.mod = mod
         this.game = game
     }
 
+    def test() {
+        println 'test okay'
+    }
+
     def playerDeckFromConfig(String name) {
+        println "Player deck from config $name"
         def players = Players.getPlayersInGame(game)
         for (Entity player in players) {
             DeckComponent deck = player.getComponent(DeckComponent)
@@ -278,7 +289,11 @@ class SetupDelegate {
     }
 
     def methodMissing(String name, args) {
-        println 'Unsupported method: ' + name
+        println 'Setup Unsupported method: ' + name
     }
 
+    void systems(Closure<?> closure) {
+        def cl = closure.rehydrate(new SystemsDelegate(game: game), this, this);
+        cl.call()
+    }
 }
