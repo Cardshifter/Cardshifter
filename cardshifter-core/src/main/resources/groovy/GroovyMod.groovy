@@ -21,6 +21,7 @@ import com.cardshifter.modapi.resources.ECSResourceMap
 import com.cardshifter.modapi.resources.ResourceModifierComponent
 import net.zomis.cardshifter.ecs.config.ConfigComponent
 import net.zomis.cardshifter.ecs.config.DeckConfigFactory;
+import SystemsDelegate;
 
 class CardDelegate {
     Entity entity
@@ -226,6 +227,11 @@ public abstract class GroovyMod implements ECSMod {
         cl.call()
     }
 
+    void systems(Closure<?> closure) {
+        def cl = closure.rehydrate(new SystemsDelegate(game: game), this, this);
+        cl.call()
+    }
+
 }
 
 class SetupDelegate {
@@ -267,6 +273,10 @@ class SetupDelegate {
             DeckComponent deck = player.getComponent(DeckComponent)
             deck.shuffle()
         }
+    }
+
+    def methodMissing(String name, args) {
+        println 'Unsupported method: ' + name
     }
 
 }

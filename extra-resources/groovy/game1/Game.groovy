@@ -1,14 +1,14 @@
 import GroovyMod;
 import Cards
 
-def ownedBattlefieldCreatures = {entity ->
-    def Cards = Java.type("com.cardshifter.modapi.cards.Cards");
-    return entity.hasComponent(com.cardshifter.modapi.base.CreatureTypeComponent.class) &&
-            Cards.isOnZone(entity, com.cardshifter.modapi.cards.BattlefieldComponent.class) &&
-            Cards.isOwnedByCurrentPlayer(entity)
-}
-
 class MyGame extends GroovyMod {
+
+    def ownedBattlefieldCreatures = {entity ->
+        def Cards = com.cardshifter.modapi.cards.Cards;
+        return entity.hasComponent(com.cardshifter.modapi.base.CreatureTypeComponent.class) &&
+                Cards.isOnZone(entity, com.cardshifter.modapi.cards.BattlefieldComponent.class) &&
+                Cards.isOwnedByCurrentPlayer(entity)
+    }
 
     def ATTACK = createResource('ATTACK')
     def HEALTH = createResource("HEALTH")
@@ -73,9 +73,6 @@ class MyGame extends GroovyMod {
 
         }
 
-        def LastPlayersStandingEndsGame = net.zomis.cardshifter.ecs.usage.LastPlayersStandingEndsGame
-        def EffectActionSystem = net.zomis.cardshifter.ecs.effects.EffectActionSystem
-
         def removeDead = {
             game.events.registerHandlerAfter(this, com.cardshifter.modapi.actions.ActionPerformEvent.class, {event ->
                 def battlefield = com.cardshifter.modapi.cards.BattlefieldComponent.class;
@@ -90,7 +87,7 @@ class MyGame extends GroovyMod {
             })
         }
 
-/*        systems {
+        systems {
             gainResource(res: MANA_MAX, value: 1, untilMax: 10)
             restoreResources(res: MANA, value: { res MANA_MAX })
 
@@ -138,18 +135,19 @@ class MyGame extends GroovyMod {
             PerformerMustBeCurrentPlayer()
             removeDead()
             ResourceRecountSystem()
+
+            def allowCounterAttackRes = DENY_COUNTERATTACK.retriever;
+            def allowCounterAttack = {attacker, defender ->
+                return allowCounterAttackRes.getOrDefault(attacker, 0) == 0;
+            }
+
+            attackSystem {
+                accumulating(ATTACK, HEALTH, allowCounterAttack)
+                healAtEndOfTurn(HEALTH, MAX_HEALTH)
+                afterAttack({entity -> allowCounterAttackRes.getFor(entity) > 0},
+                        { entity -> SICKNESS.retriever.set(entity, 2) })
+            }
         }
-
-        def allowCounterAttackRes = DENY_COUNTERATTACK.retriever;
-        def allowCounterAttack = function (attacker, defender) {
-            return allowCounterAttackRes.getOrDefault(attacker, 0) == 0;
-        }
-
-        game.addSystem(AttackDamageAccumulating(ATTACK, HEALTH, allowCounterAttack))
-        game.addSystem(AttackDamageHealAtEndOfTurn(HEALTH, MAX_HEALTH))
-
-        game.addSystem(ApplyAfterAttack({entity -> allowCounterAttackRes.getFor(entity) > 0}),
-                { entity -> SICKNESS.retriever.set(entity, 2) })*/
     }
 
 }
