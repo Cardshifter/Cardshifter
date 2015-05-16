@@ -84,7 +84,7 @@ setup {
         // Play
         playFromHand PLAY_ACTION
         playEntersBattlefield PLAY_ACTION
-        useCost(action: PLAY_ACTION, res: MANA, value: { res MANA_COST }, whoPays: "player")
+        useCost(action: PLAY_ACTION, res: MANA, value: MANA_COST, whoPays: "player")
 
         // Enchant
         playFromHand ENCHANT_ACTION
@@ -93,7 +93,7 @@ setup {
         EnchantPerform(ATTACK, HEALTH, MAX_HEALTH)
 
         // Spell
-        useCost(action: USE_ACTION, res: MANA, value: { res MANA_COST }, whoPays: "player")
+        useCost(action: USE_ACTION, res: MANA, value: MANA_COST, whoPays: "player")
         playFromHand USE_ACTION,
         EffectActionSystem(USE_ACTION)
         EffectActionSystem(PLAY_ACTION)
