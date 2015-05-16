@@ -1,10 +1,7 @@
 import com.cardshifter.api.config.DeckConfig
 import com.cardshifter.modapi.actions.ActionComponent
 import com.cardshifter.modapi.actions.ECSAction
-import com.cardshifter.modapi.attributes.Attributes
-import com.cardshifter.modapi.attributes.ECSAttributeMap
 import com.cardshifter.modapi.base.ComponentRetriever
-import com.cardshifter.modapi.base.ECSMod;
 import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.Entity
 import com.cardshifter.modapi.base.PlayerComponent
@@ -17,62 +14,12 @@ import com.cardshifter.modapi.phase.PhaseController
 import com.cardshifter.modapi.players.Players
 import com.cardshifter.modapi.resources.ECSResource
 import com.cardshifter.modapi.resources.ECSResourceDefault
-import com.cardshifter.modapi.resources.ECSResourceMap
 import com.cardshifter.modapi.resources.ResourceModifierComponent
 import net.zomis.cardshifter.ecs.config.ConfigComponent
 import net.zomis.cardshifter.ecs.config.DeckConfigFactory;
 import SystemsDelegate;
+import ZoneDelegate;
 import systems.GeneralSystems;
-
-class CardDelegate {
-    Entity entity
-
-    def propertyMissing(String name, value) {
-        ECSResource res = entity.game.resource(name)
-        if (res) {
-            res.retriever.set(entity, (int) value)
-        } else {
-            println "Missing property: Cannot set $name to $value"
-        }
-    }
-
-    def propertyMissing(String name) {
-        println 'Missing property: ' + name
-    }
-
-    def methodMissing(String name, args) {
-        ECSResource res = entity.game.resource(name)
-        if (res) {
-            res.retriever.set(entity, (int) args[0])
-        } else {
-            println 'Missing method: ' + name
-        }
-    }
-}
-
-class ZoneDelegate {
-    Entity entity
-    ZoneComponent zone
-
-    def cards(Closure<?> closure) {
-        closure.delegate = this
-        closure.call()
-    }
-
-    def card(String name, Closure<?> closure) {
-        def card = entity.game.newEntity()
-        ECSAttributeMap.createFor(card).set(Attributes.NAME, name)
-        ECSResourceMap.createFor(card)
-        closure.delegate = new CardDelegate(entity: card)
-        closure.setResolveStrategy(Closure.DELEGATE_ONLY)
-        closure.call()
-        zone.addOnBottom(card)
-    }
-
-    def card(Closure<?> closure) {
-        card('', closure)
-    }
-}
 
 class NeutralDelegate {
     Entity entity
@@ -249,10 +196,6 @@ class SetupDelegate {
         println 'Creating setup delegate 2'
         this.mod = mod
         this.game = game
-    }
-
-    def test() {
-        println 'test okay'
     }
 
     def playerDeckFromConfig(String name) {

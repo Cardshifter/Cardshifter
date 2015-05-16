@@ -24,19 +24,7 @@ def ATTACK_ACTION = "Attack";
 def END_TURN_ACTION = "End Turn";
 def USE_ACTION = "Use";
 
-def a = 1
-
-def bc = {String some ->
-    println 'some lambda: ' + some
-    "Result is $some"
-}
-
-println a
-println bc
-println bc('test')
-
 config {
-    println 'value of a is ' + a
     resources([ATTACK, HEALTH, MAX_HEALTH, ATTACK_AVAILABLE, DENY_COUNTERATTACK, MANA, MANA_COST, MANA_MAX,
                SICKNESS, TAUNT, SCRAP])
     println 'Game Closure!'
@@ -70,8 +58,6 @@ config {
 }
 
 setup {
-    println 'setup game called ' + game
-    test()
     playerDeckFromConfig('Deck')
     playerDeckShuffle()
 
