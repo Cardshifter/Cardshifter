@@ -2,38 +2,43 @@ package com.cardshifter.core.modloader;
 
 import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.ECSMod;
+import groovy.lang.Binding;
+import groovy.lang.Script;
+import groovy.util.GroovyScriptEngine;
+import groovy.util.ResourceException;
+import groovy.util.ScriptException;
+import org.codehaus.groovy.control.CompilerConfiguration;
 
-import javax.script.Invocable;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * Created by Simon on 3/5/2015.
  */
 public class GroovyMod implements ECSMod {
 
-    private final ScriptEngine engine;
+    private final GroovyScriptEngine engine;
+    private final Binding binding = new Binding();
     private final Exception exception;
-    private final Invocable invocable;
+    private ECSMod script;
 
-    public GroovyMod(String name, ScriptEngineManager scripts) {
-        engine = scripts.getEngineByName("groovy");
-        this.invocable = (Invocable) engine;
-        Exception exception;
+    public GroovyMod(String name) {
+        File file = new File("groovy/" + name);
+        Exception ex;
+        GroovyScriptEngine scriptEngine;
         try {
-            engine.eval(new InputStreamReader(new FileInputStream(name), StandardCharsets.UTF_8));
-            exception = null;
-        } catch (ScriptException e) {
-            exception = e;
-        } catch (FileNotFoundException e) {
-            exception = e;
+            scriptEngine = new GroovyScriptEngine(new URL[]{file.toURI().toURL()});
+            CompilerConfiguration config = new CompilerConfiguration();
+            scriptEngine.setConfig(config);
+            this.script = (ECSMod) scriptEngine.run("Game.groovy", binding);
+            ex = null;
+        } catch (MalformedURLException | ResourceException | groovy.util.ScriptException e) {
+            scriptEngine = null;
+            ex = e;
         }
-        this.exception = exception;
+        this.exception = ex;
+        this.engine = scriptEngine;
     }
 
     @Override
@@ -41,13 +46,7 @@ public class GroovyMod implements ECSMod {
         if (exception != null) {
             throw new RuntimeException("Error initializing mod", exception);
         }
-        try {
-            invocable.invokeFunction("declareConfiguration", game);
-        } catch (ScriptException e) {
-            throw new RuntimeException("Error declaring configuration: " + e, e);
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException("Error declaring configuration: " + e, e);
-        }
+        script.declareConfiguration(game);
     }
 
     @Override
@@ -55,12 +54,6 @@ public class GroovyMod implements ECSMod {
         if (exception != null) {
             throw new RuntimeException("Error initializing mod", exception);
         }
-        try {
-            invocable.invokeFunction("setupGame", game);
-        } catch (ScriptException e) {
-            throw new RuntimeException("Error setting up game", e);
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException("Error setting up game", e);
-        }
+        script.setupGame(game);
     }
 }

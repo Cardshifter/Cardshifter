@@ -53,7 +53,7 @@ public class ModCollection {
         ScriptEngineManager scripts = new ScriptEngineManager();
         mods.put("NewJS", () -> new JavaScriptMod("JSGame.js", scripts));
 		mods.put(CardshifterConstants.VANILLA, () -> new CyborgChroniclesGameNewAttackSystem());
-        mods.put("Groovy", () -> new GroovyMod("groovy/game.groovy", scripts));
+        mods.put("Groovy", () -> new GroovyMod("game1"));
 //		mods.put("Cyborg-Spells", () -> new CyborgChroniclesGameWithSpells());
 //		mods.put("Test", () -> new TestMod());
 	}
