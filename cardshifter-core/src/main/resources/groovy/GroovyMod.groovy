@@ -1,10 +1,14 @@
 import com.cardshifter.modapi.base.ECSMod;
 import com.cardshifter.modapi.base.ECSGame;
+import com.cardshifter.modapi.base.Entity;
 
 class NeutralDelegate {
-    def resourceModifier() {
+    Entity entity
 
+    def resourceModifier() {
+        entity.addComponent(new com.cardshifter.modapi.resources.ResourceModifierComponent());
     }
+
     def zone(String name, Closure<?> closure) {
         println "Zone $name $closure"
     }
@@ -35,7 +39,7 @@ public abstract class GroovyMod implements ECSMod {
     def enableMeta() {
         ECSGame.class.metaClass.neutral << {Closure closure ->
             println 'Neutral closure'
-            def cl = closure.rehydrate(new NeutralDelegate(), null, null)
+            def cl = closure.rehydrate(new NeutralDelegate(entity: game.newEntity()), null, null)
             cl.call()
         }
         ECSGame.class.metaClass.players << {int count, Closure closure ->

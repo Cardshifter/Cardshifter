@@ -28,12 +28,13 @@ public class GroovyMod implements ECSMod {
         Exception ex;
         GroovyScriptEngine scriptEngine;
         try {
-            scriptEngine = new GroovyScriptEngine(new URL[]{file.toURI().toURL()});
+            URL groovyURL = getClass().getClassLoader().getResource("groovy/");
+            scriptEngine = new GroovyScriptEngine(new URL[]{file.toURI().toURL(), groovyURL});
             CompilerConfiguration config = new CompilerConfiguration();
             scriptEngine.setConfig(config);
             this.script = (ECSMod) scriptEngine.run("Game.groovy", binding);
             ex = null;
-        } catch (MalformedURLException | ResourceException | groovy.util.ScriptException e) {
+        } catch (Exception e) { // MalformedURLException | ResourceException | groovy.util.ScriptException |
             scriptEngine = null;
             ex = e;
         }
