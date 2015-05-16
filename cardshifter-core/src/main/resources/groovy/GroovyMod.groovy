@@ -143,6 +143,7 @@ public class GroovyMod {
 
     private def enableMeta() {
         GeneralSystems.setup()
+        GeneralSystems.cardSystems()
         ECSGame.class.metaClass.neutral << {Closure closure ->
             def cl = closure.rehydrate(new NeutralDelegate(entity: game.newEntity()), this, this)
             cl.call()

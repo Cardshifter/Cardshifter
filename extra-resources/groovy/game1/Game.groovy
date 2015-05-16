@@ -93,21 +93,13 @@ setup {
         // Spell
         useCost(action: USE_ACTION, res: MANA, value: { res MANA_COST }, whoPays: "player")
         playFromHand USE_ACTION,
-                EffectActionSystem(USE_ACTION)
+        EffectActionSystem(USE_ACTION)
         EffectActionSystem(PLAY_ACTION)
         targetFilterSystem USE_ACTION
         destroyAfterUse USE_ACTION
 
-        // Attack
-        AttackOnBattlefield()
-        AttackTargetMinionsFirstThenPlayer(TAUNT)
-        AttackSickness(SICKNESS)
-        useCost(action: ATTACK_ACTION, res: ATTACK_AVAILABLE, value: 1, whoPays: "self")
-
-
         RestoreResourcesToSystem(ownedBattlefieldCreatures, ATTACK_AVAILABLE, {ent -> 1})
         RestoreResourcesToSystem(ownedBattlefieldCreatures, SICKNESS, {ent -> Math.max(0, SICKNESS.getFor(ent) - 1)})
-        TrampleSystem(HEALTH)
 
         // Draw cards
         startCards 5
@@ -130,10 +122,15 @@ setup {
         }
 
         attackSystem {
+            zone 'Battlefield'
+            cardsFirst TAUNT
+            sickness SICKNESS
+            useCost(action: ATTACK_ACTION, res: ATTACK_AVAILABLE, value: 1, whoPays: "self")
             accumulating(ATTACK, HEALTH, allowCounterAttack)
             healAtEndOfTurn(HEALTH, MAX_HEALTH)
             afterAttack({entity -> allowCounterAttackRes.getFor(entity) > 0},
                     { entity -> SICKNESS.retriever.set(entity, 2) })
+            TrampleSystem(HEALTH)
         }
     }
 }
