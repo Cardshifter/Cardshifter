@@ -3,14 +3,10 @@ package com.cardshifter.core.modloader;
 import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.ECSMod;
 import groovy.lang.Binding;
-import groovy.lang.Script;
 import groovy.util.GroovyScriptEngine;
-import groovy.util.ResourceException;
-import groovy.util.ScriptException;
 import org.codehaus.groovy.control.CompilerConfiguration;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
@@ -47,7 +43,13 @@ public class GroovyMod implements ECSMod {
         if (exception != null) {
             throw new RuntimeException("Error initializing mod", exception);
         }
-        script.declareConfiguration(game);
+        try {
+            script.declareConfiguration(game);
+            System.out.println("declare config complete");
+        } catch (Exception | AssertionError ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        }
     }
 
     @Override
@@ -55,6 +57,11 @@ public class GroovyMod implements ECSMod {
         if (exception != null) {
             throw new RuntimeException("Error initializing mod", exception);
         }
-        script.setupGame(game);
+        try {
+            script.setupGame(game);
+        } catch (Exception | AssertionError ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        }
     }
 }
