@@ -8,6 +8,8 @@ import com.cardshifter.modapi.actions.attack.AttackOnBattlefield
 import com.cardshifter.modapi.actions.attack.AttackSickness
 import com.cardshifter.modapi.actions.attack.AttackTargetMinionsFirstThenPlayer
 import com.cardshifter.modapi.actions.attack.TrampleSystem
+import com.cardshifter.modapi.actions.enchant.EnchantPerform
+import com.cardshifter.modapi.actions.enchant.EnchantTargetCreatureTypes
 import com.cardshifter.modapi.base.ECSGame
 import com.cardshifter.modapi.base.ECSSystem
 import com.cardshifter.modapi.base.Entity
@@ -16,6 +18,7 @@ import com.cardshifter.modapi.cards.DrawCardAtBeginningOfTurnSystem
 import com.cardshifter.modapi.cards.DrawCardEvent
 import com.cardshifter.modapi.cards.DrawStartCards
 import com.cardshifter.modapi.cards.LimitedHandSizeSystem
+import com.cardshifter.modapi.cards.MulliganSingleCards
 import com.cardshifter.modapi.cards.PlayEntersBattlefieldSystem
 import com.cardshifter.modapi.cards.PlayFromHandSystem
 import com.cardshifter.modapi.cards.RemoveDeadEntityFromZoneSystem
@@ -33,6 +36,7 @@ import net.zomis.cardshifter.ecs.effects.EntityInt
 import net.zomis.cardshifter.ecs.usage.ApplyAfterAttack
 import net.zomis.cardshifter.ecs.usage.DestroyAfterUseSystem
 import net.zomis.cardshifter.ecs.usage.LastPlayersStandingEndsGame
+import net.zomis.cardshifter.ecs.usage.ScrapSystem
 
 import java.util.function.BiPredicate
 import java.util.function.Consumer
@@ -96,6 +100,19 @@ public class GeneralSystems {
     }
 
     static def setup(ECSGame game) {
+        // Scrap
+        SystemsDelegate.metaClass.EnchantTargetCreatureTypes << {String... args ->
+            addSystem new EnchantTargetCreatureTypes(args)
+        }
+        SystemsDelegate.metaClass.EnchantPerform << {ECSResource... resources ->
+            addSystem new EnchantPerform(resources)
+        }
+        SystemsDelegate.metaClass.ScrapSystem << {ECSResource resource, Predicate<Entity> predicate ->
+            addSystem new ScrapSystem(resource, predicate)
+        }
+
+
+        // General
         SystemsDelegate.metaClass.PerformerMustBeCurrentPlayer << {
             addSystem(new PerformerMustBeCurrentPlayer())
         }
@@ -180,7 +197,10 @@ public class GeneralSystems {
         }
     }
 
-    static def cardSystems() {
+    static def cardSystems(ECSGame game) {
+        SystemsDelegate.metaClass.MulliganSingleCards << {
+            addSystem new MulliganSingleCards(game)
+        }
         SystemsDelegate.metaClass.playFromHand << {String zone ->
             addSystem(new PlayFromHandSystem(zone))
         }

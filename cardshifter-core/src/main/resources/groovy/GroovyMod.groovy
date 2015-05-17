@@ -39,7 +39,7 @@ public class GroovyMod {
 
     private def enableMeta(ECSGame game) {
         GeneralSystems.setup(game)
-        GeneralSystems.cardSystems()
+        GeneralSystems.cardSystems(game)
         GeneralSystems.resourceSystems()
     }
 

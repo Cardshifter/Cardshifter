@@ -17,6 +17,7 @@ def MANA_MAX = createResource("MANA_MAX")
 def SICKNESS = createResource("SICKNESS")
 def TAUNT = createResource("TAUNT")
 def SCRAP = createResource("SCRAP")
+def SCRAP_COST = createResource("SCRAP_COST")
 
 def PLAY_ACTION = "Play";
 def ENCHANT_ACTION = "Enchant";
@@ -25,10 +26,11 @@ def END_TURN_ACTION = "End Turn";
 def USE_ACTION = "Use";
 
 include 'creatures'
+include 'enchantment'
 
 config {
     resources([ATTACK, HEALTH, MAX_HEALTH, ATTACK_AVAILABLE, DENY_COUNTERATTACK, MANA, MANA_COST, MANA_MAX,
-               SICKNESS, TAUNT, SCRAP])
+               SICKNESS, TAUNT, SCRAP, SCRAP_COST])
     println 'Game Closure!'
 
     neutral {
@@ -90,7 +92,7 @@ setup {
 
         // Enchant
         playFromHand ENCHANT_ACTION
-        EnchantTargetCreatureTypes("Bio")
+        EnchantTargetCreatureTypes('Bio')
         EffectActionSystem(ENCHANT_ACTION) // needs to be before EnchantPerform, because of entity removal
         EnchantPerform(ATTACK, HEALTH, MAX_HEALTH)
 
@@ -105,6 +107,14 @@ setup {
         RestoreResourcesToSystem(filter: ownedBattlefieldCreatures, resource: ATTACK_AVAILABLE, value: 1)
         RestoreResourcesToSystem(filter: ownedBattlefieldCreatures, resource: SICKNESS,
                 value: {ent -> Math.max(0, (int) SICKNESS.getFor(ent) - 1)})
+
+        // Scrap
+        ScrapSystem(SCRAP, {entity ->
+            return ATTACK_AVAILABLE.retriever.getOrDefault(entity, 0) > 0 &&
+                    SICKNESS.retriever.getOrDefault(entity, 1) == 0;
+        })
+        useCost(action: ENCHANT_ACTION, res: SCRAP, value: SCRAP_COST, whoPays: "player")
+        useCost(action: USE_ACTION, res: SCRAP, value: SCRAP_COST, whoPays: "player")
 
         // Draw cards
         startCards 5
