@@ -133,7 +133,7 @@ setup {
             healAtEndOfTurn(HEALTH, MAX_HEALTH)
             afterAttack({entity -> allowCounterAttackRes.getFor(entity) > 0},
                     { entity -> SICKNESS.retriever.set(entity, 2) })
-            TrampleSystem(HEALTH)
+            trample HEALTH
         }
     }
 }

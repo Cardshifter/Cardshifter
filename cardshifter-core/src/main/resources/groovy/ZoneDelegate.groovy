@@ -21,13 +21,7 @@ class CardDelegate {
     }
 
     def propertyMissing(String name, value) {
-        ECSResource res = entity.game.resource(name)
-        if (res) {
-            res.retriever.set(entity, (int) value)
-            println "set $res $name to $value (property)"
-        } else {
-            println "Missing property: Cannot set $name to $value"
-        }
+        "$name"(value)
     }
 
     def propertyMissing(String name) {
