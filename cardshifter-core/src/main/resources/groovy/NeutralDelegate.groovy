@@ -6,6 +6,7 @@ import ZoneDelegate
 
 public class NeutralDelegate {
     Entity entity
+    GroovyMod mod
 
     def resourceModifier() {
         entity.addComponent(new ResourceModifierComponent());
@@ -19,7 +20,7 @@ public class NeutralDelegate {
         def zone = new ZoneComponent(entity, name)
         entity.addComponent(zone)
         println "Zone $name"
-        closure.delegate = new ZoneDelegate(entity: entity, zone: zone)
+        closure.delegate = new ZoneDelegate(entity: entity, zone: zone, mod: mod)
         closure.call(closure)
     }
     def addCards() {

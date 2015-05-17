@@ -34,8 +34,8 @@ config {
     neutral {
         resourceModifier()
         phases()
-        zone 'Cards', {Closure cl ->
-            new Cards().addCards(cl)
+        zone 'Cards', {
+            cardset 'Cards'
         }
     }
 

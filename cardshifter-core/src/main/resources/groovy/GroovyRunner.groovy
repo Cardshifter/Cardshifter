@@ -9,8 +9,9 @@ public class MyGroovyMod implements ECSMod {
 
     MyGroovyMod(String name, ClassLoader cl) {
         this.name = name
-        this.groovyMod = new GroovyMod(loader: cl)
-        File file = new File("groovy/" + name + "/Game.groovy")
+        File modDirectory = new File("groovy/$name")
+        this.groovyMod = new GroovyMod(loader: cl, modDirectory: modDirectory)
+        File file = new File(modDirectory, "Game.groovy")
         CompilerConfiguration cc = new CompilerConfiguration()
         cc.setScriptBaseClass(DelegatingScript.class.getName())
         GroovyShell sh = new GroovyShell(cl, new Binding(), cc)

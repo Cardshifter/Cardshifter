@@ -15,7 +15,8 @@ import systems.GeneralSystems;
 public class GroovyMod {
 
     ClassLoader loader
-    protected ECSGame game
+    File modDirectory
+    ECSGame game
 
     ECSResource createResource(String name) {
         return new ECSResourceDefault(name)
@@ -48,7 +49,7 @@ public class GroovyMod {
     void declareConfiguration(ECSGame game) {
         this.game = game
         enableMeta(game)
-        def cl = configClosure.rehydrate(new ConfigDelegate(game: game), this, this)
+        def cl = configClosure.rehydrate(new ConfigDelegate(game: game, mod: this), this, this)
         cl.setResolveStrategy(Closure.DELEGATE_FIRST)
         cl.call()
     }
@@ -72,9 +73,10 @@ public class GroovyMod {
 
 class ConfigDelegate {
     ECSGame game
+    GroovyMod mod
 
     def neutral(Closure closure) {
-        closure.delegate = new NeutralDelegate(entity: game.newEntity())
+        closure.delegate = new NeutralDelegate(entity: game.newEntity(), mod: mod)
         closure.call()
     }
 

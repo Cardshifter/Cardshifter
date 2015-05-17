@@ -5,6 +5,7 @@ import com.cardshifter.modapi.base.Entity
 import com.cardshifter.modapi.cards.ZoneComponent
 import com.cardshifter.modapi.resources.ECSResource
 import com.cardshifter.modapi.resources.ECSResourceMap
+import org.codehaus.groovy.control.CompilerConfiguration
 
 class CardDelegate {
     Entity entity
@@ -43,10 +44,24 @@ class CardDelegate {
 class ZoneDelegate {
     Entity entity
     ZoneComponent zone
+    GroovyMod mod
 
     def cards(Closure<?> closure) {
         closure.delegate = this
         closure.call()
+    }
+
+    def cardset(String name) {
+        File file = new File(mod.modDirectory, "${name}.groovy")
+        CompilerConfiguration cc = new CompilerConfiguration()
+        cc.setScriptBaseClass(DelegatingScript.class.getName())
+        GroovyShell sh = new GroovyShell(mod.loader, new Binding(), cc)
+        DelegatingScript script = (DelegatingScript) sh.parse(file)
+        script.setDelegate(this)
+
+        int size = zone.size()
+        script.run()
+        println "Include cardset $name: Included ${zone.size() - size} cards"
     }
 
     def card(String name, Closure<?> closure) {
