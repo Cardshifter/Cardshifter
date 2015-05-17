@@ -1,4 +1,13 @@
-import com.cardshifter.modapi.actions.*;
+import com.cardshifter.modapi.actions.*
+import com.cardshifter.modapi.attributes.*
+
+CardDelegate.metaClass.manaCost << {int value ->
+    mana_cost(value)
+}
+
+CardDelegate.metaClass.flavor << {String value ->
+    ECSAttributeMap.createOrGetFor(entity).set(Attributes.FLAVOR, value)
+}
 
 CardDelegate.metaClass.creature << {String type ->
     println 'this is ' + this

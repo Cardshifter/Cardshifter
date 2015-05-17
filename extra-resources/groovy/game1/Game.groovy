@@ -94,7 +94,7 @@ setup {
 
         // Spell
         useCost(action: USE_ACTION, res: MANA, value: MANA_COST, whoPays: "player")
-        playFromHand USE_ACTION,
+        playFromHand USE_ACTION
         EffectActionSystem(USE_ACTION)
         EffectActionSystem(PLAY_ACTION)
         targetFilterSystem USE_ACTION

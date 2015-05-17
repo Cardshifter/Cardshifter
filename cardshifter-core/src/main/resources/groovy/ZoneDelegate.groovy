@@ -17,6 +17,7 @@ class CardDelegate {
         ECSResource res = entity.game.resource(name)
         if (res) {
             res.retriever.set(entity, (int) value)
+            println "set $res $name to $value (property)"
         } else {
             println "Missing property: Cannot set $name to $value"
         }
@@ -29,7 +30,9 @@ class CardDelegate {
     def methodMissing(String name, args) {
         ECSResource res = entity.game.resource(name)
         if (res) {
-            res.retriever.set(entity, (int) args[0])
+            int value = args[0]
+            res.retriever.set(entity, value)
+            println "set $res $name to $value (method)"
         } else {
             println 'Missing method: ' + name
         }
