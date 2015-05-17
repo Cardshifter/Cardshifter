@@ -10,6 +10,10 @@ CardDelegate.metaClass.health << {int value ->
     setResource('max_health', value)
 }
 
+CardDelegate.metaClass.denyCounterAttack << {
+    DENY_COUNTERATTACK 1
+}
+
 CardDelegate.metaClass.flavor << {String value ->
     ECSAttributeMap.createOrGetFor(entity).set(Attributes.FLAVOR, value)
 }
