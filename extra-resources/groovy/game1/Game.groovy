@@ -79,7 +79,7 @@ setup {
 
     systems {
         gainResource(res: MANA_MAX, value: 1, untilMax: 10)
-        restoreResources(res: MANA, value: { res MANA_MAX })
+        restoreResources(resource: MANA, value: MANA_MAX)
 
         // Play
         playFromHand PLAY_ACTION
@@ -100,8 +100,9 @@ setup {
         targetFilterSystem USE_ACTION
         destroyAfterUse USE_ACTION
 
-        RestoreResourcesToSystem(ownedBattlefieldCreatures, ATTACK_AVAILABLE, {ent -> 1})
-        RestoreResourcesToSystem(ownedBattlefieldCreatures, SICKNESS, {ent -> Math.max(0, SICKNESS.getFor(ent) - 1)})
+        RestoreResourcesToSystem(filter: ownedBattlefieldCreatures, resource: ATTACK_AVAILABLE, value: 1)
+        RestoreResourcesToSystem(filter: ownedBattlefieldCreatures, resource: SICKNESS,
+                value: {ent -> Math.max(0, (int) SICKNESS.getFor(ent) - 1)})
 
         // Draw cards
         startCards 5

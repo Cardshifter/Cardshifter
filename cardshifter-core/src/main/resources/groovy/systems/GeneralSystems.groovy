@@ -15,12 +15,15 @@ import com.cardshifter.modapi.cards.PlayEntersBattlefieldSystem
 import com.cardshifter.modapi.cards.PlayFromHandSystem
 import com.cardshifter.modapi.phase.GainResourceSystem
 import com.cardshifter.modapi.phase.PerformerMustBeCurrentPlayer
+import com.cardshifter.modapi.phase.RestoreResourcesSystem
 import com.cardshifter.modapi.players.Players
 import com.cardshifter.modapi.resources.ECSResource
+import com.cardshifter.modapi.resources.RestoreResourcesToSystem
 import net.zomis.cardshifter.ecs.effects.EntityInt
 import net.zomis.cardshifter.ecs.usage.DestroyAfterUseSystem
 
 import java.util.function.Consumer
+import java.util.function.Predicate
 import java.util.function.ToIntFunction
 import java.util.function.UnaryOperator;
 
@@ -78,7 +81,20 @@ public class GeneralSystems {
             addSystem(new GainResourceSystem(resource, {e -> 1}))
         }
         SystemsDelegate.metaClass.restoreResources << {Map map ->
-// res: MANA, value: { res MANA_MAX })
+            ECSResource resource = (ECSResource) map.get('resource')
+            Object value = map.get('value')
+            EntityInt entityInt;
+            if (value instanceof Closure) {
+                entityInt = value
+            } else if (value instanceof ECSResource) {
+                entityInt = {Entity e -> (value as ECSResource).getFor(e)}
+            } else {
+                assert value instanceof Number
+                entityInt = {e -> value}
+            }
+            assert resource
+            assert entityInt
+            addSystem new RestoreResourcesSystem(resource, entityInt)
         }
         SystemsDelegate.metaClass.useCost << {Map map ->
 //            (action: PLAY_ACTION, res: MANA, value: { res MANA_COST }, whoPays: "player")
@@ -94,7 +110,17 @@ public class GeneralSystems {
             addSystem new UseCostSystem(action, res, entityInt, whoPays)
         }
         SystemsDelegate.metaClass.RestoreResourcesToSystem << {Map map ->
-//            RestoreResourcesToSystem(ownedBattlefieldCreatures, ATTACK_AVAILABLE, {ent -> 1})
+            Predicate<Entity> filter = map.get('filter') as Predicate<Entity>
+            ECSResource resource = map.get('resource') as ECSResource
+            Object value = map.get('value')
+            ToIntFunction<Entity> entityInt
+            if (value instanceof Closure) {
+                entityInt = value as ToIntFunction<Entity>
+            } else {
+                assert value instanceof Number
+                entityInt = {e -> value}
+            }
+            addSystem new RestoreResourcesToSystem(filter, resource, entityInt)
         }
     }
 
