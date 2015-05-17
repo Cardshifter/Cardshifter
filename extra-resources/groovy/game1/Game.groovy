@@ -35,7 +35,9 @@ config {
         resourceModifier()
         phases()
         zone 'Cards', {
-            cardset 'Cards'
+            cardset 'mechs'
+            cardset 'bios'
+            cardset 'enchantments'
         }
     }
 
