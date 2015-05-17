@@ -18,15 +18,21 @@ import com.cardshifter.modapi.cards.DrawStartCards
 import com.cardshifter.modapi.cards.LimitedHandSizeSystem
 import com.cardshifter.modapi.cards.PlayEntersBattlefieldSystem
 import com.cardshifter.modapi.cards.PlayFromHandSystem
+import com.cardshifter.modapi.cards.RemoveDeadEntityFromZoneSystem
 import com.cardshifter.modapi.phase.GainResourceSystem
 import com.cardshifter.modapi.phase.PerformerMustBeCurrentPlayer
 import com.cardshifter.modapi.phase.RestoreResourcesSystem
 import com.cardshifter.modapi.players.Players
 import com.cardshifter.modapi.resources.ECSResource
+import com.cardshifter.modapi.resources.GameOverIfNoHealth
+import com.cardshifter.modapi.resources.ResourceRecountSystem
 import com.cardshifter.modapi.resources.RestoreResourcesToSystem
+import net.zomis.cardshifter.ecs.effects.EffectActionSystem
+import net.zomis.cardshifter.ecs.effects.EffectTargetFilterSystem
 import net.zomis.cardshifter.ecs.effects.EntityInt
 import net.zomis.cardshifter.ecs.usage.ApplyAfterAttack
 import net.zomis.cardshifter.ecs.usage.DestroyAfterUseSystem
+import net.zomis.cardshifter.ecs.usage.LastPlayersStandingEndsGame
 
 import java.util.function.BiPredicate
 import java.util.function.Consumer
@@ -99,6 +105,25 @@ public class GeneralSystems {
         SystemsDelegate.metaClass.attackSystem << {Closure clos ->
             clos.delegate = new AttackSystemDelegate(game: game)
             clos.call()
+        }
+        SystemsDelegate.metaClass.EffectActionSystem << {String name ->
+            addSystem new EffectActionSystem(name)
+        }
+        SystemsDelegate.metaClass.targetFilterSystem << {String name ->
+            addSystem new EffectTargetFilterSystem(name)
+        }
+
+        SystemsDelegate.metaClass.GameOverIfNoHealth << {ECSResource resource ->
+            addSystem new GameOverIfNoHealth(resource)
+        }
+        SystemsDelegate.metaClass.LastPlayersStandingEndsGame << {
+            addSystem new LastPlayersStandingEndsGame()
+        }
+        SystemsDelegate.metaClass.RemoveDeadEntityFromZoneSystem << {
+            addSystem new RemoveDeadEntityFromZoneSystem()
+        }
+        SystemsDelegate.metaClass.ResourceRecountSystem << {
+            addSystem new ResourceRecountSystem()
         }
     }
 
