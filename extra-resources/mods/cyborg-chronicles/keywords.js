@@ -214,6 +214,6 @@ function applySystems(game, data) {
     }
 }
 
-load("keywords-filters.js");
-load('keywords-systems.js');
-load('keywords-effects.js');
+load("mods/cyborg-chronicles/keywords-filters.js");
+load('mods/cyborg-chronicles/keywords-systems.js');
+load('mods/cyborg-chronicles/keywords-effects.js');

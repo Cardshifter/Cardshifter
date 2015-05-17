@@ -1,5 +1,5 @@
 "use strict";
-load('keywords.js');
+load('mods/cyborg-chronicles/keywords.js');
 
 var PLAY_ACTION = "Play";
 var ENCHANT_ACTION = "Enchant";
@@ -19,11 +19,11 @@ var MANA_MAX = createResource("MANA_MAX");
 var SICKNESS = createResource("SICKNESS");
 var TAUNT = createResource("TAUNT");
 
-load('keywords-creatures.js');
-load('keywords-enchantments.js');
-load('keyword-noattack.js');
-load('keyword-scrap.js');
-load('jsgame-cards.js');
+load('mods/cyborg-chronicles/keywords-creatures.js');
+load('mods/cyborg-chronicles/keywords-enchantments.js');
+load('mods/cyborg-chronicles/keyword-noattack.js');
+load('mods/cyborg-chronicles/keyword-scrap.js');
+load('mods/cyborg-chronicles/jsgame-cards.js');
 
 /**
  * Declare game configuration
