@@ -155,7 +155,7 @@ Various triggers are available for actions to be applied on.
 
 - Only works on creature cards. 
 - Applies the contained effects while the card is present in battle. 
-- It is an array of `MODIFIER` sent to the server's resource map. 
+- It is an array of `MODIFIER`.
 - Note the use of square brackets `[]` is required for this to work correctly. 
 - Note that an array of `whilePresent` must be used for each resource that is modified.
 
@@ -196,7 +196,7 @@ Example:
 
 - Only works on creature cards. 
 - Applies the contained effects at the end of each of the owner's turns.
-- It is `EFFECT` (single effect) or array of `EFFECT` (multiple effects) sent to the server's resource map. 
+- It is `EFFECT` (single effect) or array of `EFFECT` (multiple effects).
 - Note the use of square brackets `[]` is required for this to work correctly with multiple effects.
 - Note that an array of `onEndOfTurn` must be used if multiple effects apply on end of turn. It is also OK to use array syntax for a single effect. 
 
@@ -246,7 +246,7 @@ Example:
 
 - Works on all cards.
 - Applies the contained effects after a card is played.
-- It is `EFFECT` (single effect) or array of `EFFECT` (multiple effects) sent to the server's resource map. 
+- It is `EFFECT` (single effect) or array of `EFFECT` (multiple effects). 
 - Note the use of square brackets `[]` is required for this to work correctly with multiple effects.
 - Note that an array of `afterPlay` must be used if multiple effects apply on end of turn. It is also OK to use array syntax for a single effect. 
 
@@ -323,11 +323,11 @@ Usage:
 
 This is a list of possible owners with descriptions. Note that owner values are String values, and therefore need to be contained in quotation marks. 
 
-- `"self"`: Cards that you, the player, own.
+- `"owner"`: Cards that you, as the player, own.
 - `"opponent"`: Cards that your opponent owns. 
 - `"next"`: Cards that are owned by the next player. Synonymous to `"opponent"` unless your mod supports more than 2 players. 
-- `"active"`: Cards owned by the active player. Synonymous to `"self"` unless your mod supports more than 2 players. 
-- `"inactive"`: Cards owned by the inactive player(s). Synonymous to `"opponent"` unless your mod supports more than 2 players. 
+- `"active"`: Cards owned by the active player. 
+- `"inactive"`: Opposite of `"active"`. 
 - `"none"`: Cards owner by no player. There are no current game mechanics that use this. 
 
 
@@ -338,8 +338,9 @@ This is a list of possible zones with descriptions. Note that zone values are St
 - `"Battlefield"`: Creature cards that are currently in active play, i.e., in battle or on the battlefield. 
 - `"Hand"`: Cards in a player's hand, not played yet.
 - `"Discard"`: Cards which have been discarded from battle. Sometimes also referred to as graveyard. 
+- `"Deck"`: Cards in a player's deck. 
 - `"Exile"`: Not currently used. Cards which are exiled, which may vary depending on the mod implementation.  
-- `"Cards"`: All available cards. Not currently used as it is too meta.
+- `"Cards"`: All cards loaded at game start. Not currently used as it is too meta.
 
 ####`creatureType`
 
