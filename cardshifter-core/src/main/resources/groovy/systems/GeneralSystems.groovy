@@ -2,7 +2,12 @@ package systems;
 
 import SystemsDelegate
 import com.cardshifter.modapi.actions.UseCostSystem
+import com.cardshifter.modapi.actions.attack.AttackDamageAccumulating
+import com.cardshifter.modapi.actions.attack.AttackDamageHealAtEndOfTurn
 import com.cardshifter.modapi.actions.attack.AttackOnBattlefield
+import com.cardshifter.modapi.actions.attack.AttackSickness
+import com.cardshifter.modapi.actions.attack.AttackTargetMinionsFirstThenPlayer
+import com.cardshifter.modapi.actions.attack.TrampleSystem
 import com.cardshifter.modapi.base.ECSGame
 import com.cardshifter.modapi.base.ECSSystem
 import com.cardshifter.modapi.base.Entity
@@ -20,8 +25,10 @@ import com.cardshifter.modapi.players.Players
 import com.cardshifter.modapi.resources.ECSResource
 import com.cardshifter.modapi.resources.RestoreResourcesToSystem
 import net.zomis.cardshifter.ecs.effects.EntityInt
+import net.zomis.cardshifter.ecs.usage.ApplyAfterAttack
 import net.zomis.cardshifter.ecs.usage.DestroyAfterUseSystem
 
+import java.util.function.BiPredicate
 import java.util.function.Consumer
 import java.util.function.Predicate
 import java.util.function.ToIntFunction
@@ -33,6 +40,30 @@ class AttackSystemDelegate {
     def zone(String name) {
         assert name == 'Battlefield' // Only supported right now
         addSystem(new AttackOnBattlefield())
+    }
+
+    def cardsFirst(ECSResource resource) {
+        addSystem new AttackTargetMinionsFirstThenPlayer(resource)
+    }
+
+    def sickness(ECSResource resource) {
+        addSystem new AttackSickness(resource)
+    }
+
+    def accumulating(ECSResource attack, ECSResource health, BiPredicate<Entity, Entity> allowCounterAttack) {
+        addSystem new AttackDamageAccumulating(attack, health, allowCounterAttack)
+    }
+
+    def healAtEndOfTurn(ECSResource health, ECSResource maxHealth) {
+        addSystem new AttackDamageHealAtEndOfTurn(health, maxHealth)
+    }
+
+    def afterAttack(Predicate<Entity> condition, Consumer<Entity> apply) {
+        addSystem new ApplyAfterAttack(condition, apply)
+    }
+
+    def trample(ECSResource resource) {
+        addSystem new TrampleSystem(resource)
     }
 
     def methodMissing(String name, args) {

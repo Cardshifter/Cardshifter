@@ -13,6 +13,13 @@ class CardDelegate {
         entity
     }
 
+    def setResource(String resource, int value) {
+        ECSResource res = entity.game.resource(resource)
+        assert res : 'No such resource: ' + resource
+        res.retriever.set(entity, (int) value)
+        println "set $res $resource to $value (setResource)"
+    }
+
     def propertyMissing(String name, value) {
         ECSResource res = entity.game.resource(name)
         if (res) {

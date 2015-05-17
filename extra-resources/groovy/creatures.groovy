@@ -5,6 +5,11 @@ CardDelegate.metaClass.manaCost << {int value ->
     mana_cost(value)
 }
 
+CardDelegate.metaClass.health << {int value ->
+    setResource('health', value)
+    setResource('max_health', value)
+}
+
 CardDelegate.metaClass.flavor << {String value ->
     ECSAttributeMap.createOrGetFor(entity).set(Attributes.FLAVOR, value)
 }
