@@ -10,6 +10,7 @@ import net.zomis.cardshifter.ecs.config.ConfigComponent
 import SystemsDelegate;
 import PlayerDelegate;
 import NeutralDelegate;
+import org.codehaus.groovy.control.CompilerConfiguration;
 import systems.GeneralSystems;
 import static groovy.lang.Closure.DELEGATE_ONLY;
 
@@ -18,26 +19,42 @@ public class GroovyMod {
     ClassLoader loader
     File modDirectory
     ECSGame game
+    Binding binding
     private List<Closure> configClosure = []
     private List<Closure> setupClosure = []
+    private Map<String, ECSResource> knownResources = [:]
 
     ECSResource createResource(String name) {
         return new ECSResourceDefault(name)
     }
 
     void include(String fileName) {
-        GroovyShell sh = new GroovyShell(loader, new Binding())
-        Object script = sh.run(new File("groovy/${fileName}.groovy"), [])
-        println "Include $fileName resulted in $script"
+        File file = new File("groovy/${fileName}.groovy")
+
+        CompilerConfiguration cc = new CompilerConfiguration()
+        cc.setScriptBaseClass(DelegatingScript.class.getName())
+        GroovyShell sh = new GroovyShell(loader, binding, cc)
+        DelegatingScript script = (DelegatingScript) sh.parse(file)
+        script.setDelegate(this)
+        def result = script.run()
+        println "Include $fileName resulted in $result"
+    }
+
+    ECSResource resource(String name) {
+        ECSResource result = resourceOrNull(name)
+        assert result : "Resource with name $name not found. Known resources is $knownResources"
+        result
+    }
+
+    ECSResource resourceOrNull(String name) {
+        knownResources[name.toUpperCase()]
     }
 
     void resources(List<ECSResource> resources) {
         println "Adding ${resources.size()} resources"
-        def map = [:]
         for (ECSResource res in resources) {
-            map.put(res.toString().toUpperCase(), res)
+            knownResources.put(res.toString().toUpperCase(), res)
         }
-        game.metaClass.resource << {String name -> map[name.toUpperCase()]}
     }
 
     private static def enableMeta(ECSGame game) {
@@ -51,8 +68,8 @@ public class GroovyMod {
         enableMeta(game)
         def confDelegate = new ConfigDelegate(game: game, mod: this)
         configClosure.each {
-            def cl = it.rehydrate(confDelegate, this, this)
-            cl.setResolveStrategy(DELEGATE_ONLY)
+            def cl = it.rehydrate(confDelegate, it.owner, it.thisObject)
+            cl.setResolveStrategy(Closure.DELEGATE_FIRST)
             cl.call()
         }
     }
@@ -62,8 +79,8 @@ public class GroovyMod {
         println 'Creating setup delegate'
         def setupDelegate = new SetupDelegate(this, game)
         setupClosure.each {
-            def cl = it.rehydrate(setupDelegate, this, this)
-            cl.setResolveStrategy(DELEGATE_ONLY)
+            def cl = it.rehydrate(setupDelegate, it.owner, it.thisObject)
+            cl.setResolveStrategy(Closure.DELEGATE_FIRST)
             cl.call()
         }
     }
@@ -94,7 +111,7 @@ class ConfigDelegate {
         for (int i = 0; i < count; i++) {
             println 'Creating player ' + i
             Entity player = game.newEntity()
-            def cl = closure.rehydrate(new PlayerDelegate(player), this, this)
+            def cl = closure.rehydrate(new PlayerDelegate(player, mod), this, this)
             player.addComponent(new PlayerComponent(i, "Player $i"))
             cl.setResolveStrategy(DELEGATE_ONLY)
             cl.call()
@@ -118,12 +135,12 @@ class SetupDelegate {
         for (Entity player in players) {
             DeckComponent deck = player.getComponent(DeckComponent)
             ConfigComponent playerConfig = player.getComponent(ConfigComponent)
-            DeckConfig config = playerConfig.getConfigs().get(name)
+            DeckConfig config = (DeckConfig) playerConfig.getConfigs().get(name)
             setupDeck(deck, config)
         }
     }
 
-    def setupDeck(DeckComponent deck, DeckConfig deckConf) {
+    static def setupDeck(DeckComponent deck, DeckConfig deckConf) {
         def game = deck.owner.game;
         for (def chosen in deckConf.chosen.entrySet()) {
             def entityId = chosen.key;
@@ -150,7 +167,7 @@ class SetupDelegate {
     }
 
     void systems(Closure<?> closure) {
-        def cl = closure.rehydrate(new SystemsDelegate(game: game), this, this);
+        def cl = closure.rehydrate(new SystemsDelegate(game: game), closure.owner, closure.thisObject);
         cl.call()
     }
 }

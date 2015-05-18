@@ -16,7 +16,7 @@ class CardDelegate {
     }
 
     def setResource(String resource, int value) {
-        ECSResource res = entity.game.resource(resource)
+        ECSResource res = mod.resource(resource)
         assert res : 'No such resource: ' + resource
         res.retriever.set(entity, (int) value)
         println "set $res $resource to $value (setResource)"
@@ -31,7 +31,7 @@ class CardDelegate {
     }
 
     def methodMissing(String name, args) {
-        ECSResource res = entity.game.resource(name)
+        ECSResource res = mod.resourceOrNull(name)
         if (res) {
             int value = args[0]
             res.retriever.set(entity, value)

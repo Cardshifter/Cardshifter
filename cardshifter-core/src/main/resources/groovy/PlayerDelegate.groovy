@@ -14,16 +14,18 @@ import net.zomis.cardshifter.ecs.config.DeckConfigFactory
 
 public class PlayerDelegate {
     Entity entity
+    GroovyMod mod
     def config = new ConfigComponent()
 
-    PlayerDelegate(Entity entity) {
+    PlayerDelegate(Entity entity, GroovyMod mod) {
         this.entity = entity
+        this.mod = mod
         entity.addComponent(config);
         entity.addComponent(new ActionComponent())
     }
 
     def methodMissing(String name, args) {
-        ECSResource res = entity.game.resource(name)
+        ECSResource res = mod.resourceOrNull(name)
         if (res) {
             res.retriever.set(entity, (int) args[0])
         } else {

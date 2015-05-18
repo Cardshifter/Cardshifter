@@ -5,32 +5,32 @@ def ownedBattlefieldCreatures = {entity ->
             Cards.isOwnedByCurrentPlayer(entity)
 }
 
-def ATTACK = createResource('ATTACK')
-def HEALTH = createResource("HEALTH")
-def MAX_HEALTH = createResource("MAX_HEALTH")
+ATTACK = createResource('ATTACK')
+HEALTH = createResource("HEALTH")
+MAX_HEALTH = createResource("MAX_HEALTH")
 
-def ATTACK_AVAILABLE = createResource("ATTACK_AVAILABLE")
-def DENY_COUNTERATTACK = createResource("DENY_COUNTERATTACK")
-def MANA = createResource("MANA")
-def MANA_COST = createResource("MANA_COST")
-def MANA_MAX = createResource("MANA_MAX")
-def SICKNESS = createResource("SICKNESS")
-def TAUNT = createResource("TAUNT")
-def SCRAP = createResource("SCRAP")
-def SCRAP_COST = createResource("SCRAP_COST")
+ATTACK_AVAILABLE = createResource("ATTACK_AVAILABLE")
+DENY_COUNTERATTACK = createResource("DENY_COUNTERATTACK")
+MANA = createResource("MANA")
+MANA_COST = createResource("MANA_COST")
+MANA_MAX = createResource("MANA_MAX")
+SICKNESS = createResource("SICKNESS")
+TAUNT = createResource("TAUNT")
+SCRAP = createResource("SCRAP")
+SCRAP_COST = createResource("SCRAP_COST")
 
-def PLAY_ACTION = "Play";
-def ENCHANT_ACTION = "Enchant";
-def ATTACK_ACTION = "Attack";
-def END_TURN_ACTION = "End Turn";
-def USE_ACTION = "Use";
+PLAY_ACTION = "Play";
+ENCHANT_ACTION = "Enchant";
+ATTACK_ACTION = "Attack";
+USE_ACTION = "Use";
+
+resources([ATTACK, HEALTH, MAX_HEALTH, ATTACK_AVAILABLE, DENY_COUNTERATTACK, MANA, MANA_COST, MANA_MAX,
+           SICKNESS, TAUNT, SCRAP, SCRAP_COST])
 
 include 'creatures'
 include 'enchantment'
 
 config {
-    resources([ATTACK, HEALTH, MAX_HEALTH, ATTACK_AVAILABLE, DENY_COUNTERATTACK, MANA, MANA_COST, MANA_MAX,
-               SICKNESS, TAUNT, SCRAP, SCRAP_COST])
     println 'Game Closure!'
 
     neutral {
