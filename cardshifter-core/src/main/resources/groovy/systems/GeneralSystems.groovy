@@ -101,9 +101,8 @@ public class GeneralSystems {
     }
 
     static def setup(ECSGame game) {
-        Entity.metaClass.getName << {
-            Attributes.NAME.getFor(delegate)
-        }
+        game.getEntityMeta().name << {Attributes.NAME.getFor(delegate)}
+        game.getEntityMeta().flavor << {Attributes.FLAVOR.getFor(delegate)}
 
         // Scrap
         SystemsDelegate.metaClass.EnchantTargetCreatureTypes << {String... args ->

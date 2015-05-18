@@ -75,13 +75,23 @@ public class GroovyMod {
 
     void declareConfiguration(ECSGame game) {
         this.game = game
-        def entityMeta = new ExpandoMetaClass(Entity, false)
-        entityMeta.initialize()
+        def entityMeta = new ExpandoMetaClass(Entity, false, true)
         game.metaClass.getEntityMeta << {
             entityMeta
         }
+        knownResources.forEach {key, value ->
+            def lowerCaseKey = key.toLowerCase().capitalize()
+            println 'Adding getters and setters for ' + lowerCaseKey + " to ${game.entityMeta}"
+            game.entityMeta."get$lowerCaseKey" << {
+                value.getFor(delegate)
+            }
+            game.entityMeta."set$lowerCaseKey" << {int newValue ->
+                value.retriever.set(delegate, newValue)
+            }
+        }
+        entityMeta.initialize()
         this.game.getEvents().registerHandlerAfter(this, EntityCreatedEvent, {e ->
-            e.setMetaClass(game.entityMeta)
+            e.entity.setMetaClass(game.entityMeta)
         })
         enableMeta(game)
         def confDelegate = new ConfigDelegate(game: game, mod: this, cardDelegate: cardDelegate)
