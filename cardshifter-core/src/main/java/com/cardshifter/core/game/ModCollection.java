@@ -53,7 +53,11 @@ public class ModCollection {
         ScriptEngineManager scripts = new ScriptEngineManager();
         mods.put("NewJS", () -> new JavaScriptMod("JSGame.js", scripts));
 		mods.put(CardshifterConstants.VANILLA, () -> new CyborgChroniclesGameNewAttackSystem());
-        mods.put("Groovy", () -> new GroovyMod("game1"));
+        File groovyModDir = new File("groovy");
+        Arrays.stream(groovyModDir.listFiles())
+                .filter(File::isDirectory)
+                .filter(f -> new File(f, "Game.groovy").exists())
+                .forEach(f -> mods.put(f.getName(), () -> new GroovyMod(f.getName())));
 //		mods.put("Cyborg-Spells", () -> new CyborgChroniclesGameWithSpells());
 //		mods.put("Test", () -> new TestMod());
 	}
