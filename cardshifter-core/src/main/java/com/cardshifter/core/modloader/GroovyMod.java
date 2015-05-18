@@ -14,30 +14,28 @@ import java.net.URL;
  */
 public class GroovyMod implements ECSMod {
 
-    private final GroovyScriptEngine engine;
-    private final Binding binding = new Binding();
-    private final Exception exception;
+    private final Throwable exception;
     private ECSMod script;
 
     public GroovyMod(String name) {
         File file = new File("groovy/" + name);
-        Exception ex;
-        GroovyScriptEngine scriptEngine;
+        Throwable ex;
         try {
+            Binding binding = new Binding();
             URL groovyURL = getClass().getClassLoader().getResource("groovy/");
-            scriptEngine = new GroovyScriptEngine(new URL[]{file.toURI().toURL(), groovyURL});
+            GroovyScriptEngine scriptEngine = new GroovyScriptEngine(new URL[]{file.toURI().toURL(), groovyURL});
+
             CompilerConfiguration config = new CompilerConfiguration();
             scriptEngine.setConfig(config);
             binding.setVariable("script", name);
             binding.setVariable("cl", scriptEngine.getGroovyClassLoader());
+
             script = (ECSMod) scriptEngine.run("GroovyRunner.groovy", binding);
             ex = null;
-        } catch (Exception e) { // MalformedURLException | ResourceException | groovy.util.ScriptException |
-            scriptEngine = null;
+        } catch (Exception | AssertionError e) { // MalformedURLException | ResourceException | groovy.util.ScriptException |
             ex = e;
         }
         this.exception = ex;
-        this.engine = scriptEngine;
     }
 
     @Override
