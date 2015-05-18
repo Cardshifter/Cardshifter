@@ -15,6 +15,20 @@ class CardDelegate {
         entity
     }
 
+    def invokeMethod(String name, args) {
+        def metaMethod = CardDelegate.metaClass.getMetaMethod(name, args)
+        def result
+        if (metaMethod) {
+            println "Invoke method: $name with $args"
+            result = metaMethod.invoke(delegate, args)
+            println "method invocation done."
+        } else {
+            println "Invoke method: $name with $args --- missing"
+            return methodMissing(name, args)
+        }
+        result
+    }
+
     def setResource(String resource, int value) {
         ECSResource res = mod.resource(resource)
         assert res : 'No such resource: ' + resource

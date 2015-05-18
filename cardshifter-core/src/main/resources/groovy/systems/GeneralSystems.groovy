@@ -10,6 +10,7 @@ import com.cardshifter.modapi.actions.attack.AttackTargetMinionsFirstThenPlayer
 import com.cardshifter.modapi.actions.attack.TrampleSystem
 import com.cardshifter.modapi.actions.enchant.EnchantPerform
 import com.cardshifter.modapi.actions.enchant.EnchantTargetCreatureTypes
+import com.cardshifter.modapi.attributes.Attributes
 import com.cardshifter.modapi.base.ECSGame
 import com.cardshifter.modapi.base.ECSSystem
 import com.cardshifter.modapi.base.Entity
@@ -100,6 +101,10 @@ public class GeneralSystems {
     }
 
     static def setup(ECSGame game) {
+        Entity.metaClass.getName << {
+            Attributes.NAME.getFor(delegate)
+        }
+
         // Scrap
         SystemsDelegate.metaClass.EnchantTargetCreatureTypes << {String... args ->
             addSystem new EnchantTargetCreatureTypes(args)

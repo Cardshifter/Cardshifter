@@ -30,6 +30,7 @@ resources([ATTACK, HEALTH, MAX_HEALTH, ATTACK_AVAILABLE, DENY_COUNTERATTACK, MAN
 include 'creatures'
 include 'enchantment'
 include 'scrap'
+include 'noAttack'
 
 config {
     println 'Game Closure!'
