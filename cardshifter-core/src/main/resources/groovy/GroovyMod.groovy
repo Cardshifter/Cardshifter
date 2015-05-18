@@ -6,6 +6,7 @@ import com.cardshifter.modapi.cards.DeckComponent
 import com.cardshifter.modapi.players.Players
 import com.cardshifter.modapi.resources.ECSResource
 import com.cardshifter.modapi.resources.ECSResourceDefault
+import groovy.transform.PackageScope
 import net.zomis.cardshifter.ecs.config.ConfigComponent
 import SystemsDelegate;
 import PlayerDelegate;
@@ -20,12 +21,20 @@ public class GroovyMod {
     File modDirectory
     ECSGame game
     Binding binding
+    private CardDelegate cardDelegate = new CardDelegate(mod: this)
     private List<Closure> configClosure = []
     private List<Closure> setupClosure = []
     private Map<String, ECSResource> knownResources = [:]
+    @PackageScope Map<String, List<Closure>> cardMethodListeners = [:]
 
     ECSResource createResource(String name) {
         return new ECSResourceDefault(name)
+    }
+
+    void onCard(String method, Closure closure) {
+        cardMethodListeners.putIfAbsent(method, new ArrayList<Closure>())
+        cardMethodListeners[method].add(closure)
+        println "Registering onCard listener: $method, is now ${cardMethodListeners.get(method)}"
     }
 
     void include(String fileName) {
@@ -66,7 +75,7 @@ public class GroovyMod {
     void declareConfiguration(ECSGame game) {
         this.game = game
         enableMeta(game)
-        def confDelegate = new ConfigDelegate(game: game, mod: this)
+        def confDelegate = new ConfigDelegate(game: game, mod: this, cardDelegate: cardDelegate)
         configClosure.each {
             def cl = it.rehydrate(confDelegate, it.owner, it.thisObject)
             cl.setResolveStrategy(Closure.DELEGATE_FIRST)
@@ -97,13 +106,14 @@ public class GroovyMod {
 class ConfigDelegate {
     ECSGame game
     GroovyMod mod
+    CardDelegate cardDelegate
 
     def resources(List<ECSResource> resources) {
         mod.resources(resources)
     }
 
     def neutral(Closure closure) {
-        closure.delegate = new NeutralDelegate(entity: game.newEntity(), mod: mod)
+        closure.delegate = new NeutralDelegate(entity: game.newEntity(), mod: mod, cardDelegate: cardDelegate)
         closure.call()
     }
 

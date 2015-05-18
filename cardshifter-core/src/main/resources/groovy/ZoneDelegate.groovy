@@ -3,63 +3,14 @@ import com.cardshifter.modapi.attributes.Attributes
 import com.cardshifter.modapi.attributes.ECSAttributeMap
 import com.cardshifter.modapi.base.Entity
 import com.cardshifter.modapi.cards.ZoneComponent
-import com.cardshifter.modapi.resources.ECSResource
 import com.cardshifter.modapi.resources.ECSResourceMap
 import org.codehaus.groovy.control.CompilerConfiguration
-
-class CardDelegate {
-    Entity entity
-    GroovyMod mod
-
-    Entity entity() {
-        entity
-    }
-
-    def invokeMethod(String name, args) {
-        def metaMethod = CardDelegate.metaClass.getMetaMethod(name, args)
-        def result
-        if (metaMethod) {
-            println "Invoke method: $name with $args"
-            result = metaMethod.invoke(delegate, args)
-            println "method invocation done."
-        } else {
-            println "Invoke method: $name with $args --- missing"
-            return methodMissing(name, args)
-        }
-        result
-    }
-
-    def setResource(String resource, int value) {
-        ECSResource res = mod.resource(resource)
-        assert res : 'No such resource: ' + resource
-        res.retriever.set(entity, (int) value)
-        println "set $res $resource to $value (setResource)"
-    }
-
-    def propertyMissing(String name, value) {
-        "$name"(value)
-    }
-
-    def propertyMissing(String name) {
-        println 'Missing property: ' + name
-    }
-
-    def methodMissing(String name, args) {
-        ECSResource res = mod.resourceOrNull(name)
-        if (res) {
-            int value = args[0]
-            res.retriever.set(entity, value)
-            println "set $res $name to $value (method)"
-        } else {
-            println 'Missing method: ' + name
-        }
-    }
-}
 
 class ZoneDelegate {
     Entity entity
     ZoneComponent zone
     GroovyMod mod
+    CardDelegate cardDelegate
 
     def cards(Closure<?> closure) {
         closure.delegate = this
@@ -84,8 +35,9 @@ class ZoneDelegate {
         ECSAttributeMap.createFor(card).set(Attributes.NAME, name)
         ECSResourceMap.createFor(card)
         card.addComponent(new ActionComponent())
-        closure.delegate = new CardDelegate(entity: card, mod: mod)
-        closure.setResolveStrategy(Closure.DELEGATE_ONLY)
+        cardDelegate.entity = card
+        closure.delegate = cardDelegate
+        closure.setResolveStrategy(Closure.DELEGATE_FIRST)
         closure.call()
         zone.addOnBottom(card)
     }

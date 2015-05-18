@@ -19,15 +19,14 @@ CardDelegate.metaClass.flavor << {String value ->
 }
 
 CardDelegate.metaClass.creature << {String type ->
+    println "Creature set: $type"
     def entity = entity()
     def actions = entity.getComponent(ActionComponent)
     def playAction = new ECSAction(entity, 'Play', {act -> true }, {act -> })
     def attackAction = new ECSAction(entity, 'Attack', {act -> true }, {act -> }).addTargetSet(1, 1)
-    def scrapAction = new ECSAction(entity, 'Scrap', {act -> true }, {act -> })
 
     actions.addAction(playAction)
     actions.addAction(attackAction)
-    actions.addAction(scrapAction)
 
     entity.addComponent(new com.cardshifter.modapi.base.CreatureTypeComponent(type))
 
