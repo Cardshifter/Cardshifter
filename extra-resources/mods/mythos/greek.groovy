@@ -9,6 +9,7 @@ card('Change Me') {
     attack 1
 }
 */
+
 card('OLYMPUS') {
     creature "Greek"
     flavor "A lofty mountain where all the top Greek deities have their palaces and parties"
