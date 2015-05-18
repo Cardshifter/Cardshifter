@@ -29,6 +29,7 @@ resources([ATTACK, HEALTH, MAX_HEALTH, ATTACK_AVAILABLE, DENY_COUNTERATTACK, MAN
 
 include 'creatures'
 include 'enchantment'
+include 'scrap'
 
 config {
     println 'Game Closure!'
@@ -107,14 +108,6 @@ setup {
         RestoreResourcesToSystem(filter: ownedBattlefieldCreatures, resource: ATTACK_AVAILABLE, value: 1)
         RestoreResourcesToSystem(filter: ownedBattlefieldCreatures, resource: SICKNESS,
                 value: {ent -> Math.max(0, (int) SICKNESS.getFor(ent) - 1)})
-
-        // Scrap
-        ScrapSystem(SCRAP, {entity ->
-            return ATTACK_AVAILABLE.retriever.getOrDefault(entity, 0) > 0 &&
-                    SICKNESS.retriever.getOrDefault(entity, 1) == 0;
-        })
-        useCost(action: ENCHANT_ACTION, res: SCRAP, value: SCRAP_COST, whoPays: "player")
-        useCost(action: USE_ACTION, res: SCRAP, value: SCRAP_COST, whoPays: "player")
 
         // Draw cards
         startCards 5
