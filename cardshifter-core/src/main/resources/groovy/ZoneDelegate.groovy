@@ -9,6 +9,7 @@ import org.codehaus.groovy.control.CompilerConfiguration
 
 class CardDelegate {
     Entity entity
+    GroovyMod mod
 
     Entity entity() {
         entity
@@ -69,7 +70,7 @@ class ZoneDelegate {
         ECSAttributeMap.createFor(card).set(Attributes.NAME, name)
         ECSResourceMap.createFor(card)
         card.addComponent(new ActionComponent())
-        closure.delegate = new CardDelegate(entity: card)
+        closure.delegate = new CardDelegate(entity: card, mod: mod)
         closure.setResolveStrategy(Closure.DELEGATE_ONLY)
         closure.call()
         zone.addOnBottom(card)

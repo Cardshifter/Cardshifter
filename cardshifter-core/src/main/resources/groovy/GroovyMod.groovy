@@ -11,12 +11,15 @@ import SystemsDelegate;
 import PlayerDelegate;
 import NeutralDelegate;
 import systems.GeneralSystems;
+import static groovy.lang.Closure.DELEGATE_ONLY;
 
 public class GroovyMod {
 
     ClassLoader loader
     File modDirectory
     ECSGame game
+    private List<Closure> configClosure = []
+    private List<Closure> setupClosure = []
 
     ECSResource createResource(String name) {
         return new ECSResourceDefault(name)
@@ -37,43 +40,50 @@ public class GroovyMod {
         game.metaClass.resource << {String name -> map[name.toUpperCase()]}
     }
 
-    private def enableMeta(ECSGame game) {
+    private static def enableMeta(ECSGame game) {
         GeneralSystems.setup(game)
         GeneralSystems.cardSystems(game)
         GeneralSystems.resourceSystems()
     }
 
-    private Closure<?> configClosure
-    private Closure<?> setupClosure
-
     void declareConfiguration(ECSGame game) {
         this.game = game
         enableMeta(game)
-        def cl = configClosure.rehydrate(new ConfigDelegate(game: game, mod: this), this, this)
-        cl.setResolveStrategy(Closure.DELEGATE_FIRST)
-        cl.call()
+        def confDelegate = new ConfigDelegate(game: game, mod: this)
+        configClosure.each {
+            def cl = it.rehydrate(confDelegate, this, this)
+            cl.setResolveStrategy(DELEGATE_ONLY)
+            cl.call()
+        }
     }
 
     void setupGame(ECSGame game) {
         this.game = game
         println 'Creating setup delegate'
-        def cl = setupClosure.rehydrate(new SetupDelegate(this, game), this, this)
-        cl.setResolveStrategy(Closure.DELEGATE_ONLY)
-        cl.call()
+        def setupDelegate = new SetupDelegate(this, game)
+        setupClosure.each {
+            def cl = it.rehydrate(setupDelegate, this, this)
+            cl.setResolveStrategy(DELEGATE_ONLY)
+            cl.call()
+        }
     }
 
     void setup(Closure<?> closure) {
-        this.setupClosure = closure
+        this.setupClosure << closure
     }
 
     void config(Closure<?> closure) {
-        this.configClosure = closure
+        this.configClosure << closure
     }
 }
 
 class ConfigDelegate {
     ECSGame game
     GroovyMod mod
+
+    def resources(List<ECSResource> resources) {
+        mod.resources(resources)
+    }
 
     def neutral(Closure closure) {
         closure.delegate = new NeutralDelegate(entity: game.newEntity(), mod: mod)
@@ -86,7 +96,7 @@ class ConfigDelegate {
             Entity player = game.newEntity()
             def cl = closure.rehydrate(new PlayerDelegate(player), this, this)
             player.addComponent(new PlayerComponent(i, "Player $i"))
-            cl.setResolveStrategy(Closure.DELEGATE_FIRST)
+            cl.setResolveStrategy(DELEGATE_ONLY)
             cl.call()
         }
     }
