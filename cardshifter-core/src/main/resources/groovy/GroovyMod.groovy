@@ -3,6 +3,7 @@ import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.Entity
 import com.cardshifter.modapi.base.PlayerComponent
 import com.cardshifter.modapi.cards.DeckComponent
+import com.cardshifter.modapi.events.EntityCreatedEvent
 import com.cardshifter.modapi.players.Players
 import com.cardshifter.modapi.resources.ECSResource
 import com.cardshifter.modapi.resources.ECSResourceDefault
@@ -74,6 +75,14 @@ public class GroovyMod {
 
     void declareConfiguration(ECSGame game) {
         this.game = game
+        def entityMeta = new ExpandoMetaClass(Entity, false)
+        entityMeta.initialize()
+        game.metaClass.getEntityMeta << {
+            entityMeta
+        }
+        this.game.getEvents().registerHandlerAfter(this, EntityCreatedEvent, {e ->
+            e.setMetaClass(game.entityMeta)
+        })
         enableMeta(game)
         def confDelegate = new ConfigDelegate(game: game, mod: this, cardDelegate: cardDelegate)
         configClosure.each {

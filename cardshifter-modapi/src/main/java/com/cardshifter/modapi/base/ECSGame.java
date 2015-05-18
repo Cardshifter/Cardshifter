@@ -10,13 +10,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import com.cardshifter.modapi.events.*;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-
-import com.cardshifter.modapi.events.EventExecutor;
-import com.cardshifter.modapi.events.GameOverEvent;
-import com.cardshifter.modapi.events.IEvent;
-import com.cardshifter.modapi.events.StartGameEvent;
 
 /**
  * Starting point for the entire ECS
@@ -52,6 +48,7 @@ public final class ECSGame {
 	public Entity newEntity() {
 		Entity entity = new Entity(this, ids.incrementAndGet());
 		this.entities.put(entity.getId(), entity);
+        getEvents().executePostEvent(new EntityCreatedEvent(entity));
 		return entity;
 	}
 	
