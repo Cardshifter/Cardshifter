@@ -11,7 +11,7 @@ card('Change Me') {
 */
 
 card('ASGARD') {
-    creature "Greek"
+    creature "Norse"
     flavor "Legendary place where dead heroes lie."
     health 1
     sickness 1
@@ -19,7 +19,7 @@ card('ASGARD') {
     attack 1
 }
 card('VALHALLA') {
-    creature "Greek"
+    creature "Norse"
     flavor "Legendary place. The afterlife for warriors."
     health 1
     sickness 1
