@@ -8,6 +8,7 @@ import com.cardshifter.modapi.actions.attack.TrampleSystem
 import com.cardshifter.modapi.actions.enchant.EnchantPerform
 import com.cardshifter.modapi.actions.enchant.EnchantTargetCreatureTypes
 import com.cardshifter.modapi.attributes.Attributes
+import com.cardshifter.modapi.base.ComponentRetriever
 import com.cardshifter.modapi.base.ECSGame
 import com.cardshifter.modapi.base.ECSSystem
 import com.cardshifter.modapi.base.Entity
@@ -27,10 +28,12 @@ import com.cardshifter.modapi.phase.RestoreResourcesSystem
 import com.cardshifter.modapi.players.Players
 import com.cardshifter.modapi.resources.ECSResource
 import com.cardshifter.modapi.resources.GameOverIfNoHealth
+import com.cardshifter.modapi.resources.ResourceModifierComponent
 import com.cardshifter.modapi.resources.ResourceRecountSystem
 import com.cardshifter.modapi.resources.RestoreResourcesToSystem
 import net.zomis.cardshifter.ecs.effects.EffectActionSystem
 import net.zomis.cardshifter.ecs.effects.EffectTargetFilterSystem
+import net.zomis.cardshifter.ecs.effects.Effects
 import net.zomis.cardshifter.ecs.effects.EntityInt
 import net.zomis.cardshifter.ecs.usage.ApplyAfterAttack
 import net.zomis.cardshifter.ecs.usage.DestroyAfterUseSystem
@@ -129,6 +132,24 @@ public class GeneralSystems {
                 eff.described("${effect.description}",
                     eff.toSelf({source ->
                         effect.perform(source, null)
+                    })
+                )
+            )
+        }
+
+        CardDelegate.metaClass.whilePresent << {Closure closure ->
+            def eff = new Effects()
+            WhilePresentDelegate effect = new WhilePresentDelegate()
+            closure.delegate = effect
+            closure.call()
+            entity().addComponent(
+                eff.described("${effect.description}",
+                    eff.toSelf({source ->
+                        def resModifierObject = ComponentRetriever.singleton(source.game, ResourceModifierComponent)
+                        def modifiers = effect.modifiers
+                        for (def modifier in modifiers) {
+                            resModifierObject.addModifier(modifier.resource, modifier.createModifier(source))
+                        }
                     })
                 )
             )
