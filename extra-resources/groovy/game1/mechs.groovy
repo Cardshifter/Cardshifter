@@ -2,8 +2,8 @@
 
 card('Spareparts') {
     creature 'Mech'
-    health = 1
-    attack = 0
+    health 1
+    attack 0
     noAttack()
     sickness 0
     scrap 0

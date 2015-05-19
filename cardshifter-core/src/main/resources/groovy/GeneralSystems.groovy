@@ -100,8 +100,8 @@ public class GeneralSystems {
     }
 
     static def setup(ECSGame game) {
-        game.getEntityMeta().name << {Attributes.NAME.getFor(delegate)}
-        game.getEntityMeta().flavor << {Attributes.FLAVOR.getFor(delegate)}
+        game.getEntityMeta().getName << {Attributes.NAME.getFor(delegate)}
+        game.getEntityMeta().getFlavor << {Attributes.FLAVOR.getFor(delegate)}
 
         CardDelegate.metaClass.onEndOfTurn << {Closure closure ->
             EffectDelegate effect = new EffectDelegate()

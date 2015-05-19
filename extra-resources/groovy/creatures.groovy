@@ -30,9 +30,9 @@ CardDelegate.metaClass.creature << {String type ->
 
     entity.addComponent(new com.cardshifter.modapi.base.CreatureTypeComponent(type))
 
-    sickness = 1
-    taunt = 1
-    attack_available = 1
+    sickness 1
+    taunt 1
+    attack_available 1
 
 }
 
