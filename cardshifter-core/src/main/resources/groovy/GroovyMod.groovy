@@ -79,6 +79,9 @@ public class GroovyMod {
         game.metaClass.getEntityMeta << {
             entityMeta
         }
+        game.metaClass.resource << {String resourceName ->
+            resource(resourceName)
+        }
         knownResources.forEach {key, value ->
             def lowerCaseKey = key.toLowerCase().capitalize()
             println 'Adding getters and setters for ' + lowerCaseKey + " to ${game.entityMeta}"

@@ -32,10 +32,7 @@ card('Field Medic') {
     creature "Bio"
     health 5
     onEndOfTurn {
-        heal {
-            value 1
-            target "owner"
-        }
+        heal 1 to 'you'
     }
     manaCost 5
     attack 1
@@ -86,7 +83,7 @@ card('Inside Man') {
     creature "Bio"
     health 6
     attack 2
-    noAttack true
+    noAttack()
     afterPlay {
         summon 1 of 'Bodyman' to 'owner' zone 'Battlefield'
     }

@@ -83,7 +83,7 @@ card('Supply Mech') {
     creature "Mech"
     health 5
     attack 0
-    noAttack true
+    noAttack()
     sickness 0
     manaCost 3
     scrap 3
@@ -94,12 +94,9 @@ card('F.M.U.') {
     creature "Mech"
     health 4
     attack 0
-    noAttack true
+    noAttack()
     onEndOfTurn {
-        heal {
-            value 1
-            target "owner"
-        }
+        heal 1 to 'you'
     }
     manaCost 4
     scrap 2

@@ -2,6 +2,7 @@ import com.cardshifter.modapi.base.Entity
 import com.cardshifter.modapi.cards.DrawStartCards
 import com.cardshifter.modapi.cards.ZoneComponent
 import com.cardshifter.modapi.players.Players
+import com.cardshifter.modapi.resources.ECSResource
 
 class EffectDelegate {
 
@@ -42,6 +43,40 @@ class EffectDelegate {
             Entity drawer = entityLookup(source, who)
             DrawStartCards.drawCard(drawer)
         })
+    }
+
+    def heal(int value) {
+        [to: {String who ->
+            String desc = "Heal $who by $value"
+            Closure closure = {Entity source, Entity target ->
+                Entity entity = entityLookup(source, who)
+                assert entity : 'Invalid entity'
+                assert value >= 0 : 'Value cannot be negative'
+                ECSResource resource = entity.game.resource('health')
+                assert resource : 'health resource not found'
+                resource.retriever().resFor(entity).change(value)
+            }
+            description.append(desc)
+            description.append('\n')
+            closures.add(closure)
+        }]
+    }
+
+    def damage(int value) {
+        [to: {String who ->
+            String desc = "Damage $who by $value"
+            Closure closure = {Entity source, Entity target ->
+                Entity entity = entityLookup(source, who)
+                assert entity : 'Invalid entity'
+                assert value >= 0 : 'Value cannot be negative'
+                ECSResource resource = entity.game.resource('health')
+                assert resource : 'health resource not found'
+                resource.retriever().resFor(entity).change(-value)
+            }
+            description.append(desc)
+            description.append('\n')
+            closures.add(closure)
+        }]
     }
 
     // summon 2 of 'Bodyman' to owner zone Hand
