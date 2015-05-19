@@ -8,6 +8,7 @@ import com.cardshifter.modapi.actions.attack.TrampleSystem
 import com.cardshifter.modapi.actions.enchant.EnchantPerform
 import com.cardshifter.modapi.actions.enchant.EnchantTargetCreatureTypes
 import com.cardshifter.modapi.attributes.Attributes
+import com.cardshifter.modapi.base.Component
 import com.cardshifter.modapi.base.ComponentRetriever
 import com.cardshifter.modapi.base.ECSGame
 import com.cardshifter.modapi.base.ECSSystem
@@ -32,6 +33,7 @@ import com.cardshifter.modapi.resources.ResourceModifierComponent
 import com.cardshifter.modapi.resources.ResourceRecountSystem
 import com.cardshifter.modapi.resources.RestoreResourcesToSystem
 import net.zomis.cardshifter.ecs.effects.EffectActionSystem
+import net.zomis.cardshifter.ecs.effects.EffectComponent
 import net.zomis.cardshifter.ecs.effects.EffectTargetFilterSystem
 import net.zomis.cardshifter.ecs.effects.Effects
 import net.zomis.cardshifter.ecs.effects.EntityInt
@@ -102,6 +104,15 @@ public class GeneralSystems {
         throw new UnsupportedOperationException('whoPays? ' + str)
     }
 
+    static def addEffect(def ent, Component effect) {
+        Entity entity = (Entity) ent
+        EffectComponent existing = entity.getComponent(EffectComponent);
+        if (existing) {
+            effect = existing.and(effect as EffectComponent)
+        }
+        entity.addComponent(effect)
+    }
+
     static def setup(ECSGame game) {
         game.getEntityMeta().getName << {Attributes.NAME.getFor(delegate)}
         game.getEntityMeta().getFlavor << {Attributes.FLAVOR.getFor(delegate)}
@@ -111,7 +122,7 @@ public class GeneralSystems {
             closure.delegate = effect
             closure.call()
             def eff = new net.zomis.cardshifter.ecs.effects.Effects();
-            entity().addComponent(
+            addEffect(entity(),
                     eff.described("${effect.description} at end of turn",
                             eff.giveSelf(
                                     eff.triggerSystem(com.cardshifter.modapi.phase.PhaseEndEvent.class,
@@ -128,7 +139,7 @@ public class GeneralSystems {
             EffectDelegate effect = new EffectDelegate()
             closure.delegate = effect
             closure.call()
-            entity().addComponent(
+            addEffect(entity(),
                 eff.described("${effect.description}",
                     eff.toSelf({source ->
                         effect.perform(source, null)
@@ -142,7 +153,7 @@ public class GeneralSystems {
             WhilePresentDelegate effect = new WhilePresentDelegate()
             closure.delegate = effect
             closure.call()
-            entity().addComponent(
+            addEffect(entity(),
                 eff.described("${effect.description}",
                     eff.toSelf({source ->
                         def resModifierObject = ComponentRetriever.singleton(source.game, ResourceModifierComponent)

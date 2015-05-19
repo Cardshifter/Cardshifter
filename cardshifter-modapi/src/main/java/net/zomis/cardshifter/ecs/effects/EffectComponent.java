@@ -29,7 +29,7 @@ public class EffectComponent extends Component implements CopyableComponent {
 	}
 
 	public Component and(EffectComponent next) {
-		return new EffectComponent(description + " and " + next.description, 
+		return new EffectComponent(description + "\n" + next.description,
 				event -> effect.andThen(next.effect).accept(event));
 	}
 
