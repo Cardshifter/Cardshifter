@@ -120,6 +120,20 @@ public class GeneralSystems {
             )
         }
 
+        CardDelegate.metaClass.afterPlay << {Closure closure ->
+            def eff = new net.zomis.cardshifter.ecs.effects.Effects();
+            EffectDelegate effect = new EffectDelegate()
+            closure.delegate = effect
+            closure.call()
+            entity().addComponent(
+                eff.described("${effect.description}",
+                    eff.toSelf({source ->
+                        effect.perform(source, null)
+                    })
+                )
+            )
+        }
+
         // Scrap
         SystemsDelegate.metaClass.EnchantTargetCreatureTypes << {String... args ->
             addSystem new EnchantTargetCreatureTypes(args)
