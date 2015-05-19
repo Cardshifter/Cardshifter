@@ -22,6 +22,7 @@ public class NeutralDelegate {
         entity.addComponent(zone)
         println "Zone $name"
         closure.delegate = new ZoneDelegate(entity: entity, zone: zone, mod: mod, cardDelegate: cardDelegate)
+        closure.setResolveStrategy(Closure.DELEGATE_FIRST)
         closure.call(closure)
     }
 

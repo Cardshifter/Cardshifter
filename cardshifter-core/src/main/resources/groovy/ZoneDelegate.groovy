@@ -21,7 +21,7 @@ class ZoneDelegate {
         File file = new File(mod.modDirectory, "${name}.groovy")
         CompilerConfiguration cc = new CompilerConfiguration()
         cc.setScriptBaseClass(DelegatingScript.class.getName())
-        GroovyShell sh = new GroovyShell(mod.loader, new Binding(), cc)
+        GroovyShell sh = new GroovyShell(mod.loader, mod.binding, cc)
         DelegatingScript script = (DelegatingScript) sh.parse(file)
         script.setDelegate(this)
 
@@ -37,7 +37,7 @@ class ZoneDelegate {
         card.addComponent(new ActionComponent())
         cardDelegate.entity = card
         closure.delegate = cardDelegate
-        closure.setResolveStrategy(Closure.DELEGATE_FIRST)
+        closure.setResolveStrategy(Closure.OWNER_FIRST)
         closure.call()
         zone.addOnBottom(card)
     }

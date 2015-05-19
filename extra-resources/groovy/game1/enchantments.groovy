@@ -15,10 +15,7 @@ card('Body Armor') {
 
 card('Adrenalin Injection') {
     enchantment true
-    set {
-        res SICKNESS
-        value 0
-    }
+    set(SICKNESS, 0)
     addAttack 1
     addHealth 1
     scrapCost 1
@@ -43,10 +40,7 @@ card('Reinforced Cranial Implants') {
 
 card('Cybernetic Arm Cannon') {
     enchantment true
-    set {
-        res DENY_COUNTERATTACK
-        value 1
-    }
+    set(DENY_COUNTERATTACK, 1)
     addAttack 3
     addHealth 0
     scrapCost 2

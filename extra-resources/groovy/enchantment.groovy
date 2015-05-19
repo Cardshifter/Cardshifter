@@ -23,3 +23,15 @@ CardDelegate.metaClass.enchantment << {
 
     actions.addAction(enchantAction)
 }
+
+CardDelegate.metaClass.set << {resource, val ->
+    def entity = entity()
+    def eff = new net.zomis.cardshifter.ecs.effects.Effects();
+
+    entity.addComponent(
+        eff.described("Set " + resource + " to " + val,
+            eff.giveTarget(resource, 1, {i -> val})
+        )
+    );
+}
+

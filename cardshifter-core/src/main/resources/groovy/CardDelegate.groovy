@@ -55,9 +55,9 @@ class CardDelegate implements GroovyInterceptable {
         "$name"(value)
     }
 
-    def propertyMissing(String name) {
+/*    def propertyMissing(String name) {
         println 'Missing property: ' + name
-    }
+    }*/
 
     def methodMissing(String name, args) {
         missingMethod(entity, mod, name, args)
