@@ -88,12 +88,7 @@ card('Inside Man') {
     attack 2
     noAttack true
     afterPlay {
-        summon {
-            count 1
-            card "Bodyman"
-            where "Battlefield"
-            who "owner"
-        }
+        summon 1 of 'Bodyman' to 'owner' zone 'Battlefield'
     }
     manaCost 8
     flavor "A government official with wider web control. Usually brings friends."

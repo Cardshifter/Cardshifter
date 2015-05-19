@@ -1,6 +1,3 @@
-package systems;
-
-import SystemsDelegate
 import com.cardshifter.modapi.actions.UseCostSystem
 import com.cardshifter.modapi.actions.attack.AttackDamageAccumulating
 import com.cardshifter.modapi.actions.attack.AttackDamageHealAtEndOfTurn
@@ -25,6 +22,7 @@ import com.cardshifter.modapi.cards.PlayFromHandSystem
 import com.cardshifter.modapi.cards.RemoveDeadEntityFromZoneSystem
 import com.cardshifter.modapi.phase.GainResourceSystem
 import com.cardshifter.modapi.phase.PerformerMustBeCurrentPlayer
+import com.cardshifter.modapi.phase.PhaseEndEvent
 import com.cardshifter.modapi.phase.RestoreResourcesSystem
 import com.cardshifter.modapi.players.Players
 import com.cardshifter.modapi.resources.ECSResource
@@ -43,7 +41,8 @@ import java.util.function.BiPredicate
 import java.util.function.Consumer
 import java.util.function.Predicate
 import java.util.function.ToIntFunction
-import java.util.function.UnaryOperator;
+import java.util.function.UnaryOperator
+import EffectDelegate;
 
 class AttackSystemDelegate {
     ECSGame game
@@ -103,6 +102,23 @@ public class GeneralSystems {
     static def setup(ECSGame game) {
         game.getEntityMeta().name << {Attributes.NAME.getFor(delegate)}
         game.getEntityMeta().flavor << {Attributes.FLAVOR.getFor(delegate)}
+
+        CardDelegate.metaClass.onEndOfTurn << {Closure closure ->
+            EffectDelegate effect = new EffectDelegate()
+            closure.delegate = effect
+            closure.call()
+            def eff = new net.zomis.cardshifter.ecs.effects.Effects();
+            entity().addComponent(
+                    eff.described("${effect.description} at end of turn",
+                            eff.giveSelf(
+                                    eff.triggerSystem(com.cardshifter.modapi.phase.PhaseEndEvent.class,
+                                            {Entity me, PhaseEndEvent event -> com.cardshifter.modapi.players.Players.findOwnerFor(me) == event.getOldPhase().getOwner()},
+                                            {Entity source, PhaseEndEvent event -> effect.perform(source, source)}
+                                    )
+                            )
+                    )
+            )
+        }
 
         // Scrap
         SystemsDelegate.metaClass.EnchantTargetCreatureTypes << {String... args ->

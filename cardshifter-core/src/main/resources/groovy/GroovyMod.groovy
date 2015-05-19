@@ -12,8 +12,8 @@ import net.zomis.cardshifter.ecs.config.ConfigComponent
 import SystemsDelegate;
 import PlayerDelegate;
 import NeutralDelegate;
+import GeneralSystems;
 import org.codehaus.groovy.control.CompilerConfiguration;
-import systems.GeneralSystems;
 import static groovy.lang.Closure.DELEGATE_ONLY;
 
 public class GroovyMod {
