@@ -1,4 +1,5 @@
 import com.cardshifter.modapi.base.Entity
+import com.cardshifter.modapi.cards.DrawStartCards
 import com.cardshifter.modapi.cards.ZoneComponent
 import com.cardshifter.modapi.players.Players
 
@@ -17,6 +18,12 @@ class EffectDelegate {
         if (who == 'owner') {
             return Players.findOwnerFor(entity)
         }
+        if (who == 'you') {
+            return Players.findOwnerFor(entity)
+        }
+        if (who == 'opponent') {
+            return Players.getNextPlayer(Players.findOwnerFor(entity))
+        }
         assert false
     }
 
@@ -26,6 +33,15 @@ class EffectDelegate {
             .findAny().get()
         assert zone
         zone
+    }
+
+    def drawCard(String who, int count) {
+        def s = count == 1 ? '' : 's'
+        description.append("$who draw $count card$s\n")
+        closures.add({Entity source, Entity target ->
+            Entity drawer = entityLookup(source, who)
+            DrawStartCards.drawCard(drawer)
+        })
     }
 
     // summon 2 of 'Bodyman' to owner zone Hand
