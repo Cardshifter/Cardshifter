@@ -69,19 +69,39 @@ card('DIYU') {
 }
 card('MONKING') {
     creature "Chinese"
-    flavor "The infamous irrepressible Monkey King and Great Sage Equal Of Heaven"
-    health 1
-    sickness 1
-    manaCost 1
-    attack 1
+    flavor "Monkey King Warrior of Immense Strength."
+    // Type: Person
+    // Info: http://en.wikipedia.org/wiki/Sun_Wukong
+    // Image: http://upload.wikimedia.org/wikipedia/commons/2/25/Sun_Wukong_and_Jade_Rabbit.jpg
+    // License: Public Domain
+    health 5
+    sickness 0
+    manaCost 15
+    attack 5
+    denyCounterAttack true
+    onEndOfTurn {
+        change ATTACK by 1 withPriority 1 onCards {
+            card('MONKING')
+            ownedBy 'you'
+            zone 'Battlefield'
+        }
+    }
 }
-card('GUAN-YU') {
+card('GUAN YU') {
     creature "Chinese"
     flavor "God of War and Martial Arts"
-    health 1
+    // Type: Person
+    // Info: http://en.wikipedia.org/wiki/Guan_Yu
+    // Image: http://upload.wikimedia.org/wikipedia/commons/e/eb/Guan_yu_-Summer_Palace%2C_Beijing.JPG
+    // License: CC BY-SA 3.0
+    // Author: http://commons.wikimedia.org/wiki/User:Shizhao
+    health 10
     sickness 1
-    manaCost 1
-    attack 1
+    manaCost 15
+    attack 5
+    afterPlay {
+        summon 2 of 'Terracotta Soldier' to 'you' zone 'Hand'
+    }
 }
 card('EIGHT IMMORTALS') {
     creature "Chinese"
@@ -133,6 +153,21 @@ card('CAO-GUOJIU') {
 }
 
 // TOKENS 
+
+card('Terracotta Soldier') {
+    creature "Chinese"
+    flavor "Armies of Qin Shi Huang, the first Emperor of China."
+    // Info: http://en.wikipedia.org/wiki/Terracotta_Army
+    // Image: http://upload.wikimedia.org/wikipedia/commons/2/22/Officer_Terrakottaarm%C3%A9n.jpg
+    // License: CC BY-SA 3.0
+    // Author: Tor Svensson | http://sv.wikipedia.org/wiki/User:Kemitsv
+    manaCost 5
+    sickness 1
+    health 3
+    attack 3
+    taunt true
+}
+
 card('Yaoguai') {
     creature "Chinese"
     flavor "Freak"
