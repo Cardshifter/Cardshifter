@@ -40,7 +40,7 @@ card('JADE EMPEROR') {
 }
 card('DIYU') {
     creature "Chinese"
-    flavor "The Realm of the Dead, containing the The Courts of Hell."
+    flavor "The Realm of the Dead, containing the Ten Courts of Hell."
     // Type: Place
     // Info: http://en.wikipedia.org/wiki/Diyu
     // Image: http://upload.wikimedia.org/wikipedia/commons/c/cb/Jade_Record_1.PNG
@@ -89,7 +89,7 @@ card('MONKING') {
 }
 card('GUAN YU') {
     creature "Chinese"
-    flavor "God of War and Martial Arts"
+    flavor "God of War and Martial Arts."
     // Type: Person
     // Info: http://en.wikipedia.org/wiki/Guan_Yu
     // Image: http://upload.wikimedia.org/wikipedia/commons/e/eb/Guan_yu_-Summer_Palace%2C_Beijing.JPG
@@ -105,15 +105,23 @@ card('GUAN YU') {
 }
 card('EIGHT IMMORTALS') {
     creature "Chinese"
-    flavor "Accidental immortals, gods and goddesses of perfection."
+    flavor "Accidental Immortals, Gods and Goddesses of Perfection."
+    // Type: Person
+    // Info: http://en.wikipedia.org/wiki/Eight_Immortals
+    // Image: http://upload.wikimedia.org/wikipedia/commons/9/9a/Eight_Immortals_Crossing_the_Sea_-_Project_Gutenberg_eText_15250.jpg
+    // License: Public Domain
     health 1
     sickness 1
     manaCost 1
     attack 1
 }
-card('YEN-LO-WANG') {
+card('SHIN JE') {
     creature "Chinese"
-    flavor "Deity of Death and Lord of the Fifth Floor of Hell"
+    flavor "Deity of Death and Lord of the Fifth Court of Hell."
+    // Type: Person
+    // Info: http://en.wikipedia.org/wiki/Yama_(East_Asia)#Yama_in_Tibetan_Buddhism
+    // Image: http://upload.wikimedia.org/wikipedia/commons/5/54/Yama_tibet.jpg
+    // License: Püblic Domain
     health 1
     sickness 1
     manaCost 1
@@ -161,6 +169,7 @@ card('Terracotta Soldier') {
     // Image: http://upload.wikimedia.org/wikipedia/commons/2/22/Officer_Terrakottaarm%C3%A9n.jpg
     // License: CC BY-SA 3.0
     // Author: Tor Svensson | http://sv.wikipedia.org/wiki/User:Kemitsv
+    token true
     manaCost 5
     sickness 1
     health 3
@@ -171,6 +180,7 @@ card('Terracotta Soldier') {
 card('Yaoguai') {
     creature "Chinese"
     flavor "Freak"
+    // Info: http://en.wikipedia.org/wiki/Yaoguai
     token true
     sickness 1
     manaCost 0
@@ -181,6 +191,7 @@ card('Yaoguai') {
 card('Yaomo') {
     creature "Chinese"
     flavor "Demon"
+    // Info: http://en.wikipedia.org/wiki/Yaoguai
     token true
     sickness 1
     manaCost 0
@@ -190,6 +201,7 @@ card('Yaomo') {
 card('Yaojing') {
     creature "Chinese"
     flavor "Pixie"
+    // Info: http://en.wikipedia.org/wiki/Yaoguai
     token true
     sickness 1
     manaCost 0
