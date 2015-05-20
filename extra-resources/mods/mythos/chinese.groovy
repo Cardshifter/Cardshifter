@@ -9,21 +9,63 @@ card('ChangeMe') {
     attack 1
 }
 */
+
+/**
+ * List of available cards for Chinese panthon for Cardshifter "Mythos" mod
+ * @author www.github.com/Phrancis
+ */
+
 card('JADE EMPEROR') {
     creature "Chinese"
-    flavor "Creator and ruler of the universe."
-    health 1
+    flavor "The Great Grandfather, Emperor of all Deities, Vanquisher of Evil."
+    // Type: Person
+    // Info: http://en.wikipedia.org/wiki/Jade_Emperor
+    // Image: http://upload.wikimedia.org/wikipedia/commons/2/24/Jade_Emperor._Ming_Dynasty.jpg
+    // License: Public Domain
+    health 10
     sickness 1
-    manaCost 1
-    attack 1
+    manaCost 30
+    attack 3
+    whilePresent {
+        change HEALTH by 3 withPriority 1 onCards {
+            creatureType 'Chinese'
+            ownedBy 'you'
+            zone 'Battlefield'
+        }
+        change ATTACK by -1 withPriority 2 onCards {
+            creature()
+            zone 'Battlefield'
+        }
+    }
 }
-card('FENG-DU') {
+card('DIYU') {
     creature "Chinese"
-    flavor "The Realm of the Dead, containing all the Hells."
-    health 1
-    sickness 1
-    manaCost 1
-    attack 1
+    flavor "The Realm of the Dead, containing the The Courts of Hell."
+    // Type: Place
+    // Info: http://en.wikipedia.org/wiki/Diyu
+    // Image: http://upload.wikimedia.org/wikipedia/commons/c/cb/Jade_Record_1.PNG
+    // License: Public Domain
+    health 10
+    sickness 0
+    manaCost 20
+    attack 0
+    noAttack true
+    afterPlay {
+        summon 1 of 'Yaoguai' to 'you' zone 'Battlefield'
+        summon 1 of 'Yaomo' to 'you' zone 'Battlefield'
+        summon 1 of 'Yaojing' to 'you' zone 'Battlefield'
+    }
+    whilePresent {
+        change HEALTH by -1 withPriority 1 onCards {
+            creature()
+            zone 'Battlefield'
+        }
+        change ATTACK by 1 withPriority 2 onCards {
+            creatureType 'Chinese'
+            ownedBy 'you'
+            zone 'Battlefield'
+        }
+    }
 }
 card('MONKING') {
     creature "Chinese"
@@ -88,4 +130,36 @@ card('CAO-GUOJIU') {
     sickness 1
     manaCost 1
     attack 1
+}
+
+// TOKENS 
+card('Yaoguai') {
+    creature "Chinese"
+    flavor "Freak"
+    token true
+    sickness 1
+    manaCost 0
+    health 2
+    attack 2
+    denyCounterAttack true
+}
+card('Yaomo') {
+    creature "Chinese"
+    flavor "Demon"
+    token true
+    sickness 1
+    manaCost 0
+    health 2
+    attack 3
+}
+card('Yaojing') {
+    creature "Chinese"
+    flavor "Pixie"
+    token true
+    sickness 1
+    manaCost 0
+    health 3
+    attack 0
+    noAttack true
+    taunt true
 }
