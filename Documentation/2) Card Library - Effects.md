@@ -49,7 +49,7 @@ Various triggers are available for actions to be applied on.
 - Only works on creature cards. 
 - Applies the nested effects at the end of each of the owner's turns.
 
-####onDeath
+####`onDeath`
 
 - Only works on creature cards. 
 - Applies the nested effects when the creature's health reaches 0 or less.
@@ -143,40 +143,31 @@ Examples:
         }
     }
 
+
 ---
 
-##Filters
+####`withPriority` 
+
+
+This is only used with the `whilePresent` filter. It specifies in which order the actions are applied when the creature is present, i.e., when it enters play or upon a new turn while it is in play. Actions with the same priority are applied simultaneously. It can be any whole number but it is simpler to use `1, 2, 3` etc. The default value if not specified is `1`. 
+
+---
+
+##`onCards` Filters
 
 - These are used to filter the effects to a particular set of targets. 
-- A filter is an object containing any of those keys. `owner`, `zone`, `creature` and `creatureType`. 
+- A filter iuses a number of keys such as `ownedBy`, `zone`, `creature()`, `creatureType` and `card(this)`.
 - A variety of filters are available for effects, and will be explained in detail below.
 
-Usage:
-
-    {
-        name: "my card",
-        //some trigger: {
-            // do something,
-            filter: {
-                // filters here
-                owner: "foo",           // some owner
-                zone: "foo",            // some zone
-                creatureType: "foo",    // some creature type
-                creature: "foo",        // some creature
-        },
-    },
-    
-####`owner`
+####`ownedBy`
 
 This is a list of possible owners with descriptions. Note that owner values are String values, and therefore need to be contained in quotation marks. 
 
-- `"owner"`: Cards that you, as the player, own.
+- `"you"`: Cards that you, as the player, own.
 - `"opponent"`: Cards that your opponent owns. 
-- `"next"`: Cards that are owned by the next player. Synonymous to `"opponent"` unless your mod supports more than 2 players. 
-- `"active"`: Cards owned by the active player. 
+- `"next"`: Cards that are owned by the next player. Synonymous to `"opponent"` unless your mod supports more than 2 players. - `"active"`: Cards owned by the active player, in other words to the player whose turn it is.
 - `"inactive"`: Opposite of `"active"`. 
 - `"none"`: Cards owner by no player. There are no current game mechanics that use this. 
-
 
 ####`zone`
 
@@ -191,14 +182,12 @@ This is a list of possible zones with descriptions. Note that zone values are St
 
 ####`creatureType`
 
-A specific `creature` type, for example `"Mech"` or `"Bio"`. Affects all creature cards of that type. 
+A specific `creatureType` type, for example `"Mech"` or `"Bio"`. Affects all creature cards of that type. 
 
-####`creature`
+####`creature()`
 
-Whether a card is a `creature`. The `creatureType` does not matter in this case.
+Affects all creatures regardless of their type.
 
----
+####`card(this)`
 
-##`priority`
-
-This defines which effects get applied in what order. In many cases, setting `priority: 1` on all effects of a specific card is fine. In cases where one effect is intended to be applied logically before another is, then `priority` can be used to determine that order. `priority` is executed/applied from lower to higher number. It supports negative values as well, although we don't recommend using them, to keep intentions clear. 
+Affects the card which has the effect itself and no other. 
