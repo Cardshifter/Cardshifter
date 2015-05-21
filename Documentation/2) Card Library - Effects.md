@@ -191,3 +191,29 @@ Affects all creatures regardless of their type.
 ####`card(this)`
 
 Affects the card which has the effect itself and no other. 
+
+---
+
+##Summoning effects
+
+Summoning effects create new entities of specific cards into a specified zone. This is particularly important for cards with the `token()` attribute as it is the only way to bring them into play. 
+
+Syntax:
+
+    trigger {
+        summon n of "Card Name" to "ownedBy" zone "zone"
+    }
+
+It uses the same keywords for `ownedBy` and `zone` as the other card filters.
+
+Examples:
+
+    // create one Conscript in your hand when this is played
+    afterPlay {
+        summon 1 of "Conscript" to "you" zone "Hand"
+    }
+    // "Deathrattle" (Hearthstone) style effect
+    onDeath {
+        summon 1 of "The Chopper" to "you" zone "Battlefield"
+    }
+    
