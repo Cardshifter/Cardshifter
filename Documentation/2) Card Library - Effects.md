@@ -194,6 +194,50 @@ Affects the card which has the effect itself and no other.
 
 ---
 
+##Player effects
+
+These effects are targeted at affecting players directly. Please don't use those with the `whilePresent` trigger. 
+
+####`drawCard`
+
+Draw cards from top of deck to `Hand`.
+
+Syntax
+
+    trigger {
+        drawCard 'owner', n
+    }
+
+Examples
+
+    onEndOfTurn {
+        drawCard 'opponent', 1
+    }
+    afterPlay {
+        drawCard 'you', 3
+    }
+
+####`heal`, `damage`
+
+This heals or damages a target player.
+
+Syntax:
+
+    trigger {
+        heal|damage n to 'owner'
+    }
+
+Examples:
+
+    onDeath {
+        damage 3 to 'opponent'
+    }
+    onEndOfTurn {
+        heal 1 to 'you'
+    }
+
+---
+
 ##Summoning effects
 
 Summoning effects create new entities of specific cards into a specified zone. This is particularly important for cards with the `token()` attribute as it is the only way to bring them into play. 
