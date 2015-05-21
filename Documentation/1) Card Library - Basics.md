@@ -124,25 +124,23 @@ A card with `n` scrapCost requires spending `n` player scrap points in order to 
 
 ---
 
-##Attack Modifiers
+##Modifiers
 
 ####`noAttack()`
 
 Declares that a creature card cannot attack. 
 
-Usage: `noAttack()`.
-
 ####`taunt()`
 
-A card with `taunt()` will require the opponent to attack that card first before other cards or a player can be attacked.
-
-Usage: `taunt()`
+A creature card with `taunt()` will require the opponent to attack that card first before other cards or the player can be attacked.
 
 ####`denyCounterAttack()`
 
 A card with `denyCounterAttack()` will not be subject to the counter-attack mechanic. By default, the counter-attack mechanic makes it so that if a creature attacks another creature, and the target creature has `n` attack, the attacking creature will take `n` damage to health as a consequence. Enabling this will override this mechanic. This can be referred to as a "Ranged" or "Sniper" creature, in a way. 
 
-Usage: `denyCounterAttack()`
+####`token()`
+
+A card with `token()` cannot be selected from the Deck Builder. It can only be brought into play by summoning it. See `2) Card Library - Effects.md` for more details on summoning cards.
 
 ---
 
@@ -152,9 +150,9 @@ Enchantments are cards that can be cast upon creature cards which are in play. T
 
 ####`enchantment()`
 
-When set to `true`, the card is viewed as an enchantment. Note that a card cannot be both a Creature and an Enchantment.
+When declared an `enchantment()`, the card is viewed as an Enchantment. An enchantment can be cast on a `"Bio"` creature in Cyborg-Chronicles to make changes to its resources.
 
-Usage: `enchantment()`
+_Note that a card cannot be both a Creature and an Enchantment._
 
 ####`addHealth`
 
