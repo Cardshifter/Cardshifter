@@ -4,24 +4,7 @@
 
 #Card Library Guide - Effects
 
-Creating and modifying the available cards is the quickest and easiest way to customize your game modification _[mod]_. This guide will explain how to create custom effects for cards. 
-
----
-
-####Comments
-
-Note that code comments are used throughout to clarify usage. Comments on one line, or at the end of a line, are like `// this is a comment`. Comments spanning multiple lines, or interrupting a line, are like:
-
-    /*
-     * This is
-     * a multi-line comment
-     */
- 
-Or...
- 
-    card("My Card") /* a comment */ {
-        // stuff
-    }
+This guide will explain how to create custom effects for cards. We created an easy-to-use, flexible system that allows for creative effects to be applied to your mod. 
 
 ---
 
@@ -31,11 +14,52 @@ It is important to note that the keywords and identifiers must be typed **exactl
 
 ---
 
+##Resource effects
+
+An effect generally takes this form for resource modification:
+
+    trigger {
+        action resource n [withPriority n] onCards {
+            // filters
+        }
+    }
+
+There are also summoning effects, but those will be covered separately. 
+
+_Note that `priority` only applies to the `whilePresent` trigger and should be omitted for other triggers._
+
+---
+
+###Triggers
+
+Various triggers are available for actions to be applied on. 
+
+####`afterPlay`
+
+- Works on all cards.
+- Applies the nested effects after a card is played.
+
+####`whilePresent`
+
+- Only works on creature cards. 
+- Applies the nested effects while the card is present on the Battlefield.
+
+####`onEndOfTurn`
+
+- Only works on creature cards. 
+- Applies the nested effects at the end of each of the owner's turns.
+
+####onDeath
+
+- Only works on creature cards. 
+- Applies the nested effects when the creature's health reaches 0 or less.
+
+---
+
 ##Resources
 
 Many effects manipulate resources. Following is a list of the different resources. For a description of what each resource does, please see the `Card Library - Basics.md` guide.
 
----
 
 ###Important note
 
@@ -58,269 +82,67 @@ The name of the resource must always be `ALL_CAPS_WITH_UNDERSCORES` as this is w
 
 ---
 
-##`change` vs. `set`
+##Actions
 
-**It is very important to define the distinction between "changing" and "setting" the resource value of a card.** 
+The primary resource actions are `change` and `set`. The important distinction is that you either _change value(s) by `n`_ from its current value, or that you _set value(s) to `n`_ regardless of their current value. Therefore, be careful to use the correct keyword, `change` or `set`, according to your intentions. 
 
-- `change` takes account of the current value of a resource, and changes it accordingly, in a positive or negative manner.
-- `change` is generally more natural to gameplay, and therefore most frequently used.
-- `set` _ignores_ the current value of a resource, and sets applicable resource values to an arbitrary value.
-- `set` can be used for interesting effects, but can also drastically skew the game balance, and should be used with caution.
+####`change`
 
-####Examples:
+Syntax:
 
-Say you have the following cards as targets (according to your `filter`):
-
-    {
-        name: "card 1",
-        health: 3
-    },
-    {
-        name: "card 2",
-        health: 1
-    }
-
-And you played a card with this `change` effect:
-
-    {
-        name: "change health +1",
-        afterPlay: {
-            res: HEALTH,
-            change: 1,
-            filter: { /* some applicable filter */ }
+    trigger {
+        change RESOURCE by n [withPriority n] onCards {
+            // filters
         }
     }
 
-The resulting affected cards would be as such:
+Examples:
 
-    {
-        name: "card 1",
-        health: 4
-    },
-    {
-        name: "card 2",
-        health: 2
-    }
-    
-Likewise, if you played a card with this `change` effect:
-
-    {
-        name: "change health -1",
-        afterPlay: {
-            res: HEALTH,
-            change: -1,
-            filter: { /* some applicable filter */ }
+    // add one health to your cards on after play
+    afterPlay {
+        change HEALTH by 1 onCards {
+            ownedBy 'you'
+            zone 'Battlefield'
         }
     }
-
-The resulting affected cards would be as such:
-
-    {
-        name: "card 1",
-        health: 2
-    },
-    {
-        name: "card 2",
-        health: 0   // destroyed
-    }
-    
-**But**, if instead of `change`, you played a `set` card like this:
-
-    {
-        name: "set health 1",
-        afterPlay: {
-            res: HEALTH,
-            set: 1,
-            filter: { /* some applicable filter */ }
+    // subtract two attack from opponent creatures while present
+    whilePresent {
+        change ATTACK by -2 withPriority 1 onCards {
+            creature()
+            ownedBy 'opponent'
+            zone 'Battlefield'
         }
     }
     
-Then, the resulting cards would be like this: 
+####`set`
 
-    {
-        name: "card 1",
-        health: 1
-    },
-    {
-        name: "card 2",
-        health: 1
-    }
-    
-And if you you played a `set` card like this:
+Syntax:
 
-    {
-        name: "set health -1",
-        afterPlay: {
-            res: HEALTH,
-            set: -1,
-            filter: { /* some applicable filter */ }
+    trigger {
+        set RESOURCE to n [withPriority n] onCards {
+            // filters
         }
     }
-    
-Then, the resulting cards would be like this: 
 
-    {
-        name: "card 1",
-        health: -1  // destroyed
-    },
-    {
-        name: "card 2",
-        health: -1  // destroyed
+Examples:
+
+    // set opponent creature sickness to 2 (wait one turn) on death
+    onDeath {
+        set SICKNESS to 2 onCards {
+            creature()
+            ownedBy 'opponent'
+            zone 'Battlefield'
+        }
     }
-    
-Therefore, be careful to use the correct keyword, `change` or `set`, according to your intentions. 
-
----
-
-##Triggers
-
-Various triggers are available for actions to be applied on. 
-
-####`whilePresent`
-
-- Only works on creature cards. 
-- Applies the contained effects while the card is present in battle. 
-- It is an array of `MODIFIER`.
-- Note the use of square brackets `[]` is required for this to work correctly. 
-- Note that an array of `whilePresent` must be used for each resource that is modified.
-
-Usage:
-
-    {
-        name: "my card",
-        whilePresent [
-            // do some things
-        ],
-    },
-
-Example:
-
-    {
-        name: "my card",
-        creature: "Bio",
-        health: 3,
-        whilePresent: [
-            {   // Give all your Bio creatures +2 attack
-                res: ATTACK,
-                priority: 1,
-                change: 2,
-                filter: { creatureType: "Bio", owner: "owner" }
-            },
-            {   // Give all your opponent's Mech creatures -3 scrap
-                res: SCRAP,
-                priority: 1,
-                change: -3,
-                filter: { creatureType: "Mech", owner: "opponent" }
-            }
-        ]
+    // make all your Bio creatures have 3 attack while present
+    whilePresent {
+        set ATTACK to 3 withPriority 1 onCards {
+            creatureType "Bio"
+            ownedBy 'you'
+            zone 'Battlefield'
+        }
     }
 
----
-
-####`onEndOfTurn`
-
-- Only works on creature cards. 
-- Applies the contained effects at the end of each of the owner's turns.
-- It is `EFFECT` (single effect) or array of `EFFECT` (multiple effects).
-- Note the use of square brackets `[]` is required for this to work correctly with multiple effects.
-- Note that an array of `onEndOfTurn` must be used if multiple effects apply on end of turn. It is also OK to use array syntax for a single effect. 
-
-Usage:
-
-    {   // single effect
-        name: "my card",
-        onEndOfTurn: {
-            // do something
-        },
-    },
-    {   // multiple effects
-        name: "my other card",
-        onEndOfTurn: [
-            {
-                // do some thing
-            },
-            {
-                // do some other thing
-            }
-        ]
-    },
-    
-Example:
-
-    {   
-        name: "my card",
-        onEndOfTurn: { // heal self by 1
-            heal: { value: 1, target: "owner" } 
-        },
-    },
-    {
-        name: "my other card",
-        onEndOfTurn: [
-            { // heal self by 1
-                heal: { value: 1, target: "owner" } 
-            },
-            { // damage opponent by 1
-                damage: { value: 1, target: "opponent" }
-            }
-        ]
-    },
-
----
-
-####`afterPlay`
-
-- Works on all cards.
-- Applies the contained effects after a card is played.
-- It is `EFFECT` (single effect) or array of `EFFECT` (multiple effects). 
-- Note the use of square brackets `[]` is required for this to work correctly with multiple effects.
-- Note that an array of `afterPlay` must be used if multiple effects apply on end of turn. It is also OK to use array syntax for a single effect. 
-
-Usage:
-
-    {   // single effect
-        name: "my card",
-        afterPlay: {
-            // do something
-        },
-    },
-    {   // multiple effects
-        name: "my other card",
-        afterPlay: [
-            {
-                // do some thing
-            },
-            {
-                // do some other thing
-            }
-        ]
-    },
-    
-Example:
-
-    {   
-        name: "my card",
-        afterPlay: { // heal self by 1
-            heal: { value: 1, target: "owner" } 
-        },
-    },
-    {
-        name: "my other card",
-        afterPlay: [
-            {   // Give all your Bio creatures +2 attack
-                res: ATTACK,
-                priority: 1,
-                change: 2,
-                filter: { creatureType: "Bio", owner: "owner" }
-            },
-            {   // Give all your opponent's Mech creatures -3 scrap
-                res: SCRAP,
-                priority: 1,
-                change: -3,
-                filter: { creatureType: "Mech", owner: "opponent" }
-            }
-        ]
-    }
-    
 ---
 
 ##Filters
