@@ -12,7 +12,7 @@ The card library uses a Groovy Domain-Specific Language _[DSL]_ to store card in
 
 ####Comments
 
-Note that code comments are used throughout to clarify usage. Comments on one line, or at the end of a line, are like `// this is a comment`. Comments spanning multiple lines, or interrupting a line, are like:
+Note that code comments are used throughout to clarify usage. Comments a single line, or at the end of a line, are like `// this is a comment`. Comments spanning multiple lines, or interrupting a line, are like:
 
     /*
      * This is
@@ -22,7 +22,7 @@ Note that code comments are used throughout to clarify usage. Comments on one li
 Or...
  
     card("My Card") /* a comment */ {
-        // stuff
+        // a line comment
     }
 
 ---
@@ -145,9 +145,11 @@ Usage: `denyCounterAttack()`
 
 Enchantments are cards that can be cast upon creature cards which are in play. They modify the target card's properties.
 
-####`enchantment`
+####`enchantment()`
 
-When set to `true`, the card is viewed as an enchantment. Note that a card cannot be both a Creature and an Enchantment. Usage: `enchantment: true`
+When set to `true`, the card is viewed as an enchantment. Note that a card cannot be both a Creature and an Enchantment.
+
+Usage: `enchantment()`
 
 ####`addHealth`
 
@@ -159,4 +161,4 @@ Add `n` attack to the target card. Usage: `addAttack: n`
 
 ---
 
-**Note**: More advanced effects are described in the `Card Library - Effects.md` file.
+**Note**: More advanced effects are described in the `2) Card Library - Effects.md` file.
