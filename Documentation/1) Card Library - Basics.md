@@ -6,50 +6,85 @@
 
 Creating and modifying the available cards is the quickest and easiest way to customize your game modification _[mod]_. This guide will explain the basics of what are the different attributes, properties and effects, and how to use them effectively. 
 
-The card library uses JavaScript Objects to store card information. This is not to be confused with typical JSON, which uses quotation marks for all field identifiers and values. JavaScript Objects only use quotation marks for String data, e.g., `"Hello, Cardshifter!"`. All identifiers, as well as numeric and boolean (`true/false`) values should be written with no quotation marks.
+The card library uses a Groovy Domain-Specific Language _[DSL]_ to store card information. Numeric (1, 2, 3.14, 42, 999999999) values, as well as Boolean (true/false) are written without quotes. String values ("hello", "http://www.cardshifter.com/", etc.) are written either using `'single'` or `"double"` quotation marks (they act the same in the scope of your mod).
+
+---
+
+####Comments
+
+Note that code comments are used throughout to clarify usage. Comments on one line, or at the end of a line, are like `// this is a comment`. Comments spanning multiple lines, or interrupting a line, are like:
+
+    /*
+     * This is
+     * a multi-line comment
+     */
+ 
+Or...
+ 
+    card("My Card") /* a comment */ {
+        // stuff
+    }
+
+---
+
+####On precise grammar...
+
+It is important to note that the keywords and identifiers must be typed **exactly** as listed to be trustworthy of working. Misspelled words will not work at all. Capilatization must also be respected to ensure functionality.
 
 ---
 
 ##General attributes
 
-####`name`
+###`card("name")`
 
 - **Required**
 - The unique identifier of a specific card. You must not have multiple cards with the same name, otherwise the game behavior could be unpredictable. 
 
 Usage:
 
-    {
-        name: "My new card",
-    },
+    card("My Card")
+    // or
+    card('My Card')
     
-####`flavor`
+###`flavor`
 
 - Optional
 - Flavor text that says something interesting about the card. 
  
 Usage:
 
-    {
-        name: "My new card",
-        flavor: "This is my favorite card of all.",
-    },
+    card("My Card") {
+            flavor "This is my favorite card of all."
+    }
     
-####`creature`
+---
+    
+###`creature`
 
 - Any present value declares that the card is a creature. This means that the card can be played onto the battlefield, and will be destroyed into the discard pile upon becoming `health <= 0` or otherwise being destroyed by another mechanic.
 - It also displays the creature type of the card.
 - For reference, the most common creature types are:
+
+#####_Cyborg-Chronicles_ mod
+
 - - `"Bio"`: Creature which can have Enchantments played on it. See Enchantments section below for details. 
 - - `"Mech"`: Creature which can _not_ have Enchantments played on it. Mechs often have the characteristic that they can be sacrificed for scrap resource. See related `scrap` section. This property requires that `scrap > 0` in order to take effect.
 
 Usage:
 
-    {
-        name: "My new card",
-        flavor: "This is my favorite card of all.",
-        creature: "Bio",
-    },
+    card("My Card") {
+        flavor "This is my favorite card of all."
+        creature "Bio"
+    }
+
+#####_Mythos_ mod
+
+- There are no creature-type specific effects at this time. Creature type is used for labeling and targeting.
+
+    card("My Greek Card") {
+        flavor "This is my favorite Greek card of all."
+        creature "Greek"
+    }
 
 ---
 
@@ -81,13 +116,27 @@ A card with `n` manaCost requires spending `n` player mana points in order to pl
 
 A card with `n` scrapCost requires spending `n` player scrap points in order to play it. Usage: `scrapCost: n`
 
-####`noAttack`
+---
 
-Declares that a creature card cannot attack. Usage: `noAttack: 1` **or** `noAttack: true`
+##Attack Modifiers
 
-####`denyCounterAttack`
+####`noAttack()`
 
-A card with `denyCounterAttack: 1` will not be subject to the counter-attack mechanic. By default, the counter-attack mechanic makes it so that if a creature attacks another creature, and the target creature has `n` attack, the attacking creature will take `n` damage as a consequence. Setting this to `1` or `true` will override this mechanic. This can be referred to as a "Ranged" or "Sniper" creature, in a way. Usage: `denyCounterAttack: 1` **or** `denyCounterAttack: true`
+Declares that a creature card cannot attack. 
+
+Usage: `noAttack()`.
+
+####`denyCounterAttack()`
+
+A card with `denyCounterAttack()` will not be subject to the counter-attack mechanic. By default, the counter-attack mechanic makes it so that if a creature attacks another creature, and the target creature has `n` attack, the attacking creature will take `n` damage to health as a consequence. Enabling this will override this mechanic. This can be referred to as a "Ranged" or "Sniper" creature, in a way. 
+
+Usage: `denyCounterAttack()`
+
+####`taunt()`
+
+A card with `taunt()` will require the opponent to attack that card first before other cards or a player can be attacked.
+
+Usage: `taunt()`
 
 ---
 
@@ -107,5 +156,6 @@ Add `n` health to the target card. Usage: `addHealth: n`
 
 Add `n` attack to the target card. Usage: `addAttack: n`
 
-_Note: More advanced Enchancment effects are described in the `card-library-effects.md` file.
+---
 
+**Note**: More advanced effects are described in the `Card Library - Effects.md` file.

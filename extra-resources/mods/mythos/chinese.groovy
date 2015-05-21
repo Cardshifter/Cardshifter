@@ -49,7 +49,7 @@ card('DIYU') {
     sickness 0
     manaCost 20
     attack 0
-    noAttack true
+    noAttack()
     afterPlay {
         summon 1 of 'Yaoguai' to 'you' zone 'Battlefield'
         summon 1 of 'Yaomo' to 'you' zone 'Battlefield'
@@ -78,12 +78,10 @@ card('MONKING') {
     sickness 0
     manaCost 15
     attack 5
-    denyCounterAttack true
+    denyCounterAttack()
     onEndOfTurn {
-        change ATTACK by 1 withPriority 1 onCards {
-            card('MONKING')
-            ownedBy 'you'
-            zone 'Battlefield'
+        change ATTACK by 1 onCards {
+            card(this)
         }
     }
 }
@@ -174,7 +172,7 @@ card('Terracotta Soldier') {
     sickness 1
     health 3
     attack 3
-    taunt true
+    taunt()
 }
 
 card('Yaoguai') {
@@ -186,7 +184,7 @@ card('Yaoguai') {
     manaCost 0
     health 2
     attack 2
-    denyCounterAttack true
+    denyCounterAttack()
 }
 card('Yaomo') {
     creature "Chinese"
@@ -207,6 +205,6 @@ card('Yaojing') {
     manaCost 0
     health 3
     attack 0
-    noAttack true
-    taunt true
+    noAttack()
+    taunt()
 }
