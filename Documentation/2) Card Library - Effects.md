@@ -4,17 +4,42 @@
 
 #Card Library Guide - Effects
 
-Creating and modifying the available cards is the quickest and easiest way to customize your game modification _[mod]_. This guide will explain how to create custom effects for cards. Please make sure you have read the `card-library-basics` guide before proceeding. 
+Creating and modifying the available cards is the quickest and easiest way to customize your game modification _[mod]_. This guide will explain how to create custom effects for cards. 
 
-Card effects give special behavior to a card. Various elements can be combined flexibly in order to make cards behave in very specific ways. Please read this section very carefully before attempting to make new card effects, as the syntax is very particular. Note that `// code comments` (and occasional `/* inline code comments */`) are used throughout the examples, to help understand the application of the syntax. 
+---
+
+####Comments
+
+Note that code comments are used throughout to clarify usage. Comments on one line, or at the end of a line, are like `// this is a comment`. Comments spanning multiple lines, or interrupting a line, are like:
+
+    /*
+     * This is
+     * a multi-line comment
+     */
+ 
+Or...
+ 
+    card("My Card") /* a comment */ {
+        // stuff
+    }
+
+---
+
+###On precise grammar...
+
+It is important to note that the keywords and identifiers must be typed **exactly** as listed to be trustworthy of working. Misspelled words will not work at all. Capilatization must also be respected to ensure functionality.
 
 ---
 
 ##Resources
 
-Many effects manipulate resources (or `res:`). Following is a list of the different resources. For a description of what each resource does, please see the `card-library-basics` guide.
+Many effects manipulate resources. Following is a list of the different resources. For a description of what each resource does, please see the `Card Library - Basics.md` guide.
 
-**Important note:** The name of the resource must always be `ALL_CAPS_WITH_UNDERSCORES` as this is what the game server is expecting. 
+---
+
+###Important note
+
+The name of the resource must always be `ALL_CAPS_WITH_UNDERSCORES` as this is what the game server is expecting. 
 
 ####Basic Resources
 

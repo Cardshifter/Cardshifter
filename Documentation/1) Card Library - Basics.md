@@ -6,7 +6,7 @@
 
 Creating and modifying the available cards is the quickest and easiest way to customize your game modification _[mod]_. This guide will explain the basics of what are the different attributes, properties and effects, and how to use them effectively. 
 
-The card library uses a Groovy Domain-Specific Language _[DSL]_ to store card information. Numeric (1, 2, 3.14, 42, 999999999) values, as well as Boolean (true/false) are written without quotes. String values ("hello", "http://www.cardshifter.com/", etc.) are written either using `'single'` or `"double"` quotation marks (they act the same in the scope of your mod).
+The card library uses a Groovy Domain-Specific Language _[DSL]_ to store card information. Numeric values `(1, 2, 3.14, 42, 999999999)` , as well as Boolean values `(true / false, 1 / 0)` are written without quotes. String of character values `("hello world", "http://www.cardshifter.com/", etc.)` are written either using `'single'` or `"double"` quotation marks (they act the same in the scope of your mod).
 
 ---
 
@@ -27,7 +27,7 @@ Or...
 
 ---
 
-####On precise grammar...
+###On precise grammar...
 
 It is important to note that the keywords and identifiers must be typed **exactly** as listed to be trustworthy of working. Misspelled words will not work at all. Capilatization must also be respected to ensure functionality.
 
@@ -38,7 +38,8 @@ It is important to note that the keywords and identifiers must be typed **exactl
 ###`card("name")`
 
 - **Required**
-- The unique identifier of a specific card. You must not have multiple cards with the same name, otherwise the game behavior could be unpredictable. 
+- Declares the unique identifier of a specific card. You must not have multiple cards with the same name, otherwise the game behavior could be unpredictable. 
+- The properties/attributes/effects pertaining to that card are to all be contained within curly braces `{}` after this is declared.
 
 Usage:
 
@@ -65,7 +66,7 @@ Usage:
 - It also displays the creature type of the card.
 - For reference, the most common creature types are:
 
-#####_Cyborg-Chronicles_ mod
+#####_"Cyborg Chronicles"_ mod
 
 - - `"Bio"`: Creature which can have Enchantments played on it. See Enchantments section below for details. 
 - - `"Mech"`: Creature which can _not_ have Enchantments played on it. Mechs often have the characteristic that they can be sacrificed for scrap resource. See related `scrap` section. This property requires that `scrap > 0` in order to take effect.
@@ -77,7 +78,7 @@ Usage:
         creature "Bio"
     }
 
-#####_Mythos_ mod
+#####_"Mythos"_ mod
 
 - There are no creature-type specific effects at this time. Creature type is used for labeling and targeting.
 
@@ -126,17 +127,17 @@ Declares that a creature card cannot attack.
 
 Usage: `noAttack()`.
 
-####`denyCounterAttack()`
-
-A card with `denyCounterAttack()` will not be subject to the counter-attack mechanic. By default, the counter-attack mechanic makes it so that if a creature attacks another creature, and the target creature has `n` attack, the attacking creature will take `n` damage to health as a consequence. Enabling this will override this mechanic. This can be referred to as a "Ranged" or "Sniper" creature, in a way. 
-
-Usage: `denyCounterAttack()`
-
 ####`taunt()`
 
 A card with `taunt()` will require the opponent to attack that card first before other cards or a player can be attacked.
 
 Usage: `taunt()`
+
+####`denyCounterAttack()`
+
+A card with `denyCounterAttack()` will not be subject to the counter-attack mechanic. By default, the counter-attack mechanic makes it so that if a creature attacks another creature, and the target creature has `n` attack, the attacking creature will take `n` damage to health as a consequence. Enabling this will override this mechanic. This can be referred to as a "Ranged" or "Sniper" creature, in a way. 
+
+Usage: `denyCounterAttack()`
 
 ---
 

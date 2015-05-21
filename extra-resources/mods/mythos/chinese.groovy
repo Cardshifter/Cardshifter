@@ -33,7 +33,7 @@ card('JADE EMPEROR') {
             zone 'Battlefield'
         }
         change ATTACK by -1 withPriority 2 onCards {
-            creature()
+            creature() // all creatures
             zone 'Battlefield'
         }
     }
@@ -57,7 +57,7 @@ card('DIYU') {
     }
     whilePresent {
         change HEALTH by -1 withPriority 1 onCards {
-            creature()
+            creature() // all creatures
             zone 'Battlefield'
         }
         change ATTACK by 1 withPriority 2 onCards {
