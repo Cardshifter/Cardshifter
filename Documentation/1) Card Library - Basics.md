@@ -39,13 +39,18 @@ It is important to note that the keywords and identifiers must be typed **exactl
 
 - **Required**
 - Declares the unique identifier of a specific card. You must not have multiple cards with the same name, otherwise the game behavior could be unpredictable. 
-- The properties/attributes/effects pertaining to that card are to all be contained within curly braces `{}` after this is declared.
+- The properties/attributes/effects pertaining to that card are to all be contained within curly braces `{}` after this is declared. Please use line breaks and indentation spaces to keep the properties visually grouped together.
 
 Usage:
 
-    card("My Card")
-    // or
-    card('My Card')
+    card("My Card") {
+        // card properties
+    }
+    // or also acceptable
+    card("My Card") 
+    {
+        // card properties
+    }
     
 ###`flavor`
 
@@ -82,10 +87,10 @@ Usage:
 
 - There are no creature-type specific effects at this time. Creature type is used for labeling and targeting.
 
-    card("My Greek Card") {
-        flavor "This is my favorite Greek card of all."
-        creature "Greek"
-    }
+        card("My Greek Card") {
+            flavor "This is my favorite Greek card of all."
+            creature "Greek"
+        }
 
 ---
 
