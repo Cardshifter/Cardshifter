@@ -103,35 +103,69 @@ card('GUAN YU') {
 }
 card('EIGHT IMMORTALS') {
     creature "Chinese"
-    flavor "Accidental Immortals, Gods and Goddesses of Perfection."
+    flavor "Their power can be transferred to a tool that can bestow life or destroy evil."
     // Type: Person
     // Info: http://en.wikipedia.org/wiki/Eight_Immortals
     // Image: http://upload.wikimedia.org/wikipedia/commons/9/9a/Eight_Immortals_Crossing_the_Sea_-_Project_Gutenberg_eText_15250.jpg
     // License: Public Domain
-    health 1
+    health 5
     sickness 1
-    manaCost 1
-    attack 1
+    manaCost 10
+    attack 3
+    afterPlay {
+        pickAtRandom(
+            { summon 1 of "Life Tool" to 'you' zone 'Battlefield' },
+            { summon 1 of "Destruction Tool" to 'you' zone 'Battlefield' }
+        )
+    }
 }
-card('SHIN JE') {
+card('SHINJE') {
     creature "Chinese"
-    flavor "Deity of Death and Lord of the Fifth Court of Hell."
+    flavor "Wrathful God of Death and Guardian of Spiritual Practice."
     // Type: Person
     // Info: http://en.wikipedia.org/wiki/Yama_(East_Asia)#Yama_in_Tibetan_Buddhism
     // Image: http://upload.wikimedia.org/wikipedia/commons/5/54/Yama_tibet.jpg
     // License: Püblic Domain
-    health 1
+    health 6
     sickness 1
-    manaCost 1
-    attack 1
+    manaCost 20
+    attack 6
+    whilePresent {
+        change ATTACK, HEALTH by 1 withPriority 1 onCards {
+            creature()
+            ownedBy "you"
+            zone "Battlefield"
+        }
+        change MANA_COST by -3 onCards {
+            ownedBy "you"
+            zone "Hand", "Battlefield"
+        }
+    }
 }
-card('GUAN-YIN') {
+card('GUANYIN') {
     creature "Chinese"
-    flavor "Goddess of Compassion and Caring"
-    health 1
+    flavor "Perceives the Cries of the World"
+    // Type: Person
+    // Info: http://en.wikipedia.org/wiki/Guanyin
+    // Image: http://upload.wikimedia.org/wikipedia/commons/8/89/Daienin_Kannon.JPG
+    // License: CC BY-SA 3.0
+    // Author: ":...---...SOS" | http://commons.wikimedia.org/w/index.php?title=User:...---...SOS&action=edit&redlink=1
+    health 10
     sickness 1
-    manaCost 1
-    attack 1
+    manaCost 15
+    attack 0
+    noAttack()
+    whilePresent {
+        change HEALTH by 1 withPriority 1 onCards {
+            creature() 
+            ownedBy 'you' 
+            zone 'Battlefield'
+        }
+    }
+    onEndOfTurn {
+        heal 1 to 'you'
+        damage 1 to { card(this) }
+    }
 }
 card('AO-CHIN') {
     creature "Chinese"
@@ -167,7 +201,7 @@ card('Terracotta Soldier') {
     // Image: http://upload.wikimedia.org/wikipedia/commons/2/22/Officer_Terrakottaarm%C3%A9n.jpg
     // License: CC BY-SA 3.0
     // Author: Tor Svensson | http://sv.wikipedia.org/wiki/User:Kemitsv
-    token true
+    token()
     manaCost 5
     sickness 1
     health 3
@@ -179,7 +213,7 @@ card('Yaoguai') {
     creature "Chinese"
     flavor "Freak"
     // Info: http://en.wikipedia.org/wiki/Yaoguai
-    token true
+    token()
     sickness 1
     manaCost 0
     health 2
@@ -190,7 +224,7 @@ card('Yaomo') {
     creature "Chinese"
     flavor "Demon"
     // Info: http://en.wikipedia.org/wiki/Yaoguai
-    token true
+    token()
     sickness 1
     manaCost 0
     health 2
@@ -200,11 +234,33 @@ card('Yaojing') {
     creature "Chinese"
     flavor "Pixie"
     // Info: http://en.wikipedia.org/wiki/Yaoguai
-    token true
+    token()
     sickness 1
     manaCost 0
     health 3
     attack 0
     noAttack()
     taunt()
+}
+card("Life Tool") {
+    creature "Chinese"
+    flavor "Restores life."
+    token()
+    health 3
+    attack 0
+    noAttack()
+    onEndOfTurn {
+        heal 1 to 'you'
+    }
+}
+card("Destruction Tool") {
+    creature "Chinese"
+    flavor "Causes damage."
+    token()
+    health 3
+    attack 0
+    noAttack()
+    onEndOfTurn {
+        damage 1 to 'opponent'
+    }
 }
