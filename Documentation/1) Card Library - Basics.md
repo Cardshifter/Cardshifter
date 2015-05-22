@@ -98,13 +98,13 @@ Usage:
 
 ####`health`
 
-A creature card with `n` health can take `n` damage while it is in battle, and it is destroyed into the discard pile if the health reaches `0` or less. If you set `health: 0`, your card should die immediately after being played, save some effect(s) modify health. Usage: `health: n`
+A creature card with `n` health can take `n` damage while it is in battle, and it is destroyed into the discard pile if the health reaches `0` or less. If you set `health 0`, your card should die immediately after being played, save some effect(s) modify health. Usage: `health n`
 
 _Note: by default setting, Cardshifter cards will gain their health back after each turn._
 
 ####`attack`
 
-A creature card with `n` attack can cause `n` damage  to a target card or player while it is in battle. Usage: `attack: n`
+A creature card with `n` attack can cause `n` damage  to a target card or player while it is in battle. Usage: `attack n`
 
 ####`scrap`
 
@@ -112,15 +112,15 @@ A creature card with `n` scrap value can be sacrificed from battle after exhaust
 
 ####`sickness`
 
-A creature card with `n` sickness must wait `n` turns after being played before it can perform an action. A creature with `0` sickness is often referred to as having "Rush" or immediate action. Usage: `sickness: n`
+A creature card with `n` sickness must wait `n` turns after being played before it can perform an action. A creature with `0` sickness is often referred to as having "Rush" or immediate action. Usage: `sickness n`
 
 ####`manaCost`
 
-A card with `n` manaCost requires spending `n` player mana points in order to play it. Usage: `manaCost: n`
+A card with `n` manaCost requires spending `n` player mana points in order to play it. Usage: `manaCost n`
 
 ####`scrapCost`
 
-A card with `n` scrapCost requires spending `n` player scrap points in order to play it. Usage: `scrapCost: n`
+A card with `n` scrapCost requires spending `n` player scrap points in order to play it. Usage: `scrapCost n`
 
 ---
 
@@ -156,11 +156,11 @@ _Note that a card cannot be both a Creature and an Enchantment._
 
 ####`addHealth`
 
-Add `n` health to the target card. Usage: `addHealth: n`
+Add `n` health to the target card. Usage: `addHealth n`
 
 ####`addAttack`
 
-Add `n` attack to the target card. Usage: `addAttack: n`
+Add `n` attack to the target card. Usage: `addAttack n`
 
 ---
 
