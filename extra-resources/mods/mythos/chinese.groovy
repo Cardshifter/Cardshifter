@@ -53,7 +53,8 @@ card("NUWA") {
     attack 4
     afterPlay {
         summon 1 of "Terracotta Soldier" to "you" zone "Battlefield"
-        summon 1 of "Manchu Archer" to "you" zone "Battlefield"   
+        summon 1 of "Manchu Archer" to "you" zone "Battlefield"
+        summon 1 of "Kung Fu Fighter" to "you" zone "Battlefield"
     }
     whilePresent {
         pickAtRandom (
@@ -257,10 +258,9 @@ card("Kung Fu Fighter") {
     // License: CC-BY-SA-3.0
     // Author: Scrozentalis | https://commons.wikimedia.org/w/index.php?title=User:Srozentalis&action=edit&redlink=1
     manaCost 5
-    sickness 1
-    health 4
-    attack 2
-    denyCounterAttack()
+    sickness 0
+    health 3
+    attack 4
 }
 
 // TOKENS 
