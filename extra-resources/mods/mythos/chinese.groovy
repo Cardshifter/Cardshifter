@@ -56,7 +56,7 @@ card("NUWA") {
         summon 1 of "Manchu Archer" to "you" zone "Battlefield"
         summon 1 of "Kung Fu Fighter" to "you" zone "Battlefield"
     }
-    whilePresent {
+    onEndOfTurn {
         pickAtRandom (
             { heal 2 to "you" },
             { heal 1 to "opponent" },
