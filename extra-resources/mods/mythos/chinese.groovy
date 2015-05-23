@@ -1,6 +1,6 @@
 /* See modding documentation for all available keywords. */
 /* GENERIC TEMPLATE
-card('ChangeMe') {
+card("ChangeMe") {
     creature "Chinese"
     flavor "hello"
     health 1
@@ -15,7 +15,9 @@ card('ChangeMe') {
  * @author www.github.com/Phrancis
  */
 
-card('JADE EMPEROR') {
+// PANTHEON
+
+card("JADE EMPEROR") {
     creature "Chinese"
     flavor "The Great Grandfather, Emperor of all Deities, Vanquisher of Evil."
     // Type: Person
@@ -28,17 +30,41 @@ card('JADE EMPEROR') {
     attack 3
     whilePresent {
         change HEALTH by 3 withPriority 1 onCards {
-            creatureType 'Chinese'
-            ownedBy 'you'
-            zone 'Battlefield'
+            creatureType "Chinese"
+            ownedBy "you"
+            zone "Battlefield"
         }
         change ATTACK by -1 withPriority 2 onCards {
             creature() // all creatures
-            zone 'Battlefield'
+            zone "Battlefield"
         }
     }
 }
-card('DIYU') {
+card("NUWA") {
+    creature "Chinese"
+    flavor "Serpent Creator Goddess of Mankind and Repairer of the Pillar of Heaven."
+    // Type: Person
+    // Info: http://en.wikipedia.org/wiki/N%C3%BCwa
+    // Image: http://upload.wikimedia.org/wikipedia/commons/4/49/Nuwa.jpg
+    // License: Public Domain
+    health 10
+    sickness 1
+    manaCost 25
+    attack 4
+    afterPlay {
+        summon 1 of "Terracotta Soldier" to "you" zone "Battlefield"
+        summon 1 of "Manchu Archer" to "you" zone "Battlefield"   
+    }
+    whilePresent {
+        pickAtRandom (
+            { heal 2 to "you" },
+            { heal 1 to "opponent" },
+            { damage 1 to "you" },
+            { damage 2 to "opponent" }
+        )
+    }
+}
+card("DIYU") {
     creature "Chinese"
     flavor "The Realm of the Dead, containing the Ten Courts of Hell."
     // Type: Place
@@ -51,23 +77,23 @@ card('DIYU') {
     attack 0
     noAttack()
     afterPlay {
-        summon 1 of 'Yaoguai' to 'you' zone 'Battlefield'
-        summon 1 of 'Yaomo' to 'you' zone 'Battlefield'
-        summon 1 of 'Yaojing' to 'you' zone 'Battlefield'
+        summon 1 of "Yaoguai" to "you" zone "Battlefield"
+        summon 1 of "Yaomo" to "you" zone "Battlefield"
+        summon 1 of "Yaojing" to "you" zone "Battlefield"
     }
     whilePresent {
         change HEALTH by -1 withPriority 1 onCards {
             creature() // all creatures
-            zone 'Battlefield'
+            zone "Battlefield"
         }
         change ATTACK by 1 withPriority 2 onCards {
-            creatureType 'Chinese'
-            ownedBy 'you'
-            zone 'Battlefield'
+            creatureType "Chinese"
+            ownedBy "you"
+            zone "Battlefield"
         }
     }
 }
-card('MONKING') {
+card("MONKING") {
     creature "Chinese"
     flavor "Monkey King Warrior of Immense Strength."
     // Type: Person
@@ -85,7 +111,7 @@ card('MONKING') {
         }
     }
 }
-card('GUAN YU') {
+card("GUAN YU") {
     creature "Chinese"
     flavor "God of War and Martial Arts."
     // Type: Person
@@ -98,10 +124,10 @@ card('GUAN YU') {
     manaCost 15
     attack 5
     afterPlay {
-        summon 2 of 'Terracotta Soldier' to 'you' zone 'Hand'
+        summon 2 of "Terracotta Soldier" to "you" zone "Hand"
     }
 }
-card('EIGHT IMMORTALS') {
+card("EIGHT IMMORTALS") {
     creature "Chinese"
     flavor "Their power can be transferred to a tool that can bestow life or destroy evil."
     // Type: Person
@@ -113,13 +139,13 @@ card('EIGHT IMMORTALS') {
     manaCost 10
     attack 3
     afterPlay {
-        pickAtRandom(
-            { summon 1 of "Life Tool" to 'you' zone 'Battlefield' },
-            { summon 1 of "Destruction Tool" to 'you' zone 'Battlefield' }
+        pickAtRandom (
+            { summon 1 of "Life Tool" to "you" zone "Battlefield" },
+            { summon 1 of "Destruction Tool" to "you" zone "Battlefield" }
         )
     }
 }
-card('SHINJE') {
+card("SHINJE") {
     creature "Chinese"
     flavor "Wrathful God of Death and Guardian of Spiritual Practice."
     // Type: Person
@@ -142,7 +168,7 @@ card('SHINJE') {
         }
     }
 }
-card('GUANYIN') {
+card("GUANYIN") {
     creature "Chinese"
     flavor "Perceives the Cries of the World"
     // Type: Person
@@ -158,58 +184,88 @@ card('GUANYIN') {
     whilePresent {
         change HEALTH by 1 withPriority 1 onCards {
             creature() 
-            ownedBy 'you' 
-            zone 'Battlefield'
+            ownedBy "you" 
+            zone "Battlefield"
         }
     }
     onEndOfTurn {
-        heal 1 to 'you'
+        heal 1 to "you"
         damage 1 to { card(this) }
     }
 }
-card('AO-CHIN') {
+card("MAZU") {
     creature "Chinese"
-    flavor "Sea Spirit. King of the Southern Ocean"
-    health 1
+    flavor "Silent Goddess watching over Seafarers."
+    // Type: Person
+    // Info: http://en.wikipedia.org/wiki/Mazu_(goddess)
+    // Image: http://upload.wikimedia.org/wikipedia/commons/c/cf/Mazu_statue.JPG
+    // License: CC BY-SA 3.0
+    // Author: http://commons.wikimedia.org/wiki/User:Dli184
+    health 8
     sickness 1
-    manaCost 1
-    attack 1
-}
-card('NU-GUA') {
-    creature "Chinese"
-    flavor "Serpent Creator Goddess of Mankind, Marriage and Mud"
-    health 1
-    sickness 1
-    manaCost 1
-    attack 1
-}
-card('CAO-GUOJIU') {
-    creature "Chinese"
-    flavor "Immortal theatre fan and royal patron of actors"
-    health 1
-    sickness 1
-    manaCost 1
-    attack 1
+    manaCost 10
+    attack 3
+    whilePresent {
+        change HEALTH by 1 withPriority 1 onCards {
+            creature()
+            ownedBy "you"
+            zone "Battlefield"
+        }
+        change HEALTH by 2 withPriority 2 onCards {
+            creature()
+            ownedBy "active"
+            zone "Battlefield"
+        }
+    }
 }
 
-// TOKENS 
+// COMMON UNITS
 
-card('Terracotta Soldier') {
+card("Terracotta Soldier") {
     creature "Chinese"
     flavor "Armies of Qin Shi Huang, the first Emperor of China."
+    // Type: Person
     // Info: http://en.wikipedia.org/wiki/Terracotta_Army
     // Image: http://upload.wikimedia.org/wikipedia/commons/2/22/Officer_Terrakottaarm%C3%A9n.jpg
     // License: CC BY-SA 3.0
     // Author: Tor Svensson | http://sv.wikipedia.org/wiki/User:Kemitsv
-    token()
     manaCost 5
     sickness 1
     health 3
     attack 3
     taunt()
 }
+card("Manchu Archer") {
+    creature "Chinese"
+    flavor: "Archers have played a pivotal role in Chinese society."
+    // Type: Person
+    // Info: http://en.wikipedia.org/wiki/Chinese_archery
+    // Image: http://upload.wikimedia.org/wikipedia/commons/2/20/Manchuguard.jpg
+    // License: Public Domain
+    manaCost 5
+    sickness 1
+    health 4
+    attack 2
+    denyCounterAttack()
+}
+card("Kung Fu Fighter") {
+    creature "Chinese"
+    flavor: "Chinese Martial Artist."
+    // Type: Person
+    // Info: http://en.wikipedia.org/wiki/Chinese_martial_arts
+    // Image: https://upload.wikimedia.org/wikipedia/commons/0/0b/Beddar.jpg
+    // License: CC-BY-SA-3.0
+    // Author: Scrozentalis | https://commons.wikimedia.org/w/index.php?title=User:Srozentalis&action=edit&redlink=1
+    manaCost 5
+    sickness 1
+    health 4
+    attack 2
+    denyCounterAttack()
+}
 
-card('Yaoguai') {
+// TOKENS 
+
+card("Yaoguai") {
     creature "Chinese"
     flavor "Freak"
     // Info: http://en.wikipedia.org/wiki/Yaoguai
@@ -220,7 +276,7 @@ card('Yaoguai') {
     attack 2
     denyCounterAttack()
 }
-card('Yaomo') {
+card("Yaomo") {
     creature "Chinese"
     flavor "Demon"
     // Info: http://en.wikipedia.org/wiki/Yaoguai
@@ -230,7 +286,7 @@ card('Yaomo') {
     health 2
     attack 3
 }
-card('Yaojing') {
+card("Yaojing") {
     creature "Chinese"
     flavor "Pixie"
     // Info: http://en.wikipedia.org/wiki/Yaoguai
@@ -250,7 +306,7 @@ card("Life Tool") {
     attack 0
     noAttack()
     onEndOfTurn {
-        heal 1 to 'you'
+        heal 1 to "you"
     }
 }
 card("Destruction Tool") {
@@ -261,6 +317,6 @@ card("Destruction Tool") {
     attack 0
     noAttack()
     onEndOfTurn {
-        damage 1 to 'opponent'
+        damage 1 to "opponent"
     }
 }
