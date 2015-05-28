@@ -57,7 +57,7 @@ card("NUWA") {
         summon 1 of "Kung Fu Fighter" to "you" zone "Battlefield"
     }
     onEndOfTurn {
-        pickAtRandom (
+        pick 1 atRandom (
             { heal 2 to "you" },
             { heal 1 to "opponent" },
             { damage 1 to "you" },
@@ -108,7 +108,7 @@ card("MONKING") {
     denyCounterAttack()
     onEndOfTurn {
         change ATTACK by 1 onCards {
-            card(this)
+            thisCard()
         }
     }
 }
@@ -140,7 +140,7 @@ card("EIGHT IMMORTALS") {
     manaCost 10
     attack 3
     afterPlay {
-        pickAtRandom (
+        pick 1 atRandom (
             { summon 1 of "Life Tool" to "you" zone "Battlefield" },
             { summon 1 of "Destruction Tool" to "you" zone "Battlefield" }
         )
@@ -191,7 +191,7 @@ card("GUANYIN") {
     }
     onEndOfTurn {
         heal 1 to "you"
-        damage 1 to { card(this) }
+        damage 1 to { thisCard() }
     }
 }
 card("MAZU") {
