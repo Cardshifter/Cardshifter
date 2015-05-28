@@ -22,6 +22,7 @@ import com.cardshifter.modapi.cards.MulliganSingleCards
 import com.cardshifter.modapi.cards.PlayEntersBattlefieldSystem
 import com.cardshifter.modapi.cards.PlayFromHandSystem
 import com.cardshifter.modapi.cards.RemoveDeadEntityFromZoneSystem
+import com.cardshifter.modapi.events.EntityRemoveEvent
 import com.cardshifter.modapi.phase.GainResourceSystem
 import com.cardshifter.modapi.phase.PerformerMustBeCurrentPlayer
 import com.cardshifter.modapi.phase.PhaseEndEvent
@@ -129,6 +130,24 @@ public class GeneralSystems {
                                     eff.triggerSystem(com.cardshifter.modapi.phase.PhaseEndEvent.class,
                                             {Entity me, PhaseEndEvent event -> com.cardshifter.modapi.players.Players.findOwnerFor(me) == event.getOldPhase().getOwner()},
                                             {Entity source, PhaseEndEvent event -> effect.perform(source, source)}
+                                    )
+                            )
+                    )
+            )
+        }
+
+        CardDelegate.metaClass.onDeath << {Closure closure ->
+            EffectDelegate effect = new EffectDelegate()
+            closure.delegate = effect
+            closure.setResolveStrategy(Closure.DELEGATE_FIRST)
+            closure.call()
+            def eff = new net.zomis.cardshifter.ecs.effects.Effects();
+            addEffect(entity(),
+                    eff.described("When this dies, ${effect.description}",
+                            eff.giveSelf(
+                                    eff.triggerSystemBefore(EntityRemoveEvent.class,
+                                            {Entity me, EntityRemoveEvent event -> me == event.entity},
+                                            {Entity source, EntityRemoveEvent event -> effect.perform(source, source)}
                                     )
                             )
                     )
