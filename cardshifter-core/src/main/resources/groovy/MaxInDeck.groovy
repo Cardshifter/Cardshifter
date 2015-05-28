@@ -26,6 +26,10 @@ class MaxInDeck {
             Entity e = entity()
             cardCounts.put(e.id, count)
         }
+        CardDelegate.metaClass.token << {
+            Entity e = entity()
+            cardCounts.put(e.id, 0)
+        }
     }
 
     void afterConfig(ECSGame game) {
