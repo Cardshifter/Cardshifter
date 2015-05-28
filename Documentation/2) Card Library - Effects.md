@@ -54,6 +54,32 @@ Various triggers are available for actions to be applied on.
 - Only works on creature cards. 
 - Applies the nested effects when the creature's health reaches 0 or less.
 
+####`pick X atRandom`
+
+- Works on all cards.
+- This is a sub-trigger and picks `X` actions from the available list whenever the trigger is activated. 
+- Note that the available actions list need to be enclosed in parentheses rather than curly brackets. 
+
+Syntax:
+
+    trigger {
+        pick X atRandom (
+            { action a },
+            { action b },
+            { action _n_ }
+        )
+    }
+
+Example:
+
+    afterPlay {
+        pick 1 atRandom (
+            { summon 1 of "Conscript" to "you" zone "Hand" },
+            { heal 1 to 'you' }
+        )
+    }
+
+
 ---
 
 ##Resources
@@ -156,7 +182,7 @@ This is only used with the `whilePresent` filter. It specifies in which order th
 ##`onCards` Filters
 
 - These are used to filter the effects to a particular set of targets. 
-- A filter iuses a number of keys such as `ownedBy`, `zone`, `creature()`, `creatureType` and `card(this)`.
+- A filter uses a number of keys such as `ownedBy`, `zone`, `creature()`, `creatureType` and `thisCard()`.
 - A variety of filters are available for effects, and will be explained in detail below.
 
 ####`ownedBy`
@@ -188,7 +214,7 @@ A specific `creatureType` type, for example `"Mech"` or `"Bio"`. Affects all cre
 
 Affects all creatures regardless of their type.
 
-####`card(this)`
+####`thisCard()`
 
 Affects the card which has the effect itself and no other. 
 
@@ -205,7 +231,7 @@ Draw cards from top of deck to `Hand`.
 Syntax
 
     trigger {
-        drawCard 'owner', n
+        drawCard 'you', n
     }
 
 Examples
