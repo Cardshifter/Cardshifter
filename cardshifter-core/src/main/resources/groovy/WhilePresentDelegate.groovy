@@ -92,6 +92,15 @@ class FilterDelegate {
             target.name in name
         })
     }
+
+    def thisCard() {
+        addAnd()
+        description.append('this card')
+        predicate = predicate.and({Entity source, Entity target ->
+            source == target
+        })
+    }
+
 }
 
 class WhilePresentDelegate {
