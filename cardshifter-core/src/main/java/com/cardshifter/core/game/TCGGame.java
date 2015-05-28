@@ -13,6 +13,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import com.cardshifter.api.config.PlayerConfig;
 import com.cardshifter.modapi.resources.ResourceViewUpdate;
 import net.zomis.cardshifter.ecs.EntitySerialization;
 import net.zomis.cardshifter.ecs.config.ConfigComponent;
@@ -369,7 +370,9 @@ public class TCGGame extends ServerGame {
 		for (ClientIO io : getPlayers()) {
 			Entity playerEntity = playerFor(io);
 			if (configEntities.contains(playerEntity)) {
-				PlayerConfigMessage configMessage = new PlayerConfigMessage(getId(), modName, playerEntity.getComponent(ConfigComponent.class).getConfigs());
+                Map<String, PlayerConfig> configs = playerEntity.getComponent(ConfigComponent.class).getConfigs();
+                configs.values().forEach(PlayerConfig::beforeSend);
+				PlayerConfigMessage configMessage = new PlayerConfigMessage(getId(), modName, configs);
 				io.sendToClient(configMessage);
 				if (io instanceof FakeAIClientTCG) {
 					FakeAIClientTCG aiClient = (FakeAIClientTCG) io;
@@ -485,7 +488,7 @@ public class TCGGame extends ServerGame {
 	public void incomingPlayerConfig(PlayerConfigMessage message, ClientIO client) {
 		Entity player = playerFor(client);
 		ConfigComponent config = player.getComponent(ConfigComponent.class);
-		for (Entry<String, Object> entry : message.getConfigs().entrySet()) {
+		for (Entry<String, PlayerConfig> entry : message.getConfigs().entrySet()) {
 			config.addConfig(entry.getKey(), entry.getValue());
 			logger.info("Incoming player config for " + player + ": " + entry.getValue());
 		}

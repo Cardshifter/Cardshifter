@@ -11,6 +11,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.prefs.Preferences;
 
 import com.cardshifter.api.LogInterface;
+import com.cardshifter.api.config.PlayerConfig;
 import com.cardshifter.core.Log4jAdapter;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -203,8 +204,8 @@ public final class GameClientLauncherController implements Initializable {
 		if (msg instanceof PlayerConfigMessage) {
 			PlayerConfigMessage configMessage = (PlayerConfigMessage) msg;
 			
-			Map<String, Object> configs = configMessage.getConfigs();
-			for (Entry<String, Object> entry : configs.entrySet()) {
+			Map<String, PlayerConfig> configs = configMessage.getConfigs();
+			for (Entry<String, PlayerConfig> entry : configs.entrySet()) {
 				Object value = entry.getValue();
 				if (value instanceof DeckConfig) {
 					DeckConfig deckConfig = (DeckConfig) value;
@@ -241,9 +242,9 @@ public final class GameClientLauncherController implements Initializable {
 	}
 	
 	private Message incorporateConfig(PlayerConfigMessage conf, DeckConfig oldConfig, DeckConfig newConfig) {
-		Map<String, Object> configs = conf.getConfigs();
+		Map<String, PlayerConfig> configs = conf.getConfigs();
 		
-		for (Entry<String, Object> entry : configs.entrySet()) {
+		for (Entry<String, PlayerConfig> entry : configs.entrySet()) {
 			Object value = entry.getValue();
 			if (value instanceof DeckConfig) {
 				DeckConfig config = (DeckConfig) value;

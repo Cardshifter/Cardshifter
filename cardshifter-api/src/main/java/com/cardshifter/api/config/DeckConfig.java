@@ -9,7 +9,7 @@ import java.util.Random;
 
 import com.cardshifter.api.outgoing.CardInfoMessage;
 
-public class DeckConfig {
+public class DeckConfig implements PlayerConfig {
 
 	private Map<Integer, CardInfoMessage> cardData;
 	private Map<Integer, Integer> chosen = new HashMap<Integer, Integer>();
@@ -112,4 +112,13 @@ public class DeckConfig {
 		return value == null ? maxPerCard : value;
 	}
 
+    @Override
+    public void beforeSend() {
+        // Don't send information about cards that cannot be chosen
+        for (Map.Entry<Integer, Integer> ee : this.max.entrySet()) {
+            if (ee.getValue() <= 0) {
+                this.cardData.remove(ee.getKey());
+            }
+        }
+    }
 }
