@@ -113,11 +113,15 @@ public class GroovyMod {
         })
         enableMeta(game)
         def confDelegate = new ConfigDelegate(game: game, mod: this, cardDelegate: cardDelegate)
+
+        MaxInDeck maxInDeck = new MaxInDeck()
+        maxInDeck.initialize(game)
         configClosure.each {
             def cl = it.rehydrate(confDelegate, it.owner, it.thisObject)
             cl.setResolveStrategy(Closure.DELEGATE_FIRST)
             cl.call()
         }
+        maxInDeck.afterConfig(game)
     }
 
     void setupGame(ECSGame game) {
