@@ -40,6 +40,7 @@ class EffectDelegate {
 
     def pick(int count) {
         [atRandom: {Closure... effects ->
+            assert count > 0
             assert count <= effects.size()
             // { summon 1 of "Bar" to 'you' zone 'Battlefield' }
 
