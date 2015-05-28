@@ -54,25 +54,25 @@ class FilterDelegate {
         })
     }
 
-    def creatureType(String type) {
+    def creatureType(String... type) {
         addAnd()
-        description.append("$type creatures")
+        description.append('creatures of type ' + String.join(' or ', type))
         predicate = predicate.and({Entity source, Entity target ->
             CreatureTypeComponent creatureType = target.getComponent(CreatureTypeComponent)
             if (creatureType) {
-                return creatureType.getCreatureType() == type
+                return creatureType.getCreatureType() in type
             } else {
                 return false
             }
         })
     }
 
-    def zone(String zone) {
+    def zone(String... zone) {
         addAnd()
-        description.append("on $zone")
+        description.append('on ' + String.join(' or ', zone))
         predicate = predicate.and({Entity source, Entity target ->
             CardComponent cardComponent = target.getComponent(CardComponent)
-            Cards.isCard(target) && cardComponent.getCurrentZone() && cardComponent.getCurrentZone().getName() == zone
+            Cards.isCard(target) && cardComponent.getCurrentZone() && cardComponent.getCurrentZone().getName() in zone
         })
     }
 
@@ -85,11 +85,11 @@ class FilterDelegate {
         })
     }
 
-    def cardName(String name) {
+    def cardName(String... name) {
         addAnd()
-        description.append("cards with name '$name'")
+        description.append('cards with name \'' + String.join("'/'", name) + '\'')
         predicate = predicate.and({Entity source, Entity target ->
-            target.name == name
+            target.name in name
         })
     }
 }
