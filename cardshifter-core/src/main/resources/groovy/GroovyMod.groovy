@@ -38,8 +38,23 @@ public class GroovyMod {
         println "Registering onCard listener: $method, is now ${cardMethodListeners.get(method)}"
     }
 
+    File findFile(String fileName) {
+        if (!fileName.contains('.')) {
+            fileName += '.groovy'
+        }
+        File[] files = [
+            new File(modDirectory, fileName),
+            new File('groovy/' + fileName),
+            new File(fileName),
+        ]
+        Arrays.stream(files)
+            .filter({f -> f.exists()})
+            .findFirst()
+            .orElseThrow({ new IllegalArgumentException('Unable to find file: ' + fileName) })
+    }
+
     void include(String fileName) {
-        File file = new File("groovy/${fileName}.groovy")
+        File file = findFile(fileName)
 
         CompilerConfiguration cc = new CompilerConfiguration()
         cc.setScriptBaseClass(DelegatingScript.class.getName())
