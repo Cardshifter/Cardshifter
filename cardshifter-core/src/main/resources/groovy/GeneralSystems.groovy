@@ -120,6 +120,7 @@ public class GeneralSystems {
         CardDelegate.metaClass.onEndOfTurn << {Closure closure ->
             EffectDelegate effect = new EffectDelegate()
             closure.delegate = effect
+            closure.setResolveStrategy(Closure.DELEGATE_FIRST)
             closure.call()
             def eff = new net.zomis.cardshifter.ecs.effects.Effects();
             addEffect(entity(),
@@ -138,6 +139,7 @@ public class GeneralSystems {
             def eff = new net.zomis.cardshifter.ecs.effects.Effects();
             EffectDelegate effect = new EffectDelegate()
             closure.delegate = effect
+            closure.setResolveStrategy(Closure.DELEGATE_FIRST)
             closure.call()
             addEffect(entity(),
                 eff.described("${effect.description}",

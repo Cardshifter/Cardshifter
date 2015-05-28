@@ -4,6 +4,8 @@ import com.cardshifter.modapi.cards.ZoneComponent
 import com.cardshifter.modapi.players.Players
 import com.cardshifter.modapi.resources.ECSResource
 
+import java.util.stream.Collectors
+
 class EffectDelegate {
 
     StringBuilder description = new StringBuilder()
@@ -34,6 +36,35 @@ class EffectDelegate {
             .findAny().get()
         assert zone
         zone
+    }
+
+    def pick(int count) {
+        [atRandom: {Closure... effects ->
+            assert count <= effects.size()
+            // { summon 1 of "Bar" to 'you' zone 'Battlefield' }
+
+            EffectDelegate[] deleg = new EffectDelegate[effects.length]
+            for (int i = 0; i < deleg.length; i++) {
+                deleg[i] = new EffectDelegate()
+                Closure closure = effects[i]
+                closure.setDelegate(deleg[i])
+                closure.setResolveStrategy(Closure.DELEGATE_ONLY)
+                closure.call()
+                assert deleg[i].closures.size() > 0 : 'probability condition needs to have some actions'
+            }
+            String effectString = Arrays.stream(deleg).map({ef -> ef.description.toString()})
+                .collect(Collectors.joining(' or '))
+            description.append("Choose $count at random: " + effectString)
+            closures.add({Entity source, Entity target ->
+                List<EffectDelegate> list = new ArrayList<>(Arrays.asList(deleg))
+                Collections.shuffle(list, source.game.random)
+                for (int i = 0; i < count; i++) {
+                    for (Closure act : list.get(i).closures) {
+                        act.call(source, target)
+                    }
+                }
+            })
+        }]
     }
 
     def withProbability(double probability, @DelegatesTo(EffectDelegate) Closure action) {
