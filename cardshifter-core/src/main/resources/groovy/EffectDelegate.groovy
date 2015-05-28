@@ -36,6 +36,25 @@ class EffectDelegate {
         zone
     }
 
+    def withProbability(double probability, @DelegatesTo(EffectDelegate) Closure action) {
+        EffectDelegate deleg = new EffectDelegate()
+        action.setDelegate(deleg)
+        action.setResolveStrategy(Closure.DELEGATE_ONLY)
+        action.call()
+        assert deleg.closures.size() > 0 : 'probability condition needs to have some actions'
+        description.append("$probability chance to $deleg.description")
+        closures.add({Entity source, Entity target ->
+            double random = source.game.random.nextDouble()
+            println "random $random probability $probability perform ${random < probability}"
+            if (random < probability) {
+                println "Calling closures: $deleg.closures"
+                for (Closure act : deleg.closures) {
+                    act.call(source, target)
+                }
+            }
+        })
+    }
+
     def drawCard(String who, int count) {
         def s = count == 1 ? '' : 's'
         description.append("$who draw $count card$s\n")
