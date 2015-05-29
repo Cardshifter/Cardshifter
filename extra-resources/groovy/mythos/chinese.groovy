@@ -1,3 +1,4 @@
+package mythos
 /* See modding documentation for all available keywords. */
 /* GENERIC TEMPLATE
 card("ChangeMe") {
@@ -159,11 +160,11 @@ card("SHINJE") {
     attack 6
     whilePresent {
         change ATTACK, HEALTH by 1 withPriority 1 onCards {
-            creature()
+            creature true
             ownedBy "you"
             zone "Battlefield"
         }
-        change MANA_COST by -3 onCards {
+        change MANA_COST by -3 withPriority 1 onCards {
             ownedBy "you"
             zone "Hand", "Battlefield"
         }
@@ -191,7 +192,7 @@ card("GUANYIN") {
     }
     onEndOfTurn {
         heal 1 to "you"
-        damage 1 to { thisCard() }
+        change HEALTH by -1 onCards { thisCard() }
     }
 }
 card("MAZU") {

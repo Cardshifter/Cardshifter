@@ -1,3 +1,4 @@
+package mythos
 /* See modding documentation for all available keywords. */
 /* GENERIC TEMPLATE
 card('Change Me') {
@@ -66,6 +67,7 @@ card('CHAOS') {
     sickness 1
     manaCost 1
     attack 1
+}
 card('HERMES') {
     creature "Greek"
     flavor "God of merchants and entrepreneurs."
