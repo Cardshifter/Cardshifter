@@ -144,7 +144,7 @@ class EffectDelegate {
         }]
     }
 
-    private void targetedAction(EntityConsumer action, Object who, String desc) {
+    private Object targetedAction(EntityConsumer action, Object who, String desc) {
         String targetStr = '';
         Closure closure = null;
         if (who instanceof String) {
@@ -153,6 +153,22 @@ class EffectDelegate {
                 Entity entity = entityLookup(source, who as String)
                 action.perform(source, entity)
             }
+        } else if (who instanceof Integer) {
+            return [random: {Closure filter ->
+                FilterDelegate filterDelegate = FilterDelegate.fromClosure(filter)
+                Closure randomizedAction = {Entity source, Entity target ->
+                    List<Entity> targets = filterDelegate.findMatching(source)
+                    int count = who as int
+                    Collections.shuffle(targets, source.game.random)
+                    println "Targeting $who random of $targets with $desc"
+                    targets.stream().limit(count).forEachOrdered({Entity dst ->
+                        action.perform(source, dst)
+                    })
+                }
+                description.append(desc.replace('%who%', "$who random $filterDelegate.description"))
+                description.append('\n')
+                closures.add(randomizedAction)
+            }]
         } else if (who instanceof Closure) {
             FilterDelegate filter = FilterDelegate.fromClosure(who as Closure)
             targetStr = filter.description
