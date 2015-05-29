@@ -91,7 +91,8 @@ public final class Entity {
 	}
 
 	public void removeComponent(Class<? extends Component> component) {
-		this.components.remove(component);
+		Component comp = this.components.remove(component);
+        comp.setEntity(null);
 	}
 	
 	/**
