@@ -32,6 +32,11 @@ include 'enchantment'
 include 'scrap'
 include 'noAttack'
 
+onCard('creature') {entity, args ->
+    // give all creatures taunt by default
+    entity.taunt = 1
+}
+
 config {
     println 'Game Closure!'
 
