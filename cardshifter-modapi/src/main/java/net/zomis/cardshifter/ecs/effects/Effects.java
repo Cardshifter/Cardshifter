@@ -20,22 +20,38 @@ import net.zomis.cardshifter.ecs.usage.functional.EntityConsumer;
 
 public class Effects {
 
-	public <T extends IEvent> Function<Entity, ECSSystem> triggerSystem(Class<T> eventClass, BiPredicate<Entity, T> interestingEvents, BiConsumer<Entity, T> handler) {
-		return e -> new ECSSystem() {
-			@Override
-			public void startGame(ECSGame game) {
-				game.getEvents().registerHandlerAfter(this, eventClass, this::event);
-			}
-			
-			private void event(T event) {
-				if (interestingEvents.test(e, event)) {
-					 handler.accept(e, event);
-				}
-			}
-		};
-	}
-	
-	public EffectComponent forEach(TargetFilter filter, TargetEffect consumer) {
+    public <T extends IEvent> Function<Entity, ECSSystem> triggerSystem(Class<T> eventClass, BiPredicate<Entity, T> interestingEvents, BiConsumer<Entity, T> handler) {
+        return e -> new ECSSystem() {
+            @Override
+            public void startGame(ECSGame game) {
+                game.getEvents().registerHandlerAfter(this, eventClass, this::event);
+            }
+
+            private void event(T event) {
+                if (interestingEvents.test(e, event)) {
+                    handler.accept(e, event);
+                }
+            }
+        };
+    }
+
+    public <T extends IEvent> Function<Entity, ECSSystem> triggerSystemBefore(Class<T> eventClass, BiPredicate<Entity, T> interestingEvents, BiConsumer<Entity, T> handler) {
+        return e -> new ECSSystem() {
+            @Override
+            public void startGame(ECSGame game) {
+                game.getEvents().registerHandlerBefore(this, eventClass, this::event);
+            }
+
+            private void event(T event) {
+                if (interestingEvents.test(e, event)) {
+                    handler.accept(e, event);
+                }
+            }
+        };
+    }
+
+
+    public EffectComponent forEach(TargetFilter filter, TargetEffect consumer) {
 		GameEffect effect = event -> event.getEntity().getGame()
 			.findEntities(target -> filter.test(event.getEntity(), target))
 			.forEach(target -> consumer.perform(event.getEntity(), target));

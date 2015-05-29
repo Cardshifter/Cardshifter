@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.cardshifter.api.config.PlayerConfig;
 import net.zomis.cardshifter.ecs.config.ConfigComponent;
 
 import com.cardshifter.api.both.PlayerConfigMessage;
@@ -147,7 +148,7 @@ public class ReplayPlaybackSystem implements ECSSystem {
 			System.out.println("Processing stored config " + storedConfig.getKey() + ": " + storedConfig.getValue());
 			Entity entity = game.getEntity(storedConfig.getKey());
 			ConfigComponent config = entity.getComponent(ConfigComponent.class);
-			for (Entry<String, Object> configuration : storedConfig.getValue().getConfigs().entrySet()) {
+			for (Entry<String, PlayerConfig> configuration : storedConfig.getValue().getConfigs().entrySet()) {
 				System.out.println("Adding config " + configuration.getKey() + " of type " + configuration.getValue().getClass() + ": " + configuration.getValue());
 				config.addConfig(configuration.getKey(), configuration.getValue());
 			}

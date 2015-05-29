@@ -19,6 +19,7 @@ import java.util.Map.Entry;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import com.cardshifter.api.config.PlayerConfig;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -194,9 +195,9 @@ public class GameClientLobby implements Initializable {
 	private void showConfigDialog(PlayerConfigMessage configMessage) {
 		this.currentPlayerConfig = configMessage;
 		
-		Map<String, Object> configs = configMessage.getConfigs();
+		Map<String, PlayerConfig> configs = configMessage.getConfigs();
 		
-		for (Entry<String, Object> entry : configs.entrySet()) {
+		for (Entry<String, PlayerConfig> entry : configs.entrySet()) {
 			Object value = entry.getValue();
 			if (value instanceof DeckConfig) {
 				DeckConfig deckConfig = (DeckConfig) value;
@@ -206,9 +207,9 @@ public class GameClientLobby implements Initializable {
 	}
 	
 	public void sendDeckAndPlayerConfigToServer(DeckConfig deckConfig) {
-		Map<String, Object> configs = this.currentPlayerConfig.getConfigs();
+		Map<String, PlayerConfig> configs = this.currentPlayerConfig.getConfigs();
 		
-		for (Entry<String, Object> entry : configs.entrySet()) {
+		for (Entry<String, PlayerConfig> entry : configs.entrySet()) {
 			Object value = entry.getValue();
 			if (value instanceof DeckConfig) {
 				DeckConfig config = (DeckConfig) value;

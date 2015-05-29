@@ -1,5 +1,6 @@
 package com.cardshifter.server.model;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ScheduledExecutorService;
@@ -107,6 +108,7 @@ public class MainServer {
 		commandHandler.addHandler("chat", this::chatInfo);
 		commandHandler.addHandler("games", this::showGames);
 		commandHandler.addHandler("invites", this::showInvites);
+        commandHandler.addHandler("test", this::test);
 		commandHandler.addHandler("ai", () -> new AICommandParameters(), new AICommand());
 		commandHandler.addHandler("ent", () -> new EntityInspectParameters(), new EntityCommand());
 		commandHandler.addHandler("threads", cmd -> showAllStackTraces(server, System.out::println));
@@ -114,6 +116,13 @@ public class MainServer {
 		commandHandler.addHandler("allreplays", () -> new ReplayAllParameters(), new ReplayAllCommand());
 	}
 	
+    private void test(Command command) {
+        ServerGame game = server.createGame(command.getParameter(1));
+        FakeAIClientTCG ai1 = new FakeAIClientTCG(server, mods.getAIs().get("Fighter"));
+        FakeAIClientTCG ai2 = new FakeAIClientTCG(server, mods.getAIs().get("Idiot"));
+        game.start(Arrays.asList(ai1, ai2));
+    }
+
 	/**
 	 * Prints out the game invites of the Server
 	 * 

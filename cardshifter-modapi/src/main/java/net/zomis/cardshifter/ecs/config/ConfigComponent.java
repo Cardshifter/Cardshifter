@@ -3,19 +3,20 @@ package net.zomis.cardshifter.ecs.config;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.cardshifter.api.config.PlayerConfig;
 import com.cardshifter.modapi.base.Component;
 
 public class ConfigComponent extends Component {
 	
-	private final Map<String, Object> configs = new HashMap<>();
+	private final Map<String, PlayerConfig> configs = new HashMap<>();
 	private boolean configured;
 
-	public ConfigComponent addConfig(String key, Object config) {
+	public ConfigComponent addConfig(String key, PlayerConfig config) {
 		configs.put(key, config);
 		return this;
 	}
 	
-	public Map<String, Object> getConfigs() {
+	public Map<String, PlayerConfig> getConfigs() {
 		return new HashMap<>(configs);
 	}
 	
@@ -27,8 +28,8 @@ public class ConfigComponent extends Component {
 		this.configured = configured;
 	}
 	
-	public <T> T getConfig(Class<T> configClass) {
-		for (Object confObject : configs.values()) {
+	public <T extends PlayerConfig> T getConfig(Class<T> configClass) {
+		for (PlayerConfig confObject : configs.values()) {
 			if (confObject.getClass() == configClass) {
 				return configClass.cast(confObject);
 			}
