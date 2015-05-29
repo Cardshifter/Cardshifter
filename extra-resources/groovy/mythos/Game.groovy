@@ -34,11 +34,11 @@ config {
         zone 'Cards', {
             cardset 'common'
             cardset 'chinese'
-            cardset 'egyptian'
-            cardset 'greek'
-            cardset 'norse'
-            cardset 'hindu'
-            cardset 'roman'
+            //cardset 'egyptian'
+            //cardset 'greek'
+            //cardset 'norse'
+            //cardset 'hindu'
+            //cardset 'roman'
         }
     }
 
