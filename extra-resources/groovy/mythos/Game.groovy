@@ -127,7 +127,6 @@ setup {
             sickness SICKNESS
             useCost(action: ATTACK_ACTION, res: ATTACK_AVAILABLE, value: 1, whoPays: "self")
             accumulating(ATTACK, HEALTH, allowCounterAttack)
-            healAtEndOfTurn(HEALTH, MAX_HEALTH)
             afterAttack({entity -> allowCounterAttackRes.getFor(entity) > 0},
                     { entity -> SICKNESS.retriever.set(entity, 2) })
             trample HEALTH
