@@ -3,6 +3,7 @@ import com.cardshifter.modapi.cards.DrawStartCards
 import com.cardshifter.modapi.cards.ZoneComponent
 import com.cardshifter.modapi.players.Players
 import com.cardshifter.modapi.resources.ECSResource
+import net.zomis.cardshifter.ecs.usage.functional.EntityConsumer
 
 import java.util.stream.Collectors
 
@@ -97,20 +98,14 @@ class EffectDelegate {
     }
 
     def heal(int value) {
-        [to: {String who ->
-            String desc = "Heal $who by $value"
-            Closure closure = {Entity source, Entity target ->
-                Entity entity = entityLookup(source, who)
-                assert entity : 'Invalid entity'
-                assert value >= 0 : 'Value cannot be negative'
-                ECSResource resource = entity.game.resource('health')
-                assert resource : 'health resource not found'
-                resource.retriever().resFor(entity).change(value)
-            }
-            description.append(desc)
-            description.append('\n')
-            closures.add(closure)
-        }]
+        EntityConsumer action = {Entity source, Entity target ->
+            assert target : 'Invalid entity'
+            assert value >= 0 : 'Value cannot be negative'
+            ECSResource resource = target.game.resource('health')
+            assert resource : 'health resource not found'
+            resource.retriever().resFor(target).change(value)
+        }
+        [to: {Object who -> targetedAction(action, who, "Heal $value to %who%")}]
     }
 
     def change(ECSResource resource) {
@@ -149,21 +144,40 @@ class EffectDelegate {
         }]
     }
 
-    def damage(int value) {
-        [to: {String who ->
-            String desc = "Damage $who by $value"
-            Closure closure = {Entity source, Entity target ->
-                Entity entity = entityLookup(source, who)
-                assert entity : 'Invalid entity'
-                assert value >= 0 : 'Value cannot be negative'
-                ECSResource resource = entity.game.resource('health')
-                assert resource : 'health resource not found'
-                resource.retriever().resFor(entity).change(-value)
+    private void targetedAction(EntityConsumer action, Object who, String desc) {
+        String targetStr = '';
+        Closure closure = null;
+        if (who instanceof String) {
+            targetStr = who;
+            closure = {Entity source, Entity target ->
+                Entity entity = entityLookup(source, who as String)
+                action.perform(source, entity)
             }
-            description.append(desc)
-            description.append('\n')
-            closures.add(closure)
-        }]
+        } else if (who instanceof Closure) {
+            FilterDelegate filter = FilterDelegate.fromClosure(who as Closure)
+            targetStr = filter.description
+            closure = {Entity source, Entity target ->
+                filter.findMatching(source).forEach({Entity entity ->
+                    action.perform(source, entity)
+                })
+            }
+        }
+        assert closure : "$description: Unknown target $who"
+
+        description.append(desc.replace('%who%', targetStr))
+        description.append('\n')
+        closures.add(closure)
+    }
+
+    def damage(int value) {
+        EntityConsumer action = {Entity source, Entity target ->
+            assert target : 'Invalid entity'
+            assert value >= 0 : 'Value cannot be negative'
+            ECSResource resource = target.game.resource('health')
+            assert resource : 'health resource not found'
+            resource.retriever().resFor(target).change(-value)
+        }
+        [to: {Object who -> targetedAction(action, who, "Deal $value damage to %who%")}]
     }
 
     // summon 2 of 'Bodyman' to owner zone Hand
