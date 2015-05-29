@@ -123,36 +123,22 @@ class EffectDelegate {
 
     def change(ECSResource resource) {
         [by: {int amount ->
-            [onCards: {Closure filter ->
-                FilterDelegate filterDelegate = FilterDelegate.fromClosure filter
-                String desc = "Change $resource by $amount on ${filterDelegate.description.toString()}"
-                Closure closure = {Entity source, Entity dst ->
-                    List<Entity> targets = filterDelegate.findMatching(source)
-                    for (Entity target : targets) {
-                        resource.retriever.resFor(target).change(amount)
-                    }
-                }
-                description.append(desc)
-                description.append('\n')
-                closures.add(closure)
+            EntityConsumer action = {Entity source, Entity target ->
+                resource.retriever.resFor(target).change(amount)
+            }
+            [onCards: {Object obj ->
+                targetedAction(action, obj, "Change $resource by $amount on %who%")
             }]
         }]
     }
 
     def set(ECSResource resource) {
         [to: {int amount ->
-            [onCards: {Closure filter ->
-                FilterDelegate filterDelegate = FilterDelegate.fromClosure filter
-                String desc = "Set $resource to $amount on ${filterDelegate.description.toString()}"
-                Closure closure = {Entity source, Entity dst ->
-                    List<Entity> targets = filterDelegate.findMatching(source)
-                    for (Entity target : targets) {
-                        resource.retriever.resFor(target).set(amount)
-                    }
-                }
-                description.append(desc)
-                description.append('\n')
-                closures.add(closure)
+            EntityConsumer action = {Entity source, Entity target ->
+                resource.retriever.resFor(target).set(amount)
+            }
+            [onCards: {Object obj ->
+                targetedAction(action, obj, "Set $resource to $amount on %who%")
             }]
         }]
     }
