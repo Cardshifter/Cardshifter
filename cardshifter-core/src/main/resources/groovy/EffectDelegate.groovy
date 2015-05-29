@@ -131,6 +131,24 @@ class EffectDelegate {
         }]
     }
 
+    def set(ECSResource resource) {
+        [to: {int amount ->
+            [onCards: {Closure filter ->
+                FilterDelegate filterDelegate = FilterDelegate.fromClosure filter
+                String desc = "Set $resource to $amount on ${filterDelegate.description.toString()}"
+                Closure closure = {Entity source, Entity dst ->
+                    List<Entity> targets = filterDelegate.findMatching(source)
+                    for (Entity target : targets) {
+                        resource.retriever.resFor(target).set(amount)
+                    }
+                }
+                description.append(desc)
+                description.append('\n')
+                closures.add(closure)
+            }]
+        }]
+    }
+
     def damage(int value) {
         [to: {String who ->
             String desc = "Damage $who by $value"
