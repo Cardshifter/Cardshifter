@@ -88,6 +88,23 @@ class EffectDelegate {
         })
     }
 
+    def repeat(int count, @DelegatesTo(EffectDelegate) Closure action) {
+        EffectDelegate deleg = new EffectDelegate()
+        action.setDelegate(deleg)
+        action.setResolveStrategy(Closure.DELEGATE_FIRST)
+        action.call()
+        assert deleg.closures.size() > 0 : 'repeat needs to have some actions'
+        description.append("$deleg.description $count times")
+        closures.add({Entity source, Entity target ->
+            for (int i = 0; i < count; i++) {
+                println "Calling closures: $deleg.closures"
+                for (Closure act : deleg.closures) {
+                    act.call(source, target)
+                }
+            }
+        })
+    }
+
     def drawCard(String who, int count) {
         def s = count == 1 ? '' : 's'
         if (who == 'all') {
