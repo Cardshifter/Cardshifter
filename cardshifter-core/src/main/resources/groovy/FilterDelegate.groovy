@@ -27,7 +27,7 @@ class FilterDelegate {
 
     private void addAnd() {
         if (description.length() > 0) {
-            description.append(' and ')
+            description.append(' ')
         }
     }
 
