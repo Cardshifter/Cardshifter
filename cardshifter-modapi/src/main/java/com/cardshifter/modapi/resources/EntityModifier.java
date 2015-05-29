@@ -1,6 +1,7 @@
 package com.cardshifter.modapi.resources;
 
 import com.cardshifter.modapi.base.Entity;
+import net.zomis.cardshifter.ecs.effects.TargetFilter;
 
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
@@ -10,11 +11,11 @@ public class EntityModifier implements ECSResourceStrategy {
     private final Entity source;
     private final int priority;
     private final Predicate<Entity> active;
-    private final BiPredicate<Entity, Entity> appliesTo;
+    private final TargetFilter appliesTo;
     private final ECSResourceBiStrategy amount;
 
     public EntityModifier(Entity entity, int priority, Predicate<Entity> active,
-        BiPredicate<Entity, Entity> appliesTo, ECSResourceBiStrategy amount) {
+        TargetFilter appliesTo, ECSResourceBiStrategy amount) {
         this.source = entity;
         this.priority = priority;
         this.active = active;

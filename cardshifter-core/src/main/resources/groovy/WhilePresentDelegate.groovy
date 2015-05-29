@@ -2,6 +2,7 @@ import com.cardshifter.modapi.base.Entity
 import com.cardshifter.modapi.resources.ECSResource
 import com.cardshifter.modapi.resources.ECSResourceBiStrategy
 import com.cardshifter.modapi.resources.EntityModifier
+import net.zomis.cardshifter.ecs.effects.TargetFilter
 
 import java.util.function.BiPredicate
 import java.util.function.Function
@@ -27,7 +28,7 @@ class WhilePresentDelegate {
         filter.delegate = deleg
         filter.call()
         Predicate<Entity> active = {!it.isRemoved()}
-        BiPredicate<Entity, Entity> appliesTo = deleg.predicate
+        TargetFilter appliesTo = deleg.predicate
 
         Closure<EntityModifier> closure = {Entity entity ->
             new EntityModifier(entity, priority, active, appliesTo, strategy)
