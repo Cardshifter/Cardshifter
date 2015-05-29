@@ -19,6 +19,7 @@ card("ChangeMe") {
 card("Swordsman") {
     creature "Common"
     flavor "Armed with a sharp sword."
+    maxInDeck 5
     health 3
     sickness 1
     manaCost 5
@@ -27,6 +28,7 @@ card("Swordsman") {
 card("Pikeman") {
     creature "Common"
     flavor "Armed with a long armor-piercing pike."
+    maxInDeck 5
     health 2
     sickness 1
     manaCost 5
@@ -35,6 +37,7 @@ card("Pikeman") {
 card("Archer") {
     creature "Common"
     flavor "Fires arrows from a distance."
+    maxInDeck 5
     health 2
     sickness 1
     manaCost 5
@@ -71,6 +74,7 @@ card("Assassin") {
 card("Spy") {
     creature "Common"
     flavor "Weakens the enemy by revealing their secrets."
+    maxInDeck 2
     health 4
     sickness 1
     manaCost 10
@@ -87,6 +91,7 @@ card("Spy") {
 card("Slingman") {
     creature "Common"
     flavor "Slings stones to break enemy weapons."
+    maxInDeck 2
     health 3
     sickness 1
     manaCost 10
@@ -102,6 +107,7 @@ card("Slingman") {
 card("Healer") {
     creature "Common"
     flavor "Supports troops by providing healing."
+    maxInDeck 2
     health 5
     sickness 1
     manaCost 10
