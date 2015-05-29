@@ -12,7 +12,12 @@ class CardDelegate implements GroovyInterceptable {
     static def missingMethod(Entity entity, GroovyMod mod, String name, args) {
         ECSResource res = mod.resourceOrNull(name)
         if (res) {
-            int value = args[0]
+            int value = 1
+            if (args.length == 1) {
+                value = args[0]
+            } else if (args.length > 1) {
+                throw new MissingMethodException("Method with name $name not found", getClass(), (Object[]) args)
+            }
             res.retriever.set(entity, value)
             println "set $res $name to $value (method)"
         } else {
