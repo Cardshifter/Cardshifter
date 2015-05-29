@@ -1,4 +1,5 @@
 import com.cardshifter.modapi.actions.ActionPerformEvent
+import com.cardshifter.modapi.actions.TargetSet
 import com.cardshifter.modapi.base.Entity
 import com.cardshifter.modapi.cards.DrawStartCards
 import com.cardshifter.modapi.cards.ZoneComponent
@@ -24,12 +25,14 @@ class EffectDelegate {
     final Object targets = new Object()
 
     def perform(Entity source, ActionPerformEvent event) {
-        perform(source)
+        closures.each {
+            it.call(source, event)
+        }
     }
 
     def perform(Entity source) {
         closures.each {
-            it.call(source, source)
+            it.call(source, null)
         }
     }
 
@@ -68,12 +71,12 @@ class EffectDelegate {
             String effectString = Arrays.stream(deleg).map({ef -> ef.description.toString()})
                 .collect(Collectors.joining(' or '))
             description.append("Choose $count at random: " + effectString)
-            closures.add({Entity source, Entity target ->
+            closures.add({Entity source, Object data ->
                 List<EffectDelegate> list = new ArrayList<>(Arrays.asList(deleg))
                 Collections.shuffle(list, source.game.random)
                 for (int i = 0; i < count; i++) {
                     for (Closure act : list.get(i).closures) {
-                        act.call(source, target)
+                        act.call(source, data)
                     }
                 }
             })
@@ -84,13 +87,13 @@ class EffectDelegate {
         EffectDelegate deleg = create(action, true)
         assert deleg.closures.size() > 0 : 'probability condition needs to have some actions'
         description.append("$probability chance to $deleg.description")
-        closures.add({Entity source, Entity target ->
+        closures.add({Entity source, Object data ->
             double random = source.game.random.nextDouble()
             println "random $random probability $probability perform ${random < probability}"
             if (random < probability) {
                 println "Calling closures: $deleg.closures"
                 for (Closure act : deleg.closures) {
-                    act.call(source, target)
+                    act.call(source, data)
                 }
             }
         })
@@ -100,11 +103,11 @@ class EffectDelegate {
         EffectDelegate deleg = create(action, false)
         assert deleg.closures.size() > 0 : 'repeat needs to have some actions'
         description.append("$deleg.description $count times")
-        closures.add({Entity source, Entity target ->
+        closures.add({Entity source, Object data ->
             for (int i = 0; i < count; i++) {
                 println "Calling closures: $deleg.closures"
                 for (Closure act : deleg.closures) {
-                    act.call(source, target)
+                    act.call(source, data)
                 }
             }
         })
@@ -114,7 +117,7 @@ class EffectDelegate {
         def s = count == 1 ? '' : 's'
         if (who == 'all') {
             description.append("All players draw $count card$s\n")
-            closures.add({Entity source, Entity target ->
+            closures.add({Entity source, Object data ->
                 Players.getPlayersInGame(source.game).forEach({Entity e ->
                     for (int i = 0; i < count; i++) {
                         DrawStartCards.drawCard(e)
@@ -124,7 +127,7 @@ class EffectDelegate {
             return;
         }
         description.append("$who draw $count card$s\n")
-        closures.add({Entity source, Entity target ->
+        closures.add({Entity source, Object data ->
             Entity drawer = entityLookup(source, who)
             for (int i = 0; i < count; i++) {
                 DrawStartCards.drawCard(drawer)
@@ -168,16 +171,27 @@ class EffectDelegate {
     private Object targetedAction(EntityConsumer action, Object who, String desc) {
         String targetStr = '';
         Closure closure = null;
-        if (who instanceof String) {
+        if (who == targets) {
+            targetStr = 'targets'
+            closure = {Entity source, Object data ->
+                assert data instanceof ActionPerformEvent
+                ActionPerformEvent event = data as ActionPerformEvent
+                assert event.action.getTargetSets().size() == 1
+                TargetSet targetSet = event.action.getTargetSets().get(0)
+                targetSet.chosenTargets.forEach({Entity target ->
+                    action.perform(source, target)
+                })
+            }
+        } else if (who instanceof String) {
             targetStr = who;
-            closure = {Entity source, Entity target ->
+            closure = {Entity source, Object data ->
                 Entity entity = entityLookup(source, who as String)
                 action.perform(source, entity)
             }
         } else if (who instanceof Integer) {
             return [random: {Closure filter ->
                 FilterDelegate filterDelegate = FilterDelegate.fromClosure(filter)
-                Closure randomizedAction = {Entity source, Entity target ->
+                Closure randomizedAction = {Entity source, Object data ->
                     List<Entity> targets = filterDelegate.findMatching(source)
                     int count = who as int
                     Collections.shuffle(targets, source.game.random)
@@ -193,7 +207,7 @@ class EffectDelegate {
         } else if (who instanceof Closure) {
             FilterDelegate filter = FilterDelegate.fromClosure(who as Closure)
             targetStr = filter.description
-            closure = {Entity source, Entity target ->
+            closure = {Entity source, Object data ->
                 filter.findMatching(source).forEach({Entity entity ->
                     action.perform(source, entity)
                 })
@@ -224,7 +238,7 @@ class EffectDelegate {
                 [zone: {String zoneName ->
                     String desc = "Summon " + count + " " + cardName + " at " + who + " " + zoneName;
 
-                    Closure closure = {Entity source, Entity target ->
+                    Closure closure = {Entity source, Object data ->
                         Entity zoneOwner = entityLookup(source, who)
                         ZoneComponent zone = zoneLookup(zoneOwner, zoneName)
                         int amount = count // valueLookup(source, obj.count);

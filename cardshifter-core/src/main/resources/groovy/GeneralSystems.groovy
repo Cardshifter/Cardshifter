@@ -165,14 +165,18 @@ public class GeneralSystems {
         throw new IllegalArgumentException('Unexpected owner match: ' + str)
     }
 
-    private class SpellsDelegate {
+    private static class SpellsDelegate {
         private Entity entity
         private ECSAction action
 
         private void addTargetSet(int min, int max, Closure filter) {
             action.addTargetSet(min, max)
             assert !entity.hasComponent(FilterComponent) : 'Only one target set is supported so far'
-            entity.addComponent(new FilterComponent(filter as TargetFilter))
+            FilterDelegate filterDelegate = FilterDelegate.fromClosure filter
+            TargetFilter resultFilter = {Entity source, Entity target ->
+                filterDelegate.predicate.test(source, target)
+            }
+            entity.addComponent(new FilterComponent(resultFilter))
         }
 
         def targets(Map map, Closure closure) {

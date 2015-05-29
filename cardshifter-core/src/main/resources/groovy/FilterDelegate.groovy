@@ -5,11 +5,12 @@ import com.cardshifter.modapi.cards.CardComponent
 import com.cardshifter.modapi.cards.Cards
 import com.cardshifter.modapi.phase.PhaseController
 import com.cardshifter.modapi.players.Players
+import net.zomis.cardshifter.ecs.effects.TargetFilter
 
 import java.util.function.BiPredicate
 
 class FilterDelegate {
-    BiPredicate<Entity, Entity> predicate = {Entity source, Entity target -> true}
+    TargetFilter predicate = {Entity source, Entity target -> true}
     StringBuilder description = new StringBuilder()
 
     static FilterDelegate fromClosure(Closure filter) {
