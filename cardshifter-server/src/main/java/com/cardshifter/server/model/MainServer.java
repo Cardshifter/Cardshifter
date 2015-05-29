@@ -1,5 +1,6 @@
 package com.cardshifter.server.model;
 
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -7,6 +8,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import com.cardshifter.server.main.ServerConfiguration;
 import com.cardshifter.server.utils.export.DataExportCommand;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -49,22 +51,28 @@ public class MainServer {
 	 * ModCollection is where the Phrancis mods are initialized
 	 */
 	private final ModCollection mods = new ModCollection();
+    private final ServerConfiguration config;
 
-	private Thread consoleThread;
-	
-	/**
+    private Thread consoleThread;
+
+    public MainServer(ServerConfiguration serverConfiguration) {
+        this.config = serverConfiguration;
+    }
+
+    /**
 	 * Adds connections, AIs, and GameFactories to the Server, and starts the ServerConsole.
 	 * CommandHandler is a reference to the CommandHandler in Server
 	 * 
 	 * @return The configured Server object
 	 */
 	public Server start() {
-		mods.loadExternal(mods.getDefaultModLocation());
+        mods.loadExternal(mods.getDefaultModLocation());
+        mods.loadExternal(Paths.get(config.getModsDirectory()));
 		try {
 			logger.info("Starting Server...");
 			
-			server.addConnections(new ServerSock(server, 4242));
-			server.addConnections(new ServerWeb(server, 4243));
+			server.addConnections(new ServerSock(server, config.getPortSocket()));
+			server.addConnections(new ServerWeb(server, config.getPortWebsocket()));
 			
 			logger.info("Starting Console...");
 			CommandHandler commandHandler = server.getCommandHandler();

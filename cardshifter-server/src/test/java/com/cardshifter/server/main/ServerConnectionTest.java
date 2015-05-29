@@ -54,7 +54,7 @@ public class ServerConnectionTest {
 	@Before
 	public void setup() throws UnknownHostException, IOException, InterruptedException {
 		PropertyConfigurator.configure(getClass().getResourceAsStream("log4j.properties"));
-		main = new MainServer();
+		main = new MainServer(ServerConfiguration.defaults());
 		server = main.start();
 		assertTrue("Server did not start correctly. Perhaps it is already running?", server.getClients().size() > 0);
 		

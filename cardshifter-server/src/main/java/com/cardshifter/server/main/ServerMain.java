@@ -4,6 +4,7 @@ import org.apache.log4j.PropertyConfigurator;
 
 import com.cardshifter.server.model.MainServer;
 
+import java.util.Properties;
 import java.util.Scanner;
 
 public class ServerMain {
@@ -18,7 +19,7 @@ public class ServerMain {
             }
 		}
 		PropertyConfigurator.configure(ServerMain.class.getResource("log4j.properties"));
-		new MainServer().start();
+		new MainServer(ServerConfiguration.readFrom("server.properties")).start();
 	}
 
 }

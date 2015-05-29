@@ -3,6 +3,7 @@ package com.cardshifter.server.messages;
 import java.util.Arrays;
 
 import com.cardshifter.server.commands.CommandContext;
+import com.cardshifter.server.main.ServerConfiguration;
 import com.cardshifter.server.model.Command;
 import com.cardshifter.server.utils.export.DataExportCommand;
 import org.apache.log4j.PropertyConfigurator;
@@ -21,7 +22,7 @@ public class ExportTest {
 	public void test() {
 		PropertyConfigurator.configure(ServerMain.class.getResourceAsStream("log4j.properties"));
 		
-		Server server = new MainServer().start();
+		Server server = new MainServer(ServerConfiguration.defaults()).start();
 		
 		ServerGame game = server.createGame(CardshifterConstants.VANILLA);
         FakeClient fakeClient = new FakeClient(server, e -> {});

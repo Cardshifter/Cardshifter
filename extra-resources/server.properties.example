@@ -1,0 +1,4 @@
+port = 4242
+websocket-port = 4243
+mods = path/to/additional/mods
+
