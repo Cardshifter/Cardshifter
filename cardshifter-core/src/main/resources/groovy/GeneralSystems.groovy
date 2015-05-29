@@ -1,3 +1,6 @@
+import com.cardshifter.modapi.actions.ActionComponent
+import com.cardshifter.modapi.actions.ActionPerformEvent
+import com.cardshifter.modapi.actions.ECSAction
 import com.cardshifter.modapi.actions.UseCostSystem
 import com.cardshifter.modapi.actions.attack.AttackDamageAccumulating
 import com.cardshifter.modapi.actions.attack.AttackDamageHealAtEndOfTurn
@@ -40,6 +43,9 @@ import net.zomis.cardshifter.ecs.effects.EffectComponent
 import net.zomis.cardshifter.ecs.effects.EffectTargetFilterSystem
 import net.zomis.cardshifter.ecs.effects.Effects
 import net.zomis.cardshifter.ecs.effects.EntityInt
+import net.zomis.cardshifter.ecs.effects.FilterComponent
+import net.zomis.cardshifter.ecs.effects.GameEffect
+import net.zomis.cardshifter.ecs.effects.TargetFilter
 import net.zomis.cardshifter.ecs.usage.ApplyAfterAttack
 import net.zomis.cardshifter.ecs.usage.DestroyAfterUseSystem
 import net.zomis.cardshifter.ecs.usage.LastPlayersStandingEndsGame
@@ -129,7 +135,7 @@ public class GeneralSystems {
                         eff.giveSelf(
                                 eff.triggerSystemBefore(eventClass,
                                         {Entity me, T event -> predicate.test(me, event)},
-                                        {Entity source, T event -> effect.perform(source, source)}
+                                        {Entity source, T event -> effect.perform(source)}
                                 )
                         )
                 )
@@ -147,7 +153,7 @@ public class GeneralSystems {
                         eff.giveSelf(
                                 eff.triggerSystem(eventClass,
                                         {Entity me, T event -> predicate.test(me, event)},
-                                        {Entity source, T event -> effect.perform(source, source)}
+                                        {Entity source, T event -> effect.perform(source)}
                                 )
                         )
                 )
@@ -163,6 +169,31 @@ public class GeneralSystems {
             return true
         }
         throw new IllegalArgumentException('Unexpected owner match: ' + str)
+    }
+
+    private class SpellsDelegate {
+        private Entity entity
+        private ECSAction action
+
+        private void addTargetSet(int min, int max, Closure filter) {
+            action.addTargetSet(min, max)
+            assert !entity.hasComponent(FilterComponent) : 'Only one target set is supported so far'
+            entity.addComponent(new FilterComponent(filter as TargetFilter))
+        }
+
+        def targets(Map map, Closure closure) {
+            int min = map.getOrDefault('min', 0) as int
+            int max = map.getOrDefault('max', Integer.MAX_VALUE) as int
+            addTargetSet(min, max, closure)
+        }
+
+        def targets(int count) {
+            def finalize = {Closure closure ->
+                addTargetSet(count, count, closure)
+            }
+            [to: {int max -> [cards: finalize]},
+                cards: finalize]
+        }
     }
 
     static def setup(ECSGame game) {
@@ -192,19 +223,32 @@ public class GeneralSystems {
                     {Entity source, EntityRemoveEvent event -> source == event.entity}, closure)
         }
 
+        CardDelegate.metaClass.spell << {String actionName ->
+            spell(actionName, null)
+        }
+        CardDelegate.metaClass.spell << {String actionName, Closure closure ->
+            Entity entity = entity()
+            def actions = entity.getComponent(ActionComponent)
+            def useAction = new ECSAction(entity, actionName, {act -> true }, {act -> })
+            actions.addAction(useAction)
+
+            if (closure) {
+                SpellsDelegate delegate = new SpellsDelegate(entity: entity, action: useAction)
+                closure.setDelegate(delegate)
+                closure.call()
+            }
+        }
+
         CardDelegate.metaClass.afterPlay << {Closure closure ->
             def eff = new net.zomis.cardshifter.ecs.effects.Effects();
             EffectDelegate effect = new EffectDelegate()
             closure.delegate = effect
             closure.setResolveStrategy(Closure.DELEGATE_FIRST)
             closure.call()
-            addEffect(entity(),
-                eff.described("${effect.description}",
-                    eff.toSelf({source ->
-                        effect.perform(source, null)
-                    })
-                )
-            )
+            GameEffect eventConsumer = {ActionPerformEvent event ->
+                effect.perform(event.entity, event)
+            } as GameEffect
+            addEffect(entity(), new EffectComponent(effect.description.toString(), eventConsumer))
         }
 
         CardDelegate.metaClass.whilePresent << {Closure closure ->

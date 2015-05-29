@@ -1,3 +1,4 @@
+import com.cardshifter.modapi.actions.ActionPerformEvent
 import com.cardshifter.modapi.base.Entity
 import com.cardshifter.modapi.cards.DrawStartCards
 import com.cardshifter.modapi.cards.ZoneComponent
@@ -12,9 +13,15 @@ class EffectDelegate {
     StringBuilder description = new StringBuilder()
     List<Closure> closures = new ArrayList<>()
 
-    def perform(Entity source, Entity target) {
+    final Object targets = new Object()
+
+    def perform(Entity source, ActionPerformEvent event) {
+        perform(source)
+    }
+
+    def perform(Entity source) {
         closures.each {
-            it.call(source, target)
+            it.call(source, source)
         }
     }
 
