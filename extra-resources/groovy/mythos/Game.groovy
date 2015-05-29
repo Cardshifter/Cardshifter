@@ -32,6 +32,7 @@ config {
         resourceModifier()
         phases()
         zone 'Cards', {
+            cardset 'common'
             cardset 'chinese'
             cardset 'egyptian'
             cardset 'greek'
