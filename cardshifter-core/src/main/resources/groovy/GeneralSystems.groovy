@@ -256,6 +256,19 @@ public class GeneralSystems {
             assert entityInt
             addSystem new RestoreResourcesSystem(resource, entityInt)
         }
+
+        SystemsDelegate.metaClass.upkeepCost << {Map map ->
+            Predicate<Entity> filter = map.get('filter') as Predicate<Entity>
+            ECSResource decreaseBy = map.get('decreaseBy') as ECSResource
+            ECSResource decrease = map.get('decrease') as ECSResource
+            addSystem new RestoreResourcesSystem(decrease, {Entity player ->
+                List<Entity> entities = player.game.findEntities(filter);
+                int sum = entities.stream().mapToInt({ Entity ent -> decreaseBy.getFor(ent) }).sum()
+                println "Sum is $sum for ${entities.size()} creatures: $entities"
+                return decrease.getFor(player) - sum
+            })
+        }
+
         SystemsDelegate.metaClass.useCost << {Map map ->
 //            (action: PLAY_ACTION, res: MANA, value: { res MANA_COST }, whoPays: "player")
             String action = map.get('action')
