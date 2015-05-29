@@ -126,4 +126,11 @@ public final class Entity {
 		effect.accept(this);
 		return this;
 	}
+
+    public static String debugInfo(Entity entity) {
+        if (entity == null) {
+            return "null entity";
+        }
+        return entity.toString() + " --- " + entity.components.toString();
+    }
 }

@@ -3,6 +3,8 @@ package com.cardshifter.modapi.cards;
 import com.cardshifter.modapi.base.Component;
 import com.cardshifter.modapi.base.Entity;
 
+import java.util.Objects;
+
 public class CardComponent extends Component {
 
 	private ZoneComponent currentZone;
@@ -12,6 +14,7 @@ public class CardComponent extends Component {
 	}
 	
 	public Entity getOwner() {
+        Objects.requireNonNull(getCurrentZone(), "Card is not on any zone: " + Entity.debugInfo(getEntity()));
 		return getCurrentZone().getOwner();
 	}
 	
