@@ -13,7 +13,7 @@ public class ServerConfiguration {
     private int portSocket = 4242;
     private int portWebsocket = 4243;
 
-    private String modsDirectory = "";
+    private String modsDirectory = "extra-mods";
 
     public static ServerConfiguration readFrom(String s) {
         Properties properties = new Properties();
@@ -26,7 +26,7 @@ public class ServerConfiguration {
         ServerConfiguration config = new ServerConfiguration();
         config.portSocket = Integer.parseInt(properties.getProperty("port", "4242"));
         config.portWebsocket = Integer.parseInt(properties.getProperty("websocket-port", "4243"));
-        config.modsDirectory = properties.getProperty("mods", "");
+        config.modsDirectory = properties.getProperty("mods", "extra-mods");
         return config;
     }
 
