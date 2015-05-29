@@ -27,6 +27,7 @@ import com.cardshifter.modapi.events.IEvent
 import com.cardshifter.modapi.phase.GainResourceSystem
 import com.cardshifter.modapi.phase.PerformerMustBeCurrentPlayer
 import com.cardshifter.modapi.phase.PhaseEndEvent
+import com.cardshifter.modapi.phase.PhaseStartEvent
 import com.cardshifter.modapi.phase.RestoreResourcesSystem
 import com.cardshifter.modapi.players.Players
 import com.cardshifter.modapi.resources.ECSResource
@@ -153,13 +154,37 @@ public class GeneralSystems {
         )
     }
 
+    private static boolean ownerMatch(String str, Entity expected, Entity actual) {
+        if (str == 'your') {
+            return expected == actual
+        } else if (str == 'opponent') {
+            return expected != actual
+        } else if (str == 'each') {
+            return true
+        }
+        throw new IllegalArgumentException('Unexpected owner match: ' + str)
+    }
+
     static def setup(ECSGame game) {
         game.getEntityMeta().getName << {Attributes.NAME.getFor(delegate)}
         game.getEntityMeta().getFlavor << {Attributes.FLAVOR.getFor(delegate)}
 
         CardDelegate.metaClass.onEndOfTurn << {Closure closure ->
-            triggerAfter((Entity) entity(), '%description% at end of turn', PhaseEndEvent.class,
-                    {Entity source, PhaseEndEvent event -> Players.findOwnerFor(source) == event.getOldPhase().getOwner()}, closure)
+            onEndOfTurn('your', closure)
+        }
+
+        CardDelegate.metaClass.onEndOfTurn << {String turn, Closure closure ->
+            triggerAfter((Entity) entity(), "%description% at end of $turn turn", PhaseStartEvent.class,
+                    {Entity source, PhaseStartEvent event -> ownerMatch(turn, Players.findOwnerFor(source), event.getOldPhase().getOwner())}, closure)
+        }
+
+        CardDelegate.metaClass.onStartOfTurn << {Closure closure ->
+            onStartOfTurn('your', closure)
+        }
+
+        CardDelegate.metaClass.onStartOfTurn << {String turn, Closure closure ->
+            triggerAfter((Entity) entity(), "%description% at start of $turn turn", PhaseStartEvent.class,
+                    {Entity source, PhaseStartEvent event -> ownerMatch(turn, Players.findOwnerFor(source), event.getNewPhase().getOwner())}, closure)
         }
 
         CardDelegate.metaClass.onDeath << {Closure closure ->
