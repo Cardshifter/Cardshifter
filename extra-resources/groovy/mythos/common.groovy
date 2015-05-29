@@ -15,3 +15,103 @@ card("ChangeMe") {
  * List of available common cards Cardshifter "Mythos" mod
  * @author www.github.com/Phrancis
  */
+
+card("Swordsman") {
+    creature "Common"
+    flavor "Armed with a sharp sword."
+    health 3
+    sickness 1
+    manaCost 5
+    attack 3
+}
+card("Pikeman") {
+    creature "Common"
+    flavor "Armed with a long armor-piercing pike."
+    health 2
+    sickness 1
+    manaCost 5
+    attack 4
+}
+card("Archer") {
+    creature "Common"
+    flavor "Fires arrows from a distance."
+    health 2
+    sickness 1
+    manaCost 5
+    attack 3
+    denyCounterAttack()
+}
+card("Longbowman") {
+    creature "Common"
+    flavor "Fires devastating arrows from a very long distance."
+    health 2
+    sickness 1
+    manaCost 8
+    attack 5
+}
+card("Defender") {
+    creature "Common"
+    flavor "Wields a large shield to protect troops."
+    health 6
+    sickness 1
+    manaCost 10
+    attack 1
+    noAttack()
+    taunt()
+}
+card("Assassin") {
+    creature "Common"
+    flavor "Strikes with speed and stealth."
+    health 2
+    sickness 0
+    manaCost 10
+    attack 6
+    denyCounterAttack()
+}
+card("Spy") {
+    creature "Common"
+    flavor "Weakens the enemy by revealing their secrets."
+    health 4
+    sickness 1
+    manaCost 10
+    attack 0
+    noAttack()
+    whilePresent {
+        change HEALTH, ATTACK by -1 priority 1 onCards {
+            creature true
+            ownedBy 'Opponent'
+            zone 'Battlefield'
+        }
+    }
+}
+card("Slingman") {
+    creature "Common"
+    flavor "Slings stones to break enemy weapons."
+    health 3
+    sickness 1
+    manaCost 10
+    attack 4
+    whilePresent {
+        change ATTACK by -2 priority 1 onCards {
+            creature true
+            ownedBy 'Opponent'
+            zone 'Battlefield'
+        }
+    }
+}
+card("Healer") {
+    creature "Common"
+    flavor "Supports troops by providing healing."
+    health 5
+    sickness 1
+    manaCost 10
+    attack 0
+    noAttack()
+    whilePresent {
+        change HEALTH by 2 priority 1 onCards {
+            creature true
+            ownedBy 'you'
+            zone 'Battlefield'
+        }
+    }
+}
