@@ -43,30 +43,35 @@ public class AttackDamageAccumulating extends SpecificActionSystem {
 			int attackDamage = attack.getFor(source);
 			int defenseDamage = attack.getFor(target);
 			ECSGame game = source.getGame();
-			damage(attackDamage, target, source, game);
-			if (allowCounterAttack.test(source, target)) {
-				damage(defenseDamage, source, target, game);
+			attackDamage = damage(attackDamage, target, source, game);
+            boolean counterAttack = allowCounterAttack.test(source, target);
+			if (counterAttack) {
+				defenseDamage = damage(defenseDamage, source, target, game);
 			}
 
-			checkKill(target);
-			checkKill(source);
+			checkKill(target, attackDamage);
+            if (counterAttack) {
+                checkKill(source, defenseDamage);
+            }
 		});
 	}
 
-	private void checkKill(Entity target) {
-		if (health.getFor(target) <= 0 && !target.hasComponent(PlayerComponent.class)) {
+	private void checkKill(Entity target, int damage) {
+		if (health.getFor(target) <= damage && !target.hasComponent(PlayerComponent.class)) {
 			target.destroy();
 		}
 	}
 
-	private void damage(int damage, Entity target, Entity damagedBy, ECSGame game) {
+	private int damage(int damage, Entity target, Entity damagedBy, ECSGame game) {
 		if (damage == 0) {
-			return;
+			return 0;
 		}
 		if (damage < 0) {
 			throw new IllegalArgumentException("damage must be positive");
 		}
-		game.getEvents().executeEvent(new DamageEvent(target, damagedBy, damage), e -> health.resFor(target).change(-e.getDamage()));
+        DamageEvent damageEvent = new DamageEvent(target, damagedBy, damage);
+		game.getEvents().executeEvent(damageEvent, e -> health.resFor(target).change(-e.getDamage()));
+        return damageEvent.getDamage();
 	}
 
 }
