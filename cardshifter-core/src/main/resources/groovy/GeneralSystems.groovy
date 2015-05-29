@@ -23,6 +23,7 @@ import com.cardshifter.modapi.cards.PlayEntersBattlefieldSystem
 import com.cardshifter.modapi.cards.PlayFromHandSystem
 import com.cardshifter.modapi.cards.RemoveDeadEntityFromZoneSystem
 import com.cardshifter.modapi.events.EntityRemoveEvent
+import com.cardshifter.modapi.events.IEvent
 import com.cardshifter.modapi.phase.GainResourceSystem
 import com.cardshifter.modapi.phase.PerformerMustBeCurrentPlayer
 import com.cardshifter.modapi.phase.PhaseEndEvent
@@ -48,7 +49,9 @@ import java.util.function.Consumer
 import java.util.function.Predicate
 import java.util.function.ToIntFunction
 import java.util.function.UnaryOperator
-import EffectDelegate;
+import EffectDelegate
+
+import static com.cardshifter.modapi.phase.PhaseEndEvent.*;
 
 class AttackSystemDelegate {
     ECSGame game
@@ -114,44 +117,54 @@ public class GeneralSystems {
         entity.addComponent(effect)
     }
 
+    static <T extends IEvent> void triggerBefore(Entity entity, String description, Class<T> eventClass, BiPredicate<Entity, T> predicate, Closure closure) {
+        EffectDelegate effect = new EffectDelegate()
+        closure.delegate = effect
+        closure.setResolveStrategy(Closure.DELEGATE_FIRST)
+        closure.call()
+        def eff = new Effects();
+        addEffect(entity,
+                eff.described(description.replace("%description%", effect.description.toString()),
+                        eff.giveSelf(
+                                eff.triggerSystemBefore(eventClass,
+                                        {Entity me, T event -> predicate.test(me, event)},
+                                        {Entity source, T event -> effect.perform(source, source)}
+                                )
+                        )
+                )
+        )
+    }
+
+    static <T extends IEvent> void triggerAfter(Entity entity, String description, Class<T> eventClass, BiPredicate<Entity, T> predicate, Closure closure) {
+        EffectDelegate effect = new EffectDelegate()
+        closure.delegate = effect
+        closure.setResolveStrategy(Closure.DELEGATE_FIRST)
+        closure.call()
+        def eff = new Effects();
+        addEffect(entity,
+                eff.described(description.replace("%description%", effect.description.toString()),
+                        eff.giveSelf(
+                                eff.triggerSystem(eventClass,
+                                        {Entity me, T event -> predicate.test(me, event)},
+                                        {Entity source, T event -> effect.perform(source, source)}
+                                )
+                        )
+                )
+        )
+    }
+
     static def setup(ECSGame game) {
         game.getEntityMeta().getName << {Attributes.NAME.getFor(delegate)}
         game.getEntityMeta().getFlavor << {Attributes.FLAVOR.getFor(delegate)}
 
         CardDelegate.metaClass.onEndOfTurn << {Closure closure ->
-            EffectDelegate effect = new EffectDelegate()
-            closure.delegate = effect
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST)
-            closure.call()
-            def eff = new net.zomis.cardshifter.ecs.effects.Effects();
-            addEffect(entity(),
-                    eff.described("${effect.description} at end of turn",
-                            eff.giveSelf(
-                                    eff.triggerSystem(com.cardshifter.modapi.phase.PhaseEndEvent.class,
-                                            {Entity me, PhaseEndEvent event -> com.cardshifter.modapi.players.Players.findOwnerFor(me) == event.getOldPhase().getOwner()},
-                                            {Entity source, PhaseEndEvent event -> effect.perform(source, source)}
-                                    )
-                            )
-                    )
-            )
+            triggerAfter((Entity) entity(), '%description% at end of turn', PhaseEndEvent.class,
+                    {Entity source, PhaseEndEvent event -> Players.findOwnerFor(source) == event.getOldPhase().getOwner()}, closure)
         }
 
         CardDelegate.metaClass.onDeath << {Closure closure ->
-            EffectDelegate effect = new EffectDelegate()
-            closure.delegate = effect
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST)
-            closure.call()
-            def eff = new net.zomis.cardshifter.ecs.effects.Effects();
-            addEffect(entity(),
-                    eff.described("When this dies, ${effect.description}",
-                            eff.giveSelf(
-                                    eff.triggerSystemBefore(EntityRemoveEvent.class,
-                                            {Entity me, EntityRemoveEvent event -> me == event.entity},
-                                            {Entity source, EntityRemoveEvent event -> effect.perform(source, source)}
-                                    )
-                            )
-                    )
-            )
+            triggerBefore((Entity) entity(), 'When this dies, %description%', EntityRemoveEvent.class,
+                    {Entity source, EntityRemoveEvent event -> source == event.entity}, closure)
         }
 
         CardDelegate.metaClass.afterPlay << {Closure closure ->
