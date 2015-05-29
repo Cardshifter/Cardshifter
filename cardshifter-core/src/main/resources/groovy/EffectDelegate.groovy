@@ -90,10 +90,23 @@ class EffectDelegate {
 
     def drawCard(String who, int count) {
         def s = count == 1 ? '' : 's'
+        if (who == 'all') {
+            description.append("All players draw $count card$s\n")
+            closures.add({Entity source, Entity target ->
+                Players.getPlayersInGame(source.game).forEach({Entity e ->
+                    for (int i = 0; i < count; i++) {
+                        DrawStartCards.drawCard(e)
+                    }
+                })
+            })
+            return;
+        }
         description.append("$who draw $count card$s\n")
         closures.add({Entity source, Entity target ->
             Entity drawer = entityLookup(source, who)
-            DrawStartCards.drawCard(drawer)
+            for (int i = 0; i < count; i++) {
+                DrawStartCards.drawCard(drawer)
+            }
         })
     }
 
