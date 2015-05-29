@@ -14,8 +14,9 @@ public class CardComponent extends Component {
 	}
 	
 	public Entity getOwner() {
-        Objects.requireNonNull(getCurrentZone(), "Card is not on any zone: " + Entity.debugInfo(getEntity()));
-		return getCurrentZone().getOwner();
+        ZoneComponent zone = getCurrentZone();
+//        Objects.requireNonNull(getCurrentZone(), "Card is not on any zone: " + Entity.debugInfo(getEntity()));
+		return zone == null ? null : zone.getOwner();
 	}
 	
 	public ZoneComponent getCurrentZone() {
