@@ -25,6 +25,7 @@ card("JADE EMPEROR") {
     // Info: http://en.wikipedia.org/wiki/Jade_Emperor
     // Image: http://upload.wikimedia.org/wikipedia/commons/2/24/Jade_Emperor._Ming_Dynasty.jpg
     // License: Public Domain
+    maxInDeck 1
     health 10
     sickness 1
     manaCost 30
@@ -48,6 +49,7 @@ card("NUWA") {
     // Info: http://en.wikipedia.org/wiki/N%C3%BCwa
     // Image: http://upload.wikimedia.org/wikipedia/commons/4/49/Nuwa.jpg
     // License: Public Domain
+    maxInDeck 1
     health 10
     sickness 1
     manaCost 25
@@ -73,6 +75,7 @@ card("DIYU") {
     // Info: http://en.wikipedia.org/wiki/Diyu
     // Image: http://upload.wikimedia.org/wikipedia/commons/c/cb/Jade_Record_1.PNG
     // License: Public Domain
+    maxInDeck 1
     health 10
     sickness 0
     manaCost 20
@@ -102,6 +105,7 @@ card("MONKING") {
     // Info: http://en.wikipedia.org/wiki/Sun_Wukong
     // Image: http://upload.wikimedia.org/wikipedia/commons/2/25/Sun_Wukong_and_Jade_Rabbit.jpg
     // License: Public Domain
+    maxInDeck 2
     health 5
     sickness 0
     manaCost 15
@@ -121,6 +125,7 @@ card("GUAN YU") {
     // Image: http://upload.wikimedia.org/wikipedia/commons/e/eb/Guan_yu_-Summer_Palace%2C_Beijing.JPG
     // License: CC BY-SA 3.0
     // Author: http://commons.wikimedia.org/wiki/User:Shizhao
+    maxInDeck 2
     health 10
     sickness 1
     manaCost 15
@@ -154,6 +159,7 @@ card("SHINJE") {
     // Info: http://en.wikipedia.org/wiki/Yama_(East_Asia)#Yama_in_Tibetan_Buddhism
     // Image: http://upload.wikimedia.org/wikipedia/commons/5/54/Yama_tibet.jpg
     // License: Püblic Domain
+    maxInDeck 1
     health 6
     sickness 1
     manaCost 20
@@ -178,6 +184,7 @@ card("GUANYIN") {
     // Image: http://upload.wikimedia.org/wikipedia/commons/8/89/Daienin_Kannon.JPG
     // License: CC BY-SA 3.0
     // Author: ":...---...SOS" | http://commons.wikimedia.org/w/index.php?title=User:...---...SOS&action=edit&redlink=1
+    maxInDeck 2
     health 10
     sickness 1
     manaCost 15
