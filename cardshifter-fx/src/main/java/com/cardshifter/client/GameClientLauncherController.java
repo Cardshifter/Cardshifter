@@ -22,6 +22,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
@@ -57,6 +58,7 @@ public final class GameClientLauncherController implements Initializable {
 	@FXML private AnchorPane anchorPane;
 	@FXML private Button localGameButton;
 	@FXML private HBox aiChoiceBox;
+    @FXML private ChoiceBox<String> modChoice;
 	
 	private final Map<String, AIComponent> aiChoices = new HashMap<>();
 	private AIComponent aiChoice;
@@ -114,6 +116,8 @@ public final class GameClientLauncherController implements Initializable {
 	
 	private void createAIChoices() {
 		mods.getAIs().forEach((name, ai) -> aiChoices.put(name, new AIComponent(ai)));
+        modChoice.getItems().addAll(mods.getAvailableMods());
+        modChoice.getSelectionModel().select(0);
 		localGameButton.setOnAction(this::localGameStart);
 		this.createAIButtons();
 	}
@@ -138,7 +142,7 @@ public final class GameClientLauncherController implements Initializable {
 	}
 	
 	private void localGameStart(ActionEvent event) {
-		ECSMod mod = mods.getModFor(DEFAULT_MOD);
+		ECSMod mod = mods.getModFor(modChoice.getValue());
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 		TCGGame game = new TCGGame(() -> executor, DEFAULT_MOD, 1, mod);
 		ClientServerInterface singlePlayerHandler = new ClientServerInterface() {

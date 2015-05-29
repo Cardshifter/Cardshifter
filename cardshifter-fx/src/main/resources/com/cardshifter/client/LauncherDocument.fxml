@@ -65,6 +65,7 @@
 	  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="8.0" layoutX="41.0" layoutY="361.0" stroke="BLACK" strokeType="INSIDE" width="540.0" />
 	  <HBox fx:id="aiChoiceBox" layoutX="100.0" layoutY="417.0" prefHeight="65.0" prefWidth="400.0" />
       <Button fx:id="localGameButton" layoutX="238.0" layoutY="383.0" mnemonicParsing="false" text="Start Local Game" />
+      <ChoiceBox fx:id="modChoice" layoutX="350.0" layoutY="383.0" prefWidth="150.0" />
       
    </children>
 </AnchorPane>
