@@ -125,10 +125,7 @@ public class GeneralSystems {
     }
 
     static <T extends IEvent> void triggerBefore(Entity entity, String description, Class<T> eventClass, BiPredicate<Entity, T> predicate, Closure closure) {
-        EffectDelegate effect = new EffectDelegate()
-        closure.delegate = effect
-        closure.setResolveStrategy(Closure.DELEGATE_FIRST)
-        closure.call()
+        EffectDelegate effect = EffectDelegate.create(closure, false)
         def eff = new Effects();
         addEffect(entity,
                 eff.described(description.replace("%description%", effect.description.toString()),
@@ -143,10 +140,7 @@ public class GeneralSystems {
     }
 
     static <T extends IEvent> void triggerAfter(Entity entity, String description, Class<T> eventClass, BiPredicate<Entity, T> predicate, Closure closure) {
-        EffectDelegate effect = new EffectDelegate()
-        closure.delegate = effect
-        closure.setResolveStrategy(Closure.DELEGATE_FIRST)
-        closure.call()
+        EffectDelegate effect = EffectDelegate.create(closure, false)
         def eff = new Effects();
         addEffect(entity,
                 eff.described(description.replace("%description%", effect.description.toString()),

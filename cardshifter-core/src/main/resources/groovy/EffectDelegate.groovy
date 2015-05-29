@@ -10,6 +10,14 @@ import java.util.stream.Collectors
 
 class EffectDelegate {
 
+    static EffectDelegate create(Closure effects, boolean delegateOnly) {
+        EffectDelegate delegate = new EffectDelegate()
+        effects.setDelegate(delegate)
+        effects.setResolveStrategy(delegateOnly ? Closure.DELEGATE_ONLY : Closure.DELEGATE_FIRST)
+        effects.call()
+        return delegate
+    }
+
     StringBuilder description = new StringBuilder()
     List<Closure> closures = new ArrayList<>()
 
@@ -54,11 +62,7 @@ class EffectDelegate {
 
             EffectDelegate[] deleg = new EffectDelegate[effects.length]
             for (int i = 0; i < deleg.length; i++) {
-                deleg[i] = new EffectDelegate()
-                Closure closure = effects[i]
-                closure.setDelegate(deleg[i])
-                closure.setResolveStrategy(Closure.DELEGATE_ONLY)
-                closure.call()
+                deleg[i] = create(effects[i], true)
                 assert deleg[i].closures.size() > 0 : 'probability condition needs to have some actions'
             }
             String effectString = Arrays.stream(deleg).map({ef -> ef.description.toString()})
@@ -77,10 +81,7 @@ class EffectDelegate {
     }
 
     def withProbability(double probability, @DelegatesTo(EffectDelegate) Closure action) {
-        EffectDelegate deleg = new EffectDelegate()
-        action.setDelegate(deleg)
-        action.setResolveStrategy(Closure.DELEGATE_ONLY)
-        action.call()
+        EffectDelegate deleg = create(action, true)
         assert deleg.closures.size() > 0 : 'probability condition needs to have some actions'
         description.append("$probability chance to $deleg.description")
         closures.add({Entity source, Entity target ->
@@ -96,10 +97,7 @@ class EffectDelegate {
     }
 
     def repeat(int count, @DelegatesTo(EffectDelegate) Closure action) {
-        EffectDelegate deleg = new EffectDelegate()
-        action.setDelegate(deleg)
-        action.setResolveStrategy(Closure.DELEGATE_FIRST)
-        action.call()
+        EffectDelegate deleg = create(action, false)
         assert deleg.closures.size() > 0 : 'repeat needs to have some actions'
         description.append("$deleg.description $count times")
         closures.add({Entity source, Entity target ->
