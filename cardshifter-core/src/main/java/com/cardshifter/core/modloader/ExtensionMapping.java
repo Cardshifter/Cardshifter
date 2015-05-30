@@ -9,9 +9,8 @@ import java.util.Objects;
  * @author Frank van Heeswijk
  */
 enum ExtensionMapping {
-	JAR(JavaMod::new),
-	ZIP(LuaMod::new);
-	
+	JAR(JavaMod::new);
+
 	private final ModLoadingFunction<Path, Mod, ModNotLoadableException> constructor;
 	
 	private ExtensionMapping(final ModLoadingFunction<Path, Mod, ModNotLoadableException> constructor) {

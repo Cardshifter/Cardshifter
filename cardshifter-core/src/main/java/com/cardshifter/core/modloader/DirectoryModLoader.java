@@ -20,7 +20,6 @@ public final class DirectoryModLoader implements ModLoader {
 	private static final Map<String, ModLoadingFunction<Path, LoadableMod, ModNotLoadableException>> LANGUAGE_MAPPING = new HashMap<>();
 	static {
 		LANGUAGE_MAPPING.put("java", JavaMod::new);
-		LANGUAGE_MAPPING.put("lua", LuaMod::new);
 	}
 	
 	private final Path modsDirectory;
