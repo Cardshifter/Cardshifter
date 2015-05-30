@@ -51,14 +51,7 @@ public class ModCollection {
 		ais.put("Fighter", new ScoringAI(AIs.fighter(), AIs::fighterDeck));
 		
 		mods.put(CardshifterConstants.VANILLA, () -> new CyborgChroniclesGameNewAttackSystem());
-        File groovyModDir = new File("groovy");
-        File[] groovyMods = groovyModDir.listFiles();
-        if (groovyMods != null) {
-            Arrays.stream(groovyMods)
-                    .filter(File::isDirectory)
-                    .filter(f -> new File(f, "Game.groovy").exists())
-                    .forEach(f -> mods.put(f.getName(), () -> new GroovyMod(f.getName())));
-        }
+        loadExternal(new File("groovy").toPath());
 //		mods.put("Cyborg-Spells", () -> new CyborgChroniclesGameWithSpells());
 //		mods.put("Test", () -> new TestMod());
 	}
@@ -69,23 +62,17 @@ public class ModCollection {
 	 * @param directory The directory to search for more mods.
 	 */
 	public void loadExternal(Path directory) {
-		if (!Files.isDirectory(directory)) {
-			logger.warn(directory + " not found. No external mods loaded");
-			return;
-		}
-		DirectoryModLoader loader = new DirectoryModLoader(directory);
-		List<String> loadableMods = loader.getAvailableMods();
-		for (String modName : loadableMods) {
-			mods.put(modName, () -> {
-				try {
-					Mod mod = loader.load(modName);
-					return mod;
-				} catch (ModNotLoadableException e) {
-					logger.warn("Unable to load mod " + modName, e);
-					return null;
-				}
-			});
-		}
+        if (!Files.isDirectory(directory)) {
+            logger.warn(directory + " not found. No external mods loaded");
+            return;
+        }
+        File[] groovyMods = directory.toFile().listFiles();
+        if (groovyMods != null) {
+            Arrays.stream(groovyMods)
+                    .filter(File::isDirectory)
+                    .filter(f -> new File(f, "Game.groovy").exists())
+                    .forEach(f -> mods.put(f.getName(), () -> new GroovyMod(f.getName())));
+        }
 	}
 	
 	/**
