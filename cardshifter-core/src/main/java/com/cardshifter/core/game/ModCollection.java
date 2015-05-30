@@ -50,8 +50,6 @@ public class ModCollection {
 		ais.put("Medium", new ScoringAI(AIs.medium(), AIs::mediumDeck));
 		ais.put("Fighter", new ScoringAI(AIs.fighter(), AIs::fighterDeck));
 		
-        ScriptEngineManager scripts = new ScriptEngineManager();
-        mods.put("NewJS", () -> new JavaScriptMod("JSGame.js", scripts));
 		mods.put(CardshifterConstants.VANILLA, () -> new CyborgChroniclesGameNewAttackSystem());
         File groovyModDir = new File("groovy");
         File[] groovyMods = groovyModDir.listFiles();
