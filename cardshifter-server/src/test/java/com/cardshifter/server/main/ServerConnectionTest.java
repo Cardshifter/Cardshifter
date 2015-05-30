@@ -88,7 +88,6 @@ public class ServerConnectionTest {
 	}
 	
 	@Test(timeout = 20000)
-//	@Ignore
 	public void testUserOnlineOffline() throws InterruptedException, UnknownHostException, IOException {
 		
 		TestClient client2 = new TestClient();
@@ -133,7 +132,7 @@ public class ServerConnectionTest {
 		client1.await(WaitMessage.class);
 		NewGameMessage gameMessage = client1.await(NewGameMessage.class);
 		assertEquals(1, gameMessage.getGameId());
-		Thread.sleep(2000);
+		Thread.sleep(6000);
 		TCGGame game = (TCGGame) server.getGames().get(1);
 		assertEquals(2, game.getGameModel().getEntitiesWithComponent(PlayerComponent.class).size());
 		assertTrue(game.hasPlayer(server.getClients().get(userId)));
@@ -147,7 +146,7 @@ public class ServerConnectionTest {
 	@Test(timeout = 100000)
 	public void testPlayGame() throws InterruptedException, UnknownHostException, IOException {
 		testPlayAny();
-		Thread.sleep(1000);
+		Thread.sleep(6000);
 		TCGGame game = (TCGGame) server.getGames().get(1);
 		ClientIO io = server.getClients().get(userId);
 		assertEquals(2, game.getGameModel().getEntitiesWithComponent(PlayerComponent.class).size());
