@@ -40,8 +40,7 @@ public class MyGroovyMod implements GroovyModInterface {
         Binding binding = new Binding()
         def file = new File(groovyMod.modDirectory, "test.groovy")
         if (!file.exists()) {
-            result.add(new ECSModTest(null, {}))
-            return result
+            return null
         }
 
         def delegate = new TestDelegate(tests: result)

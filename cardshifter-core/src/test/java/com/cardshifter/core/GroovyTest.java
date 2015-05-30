@@ -37,11 +37,11 @@ public class GroovyTest {
         if (mod instanceof GroovyMod) {
             GroovyMod groovyMod = (GroovyMod) mod;
             List<ECSModTest> tests = groovyMod.testList();
+            if (tests == null) {
+                suite.addTest(untestedMod(modName));
+                return suite;
+            }
             for (ECSModTest test : tests) {
-                if (test.getName() == null) {
-                    suite.addTest(untestedMod(modName));
-                    continue;
-                }
                 suite.addTest(createTest(mods, modName, test));
             }
         }
