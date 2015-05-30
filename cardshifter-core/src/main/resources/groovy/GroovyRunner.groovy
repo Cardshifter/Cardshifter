@@ -37,6 +37,20 @@ public class MyGroovyMod implements GroovyModInterface {
     @Override
     List<ECSModTest> getTests() {
         List<ECSModTest> result = new ArrayList<>();
+        Binding binding = new Binding()
+        def file = new File(groovyMod.modDirectory, "test.groovy")
+        if (!file.exists()) {
+            result.add(new ECSModTest(null, {}))
+            return result
+        }
+
+        def delegate = new TestDelegate(tests: result)
+        CompilerConfiguration cc = new CompilerConfiguration()
+        cc.setScriptBaseClass(DelegatingScript.class.getName())
+        GroovyShell sh = new GroovyShell(groovyMod.loader, binding, cc)
+        DelegatingScript script = (DelegatingScript) sh.parse(file)
+        script.setDelegate(delegate)
+        script.run()
         return result
     }
 
