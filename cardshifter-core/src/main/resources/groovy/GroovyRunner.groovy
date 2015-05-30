@@ -1,8 +1,9 @@
+import com.cardshifter.core.modloader.GroovyModInterface
+import com.cardshifter.core.modloader.ECSModTest
 import com.cardshifter.modapi.base.ECSGame
-import com.cardshifter.modapi.base.ECSMod
 import org.codehaus.groovy.control.CompilerConfiguration
 
-public class MyGroovyMod implements ECSMod {
+public class MyGroovyMod implements GroovyModInterface {
 
     String name
     GroovyMod groovyMod
@@ -21,14 +22,22 @@ public class MyGroovyMod implements ECSMod {
         script.run()
     }
 
+    @Override
     void declareConfiguration(ECSGame game) {
         println 'declare config'
         groovyMod.declareConfiguration(game)
     }
 
+    @Override
     void setupGame(ECSGame game) {
         println 'setup game'
         groovyMod.setupGame(game)
+    }
+
+    @Override
+    List<ECSModTest> getTests() {
+        List<ECSModTest> result = new ArrayList<>();
+        return result
     }
 
 }
