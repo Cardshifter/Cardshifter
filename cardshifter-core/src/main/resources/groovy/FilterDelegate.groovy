@@ -7,8 +7,6 @@ import com.cardshifter.modapi.phase.PhaseController
 import com.cardshifter.modapi.players.Players
 import net.zomis.cardshifter.ecs.effects.TargetFilter
 
-import java.util.function.BiPredicate
-
 class FilterDelegate {
     TargetFilter predicate = {Entity source, Entity target -> true}
     StringBuilder description = new StringBuilder()
