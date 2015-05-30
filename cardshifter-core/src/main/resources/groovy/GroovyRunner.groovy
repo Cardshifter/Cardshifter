@@ -5,26 +5,28 @@ import org.codehaus.groovy.control.CompilerConfiguration
 
 public class MyGroovyMod implements GroovyModInterface {
 
-    String name
-    GroovyMod groovyMod
+    final String name
+    final File modDirectory
+    private final GroovyMod groovyMod
+    private final ClassLoader classLoader
 
     MyGroovyMod(File dir, String name, ClassLoader cl) {
         this.name = name
-        File modDirectory = dir
+        this.modDirectory = dir
+        this.classLoader = cl
         Binding binding = new Binding()
         this.groovyMod = new GroovyMod(loader: cl, modDirectory: modDirectory, binding: binding)
-        File file = new File(modDirectory, "Game.groovy")
-        CompilerConfiguration cc = new CompilerConfiguration()
-        cc.setScriptBaseClass(DelegatingScript.class.getName())
-        GroovyShell sh = new GroovyShell(cl, binding, cc)
-        DelegatingScript script = (DelegatingScript) sh.parse(file)
-        script.setDelegate(groovyMod)
-        script.run()
     }
 
     @Override
     void declareConfiguration(ECSGame game) {
-        println 'declare config'
+        File file = new File(modDirectory, "Game.groovy")
+        CompilerConfiguration cc = new CompilerConfiguration()
+        cc.setScriptBaseClass(DelegatingScript.class.getName())
+        GroovyShell sh = new GroovyShell(classLoader, groovyMod.binding, cc)
+        DelegatingScript script = (DelegatingScript) sh.parse(file)
+        script.setDelegate(groovyMod)
+        script.run()
         groovyMod.declareConfiguration(game)
     }
 
