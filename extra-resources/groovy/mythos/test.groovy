@@ -3,6 +3,6 @@ package mythos
 def clearState = {
 }
 
-from clearState test 'test', {
+from clearState test 'test' using {
     assert true
 }

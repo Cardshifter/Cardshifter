@@ -99,6 +99,9 @@ public class GroovyMod {
         game.metaClass.getEntityMeta << {
             entityMeta
         }
+        game.metaClass.getPlayers << {
+            Players.getPlayersInGame(delegate)
+        }
         game.metaClass.resource << {String resourceName ->
             resource(resourceName)
         }
