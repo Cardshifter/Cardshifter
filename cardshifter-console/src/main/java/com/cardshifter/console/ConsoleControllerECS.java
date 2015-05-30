@@ -156,11 +156,4 @@ public class ConsoleControllerECS {
 		return sb.toString();
 	}
 	
-	public static void main(String[] args) {
-		ECSMod mod = new CyborgChroniclesGame();
-		ECSGame newgame = new ECSGame();
-		mod.declareConfiguration(newgame);
-		mod.setupGame(newgame);
-		new ConsoleControllerECS(newgame).play(new Scanner(System.in, StandardCharsets.UTF_8.name()));
-	}
 }

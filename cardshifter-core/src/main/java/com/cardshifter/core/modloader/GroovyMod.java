@@ -17,8 +17,8 @@ public class GroovyMod implements ECSMod {
     private final Throwable exception;
     private ECSMod script;
 
-    public GroovyMod(String name) {
-        File file = new File("groovy/" + name);
+    public GroovyMod(File directory, String name) {
+        File file = directory;
         Throwable ex;
         try {
             Binding binding = new Binding();
@@ -27,7 +27,8 @@ public class GroovyMod implements ECSMod {
 
             CompilerConfiguration config = new CompilerConfiguration();
             scriptEngine.setConfig(config);
-            binding.setVariable("script", name);
+            binding.setVariable("dir", file);
+            binding.setVariable("name", name);
             binding.setVariable("cl", scriptEngine.getGroovyClassLoader());
 
             script = (ECSMod) scriptEngine.run("GroovyRunner.groovy", binding);

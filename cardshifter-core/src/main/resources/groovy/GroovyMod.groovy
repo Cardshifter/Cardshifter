@@ -44,13 +44,18 @@ public class GroovyMod {
         }
         File[] files = [
             new File(modDirectory, fileName),
+            new File(modDirectory.getParentFile(), fileName),
             new File('groovy/' + fileName),
             new File(fileName),
         ]
         Arrays.stream(files)
             .filter({f -> f.exists()})
             .findFirst()
-            .orElseThrow({ new IllegalArgumentException('Unable to find file: ' + fileName) })
+            .orElseThrow({
+                String basePath = new File('').getAbsolutePath()
+                String arrayInfo = Arrays.toString(files)
+                new IllegalArgumentException("Unable to find file: $fileName . Searched in: $arrayInfo . Base path is $basePath")
+            })
     }
 
     void include(String fileName) {

@@ -31,7 +31,6 @@ import javafx.stage.Stage;
 import com.cardshifter.api.config.DeckConfig;
 
 import com.cardshifter.ai.FakeAIClientTCG;
-import com.cardshifter.api.CardshifterConstants;
 import com.cardshifter.api.ClientIO;
 import com.cardshifter.api.ClientServerInterface;
 import com.cardshifter.api.both.PlayerConfigMessage;
@@ -67,7 +66,6 @@ public final class GameClientLauncherController implements Initializable {
 	private final ModCollection mods = new ModCollection();
 	
 	private static final String CONF_NAME = "name";
-	private static final String DEFAULT_MOD = CardshifterConstants.VANILLA;
 
 	private String getCharactersFromTextField(TextField textField) {
 		return textField.getCharacters().toString();
@@ -142,9 +140,10 @@ public final class GameClientLauncherController implements Initializable {
 	}
 	
 	private void localGameStart(ActionEvent event) {
-		ECSMod mod = mods.getModFor(modChoice.getValue());
+        String modName = modChoice.getValue();
+		ECSMod mod = mods.getModFor(modName);
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
-		TCGGame game = new TCGGame(() -> executor, DEFAULT_MOD, 1, mod);
+		TCGGame game = new TCGGame(() -> executor, modName, 1, mod);
 		ClientServerInterface singlePlayerHandler = new ClientServerInterface() {
 			@Override
 			public void performIncoming(Message message, ClientIO clientIO) {

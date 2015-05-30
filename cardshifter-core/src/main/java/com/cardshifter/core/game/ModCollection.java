@@ -6,21 +6,14 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Supplier;
 
-import com.cardshifter.core.modloader.*;
-import net.zomis.cardshifter.ecs.usage.CyborgChroniclesGameNewAttackSystem;
-import net.zomis.cardshifter.ecs.usage.CyborgChroniclesGameWithSpells;
-
-import net.zomis.cardshifter.ecs.usage.TestMod;
+import com.cardshifter.core.modloader.GroovyMod;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import com.cardshifter.ai.AIs;
 import com.cardshifter.ai.ScoringAI;
-import com.cardshifter.api.CardshifterConstants;
 import com.cardshifter.modapi.ai.CardshifterAI;
 import com.cardshifter.modapi.base.ECSMod;
-
-import javax.script.ScriptEngineManager;
 
 /**
  * Class where the Mods and AIs are initialized.
@@ -50,10 +43,7 @@ public class ModCollection {
 		ais.put("Medium", new ScoringAI(AIs.medium(), AIs::mediumDeck));
 		ais.put("Fighter", new ScoringAI(AIs.fighter(), AIs::fighterDeck));
 		
-		mods.put(CardshifterConstants.VANILLA, () -> new CyborgChroniclesGameNewAttackSystem());
         loadExternal(new File("groovy").toPath());
-//		mods.put("Cyborg-Spells", () -> new CyborgChroniclesGameWithSpells());
-//		mods.put("Test", () -> new TestMod());
 	}
 	
 	/**
@@ -71,7 +61,7 @@ public class ModCollection {
             Arrays.stream(groovyMods)
                     .filter(File::isDirectory)
                     .filter(f -> new File(f, "Game.groovy").exists())
-                    .forEach(f -> mods.put(f.getName(), () -> new GroovyMod(f.getName())));
+                    .forEach(f -> mods.put(f.getName(), () -> new GroovyMod(f, f.getName())));
         }
 	}
 	

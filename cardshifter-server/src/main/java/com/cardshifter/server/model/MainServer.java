@@ -14,11 +14,9 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import com.cardshifter.ai.FakeAIClientTCG;
-import com.cardshifter.api.CardshifterConstants;
 import com.cardshifter.api.ClientIO;
 import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.incoming.LoginMessage;
-import com.cardshifter.api.incoming.StartGameRequest;
 import com.cardshifter.core.game.ModCollection;
 import com.cardshifter.core.game.ServerGame;
 import com.cardshifter.core.game.TCGGame;
@@ -111,7 +109,6 @@ public class MainServer {
         commandHandler.addHandler("export", () -> new DataExportCommand.DataExportParameters(),
                 new DataExportCommand());
 		commandHandler.addHandler("users", this::users);
-		commandHandler.addHandler("play", this::play);
 		commandHandler.addHandler("say", this::say);
 		commandHandler.addHandler("chat", this::chatInfo);
 		commandHandler.addHandler("games", this::showGames);
@@ -218,18 +215,6 @@ public class MainServer {
 	}
 	
 	/**
-	 * Get the client that sent the command, perform a StartGameRequest. 
-	 * Right now this only sends CardshifterConstants.VANILLA
-	 * 
-	 * @param command The command object
-	 */
-	private void play(Command command) {
-		int userId = command.getParameterInt(1);
-		ClientIO client = server.getClients().get(userId);
-		server.getIncomingHandler().perform(new StartGameRequest(-1, CardshifterConstants.VANILLA), client);
-	}
-	
-	/**
 	 * The Consumer accepts all stack traces for all threads
 	 * 
 	 * @param server Unused parameter
@@ -259,4 +244,8 @@ public class MainServer {
 		output.accept("");
 	}
 	
+    public ModCollection getMods() {
+        return mods;
+    }
+
 }

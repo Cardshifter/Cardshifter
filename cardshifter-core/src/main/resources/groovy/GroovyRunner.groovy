@@ -7,9 +7,9 @@ public class MyGroovyMod implements ECSMod {
     String name
     GroovyMod groovyMod
 
-    MyGroovyMod(String name, ClassLoader cl) {
+    MyGroovyMod(File dir, String name, ClassLoader cl) {
         this.name = name
-        File modDirectory = new File("groovy/$name")
+        File modDirectory = dir
         Binding binding = new Binding()
         this.groovyMod = new GroovyMod(loader: cl, modDirectory: modDirectory, binding: binding)
         File file = new File(modDirectory, "Game.groovy")
@@ -35,4 +35,4 @@ public class MyGroovyMod implements ECSMod {
 
 
 
-new MyGroovyMod(script, cl)
+new MyGroovyMod(dir, name, cl)
