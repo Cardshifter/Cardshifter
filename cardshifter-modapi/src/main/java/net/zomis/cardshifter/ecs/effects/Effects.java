@@ -1,6 +1,5 @@
 package net.zomis.cardshifter.ecs.effects;
 
-import java.util.List;
 import java.util.function.*;
 
 import com.cardshifter.modapi.base.Component;
@@ -11,12 +10,9 @@ import com.cardshifter.modapi.cards.BattlefieldComponent;
 import com.cardshifter.modapi.cards.ZoneChangeEvent;
 import com.cardshifter.modapi.events.EntityRemoveEvent;
 import com.cardshifter.modapi.events.IEvent;
-import com.cardshifter.modapi.phase.PhaseEndEvent;
-import com.cardshifter.modapi.players.Players;
 import com.cardshifter.modapi.resources.ECSResource;
 import com.cardshifter.modapi.resources.ECSResourceData;
 import com.cardshifter.modapi.resources.ResourceRetriever;
-import net.zomis.cardshifter.ecs.usage.functional.EntityConsumer;
 
 public class Effects {
 
@@ -50,20 +46,6 @@ public class Effects {
         };
     }
 
-
-    public EffectComponent forEach(TargetFilter filter, TargetEffect consumer) {
-		GameEffect effect = event -> event.getEntity().getGame()
-			.findEntities(target -> filter.test(event.getEntity(), target))
-			.forEach(target -> consumer.perform(event.getEntity(), target));
-		return new EffectComponent("For each " + filter + ", " + consumer, effect);
-	}
-	
-	public EffectComponent giveTarget(ECSResource resource, int value) {
-		ResourceRetriever res = ResourceRetriever.forResource(resource);
-		GameEffect effect = event -> event.getAction().getAllTargets().forEach(e -> res.resFor(e).change(value));
-		return new EffectComponent("Give target " + value + " " + resource, effect);
-	}
-
 	public EffectComponent giveTarget(ECSResource resource, int value, IntUnaryOperator operator) {
 		ResourceRetriever res = ResourceRetriever.forResource(resource);
 		GameEffect effect = event -> event.getAction().getAllTargets().forEach(e -> {
@@ -73,42 +55,10 @@ public class Effects {
 		});
 		return new EffectComponent("Give target " + value + " " + resource, effect);
 	}
-
-	public <T extends IEvent> EffectComponent giveTarget(Function<Entity, ECSSystem> system) {
-		GameEffect effect = event -> event.getAction().getAllTargets().forEach(e -> e.getGame().addSystem(new InGameSystem(e, system.apply(e))));
-		return new EffectComponent("Give target " + system, effect);
-	}
-
 	public <T extends IEvent> EffectComponent giveSelf(Function<Entity, ECSSystem> system) {
 		GameEffect effect = event -> event.getEntity().getGame().addSystem(new InGameSystem(event.getEntity(), system.apply(event.getEntity())));
 		return new EffectComponent("Give target " + system, effect);
 	}
-
-    public Function<Entity, ECSSystem> atEndOfTurn(Consumer<Entity> action) {
-        return triggerSystem(PhaseEndEvent.class,
-                (me, event) -> Players.findOwnerFor(me) == event.getOldPhase().getOwner(),
-                (me, event) -> action.accept(me));
-    }
-
-    public Consumer<Entity> modify(Entity entity, ECSResource resource, int value) {
-        return e -> {
-            ResourceRetriever res = ResourceRetriever.forResource(resource);
-            res.resFor(entity).change(value);
-        };
-    }
-
-    public Consumer<Entity> toRandom(TargetFilter predicate, EntityConsumer consumer) {
-        return e -> {
-            List<Entity> entities = e.getGame().findEntities(target -> predicate.test(e, target));
-            if (entities.isEmpty()) {
-                consumer.perform(e, null);
-            }
-            else {
-                int index = e.getGame().getRandom().nextInt(entities.size());
-                consumer.perform(e, entities.get(index));
-            }
-        };
-    }
 
 	public EffectComponent toSelf(Consumer<Entity> effect) {
 		return new EffectComponent(effect.toString(), event -> effect.accept(event.getEntity()));
@@ -149,19 +99,6 @@ public class Effects {
 				event.getCard().getGame().removeSystem(systemToRemove);
 			}
 		}
-	}
-
-	public EffectComponent systemWhileOnBattlefield(Function<Entity, ECSSystem> systemSupplier) {
-		GameEffect effect = event -> event.getAction().getAllTargets().forEach(e -> e.getGame().addSystem(new InGameSystem(e, systemSupplier.apply(e))));
-//		GameEffect effect = e -> e.getEntity().getGame().addSystem(new InGameSystem(e.getEntity(), systemSupplier.apply(e.getEntity())));
-		
-		return new EffectComponent("special system", effect);
-	}
-
-	public EffectComponent addSystem(Function<Entity, ECSSystem> systemSupplier) {
-		GameEffect effect = e -> e.getEntity().getGame().addSystem(systemSupplier.apply(e.getEntity()));
-		
-		return new EffectComponent("Add System", effect);
 	}
 
 }
