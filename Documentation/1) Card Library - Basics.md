@@ -140,7 +140,7 @@ A card with `denyCounterAttack()` will not be subject to the counter-attack mech
 
 ####`maxInDeck`
 
-Determines an arbitrary maximum of how many of one card can be chosen into a deck. It overrides the mod's default `maxInDeck` property (usually 3). Syntax: `maxInDeck n`
+Determines an arbitrary maximum of how many of one card can be chosen into a deck. It overrides the mod's default `maxCardsPerType` property (usually 3). Syntax: `maxInDeck n`
 
 _Note: See the_ `maxCardsPerType` _property of the_ `players` _config method in the mod's_ `Game.groovy` _file to see or change the default value._
 
