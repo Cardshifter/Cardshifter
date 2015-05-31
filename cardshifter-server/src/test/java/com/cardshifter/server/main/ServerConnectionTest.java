@@ -154,7 +154,9 @@ public class ServerConnectionTest {
 		ai.getComponent(AIComponent.class).setDelay(0);
 		
 		CardshifterAI humanActions = new ScoringAI(AIs.medium());
-        Thread.sleep(3000); // this sleep is to make AI perform Mulligan before client1, otherwise it's not allowed the second time client1 tries to do it (naturally)
+        client1.awaitUntil(ResetAvailableActionsMessage.class);
+        client1.awaitUntil(ResetAvailableActionsMessage.class);
+        client1.awaitUntil(UsableActionMessage.class);
 		while (!game.isGameOver()) {
 			ECSAction action = humanActions.getAction(human);
 			if (action != null) {
