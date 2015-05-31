@@ -28,7 +28,7 @@ class TestDelegate {
         mod.setupGame(game)
         game.startGame()
 
-        def delegate = new TestCaseDelegate(game: game)
+        def delegate = new TestCaseDelegate(game: game, cardDelegate: mod.getCardDelegate(), mod: mod.groovyMod)
         if (setup) {
             setup.setDelegate(delegate)
             setup.setResolveStrategy(Closure.DELEGATE_FIRST)
@@ -37,6 +37,7 @@ class TestDelegate {
         test.setDelegate(delegate)
         test.setResolveStrategy(Closure.DELEGATE_FIRST)
         test.call()
+        assert delegate.finished()
     }
 
 }

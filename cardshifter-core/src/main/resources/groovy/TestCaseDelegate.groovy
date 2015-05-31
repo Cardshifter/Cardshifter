@@ -10,6 +10,7 @@ import com.cardshifter.modapi.players.Players
 class ActionChain {
     TestCaseDelegate delegate
     private boolean active = false
+    private boolean performs = true
 
     Entity performer
     Entity entity
@@ -37,6 +38,11 @@ class ActionChain {
         return this
     }
 
+    ActionChain allows(String actionName) {
+        this.performs = false
+        return uses(actionName)
+    }
+
     ActionChain withTargets(List<Entity> list) {
         assert targets == null
         this.targets = new ArrayList<>(list)
@@ -56,6 +62,10 @@ class ActionChain {
         assert this.entity == null
         this.entity = who
         return this
+    }
+
+    ActionChain on(Entity who) {
+        return entity(who)
     }
 
     ActionChain by(Entity performer) {
@@ -88,7 +98,7 @@ class ActionChain {
         } else {
             assert action.isAllowed(performer) == expectedOK
         }
-        if (expectedOK) {
+        if (expectedOK && performs) {
             assert action.perform(performer) == expectedOK
         }
         clear()
@@ -100,14 +110,25 @@ class ActionChain {
         this.actionName = null
         this.targets = null
         this.expectedOK = true
+        this.performs = true
+    }
+
+    boolean isActive() {
+        return active
+    }
+
+    String toString() {
+        return "ActionChain active $active entity $entity performs $actionName by $performer with targets $targets expected $expectedOK"
     }
 
 }
 
 class TestCaseDelegate {
     ECSGame game
+    CardDelegate cardDelegate
+    GroovyMod mod
 
-    private ActionChain active = new ActionChain(delegate: this)
+    private final ActionChain active = new ActionChain(delegate: this)
 
     ActionChain entity(Entity entity) {
         active.init()
@@ -122,10 +143,19 @@ class TestCaseDelegate {
         }]
     }
 
+    boolean finished() {
+        !active.isActive()
+    }
+
     ActionChain uses(String action) {
         active.init()
         active.uses(action)
         return active
+    }
+
+    ActionChain allowed(String action) {
+        active.init()
+        active.allows(action)
     }
 
     ActionChain withTargets(List<Entity> targets) {
@@ -166,6 +196,22 @@ class TestCaseDelegate {
             return Players.getNextPlayer(you)
         }
         throw new MissingPropertyException(name, ActionChain)
+    }
+
+    def to(Entity who) {
+        [zone: {String zoneName ->
+            [create: {Closure card ->
+                assert card
+                assert card.thisObject
+                def zone = EffectDelegate.zoneLookup(who, zoneName)
+                def closure = card
+                closure.delegate = cardDelegate
+                System.out.println 'closure this is ' + closure.thisObject
+                def entity = cardDelegate.createCard(game.newEntity(), closure, Closure.OWNER_FIRST)
+                zone.addOnBottom(entity)
+                return entity
+            }]
+        }]
     }
 
 }

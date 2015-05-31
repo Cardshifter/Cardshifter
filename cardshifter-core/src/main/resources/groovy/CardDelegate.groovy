@@ -1,9 +1,24 @@
+import com.cardshifter.modapi.actions.ActionComponent
+import com.cardshifter.modapi.attributes.ECSAttributeMap
 import com.cardshifter.modapi.base.Entity
 import com.cardshifter.modapi.resources.ECSResource
+import com.cardshifter.modapi.resources.ECSResourceMap
+import groovy.transform.PackageScope
 
 class CardDelegate implements GroovyInterceptable {
     Entity entity
     GroovyMod mod
+
+    @PackageScope Entity createCard(Entity card, Closure<?> closure, int resolveStrategy) {
+        ECSAttributeMap.createOrGetFor(card)
+        ECSResourceMap.createFor(card)
+        card.addComponent(new ActionComponent())
+        this.entity = card
+        closure.delegate = this
+        closure.setResolveStrategy(resolveStrategy)
+        closure.call()
+        return card
+    }
 
     Entity entity() {
         entity
