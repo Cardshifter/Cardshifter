@@ -15,17 +15,13 @@ import com.cardshifter.server.model.CommandHandler;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import net.zomis.cardshifter.ecs.usage.CardshifterIO;
 
-import com.beust.jcommander.JCommander;
 import com.cardshifter.core.game.ServerGame;
 import com.cardshifter.core.game.TCGGame;
 import com.cardshifter.modapi.base.Entity;
 import com.cardshifter.modapi.cards.ZoneComponent;
-import com.cardshifter.server.model.Server;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 
 public class DataExportCommand implements CommandHandler.CommandHandle<DataExportCommand.DataExportParameters> {
 

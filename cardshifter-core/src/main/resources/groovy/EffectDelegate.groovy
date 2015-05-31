@@ -1,19 +1,38 @@
+import com.cardshifter.modapi.actions.ActionPerformEvent
+import com.cardshifter.modapi.actions.TargetSet
 import com.cardshifter.modapi.base.Entity
 import com.cardshifter.modapi.cards.DrawStartCards
 import com.cardshifter.modapi.cards.ZoneComponent
 import com.cardshifter.modapi.players.Players
 import com.cardshifter.modapi.resources.ECSResource
+import net.zomis.cardshifter.ecs.usage.functional.EntityConsumer
 
 import java.util.stream.Collectors
 
 class EffectDelegate {
 
+    static EffectDelegate create(Closure effects, boolean delegateOnly) {
+        EffectDelegate delegate = new EffectDelegate()
+        effects.setDelegate(delegate)
+        effects.setResolveStrategy(delegateOnly ? Closure.DELEGATE_ONLY : Closure.DELEGATE_FIRST)
+        effects.call()
+        return delegate
+    }
+
     StringBuilder description = new StringBuilder()
     List<Closure> closures = new ArrayList<>()
 
-    def perform(Entity source, Entity target) {
+    final Object targets = new Object()
+
+    def perform(Entity source, ActionPerformEvent event) {
         closures.each {
-            it.call(source, target)
+            it.call(source, event)
+        }
+    }
+
+    def perform(Entity source) {
+        closures.each {
+            it.call(source, null)
         }
     }
 
@@ -30,7 +49,7 @@ class EffectDelegate {
         assert false
     }
 
-    static def zoneLookup(Entity entity, String zoneName) {
+    static ZoneComponent zoneLookup(Entity entity, String zoneName) {
         def zone = entity.getSuperComponents(ZoneComponent).stream()
             .filter({it.getName().equals(zoneName)})
             .findAny().get()
@@ -46,22 +65,18 @@ class EffectDelegate {
 
             EffectDelegate[] deleg = new EffectDelegate[effects.length]
             for (int i = 0; i < deleg.length; i++) {
-                deleg[i] = new EffectDelegate()
-                Closure closure = effects[i]
-                closure.setDelegate(deleg[i])
-                closure.setResolveStrategy(Closure.DELEGATE_ONLY)
-                closure.call()
+                deleg[i] = create(effects[i], true)
                 assert deleg[i].closures.size() > 0 : 'probability condition needs to have some actions'
             }
             String effectString = Arrays.stream(deleg).map({ef -> ef.description.toString()})
                 .collect(Collectors.joining(' or '))
             description.append("Choose $count at random: " + effectString)
-            closures.add({Entity source, Entity target ->
+            closures.add({Entity source, Object data ->
                 List<EffectDelegate> list = new ArrayList<>(Arrays.asList(deleg))
                 Collections.shuffle(list, source.game.random)
                 for (int i = 0; i < count; i++) {
                     for (Closure act : list.get(i).closures) {
-                        act.call(source, target)
+                        act.call(source, data)
                     }
                 }
             })
@@ -69,19 +84,28 @@ class EffectDelegate {
     }
 
     def withProbability(double probability, @DelegatesTo(EffectDelegate) Closure action) {
-        EffectDelegate deleg = new EffectDelegate()
-        action.setDelegate(deleg)
-        action.setResolveStrategy(Closure.DELEGATE_ONLY)
-        action.call()
+        EffectDelegate deleg = create(action, true)
         assert deleg.closures.size() > 0 : 'probability condition needs to have some actions'
         description.append("$probability chance to $deleg.description")
-        closures.add({Entity source, Entity target ->
+        closures.add({Entity source, Object data ->
             double random = source.game.random.nextDouble()
             println "random $random probability $probability perform ${random < probability}"
             if (random < probability) {
-                println "Calling closures: $deleg.closures"
                 for (Closure act : deleg.closures) {
-                    act.call(source, target)
+                    act.call(source, data)
+                }
+            }
+        })
+    }
+
+    def repeat(int count, @DelegatesTo(EffectDelegate) Closure action) {
+        EffectDelegate deleg = create(action, false)
+        assert deleg.closures.size() > 0 : 'repeat needs to have some actions'
+        description.append("$deleg.description $count times")
+        closures.add({Entity source, Object data ->
+            for (int i = 0; i < count; i++) {
+                for (Closure act : deleg.closures) {
+                    act.call(source, data)
                 }
             }
         })
@@ -89,73 +113,131 @@ class EffectDelegate {
 
     def drawCard(String who, int count) {
         def s = count == 1 ? '' : 's'
+        if (who == 'all') {
+            description.append("All players draw $count card$s\n")
+            closures.add({Entity source, Object data ->
+                Players.getPlayersInGame(source.game).forEach({Entity e ->
+                    for (int i = 0; i < count; i++) {
+                        DrawStartCards.drawCard(e)
+                    }
+                })
+            })
+            return;
+        }
         description.append("$who draw $count card$s\n")
-        closures.add({Entity source, Entity target ->
+        closures.add({Entity source, Object data ->
             Entity drawer = entityLookup(source, who)
-            DrawStartCards.drawCard(drawer)
+            for (int i = 0; i < count; i++) {
+                DrawStartCards.drawCard(drawer)
+            }
         })
     }
 
     def heal(int value) {
-        [to: {String who ->
-            String desc = "Heal $who by $value"
-            Closure closure = {Entity source, Entity target ->
-                Entity entity = entityLookup(source, who)
-                assert entity : 'Invalid entity'
-                assert value >= 0 : 'Value cannot be negative'
-                ECSResource resource = entity.game.resource('health')
-                assert resource : 'health resource not found'
-                resource.retriever().resFor(entity).change(value)
-            }
-            description.append(desc)
-            description.append('\n')
-            closures.add(closure)
-        }]
+        EntityConsumer action = {Entity source, Entity target ->
+            assert target : 'Invalid entity'
+            assert value >= 0 : 'Value cannot be negative'
+            ECSResource resource = target.game.resource('health')
+            assert resource : 'health resource not found'
+            resource.retriever().resFor(target).change(value)
+        }
+        [to: {Object who -> targetedAction(action, who, "Heal $value to %who%")}]
     }
 
     def change(ECSResource resource) {
         [by: {int amount ->
-            [onCards: {Closure filter ->
-                FilterDelegate filterDelegate = FilterDelegate.fromClosure filter
-                String desc = "Change $resource by $amount on ${filterDelegate.description.toString()}"
-                Closure closure = {Entity source, Entity dst ->
-                    List<Entity> targets = filterDelegate.findMatching(source)
-                    for (Entity target : targets) {
-                        resource.retriever.resFor(target).change(amount)
-                    }
-                }
-                description.append(desc)
-                description.append('\n')
-                closures.add(closure)
+            EntityConsumer action = {Entity source, Entity target ->
+                resource.retriever.resFor(target).change(amount)
+            }
+            [onCards: {Object obj ->
+                targetedAction(action, obj, "Change $resource by $amount on %who%")
             }]
         }]
     }
 
-    def damage(int value) {
-        [to: {String who ->
-            String desc = "Damage $who by $value"
-            Closure closure = {Entity source, Entity target ->
-                Entity entity = entityLookup(source, who)
-                assert entity : 'Invalid entity'
-                assert value >= 0 : 'Value cannot be negative'
-                ECSResource resource = entity.game.resource('health')
-                assert resource : 'health resource not found'
-                resource.retriever().resFor(entity).change(-value)
+    def set(ECSResource resource) {
+        [to: {int amount ->
+            EntityConsumer action = {Entity source, Entity target ->
+                resource.retriever.resFor(target).set(amount)
             }
-            description.append(desc)
-            description.append('\n')
-            closures.add(closure)
+            [onCards: {Object obj ->
+                targetedAction(action, obj, "Set $resource to $amount on %who%")
+            }]
         }]
+    }
+
+    private Object targetedAction(EntityConsumer action, Object who, String desc) {
+        String targetStr = '';
+        Closure closure = null;
+        if (who == targets) {
+            targetStr = 'targets'
+            closure = {Entity source, Object data ->
+                assert data instanceof ActionPerformEvent
+                ActionPerformEvent event = data as ActionPerformEvent
+                assert event.action.getTargetSets().size() == 1
+                TargetSet targetSet = event.action.getTargetSets().get(0)
+                targetSet.chosenTargets.forEach({Entity target ->
+                    action.perform(source, target)
+                })
+            }
+        } else if (who instanceof String) {
+            targetStr = who;
+            closure = {Entity source, Object data ->
+                Entity entity = entityLookup(source, who as String)
+                action.perform(source, entity)
+            }
+        } else if (who instanceof Integer) {
+            return [random: {Closure filter ->
+                FilterDelegate filterDelegate = FilterDelegate.fromClosure(filter)
+                Closure randomizedAction = {Entity source, Object data ->
+                    List<Entity> targets = filterDelegate.findMatching(source)
+                    int count = who as int
+                    Collections.shuffle(targets, source.game.random)
+                    println "Targeting $who random of $targets with $desc"
+                    targets.stream().limit(count).forEachOrdered({Entity dst ->
+                        action.perform(source, dst)
+                    })
+                }
+                description.append(desc.replace('%who%', "$who random $filterDelegate.description"))
+                description.append('\n')
+                closures.add(randomizedAction)
+            }]
+        } else if (who instanceof Closure) {
+            FilterDelegate filter = FilterDelegate.fromClosure(who as Closure)
+            targetStr = filter.description
+            closure = {Entity source, Object data ->
+                filter.findMatching(source).forEach({Entity entity ->
+                    action.perform(source, entity)
+                })
+            }
+        }
+        assert closure : "$description: Unknown target $who"
+
+        description.append(desc.replace('%who%', targetStr))
+        description.append('\n')
+        closures.add(closure)
+    }
+
+    def damage(int value) {
+        EntityConsumer action = {Entity source, Entity target ->
+            assert target : 'Invalid entity'
+            assert value >= 0 : 'Value cannot be negative'
+            ECSResource resource = target.game.resource('health')
+            assert resource : 'health resource not found'
+            resource.retriever().resFor(target).change(-value)
+        }
+        [to: {Object who -> targetedAction(action, who, "Deal $value damage to %who%")}]
     }
 
     // summon 2 of 'Bodyman' to owner zone Hand
     def summon(int count) { // TODO: Support other methods of getting count (random, EntityInt)
         [of: {String cardName ->
+            assert cardName
             [to: {String who ->
                 [zone: {String zoneName ->
                     String desc = "Summon " + count + " " + cardName + " at " + who + " " + zoneName;
 
-                    Closure closure = {Entity source, Entity target ->
+                    Closure closure = {Entity source, Object data ->
                         Entity zoneOwner = entityLookup(source, who)
                         ZoneComponent zone = zoneLookup(zoneOwner, zoneName)
                         int amount = count // valueLookup(source, obj.count);
@@ -172,8 +254,8 @@ class EffectDelegate {
 
                         Entity what = neutral.get(0).getComponent(com.cardshifter.modapi.cards.ZoneComponent.class)
                                 .getCards().stream().filter({card ->
-                            println "Checking " + card
-                            return name.getFor(card).equals(cardName)
+                            String match = name.getOrDefault(card, null)
+                            return cardName.equals(match)
                         }).findAny().get()
 
                         for (int i = 0; i < amount; i++) {
@@ -183,7 +265,6 @@ class EffectDelegate {
 
                     description.append(desc)
                     description.append('\n')
-                    println 'Effect: ' + desc
                     closures.add(closure)
                 }]
             }]

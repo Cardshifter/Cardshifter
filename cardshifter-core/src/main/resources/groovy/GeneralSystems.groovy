@@ -1,3 +1,6 @@
+import com.cardshifter.modapi.actions.ActionComponent
+import com.cardshifter.modapi.actions.ActionPerformEvent
+import com.cardshifter.modapi.actions.ECSAction
 import com.cardshifter.modapi.actions.UseCostSystem
 import com.cardshifter.modapi.actions.attack.AttackDamageAccumulating
 import com.cardshifter.modapi.actions.attack.AttackDamageHealAtEndOfTurn
@@ -13,6 +16,7 @@ import com.cardshifter.modapi.base.ComponentRetriever
 import com.cardshifter.modapi.base.ECSGame
 import com.cardshifter.modapi.base.ECSSystem
 import com.cardshifter.modapi.base.Entity
+import com.cardshifter.modapi.cards.BattlefieldComponent
 import com.cardshifter.modapi.cards.DamageConstantWhenOutOfCardsSystem
 import com.cardshifter.modapi.cards.DrawCardAtBeginningOfTurnSystem
 import com.cardshifter.modapi.cards.DrawCardEvent
@@ -23,9 +27,10 @@ import com.cardshifter.modapi.cards.PlayEntersBattlefieldSystem
 import com.cardshifter.modapi.cards.PlayFromHandSystem
 import com.cardshifter.modapi.cards.RemoveDeadEntityFromZoneSystem
 import com.cardshifter.modapi.events.EntityRemoveEvent
+import com.cardshifter.modapi.events.IEvent
 import com.cardshifter.modapi.phase.GainResourceSystem
 import com.cardshifter.modapi.phase.PerformerMustBeCurrentPlayer
-import com.cardshifter.modapi.phase.PhaseEndEvent
+import com.cardshifter.modapi.phase.PhaseStartEvent
 import com.cardshifter.modapi.phase.RestoreResourcesSystem
 import com.cardshifter.modapi.players.Players
 import com.cardshifter.modapi.resources.ECSResource
@@ -38,6 +43,9 @@ import net.zomis.cardshifter.ecs.effects.EffectComponent
 import net.zomis.cardshifter.ecs.effects.EffectTargetFilterSystem
 import net.zomis.cardshifter.ecs.effects.Effects
 import net.zomis.cardshifter.ecs.effects.EntityInt
+import net.zomis.cardshifter.ecs.effects.FilterComponent
+import net.zomis.cardshifter.ecs.effects.GameEffect
+import net.zomis.cardshifter.ecs.effects.TargetFilter
 import net.zomis.cardshifter.ecs.usage.ApplyAfterAttack
 import net.zomis.cardshifter.ecs.usage.DestroyAfterUseSystem
 import net.zomis.cardshifter.ecs.usage.LastPlayersStandingEndsGame
@@ -48,7 +56,9 @@ import java.util.function.Consumer
 import java.util.function.Predicate
 import java.util.function.ToIntFunction
 import java.util.function.UnaryOperator
-import EffectDelegate;
+import EffectDelegate
+
+import java.util.stream.Collectors
 
 class AttackSystemDelegate {
     ECSGame game
@@ -82,10 +92,6 @@ class AttackSystemDelegate {
         addSystem new TrampleSystem(resource)
     }
 
-    def methodMissing(String name, args) {
-        println 'AttackSystems missing method ' + name
-    }
-
     def addSystem(ECSSystem system) {
         game.addSystem(system)
     }
@@ -94,15 +100,12 @@ class AttackSystemDelegate {
 public class GeneralSystems {
     static UnaryOperator<Entity> whoPays(String str) {
         if (str.equals('owner') || str.equals('player')) {
-            println 'return owner pays'
             return {Entity e -> Players.findOwnerFor(e)}
         }
         if (str.equals('self')) {
-            println 'return self pays'
             return {Entity e -> e}
         }
-        println 'neither matches. throw exception'
-        throw new UnsupportedOperationException('whoPays? ' + str)
+        throw new UnsupportedOperationException("Invalid value for whoPays: $str")
     }
 
     static def addEffect(def ent, Component effect) {
@@ -114,44 +117,117 @@ public class GeneralSystems {
         entity.addComponent(effect)
     }
 
+    static <T extends IEvent> void triggerBefore(Entity entity, String description, Class<T> eventClass, BiPredicate<Entity, T> predicate, Closure closure) {
+        EffectDelegate effect = EffectDelegate.create(closure, false)
+        def eff = new Effects();
+        addEffect(entity,
+                eff.described(description.replace("%description%", effect.description.toString()),
+                        eff.giveSelf(
+                                eff.triggerSystemBefore(eventClass,
+                                        {Entity me, T event -> predicate.test(me, event)},
+                                        {Entity source, T event -> effect.perform(source)}
+                                )
+                        )
+                )
+        )
+    }
+
+    static <T extends IEvent> void triggerAfter(Entity entity, String description, Class<T> eventClass, BiPredicate<Entity, T> predicate, Closure closure) {
+        EffectDelegate effect = EffectDelegate.create(closure, false)
+        def eff = new Effects();
+        addEffect(entity,
+                eff.described(description.replace("%description%", effect.description.toString()),
+                        eff.giveSelf(
+                                eff.triggerSystem(eventClass,
+                                        {Entity me, T event -> predicate.test(me, event)},
+                                        {Entity source, T event -> effect.perform(source)}
+                                )
+                        )
+                )
+        )
+    }
+
+    private static boolean ownerMatch(String str, Entity expected, Entity actual) {
+        if (str == 'your') {
+            return expected == actual
+        } else if (str == 'opponent') {
+            return expected != actual
+        } else if (str == 'each') {
+            return true
+        }
+        throw new IllegalArgumentException('Unexpected owner match: ' + str)
+    }
+
+    private static class SpellsDelegate {
+        private Entity entity
+        private ECSAction action
+
+        private void addTargetSet(int min, int max, Closure filter) {
+            action.addTargetSet(min, max)
+            assert !entity.hasComponent(FilterComponent) : 'Only one target set is supported so far'
+            FilterDelegate filterDelegate = FilterDelegate.fromClosure filter
+            TargetFilter resultFilter = {Entity source, Entity target ->
+                filterDelegate.predicate.test(source, target)
+            }
+            entity.addComponent(new FilterComponent(resultFilter))
+        }
+
+        def targets(Map map, Closure closure) {
+            int min = map.getOrDefault('min', 0) as int
+            int max = map.getOrDefault('max', Integer.MAX_VALUE) as int
+            addTargetSet(min, max, closure)
+        }
+
+        def targets(int count) {
+            def finalize = {Closure closure ->
+                addTargetSet(count, count, closure)
+            }
+            [to: {int max -> [cards: finalize]},
+                cards: finalize]
+        }
+    }
+
     static def setup(ECSGame game) {
-        game.getEntityMeta().getName << {Attributes.NAME.getFor(delegate)}
-        game.getEntityMeta().getFlavor << {Attributes.FLAVOR.getFor(delegate)}
+        game.getEntityMeta().getName << {Attributes.NAME.getOrDefault(delegate, null)}
+        game.getEntityMeta().getFlavor << {Attributes.FLAVOR.getOrDefault(delegate, '')}
 
         CardDelegate.metaClass.onEndOfTurn << {Closure closure ->
-            EffectDelegate effect = new EffectDelegate()
-            closure.delegate = effect
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST)
-            closure.call()
-            def eff = new net.zomis.cardshifter.ecs.effects.Effects();
-            addEffect(entity(),
-                    eff.described("${effect.description} at end of turn",
-                            eff.giveSelf(
-                                    eff.triggerSystem(com.cardshifter.modapi.phase.PhaseEndEvent.class,
-                                            {Entity me, PhaseEndEvent event -> com.cardshifter.modapi.players.Players.findOwnerFor(me) == event.getOldPhase().getOwner()},
-                                            {Entity source, PhaseEndEvent event -> effect.perform(source, source)}
-                                    )
-                            )
-                    )
-            )
+            onEndOfTurn('your', closure)
+        }
+
+        CardDelegate.metaClass.onEndOfTurn << {String turn, Closure closure ->
+            triggerAfter((Entity) entity(), "%description% at end of $turn turn", PhaseStartEvent.class,
+                    {Entity source, PhaseStartEvent event -> ownerMatch(turn, Players.findOwnerFor(source), event.getOldPhase().getOwner())}, closure)
+        }
+
+        CardDelegate.metaClass.onStartOfTurn << {Closure closure ->
+            onStartOfTurn('your', closure)
+        }
+
+        CardDelegate.metaClass.onStartOfTurn << {String turn, Closure closure ->
+            triggerAfter((Entity) entity(), "%description% at start of $turn turn", PhaseStartEvent.class,
+                    {Entity source, PhaseStartEvent event -> ownerMatch(turn, Players.findOwnerFor(source), event.getNewPhase().getOwner())}, closure)
         }
 
         CardDelegate.metaClass.onDeath << {Closure closure ->
-            EffectDelegate effect = new EffectDelegate()
-            closure.delegate = effect
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST)
-            closure.call()
-            def eff = new net.zomis.cardshifter.ecs.effects.Effects();
-            addEffect(entity(),
-                    eff.described("When this dies, ${effect.description}",
-                            eff.giveSelf(
-                                    eff.triggerSystemBefore(EntityRemoveEvent.class,
-                                            {Entity me, EntityRemoveEvent event -> me == event.entity},
-                                            {Entity source, EntityRemoveEvent event -> effect.perform(source, source)}
-                                    )
-                            )
-                    )
-            )
+            triggerBefore((Entity) entity(), 'When this dies, %description%', EntityRemoveEvent.class,
+                    {Entity source, EntityRemoveEvent event -> source == event.entity}, closure)
+        }
+
+        CardDelegate.metaClass.spell << {String actionName ->
+            spell(actionName, null)
+        }
+        CardDelegate.metaClass.spell << {String actionName, Closure closure ->
+            Entity entity = entity()
+            def actions = entity.getComponent(ActionComponent)
+            def useAction = new ECSAction(entity, actionName, {act -> true }, {act -> })
+            actions.addAction(useAction)
+
+            if (closure) {
+                SpellsDelegate delegate = new SpellsDelegate(entity: entity, action: useAction)
+                closure.setDelegate(delegate)
+                closure.call()
+            }
         }
 
         CardDelegate.metaClass.afterPlay << {Closure closure ->
@@ -160,13 +236,10 @@ public class GeneralSystems {
             closure.delegate = effect
             closure.setResolveStrategy(Closure.DELEGATE_FIRST)
             closure.call()
-            addEffect(entity(),
-                eff.described("${effect.description}",
-                    eff.toSelf({source ->
-                        effect.perform(source, null)
-                    })
-                )
-            )
+            GameEffect eventConsumer = {ActionPerformEvent event ->
+                effect.perform(event.entity, event)
+            } as GameEffect
+            addEffect(entity(), new EffectComponent(effect.description.toString(), eventConsumer))
         }
 
         CardDelegate.metaClass.whilePresent << {Closure closure ->
@@ -229,6 +302,21 @@ public class GeneralSystems {
         SystemsDelegate.metaClass.ResourceRecountSystem << {
             addSystem new ResourceRecountSystem()
         }
+
+        SystemsDelegate.metaClass.removeDead << {ECSResource resource ->
+            addSystem {ECSGame g ->
+                g.events.registerHandlerAfter(this, ActionPerformEvent.class, {event ->
+                    List<Entity> remove = event.entity.game.getEntitiesWithComponent(BattlefieldComponent)
+                            .stream().flatMap({entity -> entity.getComponent(BattlefieldComponent).stream()})
+                            .peek({Entity e -> println("$e has ${resource.getFor(e)}")})
+                            .filter({Entity e -> resource.getFor(e) <= 0})
+                            .collect(Collectors.toList());
+                    for (Entity e in remove) {
+                        e.destroy();
+                    }
+                })
+            }
+        }
     }
 
     static def resourceSystems() {
@@ -264,7 +352,6 @@ public class GeneralSystems {
             addSystem new RestoreResourcesSystem(decrease, {Entity player ->
                 List<Entity> entities = player.game.findEntities(filter);
                 int sum = entities.stream().mapToInt({ Entity ent -> decreaseBy.getFor(ent) }).sum()
-                println "Sum is $sum for ${entities.size()} creatures: $entities"
                 return decrease.getFor(player) - sum
             })
         }

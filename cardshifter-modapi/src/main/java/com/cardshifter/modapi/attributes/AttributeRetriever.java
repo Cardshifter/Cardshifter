@@ -1,6 +1,7 @@
 package com.cardshifter.modapi.attributes;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import com.cardshifter.modapi.base.Component;
 import com.cardshifter.modapi.base.Entity;
@@ -50,8 +51,8 @@ public class AttributeRetriever {
 		if (map == null) {
 			return defaultValue;
 		}
-		ECSAttributeData attrData = map.getAttribute(attribute);
-		return attrData == null ? defaultValue : attrData.get();
+		Optional<ECSAttributeData> attrData = map.get(attribute);
+		return !attrData.isPresent() ? defaultValue : attrData.get().get();
 	}
 	
 }

@@ -2,6 +2,7 @@ package com.cardshifter.modapi.attributes;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.cardshifter.modapi.base.Component;
@@ -21,7 +22,11 @@ public class ECSAttributeMap extends Component implements CopyableComponent {
 		return this;
 	}
 
-	public ECSAttributeData getAttribute(ECSAttribute attr) {
+    public Optional<ECSAttributeData> get(ECSAttribute res) {
+        return Optional.ofNullable(map.get(res));
+    }
+
+    public ECSAttributeData getAttribute(ECSAttribute attr) {
 		map.computeIfAbsent(attr, r -> new ECSAttributeData(getEntity(), r));
 		return map.get(attr);
 	}

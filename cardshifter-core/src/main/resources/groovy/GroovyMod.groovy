@@ -22,20 +22,21 @@ public class GroovyMod {
     File modDirectory
     ECSGame game
     Binding binding
-    private CardDelegate cardDelegate = new CardDelegate(mod: this)
+    final CardDelegate cardDelegate = new CardDelegate(mod: this)
     private List<Closure> configClosure = []
     private List<Closure> setupClosure = []
     private Map<String, ECSResource> knownResources = [:]
     @PackageScope Map<String, List<Closure>> cardMethodListeners = [:]
 
     ECSResource createResource(String name) {
-        return new ECSResourceDefault(name)
+        def res = new ECSResourceDefault(name)
+        knownResources.put(res.toString().toUpperCase(), res)
+        return res
     }
 
     void onCard(String method, Closure closure) {
         cardMethodListeners.putIfAbsent(method, new ArrayList<Closure>())
         cardMethodListeners[method].add(closure)
-        println "Registering onCard listener: $method, is now ${cardMethodListeners.get(method)}"
     }
 
     File findFile(String fileName) {
@@ -44,13 +45,18 @@ public class GroovyMod {
         }
         File[] files = [
             new File(modDirectory, fileName),
+            new File(modDirectory.getParentFile(), fileName),
             new File('groovy/' + fileName),
             new File(fileName),
         ]
         Arrays.stream(files)
             .filter({f -> f.exists()})
             .findFirst()
-            .orElseThrow({ new IllegalArgumentException('Unable to find file: ' + fileName) })
+            .orElseThrow({
+                String basePath = new File('').getAbsolutePath()
+                String arrayInfo = Arrays.toString(files)
+                new IllegalArgumentException("Unable to find file: $fileName . Searched in: $arrayInfo . Base path is $basePath")
+            })
     }
 
     void include(String fileName) {
@@ -61,8 +67,8 @@ public class GroovyMod {
         GroovyShell sh = new GroovyShell(loader, binding, cc)
         DelegatingScript script = (DelegatingScript) sh.parse(file)
         script.setDelegate(this)
-        def result = script.run()
-        println "Include $fileName resulted in $result"
+        script.run()
+        println "Included $fileName"
     }
 
     ECSResource resource(String name) {
@@ -73,13 +79,6 @@ public class GroovyMod {
 
     ECSResource resourceOrNull(String name) {
         knownResources[name.toUpperCase()]
-    }
-
-    void resources(List<ECSResource> resources) {
-        println "Adding ${resources.size()} resources"
-        for (ECSResource res in resources) {
-            knownResources.put(res.toString().toUpperCase(), res)
-        }
     }
 
     private static def enableMeta(ECSGame game) {
@@ -94,14 +93,17 @@ public class GroovyMod {
         game.metaClass.getEntityMeta << {
             entityMeta
         }
+        game.metaClass.getPlayers << {
+            Players.getPlayersInGame(delegate)
+        }
         game.metaClass.resource << {String resourceName ->
             resource(resourceName)
         }
+        println "Known resources is $knownResources"
         knownResources.forEach {key, value ->
             def lowerCaseKey = key.toLowerCase().capitalize()
-            println 'Adding getters and setters for ' + lowerCaseKey + " to ${game.entityMeta}"
             game.entityMeta."get$lowerCaseKey" << {
-                value.getFor(delegate)
+                value.retriever.getOrDefault(delegate, 0)
             }
             game.entityMeta."set$lowerCaseKey" << {int newValue ->
                 value.retriever.set(delegate, newValue)
@@ -126,7 +128,6 @@ public class GroovyMod {
 
     void setupGame(ECSGame game) {
         this.game = game
-        println 'Creating setup delegate'
         def setupDelegate = new SetupDelegate(this, game)
         setupClosure.each {
             def cl = it.rehydrate(setupDelegate, it.owner, it.thisObject)
@@ -160,7 +161,6 @@ class ConfigDelegate {
 
     def players(int count, Closure closure) {
         for (int i = 0; i < count; i++) {
-            println 'Creating player ' + i
             Entity player = game.newEntity()
             def cl = closure.rehydrate(new PlayerDelegate(player, mod), this, this)
             player.addComponent(new PlayerComponent(i, "Player $i"))
@@ -175,13 +175,11 @@ class SetupDelegate {
     ECSGame game
 
     SetupDelegate(GroovyMod mod, ECSGame game) {
-        println 'Creating setup delegate 2'
         this.mod = mod
         this.game = game
     }
 
     def playerDeckFromConfig(String name) {
-        println "Player deck from config $name"
         def players = Players.getPlayersInGame(game)
         for (Entity player in players) {
             DeckComponent deck = player.getComponent(DeckComponent)
@@ -211,10 +209,6 @@ class SetupDelegate {
             DeckComponent deck = player.getComponent(DeckComponent)
             deck.shuffle()
         }
-    }
-
-    def methodMissing(String name, args) {
-        println 'Setup Unsupported method: ' + name
     }
 
     void systems(Closure<?> closure) {

@@ -16,26 +16,35 @@ MANA_COST = createResource("MANA_COST")
 MANA_MAX = createResource("MANA_MAX")
 SICKNESS = createResource("SICKNESS")
 TAUNT = createResource("TAUNT")
+SCRAP = createResource("SCRAP")
+SCRAP_COST = createResource("SCRAP_COST")
 
 PLAY_ACTION = "Play";
+ENCHANT_ACTION = "Enchant";
 ATTACK_ACTION = "Attack";
 USE_ACTION = "Use";
 
 include 'creatures'
+include 'enchantment'
+include 'scrap'
 include 'noAttack'
+include 'spells'
+
+onCard('creature') {entity, args ->
+    // give all creatures taunt by default
+    entity.taunt = 1
+}
 
 config {
+    println 'Game Closure!'
+
     neutral {
         resourceModifier()
         phases()
         zone 'Cards', {
-            cardset 'common'
-            cardset 'chinese'
-            //cardset 'egyptian'
-            //cardset 'greek'
-            //cardset 'norse'
-            //cardset 'hindu'
-            //cardset 'roman'
+            cardset 'mechs'
+            cardset 'bios'
+            cardset 'enchantments'
         }
     }
 
@@ -54,8 +63,8 @@ config {
         battlefield()
         health 30
         max_health 30
-        mana 100
-        mana_max 100
+        mana 0
+        scrap 0
     }
 }
 
@@ -64,14 +73,19 @@ setup {
     playerDeckShuffle()
 
     systems {
-//        gainResource(res: MANA_MAX, value: 1, untilMax: 10)
+        gainResource(res: MANA_MAX, value: 1, untilMax: 10)
         restoreResources(resource: MANA, value: MANA_MAX)
-        upkeepCost(filter: ownedBattlefieldCreatures, decreaseBy: MANA_COST, decrease: MANA)
 
         // Play
         playFromHand PLAY_ACTION
         playEntersBattlefield PLAY_ACTION
         useCost(action: PLAY_ACTION, res: MANA, value: MANA_COST, whoPays: "player")
+
+        // Enchant
+        playFromHand ENCHANT_ACTION
+        EnchantTargetCreatureTypes('Bio')
+        EffectActionSystem(ENCHANT_ACTION) // needs to be before EnchantPerform, because of entity removal
+        EnchantPerform(ATTACK, HEALTH, MAX_HEALTH)
 
         // Spell
         useCost(action: USE_ACTION, res: MANA, value: MANA_COST, whoPays: "player")
@@ -100,9 +114,8 @@ setup {
         removeDead(HEALTH)
         ResourceRecountSystem()
 
-        def allowCounterAttackRes = DENY_COUNTERATTACK.retriever;
         def allowCounterAttack = {attacker, defender ->
-            return allowCounterAttackRes.getOrDefault(attacker, 0) == 0;
+            return attacker.deny_counterattack == 0;
         }
 
         attackSystem {
@@ -111,7 +124,8 @@ setup {
             sickness SICKNESS
             useCost(action: ATTACK_ACTION, res: ATTACK_AVAILABLE, value: 1, whoPays: "self")
             accumulating(ATTACK, HEALTH, allowCounterAttack)
-            afterAttack({entity -> allowCounterAttackRes.getFor(entity) > 0},
+            healAtEndOfTurn(HEALTH, MAX_HEALTH)
+            afterAttack({entity -> entity.deny_counterattack > 0},
                     { entity -> SICKNESS.retriever.set(entity, 2) })
             trample HEALTH
         }

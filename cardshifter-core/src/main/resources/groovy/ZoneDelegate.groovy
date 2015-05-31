@@ -32,13 +32,8 @@ class ZoneDelegate {
 
     def card(String name, Closure<?> closure) {
         def card = entity.game.newEntity()
-        ECSAttributeMap.createFor(card).set(Attributes.NAME, name)
-        ECSResourceMap.createFor(card)
-        card.addComponent(new ActionComponent())
-        cardDelegate.entity = card
-        closure.delegate = cardDelegate
-        closure.setResolveStrategy(Closure.OWNER_FIRST)
-        closure.call()
+        ECSAttributeMap.createOrGetFor(card).set(Attributes.NAME, name)
+        cardDelegate.createCard(card, closure, Closure.OWNER_FIRST)
         zone.addOnBottom(card)
     }
 

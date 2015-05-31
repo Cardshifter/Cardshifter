@@ -6,29 +6,18 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Objects;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import com.cardshifter.api.outgoing.*;
 import net.zomis.cardshifter.ecs.usage.CardshifterIO;
 
-import com.cardshifter.api.CardshifterConstants;
 import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.incoming.RequestTargetsMessage;
 import com.cardshifter.api.incoming.StartGameRequest;
 import com.cardshifter.api.incoming.UseAbilityMessage;
 import com.cardshifter.api.messages.Message;
-import com.cardshifter.api.outgoing.NewGameMessage;
-import com.cardshifter.api.outgoing.ResetAvailableActionsMessage;
-import com.cardshifter.api.outgoing.UsableActionMessage;
-import com.cardshifter.api.outgoing.WaitMessage;
-import com.cardshifter.api.outgoing.WelcomeMessage;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -70,9 +59,18 @@ public class NetworkConsoleController {
 		if (!response.isOK()) {
 			return;
 		}
-		
-		this.send(new StartGameRequest(-1, CardshifterConstants.VANILLA));
-		Message message = messages.take();
+
+        Message message;
+        do {
+            message = messages.take();
+        } while (!(message instanceof AvailableModsMessage));
+
+        AvailableModsMessage modsMessage = (AvailableModsMessage) message;
+        System.out.println("What mod do you want to play? " + Arrays.toString(modsMessage.getMods()));
+        String modName = input.nextLine();
+
+		this.send(new StartGameRequest(-1, modName));
+        message = messages.take();
 		if (message instanceof WaitMessage) {
 			System.out.println(((WaitMessage) message).getMessage());
 			NewGameMessage game = (NewGameMessage) messages.take();

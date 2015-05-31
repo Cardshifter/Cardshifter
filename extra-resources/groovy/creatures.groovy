@@ -19,7 +19,6 @@ CardDelegate.metaClass.flavor << {String value ->
 }
 
 CardDelegate.metaClass.creature << {String type ->
-    println "Creature set: $type"
     def entity = entity()
     def actions = entity.getComponent(ActionComponent)
     def playAction = new ECSAction(entity, 'Play', {act -> true }, {act -> })
@@ -31,9 +30,6 @@ CardDelegate.metaClass.creature << {String type ->
     entity.addComponent(new com.cardshifter.modapi.base.CreatureTypeComponent(type))
 
     sickness 1
-    taunt 1
     attack_available 1
 
 }
-
-"this is result from loading $CardDelegate"

@@ -1,12 +1,14 @@
 /**
  * Created by Simon on 5/18/2015.
  */
-def noAttackCards = [] as Set
+def noAttackCards = new HashSet<>()
 
 // Register a new method when adding cards
 CardDelegate.metaClass.noAttack << {
     // add the card name to our set of cards that should not attack
-    noAttackCards.add(entity().name)
+    def name = entity().name
+    assert name : 'Cannot add null name to noAttack cards'
+    noAttackCards.add(name)
 }
 
 setup {

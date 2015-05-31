@@ -1,38 +1,69 @@
+import com.cardshifter.core.modloader.GroovyModInterface
+import com.cardshifter.core.modloader.ECSModTest
 import com.cardshifter.modapi.base.ECSGame
-import com.cardshifter.modapi.base.ECSMod
 import org.codehaus.groovy.control.CompilerConfiguration
 
-public class MyGroovyMod implements ECSMod {
+public class MyGroovyMod implements GroovyModInterface {
 
-    String name
-    GroovyMod groovyMod
+    final String name
+    final File modDirectory
+    private GroovyMod groovyMod
+    final ClassLoader classLoader
 
-    MyGroovyMod(String name, ClassLoader cl) {
+    MyGroovyMod(File dir, String name, ClassLoader cl) {
         this.name = name
-        File modDirectory = new File("groovy/$name")
+        this.modDirectory = dir
+        this.classLoader = cl
+    }
+
+    @Override
+    void declareConfiguration(ECSGame game) {
         Binding binding = new Binding()
-        this.groovyMod = new GroovyMod(loader: cl, modDirectory: modDirectory, binding: binding)
+        this.groovyMod = new GroovyMod(loader: classLoader, modDirectory: modDirectory, binding: binding)
+
         File file = new File(modDirectory, "Game.groovy")
         CompilerConfiguration cc = new CompilerConfiguration()
         cc.setScriptBaseClass(DelegatingScript.class.getName())
-        GroovyShell sh = new GroovyShell(cl, binding, cc)
+        GroovyShell sh = new GroovyShell(classLoader, groovyMod.binding, cc)
         DelegatingScript script = (DelegatingScript) sh.parse(file)
         script.setDelegate(groovyMod)
         script.run()
-    }
-
-    void declareConfiguration(ECSGame game) {
-        println 'declare config'
         groovyMod.declareConfiguration(game)
     }
 
+    @Override
     void setupGame(ECSGame game) {
-        println 'setup game'
         groovyMod.setupGame(game)
     }
 
+    @Override
+    List<ECSModTest> getTests() {
+        List<ECSModTest> result = new ArrayList<>();
+        Binding binding = new Binding()
+        def file = new File(modDirectory, "test.groovy")
+        if (!file.exists()) {
+            return null
+        }
+
+        def delegate = new TestDelegate(tests: result, mod: this)
+        CompilerConfiguration cc = new CompilerConfiguration()
+        cc.setScriptBaseClass(DelegatingScript.class.getName())
+        GroovyShell sh = new GroovyShell(classLoader, binding, cc)
+        DelegatingScript script = (DelegatingScript) sh.parse(file)
+        script.setDelegate(delegate)
+        script.run()
+        return result
+    }
+
+    public CardDelegate getCardDelegate() {
+        return groovyMod.cardDelegate
+    }
+
+    public GroovyMod getGroovyMod() {
+        return groovyMod
+    }
 }
 
 
 
-new MyGroovyMod(script, cl)
+new MyGroovyMod(dir, name, cl)

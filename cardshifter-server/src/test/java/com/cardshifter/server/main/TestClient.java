@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import com.cardshifter.api.outgoing.ResetAvailableActionsMessage;
 import net.zomis.cardshifter.ecs.usage.CardshifterIO;
 
 import org.junit.Assert;
@@ -74,7 +75,7 @@ public class TestClient {
 		return result;
 	}
 	
-	public <T> T await(Class<T> class1) throws JsonParseException, JsonProcessingException, IOException, InterruptedException {
+	public <T> T await(Class<T> class1) throws IOException, InterruptedException {
 		Message message = messages.take();
 		if (message instanceof ServerErrorMessage) {
 			Assert.fail(message.toString());
@@ -90,4 +91,11 @@ public class TestClient {
 		thread.interrupt();
 	}
 
+    public <T extends Message> T awaitUntil(Class<T> messageClass) throws InterruptedException, IOException {
+        Message message;
+        do {
+            message = await(Message.class);
+        } while (!messageClass.isAssignableFrom(message.getClass()));
+        return messageClass.cast(message);
+    }
 }

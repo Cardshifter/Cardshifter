@@ -6,21 +6,14 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Supplier;
 
-import com.cardshifter.core.modloader.*;
-import net.zomis.cardshifter.ecs.usage.CyborgChroniclesGameNewAttackSystem;
-import net.zomis.cardshifter.ecs.usage.CyborgChroniclesGameWithSpells;
-
-import net.zomis.cardshifter.ecs.usage.TestMod;
+import com.cardshifter.core.modloader.GroovyMod;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import com.cardshifter.ai.AIs;
 import com.cardshifter.ai.ScoringAI;
-import com.cardshifter.api.CardshifterConstants;
 import com.cardshifter.modapi.ai.CardshifterAI;
 import com.cardshifter.modapi.base.ECSMod;
-
-import javax.script.ScriptEngineManager;
 
 /**
  * Class where the Mods and AIs are initialized.
@@ -50,19 +43,7 @@ public class ModCollection {
 		ais.put("Medium", new ScoringAI(AIs.medium(), AIs::mediumDeck));
 		ais.put("Fighter", new ScoringAI(AIs.fighter(), AIs::fighterDeck));
 		
-        ScriptEngineManager scripts = new ScriptEngineManager();
-        mods.put("NewJS", () -> new JavaScriptMod("JSGame.js", scripts));
-		mods.put(CardshifterConstants.VANILLA, () -> new CyborgChroniclesGameNewAttackSystem());
-        File groovyModDir = new File("groovy");
-        File[] groovyMods = groovyModDir.listFiles();
-        if (groovyMods != null) {
-            Arrays.stream(groovyMods)
-                    .filter(File::isDirectory)
-                    .filter(f -> new File(f, "Game.groovy").exists())
-                    .forEach(f -> mods.put(f.getName(), () -> new GroovyMod(f.getName())));
-        }
-//		mods.put("Cyborg-Spells", () -> new CyborgChroniclesGameWithSpells());
-//		mods.put("Test", () -> new TestMod());
+        loadExternal(new File("groovy").toPath());
 	}
 	
 	/**
@@ -71,23 +52,17 @@ public class ModCollection {
 	 * @param directory The directory to search for more mods.
 	 */
 	public void loadExternal(Path directory) {
-		if (!Files.isDirectory(directory)) {
-			logger.warn(directory + " not found. No external mods loaded");
-			return;
-		}
-		DirectoryModLoader loader = new DirectoryModLoader(directory);
-		List<String> loadableMods = loader.getAvailableMods();
-		for (String modName : loadableMods) {
-			mods.put(modName, () -> {
-				try {
-					Mod mod = loader.load(modName);
-					return mod;
-				} catch (ModNotLoadableException e) {
-					logger.warn("Unable to load mod " + modName, e);
-					return null;
-				}
-			});
-		}
+        if (!Files.isDirectory(directory)) {
+            logger.warn(directory + " not found. No external mods loaded");
+            return;
+        }
+        File[] groovyMods = directory.toFile().listFiles();
+        if (groovyMods != null) {
+            Arrays.stream(groovyMods)
+                    .filter(File::isDirectory)
+                    .filter(f -> new File(f, "Game.groovy").exists())
+                    .forEach(f -> mods.put(f.getName(), () -> new GroovyMod(f, f.getName())));
+        }
 	}
 	
 	/**

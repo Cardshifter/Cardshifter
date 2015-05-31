@@ -60,3 +60,4 @@ com_crashlytics_export_strings.xml
 replay-*.json
 Server.log
 game-*.xml
+extra-resources/server.properties

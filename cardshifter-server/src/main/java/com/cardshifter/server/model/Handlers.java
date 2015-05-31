@@ -82,6 +82,10 @@ public class Handlers {
 	}
 
 	public void play(StartGameRequest message, ClientIO client) {
+        if (message.getOpponent() == client.getId()) {
+            client.sendToClient(new ChatMessage(server.getMainChat().getId(), "Server", "You cannot invite yourself."));
+            return;
+        }
 		if (message.getOpponent() < 0) {
 			this.playAny(message, client);
 		}

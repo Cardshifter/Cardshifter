@@ -5,8 +5,8 @@ import java.util.Random;
 import com.beust.jcommander.Parameter;
 
 public class CommandLineOptions {
-	@Parameter(names = { "--file", "-f" }, description = "Script file to run")
-	private String script;
+	@Parameter(names = { "--mod", "-m" }, description = "Mod to run")
+	private String mod;
 	
 	@Parameter(names = { "--seed", "-s" }, description = "Set random seed")
 	private Integer seed;
@@ -17,18 +17,15 @@ public class CommandLineOptions {
 	@Parameter(names = { "--port" }, description = "Port for use with network playing")
 	private int port = 4242;
 	
-	@Parameter(names = { "--lua" }, description = "Use old-style Lua scripts to play")
-	private boolean lua;
-	
 	public Random getRandom() {
 		return (seed == null) ? new Random() : new Random(seed);
 	}
-	
-	public String getScript() {
-		return script;
-	}
-	
-	public String getHost() {
+
+    public String getMod() {
+        return mod;
+    }
+
+    public String getHost() {
 		return host;
 	}
 	
@@ -36,8 +33,7 @@ public class CommandLineOptions {
 		return port;
 	}
 
-	public boolean isLua() {
-		return lua;
-	}
-	
+    public void setMod(String mod) {
+        this.mod = mod;
+    }
 }
