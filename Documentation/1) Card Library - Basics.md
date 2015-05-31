@@ -138,9 +138,17 @@ A creature card with `taunt()` will require the opponent to attack that card fir
 
 A card with `denyCounterAttack()` will not be subject to the counter-attack mechanic. By default, the counter-attack mechanic makes it so that if a creature attacks another creature, and the target creature has `n` attack, the attacking creature will take `n` damage to health as a consequence. Enabling this will override this mechanic. This can be referred to as a "Ranged" or "Sniper" creature, in a way. 
 
+####`maxInDeck`
+
+Determines an arbitrary maximum of how many of one card can be chosen into a deck. It overrides the mod's default `maxInDeck` property (usually 3). Syntax: `maxInDeck n`
+
+_Note: See the_ `maxCardsPerType` _property of the_ `players` _config method in the mod's_ `Game.groovy` _file to see or change the default value._
+
 ####`token()`
 
 A card with `token()` cannot be selected from the Deck Builder. It can only be brought into play by summoning it. See `2) Card Library - Effects.md` for more details on summoning cards.
+
+_Note: This is a shortcut to_ `maxInDeck 0` _which would produce the same effect._
 
 ---
 

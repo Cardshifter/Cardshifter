@@ -63,10 +63,11 @@ Various triggers are available for actions to be applied on.
 Syntax:
 
     trigger {
-        pick X atRandom (
+        pick n atRandom (
             { action a },
             { action b },
-            { action _n_ }
+            ...,
+            { action z }
         )
     }
 
@@ -75,7 +76,8 @@ Example:
     afterPlay {
         pick 1 atRandom (
             { summon 1 of "Conscript" to "you" zone "Hand" },
-            { heal 1 to 'you' }
+            { heal 1 to 'you' },
+            { damage 1 to 'opponent' }
         )
     }
 
@@ -182,7 +184,7 @@ This is only used with the `whilePresent` filter. It specifies in which order th
 ##`onCards` Filters
 
 - These are used to filter the effects to a particular set of targets. 
-- A filter uses a number of keys such as `ownedBy`, `zone`, `creature()`, `creatureType` and `thisCard()`.
+- A filter uses a number of keys such as `ownedBy`, `zone`, `creature true`, `creatureType` and `thisCard()`.
 - A variety of filters are available for effects, and will be explained in detail below.
 
 ####`ownedBy`
@@ -191,7 +193,8 @@ This is a list of possible owners with descriptions. Note that owner values are 
 
 - `"you"`: Cards that you, as the player, own.
 - `"opponent"`: Cards that your opponent owns. 
-- `"next"`: Cards that are owned by the next player. Synonymous to `"opponent"` unless your mod supports more than 2 players. - `"active"`: Cards owned by the active player, in other words to the player whose turn it is.
+- `"next"`: Cards that are owned by the next player. Synonymous to `"opponent"` unless your mod supports more than 2 players. 
+- `"active"`: Cards owned by the active player, in other words to the player whose turn it is.
 - `"inactive"`: Opposite of `"active"`. 
 - `"none"`: Cards owner by no player. There are no current game mechanics that use this. 
 
@@ -210,13 +213,42 @@ This is a list of possible zones with descriptions. Note that zone values are St
 
 A specific `creatureType` type, for example `"Mech"` or `"Bio"`. Affects all creature cards of that type. 
 
-####`creature()`
+####`creature true`
 
 Affects all creatures regardless of their type.
 
 ####`thisCard()`
 
-Affects the card which has the effect itself and no other. 
+Affects the card which has the effect itself, and no other. 
+
+##`heal`, `damage` _(cards)_
+
+Causes `n` points of healing or damage to the target card(s). You should refrain to use these with a `whilePresent` trigger, as it will likely have undesired effects. 
+
+Syntax:
+
+    trigger {
+        heal|damage n to {
+            [filters]
+        }
+    }
+    
+Examples:
+
+    afterPlay {
+        heal 1 to {
+            creatureType 'Bio'
+            ownedBy 'you'
+            zone 'Battlefield', 'Hand'
+        }
+    }
+    onEndOfTurn {
+        damage 1 to {
+            creature true
+            ownedBy 'opponent'
+            zone 'Battlefield'
+        }
+    }
 
 ---
 
@@ -243,7 +275,7 @@ Examples
         drawCard 'you', 3
     }
 
-####`heal`, `damage`
+####`heal`, `damage` _(players)_
 
 This heals or damages a target player.
 
