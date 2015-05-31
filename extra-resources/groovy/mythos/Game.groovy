@@ -62,20 +62,6 @@ setup {
     playerDeckFromConfig('Deck')
     playerDeckShuffle()
 
-    def removeDead = {
-        game.events.registerHandlerAfter(this, com.cardshifter.modapi.actions.ActionPerformEvent.class, {event ->
-            def battlefield = com.cardshifter.modapi.cards.BattlefieldComponent.class;
-            def remove = event.entity.game.getEntitiesWithComponent(battlefield)
-                    .stream().flatMap({entity -> entity.getComponent(battlefield).stream()})
-                    .peek({e -> println("$e has ${HEALTH.getFor(e)}")})
-                    .filter({e -> HEALTH.getFor(e) <= 0})
-                    .collect(java.util.stream.Collectors.toList());
-            for (def e in remove) {
-                e.destroy();
-            }
-        })
-    }
-
     systems {
 //        gainResource(res: MANA_MAX, value: 1, untilMax: 10)
         restoreResources(resource: MANA, value: MANA_MAX)
@@ -110,7 +96,7 @@ setup {
         LastPlayersStandingEndsGame()
         RemoveDeadEntityFromZoneSystem()
         PerformerMustBeCurrentPlayer()
-        removeDead()
+        removeDead(HEALTH)
         ResourceRecountSystem()
 
         def allowCounterAttackRes = DENY_COUNTERATTACK.retriever;

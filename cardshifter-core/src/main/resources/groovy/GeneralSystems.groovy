@@ -16,6 +16,7 @@ import com.cardshifter.modapi.base.ComponentRetriever
 import com.cardshifter.modapi.base.ECSGame
 import com.cardshifter.modapi.base.ECSSystem
 import com.cardshifter.modapi.base.Entity
+import com.cardshifter.modapi.cards.BattlefieldComponent
 import com.cardshifter.modapi.cards.DamageConstantWhenOutOfCardsSystem
 import com.cardshifter.modapi.cards.DrawCardAtBeginningOfTurnSystem
 import com.cardshifter.modapi.cards.DrawCardEvent
@@ -56,6 +57,8 @@ import java.util.function.Predicate
 import java.util.function.ToIntFunction
 import java.util.function.UnaryOperator
 import EffectDelegate
+
+import java.util.stream.Collectors
 
 class AttackSystemDelegate {
     ECSGame game
@@ -298,6 +301,21 @@ public class GeneralSystems {
         }
         SystemsDelegate.metaClass.ResourceRecountSystem << {
             addSystem new ResourceRecountSystem()
+        }
+
+        SystemsDelegate.metaClass.removeDead << {ECSResource resource ->
+            addSystem {ECSGame g ->
+                g.events.registerHandlerAfter(this, ActionPerformEvent.class, {event ->
+                    List<Entity> remove = event.entity.game.getEntitiesWithComponent(BattlefieldComponent)
+                            .stream().flatMap({entity -> entity.getComponent(BattlefieldComponent).stream()})
+                            .peek({Entity e -> println("$e has ${resource.getFor(e)}")})
+                            .filter({Entity e -> resource.getFor(e) <= 0})
+                            .collect(Collectors.toList());
+                    for (Entity e in remove) {
+                        e.destroy();
+                    }
+                })
+            }
         }
     }
 
