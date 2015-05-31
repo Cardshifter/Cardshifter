@@ -119,7 +119,7 @@ The primary resource actions are `change` and `set`. The important distinction i
 Syntax:
 
     trigger {
-        change RESOURCE by n [withPriority n] onCards {
+        change RESOURCE by n [withPriority n] onCards [n random] [repeat(n)] {
             // filters
         }
     }
@@ -147,7 +147,7 @@ Examples:
 Syntax:
 
     trigger {
-        set RESOURCE to n [withPriority n] onCards {
+        change RESOURCE by n [withPriority n] onCards [n random] [repeat(n)] {
             // filters
         }
     }
@@ -181,7 +181,53 @@ This is only used with the `whilePresent` filter. It specifies in which order th
 
 ---
 
-##`onCards` Filters
+####`random`
+
+This selects `n` targets at random based on the filters that follow its declaration.
+
+Examples:
+
+    // with damage|heal effects
+    onEndOfTurn {
+        damage 1 to 2 random {
+            creature true
+            ownedBy 'opponent'
+            zone 'Battlefield'
+        }
+    }
+    // with change|set effects
+    onEndOfTurn {
+        change ATTACK by 1 onCards 2 random {
+            ownedBy 'you'
+            zone 'Battlefield'
+        }
+        set HEALTH to 1 onCards 2 random {
+            ownedBy 'opponent'
+            zone 'Battlefield'
+        }
+    }
+    
+---
+
+####`repeat(n)`
+
+Repeats the effect action `n` times to the following targets affected by the filter.
+
+Example:
+
+    onEndOfTurn {
+        repeat(3) {
+            change ATTACK by 1 onCards 1 random {
+                creature true
+                ownedBy 'you'
+                zone 'Battlefield'
+            }
+        }
+    }
+
+---
+
+##Filters
 
 - These are used to filter the effects to a particular set of targets. 
 - A filter uses a number of keys such as `ownedBy`, `zone`, `creature true`, `creatureType` and `thisCard()`.
@@ -191,12 +237,15 @@ This is only used with the `whilePresent` filter. It specifies in which order th
 
 This is a list of possible owners with descriptions. Note that owner values are String values, and therefore need to be contained in quotation marks. 
 
-- `"you"`: Cards that you, as the player, own.
-- `"opponent"`: Cards that your opponent owns. 
-- `"next"`: Cards that are owned by the next player. Synonymous to `"opponent"` unless your mod supports more than 2 players. 
-- `"active"`: Cards owned by the active player, in other words to the player whose turn it is.
+_Note: These also apply to player effects, see "Player effects" section below._
+
+- `"you"`: You, as the player.
+- `"opponent"`: Your opponent.
+- `"all"`: All players.
+- `"next"`: The next player. Synonymous to `"opponent"` unless your mod supports more than 2 players. 
+- `"active"`: The active player, in other words to the player whose turn it is.
 - `"inactive"`: Opposite of `"active"`. 
-- `"none"`: Cards owner by no player. There are no current game mechanics that use this. 
+- `"none"`: No player. There are no current game mechanics that use this. 
 
 ####`zone`
 
@@ -204,7 +253,7 @@ This is a list of possible zones with descriptions. Note that zone values are St
 
 - `"Battlefield"`: Creature cards that are currently in active play, i.e., in battle or on the battlefield. 
 - `"Hand"`: Cards in a player's hand, not played yet.
-- `"Discard"`: Cards which have been discarded from battle. Sometimes also referred to as graveyard. 
+- `"Discard"`: Cards which have been discarded from battle. Sometimes also referred to as graveyard. _Not currently available as of 0.6_
 - `"Deck"`: Cards in a player's deck. 
 - `"Exile"`: Not currently used. Cards which are exiled, which may vary depending on the mod implementation.  
 - `"Cards"`: All cards loaded at game start. Not currently used as it is too meta.
