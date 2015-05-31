@@ -134,4 +134,8 @@ public final class Entity {
         }
         return entity.toString() + " --- " + entity.components.toString();
     }
+
+    public String debug() {
+        return debugInfo(this);
+    }
 }
