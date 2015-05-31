@@ -56,6 +56,13 @@ public class MyGroovyMod implements GroovyModInterface {
         return result
     }
 
+    public CardDelegate getCardDelegate() {
+        return groovyMod.cardDelegate
+    }
+
+    public GroovyMod getGroovyMod() {
+        return groovyMod
+    }
 }
 
 

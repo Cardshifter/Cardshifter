@@ -22,7 +22,7 @@ public class GroovyMod {
     File modDirectory
     ECSGame game
     Binding binding
-    private CardDelegate cardDelegate = new CardDelegate(mod: this)
+    final CardDelegate cardDelegate = new CardDelegate(mod: this)
     private List<Closure> configClosure = []
     private List<Closure> setupClosure = []
     private Map<String, ECSResource> knownResources = [:]
