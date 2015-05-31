@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Predicate;
 
-import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.outgoing.*;
 import org.apache.log4j.PropertyConfigurator;
 import org.junit.After;
@@ -72,7 +71,6 @@ public class ServerConnectionTest {
 		client1.await(ChatMessage.class);
 		mods = client1.await(AvailableModsMessage.class);
         assertNotEquals("No mods found in " + new File("").getAbsolutePath(), 0, mods.getMods().length);
-		Thread.sleep(500);
 	}
 	
 	@After
@@ -123,27 +121,26 @@ public class ServerConnectionTest {
 	}
 	
 	@Test(timeout = 10000)
-	public void testStartGame() throws InterruptedException, UnknownHostException, IOException {
-		
+	public void testStartGame() throws InterruptedException, IOException {
 		client1.send(new StartGameRequest(2, getTestMod()));
 		client1.await(WaitMessage.class);
 		NewGameMessage gameMessage = client1.await(NewGameMessage.class);
 		assertEquals(1, gameMessage.getGameId());
-		Thread.sleep(6000);
+        client1.awaitUntil(PlayerConfigMessage.class);
 		TCGGame game = (TCGGame) server.getGames().get(1);
 		assertEquals(2, game.getGameModel().getEntitiesWithComponent(PlayerComponent.class).size());
 		assertTrue(game.hasPlayer(server.getClients().get(userId)));
 		assertTrue(game.hasPlayer(server.getClients().get(2)));
 		game.incomingPlayerConfig(new PlayerConfigMessage(game.getId(), getTestMod(), new HashMap<>()), server.getClients().get(2));
 		game.incomingPlayerConfig(new PlayerConfigMessage(game.getId(), getTestMod(), new HashMap<>()), server.getClients().get(userId));
-		Thread.sleep(1000);
+        client1.awaitUntil(ResetAvailableActionsMessage.class);
 		assertEquals(ECSGameState.RUNNING, game.getState());
 	}
 	
 	@Test(timeout = 100000)
-	public void testPlayGame() throws InterruptedException, UnknownHostException, IOException {
+	public void testPlayGame() throws InterruptedException, IOException {
 		testPlayAny();
-		Thread.sleep(6000);
+        client1.awaitUntil(PlayerConfigMessage.class);
 		TCGGame game = (TCGGame) server.getGames().get(1);
 		ClientIO io = server.getClients().get(userId);
 		assertEquals(2, game.getGameModel().getEntitiesWithComponent(PlayerComponent.class).size());
@@ -176,8 +173,7 @@ public class ServerConnectionTest {
 	}
 	
 	@Test(timeout = 10000)
-	public void testPlayAny() throws InterruptedException, UnknownHostException, IOException {
-		
+	public void testPlayAny() throws InterruptedException, IOException {
 		Predicate<ClientIO> opponentFilter = client -> client.getName().equals("AI Loser");
 		server.getIncomingHandler().perform(new StartGameRequest(-1, getTestMod()), server.getClients().values().stream().filter(opponentFilter).findAny().get());
 		
@@ -186,8 +182,6 @@ public class ServerConnectionTest {
 		assertEquals(1, gameMessage.getGameId());
 		ServerGame game = server.getGames().get(1);
 		assertTrue(game.hasPlayer(server.getClients().get(userId)));
-		Thread.sleep(1000);
-//		assertEquals(ECSGameState.RUNNING, game.getState());
 	}
 	
 }
