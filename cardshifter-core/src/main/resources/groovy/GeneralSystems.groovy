@@ -29,7 +29,6 @@ import com.cardshifter.modapi.events.EntityRemoveEvent
 import com.cardshifter.modapi.events.IEvent
 import com.cardshifter.modapi.phase.GainResourceSystem
 import com.cardshifter.modapi.phase.PerformerMustBeCurrentPlayer
-import com.cardshifter.modapi.phase.PhaseEndEvent
 import com.cardshifter.modapi.phase.PhaseStartEvent
 import com.cardshifter.modapi.phase.RestoreResourcesSystem
 import com.cardshifter.modapi.players.Players
@@ -57,8 +56,6 @@ import java.util.function.Predicate
 import java.util.function.ToIntFunction
 import java.util.function.UnaryOperator
 import EffectDelegate
-
-import static com.cardshifter.modapi.phase.PhaseEndEvent.*;
 
 class AttackSystemDelegate {
     ECSGame game
@@ -92,10 +89,6 @@ class AttackSystemDelegate {
         addSystem new TrampleSystem(resource)
     }
 
-    def methodMissing(String name, args) {
-        println 'AttackSystems missing method ' + name
-    }
-
     def addSystem(ECSSystem system) {
         game.addSystem(system)
     }
@@ -104,15 +97,12 @@ class AttackSystemDelegate {
 public class GeneralSystems {
     static UnaryOperator<Entity> whoPays(String str) {
         if (str.equals('owner') || str.equals('player')) {
-            println 'return owner pays'
             return {Entity e -> Players.findOwnerFor(e)}
         }
         if (str.equals('self')) {
-            println 'return self pays'
             return {Entity e -> e}
         }
-        println 'neither matches. throw exception'
-        throw new UnsupportedOperationException('whoPays? ' + str)
+        throw new UnsupportedOperationException("Invalid value for whoPays: $str")
     }
 
     static def addEffect(def ent, Component effect) {
@@ -344,7 +334,6 @@ public class GeneralSystems {
             addSystem new RestoreResourcesSystem(decrease, {Entity player ->
                 List<Entity> entities = player.game.findEntities(filter);
                 int sum = entities.stream().mapToInt({ Entity ent -> decreaseBy.getFor(ent) }).sum()
-                println "Sum is $sum for ${entities.size()} creatures: $entities"
                 return decrease.getFor(player) - sum
             })
         }

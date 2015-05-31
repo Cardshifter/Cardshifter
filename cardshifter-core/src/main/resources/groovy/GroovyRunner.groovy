@@ -33,7 +33,6 @@ public class MyGroovyMod implements GroovyModInterface {
 
     @Override
     void setupGame(ECSGame game) {
-        println 'setup game'
         groovyMod.setupGame(game)
     }
 

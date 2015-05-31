@@ -33,12 +33,11 @@ class CardDelegate implements GroovyInterceptable {
                 assert param != null : "Invalid parameter when calling $name with args $args for $entity"
                 value = param as int
             } else if (args.length > 1) {
-                throw new MissingMethodException("Method with name $name not found", getClass(), (Object[]) args)
+                throw new MissingMethodException(name, CardDelegate, (Object[]) args)
             }
             res.retriever.set(entity, value)
-            println "set $res $name to $value (method)"
         } else {
-            println 'Missing method: ' + name
+            println "Missing method: $name on $entity with args $args"
         }
     }
 
@@ -46,18 +45,13 @@ class CardDelegate implements GroovyInterceptable {
         def metaMethod = CardDelegate.metaClass.getMetaMethod(name, args)
         def result
         if (metaMethod) {
-            System.out.println "Invoke method: $name"
             result = metaMethod.invoke(this, args)
-            System.out.println "method invocation done."
         } else {
-            System.out.println "Invoke method: $name --- missing"
             result = missingMethod(entity, mod, name, args)
         }
 
         List<Closure> closures = mod.cardMethodListeners.get(name)
-        System.out.println "Card listeners for $name: $closures"
         if (closures) {
-            System.out.println "Calling ${closures.size()} onCard listeners: $name"
             closures.each {
                 it.setDelegate(this)
                 it.call(entity, args)
@@ -70,11 +64,9 @@ class CardDelegate implements GroovyInterceptable {
         ECSResource res = mod.resource(resource)
         assert res : 'No such resource: ' + resource
         res.retriever.set(entity, (int) value)
-        System.out.println "set $res $resource to $value (setResource)"
     }
 
     def propertyMissing(String name, value) {
-        println "property missing, redirecting to method: $name = $value"
         "$name"(value)
     }
 

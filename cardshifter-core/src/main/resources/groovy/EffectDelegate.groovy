@@ -91,7 +91,6 @@ class EffectDelegate {
             double random = source.game.random.nextDouble()
             println "random $random probability $probability perform ${random < probability}"
             if (random < probability) {
-                println "Calling closures: $deleg.closures"
                 for (Closure act : deleg.closures) {
                     act.call(source, data)
                 }
@@ -105,7 +104,6 @@ class EffectDelegate {
         description.append("$deleg.description $count times")
         closures.add({Entity source, Object data ->
             for (int i = 0; i < count; i++) {
-                println "Calling closures: $deleg.closures"
                 for (Closure act : deleg.closures) {
                     act.call(source, data)
                 }
@@ -256,7 +254,6 @@ class EffectDelegate {
 
                         Entity what = neutral.get(0).getComponent(com.cardshifter.modapi.cards.ZoneComponent.class)
                                 .getCards().stream().filter({card ->
-                            println "Checking " + card
                             String match = name.getOrDefault(card, null)
                             return cardName.equals(match)
                         }).findAny().get()
@@ -268,7 +265,6 @@ class EffectDelegate {
 
                     description.append(desc)
                     description.append('\n')
-                    println 'Effect: ' + desc
                     closures.add(closure)
                 }]
             }]

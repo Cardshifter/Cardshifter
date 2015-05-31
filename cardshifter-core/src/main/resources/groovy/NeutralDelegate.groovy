@@ -20,14 +20,10 @@ public class NeutralDelegate {
     def zone(String name, Closure<?> closure) {
         def zone = new ZoneComponent(entity, name)
         entity.addComponent(zone)
-        println "Zone $name"
         closure.delegate = new ZoneDelegate(entity: entity, zone: zone, mod: mod, cardDelegate: cardDelegate)
         closure.setResolveStrategy(Closure.DELEGATE_FIRST)
         closure.call(closure)
     }
 
-    def addCards() {
-        println 'Add cards'
-    }
 }
 

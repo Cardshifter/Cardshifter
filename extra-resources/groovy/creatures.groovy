@@ -19,7 +19,6 @@ CardDelegate.metaClass.flavor << {String value ->
 }
 
 CardDelegate.metaClass.creature << {String type ->
-    println "Creature set: $type"
     def entity = entity()
     def actions = entity.getComponent(ActionComponent)
     def playAction = new ECSAction(entity, 'Play', {act -> true }, {act -> })

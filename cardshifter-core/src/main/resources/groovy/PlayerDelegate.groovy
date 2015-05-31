@@ -52,17 +52,14 @@ public class PlayerDelegate {
         def controller = ComponentRetriever.singleton(entity.game, PhaseController)
         def phase = new Phase(entity, name)
         controller.addPhase(phase)
-        println "Added phase $phase"
     }
 
     def config(Closure<?> closure) {
-        println "Config closure"
         closure.setDelegate(this)
         closure.call()
     }
 
     def deck(@DelegatesTo(DeckDelegate) Closure<?> closure) {
-        println 'Deck config creation'
         def deckConfig = new DeckDelegate()
         closure.delegate = deckConfig
         closure.call()

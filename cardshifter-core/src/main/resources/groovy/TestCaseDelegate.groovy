@@ -209,7 +209,6 @@ class TestCaseDelegate {
                 def zone = EffectDelegate.zoneLookup(who, zoneName)
                 def closure = card
                 closure.delegate = cardDelegate
-                System.out.println 'closure this is ' + closure.thisObject
                 def entity = cardDelegate.createCard(game.newEntity(), closure, Closure.OWNER_FIRST)
                 zone.addOnBottom(entity)
                 return entity
