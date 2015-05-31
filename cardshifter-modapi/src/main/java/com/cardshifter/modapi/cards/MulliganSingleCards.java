@@ -82,8 +82,9 @@ public class MulliganSingleCards implements ECSSystem {
 	private void performAction(ECSAction mulliganAction) {
 		List<Entity> chosenTargets = mulliganAction.getTargetSets().get(0).getChosenTargets();
 		chosenTargets.forEach(this::switchCard);
-		mulliganAction.getOwner().getComponent(ActionComponent.class).removeAction(ACTION_NAME);
-		// TODO: Shuffle deck after mulligan action
+        Entity owner = mulliganAction.getOwner();
+		owner.getComponent(ActionComponent.class).removeAction(ACTION_NAME);
+        owner.getComponent(DeckComponent.class).shuffle();
 		if (remainingPerforms.decrementAndGet() == 0) {
 			phases.nextPhase();
 		}
