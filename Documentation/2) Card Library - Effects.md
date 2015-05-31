@@ -65,12 +65,12 @@ Various triggers are available for actions to be applied on.
 Syntax:
 
     trigger {
-        pick n atRandom (
+        pick n atRandom {
             { action a },
             { action b },
             ...,
             { action z }
-        )
+        }
     }
 
 Example:
