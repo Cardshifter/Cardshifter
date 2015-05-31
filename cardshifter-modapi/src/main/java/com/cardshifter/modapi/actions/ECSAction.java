@@ -47,24 +47,28 @@ public class ECSAction {
 	}
 	
 	public boolean perform(Entity performer) {
-		if (!this.isAllowed(performer)) {
-			return false;
-		}
-		if (!this.targetSets.stream().allMatch(targets -> targets.hasEnoughTargets())) {
-			return false;
-		}
-		
-		this.owner.getGame().executeEvent(new ActionPerformEvent(owner, this, performer), () -> this.perform.accept(this));
-		this.targetSets.forEach(TargetSet::clearTargets);
-		return true;
+        synchronized (performer.getGame()) {
+            if (!this.isAllowed(performer)) {
+                return false;
+            }
+            if (!this.targetSets.stream().allMatch(targets -> targets.hasEnoughTargets())) {
+                return false;
+            }
+
+            this.owner.getGame().executeEvent(new ActionPerformEvent(owner, this, performer), () -> this.perform.accept(this));
+            this.targetSets.forEach(TargetSet::clearTargets);
+            return true;
+        }
 	}
 
 	public boolean isAllowed(Entity performer) {
-		ActionAllowedCheckEvent event = new ActionAllowedCheckEvent(owner, this, performer);
-		if (!owner.getGame().getEvents().executePostEvent(event).isAllowed()) {
-			return false;
-		}
-		return this.allowed.test(this);
+        synchronized (performer.getGame()) {
+            ActionAllowedCheckEvent event = new ActionAllowedCheckEvent(owner, this, performer);
+            if (!owner.getGame().getEvents().executePostEvent(event).isAllowed()) {
+                return false;
+            }
+            return this.allowed.test(this);
+        }
 	}
 
 	public List<TargetSet> getTargetSets() {
