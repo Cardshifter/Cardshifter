@@ -18,9 +18,12 @@ import net.zomis.cardshifter.ecs.config.ConfigComponent;
 import org.junit.runner.RunWith;
 import org.junit.runners.AllTests;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 @RunWith(AllTests.class)
 public class GroovyTest {
@@ -52,6 +55,7 @@ public class GroovyTest {
                 return suite;
             }
             tests.add(sequencialPlayTest(mods, modName));
+            tests.add(multithreadedPlayTest(mods, modName));
             for (ECSModTest test : tests) {
                 suite.addTest(createTest(mods, modName, test));
             }
@@ -87,6 +91,59 @@ public class GroovyTest {
                     }
                     assertTrue("No player perfored any action: " + players, performed);
                 }
+            }
+        });
+        return modTest;
+    }
+
+    private static ECSModTest multithreadedPlayTest(ModCollection mods, String modName) {
+        ECSModTest modTest = new ECSModTest("multithreaded test", new Runnable() {
+            @Override
+            public void run() {
+         //       Logger.getRootLogger().addAppender(new ConsoleAppender(new PatternLayout("%c %m\n"), "System.out"));
+                ECSMod mod = mods.getModFor(modName);
+                ECSGame game = new ECSGame();
+                CardshifterAI ai = new ScoringAI(AIs.fighter());
+                mod.declareConfiguration(game);
+                List<Entity> players = Players.getPlayersInGame(game);
+                for (Entity entity : players) {
+                    ai.configure(entity, entity.getComponent(ConfigComponent.class));
+                }
+                mod.setupGame(game);
+                game.startGame();
+
+                List<Throwable> errors = Collections.synchronizedList(new ArrayList<>());
+                List<Thread> threads = new ArrayList<>();
+                for (Entity player : players) {
+                    Thread thread = new Thread(() -> {
+                        try {
+                            while (!game.isGameOver()) {
+                                ECSAction action = ai.getAction(player);
+                                if (action != null && action.perform(player)) {
+                                    System.out.println(player + " performed " + action);
+                                }
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            errors.add(ex);
+                        }
+                    }, "AI Thread for " + modName + " " + player);
+                    threads.add(thread);
+                }
+
+                for (Thread th : threads) {
+                    th.start();
+                }
+
+                for (Thread th : threads) {
+                    try {
+                        th.join();
+                    } catch (InterruptedException e) {
+                        fail("Thread interrupted");
+                    }
+                }
+                assertTrue("Errors occured: " + errors, errors.isEmpty());
+                assertTrue(game.isGameOver());
             }
         });
         return modTest;
