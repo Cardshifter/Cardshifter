@@ -14,7 +14,9 @@ class CardDelegate implements GroovyInterceptable {
         if (res) {
             int value = 1
             if (args.length == 1) {
-                value = args[0]
+                Object param = args[0]
+                assert param != null : "Invalid parameter when calling $name with args $args for $entity"
+                value = param as int
             } else if (args.length > 1) {
                 throw new MissingMethodException("Method with name $name not found", getClass(), (Object[]) args)
             }
