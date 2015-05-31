@@ -49,7 +49,7 @@ class EffectDelegate {
         assert false
     }
 
-    static def zoneLookup(Entity entity, String zoneName) {
+    static ZoneComponent zoneLookup(Entity entity, String zoneName) {
         def zone = entity.getSuperComponents(ZoneComponent).stream()
             .filter({it.getName().equals(zoneName)})
             .findAny().get()
@@ -234,6 +234,7 @@ class EffectDelegate {
     // summon 2 of 'Bodyman' to owner zone Hand
     def summon(int count) { // TODO: Support other methods of getting count (random, EntityInt)
         [of: {String cardName ->
+            assert cardName
             [to: {String who ->
                 [zone: {String zoneName ->
                     String desc = "Summon " + count + " " + cardName + " at " + who + " " + zoneName;
@@ -256,7 +257,8 @@ class EffectDelegate {
                         Entity what = neutral.get(0).getComponent(com.cardshifter.modapi.cards.ZoneComponent.class)
                                 .getCards().stream().filter({card ->
                             println "Checking " + card
-                            return name.getFor(card).equals(cardName)
+                            String match = name.getOrDefault(card, null)
+                            return cardName.equals(match)
                         }).findAny().get()
 
                         for (int i = 0; i < amount; i++) {
