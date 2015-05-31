@@ -103,7 +103,7 @@ public class GroovyMod {
         knownResources.forEach {key, value ->
             def lowerCaseKey = key.toLowerCase().capitalize()
             game.entityMeta."get$lowerCaseKey" << {
-                value.getFor(delegate)
+                value.retriever.getOrDefault(delegate, 0)
             }
             game.entityMeta."set$lowerCaseKey" << {int newValue ->
                 value.retriever.set(delegate, newValue)

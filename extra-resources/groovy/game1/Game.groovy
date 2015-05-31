@@ -114,9 +114,8 @@ setup {
         removeDead(HEALTH)
         ResourceRecountSystem()
 
-        def allowCounterAttackRes = DENY_COUNTERATTACK.retriever;
         def allowCounterAttack = {attacker, defender ->
-            return allowCounterAttackRes.getOrDefault(attacker, 0) == 0;
+            return attacker.deny_counterattack == 0;
         }
 
         attackSystem {
@@ -126,7 +125,7 @@ setup {
             useCost(action: ATTACK_ACTION, res: ATTACK_AVAILABLE, value: 1, whoPays: "self")
             accumulating(ATTACK, HEALTH, allowCounterAttack)
             healAtEndOfTurn(HEALTH, MAX_HEALTH)
-            afterAttack({entity -> allowCounterAttackRes.getFor(entity) > 0},
+            afterAttack({entity -> entity.deny_counterattack > 0},
                     { entity -> SICKNESS.retriever.set(entity, 2) })
             trample HEALTH
         }

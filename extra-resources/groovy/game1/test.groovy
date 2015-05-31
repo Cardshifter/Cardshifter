@@ -35,3 +35,20 @@ from clearState test 'attack opponent with enchanted rush' using {
     assert opponent.health == originalLife - 4
 
 }
+
+from clearState test 'deny counter_attack' using {
+    def creature = {
+        creature 'Bio'
+        attack 2
+        health 4
+        deny_counterattack 1
+        sickness 0
+    }
+    def attacker = to you zone 'Battlefield' create creature
+    def defender = to opponent zone 'Battlefield' create creature
+
+    int originalLife = attacker.health
+    uses 'Attack' on attacker withTarget defender ok
+    assert attacker.health == originalLife
+}
+
