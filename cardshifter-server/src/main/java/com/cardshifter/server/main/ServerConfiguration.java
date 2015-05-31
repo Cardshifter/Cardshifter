@@ -10,10 +10,15 @@ import java.util.Properties;
  */
 public class ServerConfiguration {
 
+    public static enum WarningLevel {
+        FAIL, WARN, IGNORE
+    }
+
     private int portSocket = 4242;
     private int portWebsocket = 4243;
 
     private String modsDirectory = "extra-mods";
+    private WarningLevel missingSecurity = WarningLevel.WARN;
 
     public static ServerConfiguration readFrom(String s) {
         Properties properties = new Properties();
@@ -27,6 +32,7 @@ public class ServerConfiguration {
         config.portSocket = Integer.parseInt(properties.getProperty("port", "4242"));
         config.portWebsocket = Integer.parseInt(properties.getProperty("websocket-port", "4243"));
         config.modsDirectory = properties.getProperty("mods", "extra-mods");
+        config.missingSecurity = WarningLevel.valueOf(properties.getProperty("missing-security", WarningLevel.WARN.name()));
         return config;
     }
 
@@ -52,6 +58,14 @@ public class ServerConfiguration {
 
     public void setPortWebsocket(int portWebsocket) {
         this.portWebsocket = portWebsocket;
+    }
+
+    public WarningLevel getMissingSecurity() {
+        return missingSecurity;
+    }
+
+    public void setMissingSecurity(WarningLevel missingSecurity) {
+        this.missingSecurity = missingSecurity;
     }
 
     public static ServerConfiguration defaults() {

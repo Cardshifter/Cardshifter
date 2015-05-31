@@ -2,3 +2,7 @@ port = 4242
 websocket-port = 4243
 mods = path/to/additional/mods
 
+# You may change the 'missing-security' property to match
+# the behavior you want when a security manager is missing
+# valid values are: FAIL, IGNORE, WARN
+missing-security = WARN
