@@ -81,7 +81,7 @@ card("Spy") {
     attack 0
     noAttack()
     whilePresent {
-        change HEALTH, ATTACK by -1 priority 1 onCards {
+        change HEALTH, ATTACK by -1 withPriority 1 onCards {
             creature true
             ownedBy 'Opponent'
             zone 'Battlefield'
@@ -97,7 +97,7 @@ card("Slingman") {
     manaCost 10
     attack 4
     whilePresent {
-        change ATTACK by -2 priority 1 onCards {
+        change ATTACK by -2 withPriority 1 onCards {
             creature true
             ownedBy 'Opponent'
             zone 'Battlefield'
@@ -114,7 +114,7 @@ card("Healer") {
     attack 0
     noAttack()
     whilePresent {
-        change HEALTH by 2 priority 1 onCards {
+        change HEALTH by 2 withPriority 1 onCards {
             creature true
             ownedBy 'you'
             zone 'Battlefield'
