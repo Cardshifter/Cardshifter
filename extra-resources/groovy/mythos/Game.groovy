@@ -28,7 +28,7 @@ config {
     neutral {
         resourceModifier()
         phases()
-        zone 'Cards', {
+        zone('Cards') {
             cardset 'common'
             cardset 'chinese'
             //cardset 'egyptian'
