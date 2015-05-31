@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Predicate;
 
+import com.cardshifter.api.messages.Message;
+import com.cardshifter.api.outgoing.*;
 import org.apache.log4j.PropertyConfigurator;
 import org.junit.After;
 import org.junit.Before;
@@ -27,12 +29,7 @@ import com.cardshifter.api.incoming.ServerQueryMessage;
 import com.cardshifter.api.incoming.ServerQueryMessage.Request;
 import com.cardshifter.api.incoming.StartGameRequest;
 import com.cardshifter.api.incoming.UseAbilityMessage;
-import com.cardshifter.api.outgoing.AvailableModsMessage;
-import com.cardshifter.api.outgoing.NewGameMessage;
-import com.cardshifter.api.outgoing.UserStatusMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage.Status;
-import com.cardshifter.api.outgoing.WaitMessage;
-import com.cardshifter.api.outgoing.WelcomeMessage;
 import com.cardshifter.core.game.ServerGame;
 import com.cardshifter.core.game.TCGGame;
 import com.cardshifter.modapi.actions.ECSAction;
@@ -157,25 +154,22 @@ public class ServerConnectionTest {
 		ai.getComponent(AIComponent.class).setDelay(0);
 		
 		CardshifterAI humanActions = new ScoringAI(AIs.medium());
-		int count = 0;
+        Thread.sleep(3000); // this sleep is to make AI perform Mulligan before client1, otherwise it's not allowed the second time client1 tries to do it (naturally)
 		while (!game.isGameOver()) {
-			System.out.println("Perform");
 			ECSAction action = humanActions.getAction(human);
 			if (action != null) {
+                System.out.println("Perform " + action);
 				int[] targets = new int[]{ };
-				System.out.println("Chosen action: " + action);
 				if (!action.getTargetSets().isEmpty()) {
 					targets = action.getTargetSets().get(0).getChosenTargets().stream().mapToInt(e -> e.getId()).toArray();
 				}
 				UseAbilityMessage message = new UseAbilityMessage(game.getId(), action.getOwner().getId(), action.getName(), targets);
 				System.out.println("Sending message: " + message);
 				client1.send(message);
-			}
-			Thread.sleep(1000);
-			if (count++ > 5) {
-				// no need to test the entire game
-				break;
-			}
+                client1.awaitUntil(ResetAvailableActionsMessage.class);
+			} else {
+                System.out.println("Nothing to perform, busy-loop");
+            }
 		}
 	}
 	
