@@ -21,9 +21,6 @@ PLAY_ACTION = "Play";
 ATTACK_ACTION = "Attack";
 USE_ACTION = "Use";
 
-resources([ATTACK, HEALTH, MAX_HEALTH, ATTACK_AVAILABLE, DENY_COUNTERATTACK, MANA, MANA_COST, MANA_MAX,
-           SICKNESS, TAUNT])
-
 include 'creatures'
 include 'noAttack'
 

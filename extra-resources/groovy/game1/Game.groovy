@@ -24,9 +24,6 @@ ENCHANT_ACTION = "Enchant";
 ATTACK_ACTION = "Attack";
 USE_ACTION = "Use";
 
-resources([ATTACK, HEALTH, MAX_HEALTH, ATTACK_AVAILABLE, DENY_COUNTERATTACK, MANA, MANA_COST, MANA_MAX,
-           SICKNESS, TAUNT, SCRAP, SCRAP_COST])
-
 include 'creatures'
 include 'enchantment'
 include 'scrap'

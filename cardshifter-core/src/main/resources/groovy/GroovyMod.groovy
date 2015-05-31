@@ -29,7 +29,9 @@ public class GroovyMod {
     @PackageScope Map<String, List<Closure>> cardMethodListeners = [:]
 
     ECSResource createResource(String name) {
-        return new ECSResourceDefault(name)
+        def res = new ECSResourceDefault(name)
+        knownResources.put(res.toString().toUpperCase(), res)
+        return res
     }
 
     void onCard(String method, Closure closure) {
@@ -78,13 +80,6 @@ public class GroovyMod {
 
     ECSResource resourceOrNull(String name) {
         knownResources[name.toUpperCase()]
-    }
-
-    void resources(List<ECSResource> resources) {
-        println "Adding ${resources.size()} resources"
-        for (ECSResource res in resources) {
-            knownResources.put(res.toString().toUpperCase(), res)
-        }
     }
 
     private static def enableMeta(ECSGame game) {
