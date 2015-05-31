@@ -14,7 +14,7 @@ import java.util.Set;
  */
 public class DenyActionForNames implements ECSSystem {
 
-    private final HashSet<String> names;
+    private final Set<String> names;
     private final String action;
 
     private AttributeRetriever name = AttributeRetriever.forAttribute(Attributes.NAME);
@@ -38,4 +38,7 @@ public class DenyActionForNames implements ECSSystem {
         }
     }
 
+    public Set<String> getNames() {
+        return new HashSet<>(names);
+    }
 }
