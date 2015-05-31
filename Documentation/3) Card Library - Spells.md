@@ -4,7 +4,7 @@
 
 #Card Library Guide - Spells
 
-This guide will explain how to create custom effects for cards. We created an easy-to-use, flexible system that allows for creative effects to be applied to your mod. 
+This guide will explain how to create custom spell cards. We created an easy-to-use, flexible system that allows for creative spells to be applied to your mod. 
 
 ---
 

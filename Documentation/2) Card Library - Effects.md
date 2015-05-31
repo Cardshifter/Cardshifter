@@ -6,6 +6,8 @@
 
 This guide will explain how to create custom effects for cards. We created an easy-to-use, flexible system that allows for creative effects to be applied to your mod. 
 
+Effects are modifiers that are attached to specific cards, and affect the game entities in one way or another. 
+
 ---
 
 ###On precise grammar...
@@ -19,7 +21,7 @@ It is important to note that the keywords and identifiers must be typed **exactl
 An effect generally takes this form for resource modification:
 
     trigger {
-        action resource n [withPriority n] onCards {
+        action RESOURCE n [withPriority n] onCards [n random] [repeat(n)] {
             // filters
         }
     }
@@ -54,11 +56,11 @@ Various triggers are available for actions to be applied on.
 - Only works on creature cards. 
 - Applies the nested effects when the creature's health reaches 0 or less.
 
-####`pick X atRandom`
+####`pick n atRandom`
 
 - Works on all cards.
 - This is a sub-trigger and picks `X` actions from the available list whenever the trigger is activated. 
-- Note that the available actions list need to be enclosed in parentheses rather than curly brackets. 
+- Note that the available actions list (but not individual actions) need to be enclosed in parentheses rather than curly brackets. 
 
 Syntax:
 
@@ -232,6 +234,9 @@ Example:
 - These are used to filter the effects to a particular set of targets. 
 - A filter uses a number of keys such as `ownedBy`, `zone`, `creature true`, `creatureType` and `thisCard()`.
 - A variety of filters are available for effects, and will be explained in detail below.
+- If a filter needs to take multiple arguments, seperate them with a comma. For example:
+
+    owned by "you", "opponent"
 
 ####`ownedBy`
 
@@ -269,6 +274,18 @@ Affects all creatures regardless of their type.
 ####`thisCard()`
 
 Affects the card which has the effect itself, and no other. 
+
+####`cardName`
+
+Affects one or more _specific cards_, referencing their `card("hello")` name in the card library for a mod.
+
+Example: 
+
+    onCards { 
+        cardName "foo", "bar"
+        ownedBy "you"
+        zone "Battlefield"
+    }
 
 ##`heal`, `damage` _(cards)_
 
