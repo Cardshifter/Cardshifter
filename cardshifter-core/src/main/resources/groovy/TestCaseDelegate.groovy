@@ -79,8 +79,10 @@ class ActionChain {
             performer = delegate.currentPlayer()
         }
         if (!entity) {
+            println "entity is $entity, setting to performer $performer"
             entity = performer
         }
+        println 'Perform ' + this
         ActionComponent actions = entity.getComponent(ActionComponent)
         ECSAction action = actions.getAction(actionName)
         assert action : "Action with name $actionName not found on entity ${Entity.debugInfo(entity)}"
@@ -118,7 +120,8 @@ class ActionChain {
     }
 
     String toString() {
-        return "ActionChain active $active entity $entity performs $actionName by $performer with targets $targets expected $expectedOK"
+        String performVerb = performs ? 'performs' : 'checks if allowed'
+        return "ActionChain[$active] entity $entity $performVerb $actionName by $performer with targets $targets expected $expectedOK"
     }
 
 }
