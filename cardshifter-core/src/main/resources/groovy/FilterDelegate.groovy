@@ -1,6 +1,7 @@
 import com.cardshifter.modapi.base.ComponentRetriever
 import com.cardshifter.modapi.base.CreatureTypeComponent
 import com.cardshifter.modapi.base.Entity
+import com.cardshifter.modapi.base.PlayerComponent
 import com.cardshifter.modapi.cards.CardComponent
 import com.cardshifter.modapi.cards.Cards
 import com.cardshifter.modapi.phase.PhaseController
@@ -80,6 +81,15 @@ class FilterDelegate {
         predicate = predicate.and({Entity source, Entity target ->
             CreatureTypeComponent creatureType = target.getComponent(CreatureTypeComponent)
             return creatureType != null
+        } as TargetFilter)
+    }
+
+    def player(boolean player) {
+        addAnd()
+        description.append(player ? 'players' : 'non-players')
+        predicate = predicate.and({Entity source, Entity target ->
+            PlayerComponent comp = target.getComponent(PlayerComponent)
+            return comp != null
         } as TargetFilter)
     }
 
