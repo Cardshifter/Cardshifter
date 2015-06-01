@@ -54,8 +54,8 @@ config {
         battlefield()
         health 30
         max_health 30
-        mana 100
-        mana_max 100
+        mana 0
+        mana_max 0
     }
 }
 
@@ -64,7 +64,7 @@ setup {
     playerDeckShuffle()
 
     systems {
-//        gainResource(res: MANA_MAX, value: 1, untilMax: 10)
+        gainResource(res: MANA_MAX, value: 10, untilMax: 100)
         restoreResources(resource: MANA, value: MANA_MAX)
         upkeepCost(filter: ownedBattlefieldCreatures, decreaseBy: MANA_COST, decrease: MANA)
 
