@@ -16,6 +16,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
@@ -104,6 +105,8 @@ public final class CardBattlefieldDocumentController extends CardView implements
 				case "SCRAP":
 					scrapValue.setText(String.format("Scrap = %s", stringValue));
 					break;
+                case "flavor":
+                    nameText.setTooltip(new Tooltip(stringValue));
 				default:
 					break;
 			}

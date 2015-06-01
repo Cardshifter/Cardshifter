@@ -5,6 +5,7 @@ import java.util.Map.Entry;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
@@ -124,6 +125,8 @@ public final class CardHandDocumentController extends CardView {
 				abilityText.setText(value); // truncatedString);
 			} else if (key.equals("name")) {
 				nameText.setText(value);
+            } else if (key.equalsIgnoreCase("flavor")) {
+                nameText.setTooltip(new Tooltip(value));
 			}
 		}
 		abilityText.setText(abilityText.getText() + CardHelper.stringResources(this.card));
