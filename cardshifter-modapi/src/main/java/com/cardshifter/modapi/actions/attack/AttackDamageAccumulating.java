@@ -42,6 +42,8 @@ public class AttackDamageAccumulating extends SpecificActionSystem {
 		source.getGame().executeCancellableEvent(attackEvent, () -> {
 			int attackDamage = attack.getFor(source);
 			int defenseDamage = attack.getFor(target);
+            int attackHealth = health.getFor(source);
+            int defenseHealth = health.getFor(target);
 			ECSGame game = source.getGame();
 			attackDamage = damage(attackDamage, target, source, game);
             boolean counterAttack = allowCounterAttack.test(source, target);
@@ -49,15 +51,15 @@ public class AttackDamageAccumulating extends SpecificActionSystem {
 				defenseDamage = damage(defenseDamage, source, target, game);
 			}
 
-			checkKill(target, attackDamage);
+			checkKill(target, attackDamage, attackHealth);
             if (counterAttack) {
-                checkKill(source, defenseDamage);
+                checkKill(source, defenseDamage, defenseHealth);
             }
 		});
 	}
 
-	private void checkKill(Entity target, int damage) {
-		if (health.getFor(target) <= damage && !target.hasComponent(PlayerComponent.class)) {
+	private void checkKill(Entity target, int damage, int previousHealth) {
+		if (damage >= previousHealth && !target.hasComponent(PlayerComponent.class)) {
 			target.destroy();
 		}
 	}

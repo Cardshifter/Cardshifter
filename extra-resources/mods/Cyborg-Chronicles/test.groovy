@@ -9,6 +9,27 @@ def clearState = {
     }
 }
 
+from clearState test 'fight kill and no-kill' using {
+    def attacker = to you zone 'Battlefield' create {
+        creature 'Mech'
+        attack 3
+        health 3
+    }
+    def defender = to opponent zone 'Battlefield' create {
+        creature 'Mech'
+        attack 2
+        health 3
+    }
+
+    uses 'End Turn' ok
+    uses 'End Turn' ok
+
+    uses 'Attack' on attacker withTarget defender ok
+    assert defender.removed
+    assert !attacker.removed
+    assert attacker.health == 1
+}
+
 from clearState test 'attack opponent with enchanted rush' using {
     uses 'End Turn' ok
 
