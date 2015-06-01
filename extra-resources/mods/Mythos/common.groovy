@@ -83,7 +83,7 @@ card("Spy") {
     whilePresent {
         change HEALTH, ATTACK by -1 withPriority 1 onCards {
             creature true
-            ownedBy 'Opponent'
+            ownedBy 'opponent'
             zone 'Battlefield'
         }
     }
@@ -99,7 +99,7 @@ card("Slingman") {
     whilePresent {
         change ATTACK by -2 withPriority 1 onCards {
             creature true
-            ownedBy 'Opponent'
+            ownedBy 'opponent'
             zone 'Battlefield'
         }
     }
