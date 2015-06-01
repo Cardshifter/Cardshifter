@@ -37,7 +37,7 @@ card("JADE EMPEROR") {
             zone "Battlefield"
         }
         change ATTACK by -1 withPriority 2 onCards {
-            creature() // all creatures
+            creature true
             zone "Battlefield"
         }
     }
@@ -88,7 +88,7 @@ card("DIYU") {
     }
     whilePresent {
         change HEALTH by -1 withPriority 1 onCards {
-            creature() // all creatures
+            creature true // all creatures
             zone "Battlefield"
         }
         change ATTACK by 1 withPriority 2 onCards {
@@ -192,7 +192,7 @@ card("GUANYIN") {
     noAttack()
     whilePresent {
         change HEALTH by 1 withPriority 1 onCards {
-            creature() 
+            creature true
             ownedBy "you" 
             zone "Battlefield"
         }
@@ -216,12 +216,12 @@ card("MAZU") {
     attack 3
     whilePresent {
         change HEALTH by 1 withPriority 1 onCards {
-            creature()
+            creature true
             ownedBy "you"
             zone "Battlefield"
         }
         change HEALTH by 2 withPriority 2 onCards {
-            creature()
+            creature true
             ownedBy "active"
             zone "Battlefield"
         }

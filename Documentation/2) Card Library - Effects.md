@@ -6,6 +6,8 @@
 
 This guide will explain how to create custom effects for cards. We created an easy-to-use, flexible system that allows for creative effects to be applied to your mod. 
 
+Effects are modifiers that are attached to specific cards, and affect the game entities in one way or another. 
+
 ---
 
 ###On precise grammar...
@@ -19,7 +21,7 @@ It is important to note that the keywords and identifiers must be typed **exactl
 An effect generally takes this form for resource modification:
 
     trigger {
-        action resource n [withPriority n] onCards {
+        action RESOURCE n [withPriority n] onCards [n random] [repeat(n)] {
             // filters
         }
     }
@@ -41,8 +43,10 @@ Various triggers are available for actions to be applied on.
 
 ####`whilePresent`
 
+- Not _technically_ a trigger. It's more a kind of "constant effect"
 - Only works on creature cards. 
 - Applies the nested effects while the card is present on the Battlefield.
+- It is not possible at all to use `heal` and `damage` effects inside whilePresent.
 
 ####`onEndOfTurn`
 
@@ -54,21 +58,21 @@ Various triggers are available for actions to be applied on.
 - Only works on creature cards. 
 - Applies the nested effects when the creature's health reaches 0 or less.
 
-####`pick X atRandom`
+####`pick n atRandom`
 
 - Works on all cards.
 - This is a sub-trigger and picks `X` actions from the available list whenever the trigger is activated. 
-- Note that the available actions list need to be enclosed in parentheses rather than curly brackets. 
+- Note that the available actions list (but not individual actions) need to be enclosed in parentheses rather than curly brackets. 
 
 Syntax:
 
     trigger {
-        pick n atRandom (
+        pick n atRandom {
             { action a },
             { action b },
             ...,
             { action z }
-        )
+        }
     }
 
 Example:
@@ -119,7 +123,7 @@ The primary resource actions are `change` and `set`. The important distinction i
 Syntax:
 
     trigger {
-        change RESOURCE by n [withPriority n] onCards {
+        change RESOURCE by n [withPriority n] onCards [n random] [repeat(n)] {
             // filters
         }
     }
@@ -147,7 +151,7 @@ Examples:
 Syntax:
 
     trigger {
-        set RESOURCE to n [withPriority n] onCards {
+        change RESOURCE by n [withPriority n] onCards [n random] [repeat(n)] {
             // filters
         }
     }
@@ -181,22 +185,74 @@ This is only used with the `whilePresent` filter. It specifies in which order th
 
 ---
 
-##`onCards` Filters
+####`random`
+
+This selects `n` targets at random based on the filters that follow its declaration.
+
+Examples:
+
+    // with damage|heal effects
+    onEndOfTurn {
+        damage 1 to 2 random {
+            creature true
+            ownedBy 'opponent'
+            zone 'Battlefield'
+        }
+    }
+    // with change|set effects
+    onEndOfTurn {
+        change ATTACK by 1 onCards 2 random {
+            ownedBy 'you'
+            zone 'Battlefield'
+        }
+        set HEALTH to 1 onCards 2 random {
+            ownedBy 'opponent'
+            zone 'Battlefield'
+        }
+    }
+    
+---
+
+####`repeat(n)`
+
+Repeats the effect action `n` times to the following targets affected by the filter.
+
+Example:
+
+    onEndOfTurn {
+        repeat(3) {
+            change ATTACK by 1 onCards 1 random {
+                creature true
+                ownedBy 'you'
+                zone 'Battlefield'
+            }
+        }
+    }
+
+---
+
+##Filters
 
 - These are used to filter the effects to a particular set of targets. 
 - A filter uses a number of keys such as `ownedBy`, `zone`, `creature true`, `creatureType` and `thisCard()`.
 - A variety of filters are available for effects, and will be explained in detail below.
+- If a filter needs to take multiple arguments, seperate them with a comma. For example:
+
+    owned by "you", "opponent"
 
 ####`ownedBy`
 
 This is a list of possible owners with descriptions. Note that owner values are String values, and therefore need to be contained in quotation marks. 
 
-- `"you"`: Cards that you, as the player, own.
-- `"opponent"`: Cards that your opponent owns. 
-- `"next"`: Cards that are owned by the next player. Synonymous to `"opponent"` unless your mod supports more than 2 players. 
-- `"active"`: Cards owned by the active player, in other words to the player whose turn it is.
+_Note: These also apply to player effects, see "Player effects" section below._
+
+- `"you"`: You, as the player.
+- `"opponent"`: Your opponent.
+- `"all"`: All players.
+- `"next"`: The next player. Synonymous to `"opponent"` unless your mod supports more than 2 players. 
+- `"active"`: The active player, in other words to the player whose turn it is.
 - `"inactive"`: Opposite of `"active"`. 
-- `"none"`: Cards owner by no player. There are no current game mechanics that use this. 
+- `"none"`: No player. There are no current game mechanics that use this. 
 
 ####`zone`
 
@@ -204,7 +260,7 @@ This is a list of possible zones with descriptions. Note that zone values are St
 
 - `"Battlefield"`: Creature cards that are currently in active play, i.e., in battle or on the battlefield. 
 - `"Hand"`: Cards in a player's hand, not played yet.
-- `"Discard"`: Cards which have been discarded from battle. Sometimes also referred to as graveyard. 
+- `"Discard"`: Cards which have been discarded from battle. Sometimes also referred to as graveyard. _Not currently available as of 0.6_
 - `"Deck"`: Cards in a player's deck. 
 - `"Exile"`: Not currently used. Cards which are exiled, which may vary depending on the mod implementation.  
 - `"Cards"`: All cards loaded at game start. Not currently used as it is too meta.
@@ -220,6 +276,18 @@ Affects all creatures regardless of their type.
 ####`thisCard()`
 
 Affects the card which has the effect itself, and no other. 
+
+####`cardName`
+
+Affects one or more _specific cards_, referencing their `card("hello")` name in the card library for a mod.
+
+Example: 
+
+    onCards { 
+        cardName "foo", "bar"
+        ownedBy "you"
+        zone "Battlefield"
+    }
 
 ##`heal`, `damage` _(cards)_
 
