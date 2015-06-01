@@ -123,13 +123,14 @@ public final class CardHandDocumentController extends CardView {
 			} else if (key.equals("effect")) {
 //				String truncatedString = value.substring(0, Math.min(value.length(), 14));
 				abilityText.setText(value); // truncatedString);
+                abilityText.setTooltip(new Tooltip(value));
 			} else if (key.equals("name")) {
 				nameText.setText(value);
             } else if (key.equalsIgnoreCase("flavor")) {
                 nameText.setTooltip(new Tooltip(value));
 			}
 		}
-		abilityText.setText(abilityText.getText() + CardHelper.stringResources(this.card));
+        CardHelper.abilityText(abilityText, abilityText.getText() + CardHelper.stringResources(this.card));
     }
 
 	@Override

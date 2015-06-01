@@ -1,6 +1,8 @@
 package com.cardshifter.client.views;
 
 import com.cardshifter.api.outgoing.CardInfoMessage;
+import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 
 import java.util.Map;
 
@@ -21,4 +23,8 @@ public class CardHelper {
         return str.toString();
     }
 
+    public static void abilityText(Label abilityText, String text) {
+        abilityText.setText(text);
+        abilityText.setTooltip(new Tooltip(text));
+    }
 }

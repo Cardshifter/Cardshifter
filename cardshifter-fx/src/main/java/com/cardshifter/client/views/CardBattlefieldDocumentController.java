@@ -93,6 +93,7 @@ public final class CardBattlefieldDocumentController extends CardView implements
 					break;
 				case "effect":
 					abilityText.setText(stringValue);
+                    abilityText.setTooltip(new Tooltip(stringValue));
 					break;
 				case "HEALTH":
 					health.setText(stringValue);
@@ -111,7 +112,7 @@ public final class CardBattlefieldDocumentController extends CardView implements
 					break;
 			}
 		}
-		abilityText.setText(abilityText.getText() + CardHelper.stringResources(this.card));
+        CardHelper.abilityText(abilityText, abilityText.getText() + CardHelper.stringResources(this.card));
     }
     
 	@Override
