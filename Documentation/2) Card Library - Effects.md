@@ -43,8 +43,10 @@ Various triggers are available for actions to be applied on.
 
 ####`whilePresent`
 
+- Not _technically_ a trigger. It's more a kind of "constant effect"
 - Only works on creature cards. 
 - Applies the nested effects while the card is present on the Battlefield.
+- It is not possible at all to use `heal` and `damage` effects inside whilePresent.
 
 ####`onEndOfTurn`
 
