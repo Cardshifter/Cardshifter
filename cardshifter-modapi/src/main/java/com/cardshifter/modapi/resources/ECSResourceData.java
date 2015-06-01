@@ -1,6 +1,7 @@
 package com.cardshifter.modapi.resources;
 
 import java.util.Objects;
+import java.util.function.IntUnaryOperator;
 
 import com.cardshifter.modapi.base.ComponentRetriever;
 import org.apache.log4j.LogManager;
@@ -76,4 +77,9 @@ public class ECSResourceData {
 		return copy;
 	}
 	
+    public void changeBy(int value, IntUnaryOperator fix) {
+        int newValue = current + value;
+        set(fix.applyAsInt(newValue));
+    }
+
 }

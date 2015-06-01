@@ -139,7 +139,8 @@ class EffectDelegate {
             assert value >= 0 : 'Value cannot be negative'
             ECSResource resource = target.game.resource('health')
             assert resource : 'health resource not found'
-            resource.retriever().resFor(target).change(value)
+            int max = target.max_health
+            resource.retriever().resFor(target).changeBy(value, {i -> i >= max ? max : i})
         }
         [to: {Object who -> targetedAction(action, who, "Heal $value to %who%")}]
     }

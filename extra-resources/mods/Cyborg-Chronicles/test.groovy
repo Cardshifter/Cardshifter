@@ -85,6 +85,25 @@ from clearState test 'max mana' using {
     assert you.mana == 10
 }
 
+from clearState test 'max mana' using {
+    def healer = to you zone 'Hand' create {
+        creature 'Bio'
+        health 1
+        afterPlay {
+            damage 1 to 'you'
+        }
+        onEndOfTurn {
+            heal 1 to 'you'
+        }
+    }
+    def player = you
+    assert player.health == 30
+    uses 'Play' on healer ok
+    assert player.health == 29
+    uses 'End Turn' ok
+    assert player.health == 30
+}
+
 from clearState test 'deny counter_attack' using {
     def creature = {
         creature 'Bio'
