@@ -65,11 +65,8 @@ public class AttackDamageAccumulating extends SpecificActionSystem {
 	}
 
 	private int damage(int damage, Entity target, Entity damagedBy, ECSGame game) {
-		if (damage == 0) {
+		if (damage <= 0) {
 			return 0;
-		}
-		if (damage < 0) {
-			throw new IllegalArgumentException("damage must be positive");
 		}
         DamageEvent damageEvent = new DamageEvent(target, damagedBy, damage);
 		game.getEvents().executeEvent(damageEvent, e -> health.resFor(target).change(-e.getDamage()));
