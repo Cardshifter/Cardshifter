@@ -324,9 +324,9 @@ public class GeneralSystems {
             ECSResource resource = (ECSResource) map.get('res')
             int value = (int) map.get('value')
             int untilMax = (int) map.get('untilMax')
-            EntityInt restore = {e -> Math.min(1, Math.max((int) 0, (int) untilMax - resource.getFor(entity)))}
+            EntityInt gain = {e -> Math.min(value, Math.max((int) 0, (int) untilMax - resource.getFor(e)))}
 
-            addSystem(new GainResourceSystem(resource, {e -> 1}))
+            addSystem(new GainResourceSystem(resource, gain))
         }
         SystemsDelegate.metaClass.restoreResources << {Map map ->
             ECSResource resource = (ECSResource) map.get('resource')

@@ -78,6 +78,13 @@ from clearState test 'attack opponent with enchanted rush' using {
 
 }
 
+from clearState test 'max mana' using {
+    for (int i = 0; i < 30; i++) {
+        uses 'End Turn' ok
+    }
+    assert you.mana == 10
+}
+
 from clearState test 'deny counter_attack' using {
     def creature = {
         creature 'Bio'
