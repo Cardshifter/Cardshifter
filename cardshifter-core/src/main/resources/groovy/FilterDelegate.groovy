@@ -49,7 +49,7 @@ class FilterDelegate {
                         Players.findOwnerFor(target)
             }
             assert false : 'Unknown owner string: ' + owner
-        })
+        } as TargetFilter)
     }
 
     def creatureType(String... type) {
@@ -62,7 +62,7 @@ class FilterDelegate {
             } else {
                 return false
             }
-        })
+        } as TargetFilter)
     }
 
     def zone(String... zone) {
@@ -71,7 +71,7 @@ class FilterDelegate {
         predicate = predicate.and({Entity source, Entity target ->
             CardComponent cardComponent = target.getComponent(CardComponent)
             Cards.isCard(target) && cardComponent.getCurrentZone() && cardComponent.getCurrentZone().getName() in zone
-        })
+        } as TargetFilter)
     }
 
     def creature(boolean creature) {
@@ -80,7 +80,7 @@ class FilterDelegate {
         predicate = predicate.and({Entity source, Entity target ->
             CreatureTypeComponent creatureType = target.getComponent(CreatureTypeComponent)
             return creatureType != null
-        })
+        } as TargetFilter)
     }
 
     def cardName(String... name) {
@@ -88,7 +88,7 @@ class FilterDelegate {
         description.append('cards with name \'' + String.join("'/'", name) + '\'')
         predicate = predicate.and({Entity source, Entity target ->
             target.name in name
-        })
+        } as TargetFilter)
     }
 
     def thisCard() {
@@ -96,7 +96,7 @@ class FilterDelegate {
         description.append('this card')
         predicate = predicate.and({Entity source, Entity target ->
             source == target
-        })
+        } as TargetFilter)
     }
 
 }
