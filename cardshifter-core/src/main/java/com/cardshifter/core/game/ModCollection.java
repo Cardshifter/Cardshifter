@@ -43,7 +43,7 @@ public class ModCollection {
 		ais.put("Medium", new ScoringAI(AIs.medium(), AIs::mediumDeck));
 		ais.put("Fighter", new ScoringAI(AIs.fighter(), AIs::fighterDeck));
 		
-        loadExternal(new File("groovy").toPath());
+        loadExternal(new File("mods/").toPath());
 	}
 	
 	/**

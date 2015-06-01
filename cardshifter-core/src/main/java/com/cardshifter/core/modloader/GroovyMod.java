@@ -67,6 +67,9 @@ public class GroovyMod implements ECSMod {
     }
 
     public List<ECSModTest> testList() {
+        if (exception != null) {
+            throw new RuntimeException(exception);
+        }
         return script.getTests();
     }
 

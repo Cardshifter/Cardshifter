@@ -46,7 +46,7 @@ public class GroovyMod {
         File[] files = [
             new File(modDirectory, fileName),
             new File(modDirectory.getParentFile(), fileName),
-            new File('groovy/' + fileName),
+            new File('mods/' + fileName),
             new File(fileName),
         ]
         Arrays.stream(files)

@@ -61,3 +61,6 @@ replay-*.json
 Server.log
 game-*.xml
 extra-resources/server.properties
+workdir/
+extra-resources/mods/debug/
+extra-resources/extract-replay.json

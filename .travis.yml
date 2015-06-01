@@ -23,7 +23,6 @@ deploy:
       - "target/cardshifter-fx-0.5.jar"
       - "target/cardshifter-server-0.5.jar"
       - "target/cardshifter-server-0.5.policy"
-      - "target/phrancis-cards.cards"
   skip_cleanup: true
   on:
     tags: true
