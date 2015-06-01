@@ -42,6 +42,9 @@ public class UseCostSystem extends SpecificActionSystem {
 		}
 		ECSResourceData have = useResource.resFor(whoPays.apply(event.getEntity()));
 		int want = cost.applyAsInt(event.getEntity());
+        if (want < 0) {
+            return;
+        }
 		have.change(-want);
 	}
 

@@ -94,3 +94,26 @@ from clearState test 'deny counter_attack' using {
     assert attacker.health == originalLife
 }
 
+from clearState test 'negative mana cost' using {
+    def superCard = {
+        creature 'Mech'
+        manaCost 1
+        health 1
+        whilePresent {
+            change MANA_COST by -2 withPriority 1 onCards {
+                ownedBy "you"
+                zone "Hand"
+            }
+        }
+    }
+    def playCard = to you zone 'Hand' create superCard
+    def handCard = to you zone 'Hand' create superCard
+
+    assert you.mana == 1
+    uses 'Play' on playCard ok
+    assert you.mana == 0
+    assert handCard.mana_cost == -1
+    uses 'Play' on handCard ok
+    assert you.mana == 0
+
+}
