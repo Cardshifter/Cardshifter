@@ -40,7 +40,7 @@ class FilterDelegate {
             if (owner == 'opponent') {
                 return Players.findOwnerFor(source) == Players.findOwnerFor(target)
             }
-            if (owner == 'current player') {
+            if (owner == 'current player' || owner == 'active') {
                 return ComponentRetriever.singleton(source.game, PhaseController).currentEntity ==
                         Players.findOwnerFor(target)
             }
