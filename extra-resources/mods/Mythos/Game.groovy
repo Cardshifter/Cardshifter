@@ -70,8 +70,8 @@ setup {
 
         // Play
         playFromHand PLAY_ACTION
-        playEntersBattlefield PLAY_ACTION
         useCost(action: PLAY_ACTION, res: MANA, value: MANA_COST, whoPays: "player")
+        playEntersBattlefield PLAY_ACTION
 
         // Spell
         useCost(action: USE_ACTION, res: MANA, value: MANA_COST, whoPays: "player")
