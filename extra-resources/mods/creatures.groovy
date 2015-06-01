@@ -19,6 +19,7 @@ CardDelegate.metaClass.flavor << {String value ->
 }
 
 CardDelegate.metaClass.creature << {String type ->
+    assert type : 'Cannot use null creature type'
     def entity = entity()
     def actions = entity.getComponent(ActionComponent)
     def playAction = new ECSAction(entity, 'Play', {act -> true }, {act -> })
