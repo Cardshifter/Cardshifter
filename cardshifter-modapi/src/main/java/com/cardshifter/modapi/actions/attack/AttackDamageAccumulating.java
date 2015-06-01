@@ -51,9 +51,9 @@ public class AttackDamageAccumulating extends SpecificActionSystem {
 				defenseDamage = damage(defenseDamage, source, target, game);
 			}
 
-			checkKill(target, attackDamage, attackHealth);
+			checkKill(target, attackDamage, defenseHealth);
             if (counterAttack) {
-                checkKill(source, defenseDamage, defenseHealth);
+                checkKill(source, defenseDamage, attackHealth);
             }
 		});
 	}
