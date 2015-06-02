@@ -20,6 +20,11 @@ class EffectDelegate {
     }
 
     StringBuilder description = new StringBuilder()
+
+    /**
+     * List of closures to perform, where each closure has the parameters (Entity, Object),
+     * where the object *may* be an ActionPerformEvent, or null.
+     */
     List<Closure> closures = new ArrayList<>()
 
     final Object targets = new Object()

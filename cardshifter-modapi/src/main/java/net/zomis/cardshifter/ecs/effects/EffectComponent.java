@@ -15,10 +15,14 @@ public class EffectComponent extends Component implements CopyableComponent {
 		this.effect = effect;
 	}
 	
-	public void perform(ActionPerformEvent entity) {
-		effect.accept(entity);
+	public void perform(ActionPerformEvent event) {
+		effect.accept(event.getEntity(), event);
 	}
 	
+    public void perform(Entity entity) {
+        effect.accept(entity, null);
+    }
+
 	public String getDescription() {
 		return description;
 	}
@@ -30,7 +34,7 @@ public class EffectComponent extends Component implements CopyableComponent {
 
 	public Component and(EffectComponent next) {
 		return new EffectComponent(description + "\n" + next.description,
-				event -> effect.andThen(next.effect).accept(event));
+                (entity, event) -> effect.andThen(next.effect).accept(entity, event));
 	}
 
 	public GameEffect getEffect() {

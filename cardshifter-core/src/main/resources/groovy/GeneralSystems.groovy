@@ -26,6 +26,7 @@ import com.cardshifter.modapi.cards.MulliganSingleCards
 import com.cardshifter.modapi.cards.PlayEntersBattlefieldSystem
 import com.cardshifter.modapi.cards.PlayFromHandSystem
 import com.cardshifter.modapi.cards.RemoveDeadEntityFromZoneSystem
+import com.cardshifter.modapi.cards.ZoneChangeEvent
 import com.cardshifter.modapi.events.EntityRemoveEvent
 import com.cardshifter.modapi.events.IEvent
 import com.cardshifter.modapi.phase.GainResourceSystem
@@ -236,8 +237,8 @@ public class GeneralSystems {
             closure.delegate = effect
             closure.setResolveStrategy(Closure.DELEGATE_FIRST)
             closure.call()
-            GameEffect eventConsumer = {ActionPerformEvent event ->
-                effect.perform(event.entity, event)
+            GameEffect eventConsumer = {Entity ent, ActionPerformEvent event ->
+                effect.perform(ent, event)
             } as GameEffect
             addEffect(entity(), new EffectComponent(effect.description.toString(), eventConsumer))
         }
@@ -354,6 +355,23 @@ public class GeneralSystems {
                 int sum = entities.stream().mapToInt({ Entity ent -> decreaseBy.getFor(ent) }).sum()
                 return decrease.getFor(player) - sum
             })
+        }
+
+        SystemsDelegate.metaClass.effectOnSummon << {String zoneName ->
+            assert zoneName
+            addSystem {ECSGame game ->
+                game.getEvents().registerHandlerAfter(this, ZoneChangeEvent, {ZoneChangeEvent event ->
+                    if (event.source) {
+                        return;
+                    }
+                    if (event.destination.name == zoneName) {
+                        if (event.card.hasComponent(EffectComponent)) {
+                            EffectComponent comp = event.card.getComponent(EffectComponent)
+                            comp.perform(event.card);
+                        }
+                    }
+                })
+            }
         }
 
         SystemsDelegate.metaClass.useCost << {Map map ->

@@ -48,7 +48,7 @@ public class Effects {
 
 	public EffectComponent giveTarget(ECSResource resource, int value, IntUnaryOperator operator) {
 		ResourceRetriever res = ResourceRetriever.forResource(resource);
-		GameEffect effect = event -> event.getAction().getAllTargets().forEach(e -> {
+		GameEffect effect = (entity, event) -> event.getAction().getAllTargets().forEach(e -> {
 			ECSResourceData data = res.resFor(e);
 			data.change(value);
 			data.set(operator.applyAsInt(data.get()));
@@ -56,12 +56,12 @@ public class Effects {
 		return new EffectComponent("Give target " + value + " " + resource, effect);
 	}
 	public <T extends IEvent> EffectComponent giveSelf(Function<Entity, ECSSystem> system) {
-		GameEffect effect = event -> event.getEntity().getGame().addSystem(new InGameSystem(event.getEntity(), system.apply(event.getEntity())));
+		GameEffect effect = (entity, event) -> entity.getGame().addSystem(new InGameSystem(entity, system.apply(entity)));
 		return new EffectComponent("Give target " + system, effect);
 	}
 
 	public EffectComponent toSelf(Consumer<Entity> effect) {
-		return new EffectComponent(effect.toString(), event -> effect.accept(event.getEntity()));
+		return new EffectComponent(effect.toString(), (entity, event) -> effect.accept(event.getEntity()));
 	}
 
 	public Component described(String description, EffectComponent effectComponent) {

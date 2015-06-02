@@ -93,6 +93,7 @@ setup {
         EffectActionSystem(USE_ACTION)
         EffectActionSystem(PLAY_ACTION)
         targetFilterSystem USE_ACTION
+        effectOnSummon 'Battlefield'
         destroyAfterUse USE_ACTION
 
         RestoreResourcesToSystem(filter: ownedBattlefieldCreatures, resource: ATTACK_AVAILABLE, value: 1)
