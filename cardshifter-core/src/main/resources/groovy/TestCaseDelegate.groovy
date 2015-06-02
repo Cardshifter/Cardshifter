@@ -187,7 +187,7 @@ class TestCaseDelegate {
         }
         if (name == 'you') {
             Entity you = currentPlayer()
-            assert you
+            assert you : 'There is no active player'
             return you
         }
         if (name == 'currentPlayer') {
