@@ -74,3 +74,4 @@ extra-resources/server.properties
 workdir/
 extra-resources/mods/debug/
 extra-resources/extract-replay.json
+extra-resources/game-1.json
