@@ -1,0 +1,7 @@
+
+description = 'cardshifter-modapi'
+dependencies {
+    compile group: 'log4j', name: 'log4j', version:'1.2.17'
+    compile project(':cardshifter-api')
+    testCompile "junit:junit:4.11"
+}
