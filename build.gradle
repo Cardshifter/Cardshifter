@@ -33,3 +33,29 @@ subprojects {
     }
 
 }
+
+task createShadowedJars {
+    dependsOn ':cardshifter-console:shadowJar'
+    dependsOn ':cardshifter-fx:shadowJar'
+    dependsOn ':cardshifter-server:shadowJar'
+}
+
+task copyResources(type: Copy) {
+    dependsOn 'createShadowedJars'
+    from('extra-resources')
+    into("$project.buildDir/libs")
+    include('server.properties.example')
+    include('decks/Cyborg-Chronicles/Balanced.deck')
+    include('decks/Cyborg-Chronicles/Defensive.deck')
+    include('mods/**')
+}
+
+task dist(type: Zip) {
+    dependsOn 'copyResources'
+    rename {
+        println it
+        it.replace('-all', '')
+    }
+    from "$project.buildDir/libs"
+}
+

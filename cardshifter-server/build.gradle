@@ -20,3 +20,5 @@ apply plugin: 'application'
 apply plugin: 'com.github.johnrengelman.shadow'
 
 mainClassName = 'com.cardshifter.server.main.ServerMain'
+
+buildDir = project.parent.buildDir

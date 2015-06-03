@@ -10,3 +10,5 @@ apply plugin: 'application'
 apply plugin: 'com.github.johnrengelman.shadow'
 
 mainClassName = 'com.cardshifter.console.Main'
+
+buildDir = project.parent.buildDir
