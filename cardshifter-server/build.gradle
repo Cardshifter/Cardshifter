@@ -15,3 +15,5 @@ dependencies {
 test {
     workingDir new File(System.getProperty("user.dir"), "extra-resources")
 }
+
+apply plugin: 'com.github.johnrengelman.shadow'

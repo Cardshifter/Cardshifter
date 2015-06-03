@@ -2,9 +2,9 @@
 description = 'cardshifter-core'
 dependencies {
     compile group: 'org.codehaus.groovy', name: 'groovy-all', version:'2.4.3'
-  compile project(':cardshifter-api')
-  compile project(':cardshifter-modapi')
-  compile project(':cardshifter-test')
+    compile project(':cardshifter-api')
+    compile project(':cardshifter-modapi')
+    compile project(':cardshifter-test')
     compile group: 'log4j', name: 'log4j', version:'1.2.17'
     compile group: 'net.zomis', name: 'scorers', version:'0.2-SNAPSHOT'
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version:'2.4.2'
