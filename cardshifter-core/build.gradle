@@ -12,3 +12,7 @@ dependencies {
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version:'2.4.2'
     testCompile group: 'org.mockito', name: 'mockito-all', version:'1.8.4'
 }
+
+test {
+    workingDir new File(System.getProperty("user.dir"), "extra-resources")
+}
