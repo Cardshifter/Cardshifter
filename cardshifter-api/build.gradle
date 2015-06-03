@@ -39,6 +39,9 @@ def getCredentials = {
 
 uploadArchives {
     def creds = getCredentials()
+    if (!creds) {
+        return;
+    }
     repositories {
         mavenDeployer {
             configuration = configurations.deployerJars
