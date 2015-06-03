@@ -16,4 +16,7 @@ test {
     workingDir new File(System.getProperty("user.dir"), "extra-resources")
 }
 
+apply plugin: 'application'
 apply plugin: 'com.github.johnrengelman.shadow'
+
+mainClassName = 'com.cardshifter.server.main.ServerMain'
