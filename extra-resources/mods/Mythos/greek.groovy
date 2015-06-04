@@ -4,6 +4,7 @@ package mythos
 card('ChangeMe') {
     creature "Greek"
     flavor "hello"
+    maxInDeck 1
     attack 1
     health 1
     manaCost 1
@@ -16,6 +17,7 @@ card('ChangeMe') {
 card('ZEUS') {
     creature "Greek God"
     flavor "God of the sky, ruler of Mount Olympus."
+    maxInDeck 1
     attack 8
     health 8
     manaCost 30
@@ -34,6 +36,7 @@ card('ZEUS') {
 card('HADES') {
     creature "Greek Chthonic God"
     flavor "God of the Underworld."
+    maxInDeck 1
     attack 8
     health 8
     manaCost 30
@@ -41,7 +44,7 @@ card('HADES') {
     // plague()
     // Add +1/+1 to all Chthonic Deities on the field.
     whilePresent {
-        change ATTACK, HEALTH by 1 withRriority 1 onCards {
+        change ATTACK, HEALTH by 1 withPriority 1 onCards {
             creatureType "Greek Chthonic God"
             zone "Battlefield"
             ownedBy "you"
@@ -56,6 +59,7 @@ card('HADES') {
 card('CRONUS') {
     creature "Greek Titan"
     flavor "Deposed King of the Titans; also father of Zeus, Hades, and Poseidon."
+    maxInDeck 1
     attack 4
     health 8
     manaCost 30
@@ -74,6 +78,7 @@ card('CRONUS') {
 card('Heracles') {
     creature "Greek Hero"
     flavor "Ascended hero, Son of Zeus, and divine protector of mankind."
+    maxInDeck 1
     attack 6
     health 8
     manaCost 25
@@ -98,6 +103,7 @@ card('Heracles') {
 card('Lernaean Hydra') {
     creature "Greek"
     flavor "A many-headed, serpent-like creature that guarded an Underworld entrance beneath Lake Lerna."
+    maxInDeck 1
     attack 6
     health 3
     manaCost 25
@@ -122,6 +128,7 @@ card('Lernaean Hydra') {
 card('The Underworld') {
     creature "Greek Location"
     flavor "The realm of the Dead."
+    maxInDeck 1
     attack 0
     health 8
     manaCost 20
@@ -137,10 +144,64 @@ card('The Underworld') {
     }
     // Add +5 attack to this card if Hades is on the field.
     /*
-    ifPresent (card "HADES", zone "Battlefield") {
+    ifPresent (card "HADES" zone "Battlefield") {
         change ATTACK by 5 withPriority 2 onCards { thisCard() }
     }
     */
+}
+
+card('Charon') {
+    creature "Greek Chthonic God"
+    flavor "The Ferryman of the Underworld."
+    maxInDeck 1
+    attack 1
+    health 4
+    manaCost 10
+    sickness 1
+    // When this card destroys another creature card and that card 
+    // goes to the graveyard, this card gains +1/+1.
+    /*
+    onKill {
+        change ATTACK, HEALTH by 1 onCards { thisCard() }
+    }
+    */
+}
+
+card('Empusa') {
+    creature "Greek Chthonic God"
+    flavor "A monstrous underworld spirit with flaming hair, the leg of a goat and a leg of bronze."
+    maxInDeck 1
+    attack 1
+    health 2
+    manaCost 5
+    sickness 1
+    taunt()
+}
+
+card('Moirai') {
+    creature "Greek Chthonic God"
+    flavor "The white-robed incarnations of Fate."
+    maxInDeck 1
+    attack 1
+    health 3
+    manaCost 10
+    sickness 1
+    /*
+    pickAction {
+        // (3) Look at the top three cards of your deck, return them in any order.
+        // (5) Look at the top three cards of your opponent’s deck, return them in any order.
+        // (10) Your opponent discards the top three cards of his deck.
+    }
+    */
+}
+
+card('Hecate') {
+    creature "Greek Chthonic God"
+    flavor "Goddess of magic, witchcraft, the night, moon, ghosts and necromancy."
+    maxInDeck 1
+    attack 3
+    health 2
+    manaCost 1
 }
 
 
