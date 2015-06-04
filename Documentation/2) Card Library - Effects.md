@@ -140,7 +140,7 @@ Examples:
     // subtract two attack from opponent creatures while present
     whilePresent {
         change ATTACK by -2 withPriority 1 onCards {
-            creature()
+            creature true
             ownedBy 'opponent'
             zone 'Battlefield'
         }
@@ -161,7 +161,7 @@ Examples:
     // set opponent creature sickness to 2 (wait one turn) on death
     onDeath {
         set SICKNESS to 2 onCards {
-            creature()
+            creature true
             ownedBy 'opponent'
             zone 'Battlefield'
         }
