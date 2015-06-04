@@ -23,8 +23,8 @@ public class GroovyMod implements ECSMod {
         Throwable ex;
         try {
             Binding binding = new Binding();
-            URL groovyURL = getClass().getClassLoader().getResource("groovy/");
-            GroovyScriptEngine scriptEngine = new GroovyScriptEngine(new URL[]{file.toURI().toURL(), groovyURL});
+            URL groovyURL = GroovyMod.class.getResource("");
+            GroovyScriptEngine scriptEngine = new GroovyScriptEngine(new URL[]{groovyURL, file.toURI().toURL()});
 
             CompilerConfiguration config = new CompilerConfiguration();
             scriptEngine.setConfig(config);
