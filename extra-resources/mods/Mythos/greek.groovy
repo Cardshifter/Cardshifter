@@ -119,6 +119,31 @@ card('Lernaean Hydra') {
     }
 }
 
+card('The Underworld') {
+    creature "Greek Location"
+    flavor "The realm of the Dead."
+    attack 0
+    health 8
+    manaCost 20
+    sickness 1
+    noAttack()
+    // Add +2/+2 to all Chthonic Deities on the field.
+    whilePresent {
+        change ATTACK, HEALTH by 2 withPriority 1 onCards {
+            creatureType "Greek Chthonic God"
+            ownedBy "you"
+            zone "Battlefield"
+        }
+    }
+    // Add +5 attack to this card if Hades is on the field.
+    /*
+    ifPresent (card "HADES", zone "Battlefield") {
+        change ATTACK by 5 withPriority 2 onCards { thisCard() }
+    }
+    */
+}
+
+
 // TOKENS
 
 card('Lost Soul') {
