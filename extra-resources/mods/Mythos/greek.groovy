@@ -1,11 +1,11 @@
 package mythos
 /* See modding documentation for all available keywords. */
 /* GENERIC TEMPLATE
-card('Change Me') {
+card('ChangeMe') {
     creature "Greek"
     flavor "hello"
-    health 1
     attack 1
+    health 1
     manaCost 1
     sickness 1
 }
@@ -16,11 +16,10 @@ card('Change Me') {
 card('ZEUS') {
     creature "Greek God"
     flavor "God of the sky, ruler of Mount Olympus."
-    health 8
     attack 8
+    health 8
     manaCost 30
     sickness 1
-
     denyCounterAttack() // ranged
     /*
     pickAction {
@@ -35,17 +34,17 @@ card('ZEUS') {
 card('HADES') {
     creature "Greek Chthonic God"
     flavor "God of the Underworld."
-    health 8
     attack 8
+    health 8
     manaCost 30
     sickness 1
     // plague()
     // Add +1/+1 to all Chthonic Deities on the field.
     whilePresent {
-        change ATTACK, HEALTH by 1 priority 1 onCards {
+        change ATTACK, HEALTH by 1 withRriority 1 onCards {
             creatureType "Greek Chthonic God"
             zone "Battlefield"
-            owner "all"
+            ownedBy "you"
         }
     }
     // When Hades is sent to the graveyard, add three +1/+1 Lost Soul tokens to the field.
@@ -57,8 +56,8 @@ card('HADES') {
 card('CRONUS') {
     creature "Greek Titan"
     flavor "Deposed King of the Titans; also father of Zeus, Hades, and Poseidon."
-    health 8
     attack 4
+    health 8
     manaCost 30
     sickness 1
     // phase()
@@ -72,15 +71,61 @@ card('CRONUS') {
     }
 }
 
+card('Heracles') {
+    creature "Greek Hero"
+    flavor "Ascended hero, Son of Zeus, and divine protector of mankind."
+    attack 6
+    health 8
+    manaCost 25
+    sickness 0 // Rush
+    // When Heracles comes into play, deal +3 damage randomly to target unit or player.
+    afterPlay {
+        pick 1 atRandom (
+            { damage 3 to "opponent" },
+            { damage 3 to 1 random { creature true; owner "opponent" } }
+        )
+    }
+    // Add +1/+1 to all Hero units on the field.
+    whilePresent {
+        change ATTACK, HEALTH by 1 withPriority 1 onCards {
+            creatureType "Greek Hero"
+            ownedBy "you"
+            zone "Battlefield"
+        }
+    }
+}
 
+card('Lernaean Hydra') {
+    creature "Greek"
+    flavor "A many-headed, serpent-like creature that guarded an Underworld entrance beneath Lake Lerna."
+    attack 6
+    health 3
+    manaCost 25
+    sickness 1
+    taunt()
+    // When this card is attacked, but not destroyed, it gains +1 attack.
+    /*
+    afterAttacked {
+        change ATTACK by 1 onCards { thisCard }
+    }
+    */
+    // Give all Creature units +1/+1
+    whilePresent {
+        change ATTACK, HEALTH by 1 withPriority 1 onCards {
+            creature true
+            ownedBy "you"
+            zone "Battlefield"
+        }
+    }
+}
 
 // TOKENS
 
 card('Lost Soul') {
     creature "Greek"
     flavor ""
-    health 1
     attack 1
+    health 1
     manaCost 0
     sickness 1
     token()
@@ -88,8 +133,8 @@ card('Lost Soul') {
 card('Titan 2/2') {
     creature "Greek Titan"
     flavor ""
-    health 2
     attack 2
+    health 2
     manaCost 0
     sickness 1
     token()
@@ -97,8 +142,8 @@ card('Titan 2/2') {
 card('Titan 4/2') {
     creature "Greek Titan"
     flavor ""
-    health 2
     attack 4
+    health 2
     manaCost 0
     sickness 1
     token()
