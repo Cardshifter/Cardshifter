@@ -34,8 +34,13 @@ subprojects {
             compile group: 'org.codehaus.groovy', name: 'groovy-all', version:'2.4.3'
             testCompile "junit:junit:4.11"
         }
+        test {
+            testLogging {
+                events "failed"
+                exceptionFormat "short"
+            }
+        }
     }
-
 }
 
 task createShadowedJars {
