@@ -12,24 +12,28 @@ allprojects  {
 
     group = 'com.cardshifter'
     version = '0.6-SNAPSHOT'
-}
-
-subprojects {
-    apply plugin: 'java'
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
-
     repositories {
+        mavenCentral()
         mavenLocal()
     
         maven { url "http://repo.maven.apache.org/maven2" }
         maven { url "http://www.zomis.net/maven" }
     }
+}
 
-  
-    dependencies {
-        compile group: 'findbugs', name: 'findbugs', version:'1.0.0'
-        testCompile "junit:junit:4.11"
+subprojects {
+    if (!it.name.contains('-api')) {
+        apply plugin: 'groovy'
+        sourceSets {
+            main {
+                java { srcDirs = [] }
+                groovy { srcDir "src/main/java" }
+            }
+        }
+        dependencies {
+            compile group: 'org.codehaus.groovy', name: 'groovy-all', version:'2.4.3'
+            testCompile "junit:junit:4.11"
+        }
     }
 
 }
