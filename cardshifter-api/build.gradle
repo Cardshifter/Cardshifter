@@ -22,23 +22,6 @@ dependencies {
     deployerJars 'org.apache.maven.wagon:wagon-ftp:2.2'
 }
 
-def getMavenSettingsCredentials = {
-    String userHome = System.getProperty('user.home')
-    File mavenSettings = new File(userHome, '.m2/settings.xml')
-    def xmlSlurper = new XmlSlurper()
-    def output = xmlSlurper.parse(mavenSettings)
-    return output."servers"."server"
-}
-
-def getCredentials = {
-    def entries = getMavenSettingsCredentials()
-    for (entry in entries) {
-        if (entry."id".text() == 'cardshifter-deploy') {
-            return [username: entry.username.text(), password: entry.password.text()]
-        }
-    }
-}
-
 uploadArchives {
     def creds = getCredentials()
     if (!creds) {

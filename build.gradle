@@ -21,6 +21,23 @@ allprojects  {
     }
 }
 
+def getMavenSettingsCredentials() {
+    String userHome = System.getProperty('user.home')
+    File mavenSettings = new File(userHome, '.m2/settings.xml')
+    def xmlSlurper = new XmlSlurper()
+    def output = xmlSlurper.parse(mavenSettings)
+    return output."servers"."server"
+}
+
+def getCredentials() {
+    def entries = getMavenSettingsCredentials()
+    for (entry in entries) {
+        if (entry."id".text() == 'cardshifter-deploy') {
+            return [username: entry.username.text(), password: entry.password.text()]
+        }
+    }
+}
+
 subprojects {
     if (!it.name.contains('-api')) {
         apply plugin: 'groovy'
@@ -68,3 +85,35 @@ task dist(type: Zip) {
     from "$project.buildDir/libs"
 }
 
+configurations {
+    ftpAntTask
+}
+
+dependencies {
+    ftpAntTask("org.apache.ant:ant-commons-net:1.8.4") {
+        module("commons-net:commons-net:1.4.1") {
+            dependencies "oro:oro:2.0.8:jar"
+        }
+    }
+}
+
+def javaModules() {
+    subprojects.findAll {!it.name.contains('-api')}
+}
+
+task snapshot << {
+
+    def creds = getCredentials()
+    ant {
+        taskdef(name: 'ftp',
+                classname: 'org.apache.tools.ant.taskdefs.optional.net.FTP',
+                classpath: configurations.ftpAntTask.asPath)
+        ftp(server: "www.zomis.net", userid: creds["username"], password: creds["password"], remoteDir: "public_html/cardshifter.com") {
+            fileset(dir: "$buildDir/distributions") {
+                include(name: "*.zip")
+            }
+        }
+    }
+}
+snapshot.dependsOn 'dist'
+snapshot.dependsOn javaModules().test
