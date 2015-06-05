@@ -25,7 +25,7 @@ public class ActionTest {
 	private ComponentRetriever<ActionComponent> retriever = ComponentRetriever.retreiverFor(ActionComponent.class);
 
 	@Before
-	public void das() {
+	public void before() {
 		game = new ECSGame();
 		entity = game.newEntity().addComponent(new ActionComponent());
 	}
