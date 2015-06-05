@@ -151,7 +151,7 @@ Examples:
 Syntax:
 
     trigger {
-        change RESOURCE by n [withPriority n] onCards [n random] [repeat(n)] {
+        set RESOURCE to n [withPriority n] onCards [n random] [repeat(n)] {
             // filters
         }
     }
