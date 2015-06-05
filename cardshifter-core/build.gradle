@@ -11,11 +11,11 @@ dependencies {
     testCompile group: 'org.mockito', name: 'mockito-all', version:'1.8.4'
 }
 
-task copyTestResources(type: Copy) {
+task copyResources(type: Copy) {
     from "${projectDir}/src/main/resources"
     into "${buildDir}/classes/main"
 }
-processTestResources.dependsOn copyTestResources
+processResources.dependsOn copyResources
 
 test {
     workingDir new File(System.getProperty("user.dir"), "extra-resources")
