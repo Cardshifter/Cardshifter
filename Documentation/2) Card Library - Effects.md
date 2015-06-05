@@ -67,12 +67,12 @@ Various triggers are available for actions to be applied on.
 Syntax:
 
     trigger {
-        pick n atRandom {
+        pick n atRandom (
             { action a },
             { action b },
-            ...,
+            ... ,
             { action z }
-        }
+        )
     }
 
 Example:
@@ -239,6 +239,20 @@ Example:
 - If a filter needs to take multiple arguments, seperate them with a comma. For example:
 
     owned by "you", "opponent"
+    
+- Individual filters must be separated either by a new line/line break, or a semicolon `;` character.
+
+
+    // Both these are valid:
+    onCards {
+        creature true
+        ownedBy "you"
+        zone "Battlefield"
+    }
+    onCards { creature true; ownedBy "you"; zone "Battlefield }
+    //
+    // But this one is not valid:
+    onCards { creature true ownedBy "you" zone "Battlefield }
 
 ####`ownedBy`
 
