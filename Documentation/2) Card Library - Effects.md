@@ -243,16 +243,17 @@ Example:
 - Individual filters must be separated either by a new line/line break, or a semicolon `;` character.
 
 
-    // Both these are valid:
-    onCards {
-        creature true
-        ownedBy "you"
-        zone "Battlefield"
-    }
-    onCards { creature true; ownedBy "you"; zone "Battlefield }
-    //
-    // But this one is not valid:
-    onCards { creature true ownedBy "you" zone "Battlefield }
+        // Both these are valid:
+        onCards {
+            creature true
+            ownedBy "you"
+            zone "Battlefield"
+        }
+        onCards { creature true; ownedBy "you"; zone "Battlefield }
+        //
+        // But this one is not valid:
+        onCards { creature true ownedBy "you" zone "Battlefield }
+
 
 ####`ownedBy`
 
