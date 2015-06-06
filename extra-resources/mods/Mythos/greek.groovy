@@ -36,7 +36,28 @@ card('ZEUS') {
     */
 }
 
-card('APPOLLO') {
+card('URANUS') {
+    creature "Greek God"
+    flavor "The God of the Heavens, father of the Titans"
+    maxInDeck 1
+    attack 6
+    health 4
+    manaCost 20
+    sickness 1
+    // Add +3/+0 to all Titans on the field.
+    whilePresent {
+        change ATTACK by 3 withPriority 1 onCards {
+            creatureType "Greek Titan"
+            zone "Battlefield"
+        }
+    }
+    // If this card is sent to the graveyard, bring one +4/+2 Titan token to the field.
+    onDeath {
+        summon 1 of "Titan 4/2" to "you" zone "Battlefield"
+    }
+}
+
+card('APOLLO') {
     creature "Greek God"
     flavor "God of music, arts, knowledge, healing, plague, and prophecy."
     maxInDeck 1
@@ -73,6 +94,105 @@ card('ARES') {
     }
     */
 }
+
+card('ARTEMIS') {
+    creature "Greek God"
+    flavor "Virgin Goddess of the hunt, wilderness and animals."
+    maxInDeck 1
+    attack 2
+    health 3
+    manaCost 5
+    sickness 1
+    // When this card comes into play, add one +2/+2 Bear token onto the field.
+    afterPlay {
+        summon 1 of "Bear" to "you" zone "Battlefield"
+    }
+}
+
+card('ATHENA') {
+    creature "Greek God"
+    flavor "Goddess of intelligence, skill, peace, warfare, battle strategy, and wisdom."
+    maxInDeck 1
+    attack 3
+    health 2
+    manaCost 5
+    sickness 1
+    // Give +1/+1 to all God cards on the field.
+    whilePresent {
+        change ATTACK, HEALTH by 1 withPriority 1 onCards {
+            creatureType "Greek God"
+            zone "Battlefield"
+        }
+    }
+    // (3) If a player targets this card for an attack, 
+    // redirect that damage to another target unit or player.
+    /*
+    pickAction ( // #270
+        { 
+            redirectAtRandom() // #277
+        }
+    )
+    */
+}
+
+card('HERMES') {
+    creature "Greek God"
+    flavor "God of boundaries, travel, communication, trade, language, and writing."
+    maxInDeck 1
+    attack 2
+    health 2
+    manaCost 5
+    sickness 1
+    ranged()
+}
+
+card('HERA') {
+    creature "Greek God"
+    flavor "Queen of the Gods and the wife of Zeus."
+    maxInDeck 1
+    attack 3
+    health 2
+    manaCost 5
+    sickness 1
+    // phase() // #262
+}
+
+card('POSEIDON') {
+    creature "Greek God"
+    flavor "God of the sea, rivers, floods, droughts, and earthquakes."
+    maxInDeck 1
+    attack 4
+    health 4
+    manaCost 15
+    sickness 0 // Rush
+    // Once per turn: Freeze (random) enemy unit for 2 turns.
+    onStartOfTurn {
+        set SICKNESS to 3 onCards 1 random {
+            creature true
+            ownedBy "opponent"
+            zone "Battlefield"
+        }
+    }
+}
+
+card('EROS') {
+    creature "Greek God"
+    flavor "The God of love and attraction."
+    maxInDeck 1
+    attack 3
+    health 2
+    manaCost 10
+    sickness 1
+    // When Eros enters the field, take control of target creature for one turn.
+    /*
+    afterPlay {
+        // #267
+        charm 1 target for 1 turn
+    }
+    */
+}
+
+
 
 //// CHTHONIC DEITIES
 
@@ -366,6 +486,16 @@ card('Mount Olympus') {
 
 // TOKENS
 
+card('Bear') {
+    creature "Greek"
+    flavor ""
+    attack 2
+    health 2
+    manaCost 0
+    sickness 1
+    token()
+}
+
 card('Lost Soul') {
     creature "Greek"
     flavor ""
@@ -393,3 +523,4 @@ card('Titan 4/2') {
     sickness 1
     token()
 }
+
