@@ -143,7 +143,7 @@ card('HERMES') {
     health 2
     manaCost 5
     sickness 1
-    ranged()
+    denyCounterAttack() // ranged
 }
 
 card('HERA') {
@@ -249,7 +249,7 @@ card('Heracles') {
     afterPlay {
         pick 1 atRandom (
             { damage 3 to "opponent" },
-            { damage 3 to 1 random { creature true; owner "opponent" } }
+            { damage 3 to 1 random { creature true; ownedBy "opponent" } }
         )
     }
     // Add +1/+1 to all Hero units on the field.
@@ -444,7 +444,7 @@ card('THANATOS') {
     // plague() // #264
 }
 
-ard('TARTARUS') {
+card('TARTARUS') {
     creature "Greek Chthonic Deity"
     flavor "The primeval god of the dark, stormy pit of the Underworld, the Tartarean pit that houses the Titans."
     maxInDeck 1
@@ -505,7 +505,7 @@ card('Lost Soul') {
     sickness 1
     token()
 }
-card('Titan 2/2') {
+card("Titan 2/2") {
     creature "Greek Titan"
     flavor ""
     attack 2
