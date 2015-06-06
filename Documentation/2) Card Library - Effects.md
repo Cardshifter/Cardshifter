@@ -48,10 +48,18 @@ Various triggers are available for actions to be applied on.
 - Applies the nested effects while the card is present on the Battlefield.
 - It is not possible at all to use `heal` and `damage` effects inside whilePresent.
 
-####`onEndOfTurn`
+####`onStartOfTurn` & `onEndOfTurn`
 
 - Only works on creature cards. 
-- Applies the nested effects at the end of each of the owner's turns.
+- Applies the nested effects at the start or end of each of the owner's turns.
+- By default applies to "you", but can also optionally be provided an argument to specify which player it applies to, for example:
+
+
+        onStartOfTurn { ... }
+        onStartOfTurn('you') { ... }
+        onStartOfTurn('opponent') { ... }
+        onStartOfTurn('all') { ... }
+    
 
 ####`onDeath`
 
