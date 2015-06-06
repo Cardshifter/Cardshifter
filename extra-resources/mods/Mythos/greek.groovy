@@ -12,7 +12,10 @@ card('ChangeMe') {
 }
 */
 
-// CREATURES
+////// CREATURES
+
+
+//// GODS
 
 card('ZEUS') {
     creature "Greek God"
@@ -24,7 +27,7 @@ card('ZEUS') {
     sickness 1
     denyCounterAttack() // ranged
     /*
-    pickAction (
+    pickAction ( // #270
         // (3) Deal +1 damage to target creature or player per turn.
         { damage 1 to target cost 3 mana }
         // (5) Deal +5 damage to target creature or player per turn.
@@ -33,7 +36,45 @@ card('ZEUS') {
     */
 }
 
-// CHTHONIC DEITIES
+card('APPOLLO') {
+    creature "Greek God"
+    flavor "God of music, arts, knowledge, healing, plague, and prophecy."
+    maxInDeck 1
+    attack 2
+    health 4
+    manaCost 5
+    sickness 1
+    // (3) Choose one per turn: Target ku1`322player or unit gains +2 health, 
+    // target player or unit looses +2 health.
+    /*
+    pickAction ( // #270
+        { heal 2 to "you" },
+        { heal 2 to cards { target() } },
+        { damage 2 to "opponent" },
+        { damage 2 to cards { target() } }
+    )
+    */
+}
+
+card('ARES') {
+    creature "Greek God"
+    flavor "God of war, bloodshed and violence."
+    maxInDeck 1
+    attack 3
+    health 4
+    manaCost 10
+    sickness 1
+    // If this card sends another card to the graveyard as a result of battle, 
+    //this card can attack a second time in the same turn.
+    /*
+    onKill { // #272
+        // #274
+        set hasAttacked to false onCards { thisCard() }
+    }
+    */
+}
+
+//// CHTHONIC DEITIES
 
 card('HADES') {
     creature "Greek Chthonic Deity"
@@ -43,7 +84,7 @@ card('HADES') {
     health 8
     manaCost 30
     sickness 1
-    // plague()
+    // plague() // #264
     // Add +1/+1 to all Chthonic Deities on the field.
     whilePresent {
         change ATTACK, HEALTH by 1 withPriority 1 onCards {
@@ -65,7 +106,7 @@ card('CRONUS') {
     health 8
     manaCost 30
     sickness 1
-    // phase()
+    // phase() // #262
     // When this creature is put into play, add one +2/+2 Titan Token to the field.
     afterPlay {
         summon 1 of "Titan 2/2" to "you" zone "Battlefield"
@@ -111,8 +152,8 @@ card('Lernaean Hydra') {
     taunt()
     // When this card is attacked, but not destroyed, it gains +1 attack.
     /*
-    afterAttacked {
-        change ATTACK by 1 onCards { thisCard }
+    afterAttacked { // #266
+        change ATTACK by 1 onCards { thisCard() }
     }
     */
     // Give all Creature units +1/+1
@@ -142,7 +183,7 @@ card('The Underworld') {
     }
     // Add +5 attack to this card if Hades is on the field.
     /*
-    ifPresent (card "HADES" zone "Battlefield") {
+    ifPresent (card "HADES" zone "Battlefield") { // #261
         change ATTACK by 5 withPriority 2 onCards { thisCard() }
     }
     */
@@ -159,7 +200,7 @@ card('CHARON') {
     // When this card destroys another creature card and that card 
     // goes to the graveyard, this card gains +1/+1.
     /*
-    onKill {
+    onKill { // #272
         change ATTACK, HEALTH by 1 onCards { thisCard() }
     }
     */
@@ -185,7 +226,7 @@ card('MOIRAI') {
     manaCost 10
     sickness 1
     /*
-    pickAction (
+    pickAction ( // #270
         // (3) Look at the top three cards of your deck, return them in any order.
         // (5) Look at the top three cards of your opponent’s deck, return them in any order.
         // (10) Your opponent discards the top three cards of his deck.
@@ -200,11 +241,11 @@ card('HECATE') {
     attack 3
     health 2
     manaCost 10
-    // phase()
+    // phase() // #262
     // When this creature destroys another creature and sends it to the graveyard, 
     // add a +1/+1 Lost Soul token to the field. 
     /*
-    onKill {
+    onKill { // #272
         summon 1 of "Lost Soul" to "you" zone "Battlefield"
     }
     // When Hecate is sent to the graveyard, 
@@ -233,7 +274,7 @@ card('LAMIA') {
     health 3
     manaCost 10
     sickness 1
-    // Effect – When this creature deals damage to another creature, it gains +0/+1.
+    // When this creature deals damage to another creature, it gains +0/+1.
     /*
     afterAttacking {
         change HEALTH by 1 onCards { thisCard() }
@@ -251,7 +292,7 @@ card('MACARIA') {
     sickness 0 // Rush
     // When this creature destroys another creature, owner/player gains (2) health.
     /*
-    onKill {
+    onKill { // #272
         heal 1 to "you"
     }
     */
@@ -265,7 +306,7 @@ card('PERSEPHONE') {
     health 3
     manaCost 15
     sickness 1
-    // phase()
+    // phase() // #262
     // Owner gains (1) health at the end of each turn this card is on the field.
     onEndOfTurn {
         heal 1 to "you"
@@ -280,7 +321,7 @@ card('THANATOS') {
     health 2
     manaCost 5
     sickness 1
-    // plague()
+    // plague() // #264
 }
 
 ard('TARTARUS') {
@@ -315,33 +356,13 @@ card('Mount Olympus') {
     }
     // Add +5 attack to this card if Zeus is on the field.
     /*
-    ifPresent (card "ZEUS" zone "Battlefield") {
+    ifPresent (card "ZEUS" zone "Battlefield") { // #261
         change ATTACK by 5 withPriority 2 onCards { thisCard() }
     }
     */
 }
 
-// GODS
 
-card('Appollo') {
-    creature "Greek God"
-    flavor "God of music, arts, knowledge, healing, plague, and prophecy."
-    maxInDeck 1
-    attack 2
-    health 4
-    manaCost 5
-    sickness 1
-    // (3) Choose one per turn: Target player or unit gains +2 health, 
-    // target player or unit looses +2 health.
-    /*
-    pickAction ()
-        { heal 2 to "you" },
-        { heal 2 to cards { target() } },
-        { damage 2 to "opponent" },
-        { damage 2 to cards { target() } }
-    )
-    */
-}
 
 // TOKENS
 
