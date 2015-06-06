@@ -35,7 +35,6 @@ card('ZEUS') {
     )
     */
 }
-
 card('URANUS') {
     creature "Greek God"
     flavor "The God of the Heavens, father of the Titans"
@@ -56,7 +55,6 @@ card('URANUS') {
         summon 1 of "Titan 4/2" to "you" zone "Battlefield"
     }
 }
-
 card('APOLLO') {
     creature "Greek God"
     flavor "God of music, arts, knowledge, healing, plague, and prophecy."
@@ -76,7 +74,6 @@ card('APOLLO') {
     )
     */
 }
-
 card('ARES') {
     creature "Greek God"
     flavor "God of war, bloodshed and violence."
@@ -94,7 +91,6 @@ card('ARES') {
     }
     */
 }
-
 card('ARTEMIS') {
     creature "Greek God"
     flavor "Virgin Goddess of the hunt, wilderness and animals."
@@ -108,7 +104,6 @@ card('ARTEMIS') {
         summon 1 of "Bear" to "you" zone "Battlefield"
     }
 }
-
 card('ATHENA') {
     creature "Greek God"
     flavor "Goddess of intelligence, skill, peace, warfare, battle strategy, and wisdom."
@@ -134,7 +129,6 @@ card('ATHENA') {
     )
     */
 }
-
 card('HERMES') {
     creature "Greek God"
     flavor "God of boundaries, travel, communication, trade, language, and writing."
@@ -145,7 +139,6 @@ card('HERMES') {
     sickness 1
     denyCounterAttack() // ranged
 }
-
 card('HERA') {
     creature "Greek God"
     flavor "Queen of the Gods and the wife of Zeus."
@@ -156,7 +149,6 @@ card('HERA') {
     sickness 1
     // phase() // #262
 }
-
 card('POSEIDON') {
     creature "Greek God"
     flavor "God of the sea, rivers, floods, droughts, and earthquakes."
@@ -174,7 +166,6 @@ card('POSEIDON') {
         }
     }
 }
-
 card('EROS') {
     creature "Greek God"
     flavor "The God of love and attraction."
@@ -191,8 +182,26 @@ card('EROS') {
     }
     */
 }
-
-
+card('GAIA') {
+    creature "Greek God"
+    flavor "Personification of the Earth, mother of the Titans."
+    maxInDeck 1
+    attack 4
+    health 4
+    manaCost 15
+    sickness 1
+    // Add +0/+3 to all Titans on the field.
+    whilePresent {
+        change HEALTH by 1 withPriority 1 onCards {
+            creatureType "Greek Titan"
+            zone "Battlefield"
+        }
+    }
+    // If this card is sent to the graveyard, bring two +2/+2 Titan tokens to the field.
+    onDeath {
+        summon 2 of "Titan 2/2" to "you" zone "Battlefield"
+    }
+}
 
 //// CHTHONIC DEITIES
 
@@ -217,7 +226,6 @@ card('HADES') {
         summon 3 of "Lost Soul" to "you" zone "Battlefield"
     }
 }
-
 card('CRONUS') {
     creature "Greek Titan"
     flavor "Deposed King of the Titans; also father of Zeus, Hades, and Poseidon."
@@ -234,30 +242,6 @@ card('CRONUS') {
     // When this creature is sent to the graveyard, add one +4/+2 Titan Token to the Field.
     onDeath {
         summon 1 of "Titan 4/2" to "you" zone "Battlefield"
-    }
-}
-
-card('Heracles') {
-    creature "Greek Hero"
-    flavor "Ascended hero, Son of Zeus, and divine protector of mankind."
-    maxInDeck 1
-    attack 6
-    health 8
-    manaCost 25
-    sickness 0 // Rush
-    // When Heracles comes into play, deal +3 damage randomly to target unit or player.
-    afterPlay {
-        pick 1 atRandom (
-            { damage 3 to "opponent" },
-            { damage 3 to 1 random { creature true; ownedBy "opponent" } }
-        )
-    }
-    // Add +1/+1 to all Hero units on the field.
-    whilePresent {
-        change ATTACK, HEALTH by 1 withPriority 1 onCards {
-            creatureType "Greek Hero"
-            zone "Battlefield"
-        }
     }
 }
 
@@ -284,7 +268,6 @@ card('Lernaean Hydra') {
         }
     }
 }
-
 card('The Underworld') {
     creature "Greek Location"
     flavor "The realm of the Dead."
@@ -308,7 +291,6 @@ card('The Underworld') {
     }
     */
 }
-
 card('CHARON') {
     creature "Greek Chthonic Deity"
     flavor "The Ferryman of the Underworld."
@@ -325,7 +307,6 @@ card('CHARON') {
     }
     */
 }
-
 card('EMPUSA') {
     creature "Greek Chthonic Deity"
     flavor "A monstrous underworld spirit with flaming hair, the leg of a goat and a leg of bronze."
@@ -336,7 +317,6 @@ card('EMPUSA') {
     sickness 1
     taunt()
 }
-
 card('MOIRAI') {
     creature "Greek Chthonic Deity"
     flavor "The white-robed incarnations of Fate."
@@ -353,7 +333,6 @@ card('MOIRAI') {
     )
     */
 }
-
 card('HECATE') {
     creature "Greek Chthonic Deity"
     flavor "Goddess of magic, witchcraft, the night, moon, ghosts and necromancy."
@@ -375,7 +354,6 @@ card('HECATE') {
     }
     */
 }
-
 card('Judges of the Dead') {
     creature "Greek Chthonic Deity"
     flavor "Three judges sat in judgment on those who entered the Underworld."
@@ -385,7 +363,6 @@ card('Judges of the Dead') {
     manaCost 10
     sickness 1
 }
-
 card('LAMIA') {
     creature "Greek Chthonic Deity"
     flavor "A vampiric Underworld spirit."
@@ -401,7 +378,6 @@ card('LAMIA') {
     }
     */
 }
-
 card('MACARIA') {
     creature "Greek Chthonic Deity"
     flavor "The daughter of Hades and goddess of blessed death."
@@ -417,7 +393,6 @@ card('MACARIA') {
     }
     */
 }
-
 card('PERSEPHONE') {
     creature "Greek Chthonic Deity"
     flavor "The queen of the underworld, wife of Hades and goddess of spring growth."
@@ -432,7 +407,6 @@ card('PERSEPHONE') {
         heal 1 to "you"
     }
 }
-
 card('THANATOS') {
     creature "Greek Chthonic Deity"
     flavor "Spirit of death and minister of the Underworld."
@@ -443,7 +417,6 @@ card('THANATOS') {
     sickness 1
     // plague() // #264
 }
-
 card('TARTARUS') {
     creature "Greek Chthonic Deity"
     flavor "The primeval god of the dark, stormy pit of the Underworld, the Tartarean pit that houses the Titans."
@@ -457,6 +430,8 @@ card('TARTARUS') {
         summon 2 of "Titan 2/2" to "you" zone "Battlefield"
     }
 }
+
+//// LOCATIONS
 
 card('Mount Olympus') {
     creature "Greek Location"
@@ -482,9 +457,176 @@ card('Mount Olympus') {
     */
 }
 
+card('Tartarean Pit') {
+    creature "Greek Location"
+    flavor "Prison of the Titans."
+    maxInDeck 1
+    attack 0
+    noAttack()
+    health 8
+    manaCost 20
+    sickness 1
+    // Attack and health are equal to the number of Titans cards on the field. 
+    /*
+    // #240
+    whilePresent {
+        set ATTACK, HEALTH to count({creatureType "Greek Titan"; zone "Battlefield"}) withPriority 1 onCards { thisCard() }
+    }
+    */
+    // At the end of your turn, if a unit was sent to the graveyard
+    // add two +2/+2 Titan token to the field.
+    /*
+    onEndOfTurn {
+        ifAnyCardDied { // #280
+            summon 2 of "Titan 2/2" to "you" zone "Battlefield"
+        }
+    }
+    */
+}
 
+/// TITANS
 
-// TOKENS
+card('Hyperion') {
+    creature "Greek Titan"
+    flavor "Titan of Light."
+    maxInDeck 1
+    attack 4
+    health 2
+    manaCost 15
+    sickness 0 // Rush
+}
+ card('Mnemosyne') {
+    creature "Greek Titan"
+    flavor "Titaness of memory and remembrance, and mother of the Nine Muses."
+    maxInDeck 1
+    attack 2
+    health 3
+    manaCost 5
+    sickness 1
+    // phase() // #262
+}
+card('Styx') {
+    creature "Greek Titan"
+    flavor "Titaness of the Underworld river Styx and personification of hatred."
+    maxInDeck 1
+    attack 3
+    health 3
+    manaCost 5
+    sickness 1
+    // Effect – Gives +1/+0 to all Titans on the field.
+    whilePresent {
+        change ATTACK by 1 withPriority 1 onCards {
+            creatureType "Greek Titan"
+            zone "Battlefield"
+        }
+    }
+}
+card('Rhea') {
+    creature "Greek Titan"
+    flavor "Titaness of fertility, motherhood and the mountain wilds."
+    maxInDeck 1
+    attack 2
+    health 1
+    manaCost 5
+    sickness 1
+    // When this card is sent to the graveyard, bring a +2/+2 Bear token onto the field.
+    onDeath {
+        summon 1 of "Bear" to "you" zone "Battlefield"
+    }
+}
+card('Menoetius') {
+    creature "Greek Titan"
+    flavor "Titan of violent anger, rash action, and human mortality."
+    maxInDeck 1
+    attack 4
+    health 4
+    manaCost 10
+    sickness 0 // Rush
+}
+
+//// HEROES
+
+card('Heracles') {
+    creature "Greek Hero"
+    flavor "Ascended hero, Son of Zeus, and divine protector of mankind."
+    maxInDeck 1
+    attack 6
+    health 8
+    manaCost 25
+    sickness 0 // Rush
+    // When Heracles comes into play, deal +3 damage randomly to target unit or player.
+    afterPlay {
+        pick 1 atRandom (
+            { damage 3 to "opponent" },
+            { damage 3 to 1 random { creature true; ownedBy "opponent" } }
+        )
+    }
+    // Add +1/+1 to all Hero units on the field.
+    whilePresent {
+        change ATTACK, HEALTH by 1 withPriority 1 onCards {
+            creatureType "Greek Hero"
+            zone "Battlefield"
+        }
+    }
+}
+card('Achilles') {
+    creature "Greek Hero"
+    flavor "Hero of the Trojan War."
+    maxInDeck 1
+    attack 3
+    health 3
+    manaCost 10
+    sickness 1
+    // dodge() // #263
+}
+card('Perseus') {
+    creature "Greek Hero"
+    flavor "Son of Zeus and the slayer of the Gorgon Medusa."
+    maxInDeck 1
+    attack 5
+    health 4
+    manaCost 15
+    sickness 1
+    taunt()
+    // Freeze unit for 1 turn who was dealt damage from
+    // or who dealt damage to this unit.
+    /*
+    afterAttacked { // #266
+        // #281 & #282
+        counterAttack set SICKNESS to 2 onCards { attacker() }
+    }
+    afterAttacking { // #275
+        set SICKNESS to 2 onCards { target() }
+    }
+    */
+}
+card('Iolaus') {
+    creature "Greek Hero"
+    flavor "Nephew of Heracles who aided his uncle in one of his Labors."
+    maxInDeck 1
+    attack 2
+    health 2
+    manaCost 5
+    sickness 1
+    // Gains +1/+1 if Heracles is on the field.
+    /*
+    ifPresent (card "HERACLES" zone "Battlefield") { // #261
+        change ATTACK, HEALTH by 1 withPriority 1 onCards { thisCard() }
+    }
+    */
+}
+card('Theseus') {
+    creature "Greek Hero"
+    flavor "Son of Poseidon, King of Athens and slayer of the Minotaur."
+    maxInDeck 1
+    attack 3
+    health 2
+    manaCost 5
+    sickness 1
+    ranged()
+}
+
+//// TOKENS
 
 card('Bear') {
     creature "Greek"
