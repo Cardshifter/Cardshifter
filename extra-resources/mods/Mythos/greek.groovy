@@ -625,6 +625,53 @@ card('Theseus') {
     sickness 1
     ranged()
 }
+card('Odysseus') {
+    creature "Greek Hero"
+    flavor "King of Ithaca whose adventures are the subject of Homer’s Odyssey."
+    maxInDeck 1
+    attack 2
+    health 1
+    manaCost 5
+    sickness 1
+}
+card('Daedalus') {
+    creature "Greek Hero"
+    flavor "Creator of the Labyrinth and a great inventor, until King Minos trapped him in his own creation."
+    maxInDeck 1
+    attack 3
+    health 4
+    manaCost 10
+    sickness 1
+    // When Daedalus is sent to the graveyard, summon a +4/+4 Minotaur token to the field.
+    onDeath {
+        summon 1 of "Minotaur" to "you" zone "Battlefield"
+    }
+}
+card('Hector') {
+    creature "Greek Hero"
+    flavor "Hero of the Trojan War and champion of the Trojan people."
+    maxInDeck 1
+    attack 4
+    health 4
+    manaCost 15
+    sickness 0 // Rush
+    // Give +1/+1 to all other Hero cards on the field.
+    whilePresent {
+        change ATTACK, HEALTH by 1 withPriority 1 onCards {
+            creatureType "Greek Hero"
+            zone "Battlefield"
+        }
+    }
+}
+card('Ajax The Great') {
+    creature "Greek Hero"
+    flavor "Hero of the Trojan War and king of Salamis."
+    maxInDeck 1
+    attack 2
+    health 3
+    manaCost 5
+    sickness 1
+}
 
 //// TOKENS
 
@@ -665,4 +712,12 @@ card('Titan 4/2') {
     sickness 1
     token()
 }
-
+card('Minotaur') {
+    creature "Greek"
+    flavor ""
+    attack 4
+    health 4
+    manaCost 0
+    sickness 1
+    token()
+}
