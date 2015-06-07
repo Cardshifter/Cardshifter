@@ -246,7 +246,7 @@ class EffectDelegate {
             [to: {String who ->
                 [zone: {String zoneName ->
                     String ownerName
-                    if who == "you" {
+                    if (who == "you") {
                         ownerName = "your"
                     } else {
                         ownerName = who + /'s/
