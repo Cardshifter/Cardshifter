@@ -943,9 +943,84 @@ card('The Might of Hercules') {
 card('Golden Fleece') {
     flavor ""
     maxInDeck 1
-    attack 0
-    health 0
     manaCost 5
     enchantment()
     addHealth 3
+}
+card('Achilles’ Armor') {
+    flavor ""
+    maxInDeck 1
+    manaCost 10
+    enchantment()
+    addAttack 1
+    addHealth 2
+    // If that unit is a Hero it gains Taunt.
+    /*
+    spell {
+        ifTarget (creatureType: "Greek Hero") { // #286
+            set taunt() toCards { target() }
+        }
+    }
+    */
+}
+card('Hades’ Bident') {
+    flavor ""
+    maxInDeck 1
+    manaCost 10
+    enchantment()
+    addAttack 3
+    // If that unit is a Chthonic Deity it gains Plague.
+    /*
+    spell {
+        ifTarget (creatureType: "Greek Chthonic Deity") { // #286
+            set taunt() toCards { target() }
+        }
+    }
+    */
+}
+card('Helm of Darkness') {
+    flavor ""
+    maxInDeck 1
+    manaCost 5
+    enchantment()
+    // Target unit gains +1/+1 and Phase.
+    addAttack 1
+    addHealth 1
+    /*
+    spell {
+            set phase() toCards { target() }
+    }
+    */
+}
+card('Poseidon’s Trident') {
+    flavor ""
+    maxInDeck 1
+    manaCost 10
+    enchantment()
+    addAttack 2
+    addHealth 2
+    // If that unit is a God it gains Dodge.
+    /*
+    spell {
+        ifTarget (creatureType: "Greek God") { // #286
+            set dodge() toCards { target() }
+        }
+    }
+    */
+}
+card('Cronus’ Scythe') {
+    flavor ""
+    maxInDeck 1
+    manaCost 10
+    enchantment()
+    addAttack 2
+    addHealth 1
+    // If that unit is a Titan it gains Taunt.
+    /*
+    spell {
+        ifTarget (creatureType: "Greek Titan") { // #286
+            set taunt() toCards { target() }
+        }
+    }
+    */
 }
