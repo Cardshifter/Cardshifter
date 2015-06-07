@@ -130,7 +130,7 @@ card("Healer") {
 card('Tree of Life') {
     manaCost 10
     // Player gains +5 health
-    spell ()
+    spell {}
     afterPlay { heal 5 to "you" }
 }
 
@@ -183,7 +183,7 @@ card('False Idol') {
             creature true
             ownedBy "opponent"
             zone "Battlefield"
-            withLowest ATTACK // #289
+            // withLowest ATTACK // #289
         }
     }
     afterPlay {
