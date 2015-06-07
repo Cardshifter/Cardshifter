@@ -125,6 +125,24 @@ card("Healer") {
     }
 }
 
+// card('Shaman') {}
+
+// card('Skeleton') {}
+
+// card('Zombie') {}
+
+// card('Snake') {}
+
+// card('Spider') {}
+
+// card('Eagle') {}
+
+// card('Wolf') {}
+
+// card('Bear') {}
+
+// card('Holy Man') {}
+
 //// SPELLS
 
 card('Tree of Life') {
