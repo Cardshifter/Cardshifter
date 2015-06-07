@@ -286,7 +286,7 @@ card('The Underworld') {
     }
     // Add +5 attack to this card if Hades is on the field.
     /*
-    ifPresent (card "HADES" zone "Battlefield") { // #261
+    ifPresent (cardName "HADES" zone "Battlefield") { // #261
         change ATTACK by 5 withPriority 2 onCards { thisCard() }
     }
     */
@@ -451,7 +451,7 @@ card('Mount Olympus') {
     }
     // Add +5 attack to this card if Zeus is on the field.
     /*
-    ifPresent (card "ZEUS" zone "Battlefield") { // #261
+    ifPresent (cardName "ZEUS" zone "Battlefield") { // #261
         change ATTACK by 5 withPriority 2 onCards { thisCard() }
     }
     */
@@ -610,7 +610,7 @@ card('Iolaus') {
     sickness 1
     // Gains +1/+1 if Heracles is on the field.
     /*
-    ifPresent (card "HERACLES" zone "Battlefield") { // #261
+    ifPresent (cardName "HERACLES" zone "Battlefield") { // #261
         change ATTACK, HEALTH by 1 withPriority 1 onCards { thisCard() }
     }
     */
@@ -673,6 +673,133 @@ card('Ajax The Great') {
     sickness 1
 }
 
+//// CREATURES
+
+card('Medusa') {
+    creature "Greek"
+    flavor "A mortal woman transformed into a hideous Gorgon by Athena."
+    maxInDeck 1
+    attack 4
+    health 3
+    manaCost 15
+    sickness 1
+    // Freeze unit for 3 turns that was dealt or dealt damage to this unit.
+    /*
+    afterAttacked { // #266
+        // #281 & #282
+        counterAttack set SICKNESS to 4 onCards { attacker() }
+    }
+    afterAttacking { // #275
+        set SICKNESS to 4 onCards { target() }
+    }
+    */
+    // When Medusa is sent to the graveyard, summon three +1/+1 snake tokens to the field.
+    onDeath {
+        summon 3 of "Medusa Snake" to "you" zone "Battlefield"
+    }
+}
+card('Nemean Lion') {
+    creature "Greek"
+    flavor "A gigantic lion whose skin was impervious to weapons; Heracles strangled it."
+    maxInDeck 1
+    attack 3
+    health 6
+    manaCost 15
+    sickness 1
+    taunt()
+}
+card('Erymanthian Boar') {
+    creature "Greek"
+    flavor "A gigantic boar, which Heracles was sent to retrieve as one of his labors."
+    maxInDeck 1
+    attack 5
+    health 4
+    manaCost 10
+    sickness 0 // Rush
+}
+card('Pegasus') {
+    creature "Greek"
+    flavor "A divine winged stallion that is pure white, son of Medusa and Poseidon, and father of winged horses."
+    maxInDeck 1
+    attack 2
+    health 2
+    manaCost 5
+    sickness 1
+    // dodge() // #263
+    /*
+    ifPresent (creatureType "Greek Hero"; zone "Battlefield") {
+        change ATTACK, HEALTH by 2 withPriority 1 onCards { thisCard() }
+    }
+    */
+}
+card('Ararchne') {
+    creature "Greek"
+    flavor "Half-spider half-female, she is the mother of all spiders."
+    maxInDeck 1
+    attack 3
+    health 3
+    manaCost 5
+    sickness 1
+    // plague() // #264
+    // When Ararchne is sent to the graveyard, 
+    // summon two +2/+2 Spider tokens to the field with Plague.
+    onDeath {
+        summon 2 of "Ararchne Spider" to "you" zone "Battlefield"
+    }
+}
+card('Griffin') {
+    creature "Greek"
+    flavor "A creature that combines the body of a lion and the head and wings of an eagle."
+    maxInDeck 1
+    attack 3
+    health 2
+    manaCost 5
+    sickness 1
+    // dodge() // #263
+}
+card('Caucasian Eagle') {
+    creature "Greek"
+    flavor "A giant eagle set by Zeus to feed on the ever-regenerating liver of Prometheus."
+    maxInDeck 1
+    attack 2
+    health 3
+    manaCost 5
+    sickness 1
+    // dodge() // #263
+}
+card('Chiron') {
+    creature "Greek"
+    flavor "The eldest and wisest of the centaurs, the ancient trainer of heroes."
+    maxInDeck 1
+    attack 4
+    health 3
+    manaCost 10
+    sickness 0 // Rush
+    // When Chiron comes into play add +1/+0 to all Creatures on the field
+    afterPlay {
+        change ATTACK by 1 onCards {
+            creature true
+        }
+    }
+}
+card('Cerberus') {
+    creature "Greek"
+    flavor "The Three-headed hound that guards the gates of the Underworld."
+    maxInDeck 1
+    attack 3
+    health 4
+    manaCost 15
+    sickness 1
+    taunt()
+    // Cerberus gains +2/+2 if Hades is on the field.
+    /*
+    ifPresent (cardName "HADES"; zone "Battlefield") {
+        change ATTACK, HEALTH by 1 withPriority 1 onCards { thisCard() }
+
+    }
+    */
+}
+
 //// TOKENS
 
 card('Bear') {
@@ -720,4 +847,23 @@ card('Minotaur') {
     manaCost 0
     sickness 1
     token()
+}
+card('Medusa Snake') {
+    creature "Greek"
+    flavor ""
+    maxInDeck 1
+    attack 1
+    health 1
+    manaCost 0
+    sickness 1
+}
+card('Ararchne Spider') {
+    creature "Greek"
+    flavor ""
+    maxInDeck 1
+    attack 2
+    health 2
+    manaCost 0
+    sickness 1
+    // plague() // #264
 }
