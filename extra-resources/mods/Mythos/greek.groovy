@@ -870,6 +870,10 @@ card('Ararchne Spider') {
     // plague() // #264
 }
 
+
+////// NOT CREATURES
+
+
 //// SPELLS
 
 /* DOES NOTHING RIGHT NOW
