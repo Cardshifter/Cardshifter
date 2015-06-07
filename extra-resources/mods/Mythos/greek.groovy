@@ -856,6 +856,7 @@ card('Medusa Snake') {
     health 1
     manaCost 0
     sickness 1
+    token()
 }
 card('Ararchne Spider') {
     creature "Greek"
@@ -945,6 +946,7 @@ card('Golden Fleece') {
     maxInDeck 1
     manaCost 5
     enchantment()
+    // Equipped unit gains +0/+3.
     addHealth 3
 }
 card('Achilles’ Armor') {
