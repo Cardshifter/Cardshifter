@@ -865,5 +865,28 @@ card('Ararchne Spider') {
     health 2
     manaCost 0
     sickness 1
+    token()
     // plague() // #264
 }
+
+//// SPELLS
+
+/* DOES NOTHING RIGHT NOW
+card('Apollo’s Bow') {
+    creature "Greek"
+    flavor ""
+    maxInDeck 1
+    manaCost 5
+    spell {
+        // Choose one effect: 
+        // Target player or unit gains +3 health.
+        // Target player or unit looses +3 health.
+        //pickAction ( // #270
+        //    { heal 3 to "you" },
+        //    { heal 3 to cards { target() } }, // #282
+        //    { damage 3 to "opponent" },
+        //    { damage 3 to cards { target() } } // #282
+        //)
+    }
+}
+*/
