@@ -873,7 +873,6 @@ card('Ararchne Spider') {
 
 /* DOES NOTHING RIGHT NOW
 card('Apollo’s Bow') {
-    creature "Greek"
     flavor ""
     maxInDeck 1
     manaCost 5
@@ -881,12 +880,72 @@ card('Apollo’s Bow') {
         // Choose one effect: 
         // Target player or unit gains +3 health.
         // Target player or unit looses +3 health.
-        //pickAction ( // #270
-        //    { heal 3 to "you" },
-        //    { heal 3 to cards { target() } }, // #282
-        //    { damage 3 to "opponent" },
-        //    { damage 3 to cards { target() } } // #282
-        //)
+        //afterPlay {
+            //pickAction ( // #270
+            //    { heal 3 to "you" },
+            //    { heal 3 to cards { target() } }, // #282
+            //    { damage 3 to "opponent" },
+            //    { damage 3 to cards { target() } } // #282
+            //)
+        //}
     }
 }
 */
+/* DOES NOTHING RIGHT NOW
+card('Tale of the Three Brothers') {
+    flavor ""
+    maxInDeck 1
+    manaCost 20
+    spell {
+        // If you possess Hades, Poseidon, and Zeus on the field or in the graveyard 
+        // when this card is activated, choose any number of units your opponent controls, 
+        // but no more than 3, and destroy them.
+        afterplay {
+            // #284
+                ifPresent (cardName "HADES", "POSEIDON", "ZEUS"; zone "Battlefield") {
+                    destroyUpTo 3 cards { ownedBy "opponent"; zone "Battlefield" }
+                }
+        }
+    }
+}
+*/
+/* DOES NOTHING RIGHT NOW
+card('The Wrath of Zeus') {
+    flavor "hello"
+    maxInDeck 1
+    manaCost 15
+    spell {
+        // Deal +5 damage to target player or unit.
+    //    // #284
+    //    afterPlay {
+    //        damage n to { target() }
+    //    }
+    }
+}
+*/
+/* DOES NOTHING RIGHT NOW
+card('The Might of Hercules') {
+    flavor ""
+    maxInDeck 1
+    manaCost 10
+    spell {
+        afterPlay {
+            // Give target unit +3/+0 until the end of turn.
+            change ATTACK by 3 untilEndOfTurn onCards { target() } // #282 & #285
+        }
+        // If that target unit is a Hero give it Range as well.
+        ifTarget (creatureType: "Greek Hero") { // #286
+            set ranged() toCards { target() }
+        }
+    }
+}
+*/
+card('Golden Fleece') {
+    flavor ""
+    maxInDeck 1
+    attack 0
+    health 0
+    manaCost 5
+    enchantment()
+    addHealth 3
+}
