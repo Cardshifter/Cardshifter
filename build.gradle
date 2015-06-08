@@ -24,6 +24,9 @@ allprojects  {
 def getMavenSettingsCredentials() {
     String userHome = System.getProperty('user.home')
     File mavenSettings = new File(userHome, '.m2/settings.xml')
+    if (!mavenSettings.exists()) {
+        return []
+    }
     def xmlSlurper = new XmlSlurper()
     def output = xmlSlurper.parse(mavenSettings)
     return output."servers"."server"
@@ -36,6 +39,7 @@ def getCredentials() {
             return [username: entry.username.text(), password: entry.password.text()]
         }
     }
+    return [username: 'invalid', password: 'invalid']
 }
 
 subprojects {
