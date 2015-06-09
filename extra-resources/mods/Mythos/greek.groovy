@@ -306,6 +306,14 @@ card('CHARON') {
         change ATTACK, HEALTH by 1 onCards { thisCard() }
     }
     */
+    /*
+    // When this card is sent to the graveyard, destroy target creature.
+    onDeath {
+        // #282
+        set HEALTH to 0 onCards { attacker() }
+    }
+
+    /*
 }
 card('EMPUSA') {
     creature "Greek Chthonic Deity"
