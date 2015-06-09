@@ -312,8 +312,7 @@ card('CHARON') {
         // #282
         set HEALTH to 0 onCards { attacker() }
     }
-
-    /*
+    */
 }
 card('EMPUSA') {
     creature "Greek Chthonic Deity"
