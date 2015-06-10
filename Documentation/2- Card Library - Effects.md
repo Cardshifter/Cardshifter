@@ -48,10 +48,18 @@ Various triggers are available for actions to be applied on.
 - Applies the nested effects while the card is present on the Battlefield.
 - It is not possible at all to use `heal` and `damage` effects inside whilePresent.
 
-####`onEndOfTurn`
+####`onStartOfTurn` & `onEndOfTurn`
 
 - Only works on creature cards. 
-- Applies the nested effects at the end of each of the owner's turns.
+- Applies the nested effects at the start or end of each of the owner's turns.
+- By default applies to "you", but can also optionally be provided an argument to specify which player it applies to, for example:
+
+
+        onStartOfTurn { ... }
+        onStartOfTurn('you') { ... }
+        onStartOfTurn('opponent') { ... }
+        onStartOfTurn('all') { ... }
+    
 
 ####`onDeath`
 
@@ -67,12 +75,12 @@ Various triggers are available for actions to be applied on.
 Syntax:
 
     trigger {
-        pick n atRandom {
+        pick n atRandom (
             { action a },
             { action b },
-            ...,
+            ... ,
             { action z }
-        }
+        )
     }
 
 Example:
@@ -140,7 +148,7 @@ Examples:
     // subtract two attack from opponent creatures while present
     whilePresent {
         change ATTACK by -2 withPriority 1 onCards {
-            creature()
+            creature true
             ownedBy 'opponent'
             zone 'Battlefield'
         }
@@ -151,7 +159,7 @@ Examples:
 Syntax:
 
     trigger {
-        change RESOURCE by n [withPriority n] onCards [n random] [repeat(n)] {
+        set RESOURCE to n [withPriority n] onCards [n random] [repeat(n)] {
             // filters
         }
     }
@@ -161,7 +169,7 @@ Examples:
     // set opponent creature sickness to 2 (wait one turn) on death
     onDeath {
         set SICKNESS to 2 onCards {
-            creature()
+            creature true
             ownedBy 'opponent'
             zone 'Battlefield'
         }
@@ -239,6 +247,21 @@ Example:
 - If a filter needs to take multiple arguments, seperate them with a comma. For example:
 
     owned by "you", "opponent"
+    
+- Individual filters must be separated either by a new line/line break, or a semicolon `;` character.
+
+
+        // Both these are valid:
+        onCards {
+            creature true
+            ownedBy "you"
+            zone "Battlefield"
+        }
+        onCards { creature true; ownedBy "you"; zone "Battlefield }
+        //
+        // But this one is not valid:
+        onCards { creature true ownedBy "you" zone "Battlefield }
+
 
 ####`ownedBy`
 

@@ -91,7 +91,7 @@ class EffectDelegate {
     def withProbability(double probability, @DelegatesTo(EffectDelegate) Closure action) {
         EffectDelegate deleg = create(action, true)
         assert deleg.closures.size() > 0 : 'probability condition needs to have some actions'
-        description.append("$probability chance to $deleg.description")
+        description.append("$probability % chance to $deleg.description")
         closures.add({Entity source, Object data ->
             double random = source.game.random.nextDouble()
             println "random $random probability $probability perform ${random < probability}"
@@ -106,7 +106,11 @@ class EffectDelegate {
     def repeat(int count, @DelegatesTo(EffectDelegate) Closure action) {
         EffectDelegate deleg = create(action, false)
         assert deleg.closures.size() > 0 : 'repeat needs to have some actions'
-        description.append("$deleg.description $count times")
+        if (count == 1) {
+            description.append("$deleg.description once\n")
+        } else {
+            description.append("$deleg.description $count times\n")
+        }
         closures.add({Entity source, Object data ->
             for (int i = 0; i < count; i++) {
                 for (Closure act : deleg.closures) {
@@ -129,7 +133,7 @@ class EffectDelegate {
             })
             return;
         }
-        description.append("$who draw $count card$s\n")
+        description.append("$who draws $count card$s\n")
         closures.add({Entity source, Object data ->
             Entity drawer = entityLookup(source, who)
             for (int i = 0; i < count; i++) {
@@ -147,7 +151,7 @@ class EffectDelegate {
             int max = target.max_health
             resource.retriever().resFor(target).changeBy(value, {i -> i >= max ? max : i})
         }
-        [to: {Object who -> targetedAction(action, who, "Heal $value to %who%")}]
+        [to: {Object who -> targetedAction(action, who, "Heal $value to %who%\n")}]
     }
 
     def change(ECSResource resource) {
@@ -156,7 +160,7 @@ class EffectDelegate {
                 resource.retriever.resFor(target).change(amount)
             }
             [onCards: {Object obj ->
-                targetedAction(action, obj, "Change $resource by $amount on %who%")
+                targetedAction(action, obj, "Change $resource by $amount on %who%\n")
             }]
         }]
     }
@@ -167,7 +171,7 @@ class EffectDelegate {
                 resource.retriever.resFor(target).set(amount)
             }
             [onCards: {Object obj ->
-                targetedAction(action, obj, "Set $resource to $amount on %who%")
+                targetedAction(action, obj, "Set $resource to $amount on %who%\n")
             }]
         }]
     }
@@ -241,7 +245,13 @@ class EffectDelegate {
             assert cardName
             [to: {String who ->
                 [zone: {String zoneName ->
-                    String desc = "Summon " + count + " " + cardName + " at " + who + " " + zoneName;
+                    String ownerName
+                    if (who == "you") {
+                        ownerName = "your"
+                    } else {
+                        ownerName = who + /'s/
+                    }
+                    String desc = "Summon " + count + " " + cardName + " to " + ownerName + " " + zoneName;
 
                     Closure closure = {Entity source, Object data ->
                         Entity zoneOwner = entityLookup(source, who)

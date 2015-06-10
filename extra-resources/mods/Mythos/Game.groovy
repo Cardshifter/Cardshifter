@@ -32,7 +32,7 @@ config {
             cardset 'common'
             cardset 'chinese'
             //cardset 'egyptian'
-            //cardset 'greek'
+            // cardset 'greek'
             //cardset 'norse'
             //cardset 'hindu'
             //cardset 'roman'
