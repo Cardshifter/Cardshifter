@@ -151,81 +151,7 @@ class EffectDelegate {
             int max = target.max_health
             resource.retriever().resFor(target).changeBy(value, {i -> i >= max ? max : i})
         }
-        [to: {Object who -> targetedAction(action, who, "Heal $value to %who%\n")}]
-    }
-
-    def change(ECSResource resource) {
-        [by: {int amount ->
-            EntityConsumer action = {Entity source, Entity target ->
-                resource.retriever.resFor(target).change(amount)
-            }
-            [onCards: {Object obj ->
-                targetedAction(action, obj, "Change $resource by $amount on %who%\n")
-            }]
-        }]
-    }
-
-    def set(ECSResource resource) {
-        [to: {int amount ->
-            EntityConsumer action = {Entity source, Entity target ->
-                resource.retriever.resFor(target).set(amount)
-            }
-            [onCards: {Object obj ->
-                targetedAction(action, obj, "Set $resource to $amount on %who%\n")
-            }]
-        }]
-    }
-
-    private Object targetedAction(EntityConsumer action, Object who, String desc) {
-        String targetStr = '';
-        Closure closure = null;
-        if (who == targets) {
-            targetStr = 'targets'
-            closure = {Entity source, Object data ->
-                assert data instanceof ActionPerformEvent
-                ActionPerformEvent event = data as ActionPerformEvent
-                assert event.action.getTargetSets().size() == 1
-                TargetSet targetSet = event.action.getTargetSets().get(0)
-                targetSet.chosenTargets.forEach({Entity target ->
-                    action.perform(source, target)
-                })
-            }
-        } else if (who instanceof String) {
-            targetStr = who;
-            closure = {Entity source, Object data ->
-                Entity entity = entityLookup(source, who as String)
-                action.perform(source, entity)
-            }
-        } else if (who instanceof Integer) {
-            return [random: {Closure filter ->
-                FilterDelegate filterDelegate = FilterDelegate.fromClosure(filter)
-                Closure randomizedAction = {Entity source, Object data ->
-                    List<Entity> targets = filterDelegate.findMatching(source)
-                    int count = who as int
-                    Collections.shuffle(targets, source.game.random)
-                    println "Targeting $who random of $targets with $desc"
-                    targets.stream().limit(count).forEachOrdered({Entity dst ->
-                        action.perform(source, dst)
-                    })
-                }
-                description.append(desc.replace('%who%', "$who random $filterDelegate.description"))
-                description.append('\n')
-                closures.add(randomizedAction)
-            }]
-        } else if (who instanceof Closure) {
-            FilterDelegate filter = FilterDelegate.fromClosure(who as Closure)
-            targetStr = filter.description
-            closure = {Entity source, Object data ->
-                filter.findMatching(source).forEach({Entity entity ->
-                    action.perform(source, entity)
-                })
-            }
-        }
-        assert closure : "$description: Unknown target $who"
-
-        description.append(desc.replace('%who%', targetStr))
-        description.append('\n')
-        closures.add(closure)
+        targetedAction(action, "Heal $value to %who%\n")
     }
 
     def damage(int value) {
@@ -236,8 +162,82 @@ class EffectDelegate {
             assert resource : 'health resource not found'
             resource.retriever().resFor(target).change(-value)
         }
-        [to: {Object who -> targetedAction(action, who, "Deal $value damage to %who%")}]
+        targetedAction(action, "Deal $value damage to %who%")
     }
+
+    def change(ECSResource resource) {
+        [by: {int amount ->
+            EntityConsumer action = {Entity source, Entity target ->
+                resource.retriever.resFor(target).change(amount)
+            }
+            targetedAction(action, "Change $resource by $amount on %who%\n")
+        }]
+    }
+
+    def set(ECSResource resource) {
+        [to: {int amount ->
+            EntityConsumer action = {Entity source, Entity target ->
+                resource.retriever.resFor(target).set(amount)
+            }
+            targetedAction(action, "Set $resource to $amount on %who%\n")
+        }]
+    }
+
+    private Object targetedAction(EntityConsumer action, String desc) {
+        String targetStr = '';
+        Closure closure = null;
+        return [on: {Object who ->
+            if (who == targets) {
+                targetStr = 'targets'
+                closure = {Entity source, Object data ->
+                    assert data instanceof ActionPerformEvent
+                    ActionPerformEvent event = data as ActionPerformEvent
+                    assert event.action.getTargetSets().size() == 1
+                    TargetSet targetSet = event.action.getTargetSets().get(0)
+                    targetSet.chosenTargets.forEach({Entity target ->
+                        action.perform(source, target)
+                    })
+                }
+            } else if (who instanceof String) {
+                targetStr = who;
+                closure = {Entity source, Object data ->
+                    Entity entity = entityLookup(source, who as String)
+                    action.perform(source, entity)
+                }
+            } else if (who instanceof Integer) {
+                return [random: {Closure filter ->
+                    FilterDelegate filterDelegate = FilterDelegate.fromClosure(filter)
+                    Closure randomizedAction = {Entity source, Object data ->
+                        List<Entity> targets = filterDelegate.findMatching(source)
+                        int count = who as int
+                        Collections.shuffle(targets, source.game.random)
+                        println "Targeting $who random of $targets with $desc"
+                        targets.stream().limit(count).forEachOrdered({Entity dst ->
+                            action.perform(source, dst)
+                        })
+                    }
+                    description.append(desc.replace('%who%', "$who random $filterDelegate.description"))
+                    description.append('\n')
+                    closures.add(randomizedAction)
+                }]
+            } else if (who instanceof Closure) {
+                FilterDelegate filter = FilterDelegate.fromClosure(who as Closure)
+                targetStr = filter.description
+                closure = {Entity source, Object data ->
+                    filter.findMatching(source).forEach({Entity entity ->
+                        action.perform(source, entity)
+                    })
+                }
+            }
+            assert closure : "$description: Unknown target $who"
+
+            description.append(desc.replace('%who%', targetStr))
+            description.append('\n')
+            closures.add(closure)
+        }]
+    }
+
+
 
     // summon 2 of 'Bodyman' to owner zone Hand
     def summon(int count) { // TODO: Support other methods of getting count (random, EntityInt)
