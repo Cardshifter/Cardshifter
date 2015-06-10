@@ -84,7 +84,7 @@ card("Spy") {
     attack 0
     noAttack()
     whilePresent {
-        change HEALTH, ATTACK by -1 withPriority 1 onCards {
+        change HEALTH, ATTACK by -1 withPriority 1 on {
             creature true
             ownedBy 'opponent'
             zone 'Battlefield'
@@ -100,7 +100,7 @@ card("Slingman") {
     manaCost 10
     attack 4
     whilePresent {
-        change ATTACK by -2 withPriority 1 onCards {
+        change ATTACK by -2 withPriority 1 on {
             creature true
             ownedBy 'opponent'
             zone 'Battlefield'
@@ -117,7 +117,7 @@ card("Healer") {
     attack 0
     noAttack()
     whilePresent {
-        change HEALTH by 2 withPriority 1 onCards {
+        change HEALTH by 2 withPriority 1 on {
             creature true
             ownedBy 'you'
             zone 'Battlefield'
@@ -169,14 +169,14 @@ card("Spring of Rejuvenation") {
 
 /*
 One last chance – Spell
-Return target creature from the graveyard to the field for one turn, its effects is negated. 
+Return target creature from the graveyard to the field for one turn, its effects is negated.
 Mana – 5
 */
 
 /*
 card('Resurrection') {
     manaCost 10
-    // Return target unit from the graveyard to the field. 
+    // Return target unit from the graveyard to the field.
     // Player gains +3 health
     spell {
         targets 1 {
@@ -251,6 +251,6 @@ Mana - 10
 
 /*
 Sacrificial Decree – Spell
-Opponent discards a card of his choice. 
+Opponent discards a card of his choice.
 Mana - 10
 */
