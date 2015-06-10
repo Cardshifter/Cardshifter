@@ -63,7 +63,7 @@ card('APOLLO') {
     health 4
     manaCost 5
     sickness 1
-    // (3) Choose one per turn: Target ku1`322player or unit gains +2 health, 
+    // (3) Choose one per turn: Target player or unit gains +2 health, 
     // target player or unit looses +2 health.
     /*
     pickAction ( // #270
