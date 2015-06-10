@@ -6,12 +6,59 @@
 	</projects>
 	<buildSpec>
 		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
 			<name>org.eclipse.m2e.core.maven2Builder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>
 	</buildSpec>
 	<natures>
+		<nature>org.springsource.ide.eclipse.gradle.core.nature</nature>
+		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.eclipse.m2e.core.maven2Nature</nature>
 	</natures>
+	<filteredResources>
+		<filter>
+			<id>1433799662078</id>
+			<name></name>
+			<type>26</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.orFilterMatcher</id>
+				<arguments>
+					<matcher>
+						<id>org.eclipse.ui.ide.multiFilter</id>
+						<arguments>1.0-projectRelativePath-equals-true-false-cardshifter-server</arguments>
+					</matcher>
+					<matcher>
+						<id>org.eclipse.ui.ide.multiFilter</id>
+						<arguments>1.0-projectRelativePath-equals-true-false-cardshifter-fx</arguments>
+					</matcher>
+					<matcher>
+						<id>org.eclipse.ui.ide.multiFilter</id>
+						<arguments>1.0-projectRelativePath-equals-true-false-cardshifter-console</arguments>
+					</matcher>
+					<matcher>
+						<id>org.eclipse.ui.ide.multiFilter</id>
+						<arguments>1.0-projectRelativePath-equals-true-false-cardshifter-api</arguments>
+					</matcher>
+					<matcher>
+						<id>org.eclipse.ui.ide.multiFilter</id>
+						<arguments>1.0-projectRelativePath-equals-true-false-cardshifter-core</arguments>
+					</matcher>
+					<matcher>
+						<id>org.eclipse.ui.ide.multiFilter</id>
+						<arguments>1.0-projectRelativePath-equals-true-false-cardshifter-modapi</arguments>
+					</matcher>
+					<matcher>
+						<id>org.eclipse.ui.ide.multiFilter</id>
+						<arguments>1.0-projectRelativePath-equals-true-false-cardshifter-test</arguments>
+					</matcher>
+				</arguments>
+			</matcher>
+		</filter>
+	</filteredResources>
 </projectDescription>

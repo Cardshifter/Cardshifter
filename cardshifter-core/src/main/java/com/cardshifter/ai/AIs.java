@@ -32,22 +32,22 @@ public class AIs {
 		config.withScorer(new PredicateScorer<>(action -> action.getName().equals(CyborgChroniclesGame.USE_ACTION)), -10);
 		config.withScorer(new PredicateScorer<>(action -> action.getName().equals(CyborgChroniclesGame.PLAY_ACTION)), 10);
 		config.withScorer(new PredicateScorer<>(action -> action.getName().equals(CyborgChroniclesGame.ENCHANT_ACTION)), -10); // this AI does not enchant
-		config.withScorer(new SimpleScorer<>(AttackAnalyze::scrapScore));
-		config.withScorer(new SimpleScorer<>(AttackAnalyze::attackScore));
+		config.withScorer(new SimpleScorer<Entity, ECSAction>(AttackAnalyze::scrapScore));
+		config.withScorer(new SimpleScorer<Entity, ECSAction>(AttackAnalyze::attackScore));
 		return config;
 	}
 
 	public static ScoreConfigFactory<Entity, ECSAction> fighter() {
 		ScoreConfigFactory<Entity, ECSAction> config = new ScoreConfigFactory<>();
-		config.withScorer(Scorers.multiplication(playActionScorer, new SimpleScorer<>(AttackAnalyze::health)), 10);
-		config.withScorer(Scorers.multiplication(playActionScorer, new SimpleScorer<>(AttackAnalyze::attack)), 2);
+		config.withScorer(Scorers.multiplication(playActionScorer, new SimpleScorer<Entity, ECSAction>(AttackAnalyze::health)), 10);
+		config.withScorer(Scorers.multiplication(playActionScorer, new SimpleScorer<Entity, ECSAction>(AttackAnalyze::attack)), 2);
 		config.withScorer(new PredicateScorer<>(action -> action.getName().equals(CyborgChroniclesGame.USE_ACTION)), -10);
 		config.withScorer(new PredicateScorer<>(action -> action.getName().equals(CyborgChroniclesGame.SCRAP_ACTION)), -1);
-		config.withScorer(Scorers.multiplication(new SimpleScorer<>(AttackAnalyze::scrapNeeded), 
-				new SimpleScorer<>(AttackAnalyze::scrapIfCanGetKilled)));
+		config.withScorer(Scorers.multiplication(new SimpleScorer<Entity, ECSAction>(AttackAnalyze::scrapNeeded), 
+				new SimpleScorer<Entity, ECSAction>(AttackAnalyze::scrapIfCanGetKilled)));
 //		config.withScorer(new SimpleScorer<>(AttackAnalyze::scrapScore));
-		config.withScorer(new SimpleScorer<>(AttackAnalyze::attackScore));
-		config.withScorer(new SimpleScorer<>(AttackAnalyze::enchantScore));
+		config.withScorer(new SimpleScorer<Entity, ECSAction>(AttackAnalyze::attackScore));
+		config.withScorer(new SimpleScorer<Entity, ECSAction>(AttackAnalyze::enchantScore));
 		return config;
 	}
 

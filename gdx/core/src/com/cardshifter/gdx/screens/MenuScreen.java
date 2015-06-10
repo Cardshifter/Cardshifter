@@ -19,8 +19,8 @@ public class MenuScreen implements Screen {
 
     private final Table table;
     private final CardshifterGame game;
-    private final String[] availableServers = { "stats.zomis.net:4242", "dwarftowers.com:4242" };
-    private final String[] availableWSServers = { "stats.zomis.net:4243", "dwarftowers.com:4243" };
+    private final String[] availableServers = { "stats.zomis.net:4242", "dwarftowers.com:4242", "127.0.0.1:4242"};
+    private final String[] availableWSServers = { "stats.zomis.net:4243", "dwarftowers.com:4243", "127.0.0.1:4243"};
 
     public MenuScreen(final CardshifterGame game) {
         final Preferences prefs = Gdx.app.getPreferences("cardshifter");
