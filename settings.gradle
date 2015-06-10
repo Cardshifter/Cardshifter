@@ -1,0 +1,16 @@
+rootProject.name = 'cardshifter'
+include ':cardshifter-fx'
+include ':cardshifter-core'
+include ':cardshifter-server'
+include ':cardshifter-api'
+include ':cardshifter-console'
+include ':cardshifter-modapi'
+include ':cardshifter-test'
+
+project(':cardshifter-fx').projectDir = "$rootDir/cardshifter-fx" as File
+project(':cardshifter-core').projectDir = "$rootDir/cardshifter-core" as File
+project(':cardshifter-server').projectDir = "$rootDir/cardshifter-server" as File
+project(':cardshifter-api').projectDir = "$rootDir/cardshifter-api" as File
+project(':cardshifter-console').projectDir = "$rootDir/cardshifter-console" as File
+project(':cardshifter-modapi').projectDir = "$rootDir/cardshifter-modapi" as File
+project(':cardshifter-test').projectDir = "$rootDir/cardshifter-test" as File

@@ -1,0 +1,14 @@
+
+description = 'cardshifter-console'
+dependencies {
+    compile project(':cardshifter-core')
+    compile group: 'com.beust', name: 'jcommander', version:'1.30'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version:'2.4.2'
+}
+
+apply plugin: 'application'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+mainClassName = 'com.cardshifter.console.Main'
+
+buildDir = project.parent.buildDir

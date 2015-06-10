@@ -1,0 +1,38 @@
+apply plugin: 'java'
+
+sourceCompatibility = 1.6
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+description = 'cardshifter-api'
+
+jar {
+    from('src/main/java') {
+        include '**/*.java'
+        include '**/*.gwt.xml'
+    }
+}
+
+apply plugin: 'maven'
+
+configurations {
+    deployerJars
+}
+
+dependencies {
+    deployerJars 'org.apache.maven.wagon:wagon-ftp:2.2'
+}
+
+uploadArchives {
+    def creds = getCredentials()
+    if (!creds) {
+        return;
+    }
+    repositories {
+        mavenDeployer {
+            configuration = configurations.deployerJars
+            repository(url: "ftp://www.zomis.net/public_html/maven") {
+                authentication(userName: creds["username"], password: creds["password"])
+            }
+        }
+    }
+}

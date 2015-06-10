@@ -1,0 +1,22 @@
+description = 'cardshifter-core'
+dependencies {
+    compile project(':cardshifter-api')
+    compile project(':cardshifter-modapi')
+    compile project(':cardshifter-test')
+    compile group: 'log4j', name: 'log4j', version:'1.2.17'
+    compile group: 'net.zomis', name: 'scorers', version:'0.2-SNAPSHOT'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version:'2.4.2'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version:'2.4.2'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version:'2.4.2'
+    testCompile group: 'org.mockito', name: 'mockito-all', version:'1.8.4'
+}
+
+task copyResources(type: Copy) {
+    from "${projectDir}/src/main/resources"
+    into "${buildDir}/classes/main"
+}
+processResources.dependsOn copyResources
+
+test {
+    workingDir new File(System.getProperty("user.dir"), "extra-resources")
+}

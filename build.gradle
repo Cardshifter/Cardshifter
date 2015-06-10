@@ -1,0 +1,131 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.1'
+    }
+}
+
+allprojects  {
+    apply plugin: 'maven'
+
+    group = 'com.cardshifter'
+    version = '0.6-SNAPSHOT'
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    
+        maven { url "http://repo.maven.apache.org/maven2" }
+        maven { url "http://www.zomis.net/maven" }
+    }
+}
+
+def getMavenSettingsCredentials() {
+    String userHome = System.getProperty('user.home')
+    File mavenSettings = new File(userHome, '.m2/settings.xml')
+    if (!mavenSettings.exists()) {
+        return []
+    }
+    def xmlSlurper = new XmlSlurper()
+    def output = xmlSlurper.parse(mavenSettings)
+    return output."servers"."server"
+}
+
+def getCredentials() {
+    def entries = getMavenSettingsCredentials()
+    for (entry in entries) {
+        if (entry."id".text() == 'cardshifter-deploy') {
+            return [username: entry.username.text(), password: entry.password.text()]
+        }
+    }
+    return [username: 'invalid', password: 'invalid']
+}
+
+subprojects {
+    if (!it.name.contains('-api')) {
+        apply plugin: 'groovy'
+        sourceSets {
+            main {
+                java { srcDirs = [] }
+                groovy { srcDir "src/main/java" }
+            }
+        }
+        dependencies {
+            compile group: 'org.codehaus.groovy', name: 'groovy-all', version:'2.4.3'
+            testCompile "junit:junit:4.11"
+        }
+        test {
+            testLogging {
+                events "failed"
+                exceptionFormat "short"
+            }
+        }
+    }
+}
+
+task createShadowedJars {
+    dependsOn ':cardshifter-console:shadowJar'
+    dependsOn ':cardshifter-fx:shadowJar'
+    dependsOn ':cardshifter-server:shadowJar'
+}
+
+task copyResources(type: Copy) {
+    dependsOn 'createShadowedJars'
+    from('extra-resources')
+    into("$project.buildDir/libs")
+    include('server.properties.example')
+    include('decks/Cyborg-Chronicles/Balanced.deck')
+    include('decks/Cyborg-Chronicles/Defensive.deck')
+    include('mods/**')
+}
+
+task duga << {
+    println 'Invoking Duga'
+//    new URL( 'http://stats.zomis.net/GithubHookSEChatService/bot/say/Hello%20World' ).text
+//    def str = '%5bLink%20somewhere%5d%28http%3a%2f%2fwww%2egoogle%2ecom%29'
+    def str = 'Another%20Test!'
+    new URL( 'http://stats.zomis.net/GithubHookSEChatService/bot/say/' + str ).text
+}
+
+task dist(type: Zip) {
+    dependsOn 'copyResources'
+    rename {
+        println it
+        it.replace('-all', '')
+    }
+    from "$project.buildDir/libs"
+}
+
+configurations {
+    ftpAntTask
+}
+
+dependencies {
+    ftpAntTask("org.apache.ant:ant-commons-net:1.8.4") {
+        module("commons-net:commons-net:1.4.1") {
+            dependencies "oro:oro:2.0.8:jar"
+        }
+    }
+}
+
+def javaModules() {
+    subprojects.findAll {!it.name.contains('-api')}
+}
+
+task snapshot << {
+
+    def creds = getCredentials()
+    ant {
+        taskdef(name: 'ftp',
+                classname: 'org.apache.tools.ant.taskdefs.optional.net.FTP',
+                classpath: configurations.ftpAntTask.asPath)
+        ftp(server: "www.zomis.net", userid: creds["username"], password: creds["password"], remoteDir: "public_html/cardshifter.com") {
+            fileset(dir: "$buildDir/distributions") {
+                include(name: "*.zip")
+            }
+        }
+    }
+}
+snapshot.dependsOn 'dist'
+snapshot.dependsOn javaModules().test

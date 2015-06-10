@@ -10,23 +10,30 @@ import com.cardshifter.modapi.actions.attack.AttackTargetMinionsFirstThenPlayer
 import com.cardshifter.modapi.actions.attack.TrampleSystem
 import com.cardshifter.modapi.actions.enchant.EnchantPerform
 import com.cardshifter.modapi.actions.enchant.EnchantTargetCreatureTypes
+import com.cardshifter.modapi.ai.AIComponent
 import com.cardshifter.modapi.attributes.Attributes
 import com.cardshifter.modapi.base.Component
 import com.cardshifter.modapi.base.ComponentRetriever
+import com.cardshifter.modapi.base.CreatureTypeComponent
 import com.cardshifter.modapi.base.ECSGame
 import com.cardshifter.modapi.base.ECSSystem
 import com.cardshifter.modapi.base.Entity
+import com.cardshifter.modapi.base.PlayerComponent
 import com.cardshifter.modapi.cards.BattlefieldComponent
+import com.cardshifter.modapi.cards.CardComponent
 import com.cardshifter.modapi.cards.DamageConstantWhenOutOfCardsSystem
+import com.cardshifter.modapi.cards.DeckComponent
 import com.cardshifter.modapi.cards.DrawCardAtBeginningOfTurnSystem
 import com.cardshifter.modapi.cards.DrawCardEvent
 import com.cardshifter.modapi.cards.DrawStartCards
+import com.cardshifter.modapi.cards.HandComponent
 import com.cardshifter.modapi.cards.LimitedHandSizeSystem
 import com.cardshifter.modapi.cards.MulliganSingleCards
 import com.cardshifter.modapi.cards.PlayEntersBattlefieldSystem
 import com.cardshifter.modapi.cards.PlayFromHandSystem
 import com.cardshifter.modapi.cards.RemoveDeadEntityFromZoneSystem
 import com.cardshifter.modapi.cards.ZoneChangeEvent
+import com.cardshifter.modapi.cards.ZoneComponent
 import com.cardshifter.modapi.events.EntityRemoveEvent
 import com.cardshifter.modapi.events.IEvent
 import com.cardshifter.modapi.phase.GainResourceSystem
@@ -189,8 +196,23 @@ public class GeneralSystems {
     }
 
     static def setup(ECSGame game) {
+        // this adds properties to entities so that it's possible to write `entity.name` to get the name (if there is one)
         game.getEntityMeta().getName << {Attributes.NAME.getOrDefault(delegate, null)}
-        game.getEntityMeta().getFlavor << {Attributes.FLAVOR.getOrDefault(delegate, '')}
+        game.getEntityMeta().getFlavor << {Attributes.FLAVOR.getOrDefault(delegate, null)}
+        game.getEntityMeta().getOwner << {Players.findOwnerFor(delegate)}
+        game.getEntityMeta().getCard << {delegate.getComponent(CardComponent)}
+        game.getEntityMeta().getDeck << {delegate.getComponent(DeckComponent)}
+        game.getEntityMeta().getHand << {delegate.getComponent(HandComponent)}
+        game.getEntityMeta().getBattlefield << {delegate.getComponent(BattlefieldComponent)}
+        game.getEntityMeta().getZone << {
+            // get the current zone of the card
+            CardComponent card = delegate.getCard()
+            return card ? card.currentZone : null
+        }
+        game.getEntityMeta().getCreatureType << {delegate.getComponent(CreatureTypeComponent)}
+        game.getEntityMeta().getActions << {delegate.getComponent(ActionComponent)}
+        game.getEntityMeta().getAi << {delegate.getComponent(AIComponent)}
+        game.getEntityMeta().getPlayer << {delegate.getComponent(PlayerComponent)}
 
         CardDelegate.metaClass.onEndOfTurn << {Closure closure ->
             onEndOfTurn('your', closure)

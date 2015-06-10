@@ -53,6 +53,16 @@ com_crashlytics_export_strings.xml
 !cardshifter-core/src/test/resources/**
 
 
+### Gradle ###
+.gradle
+build/
+
+# Ignore Gradle GUI config
+gradle-app.setting
+
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
+
 
 
 # Cardshifter files
@@ -64,3 +74,4 @@ extra-resources/server.properties
 workdir/
 extra-resources/mods/debug/
 extra-resources/extract-replay.json
+extra-resources/game-1.json
