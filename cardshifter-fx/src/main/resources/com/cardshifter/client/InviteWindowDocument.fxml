@@ -2,14 +2,10 @@
 
 <?import javafx.scene.text.*?>
 <?import javafx.scene.shape.*?>
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
 <AnchorPane fx:id="rootPane" prefHeight="240.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
-	<children>
 	  
 		<!-- non functional elements -->
 		<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#0055a4" height="240.0" stroke="BLACK" strokeType="INSIDE" width="400.0" />
@@ -39,25 +35,20 @@
 		
 		<!-- Buttons -->
 		<AnchorPane fx:id="yesButton" layoutX="15.0" layoutY="152.0" prefHeight="73.0" prefWidth="151.0">
-			<children>
 				<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#2bab35" height="73.0" stroke="BLACK" strokeType="INSIDE" width="151.0" />
 				<Label layoutX="42.0" layoutY="15.0" text="Yes">
 					<font>
 						<Font name="System Bold" size="36.0" />
 					</font>
 				</Label>
-			</children>
 		</AnchorPane>
 		<AnchorPane fx:id="noButton" layoutX="234.0" layoutY="152.0" prefHeight="73.0" prefWidth="151.0">
-			<children>
 				<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#a4300d" height="73.0" stroke="BLACK" strokeType="INSIDE" width="151.0" />
 				<Label layoutX="50.0" layoutY="15.0" text="No">
 					<font>
 						<Font name="System Bold" size="36.0" />
 					</font>
 				</Label>
-			</children>
 		</AnchorPane>
-		
-	</children>
+
 </AnchorPane>

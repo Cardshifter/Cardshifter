@@ -1,32 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.*?>
-<?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.shape.*?>
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
 <AnchorPane fx:id="rootPane" prefHeight="647.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cardshifter.client.DeckBuilderWindow">
-	<children>
 	   
 		<!-- Card List -->
 		<AnchorPane layoutY="60.0" prefHeight="530.0" prefWidth="852.0">
-			<children>
 				<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e2e4cb" height="530.0" stroke="BLACK" strokeType="INSIDE" width="851.0" />
 				<FlowPane fx:id="cardListBox" hgap="10.0" prefHeight="530.0" prefWidth="851.0" vgap="10.0">
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding></FlowPane>
-			</children>
 		</AnchorPane>
 	   
 		<!-- Active Deck -->
 		<AnchorPane layoutX="851.0" prefHeight="640.0" prefWidth="216.0">
-			<children>
 				<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#7d8056" height="60.0" stroke="BLACK" strokeType="INSIDE" width="216.0" />
 				<Label layoutX="35.0" layoutY="8.0" text="Active Deck" textFill="WHITE">
 					<font>
@@ -34,26 +26,20 @@
 					</font>
 				</Label>
 				<ScrollPane layoutY="60.0" prefHeight="480.0" prefWidth="216.0">
-					<content>
 						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="608.0" prefWidth="196.0">
-							<children>
 								<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#b5a97d" height="524.0" stroke="BLACK" strokeType="INSIDE" width="200.0" />
 								<VBox fx:id="activeDeckBox" prefHeight="623.0" prefWidth="200.0" />
-							</children>
 						</AnchorPane>
-					</content>
 				</ScrollPane>
             <Label fx:id="cardCountLabel" layoutX="90.0" layoutY="36.0" text="0 / 0" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font>
             </Label>
-			</children>
 		</AnchorPane>
 	   
 		<!-- Deck List -->
 		<AnchorPane layoutX="1068.0" prefHeight="598.0" prefWidth="134.0">
-			<children>
 				<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#5e5a33" height="60.0" stroke="BLACK" strokeType="INSIDE" width="134.0" />
 				<Label layoutX="15.0" layoutY="16.0" text="Deck List" textFill="WHITE">
 					<font>
@@ -61,71 +47,55 @@
 					</font>
 				</Label>
 				<ScrollPane layoutY="60.0" prefHeight="495.0" prefWidth="134.0">
-					<content>
 						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="664.0" prefWidth="132.0">
-							<children>
 								<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#797158" height="666.0" stroke="BLACK" strokeType="INSIDE" width="134.0" />
 								<VBox fx:id="deckListBox" prefHeight="524.0" prefWidth="134.0" />
-							</children>
 						</AnchorPane>
-					</content>
 				</ScrollPane>
-			</children>
 		</AnchorPane>
 	  
 		<!-- Page Buttons -->
 		<AnchorPane layoutY="590.0" prefHeight="54.0" prefWidth="852.0">
-			<children>
 				<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#d9da9b" height="57.0" layoutY="-3.0" stroke="BLACK" strokeType="INSIDE" width="852.0" />
 				<AnchorPane fx:id="previousPage" layoutX="214.0" layoutY="4.0" prefHeight="46.0" prefWidth="153.0">
-					<children>
 						<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fffd00" height="44.0" stroke="BLACK" strokeType="INSIDE" width="153.0" />
 						<Label layoutX="52.0" layoutY="9.0" text="Prev">
 							<font>
 								<Font size="24.0" />
 							</font>
 						</Label>
-					</children>
 				</AnchorPane>
 				<AnchorPane fx:id="nextPage" layoutX="492.0" layoutY="3.0" prefHeight="46.0" prefWidth="153.0">
-					<children>
 						<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fffd00" height="44.0" stroke="BLACK" strokeType="INSIDE" width="153.0" />
 						<Label layoutX="50.0" layoutY="8.0" text="Next">
 							<font>
 								<Font size="24.0" />
 							</font>
 						</Label>
-					</children>
 				</AnchorPane>
       		
       		<AnchorPane fx:id="deleteButton" layoutX="8.0" layoutY="13.0" prefHeight="23.0" prefWidth="91.0">
-      			<children>
       				<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f20000" height="28.0" stroke="BLACK" strokeType="INSIDE" width="91.0" />
       				<Label layoutX="8.0" layoutY="7.0" text="Delete Deck">
       					<font>
       						<Font name="System Bold" size="12.0" />
       					</font>
       				</Label>
-      			</children>
       		</AnchorPane>
-			</children>
 		</AnchorPane>
 	  
 		<!-- Exit Button -->
 		<AnchorPane fx:id="exitButton" layoutX="1068.0" layoutY="601.0" prefHeight="46.0" prefWidth="134.0">
-			<children>
 				<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#5b2961" height="46.0" stroke="BLACK" strokeType="INSIDE" width="134.0" />
 				<Label layoutX="22.0" layoutY="12.0" text="Start Game" textFill="WHITE">
 					<font>
 						<Font name="System Bold" size="18.0" />
 					</font>
 				</Label>
-			</children>
 		</AnchorPane>
 	  
 		<!-- Title box -->
 		<AnchorPane prefHeight="60.0" prefWidth="852.0">
-			<children>
 				<Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="60.0" stroke="BLACK" strokeType="INSIDE" width="852.0" />
 				<Label layoutX="197.0" layoutY="8.0" text="Cardshifter Deck Builder" textFill="WHITE">
 					<font>
@@ -133,67 +103,51 @@
 					</font>
 				</Label>
 				<AnchorPane fx:id="deckInfoButton" layoutX="724.0" layoutY="8.0" prefHeight="44.0" prefWidth="114.0">
-					<children>
 						<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fcffb2" height="46.0" stroke="BLACK" strokeType="INSIDE" width="114.0" />
 						<Label layoutX="13.0" layoutY="12.0" text="Deck Info">
 							<font>
 								<Font name="System Bold" size="18.0" />
 							</font>
 						</Label>
-					</children>
 				</AnchorPane>
-			</children>
 		</AnchorPane>
 		
 		<!-- save and load buttons -->
         <AnchorPane fx:id="saveDeckButton" layoutX="854.0" layoutY="606.0" prefHeight="36.0" prefWidth="204.0">
-			<children>
 				<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1a5e1b" height="35.0" layoutX="3.0" layoutY="1.0" stroke="BLACK" strokeType="INSIDE" width="204.0" />
 				<Label layoutX="58.0" layoutY="7.0" text="Save Deck" textFill="WHITE">
 					<font>
 						<Font name="System Bold" size="18.0" />
 					</font>
 				</Label>
-			</children>
 		</AnchorPane>
 		<AnchorPane fx:id="loadDeckButton" layoutX="1068.0" layoutY="555.0" prefHeight="44.0" prefWidth="134.0">
-			<children>
 				<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#bf4d41" height="44.0" layoutY="1.0" stroke="BLACK" strokeType="INSIDE" width="134.0" />
 				<Label layoutX="22.0" layoutY="12.0" text="Load Deck" textFill="WHITE">
 					<font>
 						<Font size="18.0" />
 					</font>
 				</Label>
-			</children>
 		</AnchorPane>
 	  
 		<TextField fx:id="deckNameBox" layoutX="853.0" layoutY="541.0" prefHeight="26.0" prefWidth="210.0" promptText="Deck Name" />
 		
 		<AnchorPane fx:id="clearDeckButton" layoutX="857.0" layoutY="568.0" prefHeight="36.0" prefWidth="204.0">
-			<children>
 				<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ff4116" height="36.0" stroke="BLACK" strokeType="INSIDE" width="204.0" />
 				<Label layoutX="52.0" layoutY="7.0" text="Clear Deck" textFill="WHITE">
 					<font>
 						<Font name="System Bold" size="18.0" />
 					</font>
 				</Label>
-			</children>
 		</AnchorPane>
 		
 		<AnchorPane fx:id="deckInfoBox" layoutX="570.0" layoutY="59.0" prefHeight="380.0" prefWidth="281.0" visible="false">
-			<children>
 				<ScrollPane prefHeight="380.0" prefWidth="281.0">
-					<content>
 						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="507.0" prefWidth="279.0">
-							<children>
 								<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fcffb2" height="511.0" stroke="BLACK" strokeType="INSIDE" width="281.0" />
 								<VBox fx:id="deckInfoLabelBox" layoutX="5.0" layoutY="6.0" prefHeight="456.0" prefWidth="253.0" />
-							</children>
 						</AnchorPane>
-					</content>
 				</ScrollPane>
-			</children>
 		</AnchorPane>
-	  
-	</children>
+
 </AnchorPane>
