@@ -2,17 +2,12 @@
 
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
 <AnchorPane fx:id="anchorPane" prefHeight="483.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cardshifter.client.GameClientLauncherController">
-   <children>
       <AnchorPane layoutX="182.0" layoutY="25.0" prefHeight="102.0" prefWidth="200.0">
-         <children>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#09dd2d" height="123.0" layoutX="-3.0" layoutY="-2.0" stroke="BLACK" strokeType="INSIDE" width="258.0" />
+          <Rectangle arcHeight="5.0" arcWidth="5.0" fill="CHARTREUSE" height="123.0" layoutX="-3.0" layoutY="-2.0" stroke="BLACK" strokeType="INSIDE" width="258.0" />
             <Label layoutX="19.0" layoutY="14.0" prefHeight="45.0" prefWidth="239.0" text="Cardshifter" textAlignment="CENTER">
                <font>
                   <Font name="System Bold" size="37.0" />
@@ -23,10 +18,8 @@
                   <Font size="25.0" />
                </font>
             </Label>
-         </children>
       </AnchorPane>
       <AnchorPane layoutX="152.0" layoutY="168.0" prefHeight="123.0" prefWidth="318.0">
-         <children>
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="167.0" stroke="BLACK" strokeType="INSIDE" width="318.0" />
             <TextField fx:id="ipAddressBox" layoutX="133.0" layoutY="59.0" />
             <TextField fx:id="portBox" layoutX="133.0" layoutY="97.0" />
@@ -47,15 +40,13 @@
                </font>
             </Label>
             <TextField fx:id="userNameBox" layoutX="133.0" layoutY="19.0" />
-         </children>
       </AnchorPane>
       <AnchorPane layoutX="173.0" layoutY="335.0" prefHeight="30.0" prefWidth="276.0">
-         <children>
+
             <Label fx:id="errorMessage" alignment="CENTER" layoutX="59.0" layoutY="8.0" text="Welcome to Cardshifter" textAlignment="CENTER" wrapText="true">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font></Label>
-         </children>
       </AnchorPane>
       <Label layoutX="14.0" layoutY="234.0" text="Default IP: 127.0.0.1" />
       <Label layoutX="21.0" layoutY="275.0" text="Default Port: 4242" />
@@ -66,6 +57,4 @@
 	  <HBox fx:id="aiChoiceBox" layoutX="100.0" layoutY="417.0" prefHeight="65.0" prefWidth="400.0" />
       <Button fx:id="localGameButton" layoutX="238.0" layoutY="383.0" mnemonicParsing="false" text="Start Local Game" />
       <ChoiceBox fx:id="modChoice" layoutX="350.0" layoutY="383.0" prefWidth="150.0" />
-      
-   </children>
 </AnchorPane>
