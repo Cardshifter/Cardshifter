@@ -1,3 +1,13 @@
+/**
+ * The Game class sets up all the parameters upon a game being started for a mod using the client.
+ * It is imported during run time, hence errors with the mod will be logged to the server console at run time.
+ * @author Simon Forsberg
+ */
+
+/**
+ * @param entity A card entity.
+ * @return Boolean value indicating whether or not the entity is a creature, is on battlefield, and is owned by the current player.
+ */
 def ownedBattlefieldCreatures = {entity ->
     def Cards = com.cardshifter.modapi.cards.Cards;
     return entity.hasComponent(com.cardshifter.modapi.base.CreatureTypeComponent.class) &&
@@ -5,40 +15,71 @@ def ownedBattlefieldCreatures = {entity ->
             Cards.isOwnedByCurrentPlayer(entity)
 }
 
-ATTACK = createResource('ATTACK')
-HEALTH = createResource("HEALTH")
-MAX_HEALTH = createResource("MAX_HEALTH")
+/**
+ * Resources related to cards
+ */
 
-ATTACK_AVAILABLE = createResource("ATTACK_AVAILABLE")
-DENY_COUNTERATTACK = createResource("DENY_COUNTERATTACK")
-MANA = createResource("MANA")
+// Amount of damage the card can cause by attacking
+ATTACK = createResource('ATTACK')
+// Amount of damage the card can suffer before being retired from Battlefield
+HEALTH = createResource("HEALTH")
+// Maximum HEALTH value that a card may hold
+MAX_HEALTH = createResource("MAX_HEALTH")
+// Cost of mana resource to the player for casting the card into play
 MANA_COST = createResource("MANA_COST")
-MANA_MAX = createResource("MANA_MAX")
+
+/**
+ * Resources that declare a specific special behavior to creature cards
+ **/
+
+// Card cannot attack if set to false
+ATTACK_AVAILABLE = createResource("ATTACK_AVAILABLE")
+// Card is immune to counter-attack when attacking another creature
+DENY_COUNTERATTACK = createResource("DENY_COUNTERATTACK")
+// Card cannot attack while not 0
 SICKNESS = createResource("SICKNESS")
+// Card must be attacked while on Battlefield before the owner player can be attacked
 TAUNT = createResource("TAUNT")
+
+/**
+ * Actions that are related to cards, defined in more detail further down this file. 
+ */
 
 PLAY_ACTION = "Play";
 ATTACK_ACTION = "Attack";
 USE_ACTION = "Use";
 
+/**
+ * Which Groovy files to include for this mod. See extra-resources/mods for details. 
+ */
 include 'creatures'
 include 'noAttack'
+
+/**
+ * General game configuration
+ */
 
 config {
     neutral {
         resourceModifier()
         phases()
+        /**
+         * List of cardsets to load into the Cards zone, which is the pool of all possible cards available.
+         */
         zone('Cards') {
             cardset 'common'
             cardset 'chinese'
             //cardset 'egyptian'
-            // cardset 'greek'
+            //cardset 'greek'
             //cardset 'norse'
             //cardset 'hindu'
             //cardset 'roman'
         }
     }
 
+    /**
+     * General player configuration
+     */
     players(2) {
         phase 'Main'
         config {
