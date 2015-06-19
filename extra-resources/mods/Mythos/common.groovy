@@ -149,7 +149,7 @@ card('Tree of Life') {
     manaCost 10
     // Player gains +5 health
     spell {}
-    afterPlay { heal 5 to "you" }
+    afterPlay { heal 5 on "you" }
 }
 
 card("Spring of Rejuvenation") {
@@ -163,7 +163,7 @@ card("Spring of Rejuvenation") {
         }
     }
     afterPlay {
-        heal 1 to targets
+        heal 1 on targets
     }
 }
 

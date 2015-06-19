@@ -314,7 +314,7 @@ card("Life Tool") {
     attack 0
     noAttack()
     onEndOfTurn {
-        heal 1 to "you"
+        heal 1 on "you"
     }
 }
 card("Destruction Tool") {
@@ -325,6 +325,6 @@ card("Destruction Tool") {
     attack 0
     noAttack()
     onEndOfTurn {
-        damage 1 to "opponent"
+        damage 1 on "opponent"
     }
 }
