@@ -184,9 +184,9 @@ class EffectDelegate {
     }
 
     private Object targetedAction(EntityConsumer action, String desc) {
-        String targetStr = '';
-        Closure closure = null;
         return [on: {Object who ->
+            String targetStr = '';
+            Closure closure = null;
             if (who == targets) {
                 targetStr = 'targets'
                 closure = {Entity source, Object data ->

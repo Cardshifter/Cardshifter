@@ -47,7 +47,7 @@ class WhilePresentDelegate {
     def change(ECSResource... resources) {
         [by: {int change ->
             [withPriority: {int priority ->
-                [onCards: {Closure filter ->
+                [on: {Closure filter ->
                     addModifier(resources, priority, filter, {deleg ->
                         'Give ' + deleg.description + ' ' + change + ' ' + resources.join(' and ')
                     }, {Entity source, Entity target, ECSResource resource, int actualValue ->
@@ -61,7 +61,7 @@ class WhilePresentDelegate {
     def set(ECSResource... resources) {
         [to: {int change ->
             [withPriority: {int priority ->
-                [onCards: {Closure filter ->
+                [on: {Closure filter ->
                     addModifier(resources, priority, filter, { deleg ->
                         'Set ' + resources.join(' and ') + ' to ' + deleg.description + ' ' + change
                     }, {Entity source, Entity target, ECSResource resource, int actualValue ->
