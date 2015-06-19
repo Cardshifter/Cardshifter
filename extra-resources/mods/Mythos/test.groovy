@@ -15,7 +15,7 @@ from clearState test('summon on battlefield') using {
         health 1
         manaCost 0
         afterPlay {
-            damage 1 to { player true }
+            damage 1 on { player true }
             summon 1 of "Life Tool" to "you" zone "Battlefield"
         }
     }

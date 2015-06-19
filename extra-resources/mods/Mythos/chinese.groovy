@@ -198,7 +198,7 @@ card("GUANYIN") {
         }
     }
     onEndOfTurn {
-        heal 1 to "you"
+        heal 1 on "you"
         change HEALTH by -1 on { thisCard() }
     }
 }

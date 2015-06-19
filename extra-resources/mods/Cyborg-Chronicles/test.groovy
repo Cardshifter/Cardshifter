@@ -90,10 +90,10 @@ from clearState test 'max mana' using {
         creature 'Bio'
         health 1
         afterPlay {
-            damage 1 to 'you'
+            damage 1 on 'you'
         }
         onEndOfTurn {
-            heal 1 to 'you'
+            heal 1 on 'you'
         }
     }
     def player = you
@@ -126,7 +126,7 @@ from clearState test 'negative mana cost' using {
         manaCost 1
         health 1
         whilePresent {
-            change MANA_COST by -2 withPriority 1 onCards {
+            change MANA_COST by -2 withPriority 1 on {
                 ownedBy "you"
                 zone "Hand"
             }

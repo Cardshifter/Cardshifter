@@ -63,7 +63,7 @@ card('APOLLO') {
     health 4
     manaCost 5
     sickness 1
-    // (3) Choose one per turn: Target player or unit gains +2 health, 
+    // (3) Choose one per turn: Target player or unit gains +2 health,
     // target player or unit looses +2 health.
     /*
     pickAction ( // #270
@@ -82,7 +82,7 @@ card('ARES') {
     health 4
     manaCost 10
     sickness 1
-    // If this card sends another card to the graveyard as a result of battle, 
+    // If this card sends another card to the graveyard as a result of battle,
     //this card can attack a second time in the same turn.
     /*
     onKill { // #272
@@ -119,11 +119,11 @@ card('ATHENA') {
             zone "Battlefield"
         }
     }
-    // (3) If a player targets this card for an attack, 
+    // (3) If a player targets this card for an attack,
     // redirect that damage to another target unit or player.
     /*
     pickAction ( // #270
-        { 
+        {
             redirectAtRandom() // #277
         }
     )
@@ -299,7 +299,7 @@ card('CHARON') {
     health 4
     manaCost 10
     sickness 1
-    // When this card destroys another creature card and that card 
+    // When this card destroys another creature card and that card
     // goes to the graveyard, this card gains +1/+1.
     /*
     onKill { // #272
@@ -348,16 +348,16 @@ card('HECATE') {
     health 2
     manaCost 10
     // phase() // #262
-    // When this creature destroys another creature and sends it to the graveyard, 
-    // add a +1/+1 Lost Soul token to the field. 
+    // When this creature destroys another creature and sends it to the graveyard,
+    // add a +1/+1 Lost Soul token to the field.
     /*
     onKill { // #272
         summon 1 of "Lost Soul" to "you" zone "Battlefield"
     }
-    // When Hecate is sent to the graveyard, 
+    // When Hecate is sent to the graveyard,
     // return random creature from the graveyard to your hand except Hecate.
     onDeath {
-        
+
     }
     */
 }
@@ -411,7 +411,7 @@ card('PERSEPHONE') {
     // phase() // #262
     // Owner gains (1) health at the end of each turn this card is on the field.
     onEndOfTurn {
-        heal 1 to "you"
+        heal 1 on "you"
     }
 }
 card('THANATOS') {
@@ -473,7 +473,7 @@ card('Tartarean Pit') {
     health 8
     manaCost 20
     sickness 1
-    // Attack and health are equal to the number of Titans cards on the field. 
+    // Attack and health are equal to the number of Titans cards on the field.
     /*
     // #240
     whilePresent {
@@ -748,7 +748,7 @@ card('Ararchne') {
     manaCost 5
     sickness 1
     // plague() // #264
-    // When Ararchne is sent to the graveyard, 
+    // When Ararchne is sent to the graveyard,
     // summon two +2/+2 Spider tokens to the field with Plague.
     onDeath {
         summon 2 of "Ararchne Spider" to "you" zone "Battlefield"
@@ -889,7 +889,7 @@ card('Apollo’s Bow') {
     maxInDeck 1
     manaCost 5
     spell {
-        // Choose one effect: 
+        // Choose one effect:
         // Target player or unit gains +3 health.
         // Target player or unit looses +3 health.
         //afterPlay {
@@ -909,8 +909,8 @@ card('Tale of the Three Brothers') {
     maxInDeck 1
     manaCost 20
     spell {
-        // If you possess Hades, Poseidon, and Zeus on the field or in the graveyard 
-        // when this card is activated, choose any number of units your opponent controls, 
+        // If you possess Hades, Poseidon, and Zeus on the field or in the graveyard
+        // when this card is activated, choose any number of units your opponent controls,
         // but no more than 3, and destroy them.
         afterplay {
             // #284
