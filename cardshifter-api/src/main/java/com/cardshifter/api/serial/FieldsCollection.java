@@ -8,6 +8,7 @@ import java.util.*;
 
 import com.cardshifter.api.CardshifterSerializationException;
 import com.cardshifter.api.LogInterface;
+import com.cardshifter.api.config.PlayerConfig;
 
 public class FieldsCollection<T> {
 
@@ -127,7 +128,7 @@ public class FieldsCollection<T> {
 			}
 			return map;
 		}
-		else if (type == Object.class) {
+		else if (typeNameRequired(type)) {
 			String clazzName = (String) deserialize(String.class, data, null);
 			try {
 				Class<?> clazz = refl.forName(clazzName);
@@ -215,7 +216,7 @@ public class FieldsCollection<T> {
 				serialize(valueClass, ee.getValue(), out, null);
 			}
 		}
-		else if (type == Object.class) {
+		else if (typeNameRequired(type)) {
 			String clazzName = (String) value.getClass().getName();
 			serialize(String.class, clazzName, out, null);
 			serialize(value.getClass(), value, out, null);
@@ -228,8 +229,13 @@ public class FieldsCollection<T> {
 			out.write(b);
 		}
 	}
-	
-	private void serialize(ReflField field, T obj, DataOutputStream out) throws Exception {
+
+    private boolean typeNameRequired(Class<?> type) {
+        // .isInterface method and other useful methods are not officially supported by LibGDX
+        return type == Object.class || type == PlayerConfig.class;
+    }
+
+    private void serialize(ReflField field, T obj, DataOutputStream out) throws Exception {
 		field.setAccessible(true);
 		Class<?> type = field.getType();
 		Object value = field.get(obj);
