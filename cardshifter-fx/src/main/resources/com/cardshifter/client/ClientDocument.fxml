@@ -1,136 +1,136 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.shape.*?>
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="rootPane" prefHeight="600.0" prefWidth="1166.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cardshifter.client.GameClientController">
-    <children>
-        
-        <!--  Buttons  -->
-        <!-- <Button fx:id="button" layoutX="1098.0" layoutY="530.0" onAction="#startGameButtonAction" text="Start Game" /> -->
-        <!-- <Label fx:id="startGameLabel" layoutX="1098.0" layoutY="564.0" minHeight="16" minWidth="69" /> -->
-        <!-- <Button layoutX="1105.0" layoutY="467.0" mnemonicParsing="false" onAction="#handleTurnButtonAction" text="End Turn" /> -->
-        <!-- <Label fx:id="turnLabel" layoutX="1021.0" layoutY="556.0" text="Turn Number" visible="false" /> -->
-        
-		<!-- Initial Server Message -->
-		<Label layoutX="14.0" layoutY="361.0" text="Login Message:" />
-		<Label fx:id="loginMessage" layoutX="111.0" layoutY="361.0" text="No Message" />
-	  
-		<!-- Continuing Server Messages -->
-		 <AnchorPane layoutX="14.0" layoutY="10.0" prefHeight="336.0" prefWidth="207.0">
-			 <children>
-				<Label layoutX="45.0" text="Server Messages" textAlignment="CENTER" underline="true" />
-				<ListView fx:id="serverMessages" layoutY="17.0" prefHeight="336.0" prefWidth="211.0" />
-			</children>
-		</AnchorPane>
-		
-		<!-- Legend -->
-        <Pane layoutX="836.0" layoutY="10.0" prefHeight="92.0" prefWidth="219.0">
-             <children>
-				<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#d2fffe" height="92.0" stroke="BLACK" strokeType="INSIDE" width="219.0" />
-                <Label layoutX="14.0" layoutY="14.0" text="Active" />
-                <Label layoutX="66.0" layoutY="14.0" text="Can Attack" />
-                <Label layoutX="149.0" layoutY="14.0" text="Targetable" />
-                <Rectangle arcHeight="5.0" arcWidth="5.0" fill="YELLOW" height="25.0" layoutX="21.0" layoutY="30.0" stroke="BLACK" strokeType="INSIDE" width="25.0" />
-                <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#11a411" height="25.0" layoutX="88.0" layoutY="30.0" stroke="BLACK" strokeType="INSIDE" width="25.0" />
-                <Rectangle arcHeight="5.0" arcWidth="5.0" fill="BLUE" height="25.0" layoutX="170.0" layoutY="30.0" stroke="BLACK" strokeType="INSIDE" width="25.0" />
-                <Label layoutX="76.0" text="Legend" underline="true">
-					<font>
-						<Font name="System Bold" size="13.0" />
-					</font>
-				</Label>
-				<Label layoutX="10.0" layoutY="69.0" text="Strength / Health">
-					<font>
-						<Font size="10.0" />
-					</font>
-				</Label>
-				<Circle fill="#adbecd" layoutX="183.0" layoutY="76.0" radius="13.0" stroke="BLACK" strokeType="INSIDE" />
-				<Label layoutX="113.0" layoutY="70.0" text="Sickness:" />
+<AnchorPane fx:id="rootPane" prefHeight="600.0" prefWidth="1166.0" style="-fx-background-color: #DDDDDD;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cardshifter.client.GameClientController">
+   <children>
+   
+           
+           <!--  Buttons  -->
+           <!-- <Button fx:id="button" layoutX="1098.0" layoutY="530.0" onAction="#startGameButtonAction" text="Start Game" /> -->
+           <!-- <Label fx:id="startGameLabel" layoutX="1098.0" layoutY="564.0" minHeight="16" minWidth="69" /> -->
+           <!-- <Button layoutX="1105.0" layoutY="467.0" mnemonicParsing="false" onAction="#handleTurnButtonAction" text="End Turn" /> -->
+           <!-- <Label fx:id="turnLabel" layoutX="1021.0" layoutY="556.0" text="Turn Number" visible="false" /> -->
+           
+   		<!-- Initial Server Message -->
+   		<Label layoutX="14.0" layoutY="361.0" text="Login Message:" />
+   		<Label fx:id="loginMessage" layoutX="111.0" layoutY="361.0" text="No Message" />
+   	  
+   		<!-- Continuing Server Messages -->
+   		 <AnchorPane layoutX="14.0" layoutY="10.0" prefHeight="336.0" prefWidth="207.0" style="-fx-background-color: #DDDDDD;">
+      <children>
+      				<Label layoutX="45.0" text="Server Messages" textAlignment="CENTER" underline="true" />
+      				<ListView fx:id="serverMessages" layoutY="17.0" prefHeight="336.0" prefWidth="211.0" style="-fx-background-color: #CCCCCC;" />
+      </children>
+   		</AnchorPane>
+   		
+   		<!-- Legend -->
+           <Pane layoutX="836.0" layoutY="10.0" prefHeight="92.0" prefWidth="219.0">
+      <children>
+      				<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#d0d0d0" height="92.0" stroke="BLACK" strokeType="INSIDE" width="219.0" />
+                      <Label layoutX="14.0" layoutY="14.0" text="Active" />
+                      <Label layoutX="66.0" layoutY="14.0" text="Can Attack" />
+                      <Label layoutX="149.0" layoutY="14.0" text="Targetable" />
+                      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="YELLOW" height="25.0" layoutX="21.0" layoutY="30.0" stroke="BLACK" strokeType="INSIDE" width="25.0" />
+                      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#11a411" height="25.0" layoutX="88.0" layoutY="30.0" stroke="BLACK" strokeType="INSIDE" width="25.0" />
+                      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="BLUE" height="25.0" layoutX="170.0" layoutY="30.0" stroke="BLACK" strokeType="INSIDE" width="25.0" />
+                      <Label layoutX="76.0" text="Legend" underline="true">
+      					<font>
+      						<Font name="System Bold" size="13.0" />
+      					</font>
+      				</Label>
+      				<Label layoutX="10.0" layoutY="69.0" text="Strength / Health">
+      					<font>
+      						<Font size="10.0" />
+      					</font>
+      				</Label>
+      				<Circle fill="#adbecd" layoutX="183.0" layoutY="76.0" radius="13.0" stroke="BLACK" strokeType="INSIDE" />
+      				<Label layoutX="113.0" layoutY="70.0" text="Sickness:" />
+      </children>
+           </Pane>
+   		
+   		<!-- Opponent Stat Box -->
+   		<VBox fx:id="opponentStatBox" alignment="TOP_CENTER" layoutX="1064.0" layoutY="109.0" prefHeight="200.0" prefWidth="100.0" />
+   	  	<Label fx:id="opponentName" layoutX="1066.0" layoutY="88.0" text="Opponent" textAlignment="CENTER" underline="true">
+   			<font>
+   				<Font size="20.0" />
+   			</font>
+   		</Label>
+   			
+   		<!-- Player Stat Box -->
+   		<VBox fx:id="playerStatBox" alignment="TOP_CENTER" layoutX="1063.0" layoutY="334.0" prefHeight="200.0" prefWidth="100.0" />
+   		<Label fx:id="playerName" layoutX="1084.0" layoutY="309.0" text="Player" textAlignment="CENTER" underline="true">
+   			<font>
+   				<Font size="20.0" />
+   			</font>
+   		</Label>
+   		 
+   		<!-- Decks -->
+   		<Pane fx:id="opponentDeckPane" layoutX="1090.0" layoutY="15.0" prefHeight="61.0" prefWidth="46.0">
+      <children>
+            			<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#9bc1da" height="61.0" stroke="BLACK" strokeType="INSIDE" width="46.0" />
+      				<Label fx:id="opponentDeckLabel" layoutX="19.0" layoutY="23.0" text="#" />
+      				<Label layoutX="7.0" layoutY="6.0" text="Deck" />
+      </children>
+   		</Pane>
+   		<Pane fx:id="playerDeckPane" layoutX="1091.0" layoutY="526.0" prefHeight="61.0" prefWidth="46.0">
+      <children>
+            			<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#9bc1da" height="61.0" stroke="BLACK" strokeType="INSIDE" width="46.0" />
+      				<Label fx:id="playerDeckLabel" layoutX="19.0" layoutY="23.0" text="#" />
+      				<Label layoutX="7.0" layoutY="6.0" text="Deck" />
+      </children>
+   		</Pane>
+           
+   		<!--  Battlefields  -->
+   		<ScrollPane layoutX="239.0" layoutY="237.0" prefHeight="132.0" prefWidth="810.0">
+              <content>
+      				<AnchorPane layoutX="239.0" layoutY="237.0" prefHeight="132.0" prefWidth="1024.0">
+         <children>
+         						<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#0a5ba1" height="132.0" stroke="BLACK" strokeType="INSIDE" width="1024.0" />
+         						<HBox fx:id="playerBattlefieldPane" layoutX="19.0" layoutY="11.0" prefHeight="110.0" prefWidth="772.0" spacing="10.0" />
+         </children>
+      				</AnchorPane>
+              </content>
+   		</ScrollPane>
+   		<ScrollPane layoutX="239.0" layoutY="105.0" prefHeight="127.0" prefWidth="810.0">
+      <content>
+      				<AnchorPane layoutX="239.0" layoutY="105.0" prefHeight="127.0" prefWidth="1024.0">
+         <children>
+         						<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#900505" height="127.0" stroke="BLACK" strokeType="INSIDE" width="1024.0" />
+         						<HBox fx:id="opponentBattlefieldPane" layoutX="19.0" layoutY="9.0" prefHeight="110.0" prefWidth="772.0" spacing="10.0" />
+         </children>
+      				</AnchorPane>
+      </content>
+   		</ScrollPane>
+   		
+   		
+   		<!--  Player Hand  -->
+   		<ScrollPane layoutX="11.0" layoutY="386.0" prefHeight="185.0" prefWidth="1045.0">
+      <content>
+      				<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="170.0" prefWidth="1451.0">
+         <children>
+         						<Rectangle fx:id="playerTargetRectangle" arcHeight="5.0" arcWidth="5.0" fill="BLUE" height="168.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="1045.0" />                   
+         						<HBox fx:id="playerHandPane" alignment="CENTER" maxHeight="200.0" maxWidth="1230.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="170.0" prefWidth="1045.0" scaleShape="false" spacing="10.0" style="-fx-background-color: #CCCCCC;" />
+         </children>
+      				</AnchorPane>
+      </content>
+   		</ScrollPane>
+         
+         	<!-- temporary action box -->
+   		<HBox fx:id="actionBox" alignment="CENTER" layoutX="14.0" layoutY="574.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="25.0" prefWidth="1000.0" scaleShape="false" spacing="10" />
+         
+   		<!-- Opponent Hand -->
+   		<AnchorPane layoutX="228.0" layoutY="3.0" prefHeight="85.0" prefWidth="606.0">
+            <children>
+      				<HBox fx:id="opponentHandPane" alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT" prefHeight="85.0" prefWidth="606.0" scaleShape="false" spacing="10.0" />
+      				<Rectangle fx:id="opponentTargetRectangle" arcHeight="5.0" arcWidth="5.0" fill="#0013ff" height="85.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="606.0" />
             </children>
-        </Pane>
-		
-		<!-- Opponent Stat Box -->
-		<VBox fx:id="opponentStatBox" alignment="TOP_CENTER" layoutX="1064.0" layoutY="109.0" prefHeight="200.0" prefWidth="100.0" />
-	  	<Label fx:id="opponentName" layoutX="1066.0" layoutY="88.0" text="Opponent" textAlignment="CENTER" underline="true">
-			<font>
-				<Font size="20.0" />
-			</font>
-		</Label>
-			
-		<!-- Player Stat Box -->
-		<VBox fx:id="playerStatBox" alignment="TOP_CENTER" layoutX="1063.0" layoutY="334.0" prefHeight="200.0" prefWidth="100.0" />
-		<Label fx:id="playerName" layoutX="1084.0" layoutY="309.0" text="Player" textAlignment="CENTER" underline="true">
-			<font>
-				<Font size="20.0" />
-			</font>
-		</Label>
-		 
-		<!-- Decks -->
-		<Pane fx:id="opponentDeckPane" layoutX="1090.0" layoutY="15.0" prefHeight="61.0" prefWidth="46.0">
-			<children>
-      			<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1aa9cc" height="61.0" stroke="BLACK" strokeType="INSIDE" width="46.0" />
-				<Label fx:id="opponentDeckLabel" layoutX="19.0" layoutY="23.0" text="#" />
-				<Label layoutX="7.0" layoutY="6.0" text="Deck" />
-			</children>
-		</Pane>
-		<Pane fx:id="playerDeckPane" layoutX="1091.0" layoutY="526.0" prefHeight="61.0" prefWidth="46.0">
-			 <children>
-      			<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1aa9cc" height="61.0" stroke="BLACK" strokeType="INSIDE" width="46.0" />
-				<Label fx:id="playerDeckLabel" layoutX="19.0" layoutY="23.0" text="#" />
-				<Label layoutX="7.0" layoutY="6.0" text="Deck" />
-			</children>
-		</Pane>
-        
-		<!--  Battlefields  -->
-		<ScrollPane layoutX="239.0" layoutY="237.0" prefHeight="132.0" prefWidth="810.0">
-			<content>
-				<AnchorPane layoutX="239.0" layoutY="237.0" prefHeight="132.0" prefWidth="1024.0">
-					<children>
-						<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#b0d9ff" height="132.0" stroke="BLACK" strokeType="INSIDE" width="1024.0" />
-						<HBox fx:id="playerBattlefieldPane" layoutX="19.0" layoutY="11.0" prefHeight="110.0" prefWidth="772.0" spacing="10.0" />
-					</children>
-				</AnchorPane>
-			</content>
-		</ScrollPane>
-		<ScrollPane layoutX="239.0" layoutY="105.0" prefHeight="127.0" prefWidth="810.0">
-			<content>
-				<AnchorPane layoutX="239.0" layoutY="105.0" prefHeight="127.0" prefWidth="1024.0">
-					<children>
-						<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f59782" height="127.0" stroke="BLACK" strokeType="INSIDE" width="1024.0" />
-						<HBox fx:id="opponentBattlefieldPane" layoutX="19.0" layoutY="9.0" prefHeight="110.0" prefWidth="772.0" spacing="10.0" />
-					</children>
-				</AnchorPane>
-			</content>
-		</ScrollPane>
-		
-		
-		<!--  Player Hand  -->
-		<ScrollPane layoutX="11.0" layoutY="386.0" prefHeight="185.0" prefWidth="1045.0">
-			<content>
-				<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="170.0" prefWidth="1451.0">
-					<children>
-						<Rectangle fx:id="playerTargetRectangle" arcHeight="5.0" arcWidth="5.0" fill="BLUE" height="168.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="1045.0" />                   
-						<HBox fx:id="playerHandPane" alignment="CENTER" maxHeight="200.0" maxWidth="1230.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="170.0" prefWidth="1045.0" scaleShape="false" spacing="10.0" />
-					</children>
-				</AnchorPane>
-			</content>
-		</ScrollPane>
+   		</AnchorPane>
+   </children>
       
-      	<!-- temporary action box -->
-		<HBox fx:id="actionBox" alignment="CENTER" layoutX="14.0" layoutY="574.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="25.0" prefWidth="1000.0" scaleShape="false" spacing="10" />
-      
-		<!-- Opponent Hand -->
-		<AnchorPane layoutX="228.0" layoutY="3.0" prefHeight="85.0" prefWidth="606.0">
-			<children>		
-				<HBox fx:id="opponentHandPane" alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT" prefHeight="85.0" prefWidth="606.0" scaleShape="false" spacing="10.0" />
-				<Rectangle fx:id="opponentTargetRectangle" arcHeight="5.0" arcWidth="5.0" fill="#0013ff" height="85.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="606.0" />
-			</children>
-		</AnchorPane>
-      
-    </children>
+
 </AnchorPane>

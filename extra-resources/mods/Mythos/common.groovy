@@ -1,21 +1,13 @@
-package mythos
-/* See modding documentation for all available keywords. */
-/* GENERIC TEMPLATE
-card("ChangeMe") {
-    creature "Common"
-    flavor "hello"
-    health 1
-    sickness 1
-    manaCost 1
-    attack 1
-}
-*/
-
 /**
- * List of available common cards Cardshifter "Mythos" mod
+ * List of available Common cards Cardshifter "Mythos" mod.
+ * The intention of Common cards is that a player will be able to select from these cards regardless of faction chosen.
+ * This is not implemented as of 2015-06-18 and is planned to be implemented during the 0.7 milestone
+ * See: https://github.com/Cardshifter/Cardshifter/issues/175
  * @author https://github.com/Phrancis
  * @author https://github.com/jay1148
  */
+
+package mythos
 
 //// CREATURES
 
@@ -45,7 +37,7 @@ card("Archer") {
     sickness 1
     manaCost 5
     attack 3
-    denyCounterAttack()
+    denyCounterAttack() // taunt
 }
 card("Longbowman") {
     creature "Common"
@@ -72,7 +64,7 @@ card("Assassin") {
     sickness 0
     manaCost 10
     attack 6
-    denyCounterAttack()
+    denyCounterAttack() // taunt
 }
 card("Spy") {
     creature "Common"
@@ -83,6 +75,7 @@ card("Spy") {
     manaCost 10
     attack 0
     noAttack()
+    // Opponent cards are -1/-1 while this card is on Battlefield
     whilePresent {
         change HEALTH, ATTACK by -1 withPriority 1 onCards {
             creature true
@@ -99,6 +92,7 @@ card("Slingman") {
     sickness 1
     manaCost 10
     attack 4
+    // Opponent cards are -2/-0 while this card is on Battlefield
     whilePresent {
         change ATTACK by -2 withPriority 1 onCards {
             creature true
@@ -116,6 +110,7 @@ card("Healer") {
     manaCost 10
     attack 0
     noAttack()
+    // Own cards have +0/+2 while this card is on Battlefield
     whilePresent {
         change HEALTH by 2 withPriority 1 onCards {
             creature true
