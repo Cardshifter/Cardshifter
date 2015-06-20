@@ -50,6 +50,14 @@ ATTACK_ACTION = "Attack";
 USE_ACTION = "Use";
 
 /**
+ * Player mana resources.
+ */
+
+MANA = createResource("MANA")
+MANA_MAX = createResource("MANA_MAX")
+
+
+/**
  * Which Groovy files to include for this mod. See extra-resources/mods for details. 
  */
 include 'creatures'
