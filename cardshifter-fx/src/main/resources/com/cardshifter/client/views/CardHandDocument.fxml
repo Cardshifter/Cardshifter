@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.control.*?>
@@ -12,7 +13,7 @@
       <Rectangle id="backgroundRectangle" fx:id="background" arcHeight="5.0" arcWidth="5.0" height="188.0" stroke="BLACK" strokeType="INSIDE" width="129.0" />
      
       <!-- Non Functional Card Layout Pieces -->
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#b90707" height="164.0" layoutX="12.0" layoutY="12.0" stroke="BLACK" strokeType="INSIDE" width="106.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#071cb8" height="164.0" layoutX="12.0" layoutY="12.0" stroke="BLACK" strokeType="INSIDE" width="106.0" />
       <Rectangle arcHeight="5.0" arcWidth="5.0" height="16.0" layoutX="12.0" layoutY="106.0" stroke="BLACK" strokeType="INSIDE" width="106.0" />
       <Label layoutX="87.0" layoutY="83.0" text="/" textFill="WHITE">
          <font>
@@ -27,8 +28,8 @@
       <Label fx:id="manaCost" layoutX="16.0" layoutY="30.0" text="Mana Cost =" textFill="WHITE" />
       <Label fx:id="scrapCost" layoutX="16.0" layoutY="42.0" text="Scrap Cost =" textFill="WHITE" />
       <Label fx:id="creatureType" layoutX="16.0" layoutY="106.0" textFill="WHITE" />
-      <Label fx:id="nameText" layoutX="16.0" layoutY="125.0" text="Name" textFill="WHITE" ellipsisString="..." prefWidth="110" />
-      <Label fx:id="abilityText" layoutX="16.0" layoutY="150.0" text="Ability" textFill="WHITE" ellipsisString="..." prefWidth="110" prefHeight="32" />
+      <Label fx:id="nameText" ellipsisString="..." layoutX="16.0" layoutY="125.0" prefWidth="110" text="Name" textFill="WHITE" />
+      <Label fx:id="abilityText" ellipsisString="..." layoutX="16.0" layoutY="150.0" prefHeight="32" prefWidth="110" text="Ability" textFill="WHITE" />
       <Label fx:id="scrapValue" layoutX="16.0" layoutY="55.0" text="Scrap Val =" textFill="WHITE" />
       
    </children>
