@@ -7,6 +7,6 @@ card('E.M.P.') {
 		}
 	}
 	afterPlay {
-		damage 2 to targets
+		damage 2 on targets
 	}
 }

@@ -31,12 +31,12 @@ card("JADE EMPEROR") {
     manaCost 30
     attack 3
     whilePresent {
-        change HEALTH by 3 withPriority 1 onCards {
+        change HEALTH by 3 withPriority 1 on {
             creatureType "Chinese"
             ownedBy "you"
             zone "Battlefield"
         }
-        change ATTACK by -1 withPriority 2 onCards {
+        change ATTACK by -1 withPriority 2 on {
             creature true
             zone "Battlefield"
         }
@@ -61,10 +61,10 @@ card("NUWA") {
     }
     onEndOfTurn {
         pick 1 atRandom (
-            { heal 2 to "you" },
-            { heal 1 to "opponent" },
-            { damage 1 to "you" },
-            { damage 2 to "opponent" }
+            { heal 2 on "you" },
+            { heal 1 on "opponent" },
+            { damage 1 on "you" },
+            { damage 2 on "opponent" }
         )
     }
 }
@@ -87,11 +87,11 @@ card("DIYU") {
         summon 1 of "Yaojing" to "you" zone "Battlefield"
     }
     whilePresent {
-        change HEALTH by -1 withPriority 1 onCards {
+        change HEALTH by -1 withPriority 1 on {
             creature true // all creatures
             zone "Battlefield"
         }
-        change ATTACK by 1 withPriority 2 onCards {
+        change ATTACK by 1 withPriority 2 on {
             creatureType "Chinese"
             ownedBy "you"
             zone "Battlefield"
@@ -112,7 +112,7 @@ card("MONKING") {
     attack 5
     denyCounterAttack()
     onEndOfTurn {
-        change ATTACK by 1 onCards {
+        change ATTACK by 1 on {
             thisCard()
         }
     }
@@ -165,12 +165,12 @@ card("SHINJE") {
     manaCost 20
     attack 6
     whilePresent {
-        change ATTACK, HEALTH by 1 withPriority 1 onCards {
+        change ATTACK, HEALTH by 1 withPriority 1 on {
             creature true
             ownedBy "you"
             zone "Battlefield"
         }
-        change MANA_COST by -3 withPriority 1 onCards {
+        change MANA_COST by -3 withPriority 1 on {
             ownedBy "you"
             zone "Hand", "Battlefield"
         }
@@ -191,15 +191,15 @@ card("GUANYIN") {
     attack 0
     noAttack()
     whilePresent {
-        change HEALTH by 1 withPriority 1 onCards {
+        change HEALTH by 1 withPriority 1 on {
             creature true
-            ownedBy "you" 
+            ownedBy "you"
             zone "Battlefield"
         }
     }
     onEndOfTurn {
-        heal 1 to "you"
-        change HEALTH by -1 onCards { thisCard() }
+        heal 1 on "you"
+        change HEALTH by -1 on { thisCard() }
     }
 }
 card("MAZU") {
@@ -215,12 +215,12 @@ card("MAZU") {
     manaCost 10
     attack 3
     whilePresent {
-        change HEALTH by 1 withPriority 1 onCards {
+        change HEALTH by 1 withPriority 1 on {
             creature true
             ownedBy "you"
             zone "Battlefield"
         }
-        change HEALTH by 2 withPriority 2 onCards {
+        change HEALTH by 2 withPriority 2 on {
             creature true
             ownedBy "active"
             zone "Battlefield"
@@ -271,7 +271,7 @@ card("Kung Fu Fighter") {
     attack 4
 }
 
-// TOKENS 
+// TOKENS
 
 card("Yaoguai") {
     creature "Chinese"
@@ -314,7 +314,7 @@ card("Life Tool") {
     attack 0
     noAttack()
     onEndOfTurn {
-        heal 1 to "you"
+        heal 1 on "you"
     }
 }
 card("Destruction Tool") {
@@ -325,6 +325,6 @@ card("Destruction Tool") {
     attack 0
     noAttack()
     onEndOfTurn {
-        damage 1 to "opponent"
+        damage 1 on "opponent"
     }
 }

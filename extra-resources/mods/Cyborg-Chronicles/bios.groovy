@@ -32,7 +32,7 @@ card('Field Medic') {
     creature "Bio"
     health 5
     onEndOfTurn {
-        heal 1 to 'you'
+        heal 1 on 'you'
     }
     manaCost 5
     attack 1

@@ -77,7 +77,7 @@ card("Spy") {
     noAttack()
     // Opponent cards are -1/-1 while this card is on Battlefield
     whilePresent {
-        change HEALTH, ATTACK by -1 withPriority 1 onCards {
+        change HEALTH, ATTACK by -1 withPriority 1 on {
             creature true
             ownedBy 'opponent'
             zone 'Battlefield'
@@ -94,7 +94,7 @@ card("Slingman") {
     attack 4
     // Opponent cards are -2/-0 while this card is on Battlefield
     whilePresent {
-        change ATTACK by -2 withPriority 1 onCards {
+        change ATTACK by -2 withPriority 1 on {
             creature true
             ownedBy 'opponent'
             zone 'Battlefield'
@@ -112,7 +112,7 @@ card("Healer") {
     noAttack()
     // Own cards have +0/+2 while this card is on Battlefield
     whilePresent {
-        change HEALTH by 2 withPriority 1 onCards {
+        change HEALTH by 2 withPriority 1 on {
             creature true
             ownedBy 'you'
             zone 'Battlefield'
@@ -144,7 +144,7 @@ card('Tree of Life') {
     manaCost 10
     // Player gains +5 health
     spell {}
-    afterPlay { heal 5 to "you" }
+    afterPlay { heal 5 on "you" }
 }
 
 card("Spring of Rejuvenation") {
@@ -158,20 +158,20 @@ card("Spring of Rejuvenation") {
         }
     }
     afterPlay {
-        heal 1 to targets
+        heal 1 on targets
     }
 }
 
 /*
 One last chance – Spell
-Return target creature from the graveyard to the field for one turn, its effects is negated. 
+Return target creature from the graveyard to the field for one turn, its effects is negated.
 Mana – 5
 */
 
 /*
 card('Resurrection') {
     manaCost 10
-    // Return target unit from the graveyard to the field. 
+    // Return target unit from the graveyard to the field.
     // Player gains +3 health
     spell {
         targets 1 {
@@ -246,6 +246,6 @@ Mana - 10
 
 /*
 Sacrificial Decree – Spell
-Opponent discards a card of his choice. 
+Opponent discards a card of his choice.
 Mana - 10
 */

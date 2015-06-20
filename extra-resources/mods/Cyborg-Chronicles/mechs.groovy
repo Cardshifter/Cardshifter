@@ -96,7 +96,7 @@ card('F.M.U.') {
     attack 0
     noAttack()
     onEndOfTurn {
-        heal 1 to 'you'
+        heal 1 on 'you'
     }
     manaCost 4
     scrap 2
