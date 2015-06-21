@@ -1,4 +1,5 @@
-import java.time.Instant
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -84,14 +85,6 @@ task copyResources(type: Copy) {
     include('mods/**')
 }
 
-task duga << {
-    println 'Invoking Duga'
-//    new URL( 'http://stats.zomis.net/GithubHookSEChatService/bot/say/Hello%20World' ).text
-//    def str = '%5bLink%20somewhere%5d%28http%3a%2f%2fwww%2egoogle%2ecom%29'
-    def str = 'Another%20Test!'
-    new URL( 'http://stats.zomis.net/GithubHookSEChatService/bot/say/' + str ).text
-}
-
 task dist(type: Zip) {
     dependsOn 'copyResources'
     String outputDateString = DateTimeFormatter.ofPattern("yyyyMMdd-HHmm").format(LocalDateTime.now());
@@ -102,11 +95,6 @@ task dist(type: Zip) {
     }
     from "$project.buildDir/libs"
 }
-
-task dtest << {
-    println 'task output is ' + tasks.dist.outputs
-}
-dtest.dependsOn 'dist'
 
 configurations {
     ftpAntTask
@@ -124,7 +112,7 @@ def javaModules() {
     subprojects.findAll {!it.name.contains('-api')}
 }
 
-task snapshot << {
+task ftpUpload << {
 
     def creds = getCredentials()
     ant {
@@ -138,5 +126,37 @@ task snapshot << {
         }
     }
 }
-snapshot.dependsOn 'dist'
-snapshot.dependsOn javaModules().test
+ftpUpload.dependsOn 'dist'
+ftpUpload.dependsOn javaModules().test
+
+task snapshot << {
+    def files = new File("$project.buildDir/distributions").listFiles()
+    assert files.length == 1
+    def file = files[0]
+    println 'task output is ' + file
+
+    URL url = new URL('http://stats.zomis.net:8081/bot/jsonPost')
+    String fname = file.getName()
+    String downloadURL = 'http://www.cardshifter.com/releases/' + fname
+    Properties props = new Properties()
+    props.load(new FileInputStream("localbuildconf.properties"))
+    String apiKey = props.get('dugaApiKey')
+    assert apiKey : 'property "dugaApiKey" not found in "localbuildconf.properties"'
+    HttpURLConnection conn = url.openConnection()
+    def request = '{ "roomId":"16134", "apiKey":"' + apiKey +'",' +
+            '"text":"New Snapshot: [' + fname + '](' + downloadURL + ')" }'
+    byte[] postData = request.getBytes(StandardCharsets.UTF_8);
+    conn.setDoOutput(true);
+    conn.setInstanceFollowRedirects(false);
+    conn.setRequestMethod("POST");
+    conn.setRequestProperty("Content-Type", "application/json");
+    conn.setRequestProperty("Content-Length", Integer.toString(postData.length));
+    conn.setUseCaches(false);
+    new DataOutputStream(conn.getOutputStream()).withCloseable {
+        it.write(postData, 0, postData.length);
+        it.flush()
+    }
+    def is = conn.getInputStream();
+    println is.text
+}
+snapshot.dependsOn 'ftpUpload'
