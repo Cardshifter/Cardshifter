@@ -27,7 +27,7 @@
       <Label fx:id="cardId" layoutX="16.0" layoutY="17.0" text="Card Id =" textFill="WHITE" />
       <Label fx:id="manaCost" layoutX="16.0" layoutY="30.0" text="Mana Cost =" textFill="WHITE" />
       <Label fx:id="scrapCost" layoutX="16.0" layoutY="42.0" text="Scrap Cost =" textFill="WHITE" />
-      <Label fx:id="creatureType" layoutX="16.0" layoutY="106.0" textFill="WHITE" />
+      <Label fx:id="creatureType" layoutX="16.0" layoutY="106.0" textFill="WHITE" ellipsisString="..." prefWidth="110" />
       <Label fx:id="nameText" ellipsisString="..." layoutX="16.0" layoutY="125.0" prefWidth="110" text="Name" textFill="WHITE" />
       <Label fx:id="abilityText" ellipsisString="..." layoutX="16.0" layoutY="150.0" prefHeight="32" prefWidth="110" text="Ability" textFill="WHITE" />
       <Label fx:id="scrapValue" layoutX="16.0" layoutY="55.0" text="Scrap Val =" textFill="WHITE" />
