@@ -140,6 +140,17 @@ task ftpUpload << {
 ftpUpload.dependsOn 'dist'
 ftpUpload.dependsOn javaModules().test
 
+task distAndTest(type: Zip) {
+    dependsOn 'copyResources'
+    // same as 'dist' but without the classifier
+    rename {
+        println it
+        it.replace('-all', '')
+    }
+    from "$project.buildDir/libs"
+}
+distAndTest.dependsOn javaModules().test
+
 task snapshot << {
     def files = new File("$project.buildDir/distributions").listFiles()
     assert files.length == 1

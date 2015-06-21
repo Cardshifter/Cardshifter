@@ -9,6 +9,8 @@ before_install:
     - export GRADLE_OPTS='-Dorg.gradle.parallel=false'
     - chmod +x gradlew
 
+install: /bin/true
+
 notifications:
     webhooks:
         urls:
@@ -17,7 +19,7 @@ notifications:
         on_failure: always
         on_start: false
 
-script: "./gradlew test --info"
+script: "./gradlew distAndTest --info"
 
 deploy:
   provider: releases
