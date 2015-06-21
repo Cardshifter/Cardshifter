@@ -103,6 +103,11 @@ task dist(type: Zip) {
     from "$project.buildDir/libs"
 }
 
+task dtest << {
+    println 'task output is ' + tasks.dist.outputs
+}
+dtest.dependsOn 'dist'
+
 configurations {
     ftpAntTask
 }
@@ -126,7 +131,7 @@ task snapshot << {
         taskdef(name: 'ftp',
                 classname: 'org.apache.tools.ant.taskdefs.optional.net.FTP',
                 classpath: configurations.ftpAntTask.asPath)
-        ftp(server: "www.zomis.net", userid: creds["username"], password: creds["password"], remoteDir: "public_html/cardshifter.com") {
+        ftp(server: "www.zomis.net", userid: creds["username"], password: creds["password"], remoteDir: "public_html/cardshifter.com/releases") {
             fileset(dir: "$buildDir/distributions") {
                 include(name: "*.zip")
             }
