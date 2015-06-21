@@ -85,6 +85,7 @@
       						<Font name="System Bold" size="20.0" />
       					</font>
       				</Label>
+                    <HBox fx:id="gameTypeBox" layoutX="209.0" prefHeight="36.0" prefWidth="686.0" />
       </children>
    		</AnchorPane>
    </children>
