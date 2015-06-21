@@ -53,14 +53,16 @@ public class ModCollection {
 	 */
 	public void loadExternal(Path directory) {
         if (!Files.isDirectory(directory)) {
-            logger.warn(directory + " not found. No external mods loaded");
+            logger.warn(directory.toAbsolutePath() + " not found. External mod directory not loaded");
             return;
         }
+        logger.info("Loading mods in " + directory.toAbsolutePath());
         File[] groovyMods = directory.toFile().listFiles();
         if (groovyMods != null) {
             Arrays.stream(groovyMods)
                     .filter(File::isDirectory)
                     .filter(f -> new File(f, "Game.groovy").exists())
+                    .peek(f -> logger.info("Loading mod " + f.getAbsolutePath()))
                     .forEach(f -> mods.put(f.getName(), () -> new GroovyMod(f, f.getName())));
         }
 	}
