@@ -1,3 +1,7 @@
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
 buildscript {
     repositories {
         jcenter()
@@ -90,6 +94,8 @@ task duga << {
 
 task dist(type: Zip) {
     dependsOn 'copyResources'
+    String outputDateString = DateTimeFormatter.ofPattern("yyyyMMdd-HHmm").format(LocalDateTime.now());
+    classifier = outputDateString
     rename {
         println it
         it.replace('-all', '')
