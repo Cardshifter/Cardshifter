@@ -12,11 +12,15 @@ buildscript {
     }
 }
 
+plugins {
+    id 'net.researchgate.release' version '2.1.2'
+}
+
 allprojects  {
     apply plugin: 'maven'
 
     group = 'com.cardshifter'
-    version = '0.6-SNAPSHOT'
+    version = properties.version
     repositories {
         mavenCentral()
         mavenLocal()
@@ -24,6 +28,13 @@ allprojects  {
         maven { url "http://repo.maven.apache.org/maven2" }
         maven { url "http://www.zomis.net/maven" }
     }
+}
+
+release {
+    failOnSnapshotDependencies = false
+    failOnPublishNeeded = false
+    revertOnFail = false
+    versionPropertyFile = 'gradle.properties'
 }
 
 def getMavenSettingsCredentials() {
