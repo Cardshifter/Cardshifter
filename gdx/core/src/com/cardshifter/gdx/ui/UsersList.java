@@ -45,14 +45,23 @@ public class UsersList {
                     userTable.getTable().addListener(new ClickListener() {
                         @Override
                         public void clicked(InputEvent event, float x, float y) {
-                            selected = userTable;
-                            Gdx.app.log("UsersList", "Selected " + userTable);
+                        	UsersList.this.selectUser(userTable);
+
                         }
                     });
                     this.table.add(userTable.getTable()).expandX().fill().row();
                 }
                 break;
         }
+    }
+    
+    private void selectUser(UserTable userTable) {
+    	for (UserTable user : this.userMap.values()) {
+    		user.deselect();
+    	}
+        selected = userTable;
+        selected.markSelected();
+        Gdx.app.log("UsersList", "Selected " + userTable);
     }
 
     public void inviteSelected(String[] availableMods, Stage stage, final CardshifterClient client) {
