@@ -41,8 +41,10 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
     private String currentModName;
 
     public ClientScreen(final CardshifterGame game, String host, int port, final String username) {
+    	
         this.game = game;
         client = game.getPlatform().createClient(host, port, this, new LoginMessage(username));
+        
         table = new Table(game.skin);
         table.setFillParent(true);
         mods = new HorizontalGroup();
@@ -54,7 +56,7 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
             }
         });
         table.add(new ScrollPane(chatMessages)).top().expand().fill();
-        table.add(usersList.getTable()).right().expandY().fill();
+        table.add(usersList.getGroup()).right().expandY().fill();
         table.row();
         table.add(mods).bottom().expandX().fill();
         TextButton inviteButton = new TextButton("Invite", game.skin);
