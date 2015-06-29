@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
@@ -88,6 +89,7 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
         });
         
         cardsInDeckList = new VerticalGroup();
+        cardsInDeckList.align(Align.left);
         this.cardsInDeckScrollPane = new ScrollPane(cardsInDeckList);
         this.cardsInDeckScrollPane.setScrollingDisabled(true, false);
 
@@ -362,7 +364,7 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
             index++;
         }
 
-        DeckCardView view = new DeckCardView(game.skin, id, name);
+        DeckCardView view = new DeckCardView(game.skin, id, name, this);
         cardsInDeckList.addActorAt(index, view);
         return view;
     }
@@ -370,5 +372,25 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
     private void updateLabels() {
         totalLabel.setText(config.total() + "/" + config.getMaxSize());
 
+    }
+    
+    public void removeCardFromDeck(int id) {
+    	for (Actor actor : cardsInDeckList.getChildren()) {
+    		if (actor instanceof DeckCardView) {
+    			if (actor instanceof DeckCardView) {
+    				if (((DeckCardView)actor).getId() == id) {
+        				int newCount = ((DeckCardView)actor).getCount() - 1;
+        				if (newCount > 0) {
+        					((DeckCardView) actor).setCount(newCount);
+         				} else {
+         					actor.remove();
+         				}
+        				config.setChosen(id, newCount);
+    				}
+    			}
+    		}
+    	}
+    	this.updateLabels();
+    	this.displayPage(this.page);
     }
 }
