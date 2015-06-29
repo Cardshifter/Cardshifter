@@ -27,7 +27,9 @@ import java.util.*;
 public class CardViewSmall extends DefaultCardView {
 
     private final Table table;
-    private final Label effect;
+    //private final Label effect;
+    private final Label namedEffect;
+    private final Label complexEffect;
     private final Label name;
     private final ResourceView cost;
     private final ResourceView stats;
@@ -43,15 +45,23 @@ public class CardViewSmall extends DefaultCardView {
         this.properties = new HashMap<String, Object>(cardInfo.getProperties());
         this.id = cardInfo.getId();
         table = new Table(context.getSkin());
+
         table.setBackground(new NinePatchDrawable(patch));
         Gdx.app.log("CardView", "Creating for " + cardInfo.getProperties());
         table.defaults().expand();
         name = label(context, cardInfo, "name");
         table.add(name).colspan(2).width(100).row();
         // table.add(image);
-        effect = label(context, cardInfo, "effect");
-        effect.setText(effect.getText() + stringResources(cardInfo));
-        table.add(effect).colspan(2).width(100).row();
+        //effect = label(context, cardInfo, "effect");
+        this.namedEffect = new Label(" ", context.getSkin());
+        String resourceName = this.stringResources(cardInfo);
+        if (resourceName != null && !resourceName.equals("")) {
+        	this.namedEffect.setText(this.stringResources(cardInfo));
+        }
+        //effect.setText(effect.getText() + stringResources(cardInfo));
+        table.add(namedEffect).colspan(2).width(100).row();
+        this.complexEffect = label(context, cardInfo, "effect");
+        table.add(complexEffect).colspan(2).width(100).row();
         ResViewFactory rvf = new ResViewFactory(context.getSkin());
         cost = rvf.forFormat(rvf.res("MANA_COST"), rvf.res("SCRAP_COST"));
         table.add(cost.getActor()).colspan(2).right().row();
@@ -116,8 +126,13 @@ public class CardViewSmall extends DefaultCardView {
 
     public static Label label(CardshifterClientContext context, CardInfoMessage message, String key) {
         Object value = message.getProperties().get(key);
-        Label label = new Label(String.valueOf(value == null ? "" : value), context.getSkin());
+        //by changing the following to " ", a row will always be added
+        //also need to replace newline characters because of some bug on server side
+        String labelString = String.valueOf(value == null ? " " : value);
+        labelString = labelString.replace("\n", "").replace("\r", "");
+        Label label = new Label(labelString, context.getSkin());
         label.setEllipsis(true);
+        label.setWrap(false);
         return label;
     }
 
