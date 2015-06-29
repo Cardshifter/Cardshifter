@@ -81,14 +81,17 @@ public class UsersList {
         Dialog dialog = new Dialog("Invite " + selected.getName(), skin) {
             @Override
             protected void result(Object object) {
-                client.send(new StartGameRequest(selected.getId(), (String) object));
-                callback.callback((String) object);
+            	if (object != null) {
+                    client.send(new StartGameRequest(selected.getId(), (String) object));
+                    callback.callback((String) object);
+            	}
             }
         };
         dialog.text("Which mod do you want to play?");
         for (String mod : availableMods) {
             dialog.button(mod, mod);
         }
+        dialog.button("Cancel");
         dialog.show(stage);
     }
 
