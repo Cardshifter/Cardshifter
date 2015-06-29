@@ -20,9 +20,6 @@ import com.cardshifter.api.outgoing.UserStatusMessage;
 import com.cardshifter.gdx.*;
 import com.cardshifter.gdx.ui.UsersList;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,6 +39,8 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
     private String[] availableMods;
     private GameScreen gameScreen;
     private String currentModName;
+    private ScrollPane chatScrollPane;
+    //private Table chatMessagesTable;
 
     public ClientScreen(final CardshifterGame game, String host, int port, final String username) {
     	
@@ -52,9 +51,46 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
         table.setFillParent(true);
         
         //mods = new HorizontalGroup();
-       
+        Label titleLabel = new Label("Welcome to Cardshifter", game.skin);
+        table.add(titleLabel).colspan(3);
+        table.row();
+        
+        /*
         chatMessages = new TextArea("", game.skin);
-        chatMessages.setDisabled(true);
+        //chatMessages.setDisabled(true);
+        
+        //ScrollPane chatScrollPane = new ScrollPane(chatMessages);
+        Table containerTable = new Table();
+        containerTable.setWidth(300);
+        //containerTable.setHeight(1000);
+        containerTable.add(chatMessages).width(300).height(300);
+        containerTable.row();
+        this.chatScrollPane = new ScrollPane(containerTable);
+        //chatScrollPane.setForceScroll(true, true);
+        //chatScrollPane.setHeight(10000);
+        this.chatScrollPane.setScrollingDisabled(true, false);
+        //chatScrollPane.setFlickScroll(true);
+        table.add(this.chatScrollPane);
+        
+        for (int i = 0; i < 100; i++) {
+        	containerTable.add(new Label("test" + String.valueOf(i), game.skin));
+        	containerTable.row();
+        }
+        */
+        
+        /*
+        this.chatMessagesTable = new Table();
+        this.chatMessagesTable.defaults().align(Align.left).pad(-15);
+        this.chatScrollPane = new ScrollPane(this.chatMessagesTable);
+        this.chatScrollPane.setScrollingDisabled(true, false);
+        table.add(this.chatScrollPane).left();
+        */
+        
+        this.chatMessages = new TextArea("", game.skin);
+        this.chatMessages.setDisabled(true);
+        this.chatScrollPane = new ScrollPane(this.chatMessages);
+        this.chatScrollPane.setScrollingDisabled(true, false);
+        table.add(this.chatScrollPane).expand().fill();
         
         usersList = new UsersList(game.skin, new Callback<String>() {
             @Override
@@ -62,7 +98,6 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
                 currentModName = object;
             }
         });
-        table.add(new ScrollPane(chatMessages)).top().expand().fill();
         table.add(usersList.getGroup()).right().expandY().fill().colspan(2);
         table.row();
         
@@ -126,7 +161,20 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
             public void handle(ChatMessage message) {
                 String time = game.getPlatform().getTimeString();
                 String append = "\n" + "[" + time + "] " + message.getFrom() + ": " + message.getMessage();
+                
+                /*
+                Label label = new Label(append, game.skin);
+                label.setWidth(ClientScreen.this.chatMessagesTable.getWidth());
+                label.setWrap(true);
+                ClientScreen.this.chatMessagesTable.add(label);
+                ClientScreen.this.chatScrollPane.setScrollY(ClientScreen.this.chatMessagesTable.getHeight());
+                */
+                
                 chatMessages.setText(chatMessages.getText() + append);
+                int numberOfScrollLines = chatMessages.getText().split("\n").length;
+               	chatMessages.setPrefRows(numberOfScrollLines); 
+               	ClientScreen.this.chatScrollPane.layout();   
+               	ClientScreen.this.chatScrollPane.setScrollY(ClientScreen.this.chatMessages.getHeight());
             }
         });
         handlerMap.put(UserStatusMessage.class, new SpecificHandler<UserStatusMessage>() {
