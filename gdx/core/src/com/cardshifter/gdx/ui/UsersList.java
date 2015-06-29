@@ -6,7 +6,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.cardshifter.api.incoming.StartGameRequest;
 import com.cardshifter.api.outgoing.UserStatusMessage;
@@ -18,7 +17,6 @@ import java.util.Map;
 
 public class UsersList {
 
-	private VerticalGroup elementGroup;
     private final Table table;
     private final Skin skin;
     private final Map<Integer, UserTable> userMap = new HashMap<Integer, UserTable>();
@@ -26,16 +24,9 @@ public class UsersList {
     private final Callback<String> callback;
     
     public UsersList(Skin skin, Callback<String> callback) {
-    	this.elementGroup = new VerticalGroup();
         this.skin = skin;
         this.table = new Table(skin);
         this.callback = callback;
-        
-        Table titleTable = new Table(skin);
-        titleTable.add("Users List:");
-        
-        this.elementGroup.addActor(titleTable);
-        this.elementGroup.addActor(this.table);
     }
 
     public void handleUserStatus(UserStatusMessage message) {
@@ -95,13 +86,7 @@ public class UsersList {
         dialog.show(stage);
     }
 
-    /*
     public Table getTable() {
         return table;
-    }
-    */
-    
-    public VerticalGroup getGroup() {
-    	return this.elementGroup;
     }
 }

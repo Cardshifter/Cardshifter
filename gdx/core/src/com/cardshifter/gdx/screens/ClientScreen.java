@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.both.InviteRequest;
@@ -49,7 +50,9 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
         table.setFillParent(true);
 
         Label titleLabel = new Label("Welcome to Cardshifter", game.skin);
-        table.add(titleLabel).colspan(3);
+        table.add(titleLabel);
+        Label usersListLabel = new Label("Users Online:", game.skin);
+        table.add(usersListLabel);
         table.row();
         
         this.chatMessages = new TextArea("", game.skin);
@@ -64,7 +67,9 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
                 currentModName = object;
             }
         });
-        table.add(usersList.getGroup()).right().expandY().fill().colspan(2);
+        ScrollPane userScrollPane = new ScrollPane(usersList.getTable());
+        table.add(userScrollPane).top();
+        //table.add(usersList.getGroup()).right().expandY().fill().colspan(2);
         table.row();
         
         this.messageField = new TextField("", game.skin);

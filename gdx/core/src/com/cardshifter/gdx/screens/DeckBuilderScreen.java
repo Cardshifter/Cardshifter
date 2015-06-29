@@ -45,6 +45,7 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
     private final CardshifterClientContext context;
     private final Map<Integer, Label> countLabels = new HashMap<Integer, Label>();
     private final VerticalGroup cardsInDeckList;
+    private final ScrollPane cardsInDeckScrollPane;
     private final List<String> savedDecks;
     private final Label nameLabel;
     private final TextButton previousPageButton;
@@ -85,13 +86,16 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
                 }
             }
         });
+        
         cardsInDeckList = new VerticalGroup();
+        this.cardsInDeckScrollPane = new ScrollPane(cardsInDeckList);
+        this.cardsInDeckScrollPane.setScrollingDisabled(true, false);
 
         table.add(nameLabel);
         table.add(totalLabel).row();
 
         table.add(cardsTable);
-        table.add(cardsInDeckList);
+        table.add(this.cardsInDeckScrollPane);
         savedDecks = new List<String>(game.skin);
         savedDecks.addListener(new ActorGestureListener(){
             @Override
