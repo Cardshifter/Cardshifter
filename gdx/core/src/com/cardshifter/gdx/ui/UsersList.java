@@ -24,7 +24,7 @@ public class UsersList {
     private final Map<Integer, UserTable> userMap = new HashMap<Integer, UserTable>();
     private UserTable selected;
     private final Callback<String> callback;
-
+    
     public UsersList(Skin skin, Callback<String> callback) {
     	this.elementGroup = new VerticalGroup();
         this.skin = skin;
@@ -90,8 +90,6 @@ public class UsersList {
             dialog.button(mod, mod);
         }
         dialog.show(stage);
-
-
     }
 
     /*
