@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.cardshifter.api.incoming.StartGameRequest;
 import com.cardshifter.api.outgoing.UserStatusMessage;
@@ -49,7 +50,7 @@ public class UsersList {
 
                         }
                     });
-                    this.table.add(userTable.getTable()).expandX().fill().row();
+                    this.table.add(userTable.getTable()).align(Align.left).row();
                 }
                 break;
         }

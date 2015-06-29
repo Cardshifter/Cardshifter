@@ -52,7 +52,7 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
         Label titleLabel = new Label("Welcome to Cardshifter", game.skin);
         table.add(titleLabel);
         Label usersListLabel = new Label("Users Online:", game.skin);
-        table.add(usersListLabel);
+        table.add(usersListLabel).colspan(2);
         table.row();
         
         this.chatMessages = new TextArea("", game.skin);
@@ -68,7 +68,7 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
             }
         });
         ScrollPane userScrollPane = new ScrollPane(usersList.getTable());
-        table.add(userScrollPane).top();
+        table.add(userScrollPane).top().colspan(2);
         //table.add(usersList.getGroup()).right().expandY().fill().colspan(2);
         table.row();
         
