@@ -118,7 +118,7 @@ public class CardViewSmall extends DefaultCardView {
         }
         return str.toString();
     }
-    
+
     private void zoomed() {
     	if (this.zoomCallback != null) {
     		this.zoomCallback.zoomCard(this);
@@ -127,6 +127,9 @@ public class CardViewSmall extends DefaultCardView {
 
     private void clicked() {
         Gdx.app.log("CardView", "clicked on " + id);
+        if (this.zoomCallback != null) {
+        	this.zoomCallback.endZoom(this);
+        }
         if (callback != null) {
             callback.addEntity(this);
         }

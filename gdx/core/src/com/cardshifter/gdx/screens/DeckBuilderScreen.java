@@ -378,25 +378,8 @@ public class DeckBuilderScreen implements Screen, TargetableCallback, ZoomCardCa
 
     @Override
     public boolean addEntity(final EntityView view) {
-    	
-    	//this is always called after a card is clicked
-    	//so it is a good place to cancel zoom
-    	//and prevent other cards from being added when one is zoomed in on
+    	//prevent other cards from being added when one is zoomed in on
     	if (this.cardZoomedIn) {
-    		if (((CardViewSmall)view).isZoomed){
-        		SequenceAction sequence = new SequenceAction();
-        		Runnable endZoom = new Runnable() {
-        		    @Override
-        		    public void run() {
-        		    	((CardViewSmall)view).endZoom();
-        		    	((CardViewSmall)view).getActor().remove();
-        		    	DeckBuilderScreen.this.cardZoomedIn = false;
-        		    }
-        		};
-        		sequence.addAction(Actions.sizeTo(this.initialCardViewWidth, this.initialCardViewHeight, 0.2f));
-        		sequence.addAction(Actions.run(endZoom));
-        		((CardViewSmall)view).getActor().addAction(sequence);
-    		}
     		return false;
     	}
     	
@@ -487,5 +470,23 @@ public class DeckBuilderScreen implements Screen, TargetableCallback, ZoomCardCa
 		sequence.addAction(Actions.run(adjustForZoom));		
 		cardViewCopy.getActor().addAction(sequence);
 		this.cardZoomedIn = true;
+	}
+	
+	@Override
+	public void endZoom(final CardViewSmall cardView) {
+		if (cardView.isZoomed){
+    		SequenceAction sequence = new SequenceAction();
+    		Runnable endZoom = new Runnable() {
+    		    @Override
+    		    public void run() {
+    		    	cardView.endZoom();
+    		    	cardView.getActor().remove();
+    		    	DeckBuilderScreen.this.cardZoomedIn = false;
+    		    }
+    		};
+    		sequence.addAction(Actions.sizeTo(this.initialCardViewWidth, this.initialCardViewHeight, 0.2f));
+    		sequence.addAction(Actions.run(endZoom));
+    		cardView.getActor().addAction(sequence);
+		}
 	}
 }
