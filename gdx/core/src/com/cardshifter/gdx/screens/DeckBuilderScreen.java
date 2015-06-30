@@ -11,9 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.cardshifter.api.config.DeckConfig;
 import com.cardshifter.api.outgoing.CardInfoMessage;
@@ -59,14 +57,9 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
     public DeckBuilderScreen(CardshifterGame game, String modName, int gameId, final DeckConfig deckConfig, final Callback<DeckConfig> callback) {
         this.config = deckConfig;
         this.callback = callback;
-        this.table = new Table(game.skin);
-        this.table.setFillParent(true);
         this.game = game;
         this.context = new CardshifterClientContext(game.skin, gameId, null, game.stage);
-
-        totalLabel = new Label("0/" + config.getMaxSize(), game.skin);
-        nameLabel = new Label(deckName, game.skin);
-
+        
         Map<Integer, CardInfoMessage> data = deckConfig.getCardData();
         cards = new ArrayList<CardInfoMessage>(data.values());
         Collections.sort(cards, new Comparator<CardInfoMessage>() {
@@ -76,8 +69,44 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
             }
         });
         pageCount = (int) Math.ceil(cards.size() / CARDS_PER_PAGE);
+        	
+        //normally once i start constructing libGDX UI elements, I will use a separate method 
+        //not doing that here in order have the fields be final
+        //this.buildScreen();
+       
+        this.table = new Table(game.skin);
+        this.table.setFillParent(true);
+
+        totalLabel = new Label("0/" + config.getMaxSize(), game.skin);
+        nameLabel = new Label(deckName, game.skin);
+        table.add(nameLabel);
+        table.add(totalLabel);
+        table.row();
+        
         cardsTable = new Table(game.skin);
-        cardsTable.defaults().space(4);
+        cardsTable.defaults().space(4); 
+        table.add(cardsTable);
+        
+        cardsInDeckList = new VerticalGroup();
+        cardsInDeckList.align(Align.left);
+        this.cardsInDeckScrollPane = new ScrollPane(cardsInDeckList);
+        this.cardsInDeckScrollPane.setScrollingDisabled(true, false);
+        table.add(this.cardsInDeckScrollPane).width(Gdx.graphics.getWidth()/4);
+        
+        savedDecks = new List<String>(game.skin);
+        savedDecks.addListener(new ActorGestureListener(){
+            @Override
+            public boolean longPress(Actor actor, float x, float y) {
+                loadDeck(savedDecks.getSelected());
+                return true;
+            }
+        });
+        Table savedTable = scanSavedDecks(game, savedDecks, modName);
+        if (savedTable != null) {
+            table.add(savedTable).top();
+        }
+        table.row();
+        
         TextButton doneButton = new TextButton("Done", game.skin);
         doneButton.addListener(new ClickListener() {
             @Override
@@ -87,41 +116,13 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
                 }
             }
         });
-        
-        cardsInDeckList = new VerticalGroup();
-        cardsInDeckList.align(Align.left);
-        this.cardsInDeckScrollPane = new ScrollPane(cardsInDeckList);
-        this.cardsInDeckScrollPane.setScrollingDisabled(true, false);
-
-        table.add(nameLabel);
-        table.add(totalLabel).row();
-
-        table.add(cardsTable);
-        table.add(this.cardsInDeckScrollPane);
-        savedDecks = new List<String>(game.skin);
-        savedDecks.addListener(new ActorGestureListener(){
-            @Override
-            public boolean longPress(Actor actor, float x, float y) {
-                loadDeck(savedDecks.getSelected());
-                return true;
-            }
-        });
-
         HorizontalGroup buttons = new HorizontalGroup();
         this.previousPageButton = addPageButton(buttons, "Previous", -1, game.skin);
         buttons.addActor(doneButton);
         this.nextPageButton = addPageButton(buttons, "Next", 1, game.skin);
-
-        table.row();
-        Table savedTable = scanSavedDecks(game, savedDecks, modName);
-        if (savedTable != null) {
-            table.add(buttons);
-            table.add(savedTable);
-        }
-        else {
-            table.add(buttons).colspan(2);
-        }
-
+        table.add(buttons).colspan(2);
+        //table.row();
+        
         displayPage(1);
     }
 
