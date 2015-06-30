@@ -2,10 +2,9 @@ package com.cardshifter.gdx.ui.zones;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.cardshifter.api.outgoing.CardInfoMessage;
 import com.cardshifter.api.outgoing.ZoneMessage;
-import com.cardshifter.gdx.CardshifterGame;
+import com.cardshifter.gdx.ZoomCardCallback;
 import com.cardshifter.gdx.ui.CardshifterClientContext;
 import com.cardshifter.gdx.ui.EntityView;
 import com.cardshifter.gdx.ui.cards.CardView;
@@ -14,7 +13,7 @@ import com.cardshifter.gdx.ui.cards.CardViewSmall;
 
 import java.util.Map;
 
-public class DefaultZoneView extends ZoneView {
+public class DefaultZoneView extends ZoneView implements ZoomCardCallback {
 
     private final HorizontalGroup group;
     private final CardshifterClientContext context;
@@ -37,7 +36,7 @@ public class DefaultZoneView extends ZoneView {
             view = new CardViewHidden(context, message.getId());
         }
         else {
-            view = new CardViewSmall(context, message);
+            view = new CardViewSmall(context, message, this);
         }
         group.addActor(view.getActor());
         return view;
@@ -47,4 +46,9 @@ public class DefaultZoneView extends ZoneView {
     public Actor getActor() {
         return group;
     }
+
+	@Override
+	public void zoomCard(CardViewSmall cardView) {
+		System.out.println("Zoom card found in DefaultZoneView");
+	}
 }

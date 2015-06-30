@@ -7,6 +7,8 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
@@ -19,6 +21,7 @@ import com.cardshifter.gdx.Callback;
 import com.cardshifter.gdx.CardshifterGame;
 import com.cardshifter.gdx.TargetStatus;
 import com.cardshifter.gdx.TargetableCallback;
+import com.cardshifter.gdx.ZoomCardCallback;
 import com.cardshifter.gdx.ui.CardshifterClientContext;
 import com.cardshifter.gdx.ui.EntityView;
 import com.cardshifter.gdx.ui.cards.CardViewSmall;
@@ -28,7 +31,7 @@ import java.util.*;
 /**
  * Created by Simon on 2/10/2015.
  */
-public class DeckBuilderScreen implements Screen, TargetableCallback {
+public class DeckBuilderScreen implements Screen, TargetableCallback, ZoomCardCallback {
 
     private static final int ROWS_PER_PAGE = 3;
     private static final int CARDS_PER_ROW = 4;
@@ -54,6 +57,10 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
     private FileHandle external;
     private final Label totalLabel;
     final Screen lobbyScreen;
+    
+    private boolean cardZoomedIn = false;
+    private float initialCardViewWidth = 0;
+    private float initialCardViewHeight = 0;
 
     public DeckBuilderScreen(Screen screen, CardshifterGame game, String modName, int gameId, final DeckConfig deckConfig, final Callback<DeckConfig> callback) {
         this.config = deckConfig;
@@ -311,7 +318,7 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
             }
             CardInfoMessage card = cards.get(i);
             VerticalGroup choosableGroup = new VerticalGroup();
-            CardViewSmall cardView = new CardViewSmall(context, card);
+            CardViewSmall cardView = new CardViewSmall(context, card, this);
             cardView.setTargetable(TargetStatus.TARGETABLE, this);
             choosableGroup.addActor(cardView.getActor());
             Label label = new Label(countText(card.getId()), game.skin);
@@ -370,7 +377,29 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
     }
 
     @Override
-    public boolean addEntity(EntityView view) {
+    public boolean addEntity(final EntityView view) {
+    	
+    	//this is always called after a card is clicked
+    	//so it is a good place to cancel zoom
+    	//and prevent other cards from being added when one is zoomed in on
+    	if (this.cardZoomedIn) {
+    		if (((CardViewSmall)view).isZoomed){
+        		SequenceAction sequence = new SequenceAction();
+        		Runnable endZoom = new Runnable() {
+        		    @Override
+        		    public void run() {
+        		    	((CardViewSmall)view).endZoom();
+        		    	((CardViewSmall)view).getActor().toBack();
+        		    	DeckBuilderScreen.this.cardZoomedIn = false;
+        		    }
+        		};
+        		sequence.addAction(Actions.sizeTo(this.initialCardViewWidth, this.initialCardViewHeight, 0.5f));
+        		sequence.addAction(Actions.run(endZoom));
+        		((CardViewSmall)view).getActor().addAction(sequence);
+    		}
+    		return false;
+    	}
+    	
         final int id = view.getId();
         int max = config.getMaxFor(id);
         Integer chosen = config.getChosen().get(id);
@@ -435,4 +464,22 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
     	this.updateLabels();
     	this.displayPage(this.page);
     }
+
+	@Override
+	public void zoomCard(final CardViewSmall cardView) {
+		this.initialCardViewWidth = cardView.getActor().getWidth();
+		this.initialCardViewHeight = cardView.getActor().getHeight();
+		SequenceAction sequence = new SequenceAction();
+		Runnable adjustForZoom = new Runnable() {
+		    @Override
+		    public void run() {
+		    	cardView.zoom();
+		    }
+		};
+		sequence.addAction(Actions.sizeTo(Gdx.graphics.getWidth()/3, Gdx.graphics.getHeight()/2, 0.2f));
+		sequence.addAction(Actions.run(adjustForZoom));		
+		cardView.getActor().toFront();
+		cardView.getActor().addAction(sequence);
+		this.cardZoomedIn = true;
+	}
 }

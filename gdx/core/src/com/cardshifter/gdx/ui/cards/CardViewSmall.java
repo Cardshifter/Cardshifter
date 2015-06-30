@@ -12,12 +12,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.cardshifter.api.outgoing.CardInfoMessage;
 import com.cardshifter.api.outgoing.UsableActionMessage;
 import com.cardshifter.gdx.TargetStatus;
 import com.cardshifter.gdx.TargetableCallback;
+import com.cardshifter.gdx.ZoomCardCallback;
 import com.cardshifter.gdx.ui.CardshifterClientContext;
 import com.cardshifter.gdx.ui.res.ResourceView;
 import com.cardshifter.gdx.ui.res.ResViewFactory;
@@ -37,13 +39,16 @@ public class CardViewSmall extends DefaultCardView {
     private final int id;
     private final CardshifterClientContext context;
     private TargetableCallback callback;
+    private ZoomCardCallback zoomCallback;
     private final NinePatch patch = new NinePatch(new Texture(Gdx.files.internal("cardbg.png")), 3, 3, 3, 3);
     private final List<UsableActionMessage> actions = new ArrayList<UsableActionMessage>(5);
+    public boolean isZoomed = false;
 
-    public CardViewSmall(CardshifterClientContext context, CardInfoMessage cardInfo) {
+    public CardViewSmall(CardshifterClientContext context, CardInfoMessage cardInfo, ZoomCardCallback zoomCallback) {
         this.context = context;
         this.properties = new HashMap<String, Object>(cardInfo.getProperties());
         this.id = cardInfo.getId();
+        this.zoomCallback = zoomCallback;
         table = new Table(context.getSkin());
 
         table.setBackground(new NinePatchDrawable(patch));
@@ -80,6 +85,13 @@ public class CardViewSmall extends DefaultCardView {
                 CardViewSmall.this.clicked();
             }
         });
+        table.addListener(new ActorGestureListener(){
+            @Override
+            public boolean longPress(Actor actor, float x, float y) {
+            	CardViewSmall.this.longPressed();
+                return true;
+            }
+        });
     }
 
     private String stringResources(CardInfoMessage cardInfo) {
@@ -92,6 +104,12 @@ public class CardViewSmall extends DefaultCardView {
             str.append(" Ranged");
         }
         return str.toString();
+    }
+    
+    private void longPressed() {
+    	if (this.zoomCallback != null) {
+    		this.zoomCallback.zoomCard(this);
+    	}
     }
 
     private void clicked() {
@@ -132,7 +150,7 @@ public class CardViewSmall extends DefaultCardView {
         labelString = labelString.replace("\n", "").replace("\r", "");
         Label label = new Label(labelString, context.getSkin());
         label.setEllipsis(true);
-        label.setWrap(false);
+        //label.setWrap(false);
         return label;
     }
 
@@ -194,5 +212,17 @@ public class CardViewSmall extends DefaultCardView {
     @Override
     public Actor getActor() {
         return table;
+    }
+    
+    public void zoom() {
+    	this.isZoomed = true;
+    	this.complexEffect.setEllipsis(false);
+    	this.complexEffect.layout();
+    }
+    
+    public void endZoom() {
+    	this.isZoomed = false;
+    	this.complexEffect.setEllipsis(true);
+    	this.complexEffect.layout();
     }
 }
