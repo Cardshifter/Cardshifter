@@ -172,9 +172,22 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
         delete.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                FileHandle handle = external.child(savedDecks.getSelected() + ".deck");
-                handle.delete();
-                updateSavedDeckList();
+                Dialog dialog = new Dialog("Confirm Delete", DeckBuilderScreen.this.game.skin) {
+                    @Override
+                    protected void result(Object object) {
+                        boolean result = (Boolean) object;
+                        if (!result) {
+                            return;
+                        }
+                        FileHandle handle = external.child(savedDecks.getSelected() + ".deck");
+                        handle.delete();
+                        updateSavedDeckList();
+                    }
+                };
+                dialog.button("Delete", true);
+                dialog.button("Cancel", false);
+                dialog.show(DeckBuilderScreen.this.game.stage);
+
             }
         });
         HorizontalGroup saveButtons = new HorizontalGroup();
