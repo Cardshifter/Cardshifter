@@ -45,7 +45,7 @@ public class CardViewSmall extends DefaultCardView {
     public boolean isZoomed = false;
     public final CardInfoMessage cardInfo;
 
-    public CardViewSmall(CardshifterClientContext context, CardInfoMessage cardInfo, ZoomCardCallback zoomCallback) {
+    public CardViewSmall(CardshifterClientContext context, CardInfoMessage cardInfo, ZoomCardCallback zoomCallback, boolean zoomedVersion) {
         this.context = context;
         this.cardInfo = cardInfo;
         this.properties = new HashMap<String, Object>(cardInfo.getProperties());
@@ -68,7 +68,14 @@ public class CardViewSmall extends DefaultCardView {
         //effect.setText(effect.getText() + stringResources(cardInfo));
         table.add(namedEffect).colspan(2).width(100).left().row();
         this.complexEffect = label(context, cardInfo, "effect");
-        table.add(complexEffect).colspan(2).width(100).left().row();
+        table.add(complexEffect).colspan(2).width(100).center().row();
+        
+        if (zoomedVersion) {
+        	Label flavorLabel = label(context, cardInfo, "flavor");
+        	flavorLabel.setWrap(true);
+        	table.add(flavorLabel).colspan(2).width(100).center().row();
+        }
+        
         ResViewFactory rvf = new ResViewFactory(context.getSkin());
         cost = rvf.forFormat(rvf.res("MANA_COST"), rvf.res("SCRAP_COST"));
         table.add(cost.getActor()).colspan(2).right().row();
@@ -156,7 +163,6 @@ public class CardViewSmall extends DefaultCardView {
         labelString = labelString.replace("\n", "").replace("\r", "");
         Label label = new Label(labelString, context.getSkin());
         label.setEllipsis(true);
-        //label.setWrap(false);
         return label;
     }
 
@@ -225,6 +231,7 @@ public class CardViewSmall extends DefaultCardView {
     	this.name.setEllipsis(false);
     	this.name.layout();
     	this.complexEffect.setEllipsis(false);
+    	this.complexEffect.setWrap(true);
     	this.complexEffect.layout();
     }
     
@@ -233,6 +240,7 @@ public class CardViewSmall extends DefaultCardView {
     	this.name.setEllipsis(true);
     	this.name.layout();
     	this.complexEffect.setEllipsis(true);
+    	this.complexEffect.setWrap(false);
     	this.complexEffect.layout();
     }
 }

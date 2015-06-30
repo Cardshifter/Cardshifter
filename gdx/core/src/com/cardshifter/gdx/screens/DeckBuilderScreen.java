@@ -318,7 +318,7 @@ public class DeckBuilderScreen implements Screen, TargetableCallback, ZoomCardCa
             }
             CardInfoMessage card = cards.get(i);
             VerticalGroup choosableGroup = new VerticalGroup();
-            CardViewSmall cardView = new CardViewSmall(context, card, this);
+            CardViewSmall cardView = new CardViewSmall(context, card, this, false);
             cardView.setTargetable(TargetStatus.TARGETABLE, this);
             choosableGroup.addActor(cardView.getActor());
             Label label = new Label(countText(card.getId()), game.skin);
@@ -467,9 +467,12 @@ public class DeckBuilderScreen implements Screen, TargetableCallback, ZoomCardCa
 
 	@Override
 	public void zoomCard(final CardViewSmall cardView) {
-		final CardViewSmall cardViewCopy = new CardViewSmall(this.context, cardView.cardInfo, this);
+		if (this.cardZoomedIn) {
+			return;
+		}
+		final CardViewSmall cardViewCopy = new CardViewSmall(this.context, cardView.cardInfo, this, true);
 		cardViewCopy.setTargetable(TargetStatus.TARGETABLE, this);
-		cardViewCopy.getActor().setPosition(Gdx.graphics.getWidth()/3, Gdx.graphics.getHeight()/3);
+		cardViewCopy.getActor().setPosition(Gdx.graphics.getWidth()/2.7f, Gdx.graphics.getHeight()/30);
 		this.game.stage.addActor(cardViewCopy.getActor());
 		this.initialCardViewWidth = cardView.getActor().getWidth();
 		this.initialCardViewHeight = cardView.getActor().getHeight();
@@ -480,7 +483,7 @@ public class DeckBuilderScreen implements Screen, TargetableCallback, ZoomCardCa
 		    	cardViewCopy.zoom();
 		    }
 		};
-		sequence.addAction(Actions.sizeTo(Gdx.graphics.getWidth()/3, Gdx.graphics.getHeight()/2, 0.2f));
+		sequence.addAction(Actions.sizeTo(Gdx.graphics.getWidth()/4, Gdx.graphics.getHeight()*0.9f, 0.2f));
 		sequence.addAction(Actions.run(adjustForZoom));		
 		cardViewCopy.getActor().addAction(sequence);
 		this.cardZoomedIn = true;

@@ -36,7 +36,7 @@ public class DefaultZoneView extends ZoneView implements ZoomCardCallback {
             view = new CardViewHidden(context, message.getId());
         }
         else {
-            view = new CardViewSmall(context, message, this);
+            view = new CardViewSmall(context, message, this, false);
         }
         group.addActor(view.getActor());
         return view;
