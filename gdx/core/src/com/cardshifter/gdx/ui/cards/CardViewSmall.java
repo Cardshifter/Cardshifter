@@ -43,9 +43,11 @@ public class CardViewSmall extends DefaultCardView {
     private final NinePatch patch = new NinePatch(new Texture(Gdx.files.internal("cardbg.png")), 3, 3, 3, 3);
     private final List<UsableActionMessage> actions = new ArrayList<UsableActionMessage>(5);
     public boolean isZoomed = false;
+    public final CardInfoMessage cardInfo;
 
     public CardViewSmall(CardshifterClientContext context, CardInfoMessage cardInfo, ZoomCardCallback zoomCallback) {
         this.context = context;
+        this.cardInfo = cardInfo;
         this.properties = new HashMap<String, Object>(cardInfo.getProperties());
         this.id = cardInfo.getId();
         this.zoomCallback = zoomCallback;
@@ -55,7 +57,7 @@ public class CardViewSmall extends DefaultCardView {
         Gdx.app.log("CardView", "Creating for " + cardInfo.getProperties());
         table.defaults().expand();
         name = label(context, cardInfo, "name");
-        table.add(name).colspan(2).width(100).row();
+        table.add(name).colspan(2).width(100).left().row();
         // table.add(image);
         //effect = label(context, cardInfo, "effect");
         this.namedEffect = new Label(" ", context.getSkin());
@@ -64,9 +66,9 @@ public class CardViewSmall extends DefaultCardView {
         	this.namedEffect.setText(this.stringResources(cardInfo));
         }
         //effect.setText(effect.getText() + stringResources(cardInfo));
-        table.add(namedEffect).colspan(2).width(100).row();
+        table.add(namedEffect).colspan(2).width(100).left().row();
         this.complexEffect = label(context, cardInfo, "effect");
-        table.add(complexEffect).colspan(2).width(100).row();
+        table.add(complexEffect).colspan(2).width(100).left().row();
         ResViewFactory rvf = new ResViewFactory(context.getSkin());
         cost = rvf.forFormat(rvf.res("MANA_COST"), rvf.res("SCRAP_COST"));
         table.add(cost.getActor()).colspan(2).right().row();
@@ -82,13 +84,17 @@ public class CardViewSmall extends DefaultCardView {
         table.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                CardViewSmall.this.clicked();
+            	if (this.getTapCount() > 1) {
+            		CardViewSmall.this.zoomed();
+            	} else {
+            		CardViewSmall.this.clicked();
+            	} 
             }
         });
         table.addListener(new ActorGestureListener(){
             @Override
             public boolean longPress(Actor actor, float x, float y) {
-            	CardViewSmall.this.longPressed();
+            	CardViewSmall.this.zoomed();
                 return true;
             }
         });
@@ -106,7 +112,7 @@ public class CardViewSmall extends DefaultCardView {
         return str.toString();
     }
     
-    private void longPressed() {
+    private void zoomed() {
     	if (this.zoomCallback != null) {
     		this.zoomCallback.zoomCard(this);
     	}
@@ -216,12 +222,16 @@ public class CardViewSmall extends DefaultCardView {
     
     public void zoom() {
     	this.isZoomed = true;
+    	this.name.setEllipsis(false);
+    	this.name.layout();
     	this.complexEffect.setEllipsis(false);
     	this.complexEffect.layout();
     }
     
     public void endZoom() {
     	this.isZoomed = false;
+    	this.name.setEllipsis(true);
+    	this.name.layout();
     	this.complexEffect.setEllipsis(true);
     	this.complexEffect.layout();
     }
