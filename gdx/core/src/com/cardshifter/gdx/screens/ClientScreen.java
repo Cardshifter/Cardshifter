@@ -156,7 +156,7 @@ public class ClientScreen implements Screen, CardshifterMessageHandler {
             public void handle(final PlayerConfigMessage message) {
                 DeckConfig deckConfig = (DeckConfig) message.getConfigs().get("Deck");
                 if (deckConfig != null) {
-                    game.setScreen(new DeckBuilderScreen(game, currentModName, message.getGameId(), deckConfig, new Callback<DeckConfig>() {
+                    game.setScreen(new DeckBuilderScreen(ClientScreen.this, game, currentModName, message.getGameId(), deckConfig, new Callback<DeckConfig>() {
                         @Override
                         public void callback(DeckConfig object) {
                             game.setScreen(gameScreen);

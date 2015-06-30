@@ -53,10 +53,12 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
     private String deckName = "unnamed";
     private FileHandle external;
     private final Label totalLabel;
+    final Screen lobbyScreen;
 
-    public DeckBuilderScreen(CardshifterGame game, String modName, int gameId, final DeckConfig deckConfig, final Callback<DeckConfig> callback) {
+    public DeckBuilderScreen(Screen screen, CardshifterGame game, String modName, int gameId, final DeckConfig deckConfig, final Callback<DeckConfig> callback) {
         this.config = deckConfig;
         this.callback = callback;
+        this.lobbyScreen = screen;
         this.game = game;
         this.context = new CardshifterClientContext(game.skin, gameId, null, game.stage);
         
@@ -73,6 +75,17 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
         //normally once i start constructing libGDX UI elements, I will use a separate method 
         //not doing that here in order have the fields be final
         //this.buildScreen();
+        
+        TextButton backToMenu = new TextButton("Back to menu", game.skin);
+        backToMenu.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+            	DeckBuilderScreen.this.game.stage.clear();
+                DeckBuilderScreen.this.game.setScreen(DeckBuilderScreen.this.lobbyScreen);
+            }
+        });
+        backToMenu.setPosition(0, Gdx.graphics.getHeight() - Gdx.graphics.getHeight()/20);
+        this.game.stage.addActor(backToMenu);
        
         this.table = new Table(game.skin);
         this.table.setFillParent(true);
@@ -102,26 +115,73 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
             }
         });
         Table savedTable = scanSavedDecks(game, savedDecks, modName);
-        if (savedTable != null) {
-            table.add(savedTable).top();
-        }
-        table.row();
+        savedTable.setHeight(Gdx.graphics.getHeight());
+        ScrollPane savedTableScroll = new ScrollPane(savedTable);
+        savedTableScroll.setScrollingDisabled(false, false);
+        table.add(savedTableScroll).top();
         
-        TextButton doneButton = new TextButton("Done", game.skin);
-        doneButton.addListener(new ClickListener() {
+        table.row();
+
+        HorizontalGroup prevNextButtons = new HorizontalGroup();
+        this.previousPageButton = addPageButton(prevNextButtons, "Previous", -1, game.skin);
+        this.nextPageButton = addPageButton(prevNextButtons, "Next", 1, game.skin);
+        table.add(prevNextButtons);
+        
+        TextButton startGameButton = new TextButton("Start Game", game.skin);
+        startGameButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (config.total() >= config.getMinSize() && config.total() <= config.getMaxSize()) {
+                	DeckBuilderScreen.this.game.stage.clear();
                     callback.callback(deckConfig);
                 }
             }
         });
-        HorizontalGroup buttons = new HorizontalGroup();
-        this.previousPageButton = addPageButton(buttons, "Previous", -1, game.skin);
-        buttons.addActor(doneButton);
-        this.nextPageButton = addPageButton(buttons, "Next", 1, game.skin);
-        table.add(buttons).colspan(2);
-        //table.row();
+        table.add(startGameButton);
+        
+        TextButton save = new TextButton("Save", game.skin);
+        save.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                final TextField textField = new TextField(deckName, DeckBuilderScreen.this.game.skin);
+                Dialog dialog = new Dialog("Deck Name", DeckBuilderScreen.this.game.skin) {
+                    @Override
+                    protected void result(Object object) {
+                        boolean result = (Boolean) object;
+                        if (!result) {
+                            return;
+                        }
+                        deckName = textField.getText();
+                        saveDeck(deckName);
+                    }
+                };
+                dialog.add(textField);
+                dialog.button("Save", true);
+                dialog.button("Cancel", false);
+                dialog.show(DeckBuilderScreen.this.game.stage);
+            }
+        });
+        TextButton load = new TextButton("Load", game.skin);
+        load.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+            	DeckBuilderScreen.this.loadDeck(DeckBuilderScreen.this.savedDecks.getSelected());
+            }
+        });
+        TextButton delete = new TextButton("Delete", game.skin);
+        delete.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                FileHandle handle = external.child(savedDecks.getSelected() + ".deck");
+                handle.delete();
+                updateSavedDeckList();
+            }
+        });
+        HorizontalGroup saveButtons = new HorizontalGroup();
+        saveButtons.addActor(save);
+        saveButtons.addActor(load);
+        saveButtons.addActor(delete);
+        table.add(saveButtons);
         
         displayPage(1);
     }
@@ -139,40 +199,7 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
 
             updateSavedDeckList();
 
-            TextButton save = new TextButton("Save", game.skin);
-            save.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    final TextField textField = new TextField(deckName, game.skin);
-                    Dialog dialog = new Dialog("Deck Name", game.skin) {
-                        @Override
-                        protected void result(Object object) {
-                            boolean result = (Boolean) object;
-                            if (!result) {
-                                return;
-                            }
-                            deckName = textField.getText();
-                            saveDeck(deckName);
-                        }
-                    };
-                    dialog.add(textField);
-                    dialog.button("Save", true);
-                    dialog.button("Cancel", false);
-                    dialog.show(game.stage);
-                }
-            });
             saveTable.add(savedDecks).colspan(2).fill().row();
-            TextButton delete = new TextButton("Delete", game.skin);
-            delete.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    FileHandle handle = external.child(savedDecks.getSelected() + ".deck");
-                    handle.delete();
-                    updateSavedDeckList();
-                }
-            });
-            saveTable.add(save);
-            saveTable.add(delete);
             return saveTable;
         }
         return null;
@@ -212,6 +239,7 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
         FileHandle handle = external.child(deckName + ".deck");
         String deckString = handle.readString();
         config.clearChosen();
+        this.cardsInDeckList.clear();
         for (String id : deckString.split(",")) {
             try {
                 int cardId = Integer.parseInt(id);
