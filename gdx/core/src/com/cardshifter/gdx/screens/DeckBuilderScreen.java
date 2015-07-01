@@ -125,7 +125,6 @@ public class DeckBuilderScreen implements Screen, TargetableCallback, ZoomCardCa
         });
         Table savedTable = scanSavedDecks(game, savedDecks, modName);
         if (savedTable != null) {
-            table.add(savedTable);
             savedTable.setHeight(Gdx.graphics.getHeight());
             ScrollPane savedTableScroll = new ScrollPane(savedTable);
             savedTableScroll.setScrollingDisabled(false, false);
