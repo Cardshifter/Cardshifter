@@ -1,5 +1,6 @@
 package com.cardshifter.gdx.screens;
 
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
@@ -55,15 +56,15 @@ public class DeckBuilderScreen implements Screen, TargetableCallback, ZoomCardCa
     private int page;
     private String deckName = "unnamed";
     private FileHandle external;
-    private final Label totalLabel;
-    final Screen lobbyScreen;
     
+    private final Label totalLabel;
+    private final Screen lobbyScreen;
     private boolean cardZoomedIn = false;
     private float initialCardViewWidth = 0;
     private float initialCardViewHeight = 0;
 
-    public DeckBuilderScreen(Screen screen, CardshifterGame game, String modName, int gameId, final DeckConfig deckConfig, final Callback<DeckConfig> callback) {
-        this.config = deckConfig;
+    public DeckBuilderScreen(ClientScreen screen, CardshifterGame game, String modName, int gameId, final DeckConfig deckConfig, final Callback<DeckConfig> callback) {
+    	this.config = deckConfig;
         this.callback = callback;
         this.lobbyScreen = screen;
         this.game = game;
@@ -71,6 +72,7 @@ public class DeckBuilderScreen implements Screen, TargetableCallback, ZoomCardCa
         
         Map<Integer, CardInfoMessage> data = deckConfig.getCardData();
         cards = new ArrayList<CardInfoMessage>(data.values());
+        
         Collections.sort(cards, new Comparator<CardInfoMessage>() {
             @Override
             public int compare(CardInfoMessage o1, CardInfoMessage o2) {
@@ -78,7 +80,7 @@ public class DeckBuilderScreen implements Screen, TargetableCallback, ZoomCardCa
             }
         });
         pageCount = (int) Math.ceil(cards.size() / CARDS_PER_PAGE);
-        	
+        
         //normally once i start constructing libGDX UI elements, I will use a separate method 
         //not doing that here in order have the fields be final
         //this.buildScreen();
@@ -96,7 +98,7 @@ public class DeckBuilderScreen implements Screen, TargetableCallback, ZoomCardCa
        
         this.table = new Table(game.skin);
         this.table.setFillParent(true);
-
+        
         totalLabel = new Label("0/" + config.getMaxSize(), game.skin);
         nameLabel = new Label(deckName, game.skin);
         table.add(nameLabel);
@@ -122,10 +124,13 @@ public class DeckBuilderScreen implements Screen, TargetableCallback, ZoomCardCa
             }
         });
         Table savedTable = scanSavedDecks(game, savedDecks, modName);
-        savedTable.setHeight(Gdx.graphics.getHeight());
-        ScrollPane savedTableScroll = new ScrollPane(savedTable);
-        savedTableScroll.setScrollingDisabled(false, false);
-        table.add(savedTableScroll).top();
+        if (savedTable != null) {
+            table.add(savedTable);
+            savedTable.setHeight(Gdx.graphics.getHeight());
+            ScrollPane savedTableScroll = new ScrollPane(savedTable);
+            savedTableScroll.setScrollingDisabled(false, false);
+            table.add(savedTableScroll).top();
+        }
         
         table.row();
 
@@ -146,63 +151,65 @@ public class DeckBuilderScreen implements Screen, TargetableCallback, ZoomCardCa
         });
         table.add(startGameButton);
         
-        TextButton save = new TextButton("Save", game.skin);
-        save.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                final TextField textField = new TextField(deckName, DeckBuilderScreen.this.game.skin);
-                Dialog dialog = new Dialog("Deck Name", DeckBuilderScreen.this.game.skin) {
-                    @Override
-                    protected void result(Object object) {
-                        boolean result = (Boolean) object;
-                        if (!result) {
-                            return;
+        if (Gdx.app.getType() != ApplicationType.WebGL) {
+            TextButton save = new TextButton("Save", game.skin);
+            save.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    final TextField textField = new TextField(deckName, DeckBuilderScreen.this.game.skin);
+                    Dialog dialog = new Dialog("Deck Name", DeckBuilderScreen.this.game.skin) {
+                        @Override
+                        protected void result(Object object) {
+                            boolean result = (Boolean) object;
+                            if (!result) {
+                                return;
+                            }
+                            deckName = textField.getText();
+                            saveDeck(deckName);
                         }
-                        deckName = textField.getText();
-                        saveDeck(deckName);
-                    }
-                };
-                dialog.add(textField);
-                dialog.button("Save", true);
-                dialog.button("Cancel", false);
-                dialog.show(DeckBuilderScreen.this.game.stage);
-            }
-        });
-        TextButton load = new TextButton("Load", game.skin);
-        load.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-            	DeckBuilderScreen.this.loadDeck(DeckBuilderScreen.this.savedDecks.getSelected());
-            }
-        });
-        TextButton delete = new TextButton("Delete", game.skin);
-        delete.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Dialog dialog = new Dialog("Confirm Delete", DeckBuilderScreen.this.game.skin) {
-                    @Override
-                    protected void result(Object object) {
-                        boolean result = (Boolean) object;
-                        if (!result) {
-                            return;
+                    };
+                    dialog.add(textField);
+                    dialog.button("Save", true);
+                    dialog.button("Cancel", false);
+                    dialog.show(DeckBuilderScreen.this.game.stage);
+                }
+            });
+            TextButton load = new TextButton("Load", game.skin);
+            load.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                	DeckBuilderScreen.this.loadDeck(DeckBuilderScreen.this.savedDecks.getSelected());
+                }
+            });
+            TextButton delete = new TextButton("Delete", game.skin);
+            delete.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    Dialog dialog = new Dialog("Confirm Delete", DeckBuilderScreen.this.game.skin) {
+                        @Override
+                        protected void result(Object object) {
+                            boolean result = (Boolean) object;
+                            if (!result) {
+                                return;
+                            }
+                            FileHandle handle = external.child(savedDecks.getSelected() + ".deck");
+                            handle.delete();
+                            updateSavedDeckList();
                         }
-                        FileHandle handle = external.child(savedDecks.getSelected() + ".deck");
-                        handle.delete();
-                        updateSavedDeckList();
-                    }
-                };
-                dialog.button("Delete", true);
-                dialog.button("Cancel", false);
-                dialog.show(DeckBuilderScreen.this.game.stage);
+                    };
+                    dialog.button("Delete", true);
+                    dialog.button("Cancel", false);
+                    dialog.show(DeckBuilderScreen.this.game.stage);
 
-            }
-        });
-        HorizontalGroup saveButtons = new HorizontalGroup();
-        saveButtons.addActor(save);
-        saveButtons.addActor(load);
-        saveButtons.addActor(delete);
-        table.add(saveButtons);
-        
+                }
+            });
+            HorizontalGroup saveButtons = new HorizontalGroup();
+            saveButtons.addActor(save);
+            saveButtons.addActor(load);
+            saveButtons.addActor(delete);
+            table.add(saveButtons);
+        }
+
         displayPage(1);
     }
 
