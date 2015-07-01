@@ -1,6 +1,7 @@
 package com.cardshifter.gdx;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -13,8 +14,8 @@ import com.cardshifter.gdx.screens.MenuScreen;
 
 public class CardshifterGame extends Game {
 	
-    private static final float STAGE_WIDTH = 1024;
-    private static final float STAGE_HEIGHT = 600;
+    public static float STAGE_WIDTH;
+    public static float STAGE_HEIGHT;
     private final CardshifterPlatform platform;
     private SpriteBatch batch;
     public Skin skin;
@@ -28,6 +29,18 @@ public class CardshifterGame extends Game {
 
     @Override
 	public void create () {
+    	
+		//configure screen size
+		if (Gdx.app.getType() == ApplicationType.Desktop ||
+			Gdx.app.getType() == ApplicationType.WebGL) {
+	        CardshifterGame.STAGE_WIDTH = Gdx.graphics.getWidth();
+	        CardshifterGame.STAGE_HEIGHT = Gdx.graphics.getHeight();
+		} else {
+			//good for phone shape
+	        CardshifterGame.STAGE_WIDTH = 800; //Gdx.graphics.getWidth();
+	        CardshifterGame.STAGE_HEIGHT = 480; //Gdx.graphics.getHeight();
+		}
+    	
         Gdx.app.setLogLevel(Application.LOG_INFO);
         batch = new SpriteBatch();
         skin = new Skin(Gdx.files.internal("data/uiskin.json"));

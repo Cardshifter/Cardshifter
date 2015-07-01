@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.cardshifter.api.outgoing.CardInfoMessage;
 import com.cardshifter.api.outgoing.UsableActionMessage;
+import com.cardshifter.gdx.CardshifterGame;
 import com.cardshifter.gdx.TargetStatus;
 import com.cardshifter.gdx.TargetableCallback;
 import com.cardshifter.gdx.ZoomCardCallback;
@@ -44,6 +45,8 @@ public class CardViewSmall extends DefaultCardView {
     private final List<UsableActionMessage> actions = new ArrayList<UsableActionMessage>(5);
     public boolean isZoomed = false;
     public final CardInfoMessage cardInfo;
+    private final float screenWidth;
+    private final float screenHeight;
 
     public CardViewSmall(CardshifterClientContext context, CardInfoMessage cardInfo, ZoomCardCallback zoomCallback, boolean zoomedVersion) {
         this.context = context;
@@ -51,13 +54,16 @@ public class CardViewSmall extends DefaultCardView {
         this.properties = new HashMap<String, Object>(cardInfo.getProperties());
         this.id = cardInfo.getId();
         this.zoomCallback = zoomCallback;
-        table = new Table(context.getSkin());
+        this.screenWidth = CardshifterGame.STAGE_WIDTH;
+        this.screenHeight = CardshifterGame.STAGE_HEIGHT;
 
+        table = new Table(context.getSkin());
         table.setBackground(new NinePatchDrawable(patch));
+        table.defaults().height(this.screenHeight/30);
         Gdx.app.log("CardView", "Creating for " + cardInfo.getProperties());
         table.defaults().expand();
         name = label(context, cardInfo, "name");
-        table.add(name).colspan(2).width(100).left().row();
+        table.add(name).colspan(2).width(this.screenWidth/8).left().row();
         // table.add(image);
         //effect = label(context, cardInfo, "effect");
         this.namedEffect = new Label(" ", context.getSkin());
@@ -66,14 +72,14 @@ public class CardViewSmall extends DefaultCardView {
         	this.namedEffect.setText(this.stringResources(cardInfo));
         }
         //effect.setText(effect.getText() + stringResources(cardInfo));
-        table.add(namedEffect).colspan(2).width(100).left().row();
+        table.add(namedEffect).colspan(2).width(this.screenWidth/8).left().row();
         this.complexEffect = label(context, cardInfo, "effect");
-        table.add(complexEffect).colspan(2).width(100).center().row();
+        table.add(complexEffect).colspan(2).width(this.screenWidth/8).center().row();
         
         if (zoomedVersion) {
         	Label flavorLabel = label(context, cardInfo, "flavor");
         	flavorLabel.setWrap(true);
-        	table.add(flavorLabel).colspan(2).width(100).center().row();
+        	table.add(flavorLabel).colspan(2).width(this.screenWidth/8).center().row();
         }
         
         ResViewFactory rvf = new ResViewFactory(context.getSkin());

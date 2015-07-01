@@ -59,16 +59,20 @@ public class DeckBuilderScreen implements Screen, TargetableCallback, ZoomCardCa
     
     private final Label totalLabel;
     private final Screen lobbyScreen;
+    private final float screenWidth;
+    private final float screenHeight;
     private boolean cardZoomedIn = false;
     private float initialCardViewWidth = 0;
     private float initialCardViewHeight = 0;
-
+    
     public DeckBuilderScreen(ClientScreen screen, CardshifterGame game, String modName, int gameId, final DeckConfig deckConfig, final Callback<DeckConfig> callback) {
     	this.config = deckConfig;
         this.callback = callback;
         this.lobbyScreen = screen;
         this.game = game;
         this.context = new CardshifterClientContext(game.skin, gameId, null, game.stage);
+        this.screenWidth = CardshifterGame.STAGE_WIDTH;
+        this.screenHeight = CardshifterGame.STAGE_HEIGHT;
         
         Map<Integer, CardInfoMessage> data = deckConfig.getCardData();
         cards = new ArrayList<CardInfoMessage>(data.values());
@@ -93,7 +97,7 @@ public class DeckBuilderScreen implements Screen, TargetableCallback, ZoomCardCa
                 DeckBuilderScreen.this.game.setScreen(DeckBuilderScreen.this.lobbyScreen);
             }
         });
-        backToMenu.setPosition(0, Gdx.graphics.getHeight() - Gdx.graphics.getHeight()/20);
+        backToMenu.setPosition(0, this.screenHeight - this.screenHeight/20);
         this.game.stage.addActor(backToMenu);
        
         this.table = new Table(game.skin);
@@ -113,7 +117,7 @@ public class DeckBuilderScreen implements Screen, TargetableCallback, ZoomCardCa
         cardsInDeckList.align(Align.left);
         this.cardsInDeckScrollPane = new ScrollPane(cardsInDeckList);
         this.cardsInDeckScrollPane.setScrollingDisabled(true, false);
-        table.add(this.cardsInDeckScrollPane).width(Gdx.graphics.getWidth()/4);
+        table.add(this.cardsInDeckScrollPane).width(this.screenWidth/5);
         
         savedDecks = new List<String>(game.skin);
         savedDecks.addListener(new ActorGestureListener(){
@@ -125,7 +129,7 @@ public class DeckBuilderScreen implements Screen, TargetableCallback, ZoomCardCa
         });
         Table savedTable = scanSavedDecks(game, savedDecks, modName);
         if (savedTable != null) {
-            savedTable.setHeight(Gdx.graphics.getHeight());
+            savedTable.setHeight(this.screenHeight* 0.9f);
             ScrollPane savedTableScroll = new ScrollPane(savedTable);
             savedTableScroll.setScrollingDisabled(false, false);
             table.add(savedTableScroll).top();
@@ -461,7 +465,7 @@ public class DeckBuilderScreen implements Screen, TargetableCallback, ZoomCardCa
 		}
 		final CardViewSmall cardViewCopy = new CardViewSmall(this.context, cardView.cardInfo, this, true);
 		cardViewCopy.setTargetable(TargetStatus.TARGETABLE, this);
-		cardViewCopy.getActor().setPosition(Gdx.graphics.getWidth()/2.7f, Gdx.graphics.getHeight()/30);
+		cardViewCopy.getActor().setPosition(this.screenWidth/2.7f, this.screenHeight/30);
 		this.game.stage.addActor(cardViewCopy.getActor());
 		this.initialCardViewWidth = cardView.getActor().getWidth();
 		this.initialCardViewHeight = cardView.getActor().getHeight();
@@ -472,7 +476,7 @@ public class DeckBuilderScreen implements Screen, TargetableCallback, ZoomCardCa
 		    	cardViewCopy.zoom();
 		    }
 		};
-		sequence.addAction(Actions.sizeTo(Gdx.graphics.getWidth()/4, Gdx.graphics.getHeight()*0.9f, 0.2f));
+		sequence.addAction(Actions.sizeTo(this.screenWidth/4, this.screenHeight*0.9f, 0.2f));
 		sequence.addAction(Actions.run(adjustForZoom));		
 		cardViewCopy.getActor().addAction(sequence);
 		this.cardZoomedIn = true;
