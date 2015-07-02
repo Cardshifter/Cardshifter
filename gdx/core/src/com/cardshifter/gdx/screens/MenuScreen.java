@@ -4,8 +4,10 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -30,6 +32,10 @@ public class MenuScreen implements Screen {
         this.table = new Table();
         this.game = game;
         this.table.setFillParent(true);
+        
+        Image imageObject = new Image(new Texture(Gdx.files.internal("bg2.png")));
+        this.table.add(imageObject);
+        this.table.row();
 
         Table inner = new Table();
 
