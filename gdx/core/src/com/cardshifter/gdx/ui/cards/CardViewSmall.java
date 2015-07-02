@@ -1,6 +1,7 @@
 package com.cardshifter.gdx.ui.cards;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.math.Vector2;
@@ -237,19 +238,26 @@ public class CardViewSmall extends DefaultCardView {
             int diff = health - oldHealth;
             WidgetGroup grp = (WidgetGroup) table.getParent();
             grp.layout();
-
-            Vector2 pos = new Vector2(table.getWidth() / 2, table.getHeight() / 2);
-            table.localToStageCoordinates(pos);
-            final Label changeLabel = new Label(String.valueOf(diff), context.getSkin());
-            Gdx.app.log("Anim", "Create health animation at " + pos.x + ", " + pos.y);
-            changeLabel.setPosition(pos.x, pos.y);
-            changeLabel.addAction(Actions.sequence(Actions.moveBy(0, 25, 2), Actions.run(new Runnable() {
-                @Override
-                public void run() {
-                    changeLabel.remove();
+            
+            if (diff != 0) {
+                Vector2 pos = new Vector2(table.getWidth() / 2, table.getHeight() / 2);
+                table.localToStageCoordinates(pos);
+                final Label changeLabel = new Label(String.valueOf(diff), context.getSkin());
+                Gdx.app.log("Anim", "Create health animation at " + pos.x + ", " + pos.y);
+                changeLabel.setPosition(pos.x, pos.y);
+                if (diff > 0) {
+                	changeLabel.setColor(Color.GREEN);
+                } else {
+                	changeLabel.setColor(Color.RED);
                 }
-            })));
-            context.getStage().addActor(changeLabel);
+                changeLabel.addAction(Actions.sequence(Actions.moveBy(0, this.screenHeight/8, 1.5f), Actions.run(new Runnable() {
+                    @Override
+                    public void run() {
+                        changeLabel.remove();
+                    }
+                })));
+                context.getStage().addActor(changeLabel);
+            }
         }
         properties.put((String) key, value);
         cost.update(properties);
