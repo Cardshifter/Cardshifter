@@ -153,6 +153,7 @@ public class CardViewSmall extends DefaultCardView {
             	} 
             }
         };
+        this.clickListener.setTapCountInterval(0.2f); //i think that the default is 0.4f
         this.longPressListener = new ActorGestureListener(){
             @Override
             public boolean longPress(Actor actor, float x, float y) {
@@ -160,6 +161,7 @@ public class CardViewSmall extends DefaultCardView {
                 return true;
             }
         };
+        this.longPressListener.getGestureDetector().setLongPressSeconds(0.3f);
         this.dragListener = new MyDragListener(this.table);
     	
         table.addListener(this.clickListener);
