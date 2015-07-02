@@ -21,6 +21,8 @@ import com.cardshifter.gdx.CardshifterGame;
 import com.cardshifter.gdx.TargetStatus;
 import com.cardshifter.gdx.TargetableCallback;
 import com.cardshifter.gdx.ZoomCardCallback;
+import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
+import com.cardshifter.gdx.screens.DeckBuilderScreen;
 import com.cardshifter.gdx.ui.CardshifterClientContext;
 import com.cardshifter.gdx.ui.res.ResourceView;
 import com.cardshifter.gdx.ui.res.ResViewFactory;
@@ -47,6 +49,41 @@ public class CardViewSmall extends DefaultCardView {
     public final CardInfoMessage cardInfo;
     private final float screenWidth;
     private final float screenHeight;
+    private ClickListener clickListener;
+    private ActorGestureListener longPressListener;
+    private DragListener dragListener;
+    
+    public class MyDragListener extends DragListener {
+    	private Table table;
+    	private float startX = 0;
+    	private float startY = 0;
+    	public MyDragListener(Table table) {
+    		this.table = table;
+    	}
+        public void drag(InputEvent event, float x, float y, int pointer) {
+            table.moveBy(x - table.getWidth() / 2, y - table.getHeight() / 2);
+        }
+    	public void dragStart (InputEvent event, float x, float y, int pointer) {
+    		if (this.startX == 0 && this.startY == 0) {
+        		this.startX = this.table.getX();
+        		this.startY = this.table.getY();
+    		}
+    	}
+    	public void dragStop (InputEvent event, float x, float y, int pointer) {
+    		if (CardViewSmall.this.callback != null && CardViewSmall.this.callback instanceof DeckBuilderScreen) {
+    			if (!((DeckBuilderScreen)callback).checkCardDrop(CardViewSmall.this)) {
+    	    		table.addAction(Actions.moveTo(this.startX, this.startY, 0.2f));
+    			}
+    		} else {
+    			table.addAction(Actions.moveTo(this.startX, this.startY, 0.2f));
+    		}
+    		/*
+    		System.out.println("table x = " + table.getX() + " table y = " + table.getY());
+    		Vector2 stageLoc = table.localToStageCoordinates(new Vector2(table.getX(), table.getY()));
+    		System.out.println("stage x = " + stageLoc.x + " stage y = " + stageLoc.y);
+    		*/
+    	}
+    }
 
     public CardViewSmall(CardshifterClientContext context, CardInfoMessage cardInfo, ZoomCardCallback zoomCallback, boolean zoomedVersion) {
         this.context = context;
@@ -92,25 +129,34 @@ public class CardViewSmall extends DefaultCardView {
 
         cost.update(properties);
         stats.update(properties);
-
-        table.setTouchable(Touchable.enabled);
-        table.addListener(new ClickListener() {
+        
+        this.clickListener = new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+            	if (CardViewSmall.this.dragListener.isDragging()) {
+            		return;
+            	}
             	if (this.getTapCount() > 1) {
             		CardViewSmall.this.zoomed();
             	} else {
             		CardViewSmall.this.clicked();
             	} 
             }
-        });
-        table.addListener(new ActorGestureListener(){
+        };
+        this.longPressListener = new ActorGestureListener(){
             @Override
             public boolean longPress(Actor actor, float x, float y) {
             	CardViewSmall.this.zoomed();
                 return true;
             }
-        });
+        };
+        this.dragListener = new MyDragListener(this.table);
+    	
+        table.addListener(this.clickListener);
+        table.addListener(this.longPressListener);
+        table.addListener(this.dragListener);
+
+        table.setTouchable(Touchable.enabled);
     }
 
     private String stringResources(CardInfoMessage cardInfo) {

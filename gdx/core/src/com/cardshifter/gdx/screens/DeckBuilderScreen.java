@@ -4,6 +4,9 @@ import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -332,6 +335,7 @@ public class DeckBuilderScreen implements Screen, TargetableCallback, ZoomCardCa
             cardView.setTargetable(TargetStatus.TARGETABLE, this);
             choosableGroup.addActor(cardView.getActor());
             Label label = new Label(countText(card.getId()), game.skin);
+            label.setHeight(this.screenHeight/30);
             countLabels.put(card.getId(), label);
             choosableGroup.addActor(label);
             cardsTable.add(choosableGroup);
@@ -498,5 +502,37 @@ public class DeckBuilderScreen implements Screen, TargetableCallback, ZoomCardCa
     		sequence.addAction(Actions.run(endZoom));
     		cardView.getActor().addAction(sequence);
 		}
+	}
+	
+	public boolean checkCardDrop(CardViewSmall cardView) {
+		Table table = (Table)cardView.getActor();
+		Vector2 stageLoc = table.localToStageCoordinates(new Vector2());
+		Rectangle tableRect = new Rectangle(stageLoc.x, stageLoc.y, table.getWidth(), table.getHeight());
+		
+		Vector2 stageLocCardList = this.cardsInDeckList.localToStageCoordinates(new Vector2(this.cardsInDeckList.getX(), this.cardsInDeckList.getY()));
+		Vector2 modifiedSLCL = new Vector2(stageLocCardList.x, stageLocCardList.y - this.screenHeight/2);
+		Rectangle deckRect = new Rectangle(modifiedSLCL.x, modifiedSLCL.y, this.cardsInDeckList.getWidth(), this.screenHeight);
+		
+		if (tableRect.overlaps(deckRect)) {
+			//System.out.println("card drop correct position");
+			this.addEntity(cardView);
+			return true;
+		}
+		
+		return false;
+		
+		//these can be used to double check the location of the rectangles
+		/*
+		Image squareImage = new Image(new Texture(Gdx.files.internal("cardbg.png")));
+		squareImage.setPosition(modifiedSLCL.x, modifiedSLCL.y);
+		squareImage.setSize(deckRect.width, deckRect.height);
+		this.game.stage.addActor(squareImage);
+		*/
+		/*
+		Image squareImage = new Image(new Texture(Gdx.files.internal("cardbg.png")));
+		squareImage.setPosition(stageLoc.x, stageLoc.y);
+		squareImage.setSize(tableRect.width, tableRect.height);
+		this.game.stage.addActor(squareImage);
+		*/
 	}
 }
