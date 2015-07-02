@@ -41,7 +41,11 @@ public class CardshifterGame extends Game {
 	        CardshifterGame.STAGE_HEIGHT = 480; //Gdx.graphics.getHeight();
 		}
     	
-        Gdx.app.setLogLevel(Application.LOG_INFO);
+		Gdx.app.setLogLevel(Application.LOG_INFO);
+		if (Gdx.app.getType() == ApplicationType.WebGL) {
+			Gdx.app.setLogLevel(Application.LOG_NONE);
+		}
+        
         batch = new SpriteBatch();
         skin = new Skin(Gdx.files.internal("data/uiskin.json"));
         camera = new OrthographicCamera(STAGE_WIDTH, STAGE_HEIGHT);
