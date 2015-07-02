@@ -4,7 +4,6 @@ import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -514,7 +513,6 @@ public class DeckBuilderScreen implements Screen, TargetableCallback, ZoomCardCa
 		Rectangle deckRect = new Rectangle(modifiedSLCL.x, modifiedSLCL.y, this.cardsInDeckList.getWidth(), this.screenHeight);
 		
 		if (tableRect.overlaps(deckRect)) {
-			//System.out.println("card drop correct position");
 			this.addEntity(cardView);
 			return true;
 		}

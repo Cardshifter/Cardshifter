@@ -23,6 +23,7 @@ import com.cardshifter.gdx.TargetableCallback;
 import com.cardshifter.gdx.ZoomCardCallback;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.cardshifter.gdx.screens.DeckBuilderScreen;
+import com.cardshifter.gdx.screens.GameScreen;
 import com.cardshifter.gdx.ui.CardshifterClientContext;
 import com.cardshifter.gdx.ui.res.ResourceView;
 import com.cardshifter.gdx.ui.res.ResViewFactory;
@@ -70,19 +71,27 @@ public class CardViewSmall extends DefaultCardView {
     		}
     	}
     	public void dragStop (InputEvent event, float x, float y, int pointer) {
-    		if (CardViewSmall.this.callback != null && CardViewSmall.this.callback instanceof DeckBuilderScreen) {
-    			if (!((DeckBuilderScreen)callback).checkCardDrop(CardViewSmall.this)) {
-    	    		table.addAction(Actions.moveTo(this.startX, this.startY, 0.2f));
+    		if (CardViewSmall.this.callback != null) {
+    			if (CardViewSmall.this.callback instanceof DeckBuilderScreen) {
+        			if (!((DeckBuilderScreen)callback).checkCardDrop(CardViewSmall.this)) {
+        	    		table.addAction(Actions.moveTo(this.startX, this.startY, 0.2f));
+        			}
+    			} else if (CardViewSmall.this.callback instanceof GameScreen) {
+    				if (!((GameScreen)callback).checkCardDrop(CardViewSmall.this)) {
+    					table.addAction(Actions.moveTo(this.startX, this.startY, 0.2f));
+    				} else {
+    					CardViewSmall.this.performAction();
+    				}
     			}
     		} else {
     			table.addAction(Actions.moveTo(this.startX, this.startY, 0.2f));
     		}
-    		/*
-    		System.out.println("table x = " + table.getX() + " table y = " + table.getY());
-    		Vector2 stageLoc = table.localToStageCoordinates(new Vector2(table.getX(), table.getY()));
-    		System.out.println("stage x = " + stageLoc.x + " stage y = " + stageLoc.y);
-    		*/
     	}
+    }
+    
+    private void performAction() {
+        UsableActionMessage action = actions.get(0);
+        context.sendAction(action);
     }
 
     public CardViewSmall(CardshifterClientContext context, CardInfoMessage cardInfo, ZoomCardCallback zoomCallback, boolean zoomedVersion) {
@@ -184,8 +193,8 @@ public class CardViewSmall extends DefaultCardView {
         }
         if (callback != null) {
             callback.addEntity(this);
-        }
-        else if (!actions.isEmpty()) {
+        } 
+        if (!actions.isEmpty()) {
             if (actions.size() == 1) {
                 UsableActionMessage action = actions.get(0);
                 context.sendAction(action);
@@ -205,7 +214,6 @@ public class CardViewSmall extends DefaultCardView {
                     dialog.button(action.getAction(), i);
                 }
                 dialog.show(context.getStage());
-
             }
         }
     }
@@ -297,5 +305,10 @@ public class CardViewSmall extends DefaultCardView {
     	this.complexEffect.setEllipsis(true);
     	this.complexEffect.setWrap(false);
     	this.complexEffect.layout();
+    }
+    
+    //workaround for the white border active cards
+    public void setUsable(TargetableCallback screen) {
+    	this.callback = screen;
     }
 }
