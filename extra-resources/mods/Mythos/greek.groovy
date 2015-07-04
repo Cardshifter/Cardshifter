@@ -45,7 +45,7 @@ card('URANUS') {
     sickness 1
     // Add +3/+0 to all Titans on the field.
     whilePresent {
-        change ATTACK by 3 withPriority 1 onCards {
+        change ATTACK by 3 withPriority 1 on {
             creatureType "Greek Titan"
             zone "Battlefield"
         }
@@ -67,9 +67,9 @@ card('APOLLO') {
     // target player or unit looses +2 health.
     /*
     pickAction ( // #270
-        { heal 2 to "you" },
+        { heal 2 on "you" },
         { heal 2 to cards { target() } },
-        { damage 2 to "opponent" },
+        { damage 2 on "opponent" },
         { damage 2 to cards { target() } }
     )
     */
@@ -87,7 +87,7 @@ card('ARES') {
     /*
     onKill { // #272
         // #274
-        set hasAttacked to false onCards { thisCard() }
+        set hasAttacked to false on { thisCard() }
     }
     */
 }
@@ -114,7 +114,7 @@ card('ATHENA') {
     sickness 1
     // Give +1/+1 to all God cards on the field.
     whilePresent {
-        change ATTACK, HEALTH by 1 withPriority 1 onCards {
+        change ATTACK, HEALTH by 1 withPriority 1 on {
             creatureType "Greek God"
             zone "Battlefield"
         }
@@ -159,7 +159,7 @@ card('POSEIDON') {
     sickness 0 // Rush
     // Once per turn: Freeze (random) enemy unit for 2 turns.
     onStartOfTurn {
-        set SICKNESS to 3 onCards 1 random {
+        set SICKNESS to 3 on 1 random {
             creature true
             ownedBy "opponent"
             zone "Battlefield"
@@ -192,7 +192,7 @@ card('GAIA') {
     sickness 1
     // Add +0/+3 to all Titans on the field.
     whilePresent {
-        change HEALTH by 1 withPriority 1 onCards {
+        change HEALTH by 1 withPriority 1 on {
             creatureType "Greek Titan"
             zone "Battlefield"
         }
@@ -216,7 +216,7 @@ card('HADES') {
     // plague() // #264
     // Add +1/+1 to all Chthonic Deities on the field.
     whilePresent {
-        change ATTACK, HEALTH by 1 withPriority 1 onCards {
+        change ATTACK, HEALTH by 1 withPriority 1 on {
             creatureType "Greek Chthonic Deity"
             zone "Battlefield"
         }
@@ -257,12 +257,12 @@ card('Lernaean Hydra') {
     // When this card is attacked, but not destroyed, it gains +1 attack.
     /*
     afterAttacked { // #266
-        change ATTACK by 1 onCards { thisCard() }
+        change ATTACK by 1 on { thisCard() }
     }
     */
     // Give all Creature units +1/+1
     whilePresent {
-        change ATTACK, HEALTH by 1 withPriority 1 onCards {
+        change ATTACK, HEALTH by 1 withPriority 1 on {
             creature true
             zone "Battlefield"
         }
@@ -279,7 +279,7 @@ card('The Underworld') {
     sickness 1
     // Add +2/+2 to all Chthonic Deities on the field.
     whilePresent {
-        change ATTACK, HEALTH by 2 withPriority 1 onCards {
+        change ATTACK, HEALTH by 2 withPriority 1 on {
             creatureType "Greek Chthonic Deity"
             zone "Battlefield"
         }
@@ -287,7 +287,7 @@ card('The Underworld') {
     // Add +5 attack to this card if Hades is on the field.
     /*
     ifPresent (cardName "HADES" zone "Battlefield") { // #261
-        change ATTACK by 5 withPriority 2 onCards { thisCard() }
+        change ATTACK by 5 withPriority 2 on { thisCard() }
     }
     */
 }
@@ -303,14 +303,14 @@ card('CHARON') {
     // goes to the graveyard, this card gains +1/+1.
     /*
     onKill { // #272
-        change ATTACK, HEALTH by 1 onCards { thisCard() }
+        change ATTACK, HEALTH by 1 on { thisCard() }
     }
     */
     /*
     // When this card is sent to the graveyard, destroy target creature.
     onDeath {
         // #282
-        set HEALTH to 0 onCards { attacker() }
+        set HEALTH to 0 on { attacker() }
     }
     */
 }
@@ -381,7 +381,7 @@ card('LAMIA') {
     // When this creature deals damage to another creature, it gains +0/+1.
     /*
     afterAttacking {
-        change HEALTH by 1 onCards { thisCard() }
+        change HEALTH by 1 on { thisCard() }
     }
     */
 }
@@ -396,7 +396,7 @@ card('MACARIA') {
     // When this creature destroys another creature, owner/player gains (2) health.
     /*
     onKill { // #272
-        heal 1 to "you"
+        heal 1 on "you"
     }
     */
 }
@@ -451,7 +451,7 @@ card('Mount Olympus') {
     sickness 1
     // Add +2/+2 to all gods on the field.
     whilePresent {
-        change ATTACK, HEALTH by 2 withPriority 1 onCards {
+        change ATTACK, HEALTH by 2 withPriority 1 on {
             creatureType "Greek God"
             zone "Battlefield"
         }
@@ -459,7 +459,7 @@ card('Mount Olympus') {
     // Add +5 attack to this card if Zeus is on the field.
     /*
     ifPresent (cardName "ZEUS" zone "Battlefield") { // #261
-        change ATTACK by 5 withPriority 2 onCards { thisCard() }
+        change ATTACK by 5 withPriority 2 on { thisCard() }
     }
     */
 }
@@ -477,7 +477,7 @@ card('Tartarean Pit') {
     /*
     // #240
     whilePresent {
-        set ATTACK, HEALTH to count({creatureType "Greek Titan"; zone "Battlefield"}) withPriority 1 onCards { thisCard() }
+        set ATTACK, HEALTH to count({creatureType "Greek Titan"; zone "Battlefield"}) withPriority 1 on { thisCard() }
     }
     */
     // At the end of your turn, if a unit was sent to the graveyard
@@ -522,7 +522,7 @@ card('Styx') {
     sickness 1
     // Effect – Gives +1/+0 to all Titans on the field.
     whilePresent {
-        change ATTACK by 1 withPriority 1 onCards {
+        change ATTACK by 1 withPriority 1 on {
             creatureType "Greek Titan"
             zone "Battlefield"
         }
@@ -564,13 +564,13 @@ card('Heracles') {
     // When Heracles comes into play, deal +3 damage randomly to target unit or player.
     afterPlay {
         pick 1 atRandom (
-            { damage 3 to "opponent" },
-            { damage 3 to 1 random { creature true; ownedBy "opponent" } }
+            { damage 3 on "opponent" },
+            { damage 3 on 1 random { creature true; ownedBy "opponent" } }
         )
     }
     // Add +1/+1 to all Hero units on the field.
     whilePresent {
-        change ATTACK, HEALTH by 1 withPriority 1 onCards {
+        change ATTACK, HEALTH by 1 withPriority 1 on {
             creatureType "Greek Hero"
             zone "Battlefield"
         }
@@ -600,10 +600,10 @@ card('Perseus') {
     /*
     afterAttacked { // #266
         // #281 & #282
-        counterAttack set SICKNESS to 2 onCards { attacker() }
+        counterAttack set SICKNESS to 2 on { attacker() }
     }
     afterAttacking { // #275
-        set SICKNESS to 2 onCards { target() }
+        set SICKNESS to 2 on { target() }
     }
     */
 }
@@ -618,7 +618,7 @@ card('Iolaus') {
     // Gains +1/+1 if Heracles is on the field.
     /*
     ifPresent (cardName "HERACLES" zone "Battlefield") { // #261
-        change ATTACK, HEALTH by 1 withPriority 1 onCards { thisCard() }
+        change ATTACK, HEALTH by 1 withPriority 1 on { thisCard() }
     }
     */
 }
@@ -664,7 +664,7 @@ card('Hector') {
     sickness 0 // Rush
     // Give +1/+1 to all other Hero cards on the field.
     whilePresent {
-        change ATTACK, HEALTH by 1 withPriority 1 onCards {
+        change ATTACK, HEALTH by 1 withPriority 1 on {
             creatureType "Greek Hero"
             zone "Battlefield"
         }
@@ -694,10 +694,10 @@ card('Medusa') {
     /*
     afterAttacked { // #266
         // #281 & #282
-        counterAttack set SICKNESS to 4 onCards { attacker() }
+        counterAttack set SICKNESS to 4 on { attacker() }
     }
     afterAttacking { // #275
-        set SICKNESS to 4 onCards { target() }
+        set SICKNESS to 4 on { target() }
     }
     */
     // When Medusa is sent to the graveyard, summon three +1/+1 snake tokens to the field.
@@ -735,7 +735,7 @@ card('Pegasus') {
     // dodge() // #263
     /*
     ifPresent (creatureType "Greek Hero"; zone "Battlefield") {
-        change ATTACK, HEALTH by 2 withPriority 1 onCards { thisCard() }
+        change ATTACK, HEALTH by 2 withPriority 1 on { thisCard() }
     }
     */
 }
@@ -784,7 +784,7 @@ card('Chiron') {
     sickness 0 // Rush
     // When Chiron comes into play add +1/+0 to all Creatures on the field
     afterPlay {
-        change ATTACK by 1 onCards {
+        change ATTACK by 1 on {
             creature true
         }
     }
@@ -801,7 +801,7 @@ card('Cerberus') {
     // Cerberus gains +2/+2 if Hades is on the field.
     /*
     ifPresent (cardName "HADES"; zone "Battlefield") {
-        change ATTACK, HEALTH by 1 withPriority 1 onCards { thisCard() }
+        change ATTACK, HEALTH by 1 withPriority 1 on { thisCard() }
 
     }
     */
@@ -894,10 +894,10 @@ card('Apollo’s Bow') {
         // Target player or unit looses +3 health.
         //afterPlay {
             //pickAction ( // #270
-            //    { heal 3 to "you" },
-            //    { heal 3 to cards { target() } }, // #282
-            //    { damage 3 to "opponent" },
-            //    { damage 3 to cards { target() } } // #282
+            //    { heal 3 on "you" },
+            //    { heal 3 on cards { target() } }, // #282
+            //    { damage 3 on "opponent" },
+            //    { damage 3 on cards { target() } } // #282
             //)
         //}
     }
@@ -930,7 +930,7 @@ card('The Wrath of Zeus') {
         // Deal +5 damage to target player or unit.
     //    // #284
     //    afterPlay {
-    //        damage n to { target() }
+    //        damage n on { target() }
     //    }
     }
 }
@@ -943,7 +943,7 @@ card('The Might of Hercules') {
     spell {
         afterPlay {
             // Give target unit +3/+0 until the end of turn.
-            change ATTACK by 3 untilEndOfTurn onCards { target() } // #282 & #285
+            change ATTACK by 3 untilEndOfTurn on { target() } // #282 & #285
         }
         // If that target unit is a Hero give it Range as well.
         ifTarget (creatureType: "Greek Hero") { // #286
