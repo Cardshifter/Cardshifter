@@ -751,7 +751,7 @@ card('Ararchne') {
     // When Ararchne is sent to the graveyard,
     // summon two +2/+2 Spider tokens to the field with Plague.
     onDeath {
-        summon 2 of "Ararchne Spider" to "you" zone "Battlefield"
+        summon 2 of "Arachne Spider" to "you" zone "Battlefield"
     }
 }
 card('Griffin') {
@@ -865,7 +865,7 @@ card('Medusa Snake') {
     sickness 1
     token()
 }
-card('Ararchne Spider') {
+card('Arachne Spider') {
     creature "Greek"
     flavor ""
     maxInDeck 1
