@@ -28,6 +28,7 @@ MAX_HEALTH = createResource("MAX_HEALTH")
 // Cost of mana resource to the player for casting the card into play
 MANA_COST = createResource("MANA_COST")
 // Value of Scrap gained when a scrappable card is scrapped from Battlefield
+// NOTE: The SCRAP value also applies to players' owned scrap, depending on how you target your effects
 SCRAP = createResource("SCRAP")
 // Cost of Scrap resource to the player for casting the card into play
 SCRAP_COST = createResource("SCRAP_COST")
