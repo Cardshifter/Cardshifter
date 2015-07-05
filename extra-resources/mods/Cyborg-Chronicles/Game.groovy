@@ -1,3 +1,13 @@
+/**
+ * The Game class sets up all the parameters upon a game being started for a mod using the client.
+ * It is imported during run time, hence errors with the mod will be logged to the server console at run time.
+ * @author Simon Forsberg
+ */
+
+/**
+ * @param entity A card entity.
+ * @return Boolean value indicating whether or not the entity is a creature, is on battlefield, and is owned by the current player.
+ */
 def ownedBattlefieldCreatures = {entity ->
     def Cards = com.cardshifter.modapi.cards.Cards;
     return entity.hasComponent(com.cardshifter.modapi.base.CreatureTypeComponent.class) &&
@@ -5,25 +15,53 @@ def ownedBattlefieldCreatures = {entity ->
             Cards.isOwnedByCurrentPlayer(entity)
 }
 
-ATTACK = createResource('ATTACK')
-HEALTH = createResource("HEALTH")
-MAX_HEALTH = createResource("MAX_HEALTH")
+/**
+ * Resources related to cards
+ */
 
-ATTACK_AVAILABLE = createResource("ATTACK_AVAILABLE")
-DENY_COUNTERATTACK = createResource("DENY_COUNTERATTACK")
-MANA = createResource("MANA")
+// Amount of damage the card can cause by attacking
+ATTACK = createResource('ATTACK')
+// Amount of damage the card can suffer before being retired from Battlefield
+HEALTH = createResource("HEALTH")
+// Maximum HEALTH value that a card may hold
+MAX_HEALTH = createResource("MAX_HEALTH")
+// Cost of mana resource to the player for casting the card into play
 MANA_COST = createResource("MANA_COST")
-MANA_MAX = createResource("MANA_MAX")
-SICKNESS = createResource("SICKNESS")
-TAUNT = createResource("TAUNT")
+// Value of Scrap gained when a scrappable card is scrapped from Battlefield
 SCRAP = createResource("SCRAP")
+// Cost of Scrap resource to the player for casting the card into play
 SCRAP_COST = createResource("SCRAP_COST")
+/**
+ * Resources that declare a specific special behavior to creature cards
+ **/
+
+// Card cannot attack if set to false
+ATTACK_AVAILABLE = createResource("ATTACK_AVAILABLE")
+// Card is immune to counter-attack when attacking another creature
+DENY_COUNTERATTACK = createResource("DENY_COUNTERATTACK")
+// Card cannot attack while not 0
+SICKNESS = createResource("SICKNESS")
+// Card must be attacked while on Battlefield before the owner player can be attacked
+TAUNT = createResource("TAUNT")
+
+/**
+ * Actions that are related to cards, defined in more detail further down this file.
+ */
 
 PLAY_ACTION = "Play";
-ENCHANT_ACTION = "Enchant";
 ATTACK_ACTION = "Attack";
 USE_ACTION = "Use";
 
+/**
+ * Player mana resources.
+ */
+
+MANA = createResource("MANA")
+MANA_MAX = createResource("MANA_MAX")
+
+/**
+ * Which Groovy files to include for this mod. See extra-resources/mods for details.
+ */
 include 'creatures'
 include 'enchantment'
 include 'scrap'
@@ -35,6 +73,10 @@ onCard('creature') {entity, args ->
     entity.taunt = 1
 }
 
+/**
+ * General game configuration
+ */
+
 config {
     println 'Game Closure!'
 
@@ -42,18 +84,32 @@ config {
         resourceModifier()
         phases()
         zone('Cards') {
+            /**
+             * List of cardsets to load into the game entity.
+             * Note: The 'Cards' zone contains all cards available to the game entity.
+             */
             cardset 'mechs'
             cardset 'bios'
             cardset 'enchantments'
         }
     }
 
+    /**
+     * Player configuration
+     * Creates identical configuration for each player.
+     */
+
+    // Note: As of current time 2015-06-18, only two players are supported. This entry will be updated if/when this changes.
     players(2) {
         phase 'Main'
         config {
             deck {
+                // minimum cards in deck
                 minSize 30
+                // maximum cards in deck
                 maxSize 30
+                // maximum number of copies of a card
+                // can be overridden by the maxInDeck property on individual cards
                 maxCardsPerType 3
                 zone 'Cards'
             }
@@ -61,8 +117,10 @@ config {
         endTurnAction()
         hand()
         battlefield()
+        // players' starting health and maximum health
         health 30
         max_health 30
+        // initializing players' mana and scrap, which are set in the "setup" method in this file
         mana 0
         scrap 0
     }

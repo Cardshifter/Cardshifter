@@ -100,7 +100,8 @@ config {
                 minSize 30
                 // maximum cards in deck
                 maxSize 30
-                // maximum number of copies of a card - can be overridden by the maxInDeck property on individual cards
+                // maximum number of copies of a card
+                // can be overridden by the maxInDeck property on individual cards
                 maxCardsPerType 3
                 zone 'Cards'
             }
