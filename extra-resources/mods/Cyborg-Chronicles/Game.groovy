@@ -51,6 +51,7 @@ TAUNT = createResource("TAUNT")
 PLAY_ACTION = "Play";
 ATTACK_ACTION = "Attack";
 USE_ACTION = "Use";
+ENCHANT_ACTION = "Enchant";
 
 /**
  * Player mana resources.
