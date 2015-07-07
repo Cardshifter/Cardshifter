@@ -1,4 +1,5 @@
 card('E.M.P.') {
+	"Electromagnetic pulse that damages electronic circuitry."
 	manaCost 8
 	// damage 2 to up to 10 Mechs on the Battlefield
 	spell {

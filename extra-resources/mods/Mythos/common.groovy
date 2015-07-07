@@ -37,7 +37,7 @@ card("Archer") {
     sickness 1
     manaCost 5
     attack 3
-    denyCounterAttack() // taunt
+    denyCounterAttack() // ranged
 }
 card("Longbowman") {
     creature "Common"
@@ -46,6 +46,7 @@ card("Longbowman") {
     sickness 1
     manaCost 8
     attack 5
+    denyCounterAttack() // ranged
 }
 card("Defender") {
     creature "Common"
