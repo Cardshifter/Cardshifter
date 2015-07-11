@@ -225,6 +225,7 @@ card('Holy Man') {
 
 //// SPELLS
 
+/*
 card('Tree of Life') {
     manaCost 10
     // Player gains +5 health
@@ -246,6 +247,8 @@ card('Spring of Rejuvenation') {
         heal 3 on targets
     }
 }
+*/
+
 
 /*
 One last chance – Spell

@@ -878,7 +878,7 @@ card('Arachne Spider') {
 //// SPELLS
 
 /* DOES NOTHING RIGHT NOW
-card('Apollo’s Bow') {
+card('Apollo\'s Bow') {
     flavor ''
     maxInDeck 1
     manaCost 5
@@ -946,6 +946,9 @@ card('The Might of Hercules') {
     }
 }
 */
+
+// ENCHANTMENTS
+
 card('Golden Fleece') {
     flavor ''
     maxInDeck 1
@@ -954,7 +957,7 @@ card('Golden Fleece') {
     // Equipped unit gains +0/+3.
     addHealth 3
 }
-card('Achilles’ Armor') {
+card('Achilles\' Armor') {
     flavor ''
     maxInDeck 1
     manaCost 10
@@ -970,7 +973,7 @@ card('Achilles’ Armor') {
     }
     */
 }
-card('Hades’ Bident') {
+card('Hades\' Bident') {
     flavor ''
     maxInDeck 1
     manaCost 10
@@ -999,7 +1002,7 @@ card('Helm of Darkness') {
     }
     */
 }
-card('Poseidon’s Trident') {
+card('Poseidon\'s Trident') {
     flavor ''
     maxInDeck 1
     manaCost 10
@@ -1015,7 +1018,7 @@ card('Poseidon’s Trident') {
     }
     */
 }
-card('Cronus’ Scythe') {
+card('Cronus\' Scythe') {
     flavor ''
     maxInDeck 1
     manaCost 10
