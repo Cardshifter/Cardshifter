@@ -628,7 +628,7 @@ card('Theseus') {
     health 2
     manaCost 5
     sickness 1
-    ranged()
+    denyCounterAttack() // ranged
 }
 card('Odysseus') {
     creature 'Greek Hero'
@@ -947,23 +947,23 @@ card('The Might of Hercules') {
 }
 */
 
-// ENCHANTMENTS
+//// ENCHANTMENTS
 
 card('Golden Fleece') {
-    flavor ''
+    enchantment true
     maxInDeck 1
     manaCost 5
-    enchantment()
     // Equipped unit gains +0/+3.
     addHealth 3
+
 }
 card('Achilles\' Armor') {
-    flavor ''
+    enchantment true
     maxInDeck 1
     manaCost 10
-    enchantment()
     addAttack 1
     addHealth 2
+
     // If that unit is a Hero it gains Taunt.
     /*
     spell {
@@ -974,11 +974,11 @@ card('Achilles\' Armor') {
     */
 }
 card('Hades\' Bident') {
-    flavor ''
+    enchantment true
     maxInDeck 1
     manaCost 10
-    enchantment()
     addAttack 3
+
     // If that unit is a Chthonic Deity it gains Plague.
     /*
     spell {
@@ -989,13 +989,13 @@ card('Hades\' Bident') {
     */
 }
 card('Helm of Darkness') {
-    flavor ''
+    enchantment true
     maxInDeck 1
     manaCost 5
-    enchantment()
     // Target unit gains +1/+1 and Phase.
     addAttack 1
     addHealth 1
+
     /*
     spell {
             set phase() toCards { target() }
@@ -1003,12 +1003,12 @@ card('Helm of Darkness') {
     */
 }
 card('Poseidon\'s Trident') {
-    flavor ''
+    enchantment true
     maxInDeck 1
     manaCost 10
-    enchantment()
     addAttack 2
     addHealth 2
+
     // If that unit is a God it gains Dodge.
     /*
     spell {
@@ -1019,12 +1019,12 @@ card('Poseidon\'s Trident') {
     */
 }
 card('Cronus\' Scythe') {
-    flavor ''
+    enchantment true
     maxInDeck 1
     manaCost 10
-    enchantment()
     addAttack 2
     addHealth 1
+
     // If that unit is a Titan it gains Taunt.
     /*
     spell {

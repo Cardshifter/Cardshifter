@@ -158,7 +158,7 @@ _Note: This is a shortcut to_ `maxInDeck 0` _which would produce the same effect
 
 Enchantments are cards that can be cast upon creature cards which are in play. They modify the target card's properties.
 
-####`enchantment()`
+####`enchantment true`
 
 When declared an `enchantment()`, the card is viewed as an Enchantment. An enchantment can be cast on a `"Bio"` creature in Cyborg-Chronicles to make changes to its resources.
 
