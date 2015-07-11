@@ -19,7 +19,7 @@ card("ChangeMe") {
 // PANTHEON
 
 card("JADE EMPEROR") {
-    creature "Chinese"
+    creature "Chinese God"
     flavor "The Great Grandfather, Emperor of all Deities, Vanquisher of Evil."
     // Type: Person
     // Info: http://en.wikipedia.org/wiki/Jade_Emperor
@@ -43,7 +43,7 @@ card("JADE EMPEROR") {
     }
 }
 card("NUWA") {
-    creature "Chinese"
+    creature "Chinese God"
     flavor "Serpent Creator Goddess of Mankind and Repairer of the Pillar of Heaven."
     // Type: Person
     // Info: http://en.wikipedia.org/wiki/N%C3%BCwa
@@ -69,7 +69,7 @@ card("NUWA") {
     }
 }
 card("DIYU") {
-    creature "Chinese"
+    creature "Chinese Place"
     flavor "The Realm of the Dead, containing the Ten Courts of Hell."
     // Type: Place
     // Info: http://en.wikipedia.org/wiki/Diyu
@@ -98,8 +98,43 @@ card("DIYU") {
         }
     }
 }
-card("MONKING") {
+// Tokens for DIYU
+card("Yaoguai") {
     creature "Chinese"
+    flavor "Freak"
+    // Info: http://en.wikipedia.org/wiki/Yaoguai
+    token()
+    sickness 1
+    manaCost 0
+    health 2
+    attack 2
+    denyCounterAttack()
+}
+card("Yaomo") {
+    creature "Chinese"
+    flavor "Demon"
+    // Info: http://en.wikipedia.org/wiki/Yaoguai
+    token()
+    sickness 1
+    manaCost 0
+    health 2
+    attack 3
+}
+card("Yaojing") {
+    creature "Chinese"
+    flavor "Pixie"
+    // Info: http://en.wikipedia.org/wiki/Yaoguai
+    token()
+    sickness 1
+    manaCost 0
+    health 3
+    attack 0
+    noAttack()
+    taunt()
+}
+
+card("MONKING") {
+    creature "Chinese Hero"
     flavor "Monkey King Warrior of Immense Strength."
     // Type: Person
     // Info: http://en.wikipedia.org/wiki/Sun_Wukong
@@ -118,7 +153,7 @@ card("MONKING") {
     }
 }
 card("GUAN YU") {
-    creature "Chinese"
+    creature "Chinese God"
     flavor "God of War and Martial Arts."
     // Type: Person
     // Info: http://en.wikipedia.org/wiki/Guan_Yu
@@ -152,8 +187,32 @@ card("EIGHT IMMORTALS") {
         )
     }
 }
-card("SHINJE") {
+// Tokens for EIGHT IMMORTALS
+card("Life Tool") {
     creature "Chinese"
+    flavor "Restores life."
+    token()
+    health 3
+    attack 0
+    noAttack()
+    onEndOfTurn {
+        heal 1 on "you"
+    }
+}
+card("Destruction Tool") {
+    creature "Chinese"
+    flavor "Causes damage."
+    token()
+    health 3
+    attack 0
+    noAttack()
+    onEndOfTurn {
+        damage 1 on "opponent"
+    }
+}
+
+card("SHINJE") {
+    creature "Chinese God"
     flavor "Wrathful God of Death and Guardian of Spiritual Practice."
     // Type: Person
     // Info: http://en.wikipedia.org/wiki/Yama_(East_Asia)#Yama_in_Tibetan_Buddhism
@@ -177,7 +236,7 @@ card("SHINJE") {
     }
 }
 card("GUANYIN") {
-    creature "Chinese"
+    creature "Chinese God"
     flavor "Perceives the Cries of the World"
     // Type: Person
     // Info: http://en.wikipedia.org/wiki/Guanyin
@@ -203,7 +262,7 @@ card("GUANYIN") {
     }
 }
 card("MAZU") {
-    creature "Chinese"
+    creature "Chinese God"
     flavor "Silent Goddess watching over Seafarers."
     // Type: Person
     // Info: http://en.wikipedia.org/wiki/Mazu_(goddess)
@@ -271,60 +330,3 @@ card("Kung Fu Fighter") {
     attack 4
 }
 
-// TOKENS
-
-card("Yaoguai") {
-    creature "Chinese"
-    flavor "Freak"
-    // Info: http://en.wikipedia.org/wiki/Yaoguai
-    token()
-    sickness 1
-    manaCost 0
-    health 2
-    attack 2
-    denyCounterAttack()
-}
-card("Yaomo") {
-    creature "Chinese"
-    flavor "Demon"
-    // Info: http://en.wikipedia.org/wiki/Yaoguai
-    token()
-    sickness 1
-    manaCost 0
-    health 2
-    attack 3
-}
-card("Yaojing") {
-    creature "Chinese"
-    flavor "Pixie"
-    // Info: http://en.wikipedia.org/wiki/Yaoguai
-    token()
-    sickness 1
-    manaCost 0
-    health 3
-    attack 0
-    noAttack()
-    taunt()
-}
-card("Life Tool") {
-    creature "Chinese"
-    flavor "Restores life."
-    token()
-    health 3
-    attack 0
-    noAttack()
-    onEndOfTurn {
-        heal 1 on "you"
-    }
-}
-card("Destruction Tool") {
-    creature "Chinese"
-    flavor "Causes damage."
-    token()
-    health 3
-    attack 0
-    noAttack()
-    onEndOfTurn {
-        damage 1 on "opponent"
-    }
-}

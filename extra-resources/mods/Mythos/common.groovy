@@ -126,7 +126,7 @@ card('Shaman') {
     health 4
     manacost 10
     sickness 1
-    atStartOfTurn {
+    onStartOfTurn {
         pick 1 atRandom (
                 {  }, // 20% do nothing
                 {  }, // 40% do nothing
@@ -163,7 +163,7 @@ card('Burning Totem') {
     health 1
     attack 0
     noAttack()
-    atEndOfTurn {
+    onEndOfTurn {
         damage 1 on 'you'
         damage 1 on 'opponent'
     }
@@ -215,7 +215,7 @@ card('Holy Man') {
     health 6
     noAttack()
     manaCost 20
-    atEndOfTurn {
+    onEndOfTurn {
         pick 1 atRandom (
                 {  }, // 20% chance to do nothing
                 { heal 1 on 'you' },
