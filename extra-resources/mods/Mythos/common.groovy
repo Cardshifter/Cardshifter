@@ -7,8 +7,6 @@
  * @author https://github.com/jay1148
  */
 
-package mythos
-
 //// CREATURES
 
 card("Swordsman") {
@@ -121,11 +119,85 @@ card("Healer") {
     }
 }
 
-// card('Shaman') {}
+card('Shaman') {
+    creature "Common"
+    maxInDeck 2
+    attack 2
+    health 4
+    manacost 10
+    sickness 1
+    atStartOfTurn {
+        pick 1 atRandom (
+                {  }, // 20% do nothing
+                {  }, // 40% do nothing
+                { summon 1 of "Earth Totem" to "you" },
+                { summon 1 of "Tree Totem" to "you" },
+                { summon 1 of "Burning Totem" to "you" }
+        )
+    }
+}
+card('Earth Totem') {
+    token()
+    health 1
+    attack 0
+    noAttack()
+    atEndOfTurn {
+        damage 1 on 1 random {
+            creature true
+            ownedBy 'opponent'
+            zone 'Battlefield'
+        }
+    }
+}
+card('Tree Totem') {
+    token()
+    health 1
+    attack 0
+    noAttack()
+    atEndOfTurn {
+        heal 1 on 'you'
+    }
+}
+card('Burning Totem') {
+    token()
+    health 1
+    attack 0
+    noAttack()
+    atEndOfTurn {
+        damage 1 on 'you'
+        damage 1 on 'opponent'
+    }
+}
 
-// card('Skeleton') {}
+card('Skeleton') {
+    creature 'Common'
+    attack 5
+    health 2
+    sickness 1
+    manaCost 10
+    whilePresent {
+        change ATTACK by -1 withPriority 1 on {
+            creature true
+            ownedBy 'opponent'
+            zone 'Battlefield'
+        }
+    }
+}
 
-// card('Zombie') {}
+card('Zombie') {
+    creature 'Common'
+    attack 3
+    health 5
+    sickness 1
+    manaCost 10
+    whilePresent {
+        change HEALTH by -1 withPriority 1 on {
+            creatureType "Common"
+            ownedBy 'opponent'
+            zone 'Battlefield'
+        }
+    }
+}
 
 // card('Snake') {}
 
@@ -137,7 +209,29 @@ card("Healer") {
 
 // card('Bear') {}
 
-// card('Holy Man') {}
+card('Holy Man') {
+    creature 'Common'
+    attack 0
+    health 6
+    noAttack()
+    manaCost 20
+    atEndOfTurn {
+        pick 1 atRandom (
+                {  }, // 20% chance to do nothing
+                { heal 1 on 'you' },
+                { heal 1 on { thisCard() } },
+                { heal 1 on 1 random { creature true; ownedBy 'you'; zone 'Battlefield' } },
+                { heal 1 on 2 random { creature true; ownedBy 'you'; zone 'Battlefield' } }
+        )
+    }
+    whilePresent {
+        change HEALTH by 2 withPriority 1 on {
+            creature true
+            ownedBy 'you'
+            zone 'Battlefield'
+        }
+    }
+}
 
 //// SPELLS
 
@@ -159,7 +253,7 @@ card("Spring of Rejuvenation") {
         }
     }
     afterPlay {
-        heal 1 on targets
+        heal 3 on targets
     }
 }
 
