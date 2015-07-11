@@ -21,7 +21,7 @@ It is important to note that the keywords and identifiers must be typed **exactl
 An effect generally takes this form for resource modification:
 
     trigger {
-        action RESOURCE n [withPriority n] onCards [n random] [repeat(n)] {
+        action RESOURCE n [withPriority n] on [n random] [repeat(n)] {
             // filters
         }
     }
@@ -147,7 +147,7 @@ Examples:
     }
     // subtract two attack from opponent creatures while present
     whilePresent {
-        change ATTACK by -2 withPriority 1 onCards {
+        change ATTACK by -2 withPriority 1 on {
             creature true
             ownedBy 'opponent'
             zone 'Battlefield'
@@ -209,11 +209,11 @@ Examples:
     }
     // with change|set effects
     onEndOfTurn {
-        change ATTACK by 1 onCards 2 random {
+        change ATTACK by 1 on 2 random {
             ownedBy 'you'
             zone 'Battlefield'
         }
-        set HEALTH to 1 onCards 2 random {
+        set HEALTH to 1 on 2 random {
             ownedBy 'opponent'
             zone 'Battlefield'
         }
@@ -229,7 +229,7 @@ Example:
 
     onEndOfTurn {
         repeat(3) {
-            change ATTACK by 1 onCards 1 random {
+            change ATTACK by 1 on 1 random {
                 creature true
                 ownedBy 'you'
                 zone 'Battlefield'
@@ -252,15 +252,15 @@ Example:
 
 
         // Both these are valid:
-        onCards {
+        on {
             creature true
             ownedBy "you"
             zone "Battlefield"
         }
-        onCards { creature true; ownedBy "you"; zone "Battlefield }
+        on { creature true; ownedBy "you"; zone "Battlefield }
         //
-        // But this one is not valid:
-        onCards { creature true ownedBy "you" zone "Battlefield }
+        // !!! But this one is not valid:
+        on { creature true ownedBy "you" zone "Battlefield }
 
 
 ####`ownedBy`
@@ -306,7 +306,7 @@ Affects one or more _specific cards_, referencing their `card("hello")` name in 
 
 Example:
 
-    onCards {
+    on {
         cardName "foo", "bar"
         ownedBy "you"
         zone "Battlefield"
