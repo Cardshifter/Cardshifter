@@ -124,15 +124,15 @@ card('Shaman') {
     maxInDeck 2
     attack 2
     health 4
-    manacost 10
+    manaCost 10
     sickness 1
     onStartOfTurn {
         pick 1 atRandom (
-                {  }, // 20% do nothing
-                {  }, // 40% do nothing
-                { summon 1 of "Earth Totem" to "you" },
-                { summon 1 of "Tree Totem" to "you" },
-                { summon 1 of "Burning Totem" to "you" }
+                // { doNothing() }, // #323
+                // { doNothing() }, // #323
+                { summon 1 of "Earth Totem" to "you" zone 'Battlefield' },
+                { summon 1 of "Tree Totem" to "you" zone 'Battlefield' },
+                { summon 1 of "Burning Totem" to "you" zone 'Battlefield '}
         )
     }
 }
@@ -141,7 +141,7 @@ card('Earth Totem') {
     health 1
     attack 0
     noAttack()
-    atEndOfTurn {
+    onStartOfTurn {
         damage 1 on 1 random {
             creature true
             ownedBy 'opponent'
@@ -154,7 +154,7 @@ card('Tree Totem') {
     health 1
     attack 0
     noAttack()
-    atEndOfTurn {
+    onEndOfTurn {
         heal 1 on 'you'
     }
 }
@@ -207,7 +207,7 @@ card('Holy Man') {
     manaCost 20
     onEndOfTurn {
         pick 1 atRandom (
-                {  }, // 20% chance to do nothing
+                // { doNothing() } // #323
                 { heal 1 on 'you' },
                 { heal 1 on { thisCard() } },
                 { heal 1 on 1 random { creature true; ownedBy 'you'; zone 'Battlefield' } },

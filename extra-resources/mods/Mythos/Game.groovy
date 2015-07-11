@@ -83,6 +83,7 @@ config {
             //cardset 'norse'
             //cardset 'hindu'
             //cardset 'roman'
+            //cardset 'nature'
         }
     }
 

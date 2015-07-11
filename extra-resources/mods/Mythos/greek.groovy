@@ -1,4 +1,3 @@
-package mythos
 /* See modding documentation for all available keywords. */
 /* GENERIC TEMPLATE
 card("ChangeMe") {

@@ -93,6 +93,7 @@ config {
             cardset 'mechs'
             cardset 'bios'
             cardset 'enchantments'
+            //cardset 'spellcards'
         }
     }
 
