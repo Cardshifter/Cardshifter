@@ -132,7 +132,7 @@ card('Shaman') {
                 // { doNothing() }, // #323
                 { summon 1 of "Earth Totem" to "you" zone 'Battlefield' },
                 { summon 1 of "Tree Totem" to "you" zone 'Battlefield' },
-                { summon 1 of "Burning Totem" to "you" zone 'Battlefield '}
+                { summon 1 of "Burning Totem" to "you" zone 'Battlefield' }
         )
     }
 }
