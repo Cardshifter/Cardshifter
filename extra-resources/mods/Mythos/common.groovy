@@ -199,16 +199,6 @@ card('Zombie') {
     }
 }
 
-// card('Snake') {}
-
-// card('Spider') {}
-
-// card('Eagle') {}
-
-// card('Wolf') {}
-
-// card('Bear') {}
-
 card('Holy Man') {
     creature 'Common'
     attack 0

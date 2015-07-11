@@ -1,14 +1,13 @@
 package mythos
 /* See modding documentation for all available keywords. */
 /* GENERIC TEMPLATE
-card('ChangeMe') {
+card("ChangeMe") {
     creature "Greek"
     flavor "hello"
-    maxInDeck 1
-    attack 1
     health 1
-    manaCost 1
     sickness 1
+    manaCost 1
+    attack 1
 }
 */
 
