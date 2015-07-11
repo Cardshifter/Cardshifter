@@ -68,7 +68,7 @@ include 'creatures'
 include 'enchantment'
 include 'scrap'
 include 'noAttack'
-include 'spellcards'
+include 'spells'
 
 onCard('creature') {entity, args ->
     // give all creatures taunt by default
