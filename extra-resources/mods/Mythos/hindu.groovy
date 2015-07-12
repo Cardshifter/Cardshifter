@@ -91,23 +91,58 @@ card('Hansa') {
     }
 }
 
-/*
+
 card('VISHNU') {
-    creature 'Hindu'
-    flavor 'Shape-changing Preserver of the Universe'
-    health 1
+    creature 'Hindu God'
+    flavor 'The All-Pervading One. "Whatever that is there is the world of change."'
+    // https://en.wikipedia.org/wiki/Vishnu
+    // https://upload.wikimedia.org/wikipedia/commons/c/c2/Bhagavan_Vishnu.jpg
+    // Public Domain
+    attack 5
+    health 5
     sickness 1
-    manaCost 1
-    attack 1
+    manaCost 10
+    /*  // Issue #326
+    onEndOfTurn {
+        pick 1 atRandom (
+                { change HEALTH by 1  on { thisCard() } },
+                { change ATTACK by 1  on { thisCard() } },
+                { change HEALTH by -1 on { thisCard() } },
+                { change ATTACK by 2  on { thisCard() } },
+                { set SICKNESS to 2   on { thisCard() } }
+        )
+    }*/
+    // temporary replacement
+    onEndOfTurn {
+        pick 1 atRandom (
+                { heal 1    on { thisCard() } },
+                { heal 2    on { thisCard() } },
+                { damage 1  on { thisCard() } },
+                { damage 1  on 1 random { creature true; ownedBy 'opponent'; zone 'Battlefield' } }
+        )
+    }
 }
+
 card('KRISHNA') {
-    creature 'Hindu'
-    flavor 'Popular and Handsome blue-skinned Hero God'
-    health 1
-    sickness 1
-    manaCost 1
-    attack 1
+    creature 'Hindu God'
+    flavor 'Eighth incarnation of Lord Vishnu. Handsome blue-skinned Hero God.'
+    // https://en.wikipedia.org/wiki/Krishna
+    // https://upload.wikimedia.org/wikipedia/commons/7/70/Krishna_Holding_Mount_Govardhan_-_Crop.jpg
+    // Public Domain
+    attack 5
+    health 7
+    sickness 0 // rush
+    manaCost 15
+    whilePresent {
+        change ATTACK, HEALTH by 1 withPriority 1 on {
+            creature true
+            ownedBy 'you'
+            zone 'Battlefield'
+        }
+    }
 }
+
+/*
 card('BUDDHA') {
     creature 'Hindu'
     flavor 'God of Wisdom and Enlightened One'
@@ -116,6 +151,7 @@ card('BUDDHA') {
     manaCost 1
     attack 1
 }
+/*
 card('SHIVA') {
     creature 'Hindu'
     flavor 'Dancing God of Universal Destruction'
@@ -124,6 +160,7 @@ card('SHIVA') {
     manaCost 1
     attack 1
 }
+/*
 card('YAMA') {
     creature 'Hindu'
     flavor 'Buffalo-headed God of Death'
@@ -132,6 +169,7 @@ card('YAMA') {
     manaCost 1
     attack 1
 }
+/*
 card('DURGA') {
     creature 'Hindu'
     flavor 'Demon-killing Warrior Goddess'
@@ -140,14 +178,7 @@ card('DURGA') {
     manaCost 1
     attack 1
 }
-card('ChangeMe') {
-    creature 'Hindu'
-    flavor 'hello'
-    health 1
-    sickness 1
-    manaCost 1
-    attack 1
-}
+/*
 card('VARUNA') {
     creature 'Hindu'
     flavor 'Sky God of Law and Order'
@@ -156,6 +187,7 @@ card('VARUNA') {
     manaCost 1
     attack 1
 }
+/*
 card('MAITREYA') {
     creature 'Hindu'
     flavor 'Happiness God and Buddha of the Future'
