@@ -127,13 +127,15 @@ card('Shaman') {
     manaCost 10
     sickness 1
     onStartOfTurn {
-        pick 1 atRandom (
-                // { doNothing() }, // #323
-                // { doNothing() }, // #323
-                { summon 1 of 'Earth Totem' to 'you' zone 'Battlefield' },
-                { summon 1 of 'Tree Totem' to 'you' zone 'Battlefield' },
-                { summon 1 of 'Burning Totem' to 'you' zone 'Battlefield' }
-        )
+        withProbability(0.60) { // withProbability is a temporary fix until #323
+            pick 1 atRandom(
+                    // { doNothing() }, // #323
+                    // { doNothing() }, // #323
+                    { summon 1 of 'Earth Totem' to 'you' zone 'Battlefield' },
+                    { summon 1 of 'Tree Totem' to 'you' zone 'Battlefield' },
+                    { summon 1 of 'Burning Totem' to 'you' zone 'Battlefield' }
+            )
+        }
     }
 }
 card('Earth Totem') {
@@ -206,13 +208,15 @@ card('Holy Man') {
     noAttack()
     manaCost 20
     onEndOfTurn {
-        pick 1 atRandom (
-                // { doNothing() } // #323
-                { heal 1 on 'you' },
-                { heal 1 on { thisCard() } },
-                { heal 1 on 1 random { creature true; ownedBy 'you'; zone 'Battlefield' } },
-                { heal 1 on 2 random { creature true; ownedBy 'you'; zone 'Battlefield' } }
-        )
+        withProbability(0.80) { // withProbability is a temporary fix until #323
+            pick 1 atRandom(
+                    // { doNothing() } // #323
+                    { heal 1 on 'you' },
+                    { heal 1 on { thisCard() } },
+                    { heal 1 on 1 random { creature true; ownedBy 'you'; zone 'Battlefield' } },
+                    { heal 1 on 2 random { creature true; ownedBy 'you'; zone 'Battlefield' } }
+            )
+        }
     }
     whilePresent {
         change HEALTH by 2 withPriority 1 on {

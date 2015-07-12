@@ -1,15 +1,10 @@
 package mythos
-/* See modding documentation for all available keywords. */
-/* GENERIC TEMPLATE
-card('ChangeMe') {
-    creature 'Hindu'
-    flavor 'hello'
-    health 1
-    sickness 1
-    manaCost 1
-    attack 1
-}
-*/
+/**
+ * The Hindu cardset uses many variants of random and probabilities, to create a lively
+ * and unpredictable strategy that often benefits the player, but sometimes the opponent.
+ * @author https://github.com/Phrancis
+ * Created 2015-07-12
+ */
 
 card('INDRA') {
     creature 'Hindu God'
@@ -17,6 +12,7 @@ card('INDRA') {
     // https://en.wikipedia.org/wiki/Indra
     // https://upload.wikimedia.org/wikipedia/commons/3/36/Indra_deva.jpg
     // Public domain
+    maxInDeck 1
     attack 5
     health 8
     sickness 1
@@ -59,6 +55,7 @@ card('BRAHMA') {
     // https://en.wikipedia.org/wiki/Brahma
     // https://upload.wikimedia.org/wikipedia/commons/e/e4/Brahma_on_hamsa.jpg
     // Public Domain
+    maxInDeck 1
     attack 5
     health 6
     sickness 1
@@ -74,6 +71,7 @@ card('BRAHMA') {
         }
     }
 }
+// BRAHMA TOKEN
 card('Hansa') {
     creature 'Hindu'
     flavor 'Brahma\'s white swan mount.'
@@ -98,6 +96,7 @@ card('VISHNU') {
     // https://en.wikipedia.org/wiki/Vishnu
     // https://upload.wikimedia.org/wikipedia/commons/c/c2/Bhagavan_Vishnu.jpg
     // Public Domain
+    maxInDeck 1
     attack 5
     health 5
     sickness 1
@@ -129,6 +128,7 @@ card('KRISHNA') {
     // https://en.wikipedia.org/wiki/Krishna
     // https://upload.wikimedia.org/wikipedia/commons/7/70/Krishna_Holding_Mount_Govardhan_-_Crop.jpg
     // Public Domain
+    maxInDeck 1
     attack 5
     health 7
     sickness 0 // rush
@@ -139,6 +139,83 @@ card('KRISHNA') {
             ownedBy 'you'
             zone 'Battlefield'
         }
+    }
+}
+
+card('SHIVA') {
+    creature 'Hindu God'
+    flavor 'The Auspicious One, He has many Benevolent and Fearsome forms.'
+    // https://en.wikipedia.org/wiki/Shiva
+    // https://upload.wikimedia.org/wikipedia/commons/a/a7/6_%C5%9Aiva_and_P%C4%81rvat%C4%AB_seated_on_a_terrace._1800_%28circa%29_BM.jpg
+    // Public Domain
+    maxInDeck 1
+    attack 4
+    health 5
+    sickness 1
+    manaCost 10
+    afterPlay {
+        pick 1 atRandom (
+                { damage 3  on { creature true; ownedBy 'opponent'; zone 'Battlefield' } },
+                { heal 3    on { creature true; ownedBy      'you'; zone 'Battlefield' } }
+        )
+    }
+}
+
+card('YAMA') {
+    creature 'Hindu God'
+    flavor 'The first mortal who died, now the Ruler of the Departed.'
+    // https://en.wikipedia.org/wiki/Yama
+    // https://upload.wikimedia.org/wikipedia/commons/3/33/Yama_on_buffalo.jpg
+    // Public Domain
+    maxInDeck 1
+    attack 4
+    health 6
+    sickness 1
+    manaCost 10
+    onDeath { withProbability(0.7) { heal 2    on { creature true; ownedBy 'you'; zone 'Battlefield' } } }
+    onDeath { withProbability(0.7) { damage 2  on { creature true; ownedBy 'opponent'; zone 'Battlefield' } } }
+}
+
+
+card('DURGA') {
+    creature 'Hindu God'
+    flavor 'Goddess armed with Celestial Weapons of all Deities.'
+    // https://en.wikipedia.org/wiki/Durga
+    // https://upload.wikimedia.org/wikipedia/commons/f/f5/Durga_Mahisasuramardini.JPG
+    // Public Domain
+    maxInDeck 1
+    attack 7
+    health 4
+    sickness 1
+    manaCost 15
+    afterPlay {
+        repeat(2) {
+            damage 1 on 1 random { creature true; ownedBy 'opponent'; zone 'Battlefield' }
+        }
+    }
+    onStartOfTurn {
+        withProbability(0.5) {
+            damage 1 on 1 random { creature true; ownedBy 'opponent'; zone 'Battlefield' }
+        }
+    }
+}
+
+card('VARUNA') {
+    creature 'Hindu God'
+    flavor 'God of the Oceans and of Law and Morals.'
+    // https://en.wikipedia.org/wiki/Varuna
+    // https://en.wikipedia.org/wiki/Varuna#/media/File:Varunadeva.jpg
+    // Public Domain
+    maxInDeck 1
+    attack 3
+    health 6
+    sickness 1
+    manaCost 10
+    onStartOfTurn {
+        heal 1 on 2 random { creature true; zone 'Battlefield' }
+    }
+    whilePresent {
+        change HEALTH by 1 withPriority 1 on { creature true; ownedBy 'you'; zone 'Battlefield' }
     }
 }
 
@@ -162,63 +239,27 @@ card('Gautama Buddha') {
     }
 }
 
-card('SHIVA') {
-    creature 'Hindu God'
-    flavor 'The Auspicious One, He has many Benevolent and Fearsome forms.'
-    // https://en.wikipedia.org/wiki/Shiva
-    // https://upload.wikimedia.org/wikipedia/commons/a/a7/6_%C5%9Aiva_and_P%C4%81rvat%C4%AB_seated_on_a_terrace._1800_%28circa%29_BM.jpg
-    // Public Domain
-    attack 4
-    health 5
+card('Maitreya Buddha') {
+    creature 'Hindu Hero'
+    flavor 'Successor of Prophecy of the Buddha, to achieve Complete Enlightenment and teach the Pure Dharma'
+    // https://en.wikipedia.org/wiki/Maitreya
+    // https://upload.wikimedia.org/wikipedia/commons/2/2d/Maitreya_Buddha%2C_Nubra.jpg
+    // CC BY-SA 3.0
+    // https://commons.wikimedia.org/wiki/User:John%20Hill
+    maxInDeck 1
+    attack 3
+    health 9
     sickness 1
-    manaCost 10
-    afterPlay {
-        pick 1 atRandom (
-                { damage 3  on { creature true; ownedBy 'opponent'; zone 'Battlefield' } },
-                { heal 3    on { creature true; ownedBy      'you'; zone 'Battlefield' } }
-        )
+    manaCost 20
+    whilePresent {
+        change HEALTH by 2 withPriority 1 on { creature true; ownedBy 'you'; zone 'Battlefield' }
+    }
+    onEndOfTurn {
+        withProbability(0.75) {
+            pick 1 atRandom (
+                    { heal 1 on    'you' },
+                    { damage 1 on  'opponent' }
+            )
+        }
     }
 }
-
-card('YAMA') {
-    creature 'Hindu'
-    flavor 'The first mortal who died, now the Ruler of the Departed.'
-    // https://en.wikipedia.org/wiki/Yama
-    // https://upload.wikimedia.org/wikipedia/commons/3/33/Yama_on_buffalo.jpg
-    // Public Domain
-    attack 4
-    health 6
-    sickness 1
-    manaCost 10
-    onDeath { withProbability(0.7) { heal 2    on { creature true; ownedBy 'you'; zone 'Battlefield' } } }
-    onDeath { withProbability(0.7) { damage 2  on { creature true; ownedBy 'opponent'; zone 'Battlefield' } } }
-}
-
-/*
-card('DURGA') {
-    creature 'Hindu'
-    flavor 'Demon-killing Warrior Goddess'
-    health 1
-    sickness 1
-    manaCost 1
-    attack 1
-}
-/*
-card('VARUNA') {
-    creature 'Hindu'
-    flavor 'Sky God of Law and Order'
-    health 1
-    sickness 1
-    manaCost 1
-    attack 1
-}
-/*
-card('MAITREYA') {
-    creature 'Hindu'
-    flavor 'Happiness God and Buddha of the Future'
-    health 1
-    sickness 1
-    manaCost 1
-    attack 1
-}
-*/
