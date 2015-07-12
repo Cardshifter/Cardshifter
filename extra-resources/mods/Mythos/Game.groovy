@@ -91,7 +91,7 @@ config {
             //cardset 'egyptian'
             cardset 'greek'
             //cardset 'norse'
-            //cardset 'hindu'
+            cardset 'hindu'
             //cardset 'roman'
             //cardset 'nature'
         }
