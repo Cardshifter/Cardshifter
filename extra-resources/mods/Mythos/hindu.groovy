@@ -142,23 +142,42 @@ card('KRISHNA') {
     }
 }
 
-/*
-card('BUDDHA') {
-    creature 'Hindu'
-    flavor 'God of Wisdom and Enlightened One'
-    health 1
+card('Gautama Buddha') {
+    creature 'Hindu Hero'
+    flavor 'The Enlightened One, discovered of the Middle Way.'
+    // https://en.wikipedia.org/wiki/Gautama_Buddha
+    // https://upload.wikimedia.org/wikipedia/commons/c/c1/Astasahasrika_Prajnaparamita_Victory_Over_Mara.jpeg
+    // Public Domain
+    attack 4
+    health 6
     sickness 1
-    manaCost 1
-    attack 1
+    manaCost 10
+    onEndOfTurn {
+        pick 1 atRandom (
+                { heal 1    on 'you' },
+                { heal 1    on 1 random { creature true; zone 'Battlefield' } },
+                { damage 1  on 'opponent' },
+                { damage 1  on 1 random { creature true; zone 'Battlefield' } }
+        )
+    }
 }
-/*
+
 card('SHIVA') {
-    creature 'Hindu'
-    flavor 'Dancing God of Universal Destruction'
-    health 1
+    creature 'Hindu God'
+    flavor 'The Auspicious One, He has many Benevolent and Fearsome forms.'
+    // https://en.wikipedia.org/wiki/Shiva
+    // https://upload.wikimedia.org/wikipedia/commons/a/a7/6_%C5%9Aiva_and_P%C4%81rvat%C4%AB_seated_on_a_terrace._1800_%28circa%29_BM.jpg
+    // Public Domain
+    attack 4
+    health 5
     sickness 1
-    manaCost 1
-    attack 1
+    manaCost 10
+    afterPlay {
+        pick 1 atRandom (
+                { damage 3  on { creature true; ownedBy 'opponent'; zone 'Battlefield' } },
+                { heal 3    on { creature true; ownedBy      'you'; zone 'Battlefield' } }
+        )
+    }
 }
 /*
 card('YAMA') {
