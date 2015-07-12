@@ -144,7 +144,7 @@ card('KRISHNA') {
 
 card('Gautama Buddha') {
     creature 'Hindu Hero'
-    flavor 'The Enlightened One, discovered of the Middle Way.'
+    flavor 'The Enlightened One, discoverer of the Middle Way.'
     // https://en.wikipedia.org/wiki/Gautama_Buddha
     // https://upload.wikimedia.org/wikipedia/commons/c/c1/Astasahasrika_Prajnaparamita_Victory_Over_Mara.jpeg
     // Public Domain
@@ -179,15 +179,21 @@ card('SHIVA') {
         )
     }
 }
-/*
+
 card('YAMA') {
     creature 'Hindu'
-    flavor 'Buffalo-headed God of Death'
-    health 1
+    flavor 'The first mortal who died, now the Ruler of the Departed.'
+    // https://en.wikipedia.org/wiki/Yama
+    // https://upload.wikimedia.org/wikipedia/commons/3/33/Yama_on_buffalo.jpg
+    // Public Domain
+    attack 4
+    health 6
     sickness 1
-    manaCost 1
-    attack 1
+    manaCost 10
+    onDeath { withProbability(0.7) { heal 2    on { creature true; ownedBy 'you'; zone 'Battlefield' } } }
+    onDeath { withProbability(0.7) { damage 2  on { creature true; ownedBy 'opponent'; zone 'Battlefield' } } }
 }
+
 /*
 card('DURGA') {
     creature 'Hindu'

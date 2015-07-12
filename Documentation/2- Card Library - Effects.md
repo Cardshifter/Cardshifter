@@ -93,6 +93,33 @@ Example:
         )
     }
 
+####`withProbability(0.n)`
+
+- Works on all cards.
+- This is a sub-trigger and assigns a percentage probability to an action.
+- Ranges are decimal, from `withProbability(0.0)`, or 0%, to `withProbability(1.0)` or 100%.
+
+Syntax:
+
+    trigger {
+        withProbability(0.n) {
+            action
+        }
+    }
+    
+Example:
+    
+    afterPlay {
+        // 75% chance to summon creature
+        withProbability(0.75) { 
+            summon 1 of 'Conscript to 'you' zone 'Battlefield'
+        }
+    onEndOfTurn {
+        // 50% change to heal you
+        withProbability(0.50) {
+            heal 1 to 'you'
+        }
+    }
 
 ---
 
