@@ -106,19 +106,38 @@ _Note: by default setting, Cardshifter cards will gain their health back after e
 
 A creature card with `n` attack can cause `n` damage  to a target card or player while it is in battle. Usage: `attack n`
 
-####`scrap`
 
-A creature card with `n` scrap value can be sacrificed from battle after exhausting its casting `sickness`, in exchange for `n` scrap resource to the player. All cards with `scrap > 0` can be sacrificed. `scrap` resource can be used for various things which have a `scrapCost`, including most Enchantments. See the Enchantments section for details. 
+####`manaCost`
 
-Usage: `scrap n`
+A card with `n` manaCost requires spending `n` player mana points in order to play it. Usage: `manaCost n`
 
 ####`sickness`
 
 A creature card with `n` sickness must wait `n` turns after being played before it can perform an action. A creature with `0` sickness is often referred to as having "Rush" or immediate action. Usage: `sickness n`
 
-####`manaCost`
 
-A card with `n` manaCost requires spending `n` player mana points in order to play it. Usage: `manaCost n`
+---
+
+##Scrap
+
+Scrap is an additional resource that can be used which behaves differently than Mana. By adding a `scrap` value to a creature card, the card becomes "scrappable", which means it can be sacrificed, or "scrapped", instead of performing an action while on the Battlefield. This eliminates the card and awards the owner player with the amount of Scrap resource specified.
+
+For Scrap to be available, the following configuration code must be included in the mod's **Game.groovy** file:
+
+    SCRAP = createResource("SCRAP")
+    SCRAP_COST = createResource("SCRAP_COST")
+
+And including the scrap configuration in the `include` section of **Game.groovy**:
+
+    include 'scrap'
+    
+###Scrap properties
+
+####`scrap`
+
+A creature card with `n` scrap value can be sacrificed from battle after exhausting its casting `sickness`, in exchange for `n` scrap resource to the player. All cards with `scrap > 0` can be sacrificed. `scrap` resource can be used for various things which have a `scrapCost`, including most Enchantments. See the Enchantments section for details. 
+
+Usage: `scrap n`
 
 ####`scrapCost`
 
@@ -158,9 +177,11 @@ _Note: This is a shortcut to_ `maxInDeck 0` _which would produce the same effect
 
 Enchantments are cards that can be cast upon creature cards which are in play. They modify the target card's properties.
 
+**Important note:** As of 2015-07-11, the Scrap related resources_must_ be included in the mod's **Game.groovy** file for enchantment cards to function correctly. This will be addressed in the near future. 
+
 ####`enchantment true`
 
-When declared an `enchantment()`, the card is viewed as an Enchantment. An enchantment can be cast on a `"Bio"` creature in Cyborg-Chronicles to make changes to its resources.
+When declared an `enchantment true`, the card is treated as an Enchantment. An enchantment can be cast on a `"Bio"` creature in Cyborg-Chronicles to make changes to its resources.
 
 _Note that a card cannot be both a Creature and an Enchantment._
 

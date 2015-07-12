@@ -40,9 +40,9 @@ DENY_COUNTERATTACK = createResource("DENY_COUNTERATTACK")
 SICKNESS = createResource("SICKNESS")
 // Card must be attacked while on Battlefield before the owner player can be attacked
 TAUNT = createResource("TAUNT")
-// FOR COMPATIBILITY TESTING
+
+// FOR COMPATIBILITY WITH ENCHANTMENTS - SEE #325
 SCRAP = createResource("SCRAP")
-// Cost of Scrap resource to the player for casting the card into play
 SCRAP_COST = createResource("SCRAP_COST")
 
 /**
@@ -68,8 +68,10 @@ MANA_MAX = createResource("MANA_MAX")
 include 'creatures'
 include 'noAttack'
 include 'enchantment'
+// FOR COMPATIBILITY WITH ENCHANTMENTS - SEE #325
 include 'scrap'
 // include 'spells' // Bug #324
+
 
 /**
  * General game configuration
