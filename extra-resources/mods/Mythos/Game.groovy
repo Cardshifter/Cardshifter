@@ -134,6 +134,7 @@ rules {
 
     action('Play') {
         allowFor { // only allow if...
+            ownedBy 'active'
             zone 'Hand' // ...card is on hand
         }
 
@@ -150,6 +151,7 @@ rules {
 
     action('Attack') {
         allowFor {
+            ownedBy 'active'
             zone 'Battlefield'
         }
         requiresThat {
@@ -195,6 +197,7 @@ rules {
 
     action('Enchant') {
         allowFor {
+            ownedBy 'active'
             zone 'Hand'
         }
         targets 1 of {
@@ -218,6 +221,7 @@ rules {
 
     action('Use') {
         allowFor {
+            ownedBy 'active'
             zone 'Hand'
         }
         cardTargetFilter()
