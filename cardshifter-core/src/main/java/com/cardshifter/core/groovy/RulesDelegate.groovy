@@ -43,7 +43,7 @@ class RulesDelegate {
     }
 
     void action(String name, Closure closure) {
-        closure.setDelegate(new ActionDelegate(name))
+        closure.setDelegate(new ActionDelegate(game, name))
         closure.setResolveStrategy(DELEGATE_FIRST)
         closure.call()
     }
