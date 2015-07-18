@@ -68,6 +68,126 @@ config {
     }
 }
 
+rules {
+    init {
+        game.players.each {
+            it.deck.createFromConfig('Deck')
+            it.deck.shuffle()
+            it.drawCards(5)
+        }
+        mulliganIndividual()
+    }
+
+    action('Play') {
+        allowFor { // only allow if...
+            zone 'Hand' // ...card is on hand
+        }
+
+        // this action costs MANA to play
+        // the value it costs is equal to mana-cost value of the card
+        // card.owner indicates that the card's owner should pay this cost
+        cost MANA value { card.mana_cost } on { card.owner }
+
+        perform {
+            card.moveTo 'Battlefield'
+            effectAction() // perform an effect associated with the card
+        }
+    }
+
+    action('Attack') {
+        allowFor {
+            zone 'Battlefield'
+        }
+        requiresThat {
+            card.SICKNESS == 0
+        }
+        targets 1 of {
+            zone 'Battlefield'
+            ownedBy opponent
+        }
+
+        cost ATTACK_AVAILABLE value 1 on { card }
+
+        cardsFirst TAUNT
+        perform {
+            def allowCounterAttack = {attacker, defender -> attacker.deny_counterattack == 0 }
+            accumulating(ATTACK, HEALTH, allowCounterAttack) withTrample(TRAMPLE, HEALTH)
+            if (card.deny_counterattack > 0) {
+                card.sickness = 2
+            }
+        }
+    }
+
+    turnStart {
+        you.drawCard(1)
+        you.mana_max = Math.min(1 + (int) you.mana_max, 10)
+        you.mana = you.mana_max
+        you.battlefield.forEach {
+            it.attack_available = 1
+            if (it.sickness > 0) {
+                it.sickness--
+            }
+        }
+    }
+
+    turnEnd {
+        you.battlefield.forEach {
+            it.health = it.max_health
+        }
+    }
+
+    action('Enchant') {
+        allowFor {
+            zone 'Hand'
+        }
+        targets 1 of {
+            zone 'Battlefield'
+            creatureType 'Bio'
+            ownedBy you
+        }
+
+        cost SCRAP value { card.scrap_cost } on { card.owner }
+        cost MANA value { card.mana_cost } on { card.owner }
+        perform {
+            targets.forEach {
+                it.attack += card.attack
+                it.health += card.health
+                it.max_health += card.health
+            }
+            effectAction()
+            destroy()
+        }
+    }
+
+    action('Use') {
+        allowFor {
+            zone 'Hand'
+        }
+        cardTargetFilter()
+
+        cost MANA value { card.mana_cost } on { card.owner }
+        cost SCRAP value { card.scrap_cost } on { card.owner }
+
+        perform {
+            effectAction()
+            destroy()
+        }
+    }
+
+    always {
+        LimitedHandSize(10, {card -> card.getCardToDraw().destroy()})
+        DamageConstantWhenOutOfCardsSystem(HEALTH, 1)
+
+        GameOverIfNoHealth(HEALTH)
+        LastPlayersStandingEndsGame()
+        RemoveDeadEntityFromZoneSystem()
+        PerformerMustBeCurrentPlayer()
+        removeDead(HEALTH)
+        ResourceRecountSystem()
+    }
+
+}
+/*
 setup {
     playerDeckFromConfig('Deck')
     playerDeckShuffle()
@@ -132,3 +252,4 @@ setup {
         }
     }
 }
+*/

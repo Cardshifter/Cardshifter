@@ -25,9 +25,11 @@ public class GroovyMod {
     final CardDelegate cardDelegate = new CardDelegate(mod: this)
     private List<Closure> configClosure = []
     private List<Closure> setupClosure = []
+    private List<Closure> rulesClosure = []
     private Map<String, ECSResource> knownResources = [:]
     @PackageScope Map<String, List<Closure>> cardMethodListeners = [:]
 
+    @Deprecated
     ECSResource createResource(String name) {
         def res = new ECSResourceDefault(name)
         knownResources.put(res.toString().toUpperCase(), res)
@@ -134,14 +136,29 @@ public class GroovyMod {
             cl.setResolveStrategy(Closure.DELEGATE_FIRST)
             cl.call()
         }
+
+        def rulesDelegate = new RulesDelegate(this, game)
+        rulesClosure.each {
+            def cl = it.rehydrate(rulesDelegate, it.owner, it.thisObject)
+            cl.setResolveStrategy(Closure.DELEGATE_FIRST)
+            cl.call()
+        }
     }
 
+    @Deprecated
     void setup(Closure<?> closure) {
         this.setupClosure << closure
     }
 
     void config(Closure<?> closure) {
+        println 'Config ' + closure
         this.configClosure << closure
+    }
+
+    void rules(Closure<?> closure) {
+        println 'Rules'
+        this.rulesClosure << closure
+        println 'Added rule closure to list'
     }
 }
 
