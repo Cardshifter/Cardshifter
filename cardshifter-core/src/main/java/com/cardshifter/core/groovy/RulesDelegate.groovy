@@ -1,5 +1,5 @@
-import com.cardshifter.core.modloader.rules.ActionDelegate
-import com.cardshifter.core.modloader.rules.EventYouDelegate
+package com.cardshifter.core.groovy
+
 import com.cardshifter.modapi.base.ECSGame
 import com.cardshifter.modapi.base.ECSSystem
 import com.cardshifter.modapi.cards.MulliganSingleCards

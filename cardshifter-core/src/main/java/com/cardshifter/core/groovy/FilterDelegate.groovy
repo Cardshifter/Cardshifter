@@ -1,3 +1,5 @@
+package com.cardshifter.core.groovy
+
 import com.cardshifter.modapi.base.ComponentRetriever
 import com.cardshifter.modapi.base.CreatureTypeComponent
 import com.cardshifter.modapi.base.Entity

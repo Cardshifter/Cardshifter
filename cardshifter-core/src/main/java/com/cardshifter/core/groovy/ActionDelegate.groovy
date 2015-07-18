@@ -1,4 +1,4 @@
-package com.cardshifter.core.modloader.rules
+package com.cardshifter.core.groovy
 
 /**
  * Created by Simon on 6/24/2015.

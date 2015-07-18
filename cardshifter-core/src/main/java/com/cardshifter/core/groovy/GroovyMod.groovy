@@ -1,3 +1,5 @@
+package com.cardshifter.core.groovy
+
 import com.cardshifter.api.config.DeckConfig
 import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.Entity
@@ -9,10 +11,6 @@ import com.cardshifter.modapi.resources.ECSResource
 import com.cardshifter.modapi.resources.ECSResourceDefault
 import groovy.transform.PackageScope
 import net.zomis.cardshifter.ecs.config.ConfigComponent
-import SystemsDelegate;
-import PlayerDelegate;
-import NeutralDelegate;
-import GeneralSystems;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import static groovy.lang.Closure.DELEGATE_ONLY;
 

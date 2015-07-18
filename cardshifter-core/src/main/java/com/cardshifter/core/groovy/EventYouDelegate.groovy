@@ -1,4 +1,4 @@
-package com.cardshifter.core.modloader.rules
+package com.cardshifter.core.groovy
 
 import com.cardshifter.modapi.phase.PhaseChangeEvent
 

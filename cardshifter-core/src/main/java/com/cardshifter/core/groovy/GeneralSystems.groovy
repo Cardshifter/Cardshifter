@@ -1,3 +1,5 @@
+package com.cardshifter.core.groovy
+
 import com.cardshifter.modapi.actions.ActionComponent
 import com.cardshifter.modapi.actions.ActionPerformEvent
 import com.cardshifter.modapi.actions.ECSAction
@@ -33,7 +35,6 @@ import com.cardshifter.modapi.cards.PlayEntersBattlefieldSystem
 import com.cardshifter.modapi.cards.PlayFromHandSystem
 import com.cardshifter.modapi.cards.RemoveDeadEntityFromZoneSystem
 import com.cardshifter.modapi.cards.ZoneChangeEvent
-import com.cardshifter.modapi.cards.ZoneComponent
 import com.cardshifter.modapi.events.EntityRemoveEvent
 import com.cardshifter.modapi.events.IEvent
 import com.cardshifter.modapi.phase.GainResourceSystem
@@ -64,8 +65,6 @@ import java.util.function.Consumer
 import java.util.function.Predicate
 import java.util.function.ToIntFunction
 import java.util.function.UnaryOperator
-import EffectDelegate
-
 import java.util.stream.Collectors
 
 class AttackSystemDelegate {

@@ -1,3 +1,5 @@
+package com.cardshifter.core.groovy
+
 import com.cardshifter.modapi.actions.ActionComponent
 import com.cardshifter.modapi.actions.ECSAction
 import com.cardshifter.modapi.base.ComponentRetriever

@@ -1,8 +1,9 @@
+package com.cardshifter.core.groovy
+
 import com.cardshifter.modapi.base.Entity
 import com.cardshifter.modapi.cards.ZoneComponent
 import com.cardshifter.modapi.phase.PhaseController
 import com.cardshifter.modapi.resources.ResourceModifierComponent
-import ZoneDelegate
 
 public class NeutralDelegate {
     Entity entity
