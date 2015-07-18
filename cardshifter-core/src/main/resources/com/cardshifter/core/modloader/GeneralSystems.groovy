@@ -213,6 +213,11 @@ public class GeneralSystems {
         game.getEntityMeta().getActions << {delegate.getComponent(ActionComponent)}
         game.getEntityMeta().getAi << {delegate.getComponent(AIComponent)}
         game.getEntityMeta().getPlayer << {delegate.getComponent(PlayerComponent)}
+        game.getEntityMeta().drawCards << {Integer count ->
+            for (int i = 0; i < count; i++) {
+                DrawStartCards.drawCard(delegate as Entity)
+            }
+        }
 
         CardDelegate.metaClass.onEndOfTurn << {Closure closure ->
             onEndOfTurn('your', closure)
