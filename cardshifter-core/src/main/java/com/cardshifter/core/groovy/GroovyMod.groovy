@@ -59,6 +59,10 @@ public class GroovyMod {
             })
     }
 
+    void cardExtension(String name, Closure closure) {
+        cardDelegate.metaClass[name] << closure
+    }
+
     void include(String fileName) {
         File file = findFile(fileName)
 
