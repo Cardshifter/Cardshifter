@@ -80,9 +80,8 @@ class ActionDelegate {
             }
             [on: {Closure<Entity> closure ->
                 UnaryOperator<Entity> whoPays = {Entity e ->
-                    def clos = value as Closure
                     def deleg = new CardHolderDelegate(e)
-                    Closure<Entity> cl = clos.rehydrate(deleg, clos.owner, clos.thisObject)
+                    Closure<Entity> cl = closure.rehydrate(deleg, closure.owner, closure.thisObject)
                     cl.call(e)
                 } as UnaryOperator<Entity>
                 game.addSystem(new UseCostSystem(name, resource, costFunction, whoPays))
