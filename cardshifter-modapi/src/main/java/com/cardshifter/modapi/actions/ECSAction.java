@@ -55,7 +55,11 @@ public class ECSAction {
                 return false;
             }
 
-            this.owner.getGame().executeEvent(new ActionPerformEvent(owner, this, performer), () -> this.perform.accept(this));
+            try {
+                this.owner.getGame().executeEvent(new ActionPerformEvent(owner, this, performer), () -> this.perform.accept(this));
+            } catch (RuntimeException ex) {
+                throw new RuntimeException("Error performing action " + this, ex);
+            }
             this.targetSets.forEach(TargetSet::clearTargets);
             return true;
         }
