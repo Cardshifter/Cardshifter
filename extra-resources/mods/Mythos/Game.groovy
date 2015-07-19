@@ -143,10 +143,10 @@ rules {
         // the value it costs is equal to mana-cost value of the card
         // card.owner indicates that the card's owner should pay this cost
         cost MANA value { card.mana_cost } on { card.owner }
+        effectAction() // perform an effect associated with the card
 
         perform {
             card.moveTo 'Battlefield'
-            effectAction() // perform an effect associated with the card
         }
     }
 

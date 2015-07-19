@@ -89,10 +89,10 @@ rules {
         // the value it costs is equal to mana-cost value of the card
         // card.owner indicates that the card's owner should pay this cost
         cost MANA value { card.mana_cost } on { card.owner }
+        effectAction() // perform an effect associated with the card
 
         perform {
             card.moveTo 'Battlefield'
-            effectAction() // perform an effect associated with the card
         }
     }
 
@@ -155,13 +155,13 @@ rules {
 
         cost SCRAP value { card.scrap_cost } on { card.owner }
         cost MANA value { card.mana_cost } on { card.owner }
+        effectAction()
         perform {
             targets.forEach {
                 it.attack += card.attack
                 it.health += card.health
                 it.max_health += card.health
             }
-            effectAction()
             destroy()
         }
     }
@@ -172,13 +172,13 @@ rules {
             zone 'Hand'
         }
         cardTargetFilter()
+        effectAction()
 
         cost MANA value { card.mana_cost } on { card.owner }
         cost SCRAP value { card.scrap_cost } on { card.owner }
 
         perform {
-            effectAction()
-            destroy()
+            it.destroy()
         }
     }
 

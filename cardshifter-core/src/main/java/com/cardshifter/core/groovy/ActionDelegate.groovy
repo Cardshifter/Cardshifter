@@ -97,6 +97,10 @@ class ActionDelegate {
         game.addSystem new EffectTargetFilterSystem(name)
     }
 
+    void effectAction() {
+        game.addSystem new EffectActionSystem(name)
+    }
+
     void attack(Closure closure) {
         def delegate = new AttackDelegate(game: game)
         closure.setDelegate(delegate)
