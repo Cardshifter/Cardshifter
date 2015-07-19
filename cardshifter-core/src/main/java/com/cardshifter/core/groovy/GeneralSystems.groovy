@@ -317,33 +317,6 @@ public class GeneralSystems {
             addSystem new EffectTargetFilterSystem(name)
         }
 
-        SystemsDelegate.metaClass.GameOverIfNoHealth << {ECSResource resource ->
-            addSystem new GameOverIfNoHealth(resource)
-        }
-        SystemsDelegate.metaClass.LastPlayersStandingEndsGame << {
-            addSystem new LastPlayersStandingEndsGame()
-        }
-        SystemsDelegate.metaClass.RemoveDeadEntityFromZoneSystem << {
-            addSystem new RemoveDeadEntityFromZoneSystem()
-        }
-        SystemsDelegate.metaClass.ResourceRecountSystem << {
-            addSystem new ResourceRecountSystem()
-        }
-
-        SystemsDelegate.metaClass.removeDead << {ECSResource resource ->
-            addSystem {ECSGame g ->
-                g.events.registerHandlerAfter(this, ActionPerformEvent.class, {event ->
-                    List<Entity> remove = event.entity.game.getEntitiesWithComponent(BattlefieldComponent)
-                            .stream().flatMap({entity -> entity.getComponent(BattlefieldComponent).stream()})
-                            .peek({Entity e -> println("$e has ${resource.getFor(e)}")})
-                            .filter({Entity e -> resource.getFor(e) <= 0})
-                            .collect(Collectors.toList());
-                    for (Entity e in remove) {
-                        e.destroy();
-                    }
-                })
-            }
-        }
     }
 
     static def resourceSystems() {
@@ -443,12 +416,6 @@ public class GeneralSystems {
         }
         SystemsDelegate.metaClass.DrawCardAtBeginningOfTurnSystem << {
             addSystem new DrawCardAtBeginningOfTurnSystem()
-        }
-        SystemsDelegate.metaClass.DamageConstantWhenOutOfCardsSystem << {ECSResource resource, int count ->
-            addSystem new DamageConstantWhenOutOfCardsSystem(resource, count)
-        }
-        SystemsDelegate.metaClass.LimitedHandSizeSystem << {int limit, Consumer<DrawCardEvent> whenFull ->
-            addSystem new LimitedHandSizeSystem(limit, whenFull)
         }
     }
 }

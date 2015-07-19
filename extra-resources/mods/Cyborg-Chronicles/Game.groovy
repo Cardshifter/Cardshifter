@@ -183,12 +183,12 @@ rules {
     }
 
     always {
-        LimitedHandSize(10, {card -> card.getCardToDraw().destroy()})
+        limitedHandSize(10, {card -> card.getCardToDraw().destroy()})
         DamageConstantWhenOutOfCardsSystem(HEALTH, 1)
 
-        GameOverIfNoHealth(HEALTH)
+        GameOverIfNo(HEALTH)
         LastPlayersStandingEndsGame()
-        RemoveDeadEntityFromZoneSystem()
+        removeDead()
         PerformerMustBeCurrentPlayer()
         removeDead(HEALTH)
         ResourceRecountSystem()
