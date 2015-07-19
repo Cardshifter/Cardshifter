@@ -39,12 +39,14 @@ class ActionDelegate {
     final String opponent = 'inactive player'
 
     void allowFor(Closure closure) {
-        def filter = FilterDelegate.fromClosure{closure}
+        FilterDelegate filter = FilterDelegate.fromClosure(closure)
         game.addSystem(new ECSSystem() {
             @Override
             void startGame(ECSGame game) {
                 game.getEvents().registerHandlerAfter(this, ActionAllowedCheckEvent, {
-                    it.setAllowed(filter.predicate.test(it.entity, it.entity))
+                    if (it.action.name == name) {
+                        it.setAllowed(filter.predicate.test(it.entity, it.entity))
+                    }
                 })
             }
         })
@@ -57,9 +59,11 @@ class ActionDelegate {
             @Override
             void startGame(ECSGame game) {
                 game.getEvents().registerHandlerAfter(this, ActionAllowedCheckEvent, {
-                    delegate.setup(it)
-                    requirements.call(it)
-                    it.setAllowed(delegate.allowed)
+                    if (it.action.name == name) {
+                        delegate.setup(it)
+                        requirements.call(it)
+                        it.setAllowed(delegate.allowed)
+                    }
                 })
             }
         })

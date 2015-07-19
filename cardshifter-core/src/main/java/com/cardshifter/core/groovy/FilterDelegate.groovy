@@ -14,11 +14,12 @@ class FilterDelegate {
     TargetFilter predicate = {Entity source, Entity target -> true}
     StringBuilder description = new StringBuilder()
 
-    static FilterDelegate fromClosure(Closure filter) {
-        FilterDelegate deleg = new FilterDelegate()
-        filter.delegate = deleg
-        filter.call()
-        return deleg
+    static FilterDelegate fromClosure(Closure closure) {
+        FilterDelegate filter = new FilterDelegate()
+        def filterClosure = closure.rehydrate(filter, closure.owner, closure.thisObject)
+        filterClosure.call()
+        assert !filter.description.toString().isEmpty() : 'Empty filter detected.'
+        return filter
     }
 
     List<Entity> findMatching(Entity source) {
