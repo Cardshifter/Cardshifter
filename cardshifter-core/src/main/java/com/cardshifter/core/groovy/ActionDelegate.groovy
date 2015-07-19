@@ -129,8 +129,10 @@ class ActionDelegate {
             @Override
             void startGame(ECSGame game) {
                 game.getEvents().registerHandlerAfter(this, ActionPerformEvent, {
-                    def performClosure = closure.rehydrate(new PerformDelegate(it), closure.owner, closure.thisObject)
-                    performClosure.call(it.entity)
+                    if (it.action.name == name) {
+                        def performClosure = closure.rehydrate(new PerformDelegate(it), closure.owner, closure.thisObject)
+                        performClosure.call(it.entity)
+                    }
                 })
             }
         })
