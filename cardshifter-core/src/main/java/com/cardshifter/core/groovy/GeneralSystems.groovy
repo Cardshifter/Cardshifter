@@ -35,6 +35,7 @@ import com.cardshifter.modapi.cards.PlayEntersBattlefieldSystem
 import com.cardshifter.modapi.cards.PlayFromHandSystem
 import com.cardshifter.modapi.cards.RemoveDeadEntityFromZoneSystem
 import com.cardshifter.modapi.cards.ZoneChangeEvent
+import com.cardshifter.modapi.cards.ZoneComponent
 import com.cardshifter.modapi.events.EntityRemoveEvent
 import com.cardshifter.modapi.events.IEvent
 import com.cardshifter.modapi.phase.GainResourceSystem
@@ -216,6 +217,28 @@ public class GeneralSystems {
             for (int i = 0; i < count; i++) {
                 DrawStartCards.drawCard(delegate as Entity)
             }
+        }
+        game.getEntityMeta().moveTo << {String name ->
+            Entity e = delegate as Entity
+            CardComponent card = e.getComponent(CardComponent)
+            Collection<ZoneComponent> zones = card.owner.getSuperComponents(ZoneComponent)
+            def zone = zones.find {it.name == name}
+            card.moveToBottom(zone)
+        }
+        game.getEntityMeta().moveTo << {String owner, String name ->
+            Entity e = delegate as Entity
+            CardComponent card = e.getComponent(CardComponent)
+            Entity zoneOwner = card.owner
+            if (owner == 'opponent') {
+                zoneOwner = Players.getNextPlayer(zoneOwner)
+            } else if (owner == 'you') {
+                zoneOwner = card.owner
+            } else {
+                throw new IllegalArgumentException("owner value $owner is not supported yet")
+            }
+            Collection<ZoneComponent> zones = zoneOwner.getSuperComponents(ZoneComponent)
+            def zone = zones.find {it.name == name}
+            card.moveToBottom(zone)
         }
 
         CardDelegate.metaClass.onEndOfTurn << {Closure closure ->
