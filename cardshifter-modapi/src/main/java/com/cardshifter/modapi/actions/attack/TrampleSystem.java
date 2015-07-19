@@ -10,12 +10,12 @@ import com.cardshifter.modapi.resources.ResourceRetriever;
 
 public class TrampleSystem implements ECSSystem {
 
-	public static final ECSResource trample = new ECSResourceDefault("TRAMPLE");
-	public static final ResourceRetriever trampleRes = ResourceRetriever.forResource(trample);
+	private final ResourceRetriever trampleRes;
 	private final ResourceRetriever health;
 	
-	public TrampleSystem(ECSResource health) {
+	public TrampleSystem(ECSResource trample, ECSResource health) {
 		this.health = ResourceRetriever.forResource(health);
+        this.trampleRes = ResourceRetriever.forResource(trample);
 	}
 	
 	@Override

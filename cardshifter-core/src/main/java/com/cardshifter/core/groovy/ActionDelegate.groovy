@@ -2,12 +2,22 @@ package com.cardshifter.core.groovy
 
 import com.cardshifter.modapi.actions.ActionAllowedCheckEvent
 import com.cardshifter.modapi.actions.UseCostSystem
+import com.cardshifter.modapi.actions.attack.AttackDamageAccumulating
+import com.cardshifter.modapi.actions.attack.AttackDamageHealAtEndOfTurn
+import com.cardshifter.modapi.actions.attack.AttackSickness
+import com.cardshifter.modapi.actions.attack.AttackTargetMinionsFirstThenPlayer
+import com.cardshifter.modapi.actions.attack.TrampleSystem
 import com.cardshifter.modapi.base.ECSGame
 import com.cardshifter.modapi.base.ECSSystem
 import com.cardshifter.modapi.base.Entity
 import com.cardshifter.modapi.resources.ECSResource
 import groovy.transform.Immutable
+import net.zomis.cardshifter.ecs.effects.EffectTargetFilterSystem
+import net.zomis.cardshifter.ecs.usage.ApplyAfterAttack
 
+import java.util.function.BiPredicate
+import java.util.function.Consumer
+import java.util.function.Predicate
 import java.util.function.ToIntFunction
 import java.util.function.UnaryOperator
 
@@ -81,6 +91,33 @@ class ActionDelegate {
     }
 
     void perform(Closure closure) {
+
+    }
+
+    void cardTargetFilter() {
+        game.addSystem new EffectTargetFilterSystem(name)
+    }
+
+    void attack(Closure closure) {
+        def delegate = new AttackDelegate(game: game)
+        closure.setDelegate(delegate)
+        closure.call()
+    }
+
+    private static class AttackDelegate {
+        ECSGame game
+
+        void accumulating(ECSResource attack, ECSResource health, BiPredicate<Entity, Entity> allowCounterAttack) {
+            game.addSystem new AttackDamageAccumulating(attack, health, allowCounterAttack)
+        }
+
+        void trample(ECSResource trample, ECSResource resource) {
+            game.addSystem new TrampleSystem(trample, resource)
+        }
+
+        void battlefieldFirst(ECSResource resource) {
+            game.addSystem new AttackTargetMinionsFirstThenPlayer(resource)
+        }
 
     }
 

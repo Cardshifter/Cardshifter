@@ -18,6 +18,7 @@ SICKNESS = createResource("SICKNESS")
 TAUNT = createResource("TAUNT")
 SCRAP = createResource("SCRAP")
 SCRAP_COST = createResource("SCRAP_COST")
+TRAMPLE = createResource("TRAMPLE")
 
 PLAY_ACTION = "Play";
 ENCHANT_ACTION = "Enchant";
@@ -104,16 +105,19 @@ rules {
             card.SICKNESS == 0
         }
         targets 1 of {
-            zone 'Battlefield'
             ownedBy opponent
         }
 
         cost ATTACK_AVAILABLE value 1 on { card }
 
-        cardsFirst TAUNT
-        perform {
+        attack {
+            battlefieldFirst TAUNT
             def allowCounterAttack = {attacker, defender -> attacker.deny_counterattack == 0 }
-            accumulating(ATTACK, HEALTH, allowCounterAttack) withTrample(TRAMPLE, HEALTH)
+            accumulating(ATTACK, HEALTH, allowCounterAttack)
+            trample(TRAMPLE, HEALTH)
+        }
+
+        perform {
             if (card.deny_counterattack > 0) {
                 card.sickness = 2
             }
@@ -146,7 +150,7 @@ rules {
         targets 1 of {
             zone 'Battlefield'
             creatureType 'Bio'
-            ownedBy you
+            ownedBy 'you'
         }
 
         cost SCRAP value { card.scrap_cost } on { card.owner }

@@ -27,6 +27,7 @@ HEALTH = createResource("HEALTH")
 MAX_HEALTH = createResource("MAX_HEALTH")
 // Cost of mana resource to the player for casting the card into play
 MANA_COST = createResource("MANA_COST")
+TRAMPLE = createResource("TRAMPLE")
 
 /**
  * Resources that declare a specific special behavior to creature cards
@@ -164,10 +165,14 @@ rules {
 
         cost ATTACK_AVAILABLE value 1 on { card }
 
-        cardsFirst TAUNT
-        perform {
+        attack {
+            battlefieldFirst TAUNT
             def allowCounterAttack = {attacker, defender -> attacker.deny_counterattack == 0 }
-            accumulating(ATTACK, HEALTH, allowCounterAttack) withTrample(TRAMPLE, HEALTH)
+            accumulating(ATTACK, HEALTH, allowCounterAttack)
+            trample(TRAMPLE, HEALTH)
+        }
+
+        perform {
             if (card.deny_counterattack > 0) {
                 card.sickness = 2
             }
@@ -203,10 +208,9 @@ rules {
         targets 1 of {
             zone 'Battlefield'
             creatureType 'Bio'
-            ownedBy you
+            ownedBy 'you'
         }
 
-        cost SCRAP value { card.scrap_cost } on { card.owner }
         cost MANA value { card.mana_cost } on { card.owner }
         perform {
             targets.forEach {
@@ -227,7 +231,6 @@ rules {
         cardTargetFilter()
 
         cost MANA value { card.mana_cost } on { card.owner }
-        cost SCRAP value { card.scrap_cost } on { card.owner }
 
         perform {
             effectAction()
