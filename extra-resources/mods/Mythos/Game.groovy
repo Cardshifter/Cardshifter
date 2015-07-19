@@ -211,14 +211,14 @@ rules {
         }
 
         cost MANA value { card.mana_cost } on { card.owner }
+        effectAction()
         perform {
             targets.forEach {
                 it.attack += card.attack
                 it.health += card.health
                 it.max_health += card.health
             }
-            effectAction()
-            destroy()
+            it.destroy()
         }
     }
 

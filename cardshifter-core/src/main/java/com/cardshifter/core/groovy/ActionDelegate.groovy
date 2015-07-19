@@ -23,6 +23,7 @@ import java.util.function.Consumer
 import java.util.function.Predicate
 import java.util.function.ToIntFunction
 import java.util.function.UnaryOperator
+import java.util.stream.Collectors
 
 /**
  * Created by Simon on 6/24/2015.
@@ -124,11 +125,30 @@ class ActionDelegate {
             @Override
             void startGame(ECSGame game) {
                 game.getEvents().registerHandlerAfter(this, ActionPerformEvent, {
-                    def performClosure = closure.rehydrate(new CardHolderDelegate(it.entity), closure.owner, closure.thisObject)
-                    performClosure.call(it)
+                    def performClosure = closure.rehydrate(new PerformDelegate(it), closure.owner, closure.thisObject)
+                    performClosure.call(it.entity)
                 })
             }
         })
+    }
+
+    private static class PerformDelegate {
+        private final ActionPerformEvent event
+        final Entity card
+        final List<Entity> targets
+
+        PerformDelegate(ActionPerformEvent event) {
+            this.event = event
+            this.card = event.entity
+            this.targets = this.event.action.targetSets.stream()
+                .flatMap({it.chosenTargets.stream()})
+                .collect(Collectors.toList())
+        }
+
+        List<Entity> targets(int index) {
+            new ArrayList<>(this.event.action.targetSets.get(index).chosenTargets)
+        }
+
     }
 
     void cardTargetFilter() {

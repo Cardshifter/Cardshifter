@@ -162,7 +162,7 @@ rules {
                 it.health += card.health
                 it.max_health += card.health
             }
-            destroy()
+            it.destroy()
         }
     }
 
