@@ -155,11 +155,10 @@ rules {
             ownedBy 'active'
             zone 'Battlefield'
         }
-        requiresThat {
-            card.SICKNESS == 0
+        requires {
+            require card.sickness == 0
         }
         targets 1 of {
-            zone 'Battlefield'
             ownedBy opponent
         }
 

@@ -1,6 +1,7 @@
 package com.cardshifter.core.groovy
 
 import com.cardshifter.modapi.actions.ActionAllowedCheckEvent
+import com.cardshifter.modapi.actions.ActionPerformEvent
 import com.cardshifter.modapi.actions.UseCostSystem
 import com.cardshifter.modapi.actions.attack.AttackDamageAccumulating
 import com.cardshifter.modapi.actions.attack.AttackDamageHealAtEndOfTurn
@@ -12,6 +13,8 @@ import com.cardshifter.modapi.base.ECSSystem
 import com.cardshifter.modapi.base.Entity
 import com.cardshifter.modapi.resources.ECSResource
 import groovy.transform.Immutable
+import groovy.transform.PackageScope
+import net.zomis.cardshifter.ecs.effects.EffectActionSystem
 import net.zomis.cardshifter.ecs.effects.EffectTargetFilterSystem
 import net.zomis.cardshifter.ecs.usage.ApplyAfterAttack
 
@@ -46,8 +49,35 @@ class ActionDelegate {
         })
     }
 
-    void requiresThat(Closure closure) {
+    void requires(Closure closure) {
+        def delegate = new RequiresDelegate()
+        def requirements = closure.rehydrate(delegate, closure.owner, closure.thisObject)
+        game.addSystem(new ECSSystem() {
+            @Override
+            void startGame(ECSGame game) {
+                game.getEvents().registerHandlerAfter(this, ActionAllowedCheckEvent, {
+                    delegate.setup(it)
+                    requirements.call(it)
+                    it.setAllowed(delegate.allowed)
+                })
+            }
+        })
+    }
 
+    private static class RequiresDelegate {
+        Entity card
+        Entity performer
+        @PackageScope boolean allowed
+
+        @PackageScope void setup(ActionAllowedCheckEvent event) {
+            this.card = event.entity
+            this.performer = event.performer
+            this.allowed = event.allowed
+        }
+
+        void require(boolean bool) {
+            allowed = allowed && bool
+        }
     }
 
     Map targets(int count) {
@@ -90,7 +120,15 @@ class ActionDelegate {
     }
 
     void perform(Closure closure) {
-
+        game.addSystem(new ECSSystem() {
+            @Override
+            void startGame(ECSGame game) {
+                game.getEvents().registerHandlerAfter(this, ActionPerformEvent, {
+                    def performClosure = closure.rehydrate(new CardHolderDelegate(it.entity), closure.owner, closure.thisObject)
+                    performClosure.call(it)
+                })
+            }
+        })
     }
 
     void cardTargetFilter() {
