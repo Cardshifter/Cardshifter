@@ -65,7 +65,7 @@ class RulesDelegate {
         game.addSystem(new ECSSystem() {
             @Override
             void startGame(ECSGame game) {
-                game.events.registerHandlerBefore(this, PhaseEndEvent, {event ->
+                game.events.registerHandlerAfter(this, PhaseEndEvent, {event ->
                     callWithDelegate(closure, new EventYouDelegate(event))
                 })
             }
@@ -89,7 +89,7 @@ class RulesDelegate {
         game.addSystem(new ECSSystem() {
             @Override
             void startGame(ECSGame game) {
-                game.events.registerHandlerBefore(this, PhaseEndEvent, {event ->
+                game.events.registerHandlerAfter(this, PhaseEndEvent, {event ->
                     if (name == event.oldPhase.name) {
                         callWithDelegate(closure, new EventYouDelegate(event))
                     }

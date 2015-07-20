@@ -14,7 +14,7 @@ class EventYouDelegate {
 
     def EventYouDelegate(PhaseChangeEvent event) {
         this.event = event
-        PhaseController phaseController = ComponentRetriever.singleton(event.newPhase.owner.game, PhaseController)
+        PhaseController phaseController = ComponentRetriever.singleton(event.game, PhaseController)
         this.you = phaseController.currentEntity
     }
 }

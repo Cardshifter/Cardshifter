@@ -1,5 +1,6 @@
 package com.cardshifter.modapi.phase;
 
+import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.events.IEvent;
 
 public abstract class PhaseChangeEvent implements IEvent {
@@ -7,9 +8,11 @@ public abstract class PhaseChangeEvent implements IEvent {
 	private final Phase oldPhase;
 	private final Phase newPhase;
 	private final PhaseController controller;
+    private final ECSGame game;
 
-	public PhaseChangeEvent(PhaseController controller, Phase from, Phase to) {
+	public PhaseChangeEvent(PhaseController controller, ECSGame game, Phase from, Phase to) {
 		this.controller = controller;
+        this.game = game;
 		this.oldPhase = from;
 		this.newPhase = to;
 	}
@@ -26,4 +29,7 @@ public abstract class PhaseChangeEvent implements IEvent {
 		return controller;
 	}
 	
+    public ECSGame getGame() {
+        return game;
+    }
 }

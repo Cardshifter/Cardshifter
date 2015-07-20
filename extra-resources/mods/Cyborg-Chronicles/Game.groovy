@@ -139,6 +139,9 @@ rules {
     }
 
     turnEnd {
+        if (you == null) {
+            return;
+        }
         you.battlefield.forEach {
             it.health = it.max_health
         }

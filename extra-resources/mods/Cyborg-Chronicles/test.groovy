@@ -143,3 +143,24 @@ from clearState test 'negative mana cost' using {
     assert you.mana == 0
 
 }
+from clearState test 'heal creatures at end of turn' using {
+    def attacker = to you zone 'Battlefield' create {
+        creature 'Mech'
+        attack 2
+        health 2
+    }
+    def defender = to opponent zone 'Battlefield' create {
+        creature 'Mech'
+        attack 1
+        health 1
+    }
+
+    uses 'End Turn' ok
+    uses 'End Turn' ok
+    uses 'Attack' on attacker withTarget defender ok
+    assert defender.removed
+    assert attacker.health == 1
+    uses 'End Turn' ok
+    assert attacker.health == 2
+}
+
