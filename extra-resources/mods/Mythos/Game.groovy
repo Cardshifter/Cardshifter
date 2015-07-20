@@ -238,6 +238,7 @@ rules {
     }
 
     always {
+        effectOnSummon 'Battlefield'
         limitedHandSize(10, {card -> card.getCardToDraw().destroy()})
         DamageConstantWhenOutOfCardsSystem(HEALTH, 1)
 
