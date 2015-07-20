@@ -1,15 +1,20 @@
 package com.cardshifter.core.groovy
 
+import com.cardshifter.modapi.base.ComponentRetriever
+import com.cardshifter.modapi.base.Entity
 import com.cardshifter.modapi.phase.PhaseChangeEvent
+import com.cardshifter.modapi.phase.PhaseController
 
 /**
  * Created by Simon on 6/24/2015.
  */
 class EventYouDelegate {
-    PhaseChangeEvent event
+    final PhaseChangeEvent event
+    final Entity you
 
     def EventYouDelegate(PhaseChangeEvent event) {
         this.event = event
-        this.you = event.newPhase.owner.game.currentPlayer
+        PhaseController phaseController = ComponentRetriever.singleton(event.newPhase.owner.game, PhaseController)
+        this.you = phaseController.currentEntity
     }
 }
