@@ -4,6 +4,8 @@ import com.cardshifter.modapi.base.ECSGame
 import com.cardshifter.modapi.base.ECSSystem
 import com.cardshifter.modapi.cards.MulliganSingleCards
 import com.cardshifter.modapi.phase.PhaseChangeEvent
+import com.cardshifter.modapi.phase.PhaseEndEvent
+import com.cardshifter.modapi.phase.PhaseStartEvent
 
 import static groovy.lang.Closure.DELEGATE_FIRST
 
@@ -52,7 +54,7 @@ class RulesDelegate {
         game.addSystem(new ECSSystem() {
             @Override
             void startGame(ECSGame game) {
-                game.events.registerHandlerAfter(this, PhaseChangeEvent, {event ->
+                game.events.registerHandlerAfter(this, PhaseStartEvent, {event ->
                     callWithDelegate(closure, new EventYouDelegate(event))
                 })
             }
@@ -63,7 +65,7 @@ class RulesDelegate {
         game.addSystem(new ECSSystem() {
             @Override
             void startGame(ECSGame game) {
-                game.events.registerHandlerBefore(this, PhaseChangeEvent, {event ->
+                game.events.registerHandlerBefore(this, PhaseEndEvent, {event ->
                     callWithDelegate(closure, new EventYouDelegate(event))
                 })
             }
@@ -74,7 +76,7 @@ class RulesDelegate {
         game.addSystem(new ECSSystem() {
             @Override
             void startGame(ECSGame game) {
-                game.events.registerHandlerAfter(this, PhaseChangeEvent, {event ->
+                game.events.registerHandlerAfter(this, PhaseStartEvent, {event ->
                     if (name == event.newPhase.name) {
                         callWithDelegate(closure, new EventYouDelegate(event))
                     }
@@ -87,7 +89,7 @@ class RulesDelegate {
         game.addSystem(new ECSSystem() {
             @Override
             void startGame(ECSGame game) {
-                game.events.registerHandlerBefore(this, PhaseChangeEvent, {event ->
+                game.events.registerHandlerBefore(this, PhaseEndEvent, {event ->
                     if (name == event.oldPhase.name) {
                         callWithDelegate(closure, new EventYouDelegate(event))
                     }
