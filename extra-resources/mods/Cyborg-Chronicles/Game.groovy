@@ -125,7 +125,9 @@ rules {
     }
 
     turnStart {
-        you.drawCard(1)
+        if (event.oldPhase.owner != null) {
+            you.drawCard()
+        }
         you.mana_max = Math.min(1 + (int) you.mana_max, 10)
         you.mana = you.mana_max
         you.battlefield.forEach {

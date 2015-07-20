@@ -180,7 +180,7 @@ rules {
 
     turnStart('Main') {
         if (event.oldPhase.owner != null) {
-            you.drawCard(1)
+            you.drawCard()
         }
         you.mana_max = Math.min(10 + (int) you.mana_max, 100)
         you.mana = you.mana_max

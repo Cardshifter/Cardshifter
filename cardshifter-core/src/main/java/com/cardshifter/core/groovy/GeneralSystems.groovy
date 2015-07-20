@@ -218,6 +218,9 @@ public class GeneralSystems {
                 DrawStartCards.drawCard(delegate as Entity)
             }
         }
+        game.getEntityMeta().drawCard << {
+            DrawStartCards.drawCard(delegate as Entity)
+        }
         game.getEntityMeta().moveTo << {String name ->
             Entity e = delegate as Entity
             CardComponent card = e.getComponent(CardComponent)
