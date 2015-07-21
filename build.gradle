@@ -156,7 +156,7 @@ task snapshot << {
     def file = files[0]
     println 'task output is ' + file
 
-    URL url = new URL('http://stats.zomis.net:8081/bot/jsonPost')
+    URL url = new URL('http://stats.zomis.net/GithubHookSEChatService/bot/jsonPost')
     String fname = file.getName()
     String downloadURL = 'http://www.cardshifter.com/releases/' + fname
     Properties props = new Properties()
