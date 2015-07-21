@@ -160,6 +160,31 @@ from clearState test 'scrap' using {
     assert you.scrap == 1
 }
 
+from clearState test 'enchant' using {
+    def card = to you zone 'Battlefield' create {
+        creature 'Bio'
+        attack 0
+        health 1
+    }
+    def scrappy = to you zone 'Hand' create {
+        enchantment true
+        addAttack 3
+        addHealth 2
+        scrapCost 1
+    }
+
+    assert you.scrap == 0
+    you.scrap = 10
+    assert you.scrap == 10
+
+    def targets = uses 'Enchant' on scrappy getAvailableTargets()
+    assert targets.size() == 1
+
+    uses 'Enchant' on scrappy withTarget card ok
+    assert card.attack == 3
+    assert card.health == 3
+}
+
 from clearState test 'heal creatures at end of turn' using {
     def attacker = to you zone 'Battlefield' create {
         creature 'Mech'

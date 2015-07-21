@@ -70,6 +70,15 @@ class ActionChain {
         return entity(who)
     }
 
+    List<Entity> getAvailableTargets() {
+        assert entity : 'No entity specified'
+        def results = this.entity.getComponent(ActionComponent).getAction(actionName)
+            .getTargetSets().get(0).findPossibleTargets()
+        clear()
+        active = false
+        results
+    }
+
     ActionChain by(Entity performer) {
         assert this.performer == null
         this.performer = performer

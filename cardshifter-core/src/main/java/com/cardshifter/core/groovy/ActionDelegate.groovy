@@ -2,6 +2,7 @@ package com.cardshifter.core.groovy
 
 import com.cardshifter.modapi.actions.ActionAllowedCheckEvent
 import com.cardshifter.modapi.actions.ActionPerformEvent
+import com.cardshifter.modapi.actions.TargetableCheckEvent
 import com.cardshifter.modapi.actions.UseCostSystem
 import com.cardshifter.modapi.actions.attack.AttackDamageAccumulating
 import com.cardshifter.modapi.actions.attack.AttackDamageHealAtEndOfTurn
@@ -88,7 +89,21 @@ class ActionDelegate {
     Map targets(int count) {
         [of: {Closure closure ->
             FilterDelegate filter = FilterDelegate.fromClosure closure
-
+            game.addSystem(new ECSSystem() {
+                @Override
+                void startGame(ECSGame game) {
+                    game.events.registerHandlerAfter(this, TargetableCheckEvent, {
+                        if (it.action.name == name) {
+                            def source = it.action.owner
+                            def target = it.target
+                            boolean allowed = filter.predicate.test(source, target)
+                            if (!allowed) {
+                                it.setAllowed(allowed)
+                            }
+                        }
+                    })
+                }
+            })
         }]
     }
 
