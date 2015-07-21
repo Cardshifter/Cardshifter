@@ -27,6 +27,7 @@ HEALTH = createResource("HEALTH")
 MAX_HEALTH = createResource("MAX_HEALTH")
 // Cost of mana resource to the player for casting the card into play
 MANA_COST = createResource("MANA_COST")
+TRAMPLE = createResource("TRAMPLE")
 
 /**
  * Resources that declare a specific special behavior to creature cards
@@ -129,99 +130,138 @@ config {
     }
 }
 
-setup {
+rules {
+    init {
+        mulliganIndividual()
+        game.players.each {
+            it.deck.createFromConfig('Deck')
+            it.deck.shuffle()
+        }
+    }
 
-    // Add selected cards to player deck.
-    playerDeckFromConfig('Deck')
+    onStart {
+        game.players.each {
+            it.drawCards(5)
+        }
+    }
 
-    // Shuffle the cards in the decks. If you disable this, cards will not be shuffled
-    // and instead be in the same order each time the deck is loaded.
-    playerDeckShuffle()
+    action('Play') {
+        allowFor { // only allow if...
+            ownedBy 'active'
+            zone 'Hand' // ...card is on hand
+        }
 
-    /**
-     * THIS "systems" SECTION IS VERY IMPACTING TO HOW THE GAME PLAYS!
-     * PLEASE READ THE DOCUMENTATION CAREFULLY!
-     * This section is in the works to be improved and made easier to use, see this issue:
-     * https://github.com/Cardshifter/Cardshifter/issues/247
-     */
+        // this action costs MANA to play
+        // the value it costs is equal to mana-cost value of the card
+        // card.owner indicates that the card's owner should pay this cost
+        cost MANA value { card.mana_cost } on { card.owner }
+        effectAction() // perform an effect associated with the card
 
-    systems {
-        /**
-         * Defines how player resources are handled at the beginning of the game and as turns go by.
-         * @param res The resource to be gained.
-         * @param value The initial value on the first turn of each player.
-         * @param untilMax The maximum value that the resource will reach.
-         */
-        gainResource(res: MANA_MAX, value: 10, untilMax: 100)
+        perform {
+            card.moveTo 'Battlefield'
+        }
+    }
 
-        /**
-         * Defines the resource to be restored at the beginning of each turn.
-         * @param resource The resource to be restored.
-         * @param value The value to restore the resource to.
-         */
-        restoreResources(resource: MANA, value: MANA_MAX)
+    action('Attack') {
+        allowFor {
+            ownedBy 'active'
+            zone 'Battlefield'
+        }
+        requires {
+            require card.sickness == 0
+        }
+        targets 1 of {
+            ownedBy opponent
+        }
 
-        /**
-         * Declares upkeep cost of cards.
-         * Upkeep cost is defined as the "tax" on a resource of having a card in a zone.
-         * Generally used for creatures that you own on the Battlefield, but can be used for other things.
-         * If the mod does not use this mechanic, this can be disabled.
-         * @param filter Refers to the name of the method/closure that filters cards.
-         * @param decreaseBy Refers to the value by which to decrease the resource.
-         * @param decrease Refers to which resource is being decreased by "decreaseBy" param.
-         */
-        upkeepCost(filter: ownedBattlefieldCreatures, decreaseBy: MANA_COST, decrease: MANA)
+        cost ATTACK_AVAILABLE value 1 on { card }
 
-        /**
-         * "PLAY" ACTION DEFINITION
-         */
-        // Declares the play action
-        playFromHand PLAY_ACTION
-        useCost(action: PLAY_ACTION, res: MANA, value: MANA_COST, whoPays: "player")
-        playEntersBattlefield PLAY_ACTION
+        attack {
+            battlefieldFirst TAUNT
+            def allowCounterAttack = {attacker, defender -> attacker.deny_counterattack == 0 }
+            accumulating(ATTACK, HEALTH, allowCounterAttack)
+            trample(TRAMPLE, HEALTH)
+        }
 
-        // Spell
-        useCost(action: USE_ACTION, res: MANA, value: MANA_COST, whoPays: "player")
-        playFromHand USE_ACTION
-        EffectActionSystem(USE_ACTION)
-        EffectActionSystem(PLAY_ACTION)
-        targetFilterSystem USE_ACTION
+        perform {
+            if (card.deny_counterattack > 0) {
+                card.sickness = 2
+            }
+        }
+    }
+
+    turnStart('Main') {
+        if (event.oldPhase.owner != null) {
+            you.drawCard()
+        }
+        you.mana_max = Math.min(10 + (int) you.mana_max, 100)
+        you.mana = you.mana_max
+        you.battlefield.forEach {
+            you.mana -= it.mana_cost
+            it.attack_available = 1
+            if (it.sickness > 0) {
+                it.sickness--
+            }
+        }
+    }
+
+    turnEnd {
+        if (you == null) {
+            return;
+        }
+        you.battlefield.forEach {
+            it.health = it.max_health
+        }
+    }
+
+    action('Enchant') {
+        allowFor {
+            ownedBy 'active'
+            zone 'Hand'
+        }
+        targets 1 of {
+            zone 'Battlefield'
+            creatureType 'Bio'
+            ownedBy 'you'
+        }
+
+        cost MANA value { card.mana_cost } on { card.owner }
+        effectAction()
+        perform {
+            targets.forEach {
+                it.attack += card.attack
+                it.health += card.health
+                it.max_health += card.health
+            }
+            it.destroy()
+        }
+    }
+
+    action('Use') {
+        allowFor {
+            ownedBy 'active'
+            zone 'Hand'
+        }
+        cardTargetFilter()
+
+        cost MANA value { card.mana_cost } on { card.owner }
+
+        perform {
+            effectAction()
+            destroy()
+        }
+    }
+
+    always {
         effectOnSummon 'Battlefield'
-        destroyAfterUse USE_ACTION
-
-        RestoreResourcesToSystem(filter: ownedBattlefieldCreatures, resource: ATTACK_AVAILABLE, value: 1)
-        RestoreResourcesToSystem(filter: ownedBattlefieldCreatures, resource: SICKNESS,
-                value: {ent -> Math.max(0, (int) SICKNESS.getFor(ent) - 1)})
-
-        // Draw cards
-        startCards 5
-        DrawCardAtBeginningOfTurnSystem()
+        limitedHandSize(10, {card -> card.getCardToDraw().destroy()})
         DamageConstantWhenOutOfCardsSystem(HEALTH, 1)
-        LimitedHandSizeSystem(10, {card -> card.getCardToDraw().destroy()})
 
-        // General setup
-        MulliganSingleCards(game)
-        GameOverIfNoHealth(HEALTH)
+        GameOverIfNo(HEALTH)
         LastPlayersStandingEndsGame()
-        RemoveDeadEntityFromZoneSystem()
+        removeDead()
         PerformerMustBeCurrentPlayer()
         removeDead(HEALTH)
         ResourceRecountSystem()
-
-        def allowCounterAttackRes = DENY_COUNTERATTACK.retriever;
-        def allowCounterAttack = {attacker, defender ->
-            return allowCounterAttackRes.getOrDefault(attacker, 0) == 0;
-        }
-
-        attackSystem {
-            zone 'Battlefield'
-            cardsFirst TAUNT
-            sickness SICKNESS
-            useCost(action: ATTACK_ACTION, res: ATTACK_AVAILABLE, value: 1, whoPays: "self")
-            accumulating(ATTACK, HEALTH, allowCounterAttack)
-            afterAttack({entity -> allowCounterAttackRes.getFor(entity) > 0},
-                    { entity -> SICKNESS.retriever.set(entity, 2) })
-            trample HEALTH
-        }
     }
 }

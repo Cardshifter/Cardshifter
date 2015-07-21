@@ -1,16 +1,18 @@
+package com.cardshifter.core.groovy
+
 import com.cardshifter.core.modloader.GroovyModInterface
 import com.cardshifter.core.modloader.ECSModTest
 import com.cardshifter.modapi.base.ECSGame
 import org.codehaus.groovy.control.CompilerConfiguration
 
-public class MyGroovyMod implements GroovyModInterface {
+class GroovyRunner implements GroovyModInterface {
 
     final String name
     final File modDirectory
     private GroovyMod groovyMod
     final ClassLoader classLoader
 
-    MyGroovyMod(File dir, String name, ClassLoader cl) {
+    GroovyRunner(File dir, String name, ClassLoader cl) {
         this.name = name
         this.modDirectory = dir
         this.classLoader = cl
@@ -63,7 +65,3 @@ public class MyGroovyMod implements GroovyModInterface {
         return groovyMod
     }
 }
-
-
-
-new MyGroovyMod(dir, name, cl)

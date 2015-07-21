@@ -48,6 +48,9 @@ TAUNT = createResource("TAUNT")
 /**
  * Actions that are related to cards, defined in more detail further down this file.
  */
+SCRAP = createResource("SCRAP")
+SCRAP_COST = createResource("SCRAP_COST")
+TRAMPLE = createResource("TRAMPLE")
 
 PLAY_ACTION = "Play";
 ATTACK_ACTION = "Attack";
@@ -129,6 +132,139 @@ config {
     }
 }
 
+rules {
+    init {
+        game.players.each {
+            it.deck.createFromConfig('Deck')
+            it.deck.shuffle()
+            it.drawCards(5)
+        }
+        mulliganIndividual()
+    }
+
+    action('Play') {
+        allowFor { // only allow if...
+            ownedBy 'active' // ...card is owned by active player
+            zone 'Hand' // ...card is on hand
+        }
+
+        // this action costs MANA to play
+        // the value it costs is equal to mana-cost value of the card
+        // card.owner indicates that the card's owner should pay this cost
+        cost MANA value { card.mana_cost } on { card.owner }
+        effectAction() // perform an effect associated with the card
+
+        perform {
+            card.moveTo 'Battlefield'
+        }
+    }
+
+    action('Attack') {
+        allowFor {
+            ownedBy 'active'
+            zone 'Battlefield'
+        }
+        requires {
+            require card.sickness == 0
+        }
+        targets 1 of {
+            ownedBy opponent
+        }
+
+        cost ATTACK_AVAILABLE value 1 on { card }
+
+        attack {
+            battlefieldFirst TAUNT
+            def allowCounterAttack = {attacker, defender -> attacker.deny_counterattack == 0 }
+            accumulating(ATTACK, HEALTH, allowCounterAttack)
+            trample(TRAMPLE, HEALTH)
+        }
+
+        perform {
+            if (card.deny_counterattack > 0) {
+                card.sickness = 2
+            }
+        }
+    }
+
+    turnStart {
+        if (event.oldPhase.owner != null) {
+            you.drawCard()
+        }
+        you.mana_max = Math.min(1 + (int) you.mana_max, 10)
+        you.mana = you.mana_max
+        you.battlefield.forEach {
+            it.attack_available = 1
+            if (it.sickness > 0) {
+                it.sickness--
+            }
+        }
+    }
+
+    turnEnd {
+        if (you == null) {
+            return;
+        }
+        you.battlefield.forEach {
+            it.health = it.max_health
+        }
+    }
+
+    action('Enchant') {
+        allowFor {
+            ownedBy 'active'
+            zone 'Hand'
+        }
+        targets 1 of {
+            zone 'Battlefield'
+            creatureType 'Bio'
+            ownedBy 'you'
+        }
+
+        cost SCRAP value { card.scrap_cost } on { card.owner }
+        cost MANA value { card.mana_cost } on { card.owner }
+        effectAction()
+        perform {
+            targets.forEach {
+                it.attack += card.attack
+                it.health += card.health
+                it.max_health += card.health
+            }
+            it.destroy()
+        }
+    }
+
+    action('Use') {
+        allowFor {
+            ownedBy 'active'
+            zone 'Hand'
+        }
+        cardTargetFilter()
+        effectAction()
+
+        cost MANA value { card.mana_cost } on { card.owner }
+        cost SCRAP value { card.scrap_cost } on { card.owner }
+
+        perform {
+            it.destroy()
+        }
+    }
+
+    always {
+        effectOnSummon 'Battlefield'
+        limitedHandSize(10, {card -> card.getCardToDraw().destroy()})
+        DamageConstantWhenOutOfCardsSystem(HEALTH, 1)
+
+        GameOverIfNo(HEALTH)
+        LastPlayersStandingEndsGame()
+        removeDead()
+        PerformerMustBeCurrentPlayer()
+        removeDead(HEALTH)
+        ResourceRecountSystem()
+    }
+
+}
+/*
 setup {
     playerDeckFromConfig('Deck')
     playerDeckShuffle()
@@ -193,3 +329,4 @@ setup {
         }
     }
 }
+*/

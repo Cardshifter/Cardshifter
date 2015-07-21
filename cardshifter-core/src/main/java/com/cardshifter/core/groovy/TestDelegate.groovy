@@ -1,10 +1,12 @@
+package com.cardshifter.core.groovy
+
 import com.cardshifter.core.modloader.ECSModTest
 import com.cardshifter.modapi.base.ECSGame
 
 class TestDelegate {
 
     List<ECSModTest> tests
-    MyGroovyMod mod
+    GroovyRunner mod
 
     def from(Closure setup) {
         [test: {String name ->
@@ -21,7 +23,7 @@ class TestDelegate {
     }
 
     def doTest(Closure setup, Closure test) {
-        def mod = new MyGroovyMod(mod.modDirectory, mod.name, mod.classLoader)
+        def mod = new GroovyRunner(mod.modDirectory, mod.name, mod.classLoader)
         ECSGame game = new ECSGame()
 
         mod.declareConfiguration(game)

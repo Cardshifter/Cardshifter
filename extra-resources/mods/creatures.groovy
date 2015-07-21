@@ -1,24 +1,24 @@
 import com.cardshifter.modapi.actions.*
 import com.cardshifter.modapi.attributes.*
 
-CardDelegate.metaClass.manaCost << {int value ->
+cardExtension('manaCost') {int value ->
     mana_cost(value)
 }
 
-CardDelegate.metaClass.health << {int value ->
+cardExtension('health') {int value ->
     setResource('health', value)
     setResource('max_health', value)
 }
 
-CardDelegate.metaClass.denyCounterAttack << {
+cardExtension('denyCounterAttack') {
     DENY_COUNTERATTACK 1
 }
 
-CardDelegate.metaClass.flavor << {String value ->
+cardExtension('flavor') {String value ->
     ECSAttributeMap.createOrGetFor(entity).set(Attributes.FLAVOR, value)
 }
 
-CardDelegate.metaClass.creature << {String type ->
+cardExtension('creature') {String type ->
     assert type : 'Cannot use null creature type'
     def entity = entity()
     def actions = entity.getComponent(ActionComponent)

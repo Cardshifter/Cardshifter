@@ -81,7 +81,6 @@ subprojects {
 }
 
 task createShadowedJars {
-    dependsOn ':cardshifter-console:shadowJar'
     dependsOn ':cardshifter-fx:shadowJar'
     dependsOn ':cardshifter-server:shadowJar'
 }

@@ -1,3 +1,5 @@
+package com.cardshifter.core.groovy
+
 import com.cardshifter.modapi.actions.ActionPerformEvent
 import com.cardshifter.modapi.actions.TargetSet
 import com.cardshifter.modapi.base.Entity

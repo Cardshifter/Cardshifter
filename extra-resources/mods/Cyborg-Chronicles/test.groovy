@@ -85,7 +85,7 @@ from clearState test 'max mana' using {
     assert you.mana == 10
 }
 
-from clearState test 'max mana' using {
+from clearState test 'heal at end of turn' using {
     def healer = to you zone 'Hand' create {
         creature 'Bio'
         health 1
@@ -143,3 +143,41 @@ from clearState test 'negative mana cost' using {
     assert you.mana == 0
 
 }
+
+from clearState test 'scrap' using {
+    def scrappy = {
+        creature 'Mech'
+        manaCost 1
+        health 1
+        scrap 1
+    }
+    def card = to you zone 'Hand' create scrappy
+
+    uses 'Play' on card ok
+    uses 'End Turn' ok
+    uses 'End Turn' ok
+    uses 'Scrap' on card ok
+    assert you.scrap == 1
+}
+
+from clearState test 'heal creatures at end of turn' using {
+    def attacker = to you zone 'Battlefield' create {
+        creature 'Mech'
+        attack 2
+        health 2
+    }
+    def defender = to opponent zone 'Battlefield' create {
+        creature 'Mech'
+        attack 1
+        health 1
+    }
+
+    uses 'End Turn' ok
+    uses 'End Turn' ok
+    uses 'Attack' on attacker withTarget defender ok
+    assert defender.removed
+    assert attacker.health == 1
+    uses 'End Turn' ok
+    assert attacker.health == 2
+}
+

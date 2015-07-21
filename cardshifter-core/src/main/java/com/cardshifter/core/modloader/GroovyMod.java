@@ -1,5 +1,6 @@
 package com.cardshifter.core.modloader;
 
+import com.cardshifter.core.groovy.GroovyRunner;
 import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.ECSMod;
 import groovy.lang.Binding;
@@ -28,11 +29,11 @@ public class GroovyMod implements ECSMod {
 
             CompilerConfiguration config = new CompilerConfiguration();
             scriptEngine.setConfig(config);
-            binding.setVariable("dir", file);
+            script = new GroovyRunner(file, name, scriptEngine.getGroovyClassLoader());
+/*            binding.setVariable("dir", file);
             binding.setVariable("name", name);
             binding.setVariable("cl", scriptEngine.getGroovyClassLoader());
-
-            script = (GroovyModInterface) scriptEngine.run("GroovyRunner.groovy", binding);
+            script = (GroovyModInterface) scriptEngine.run("GroovyRunner.groovy", binding);*/
             ex = null;
         } catch (Exception | AssertionError e) { // MalformedURLException | ResourceException | groovy.util.ScriptException |
             ex = e;

@@ -52,4 +52,8 @@ public class CardComponent extends Component {
 		this.currentZone = dest;
 	}
 	
+    @Override
+    public String toString() {
+        return "CardOnZone " + currentZone;
+    }
 }

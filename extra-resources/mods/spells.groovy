@@ -1,3 +1,3 @@
-CardDelegate.metaClass.spell << {Closure closure ->
+cardExtension('spell') {Closure closure ->
     spell('Use', closure)
 }
