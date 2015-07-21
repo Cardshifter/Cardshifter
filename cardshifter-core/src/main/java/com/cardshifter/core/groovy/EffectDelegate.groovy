@@ -54,7 +54,9 @@ class EffectDelegate {
             return Players.findOwnerFor(entity)
         }
         if (who == 'opponent') {
-            return Players.getNextPlayer(Players.findOwnerFor(entity))
+            def playerA = Players.findOwnerFor(entity)
+            assert playerA : 'No owner found for ' + entity.debug()
+            return Players.getNextPlayer(playerA)
         }
         assert false
     }
