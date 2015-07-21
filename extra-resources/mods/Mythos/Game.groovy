@@ -209,9 +209,9 @@ rules {
         if (you == null) {
             return;
         }
-        you.battlefield.forEach {
+/*        you.battlefield.forEach {
             it.health = it.max_health
-        }
+        }*/
     }
 
     action('Enchant') {
