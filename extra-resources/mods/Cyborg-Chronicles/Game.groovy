@@ -208,6 +208,9 @@ rules {
         you.battlefield.forEach {
             it.health = it.max_health
         }
+        you.opponent.battlefield.forEach {
+            it.health = it.max_health
+        }
     }
 
     action('Enchant') {
