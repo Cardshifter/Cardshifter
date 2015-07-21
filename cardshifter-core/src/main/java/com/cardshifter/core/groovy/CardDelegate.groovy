@@ -10,6 +10,7 @@ import groovy.transform.PackageScope
 class CardDelegate implements GroovyInterceptable {
     Entity entity
     GroovyMod mod
+    private final Map<String, Closure> extMethods = [:]
 
     @PackageScope Entity createCard(Entity card, Closure<?> closure, int resolveStrategy) {
         ECSAttributeMap.createOrGetFor(card)
@@ -45,11 +46,29 @@ class CardDelegate implements GroovyInterceptable {
 
     def invokeMethod(String name, args) {
         def metaMethod = CardDelegate.metaClass.getMetaMethod(name, args)
-        def result
+        def result = null
         if (metaMethod) {
             result = metaMethod.invoke(this, args)
         } else {
-            result = missingMethod(entity, mod, name, args)
+            def cl = this.extMethods.get(name)
+            if (cl) {
+                cl.delegate = this
+                //cl.resolveStrategy = Closure.DELEGATE_FIRST
+                // This is ugly, but it works. I have not been able to make this work in a cleaner way
+                if (args.length == 0) {
+                    result = cl.call()
+                } else if (args.length == 1) {
+                    result = cl.call(args[0])
+                } else if (args.length == 2) {
+                    result = cl.call(args[0], args[1])
+                } else if (args.length == 3) {
+                    result = cl.call(args[0], args[1], args[2])
+                } else if (args.length == 4) {
+                    result = cl.call(args[0], args[1], args[2], args[3])
+                }
+            } else {
+                result = missingMethod(entity, mod, name, args)
+            }
         }
 
         List<Closure> closures = mod.cardMethodListeners.get(name)
@@ -78,5 +97,9 @@ class CardDelegate implements GroovyInterceptable {
 
     def methodMissing(String name, args) {
         missingMethod(entity, mod, name, args)
+    }
+
+    void extMethod(String methodName, Closure closure) {
+        extMethods.put(methodName, closure)
     }
 }

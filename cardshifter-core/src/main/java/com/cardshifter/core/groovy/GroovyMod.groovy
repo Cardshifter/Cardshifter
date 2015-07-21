@@ -60,7 +60,7 @@ public class GroovyMod {
     }
 
     void cardExtension(String name, Closure closure) {
-        cardDelegate.metaClass[name] << closure
+        cardDelegate.extMethod(name, closure)
     }
 
     void include(String fileName) {
