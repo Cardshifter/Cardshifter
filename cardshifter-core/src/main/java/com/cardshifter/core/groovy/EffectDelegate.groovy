@@ -2,6 +2,9 @@ package com.cardshifter.core.groovy
 
 import com.cardshifter.modapi.actions.ActionPerformEvent
 import com.cardshifter.modapi.actions.TargetSet
+import com.cardshifter.modapi.attributes.AttributeRetriever
+import com.cardshifter.modapi.attributes.Attributes
+import com.cardshifter.modapi.base.ECSGame
 import com.cardshifter.modapi.base.Entity
 import com.cardshifter.modapi.cards.DrawStartCards
 import com.cardshifter.modapi.cards.ZoneComponent
@@ -257,24 +260,12 @@ class EffectDelegate {
 
                     Closure closure = {Entity source, Object data ->
                         Entity zoneOwner = entityLookup(source, who)
+                        assert zoneOwner : "Could not find zoneOwner $who from ${source.debug()}"
                         ZoneComponent zone = zoneLookup(zoneOwner, zoneName)
                         int amount = count // valueLookup(source, obj.count);
                         assert amount >= 0
 
-                        def name = com.cardshifter.modapi.attributes.Attributes.NAME;
-                        name = com.cardshifter.modapi.attributes.AttributeRetriever.forAttribute(name);
-
-                        def neutral = source.game.findEntities({entity ->
-                            ZoneComponent comp = entity.getComponent(com.cardshifter.modapi.cards.ZoneComponent.class)
-                            return (comp != null) && comp.getName().equals("Cards")
-                        })
-                        assert neutral.size() == 1
-
-                        Entity what = neutral.get(0).getComponent(com.cardshifter.modapi.cards.ZoneComponent.class)
-                                .getCards().stream().filter({card ->
-                            String match = name.getOrDefault(card, null)
-                            return cardName.equals(match)
-                        }).findAny().get()
+                        Entity what = cardModelByName(source.game, cardName)
 
                         for (int i = 0; i < amount; i++) {
                             zone.addOnBottom what.copy()
@@ -287,6 +278,22 @@ class EffectDelegate {
                 }]
             }]
         }]
+    }
+
+    static Entity cardModelByName(ECSGame game, String name) {
+        def nameRetriever = AttributeRetriever.forAttribute(Attributes.NAME)
+        def neutral = game.findEntities({entity ->
+            ZoneComponent comp = entity.getComponent(ZoneComponent.class)
+            return (comp != null) && comp.getName().equals("Cards")
+        })
+        assert neutral.size() == 1
+
+        Entity result = neutral.get(0).getComponent(ZoneComponent.class)
+                .getCards().stream().filter({card ->
+            String match = nameRetriever.getOrDefault(card, null)
+            return name.equals(match)
+        }).findAny().orElseThrow { new IllegalArgumentException("No card found with name '$name'") }
+        result
     }
 
 }
