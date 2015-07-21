@@ -9,6 +9,24 @@ def clearState = {
     }
 }
 
+from clearState test 'play Inside Man' using {
+    assert you
+    println you
+    def handCard = to you zone 'Hand' create 'Inside Man'
+    println 'handCard debug ' + handCard.debug()
+    assert handCard.owner == you
+    for (int i = 0; i < 8; i++) {
+        uses 'End Turn' ok
+        uses 'End Turn' ok
+    }
+
+    uses 'Play' on handCard ok
+    assert you.battlefield.size() == 3
+
+    def card = to you zone 'Battlefield' create 'Inside Man'
+    assert you.battlefield.size() == 6
+}
+
 from clearState test 'fight kill and no-kill' using {
     def attacker = to you zone 'Battlefield' create {
         creature 'Mech'

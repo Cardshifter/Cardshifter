@@ -35,21 +35,23 @@ public class CardComponent extends Component {
 		Entity card = getEntity();
 		ZoneChangeEvent event = new ZoneChangeEvent(currentZone, target, card);
 		
-		executeEvent(event);
-		if (event.getSource() != null) {
-			event.getSource().cardMoveFrom(card);
-		}
+		executeEvent(event, () -> {
+            if (event.getSource() != null) {
+                event.getSource().cardMoveFrom(card);
+            }
 
-		ZoneComponent dest = event.getDestination();
-		if (dest != null) {
-			if (top) {
-				dest.cardMoveAtTop(card);
-			}
-			else {
-				dest.cardMoveAtBottom(card);
-			}
-		}
-		this.currentZone = dest;
+            ZoneComponent dest = event.getDestination();
+            if (dest != null) {
+                if (top) {
+                    dest.cardMoveAtTop(card);
+                }
+                else {
+                    dest.cardMoveAtBottom(card);
+                }
+            }
+            this.currentZone = dest;
+
+        });
 	}
 	
     @Override
