@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.cardshifter.api.incoming.StartGameRequest;
 import com.cardshifter.api.outgoing.UserStatusMessage;
@@ -22,7 +23,7 @@ public class UsersList {
     private final Map<Integer, UserTable> userMap = new HashMap<Integer, UserTable>();
     private UserTable selected;
     private final Callback<String> callback;
-
+    
     public UsersList(Skin skin, Callback<String> callback) {
         this.skin = skin;
         this.table = new Table(skin);
@@ -45,14 +46,23 @@ public class UsersList {
                     userTable.getTable().addListener(new ClickListener() {
                         @Override
                         public void clicked(InputEvent event, float x, float y) {
-                            selected = userTable;
-                            Gdx.app.log("UsersList", "Selected " + userTable);
+                        	UsersList.this.selectUser(userTable);
+
                         }
                     });
-                    this.table.add(userTable.getTable()).expandX().fill().row();
+                    this.table.add(userTable.getTable()).align(Align.left).row();
                 }
                 break;
         }
+    }
+    
+    private void selectUser(UserTable userTable) {
+    	for (UserTable user : this.userMap.values()) {
+    		user.deselect();
+    	}
+        selected = userTable;
+        selected.markSelected();
+        Gdx.app.log("UsersList", "Selected " + userTable);
     }
 
     public void inviteSelected(String[] availableMods, Stage stage, final CardshifterClient client) {
@@ -63,17 +73,18 @@ public class UsersList {
         Dialog dialog = new Dialog("Invite " + selected.getName(), skin) {
             @Override
             protected void result(Object object) {
-                client.send(new StartGameRequest(selected.getId(), (String) object));
-                callback.callback((String) object);
+            	if (object != null) {
+                    client.send(new StartGameRequest(selected.getId(), (String) object));
+                    callback.callback((String) object);
+            	}
             }
         };
         dialog.text("Which mod do you want to play?");
         for (String mod : availableMods) {
             dialog.button(mod, mod);
         }
+        dialog.button("Cancel");
         dialog.show(stage);
-
-
     }
 
     public Table getTable() {
