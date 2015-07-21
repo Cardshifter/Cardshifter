@@ -395,6 +395,7 @@ public class GeneralSystems {
                     if (event.destination.name == zoneName) {
                         if (event.card.hasComponent(EffectComponent)) {
                             EffectComponent comp = event.card.getComponent(EffectComponent)
+                            assert event.card.owner : 'Effect no owner for ' + event.card.debug()
                             comp.perform(event.card);
                         }
                     }
