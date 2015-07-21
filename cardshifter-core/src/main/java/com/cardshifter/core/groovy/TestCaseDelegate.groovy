@@ -214,15 +214,26 @@ class TestCaseDelegate {
 
     def to(Entity who) {
         [zone: {String zoneName ->
-            [create: {Closure card ->
-                assert card
-                assert card.thisObject
-                def zone = EffectDelegate.zoneLookup(who, zoneName)
-                def closure = card
-                closure.delegate = cardDelegate
-                def entity = cardDelegate.createCard(game.newEntity(), closure, Closure.OWNER_FIRST)
-                zone.addOnBottom(entity)
-                return entity
+            [create: {Object card ->
+                if (card instanceof Closure) {
+                    assert card
+                    assert card.thisObject
+                    def zone = EffectDelegate.zoneLookup(who, zoneName)
+                    def closure = card
+                    closure.delegate = cardDelegate
+                    def entity = cardDelegate.createCard(game.newEntity(), closure, Closure.OWNER_FIRST)
+                    zone.addOnBottom(entity)
+                    return entity
+                } else if (card instanceof String) {
+                    def entity = EffectDelegate.cardModelByName(game, card as String)
+                    assert entity
+                    def zone = EffectDelegate.zoneLookup(who, zoneName)
+                    def created = entity.copy()
+                    zone.addOnBottom(created)
+                    return created
+                } else {
+                    throw new RuntimeException('need to specify a String (card name) or Closure')
+                }
             }]
         }]
     }
