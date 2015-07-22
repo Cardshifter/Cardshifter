@@ -187,6 +187,23 @@ rules {
         }
     }
 
+    action('Scrap') {
+        allowFor {
+            ownedBy 'active'
+            zone 'Battlefield'
+        }
+        requires {
+            require card.sickness == 0
+            require card.attack_available > 0
+            require card.scrap > 0
+        }
+
+        perform {
+            card.owner.scrap += card.scrap
+            card.destroy()
+        }
+    }
+
     turnStart {
         if (event.oldPhase.owner != null) {
             you.drawCard()

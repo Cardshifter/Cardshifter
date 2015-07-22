@@ -42,10 +42,6 @@ SICKNESS = createResource("SICKNESS")
 // Card must be attacked while on Battlefield before the owner player can be attacked
 TAUNT = createResource("TAUNT")
 
-// FOR COMPATIBILITY WITH ENCHANTMENTS - SEE #325
-SCRAP = createResource("SCRAP")
-SCRAP_COST = createResource("SCRAP_COST")
-
 /**
  * Actions that are related to cards, defined in more detail further down this file. 
  */
@@ -69,8 +65,6 @@ MANA_MAX = createResource("MANA_MAX")
 include 'creatures'
 include 'noAttack'
 include 'enchantment'
-// FOR COMPATIBILITY WITH ENCHANTMENTS - SEE #325
-include 'scrap'
 // include 'spells' // Bug #324
 
 
