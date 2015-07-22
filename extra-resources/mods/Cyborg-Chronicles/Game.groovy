@@ -27,15 +27,10 @@ HEALTH = createResource("HEALTH")
 MAX_HEALTH = createResource("MAX_HEALTH")
 // Cost of mana resource to the player for casting the card into play
 MANA_COST = createResource("MANA_COST")
-// Value of Scrap gained when a scrappable card is scrapped from Battlefield
-// NOTE: The SCRAP value also applies to players' owned scrap, depending on how you target your effects
-SCRAP = createResource("SCRAP")
-// Cost of Scrap resource to the player for casting the card into play
-SCRAP_COST = createResource("SCRAP_COST")
+
 /**
  * Resources that declare a specific special behavior to creature cards
  **/
-
 // Card cannot attack if set to false
 ATTACK_AVAILABLE = createResource("ATTACK_AVAILABLE")
 // Card is immune to counter-attack when attacking another creature
@@ -48,8 +43,6 @@ TAUNT = createResource("TAUNT")
 /**
  * Actions that are related to cards, defined in more detail further down this file.
  */
-SCRAP = createResource("SCRAP")
-SCRAP_COST = createResource("SCRAP_COST")
 TRAMPLE = createResource("TRAMPLE")
 
 PLAY_ACTION = "Play";
@@ -187,23 +180,6 @@ rules {
         }
     }
 
-    action('Scrap') {
-        allowFor {
-            ownedBy 'active'
-            zone 'Battlefield'
-        }
-        requires {
-            require card.sickness == 0
-            require card.attack_available > 0
-            require card.scrap > 0
-        }
-
-        perform {
-            card.owner.scrap += card.scrap
-            card.destroy()
-        }
-    }
-
     turnStart {
         if (event.oldPhase.owner != null) {
             you.drawCard()
@@ -241,7 +217,6 @@ rules {
             ownedBy 'you'
         }
 
-        cost SCRAP value { card.scrap_cost } on { card.owner }
         cost MANA value { card.mana_cost } on { card.owner }
         effectAction()
         perform {
@@ -263,7 +238,6 @@ rules {
         effectAction()
 
         cost MANA value { card.mana_cost } on { card.owner }
-        cost SCRAP value { card.scrap_cost } on { card.owner }
 
         perform {
             it.destroy()
