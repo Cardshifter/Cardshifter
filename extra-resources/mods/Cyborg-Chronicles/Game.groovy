@@ -128,47 +128,48 @@ config {
 rules {
     init {
         game.players.each {
-            it.deck.createFromConfig('Deck')
-            it.deck.shuffle()
-            it.drawCards(5)
+            it.deck.createFromConfig('Deck') // create play deck from each player's Deck Builder...
+            it.deck.shuffle()                // ...shuffle it
+            it.drawCards(5)                  // ...draw "n" cards each
         }
-        mulliganIndividual()
+        mulliganIndividual()                 // allow mulligan at start of game.
     }
 
     action('Play') {
-        allowFor { // only allow if...
+        allowFor {           // only allow if...
             ownedBy 'active' // ...card is owned by active player
-            zone 'Hand' // ...card is on hand
+            zone 'Hand'      // ...card is on hand
         }
 
-        // this action costs MANA to play
-        // the value it costs is equal to mana-cost value of the card
-        // card.owner indicates that the card's owner should pay this cost
+        // 1) this action costs MANA to play
+        // 2) the value it costs is equal to mana_cost value of the card
+        // 3) card.owner indicates that the card's owner should pay this cost
         cost MANA value { card.mana_cost } on { card.owner }
-        effectAction() // perform an effect associated with the card
+
+        effectAction()       // perform an effect associated with the card
 
         perform {
-            card.moveTo 'Battlefield'
+            card.moveTo 'Battlefield' // play card onto Battlefield
         }
     }
 
     action('Attack') {
-        allowFor {
-            ownedBy 'active'
-            zone 'Battlefield'
+        allowFor {              // only allow if...
+            ownedBy 'active'    // ...card is owned by active player
+            zone 'Battlefield'  // ...card is present on Battlefield
         }
-        requires {
-            require card.sickness == 0
+        requires {                      // requiring...
+            require card.sickness == 0  // ...no sickness
         }
-        targets 1 of {
-            ownedBy opponent
+        targets 1 of {          // number of allowed targets...
+            ownedBy opponent    // ...owned by the opponent
         }
 
-        cost ATTACK_AVAILABLE value 1 on { card }
+        cost ATTACK_AVAILABLE value 1 on { card }  // depletes "n" ATTACK_AVAILABLE on attacking card
 
-        attack {
-            battlefieldFirst TAUNT
-            def allowCounterAttack = {attacker, defender -> attacker.deny_counterattack == 0 }
+        attack {                    // allow attack on...
+            battlefieldFirst TAUNT  // ...only creatures with TAUNT first, if present
+            def allowCounterAttack = {attacker, defender -> attacker.deny_counterattack == 0 } // ...defender counterattacks on attacker, if attacker cannot deny it
             accumulating(ATTACK, HEALTH, allowCounterAttack)
             trample(TRAMPLE, HEALTH)
         }
