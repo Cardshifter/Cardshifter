@@ -22,3 +22,14 @@ from clearState test 'spellcards' using {
     assert spell.removed
 }
 
+from clearState test 'Pick One Change' using {
+    def card = to you zone 'Battlefield' create 'Pick One Change'
+
+    assert card.attack == 0
+    assert card.health == 2
+    uses 'End Turn' ok
+    assert card.attack == 1 || card.health == 3 || card.sickness == 2
+
+    uses 'End Turn' ok
+}
+

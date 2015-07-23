@@ -26,3 +26,15 @@ card('Destroy Spell') {
         set HEALTH to 0 on targets
     }
 }
+
+card('Pick One Change') {
+    creature 'Bio'
+    health 2
+    onEndOfTurn {
+        pick 1 atRandom (
+                { change HEALTH by 1  on { thisCard() } },
+                { change ATTACK by 1  on { thisCard() } },
+                { set SICKNESS to 2   on { thisCard() } }
+        )
+    }
+}
