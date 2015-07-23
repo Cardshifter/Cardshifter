@@ -1,12 +1,16 @@
 /*
  * The Game class sets up all the parameters upon a game being started for a mod using the client.
  * It is imported during run time, hence errors with the mod will be logged to the server console at run time.
- * @author Simon Forsberg
+ * @author Simon Forsberg [code]
+ * @author Francis Gaboury [docs]
  */
 
 /**
  * @param entity A card entity.
- * @return Boolean value indicating whether or not the entity is a creature, is on battlefield, and is owned by the current player.
+ * @return Boolean value indicating whether or not:
+ *  - the entity is a creature,
+ *  - is on battlefield,
+ *  - and is owned by the current player.
  */
 def ownedBattlefieldCreatures = {entity ->
     def Cards = com.cardshifter.modapi.cards.Cards;
@@ -49,7 +53,7 @@ include 'creatures'
 include 'enchantment'
 include 'scrap'
 include 'noAttack'
-include 'spells'
+//include 'spells'
 
 // apply on creature cards...
 onCard('creature') {entity, args ->
@@ -71,7 +75,7 @@ config {
             cardset 'mechs'
             cardset 'bios'
             cardset 'enchantments'
-            cardset 'spellcards'
+            //cardset 'spellcards'
         }
     }
 
@@ -310,9 +314,9 @@ rules {
         }
     }
 
+    // GAME CONSTANTS
 
-     /* GAME CONSTANTS
-      * Most of these do not require changes as they are elementary functions for the game to work properly. */
+    //Most of these do not require changes as they are elementary functions for the game to work properly. */
     always {
         /* Registers a system that listens for when a creature in summoned directly on the battlefield,
          * and performs any associated effects that creature has */
@@ -336,71 +340,4 @@ rules {
         // Resource system
         ResourceRecountSystem()
     }
-
 }
-/*
-setup {
-    playerDeckFromConfig('Deck')
-    playerDeckShuffle()
-
-    systems {
-        gainResource(res: MANA_MAX, value: 1, untilMax: 10)
-        restoreResources(resource: MANA, value: MANA_MAX)
-
-        // Play
-        playFromHand PLAY_ACTION
-        useCost(action: PLAY_ACTION, res: MANA, value: MANA_COST, whoPays: "player")
-        playEntersBattlefield PLAY_ACTION
-
-        // Enchant
-        playFromHand ENCHANT_ACTION
-        EnchantTargetCreatureTypes('Bio')
-        EffectActionSystem(ENCHANT_ACTION) // needs to be before EnchantPerform, because of entity removal
-        EnchantPerform(ATTACK, HEALTH, MAX_HEALTH)
-
-        // Spell
-        useCost(action: USE_ACTION, res: MANA, value: MANA_COST, whoPays: "player")
-        playFromHand USE_ACTION
-        EffectActionSystem(USE_ACTION)
-        EffectActionSystem(PLAY_ACTION)
-        targetFilterSystem USE_ACTION
-        effectOnSummon 'Battlefield'
-        destroyAfterUse USE_ACTION
-
-        RestoreResourcesToSystem(filter: ownedBattlefieldCreatures, resource: ATTACK_AVAILABLE, value: 1)
-        RestoreResourcesToSystem(filter: ownedBattlefieldCreatures, resource: SICKNESS,
-                value: {ent -> Math.max(0, (int) SICKNESS.getFor(ent) - 1)})
-
-        // Draw cards
-        startCards 5
-        DrawCardAtBeginningOfTurnSystem()
-        DamageConstantWhenOutOfCardsSystem(HEALTH, 1)
-        LimitedHandSizeSystem(10, {card -> card.getCardToDraw().destroy()})
-
-        // General setup
-        MulliganSingleCards(game)
-        GameOverIfNoHealth(HEALTH)
-        LastPlayersStandingEndsGame()
-        RemoveDeadEntityFromZoneSystem()
-        PerformerMustBeCurrentPlayer()
-        removeDead(HEALTH)
-        ResourceRecountSystem()
-
-        def allowCounterAttack = {attacker, defender ->
-            return attacker.deny_counterattack == 0;
-        }
-
-        attackSystem {
-            zone 'Battlefield'
-            cardsFirst TAUNT
-            sickness SICKNESS
-            useCost(action: ATTACK_ACTION, res: ATTACK_AVAILABLE, value: 1, whoPays: "self")
-            accumulating(ATTACK, HEALTH, allowCounterAttack)
-            healAtEndOfTurn(HEALTH, MAX_HEALTH)
-            afterAttack({entity -> entity.deny_counterattack > 0},
-                    { entity -> SICKNESS.retriever.set(entity, 2) })
-            trample HEALTH
-        }
-    }
-}
-*/
