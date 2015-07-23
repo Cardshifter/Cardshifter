@@ -64,7 +64,7 @@ include 'creatures'
 include 'enchantment'
 include 'scrap'
 include 'noAttack'
-// include 'spells' // Bug #324
+include 'spells' // Bug #324
 
 onCard('creature') {entity, args ->
     // give all creatures taunt by default
@@ -89,7 +89,7 @@ config {
             cardset 'mechs'
             cardset 'bios'
             cardset 'enchantments'
-            // cardset 'spellcards' // Issue #324
+            cardset 'spellcards' // Issue #324
         }
     }
 

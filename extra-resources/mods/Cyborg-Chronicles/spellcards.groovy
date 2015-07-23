@@ -3,7 +3,7 @@ card('E.M.P.') {
 	manaCost 8
 	// damage 2 to up to 10 Mechs on the Battlefield
 	spell {
-		targets 1 to 10 {
+		targets 1 to 10 cards {
 			creatureType "Mech"
 			zone "Battlefield"
 		}
