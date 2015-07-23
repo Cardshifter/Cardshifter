@@ -38,3 +38,15 @@ card('Pick One Change') {
         )
     }
 }
+
+card('Random Do Nothing') {
+    creature 'Bio'
+    health 2
+    onEndOfTurn {
+        pick 1 atRandom (
+                { doNothing() },
+                { doNothing() },
+                { doNothing() }
+        )
+    }
+}

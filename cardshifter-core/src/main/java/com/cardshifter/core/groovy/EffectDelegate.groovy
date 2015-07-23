@@ -110,6 +110,11 @@ class EffectDelegate {
         })
     }
 
+    def doNothing() {
+        description.append("Do nothing")
+        closures.add({Entity source, Object data -> })
+    }
+
     def repeat(int count, @DelegatesTo(EffectDelegate) Closure action) {
         EffectDelegate deleg = create(action, false)
         assert deleg.closures.size() > 0 : 'repeat needs to have some actions'

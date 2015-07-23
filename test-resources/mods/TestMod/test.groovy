@@ -8,6 +8,18 @@ def clearState = {
 }
 
 from clearState test 'spellcards' using {
+    def spell = to you zone 'Battlefield' create 'Random Do Nothing'
+    uses 'End Turn' ok
+    uses 'End Turn' ok
+    uses 'End Turn' ok
+    uses 'End Turn' ok
+    uses 'End Turn' ok
+    uses 'End Turn' ok
+
+}
+
+
+from clearState test 'spellcards' using {
     def spell = to you zone 'Hand' create 'Destroy Spell'
     def targetCreature = to opponent zone 'Battlefield' create {
         creature 'Mech'
