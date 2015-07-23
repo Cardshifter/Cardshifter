@@ -9,13 +9,9 @@ def clearState = {
     }
 }
 
-from clearState test 'some test' using {
-    def attacker = to you zone 'Battlefield' create {
-        creature 'Mech'
-        attack 2
-        health 2
-    }
-    def defender = to opponent zone 'Battlefield' create {
+from clearState test 'spellcards' using {
+    def spell = to you zone 'Hand' create 'Destroy Spell'
+    def targetCreature = to opponent zone 'Battlefield' create {
         creature 'Mech'
         attack 1
         health 4
@@ -23,11 +19,8 @@ from clearState test 'some test' using {
 
     uses 'End Turn' ok
     uses 'End Turn' ok
-    uses 'Attack' on attacker withTarget defender ok
-    assert attacker.health == 1
-    assert defender.health == 2
-    uses 'End Turn' ok
-    assert attacker.health == 2
-    assert defender.health == 4
+    uses 'Use' on spell withTarget targetCreature ok
+    assert targetCreature.removed
+    assert spell.removed
 }
 

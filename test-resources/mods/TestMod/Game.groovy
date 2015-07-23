@@ -86,10 +86,7 @@ config {
              * List of cardsets to load into the game entity.
              * Note: The 'Cards' zone contains all cards available to the game entity.
              */
-            cardset 'mechs'
-            cardset 'bios'
-            cardset 'enchantments'
-            cardset 'spellcards' // Issue #324
+            cardset 'cards'
         }
     }
 

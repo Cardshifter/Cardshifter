@@ -13,7 +13,7 @@ card('E.M.P.') {
 	}
 }
 
-card('Test') {
+card('Destroy Spell') {
     manaCost 1
     spell {
         targets 1 cards {
