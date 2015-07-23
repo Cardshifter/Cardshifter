@@ -1,4 +1,4 @@
-/**
+/*
  * The Game class sets up all the parameters upon a game being started for a mod using the client.
  * It is imported during run time, hence errors with the mod will be logged to the server console at run time.
  * @author Simon Forsberg
@@ -15,65 +15,49 @@ def ownedBattlefieldCreatures = {entity ->
             Cards.isOwnedByCurrentPlayer(entity)
 }
 
-/**
- * Resources related to cards
- */
+// Resources related to cards
 
-// Amount of damage the card can cause by attacking
 ATTACK = createResource('ATTACK')
-// Amount of damage the card can suffer before being retired from Battlefield
 HEALTH = createResource("HEALTH")
-// Maximum HEALTH value that a card may hold
 MAX_HEALTH = createResource("MAX_HEALTH")
-// Cost of mana resource to the player for casting the card into play
 MANA_COST = createResource("MANA_COST")
 
-/**
- * Resources that declare a specific special behavior to creature cards
- **/
-// Card cannot attack if set to false
-ATTACK_AVAILABLE = createResource("ATTACK_AVAILABLE")
-// Card is immune to counter-attack when attacking another creature
-DENY_COUNTERATTACK = createResource("DENY_COUNTERATTACK")
-// Card cannot attack while not 0
-SICKNESS = createResource("SICKNESS")
-// Card must be attacked while on Battlefield before the owner player can be attacked
-TAUNT = createResource("TAUNT")
+// Resources that declare a specific special behavior to creature cards
 
-/**
- * Actions that are related to cards, defined in more detail further down this file.
- */
+ATTACK_AVAILABLE = createResource("ATTACK_AVAILABLE")
+DENY_COUNTERATTACK = createResource("DENY_COUNTERATTACK")
+SICKNESS = createResource("SICKNESS")
+TAUNT = createResource("TAUNT")
 TRAMPLE = createResource("TRAMPLE")
+
+// Actions that are related to cards, defined in more detail further down this file.
 
 PLAY_ACTION = "Play";
 ATTACK_ACTION = "Attack";
 USE_ACTION = "Use";
 ENCHANT_ACTION = "Enchant";
 
-/**
- * Player mana resources.
- */
+// Player mana resources
 
 MANA = createResource("MANA")
 MANA_MAX = createResource("MANA_MAX")
 
-/**
- * Which Groovy files to include for this mod. See extra-resources/mods for details.
- */
+/* Which Groovy files to include for this mod.
+ * See extra-resources/mods for details. */
+
 include 'creatures'
 include 'enchantment'
 include 'scrap'
 include 'noAttack'
-// include 'spells' // Bug #324
+include 'spells'
 
+// apply on creature cards...
 onCard('creature') {entity, args ->
-    // give all creatures taunt by default
+    // ... give all Taunt by default.
     entity.taunt = 1
 }
 
-/**
- * General game configuration
- */
+// General game configuration
 
 config {
     println 'Game Closure!'
@@ -82,23 +66,20 @@ config {
         resourceModifier()
         phases()
         zone('Cards') {
-            /**
-             * List of cardsets to load into the game entity.
-             * Note: The 'Cards' zone contains all cards available to the game entity.
-             */
+            /* List of cardsets to load into the game entity.
+             * Note: The 'Cards' zone contains all cards available to the game entity. */
             cardset 'mechs'
             cardset 'bios'
             cardset 'enchantments'
-            // cardset 'spellcards' // Issue #324
+            cardset 'spellcards'
         }
     }
 
-    /**
-     * Player configuration
-     * Creates identical configuration for each player.
-     */
+    /* Player configuration
+     *  Creates identical configuration for each player. */
 
-    // Note: As of current time 2015-06-18, only two players are supported. This entry will be updated if/when this changes.
+    /* Note: As of current time 2015-06-18, only two players are supported.
+     *  This entry will be updated if/when this changes. */
     players(2) {
         phase 'Main'
         config {
@@ -107,9 +88,10 @@ config {
                 minSize 30
                 // maximum cards in deck
                 maxSize 30
-                // maximum number of copies of a card
-                // can be overridden by the maxInDeck property on individual cards
+                /* maximum number of copies of a card
+                 *  - can be overridden by the maxInDeck property on individual cards */
                 maxCardsPerType 3
+                // zone where all available cards are added
                 zone 'Cards'
             }
         }
@@ -125,53 +107,77 @@ config {
     }
 }
 
+// RULES OF THE GAME
+
 rules {
+
+    // Initial config
     init {
+        // For each player...
         game.players.each {
-            it.deck.createFromConfig('Deck') // create play deck from each player's Deck Builder...
-            it.deck.shuffle()                // ...shuffle it
-            it.drawCards(5)                  // ...draw "n" cards each
+            // ...create play deck from Deck Builder
+            it.deck.createFromConfig('Deck')
+            // ...shuffle it
+            it.deck.shuffle()
+            // ...draw 5 cards
+            it.drawCards(5)
         }
-        mulliganIndividual()                 // allow mulligan at start of game.
+        // Allow mulligan at start of game
+        mulliganIndividual()
     }
 
+    // Define how to Play a card
     action('Play') {
-        allowFor {           // only allow if...
-            ownedBy 'active' // ...card is owned by active player
-            zone 'Hand'      // ...card is on hand
+        // only allow if...
+        allowFor {
+            // ...card is owned by active player
+            ownedBy 'active'
+            // ...card is on hand
+            zone 'Hand'
         }
-
-        // 1) this action costs MANA to play
-        // 2) the value it costs is equal to mana_cost value of the card
-        // 3) card.owner indicates that the card's owner should pay this cost
+        /* 1) this action costs MANA to play
+         * 2) the value it costs is equal to mana_cost value of the card
+         * 3) card.owner indicates that the card's owner should pay this cost */
         cost MANA value { card.mana_cost } on { card.owner }
-
-        effectAction()       // perform an effect associated with the card
-
-        perform {  // perform after played:
-            card.moveTo 'Battlefield' // move played card onto Battlefield
+        // perform an effect associated with the card
+        effectAction()
+        // Perform when Played:
+        perform {
+            // ...move played card onto Battlefield */
+            card.moveTo 'Battlefield'
         }
     }
 
+    // Define how to Attack with a card
     action('Attack') {
-        allowFor {              // only allow if...
-            ownedBy 'active'    // ...card is owned by active player
-            zone 'Battlefield'  // ...card is present on Battlefield
+        // only allow if...
+        allowFor {
+            // ...card is owned by active player
+            ownedBy 'active'
+            // ...card is present on Battlefield
+            zone 'Battlefield'
         }
-        requires {                      // requiring...
-            require card.sickness == 0  // ...no sickness
+        // requiring...
+        requires {
+            // ...no sickness on card
+            require card.sickness == 0
         }
-        targets 1 of {          // number of allowed targets...
-            ownedBy 'opponent'  // ...owned by the opponent
+        // number of allowed targets...
+        targets 1 of {
+            // ...owned by the opponent
+            ownedBy 'opponent'
         }
+        // depletes 1 ATTACK_AVAILABLE on attacking card
+        cost ATTACK_AVAILABLE value 1 on { card }
 
-        cost ATTACK_AVAILABLE value 1 on { card }  // depletes "n" ATTACK_AVAILABLE on attacking card
+        // Define flow of attack action:
+        attack {
+            // creatures with TAUNT must be attacked first
+            battlefieldFirst TAUNT
+            // ...defender counterattacks on attacker, if attacker cannot deny it
+            def allowCounterAttack = {attacker, defender -> attacker.deny_counterattack == 0 }
 
-        attack {                     // allow attack on...
-            battlefieldFirst TAUNT   // ...only creatures with TAUNT first, if present
-            def allowCounterAttack = {attacker, defender -> attacker.deny_counterattack == 0 } // ...defender counterattacks on attacker, if attacker cannot deny it
-            /**
-             * This part that is in a way still using the "old system". Attacks are a bit special at the moment.
+            /* This part that is in a way still using the "old system". Attacks are a bit special at the moment.
              * @TODO Refactor to use the new system
              * It means that the attack system is like Hearthstone, that attack is accumulated until a creature dies...
              * ...the amount of damage to deal is specified by the ATTACK resource
@@ -179,101 +185,137 @@ rules {
              * ...and whether or not they are allowed to counter-attack is specified by the allowCounterAttack closure
              */
             accumulating(ATTACK, HEALTH, allowCounterAttack)
-
-            trample(TRAMPLE, HEALTH) // ...ATTACK in excess of defender's HEALTH roll-over to the opponent player's HEALTH.
+            // ...ATTACK in excess of defender's HEALTH roll-over to the opponent player's HEALTH.
+            trample(TRAMPLE, HEALTH)
         }
-
-        perform {  // perform after attacking:
-            if (card.deny_counterattack > 0) { // if attacker denies counterattack...
-                card.sickness = 2              // ...they have sickness next turn
+        // Perform when attacking:
+        perform {
+            // if attacker denies counterattack...
+            if (card.deny_counterattack > 0) {
+                // ...they have sickness next turn
+                card.sickness = 2
             }
         }
     }
 
-    turnStart {  // perform on start of turn:
-        if (event.oldPhase.owner != null) {  // if it's not the first turn of the game...
-            you.drawCard()                   // ...draw a card
+    // Define how a turn starts
+    turnStart {
+        // if it's not the first turn of the game...
+        if (event.oldPhase.owner != null) {
+            // ...draw a card
+            you.drawCard()
         }
-        // 1)  your mana_max is the lesser of...
-        // 2) ...1 + your mana_max
-        // 3) ... or 10, the maximum possible mana
+        /* 1)  your mana_max is the lesser of...
+         * 2) ...1 + your mana_max
+         * 3) ... or 10, the maximum possible mana */
         you.mana_max = Math.min(1 + (int) you.mana_max, 10)
-        you.mana = you.mana_max      // current mana is set to mana_max
-
-        you.battlefield.forEach {    // for each card on your Battlefield...
-            it.attack_available = 1  // cards that can attack are set to have an attack available
-            if (it.sickness > 0) {   // cards that have any sickness...
-                it.sickness -= 1     // ...have their sickness reduced by 1
+        // current mana is set to mana_max
+        you.mana = you.mana_max
+        // for each card on your Battlefield...
+        you.battlefield.forEach {
+            // ...cards that can attack are set to have an attack available
+            it.attack_available = 1
+            // cards that have any sickness...
+            if (it.sickness > 0) {
+                // ...have their sickness reduced by 1
+                it.sickness -= 1
             }
         }
     }
 
-    turnEnd {  // perform on end of turn:
-        if (you == null) {  // if it's the phase before everything starts (i.e., Mulligan phase)...
-            return          // ...return from this method without doing anything
+    // Define how a turn ends
+    turnEnd {
+        // if now is the phase before everything starts (i.e., Mulligan phase)...
+        if (you == null) {
+            // ...return from this method without doing anything
+            return
         }
         // CYBORG-CHRONICLES MECHANIC:
-        you.battlefield.forEach {      // for each of your cards on Battlefield...
-            it.health = it.max_health  // ...restore their health to their max_health
+        // for each of your cards on Battlefield...
+        you.battlefield.forEach {
+            // ...restore their health to their max_health
+            it.health = it.max_health
         }
-        you.opponent.battlefield.forEach {  // for each of your cards on Battlefield...
-            it.health = it.max_health       // ...restore their health to their max_health
+        // for each of your opponent's cards on Battlefield...
+        you.opponent.battlefield.forEach {
+            // ...restore their health to their max_health
+            it.health = it.max_health
         }
     }
 
+    // Define how to Enchant with a card
     action('Enchant') {
-        allowFor {             // only allow if...
-            ownedBy 'active'   // ...Enchantment card is owned by active player
-            zone 'Hand'        // ...Enchantment card is on hand
+        // only allow if...
+        allowFor {
+            // ...Enchantment card is owned by active player
+            ownedBy 'active'
+            // ...Enchantment card is on hand
+            zone 'Hand'
         }
-        targets 1 of {         // number of allowed targets...
-            zone 'Battlefield' // ...present on Battlefield
-            creatureType 'Bio' // CYBORG-CHRONICLES MECHANIC: ...of type Bio
-            ownedBy 'you'      // ...owned by you
+        // number of allowed targets...
+        targets 1 of {
+            // ...present on Battlefield
+            zone 'Battlefield'
+            // CYBORG-CHRONICLES MECHANIC: ...of type Bio
+            creatureType 'Bio'
+            // ...owned by you
+            ownedBy 'you'
         }
 
-        // 1) this action costs MANA to play
-        // 2) the value it costs is equal to mana_cost value of the card
-        // 3) card.owner indicates that the card's owner should pay this cost
+        /* 1) this action costs MANA to play
+         * 2) the value it costs is equal to mana_cost value of the card
+         * 3) card.owner indicates that the card's owner should pay this cost */
         cost MANA value { card.mana_cost } on { card.owner }
-
-        effectAction()  // perform an effect associated with the card
-
+        // perform an effect associated with the card
+        effectAction()
+        // Perform when Enchanting:
         perform {
-            targets.forEach {                // for each target card...
-                it.attack += card.attack     // ...add Enchantment's attack to the target's attack
-                it.health += card.health     // ...add Enchantment's health to the target's health
-                it.max_health += card.health // ...add Enchantment's health to the target's max_health
+            // for each target card...
+            targets.forEach {
+                // ...add Enchantment's attack to the target's attack
+                it.attack += card.attack
+                // ...add Enchantment's health to the target's health
+                it.health += card.health
+                // ...add Enchantment's health to the target's max_health
+                it.max_health += card.health
             }
-            it.destroy() // destroy the Enchantment card after use
+            // destroy the Enchantment card after use
+            it.destroy()
         }
     }
 
-    action('Use') {           // Card which have a Use action (e.g., spells, etc.)
-        allowFor {            // only allow if...
-            ownedBy 'active'  // ...card is owned by active player
-            zone 'Hand'       // ...card is on hand
+    // Define cards with a Use action (e.g., spells, etc.)
+    action('Use') {
+        // only allow if...
+        allowFor {
+            // ...card is owned by active player
+            ownedBy 'active'
+            // ...card is on hand
+            zone 'Hand'
         }
-        cardTargetFilter()    // with card-defined target filter(s)
-        effectAction()        // perform an effect associated with the card
+        // with card-defined target filter(s)
+        cardTargetFilter()
+        // perform an effect associated with the card
+        effectAction()
 
         // 1) this action costs MANA to play
         // 2) the value it costs is equal to mana_cost value of the card
         // 3) card.owner indicates that the card's owner should pay this cost
         cost MANA value { card.mana_cost } on { card.owner }
 
+        // Perform actions on Use:
         perform {
-            it.destroy()      // destroy the card after use
+            // destroy the card after use
+            it.destroy()
         }
     }
 
-    /**
-     * GAME CONSTANTS
-     * Most of these do not require changes as they are elementary functions for the game to work properly.
-     */
+
+     /* GAME CONSTANTS
+      * Most of these do not require changes as they are elementary functions for the game to work properly. */
     always {
-        // Registers a system that listens for when a creature in summoned directly on the battlefield,
-        // and performs any associated effects that creature has
+        /* Registers a system that listens for when a creature in summoned directly on the battlefield,
+         * and performs any associated effects that creature has */
         effectOnSummon 'Battlefield'
         // 1) Maximum hand size at any time is 10
         // 2) Cards drawn which are in excess of 10 are destroyed

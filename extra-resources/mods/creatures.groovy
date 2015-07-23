@@ -1,6 +1,12 @@
 import com.cardshifter.modapi.actions.*
 import com.cardshifter.modapi.attributes.*
 
+/**
+ * The cardExtension() values are taken from each card's definition (in their respective cardsets)
+ * and added to the card entities at run time, i.e., when a game invitation is sent & accepted
+ */
+
+
 cardExtension('manaCost') {int value ->
     mana_cost(value)
 }
