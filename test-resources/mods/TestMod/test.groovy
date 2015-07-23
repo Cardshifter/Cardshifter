@@ -1,5 +1,3 @@
-println 'test'
-
 def clearState = {
     assert game.getGameState() == com.cardshifter.modapi.base.ECSGameState.RUNNING
     def players = game.players
