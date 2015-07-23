@@ -23,26 +23,30 @@ onCard('creature') {entity, args ->
 
 rules {
     action('Scrap') {
-        allowFor {
-            ownedBy 'active'
-            zone 'Battlefield'
+        allowFor {             // allow only if...
+            ownedBy 'active'   // ...card owned by active player
+            zone 'Battlefield' // ...card is present on Battlefield
         }
-        requires {
-            require card.sickness == 0
-            require card.attack_available > 0
-            require card.scrap > 0
+        requires {                            // requiring...
+            require card.sickness == 0        // ...card not having sickness this turn
+            require card.attack_available > 0 // ...card having attack_available this turn
+            require card.scrap > 0            // ...card having a SCRAP value
         }
 
-        perform {
-            card.owner.scrap += card.scrap
-            card.destroy()
+        perform {  // perform upon Scrap action:
+            card.owner.scrap += card.scrap // add card's SCRAP value to the player's SCRAP stockpile
+            card.destroy()                 // destroy the scrapped card
         }
     }
-
+    // 1) this action costs SCRAP to play
+    // 2) the value it costs is equal to scrap_cost value of the card
+    // 3) card.owner indicates that the card's owner should pay this cost
     action('Enchant') {
         cost SCRAP value { card.scrap_cost } on { card.owner }
     }
-
+    // 1) this action costs SCRAP to play
+    // 2) the value it costs is equal to scrap_cost value of the card
+    // 3) card.owner indicates that the card's owner should pay this cost
     action('Use') {
         cost SCRAP value { card.scrap_cost } on { card.owner }
     }
