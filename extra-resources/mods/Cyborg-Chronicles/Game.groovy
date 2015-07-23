@@ -119,7 +119,7 @@ config {
         // players' starting health and maximum health
         health 30
         max_health 30
-        // initializing players' mana and scrap, which are set in the "setup" method in this file
+        // initializing players' mana and scrap, which are set in the "rules" method in this file
         mana 0
         scrap 0
     }
@@ -148,8 +148,8 @@ rules {
 
         effectAction()       // perform an effect associated with the card
 
-        perform {
-            card.moveTo 'Battlefield' // play card onto Battlefield
+        perform {  // perform after played:
+            card.moveTo 'Battlefield' // move played card onto Battlefield
         }
     }
 
@@ -167,66 +167,76 @@ rules {
 
         cost ATTACK_AVAILABLE value 1 on { card }  // depletes "n" ATTACK_AVAILABLE on attacking card
 
-        attack {                    // allow attack on...
-            battlefieldFirst TAUNT  // ...only creatures with TAUNT first, if present
+        attack {                     // allow attack on...
+            battlefieldFirst TAUNT   // ...only creatures with TAUNT first, if present
             def allowCounterAttack = {attacker, defender -> attacker.deny_counterattack == 0 } // ...defender counterattacks on attacker, if attacker cannot deny it
             accumulating(ATTACK, HEALTH, allowCounterAttack)
-            trample(TRAMPLE, HEALTH)
+            trample(TRAMPLE, HEALTH) // ...ATTACK in excess of defender's HEALTH roll-over to the opponent player's HEALTH.
         }
 
-        perform {
-            if (card.deny_counterattack > 0) {
-                card.sickness = 2
+        perform {  // perform after attacking:
+            if (card.deny_counterattack > 0) { // if attacker denies counterattack...
+                card.sickness = 2              // ...they have sickness next turn
             }
         }
     }
 
-    turnStart {
-        if (event.oldPhase.owner != null) {
-            you.drawCard()
+    turnStart {  // perform on start of turn:
+        if (event.oldPhase.owner != null) {  // if it's not the first turn of the game...
+            you.drawCard()                   // ...draw a card
         }
+        // 1)  your mana_max is the lesser of...
+        // 2) ...1 + your mana_max
+        // 3) ... or 10, the maximum possible mana
         you.mana_max = Math.min(1 + (int) you.mana_max, 10)
-        you.mana = you.mana_max
-        you.battlefield.forEach {
-            it.attack_available = 1
-            if (it.sickness > 0) {
-                it.sickness--
+        you.mana = you.mana_max      // current mana is set to mana_max
+
+        you.battlefield.forEach {    // for each card on your Battlefield...
+            it.attack_available = 1  // cards that can attack are set to have an attack available
+            if (it.sickness > 0) {   // cards that have any sickness...
+                it.sickness -= 1     // ...have their sickness reduced by 1
             }
         }
     }
 
-    turnEnd {
-        if (you == null) {
-            return;
+    turnEnd {  // perform on end of turn:
+        if (you == null) {  // if you are defeated...
+            return          // ...return from this method
         }
-        you.battlefield.forEach {
-            it.health = it.max_health
+        // CYBORG-CHRONICLES MECHANIC:
+        you.battlefield.forEach {      // for each of your cards on Battlefield...
+            it.health = it.max_health  // ...restore their health to their max_health
         }
-        you.opponent.battlefield.forEach {
-            it.health = it.max_health
+        you.opponent.battlefield.forEach {  // for each of your cards on Battlefield...
+            it.health = it.max_health       // ...restore their health to their max_health
         }
     }
 
     action('Enchant') {
-        allowFor {
-            ownedBy 'active'
-            zone 'Hand'
+        allowFor {             // only allow if...
+            ownedBy 'active'   // ...Enchantment card is owned by active player
+            zone 'Hand'        // ...Enchantment card is on hand
         }
-        targets 1 of {
-            zone 'Battlefield'
-            creatureType 'Bio'
-            ownedBy 'you'
+        targets 1 of {         // number of allowed targets...
+            zone 'Battlefield' // ...present on Battlefield
+            creatureType 'Bio' // CYBORG-CHRONICLES MECHANIC: ...of type Bio
+            ownedBy 'you'      // ...owned by you
         }
 
+        // 1) this action costs MANA to play
+        // 2) the value it costs is equal to mana_cost value of the card
+        // 3) card.owner indicates that the card's owner should pay this cost
         cost MANA value { card.mana_cost } on { card.owner }
-        effectAction()
+
+        effectAction()  // perform an effect associated with the card
+
         perform {
-            targets.forEach {
-                it.attack += card.attack
-                it.health += card.health
-                it.max_health += card.health
+            targets.forEach {                // for each target card...
+                it.attack += card.attack     // ...add Enchantment's attack to the target's attack
+                it.health += card.health     // ...add Enchantment's health to the target's health
+                it.max_health += card.health // ...add Enchantment's health to the target's max_health
             }
-            it.destroy()
+            it.destroy() // destroy the Enchantment after use
         }
     }
 
