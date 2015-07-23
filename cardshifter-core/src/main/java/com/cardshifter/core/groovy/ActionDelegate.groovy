@@ -46,7 +46,10 @@ class ActionDelegate {
             void startGame(ECSGame game) {
                 game.getEvents().registerHandlerAfter(this, ActionAllowedCheckEvent, {
                     if (it.action.name == name) {
-                        it.setAllowed(filter.predicate.test(it.entity, it.entity))
+                        boolean allowed = filter.predicate.test(it.entity, it.entity)
+                        if (!allowed) {
+                            it.setAllowed(allowed)
+                        }
                     }
                 })
             }
