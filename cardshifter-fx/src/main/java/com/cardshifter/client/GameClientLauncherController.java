@@ -63,7 +63,7 @@ public final class GameClientLauncherController implements Initializable {
 	private AIComponent aiChoice;
 	private final Preferences settings = Preferences.userNodeForPackage(GameClientLauncherController.class);
 	private ClientIO human;
-	private final ModCollection mods = new ModCollection();
+	private final ModCollection mods = ModCollection.defaultMods();
 	
 	private static final String CONF_NAME = "name";
 

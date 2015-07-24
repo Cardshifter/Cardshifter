@@ -34,7 +34,7 @@ public class Main {
 				networkController.play(input);
 			}
 			else {
-                ModCollection modCollection = new ModCollection();
+                ModCollection modCollection = ModCollection.defaultMods();
                 modCollection.loadExternal(modCollection.getDefaultModLocation());
                 if (options.getMod() == null) {
                     System.out.println("Enter name of mod that you want to play: (" + modCollection.getAvailableMods() + ")");
