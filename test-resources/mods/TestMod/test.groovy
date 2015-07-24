@@ -38,6 +38,28 @@ from clearState test 'trample' using {
     assert defender.removed
 }
 
+from clearState test 'trample not for defender' using {
+    def trampleCreature = to you zone 'Battlefield' create {
+        creature 'Mech'
+        attack 5
+        health 5
+        sickness 0
+        trample 1
+    }
+    def defender = to opponent zone 'Battlefield' create {
+        creature 'Mech'
+        attack 9
+        health 3
+        trample 1
+    }
+    assert you.health == 30
+    assert opponent.health == 30
+    uses 'Attack' on trampleCreature withTarget defender ok
+    assert you.health == 30
+    assert opponent.health == 28
+    assert trampleCreature.removed
+    assert defender.removed
+}
 
 from clearState test 'spellcards' using {
     def spell = to you zone 'Hand' create 'Destroy Spell'
