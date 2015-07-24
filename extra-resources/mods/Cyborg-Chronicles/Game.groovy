@@ -5,13 +5,12 @@
  * @author Francis Gaboury [docs]
  */
 
-/**
- * @param entity A card entity.
- * @return Boolean value indicating whether or not:
- *  - the entity is a creature,
- *  - is on battlefield,
- *  - and is owned by the current player.
- */
+/** Check for Owner Battlefield Creatures
+ *  @param entity A card entity.
+ *  @return Boolean value indicating whether or not:
+ *   - the entity is a creature,
+ *   - is on battlefield,
+ *   - and is owned by the current player. */
 def ownedBattlefieldCreatures = {entity ->
     def Cards = com.cardshifter.modapi.cards.Cards;
     return entity.hasComponent(com.cardshifter.modapi.base.CreatureTypeComponent.class) &&
@@ -53,7 +52,7 @@ include 'creatures'
 include 'enchantment'
 include 'scrap'
 include 'noAttack'
-//include 'spells'
+//include 'spells' // Bug #324
 
 // apply on creature cards...
 onCard('creature') {entity, args ->
@@ -75,7 +74,7 @@ config {
             cardset 'mechs'
             cardset 'bios'
             cardset 'enchantments'
-            //cardset 'spellcards'
+            //cardset 'spellcards' // Bug #324
         }
     }
 
