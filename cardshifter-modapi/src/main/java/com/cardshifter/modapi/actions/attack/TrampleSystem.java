@@ -27,8 +27,9 @@ public class TrampleSystem implements ECSSystem {
 		if (trampleRes.getOrDefault(event.getDamagedBy(), 0) <= 0) {
 			return;
 		}
-		
-		int overload = event.getDamage() - health.getFor(event.getTarget());
+
+        // this is performed after damage has been dealt, so check if health is less than 0
+		int overload = - health.getFor(event.getTarget());
 		
 		if (overload > 0) {
 			Entity owner = Cards.getOwner(event.getTarget());
