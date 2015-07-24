@@ -137,6 +137,7 @@ public final class GameClientLauncherController implements Initializable {
 	
 	public void setAI(String aiName) {
 		this.aiChoice = this.aiChoices.get(aiName);
+        this.localGameButton.setDisable(false);
 	}
 	
 	private void localGameStart(ActionEvent event) {
@@ -264,6 +265,7 @@ public final class GameClientLauncherController implements Initializable {
 		this.ipAddressBox.setText("127.0.0.1");
 		this.portBox.setText("4242");
 		this.userNameBox.setText(settings.get(CONF_NAME, "Enter Name"));
+        this.localGameButton.setDisable(true);
 		this.createAIChoices();
 	}	
 
