@@ -1,5 +1,6 @@
 package com.cardshifter.server.model;
 
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -42,12 +43,12 @@ public class Handlers {
 				}
 				break;
 			case DECK_BUILDER:
-				GameFactory factory = server.getGameFactories().get(message.getMessage());
-				if (factory == null) {
-					client.sendToClient(new ServerErrorMessage("No such game factory found"));
-					return;
-				}
-				
+                Map<String, GameFactory> gameFactories = server.getGameFactories();
+                if (message.getMessage() == null || !gameFactories.containsKey(message.getMessage())) {
+                    client.sendToClient(new ServerErrorMessage("Invalid gameType specified."));
+                    return;
+                }
+
 				TCGGame game = (TCGGame) server.createGame(message.getMessage());
 				game.addPlayer(client);
 				game.addPlayer(new FakeClient(server, e -> {}));
