@@ -101,7 +101,7 @@ card('VISHNU') {
     health 5
     sickness 1
     manaCost 10
-    /*  // Issue #326
+
     onEndOfTurn {
         pick 1 atRandom (
                 { change HEALTH by 1  on { thisCard() } },
@@ -109,15 +109,6 @@ card('VISHNU') {
                 { change HEALTH by -1 on { thisCard() } },
                 { change ATTACK by 2  on { thisCard() } },
                 { set SICKNESS to 2   on { thisCard() } }
-        )
-    }*/
-    // temporary replacement
-    onEndOfTurn {
-        pick 1 atRandom (
-                { heal 1    on { thisCard() } },
-                { heal 2    on { thisCard() } },
-                { damage 1  on { thisCard() } },
-                { damage 1  on 1 random { creature true; ownedBy 'opponent'; zone 'Battlefield' } }
         )
     }
 }

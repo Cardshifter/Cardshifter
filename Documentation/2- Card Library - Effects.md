@@ -89,7 +89,8 @@ Example:
         pick 1 atRandom (
             { summon 1 of "Conscript" to "you" zone "Hand" },
             { heal 1 to 'you' },
-            { damage 1 to 'opponent' }
+            { damage 1 to 'opponent' },
+            { change HEALTH by 1 on { ownedBy "you"; zone "Battlefield" } )
         )
     }
 
