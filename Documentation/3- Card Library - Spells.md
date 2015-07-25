@@ -147,4 +147,20 @@ Examples:
 
 ##Spell effects
 
-The effects declared after the spell targets are according to the `2) Card Library - Effects` documentation. 
+The effects declared after the spell targets are according to the **2- Card Library - Effects** documentation. The following effects are available for spells:
+
+####Triggers:
+
+- `afterPlay`
+
+####Effects
+
+- `damage n on ...`
+
+- `heal n on ...`
+
+- `change RESOURCE by n on ...`
+
+- `set RESOURCE to n on ...`
+
+- `summon n of 'Some Card' ...`
