@@ -75,6 +75,7 @@ config {
             cardset 'bios'
             cardset 'enchantments'
             //cardset 'spellcards' // Bug #324
+
         }
     }
 

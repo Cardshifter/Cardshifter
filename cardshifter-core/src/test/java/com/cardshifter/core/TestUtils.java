@@ -16,12 +16,14 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import net.zomis.cardshifter.ecs.config.ConfigComponent;
+import org.apache.log4j.PropertyConfigurator;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -30,15 +32,23 @@ import static org.junit.Assert.fail;
  */
 public class TestUtils {
 
-    TestSuite testSuite() {
-        TestSuite suite = new TestSuite();
+    ModCollection createModCollection() {
         ModCollection mods = new ModCollection();
+        mods.loadExternal(new File("../test-resources/mods").toPath());
+        return mods.loadDefault();
+    }
+
+    TestSuite testSuite() {
+        PropertyConfigurator.configure(getClass().getClassLoader().getResource("log4j.properties"));
+        TestSuite suite = new TestSuite();
+        ModCollection mods = createModCollection();
 
         System.out.println("Mods found " + mods.getAvailableMods().size());
         suite.addTest(new TestCase("Testing mods " + mods.getAvailableMods()) {
             @Override
             protected void runTest() throws Throwable {
                 assertNotSame(0, mods.getAvailableMods().size());
+                assertNotNull("TestMod not found", mods.getModFor("TestMod"));
             }
         });
 
@@ -187,7 +197,7 @@ public class TestUtils {
     public TestSuite testCreateSuite() {
         System.out.println(new File("").getAbsolutePath());
         TestSuite suite = new TestSuite();
-        ModCollection mods = new ModCollection();
+        ModCollection mods = createModCollection();
 
         System.out.println("Mods found " + mods.getAvailableMods().size());
         suite.addTest(new TestCase("Mods available " + mods.getAvailableMods()) {

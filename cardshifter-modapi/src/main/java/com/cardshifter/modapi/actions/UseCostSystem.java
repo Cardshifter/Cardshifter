@@ -13,15 +13,21 @@ public class UseCostSystem extends SpecificActionSystem {
 	private final ToIntFunction<Entity> cost;
 	private final UnaryOperator<Entity> whoPays;
 	private final ResourceRetriever useResource;
+    private final String description;
 
-	public UseCostSystem(String action, ECSResource useResource, ToIntFunction<Entity> cost, UnaryOperator<Entity> whoPays) {
-		super(action);
-		this.useResource = ResourceRetriever.forResource(useResource);
-		this.cost = cost;
-		this.whoPays = whoPays;
-	}
+    public UseCostSystem(String action, ECSResource useResource, ToIntFunction<Entity> cost, UnaryOperator<Entity> whoPays) {
+        this(action, useResource, cost, whoPays, null);
+    }
 
-	@Override
+    public UseCostSystem(String action, ECSResource useResource, ToIntFunction<Entity> cost, UnaryOperator<Entity> whoPays, String description) {
+        super(action);
+        this.useResource = ResourceRetriever.forResource(useResource);
+        this.cost = cost;
+        this.whoPays = whoPays;
+        this.description = description;
+    }
+
+    @Override
 	protected void isAllowed(ActionAllowedCheckEvent event) {
 		Entity payer = whoPays.apply(event.getEntity());
 		if (!useResource.has(payer)) {
@@ -50,7 +56,8 @@ public class UseCostSystem extends SpecificActionSystem {
 
 	@Override
 	public String toString() {
-		return "UseCostSystem [action=" + getActionName() + ", useResource=" + useResource + "]";
+        return description != null ? description :
+            "UseCostSystem [action=" + getActionName() + ", useResource=" + useResource + "]";
 	}
 
 }

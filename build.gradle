@@ -80,13 +80,9 @@ subprojects {
     }
 }
 
-task createShadowedJars {
-    dependsOn ':cardshifter-fx:shadowJar'
-    dependsOn ':cardshifter-server:shadowJar'
-}
-
 task copyResources(type: Copy) {
-    dependsOn 'createShadowedJars'
+    dependsOn ':cardshifter-fx:createShadowedJar'
+    dependsOn ':cardshifter-server:createShadowedJar'
     from('extra-resources')
     into("$project.buildDir/libs")
     include('server.properties.example')
@@ -99,10 +95,6 @@ task dist(type: Zip) {
     dependsOn 'copyResources'
     String outputDateString = DateTimeFormatter.ofPattern("yyyyMMdd-HHmm").format(LocalDateTime.now());
     classifier = outputDateString
-    rename {
-        println it
-        it.replace('-all', '')
-    }
     from "$project.buildDir/libs"
 }
 

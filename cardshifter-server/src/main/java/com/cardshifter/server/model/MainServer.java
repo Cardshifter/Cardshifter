@@ -48,7 +48,7 @@ public class MainServer {
 	/**
 	 * ModCollection is where the Phrancis mods are initialized
 	 */
-	private final ModCollection mods = new ModCollection();
+	private final ModCollection mods = ModCollection.defaultMods();
     private final ServerConfiguration config;
 
     private Thread consoleThread;

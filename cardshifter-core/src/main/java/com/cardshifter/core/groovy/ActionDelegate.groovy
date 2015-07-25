@@ -46,7 +46,10 @@ class ActionDelegate {
             void startGame(ECSGame game) {
                 game.getEvents().registerHandlerAfter(this, ActionAllowedCheckEvent, {
                     if (it.action.name == name) {
-                        it.setAllowed(filter.predicate.test(it.entity, it.entity))
+                        boolean allowed = filter.predicate.test(it.entity, it.entity)
+                        if (!allowed) {
+                            it.setAllowed(allowed)
+                        }
                     }
                 })
             }
@@ -118,8 +121,10 @@ class ActionDelegate {
     Map cost(ECSResource resource) {
         [value: {Object value ->
             ToIntFunction<Entity> costFunction
+            String costDescription = ''
             if (value instanceof Integer) {
                 costFunction = {e -> value as Integer}
+                costDescription = value.toString()
             } else if (value instanceof Closure) {
                 costFunction = {e ->
                     def clos = value as Closure
@@ -127,6 +132,7 @@ class ActionDelegate {
                     Closure cl = clos.rehydrate(deleg, clos.owner, clos.thisObject)
                     cl.call(e)
                 }
+                costDescription = DescriptionDelegate.run(value)
             }
             [on: {Closure<Entity> closure ->
                 UnaryOperator<Entity> whoPays = {Entity e ->
@@ -134,7 +140,10 @@ class ActionDelegate {
                     Closure<Entity> cl = closure.rehydrate(deleg, closure.owner, closure.thisObject)
                     cl.call(e)
                 } as UnaryOperator<Entity>
-                game.addSystem(new UseCostSystem(name, resource, costFunction, whoPays))
+                def whoPaysDescription = DescriptionDelegate.run(closure)
+                def description = "ActionCost $name $resource cost $costDescription for $whoPaysDescription"
+                println description
+                game.addSystem(new UseCostSystem(name, resource, costFunction, whoPays, description))
             }]
         }]
     }

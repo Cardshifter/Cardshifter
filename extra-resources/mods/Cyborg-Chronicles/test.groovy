@@ -9,9 +9,16 @@ def clearState = {
     }
 }
 
+from clearState test 'enchant without scrap' using {
+    def handCard = to you zone 'Hand' create 'Bionic Arms'
+    def creature = to you zone 'Battlefield' create 'Cyberpimp'
+
+    assert you.scrap == 0
+    expect failure when handCard uses 'Enchant' ok
+    assert you.scrap == 0
+}
+
 from clearState test 'play Inside Man' using {
-    assert you
-    println you
     def handCard = to you zone 'Hand' create 'Inside Man'
     println 'handCard debug ' + handCard.debug()
     assert handCard.owner == you
