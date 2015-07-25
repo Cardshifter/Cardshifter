@@ -1,6 +1,17 @@
 // Import required action-related classes
 import com.cardshifter.modapi.actions.*
 
+/* The Scrap mechanic is defined in this file.
+ * It allows for creatures to have a SCRAP resource value, and a Scrap action accordingly.
+ * When an eligible card is scrapped from the Battlefield, it is destroyed in exchange for its SCRAP value granted to the owner.
+ * SCRAP resource is used similarly to MANA, e.g., a card can have a scrap_cost rather than, or in addition to, a mana_cost.
+ *
+ * NOTE: For the Scrap mechanic to be available, the mod's Game.groovy config file must contain: include 'scrap'
+ *
+ * @author Simon Forsberg [code]
+ * @author Francis Gaboury [docs]
+ * */
+
 // Value of Scrap gained when a scrappable card is scrapped from Battlefield
 // NOTE: The SCRAP value also applies to players' owned scrap, depending on how you target your effects
 SCRAP = createResource("SCRAP")
