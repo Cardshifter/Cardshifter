@@ -52,7 +52,7 @@ include 'creatures'
 include 'enchantment'
 include 'scrap'
 include 'noAttack'
-//include 'spells' // Bug #324
+include 'spells'
 
 // apply on creature cards...
 onCard('creature') {entity, args ->
@@ -74,7 +74,7 @@ config {
             cardset 'mechs'
             cardset 'bios'
             cardset 'enchantments'
-            //cardset 'spellcards' // Bug #324
+            cardset 'spellcards'
 
         }
     }

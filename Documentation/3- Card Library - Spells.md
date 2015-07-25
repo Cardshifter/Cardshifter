@@ -24,7 +24,7 @@ A spell card, in general, uses this type of syntax:
         // declare the card is a spell
         spell {
             // declares the number of targets
-            targets n {
+            targets n cards {
                 [filters]
             }
         }
@@ -48,6 +48,8 @@ This declares that a card is a spell, which means it will not persist in play af
 
 A spell can have either of 1, multiple, or zero targets. Depending on what targets are allowed determines how the card will be played. 
 
+_Note: The `cards` keyword in `target n cards` must always be plural, even if the number of card is less than 2.
+
 ###Defined number of targets
 
 A spell with a defined number of targets will let you choose `n` targets according to its filters.
@@ -56,7 +58,7 @@ Syntax:
 
     card('name') {
         spell {
-            targets n {
+            targets n cards {
                 [filters]
             }
         }
@@ -69,8 +71,9 @@ Example:
 
     // deal 1 damage to a target
     card('Fireball') {
+        // damage 1 on 1 creature on opponent's Battlefield
         spell {
-            targets 1 {
+            targets 1 cards {
                 creature true
                 ownedBy 'opponent'
                 zone 'Battlefield'
@@ -89,7 +92,7 @@ Syntax:
 
     card('name') {
         spell {
-            targets m to n {
+            targets m to n cards {
                 [filters]
             }
         }
@@ -101,6 +104,7 @@ Syntax:
 Examples:
 
     card('Healing rain') {
+        // heal 1 on 2 to 4 creatures on your Battlefield
         spell {
             targets 2 to 4 cards {
                 creature true
@@ -129,9 +133,11 @@ Syntax:
 Examples:
 
     card('Acid rain') {
+        // damage 1 to call creatures on Battlefield
         spell()
         afterPlay {
             damage 1 to {
+            creature true
                 zone 'Battlefield'
             }
         }

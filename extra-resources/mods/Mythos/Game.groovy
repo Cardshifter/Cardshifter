@@ -51,7 +51,7 @@ MANA_MAX = createResource("MANA_MAX")
 include 'creatures'
 include 'noAttack'
 include 'enchantment'
-// include 'spells' // Bug #324
+include 'spells'
 
 // General game configuration
 
