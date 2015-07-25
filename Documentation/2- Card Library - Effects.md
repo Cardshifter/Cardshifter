@@ -72,6 +72,8 @@ Various triggers are available for actions to be applied on.
 - This is a sub-trigger and picks `X` actions from the available list whenever the trigger is activated.
 - Note that the available actions list (but not individual actions) need to be enclosed in parentheses rather than curly brackets.
 
+**NOTE**: Please see the examples below for valid actions inside `pick n atRandom` blocks. The examples will be updated as new actions are made available.
+
 Syntax:
 
     trigger {
@@ -90,7 +92,9 @@ Example:
             { summon 1 of "Conscript" to "you" zone "Hand" },
             { heal 1 to 'you' },
             { damage 1 to 'opponent' },
-            { change HEALTH by 1 on { ownedBy "you"; zone "Battlefield" } )
+            { change HEALTH by 2 on { creature true; ownedBy "you"; zone "Battlefield" } },
+            { set ATTACK to 0 on 1 random { creature true; ownedBy "opponent"; zone "Battlefield" } },
+            { doNothing() }
         )
     }
 
