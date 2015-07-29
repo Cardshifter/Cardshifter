@@ -11,7 +11,7 @@ public abstract class Message {
 	
 	/**
 	 * Constructor.
-	 * @param string the command in the form of a character string
+	 * @param string the key representing the type of message that is sent
 	 */
 	public Message(String string) {
 		this.command = string;
