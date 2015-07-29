@@ -23,7 +23,6 @@ public class LoginMessage extends Message {
 	 * Constructor.
 	 * @param   username  the incoming user name passed from client to server, not null
 	 * @example Message:  <code>{ "command":"login","username":"JohnDoe" }</code>
-	 * @example Response: <code>{"command":"loginresponse","status":200,"userId":6,"message":"OK"}</code>
 	 */
 	public LoginMessage(String username) {
 		super("login");
