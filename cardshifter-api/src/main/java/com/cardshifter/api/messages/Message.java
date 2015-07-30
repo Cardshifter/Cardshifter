@@ -3,10 +3,10 @@ package com.cardshifter.api.messages;
 /** 
  * Message class.
  * <p>
- * Takes a command to or from client in the form of a string.
+ * Takes a message type key to or from server in the form of a string.
  */
 public abstract class Message {
-	/** This command. */
+	/** The message type */
 	private String command;
 	
 	/**
@@ -18,7 +18,7 @@ public abstract class Message {
 	}
 	/**
 	 * Getter.
-	 * @return this command
+	 * @return string this message type
 	 */
 	public final String getCommand() {
 		return command;
