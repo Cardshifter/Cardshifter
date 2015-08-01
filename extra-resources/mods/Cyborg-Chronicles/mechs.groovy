@@ -185,7 +185,7 @@ card("Upgrado Mk II") {
     health 4
     sickness 0
     scrap 2
-    afterPlay { damage 1 on { creature true; ownedBy "opponent"; zone "Battlefield" }
+    //afterPlay { damage 1 on { creature true; ownedBy "opponent"; zone "Battlefield" }
     onStartOfTurn { summon 1 of "Upgrado Mk III" to "you" zone "Battlefield" }
     onStartOfTurn { set HEALTH to 0 on { thisCard() }
 }
@@ -197,7 +197,7 @@ card("Upgrado Mk III") {
     health 5
     sickness 0
     scrap 3
-    afterPlay { change SCRAP by 2 on "you" }
+    //afterPlay { change SCRAP by 2 on "you" }
     onStartOfTurn { summon 1 of "Upgrado Mk IV" to "you" zone "Battlefield" }
     onStartOfTurn { set HEALTH to 0 on { thisCard() }
 }
@@ -209,7 +209,7 @@ card("Upgrado Mk IV") {
     health 6
     sickness 0
     scrap 4
-    whilePresent { change ATTACK, HEALTH by 1 withPriority 1 on { creatureType "Mech"; ownedBy "you"; zone "Battlefield" }
+    //whilePresent { change ATTACK, HEALTH by 1 withPriority 1 on { creatureType "Mech"; ownedBy "you"; zone "Battlefield" }
     onStartOfTurn { summon 1 of "Upgrado Mk V" to "you" zone "Battlefield" }
     onStartOfTurn { set HEALTH to 0 on { thisCard() }
 }
@@ -221,7 +221,7 @@ card("Upgrado Mk V") {
     health 8
     sickness 0
     scrap 5
-    afterPlay { heal 3 on "you" }
-    afterPlay { damage 3 on "opponent" }
-    whilePresent { change ATTACK, HEALTH by -1 withPriority 1 on { creatureType "Mech"; ownedBy "opponent"; zone "Battlefield" }
+    //afterPlay { heal 3 on "you" }
+    //afterPlay { damage 3 on "opponent" }
+    //whilePresent { change ATTACK, HEALTH by -1 withPriority 1 on { creatureType "Mech"; ownedBy "opponent"; zone "Battlefield" }
 }
