@@ -164,3 +164,64 @@ card('Waste Runner') {
     manaCost 5
     scrap 3
 }
+// testing for self-upgrading card
+card("Upgrado Mk I") {
+    creature "Mech"
+    flavor "Upgrades itself on each new turn up to Mk V."
+    attack 1
+    health 3
+    sickness 0
+    manaCost 3
+    scrap 1
+    onStartOfTurn { summon 1 of "Upgrado Mk II" to "you" zone "Battlefield" }
+    onStartOfTurn { set HEALTH to 0 on { thisCard() }
+}
+// tokens for Upgrado 
+card("Upgrado Mk II") {
+    creature "Mech"
+    flavor "Upgrades itself on each new turn up to Mk V."
+    token()
+    attack 2
+    health 4
+    sickness 0
+    scrap 2
+    afterPlay { damage 1 on { creature true; ownedBy "opponent"; zone "Battlefield" }
+    onStartOfTurn { summon 1 of "Upgrado Mk III" to "you" zone "Battlefield" }
+    onStartOfTurn { set HEALTH to 0 on { thisCard() }
+}
+card("Upgrado Mk III") {
+    creature "Mech"
+    flavor "Upgrades itself on each new turn up to Mk V."
+    token()
+    attack 3
+    health 5
+    sickness 0
+    scrap 3
+    afterPlay { change SCRAP by 2 on "you" }
+    onStartOfTurn { summon 1 of "Upgrado Mk IV" to "you" zone "Battlefield" }
+    onStartOfTurn { set HEALTH to 0 on { thisCard() }
+}
+card("Upgrado Mk IV") {
+    creature "Mech"
+    flavor "Upgrades itself on each new turn up to Mk V."
+    token()
+    attack 4
+    health 6
+    sickness 0
+    scrap 4
+    whilePresent { change ATTACK, HEALTH by 1 withPriority 1 on { creatureType "Mech"; ownedBy "you"; zone "Battlefield" }
+    onStartOfTurn { summon 1 of "Upgrado Mk V" to "you" zone "Battlefield" }
+    onStartOfTurn { set HEALTH to 0 on { thisCard() }
+}
+card("Upgrado Mk V") {
+    creature "Mech"
+    flavor "Upgrades itself on each new turn up to Mk V."
+    token()
+    attack 5
+    health 8
+    sickness 0
+    scrap 5
+    afterPlay { heal 3 on "you" }
+    afterPlay { damage 3 on "opponent" }
+    whilePresent { change ATTACK, HEALTH by -1 withPriority 1 on { creatureType "Mech"; ownedBy "opponent"; zone "Battlefield" }
+}
