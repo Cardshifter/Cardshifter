@@ -33,7 +33,7 @@ public class ChatMessage extends Message {
 	public int getChatId() {
 		return chatId;
 	}
-	/** @return  The If of the sender of this message */
+	/** @return  The Id of the sender of this message */
 	public String getFrom() {
 		return from;
 	}
