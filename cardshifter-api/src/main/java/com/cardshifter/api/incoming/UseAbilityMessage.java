@@ -70,7 +70,7 @@ public class UseAbilityMessage extends CardMessage {
 	public int[] getTargets() {
 		return ArrayUtil.copyOf(targets);
 	}
-	/** @return  This request as converted to String */
+	/** @return  This message as converted to String */
 	@Override
 	public String toString() {
 		return "UseAbilityMessage ["
