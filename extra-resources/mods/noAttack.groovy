@@ -1,13 +1,18 @@
-/**
- * Created by Simon on 5/18/2015.
+/* Defines the noAttack() card property, which results in a card not being able to Attack, regardless of its ATTACK resource.
+ * Note that a card with noAttack() can still counterattack and cause damage when it is being attacked by an opponent creature.
+ * @author Simon Forsberg [code]
+ * @author Francis Gaboury [docs]
  */
+
 def noAttackCards = new HashSet<>()
 
 // Register a new method when adding cards
-CardDelegate.metaClass.noAttack << {
+cardExtension('noAttack') {
     // add the card name to our set of cards that should not attack
     def name = entity().name
+    // assert that the name is not null
     assert name : 'Cannot add null name to noAttack cards'
+    // add cards with no attack to the set
     noAttackCards.add(name)
 }
 

@@ -1,18 +1,22 @@
 package com.cardshifter.gdx.screens;
 
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.cardshifter.api.config.DeckConfig;
 import com.cardshifter.api.outgoing.CardInfoMessage;
@@ -20,6 +24,7 @@ import com.cardshifter.gdx.Callback;
 import com.cardshifter.gdx.CardshifterGame;
 import com.cardshifter.gdx.TargetStatus;
 import com.cardshifter.gdx.TargetableCallback;
+import com.cardshifter.gdx.ZoomCardCallback;
 import com.cardshifter.gdx.ui.CardshifterClientContext;
 import com.cardshifter.gdx.ui.EntityView;
 import com.cardshifter.gdx.ui.cards.CardViewSmall;
@@ -29,7 +34,7 @@ import java.util.*;
 /**
  * Created by Simon on 2/10/2015.
  */
-public class DeckBuilderScreen implements Screen, TargetableCallback {
+public class DeckBuilderScreen implements Screen, TargetableCallback, ZoomCardCallback {
 
     private static final int ROWS_PER_PAGE = 3;
     private static final int CARDS_PER_ROW = 4;
@@ -45,6 +50,7 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
     private final CardshifterClientContext context;
     private final Map<Integer, Label> countLabels = new HashMap<Integer, Label>();
     private final VerticalGroup cardsInDeckList;
+    private final ScrollPane cardsInDeckScrollPane;
     private final List<String> savedDecks;
     private final Label nameLabel;
     private final TextButton previousPageButton;
@@ -52,21 +58,27 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
     private int page;
     private String deckName = "unnamed";
     private FileHandle external;
+    
     private final Label totalLabel;
-
-    public DeckBuilderScreen(CardshifterGame game, String modName, int gameId, final DeckConfig deckConfig, final Callback<DeckConfig> callback) {
-        this.config = deckConfig;
+    private final Screen lobbyScreen;
+    private final float screenWidth;
+    private final float screenHeight;
+    private boolean cardZoomedIn = false;
+    private float initialCardViewWidth = 0;
+    private float initialCardViewHeight = 0;
+    
+    public DeckBuilderScreen(ClientScreen screen, CardshifterGame game, String modName, int gameId, final DeckConfig deckConfig, final Callback<DeckConfig> callback) {
+    	this.config = deckConfig;
         this.callback = callback;
-        this.table = new Table(game.skin);
-        this.table.setFillParent(true);
+        this.lobbyScreen = screen;
         this.game = game;
         this.context = new CardshifterClientContext(game.skin, gameId, null, game.stage);
-
-        totalLabel = new Label("0/" + config.getMaxSize(), game.skin);
-        nameLabel = new Label(deckName, game.skin);
-
+        this.screenWidth = CardshifterGame.STAGE_WIDTH;
+        this.screenHeight = CardshifterGame.STAGE_HEIGHT;
+        
         Map<Integer, CardInfoMessage> data = deckConfig.getCardData();
         cards = new ArrayList<CardInfoMessage>(data.values());
+        
         Collections.sort(cards, new Comparator<CardInfoMessage>() {
             @Override
             public int compare(CardInfoMessage o1, CardInfoMessage o2) {
@@ -74,24 +86,41 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
             }
         });
         pageCount = (int) Math.ceil(cards.size() / CARDS_PER_PAGE);
-        cardsTable = new Table(game.skin);
-        cardsTable.defaults().space(4);
-        TextButton doneButton = new TextButton("Done", game.skin);
-        doneButton.addListener(new ClickListener() {
+        
+        //normally once i start constructing libGDX UI elements, I will use a separate method 
+        //not doing that here in order have the fields be final
+        //this.buildScreen();
+        
+        TextButton backToMenu = new TextButton("Back to menu", game.skin);
+        backToMenu.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (config.total() >= config.getMinSize() && config.total() <= config.getMaxSize()) {
-                    callback.callback(deckConfig);
-                }
+            	DeckBuilderScreen.this.game.stage.clear();
+                DeckBuilderScreen.this.game.setScreen(DeckBuilderScreen.this.lobbyScreen);
             }
         });
-        cardsInDeckList = new VerticalGroup();
-
+        backToMenu.setPosition(0, this.screenHeight - this.screenHeight/20);
+        this.game.stage.addActor(backToMenu);
+       
+        this.table = new Table(game.skin);
+        this.table.setFillParent(true);
+        
+        totalLabel = new Label("0/" + config.getMaxSize(), game.skin);
+        nameLabel = new Label(deckName, game.skin);
         table.add(nameLabel);
-        table.add(totalLabel).row();
-
+        table.add(totalLabel);
+        table.row();
+        
+        cardsTable = new Table(game.skin);
+        cardsTable.defaults().space(4); 
         table.add(cardsTable);
-        table.add(cardsInDeckList);
+        
+        cardsInDeckList = new VerticalGroup();
+        cardsInDeckList.align(Align.left);
+        this.cardsInDeckScrollPane = new ScrollPane(cardsInDeckList);
+        this.cardsInDeckScrollPane.setScrollingDisabled(true, false);
+        table.add(this.cardsInDeckScrollPane).width(this.screenWidth/5);
+        
         savedDecks = new List<String>(game.skin);
         savedDecks.addListener(new ActorGestureListener(){
             @Override
@@ -100,20 +129,90 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
                 return true;
             }
         });
-
-        HorizontalGroup buttons = new HorizontalGroup();
-        this.previousPageButton = addPageButton(buttons, "Previous", -1, game.skin);
-        buttons.addActor(doneButton);
-        this.nextPageButton = addPageButton(buttons, "Next", 1, game.skin);
-
-        table.row();
         Table savedTable = scanSavedDecks(game, savedDecks, modName);
         if (savedTable != null) {
-            table.add(buttons);
-            table.add(savedTable);
+            savedTable.setHeight(this.screenHeight* 0.9f);
+            ScrollPane savedTableScroll = new ScrollPane(savedTable);
+            savedTableScroll.setScrollingDisabled(false, false);
+            table.add(savedTableScroll).top();
         }
-        else {
-            table.add(buttons).colspan(2);
+        
+        table.row();
+
+        HorizontalGroup prevNextButtons = new HorizontalGroup();
+        this.previousPageButton = addPageButton(prevNextButtons, "Previous", -1, game.skin);
+        this.nextPageButton = addPageButton(prevNextButtons, "Next", 1, game.skin);
+        table.add(prevNextButtons);
+        
+        TextButton startGameButton = new TextButton("Start Game", game.skin);
+        startGameButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (config.total() >= config.getMinSize() && config.total() <= config.getMaxSize()) {
+                	DeckBuilderScreen.this.game.stage.clear();
+                    callback.callback(deckConfig);
+                }
+            }
+        });
+        table.add(startGameButton);
+        
+        if (Gdx.app.getType() != ApplicationType.WebGL) {
+            TextButton save = new TextButton("Save", game.skin);
+            save.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    final TextField textField = new TextField(deckName, DeckBuilderScreen.this.game.skin);
+                    Dialog dialog = new Dialog("Deck Name", DeckBuilderScreen.this.game.skin) {
+                        @Override
+                        protected void result(Object object) {
+                            boolean result = (Boolean) object;
+                            if (!result) {
+                                return;
+                            }
+                            deckName = textField.getText();
+                            saveDeck(deckName);
+                        }
+                    };
+                    dialog.add(textField);
+                    dialog.button("Save", true);
+                    dialog.button("Cancel", false);
+                    dialog.show(DeckBuilderScreen.this.game.stage);
+                }
+            });
+            TextButton load = new TextButton("Load", game.skin);
+            load.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                	DeckBuilderScreen.this.loadDeck(DeckBuilderScreen.this.savedDecks.getSelected());
+                }
+            });
+            TextButton delete = new TextButton("Delete", game.skin);
+            delete.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    Dialog dialog = new Dialog("Confirm Delete", DeckBuilderScreen.this.game.skin) {
+                        @Override
+                        protected void result(Object object) {
+                            boolean result = (Boolean) object;
+                            if (!result) {
+                                return;
+                            }
+                            FileHandle handle = external.child(savedDecks.getSelected() + ".deck");
+                            handle.delete();
+                            updateSavedDeckList();
+                        }
+                    };
+                    dialog.button("Delete", true);
+                    dialog.button("Cancel", false);
+                    dialog.show(DeckBuilderScreen.this.game.stage);
+
+                }
+            });
+            HorizontalGroup saveButtons = new HorizontalGroup();
+            saveButtons.addActor(save);
+            saveButtons.addActor(load);
+            saveButtons.addActor(delete);
+            table.add(saveButtons);
         }
 
         displayPage(1);
@@ -132,40 +231,7 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
 
             updateSavedDeckList();
 
-            TextButton save = new TextButton("Save", game.skin);
-            save.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    final TextField textField = new TextField(deckName, game.skin);
-                    Dialog dialog = new Dialog("Deck Name", game.skin) {
-                        @Override
-                        protected void result(Object object) {
-                            boolean result = (Boolean) object;
-                            if (!result) {
-                                return;
-                            }
-                            deckName = textField.getText();
-                            saveDeck(deckName);
-                        }
-                    };
-                    dialog.add(textField);
-                    dialog.button("Save", true);
-                    dialog.button("Cancel", false);
-                    dialog.show(game.stage);
-                }
-            });
             saveTable.add(savedDecks).colspan(2).fill().row();
-            TextButton delete = new TextButton("Delete", game.skin);
-            delete.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    FileHandle handle = external.child(savedDecks.getSelected() + ".deck");
-                    handle.delete();
-                    updateSavedDeckList();
-                }
-            });
-            saveTable.add(save);
-            saveTable.add(delete);
             return saveTable;
         }
         return null;
@@ -205,6 +271,7 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
         FileHandle handle = external.child(deckName + ".deck");
         String deckString = handle.readString();
         config.clearChosen();
+        this.cardsInDeckList.clear();
         for (String id : deckString.split(",")) {
             try {
                 int cardId = Integer.parseInt(id);
@@ -263,10 +330,11 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
             }
             CardInfoMessage card = cards.get(i);
             VerticalGroup choosableGroup = new VerticalGroup();
-            CardViewSmall cardView = new CardViewSmall(context, card);
+            CardViewSmall cardView = new CardViewSmall(context, card, this, false);
             cardView.setTargetable(TargetStatus.TARGETABLE, this);
             choosableGroup.addActor(cardView.getActor());
             Label label = new Label(countText(card.getId()), game.skin);
+            label.setHeight(this.screenHeight/30);
             countLabels.put(card.getId(), label);
             choosableGroup.addActor(label);
             cardsTable.add(choosableGroup);
@@ -322,7 +390,12 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
     }
 
     @Override
-    public boolean addEntity(EntityView view) {
+    public boolean addEntity(final EntityView view) {
+    	//prevent other cards from being added when one is zoomed in on
+    	if (this.cardZoomedIn) {
+    		return false;
+    	}
+    	
         final int id = view.getId();
         int max = config.getMaxFor(id);
         Integer chosen = config.getChosen().get(id);
@@ -358,7 +431,7 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
             index++;
         }
 
-        DeckCardView view = new DeckCardView(game.skin, id, name);
+        DeckCardView view = new DeckCardView(game.skin, id, name, this);
         cardsInDeckList.addActorAt(index, view);
         return view;
     }
@@ -367,4 +440,97 @@ public class DeckBuilderScreen implements Screen, TargetableCallback {
         totalLabel.setText(config.total() + "/" + config.getMaxSize());
 
     }
+    
+    public void removeCardFromDeck(int id) {
+    	for (Actor actor : cardsInDeckList.getChildren()) {
+    		if (actor instanceof DeckCardView) {
+    			if (actor instanceof DeckCardView) {
+    				if (((DeckCardView)actor).getId() == id) {
+        				int newCount = ((DeckCardView)actor).getCount() - 1;
+        				if (newCount > 0) {
+        					((DeckCardView) actor).setCount(newCount);
+         				} else {
+         					actor.remove();
+         				}
+        				config.setChosen(id, newCount);
+    				}
+    			}
+    		}
+    	}
+    	this.updateLabels();
+    	this.displayPage(this.page);
+    }
+
+	@Override
+	public void zoomCard(final CardViewSmall cardView) {
+		if (this.cardZoomedIn) {
+			return;
+		}
+		final CardViewSmall cardViewCopy = new CardViewSmall(this.context, cardView.cardInfo, this, true);
+		cardViewCopy.setTargetable(TargetStatus.TARGETABLE, this);
+		cardViewCopy.getActor().setPosition(this.screenWidth/2.7f, this.screenHeight/30);
+		this.game.stage.addActor(cardViewCopy.getActor());
+		this.initialCardViewWidth = cardView.getActor().getWidth();
+		this.initialCardViewHeight = cardView.getActor().getHeight();
+		SequenceAction sequence = new SequenceAction();
+		Runnable adjustForZoom = new Runnable() {
+		    @Override
+		    public void run() {
+		    	cardViewCopy.zoom();
+		    }
+		};
+		sequence.addAction(Actions.sizeTo(this.screenWidth/4, this.screenHeight*0.9f, 0.2f));
+		sequence.addAction(Actions.run(adjustForZoom));		
+		cardViewCopy.getActor().addAction(sequence);
+		this.cardZoomedIn = true;
+	}
+	
+	@Override
+	public void endZoom(final CardViewSmall cardView) {
+		if (cardView.isZoomed){
+    		SequenceAction sequence = new SequenceAction();
+    		Runnable endZoom = new Runnable() {
+    		    @Override
+    		    public void run() {
+    		    	cardView.endZoom();
+    		    	cardView.getActor().remove();
+    		    	DeckBuilderScreen.this.cardZoomedIn = false;
+    		    }
+    		};
+    		sequence.addAction(Actions.sizeTo(this.initialCardViewWidth, this.initialCardViewHeight, 0.2f));
+    		sequence.addAction(Actions.run(endZoom));
+    		cardView.getActor().addAction(sequence);
+		}
+	}
+	
+	public boolean checkCardDrop(CardViewSmall cardView) {
+		Table table = (Table)cardView.getActor();
+		Vector2 stageLoc = table.localToStageCoordinates(new Vector2());
+		Rectangle tableRect = new Rectangle(stageLoc.x, stageLoc.y, table.getWidth(), table.getHeight());
+		
+		Vector2 stageLocCardList = this.cardsInDeckList.localToStageCoordinates(new Vector2(this.cardsInDeckList.getX(), this.cardsInDeckList.getY()));
+		Vector2 modifiedSLCL = new Vector2(stageLocCardList.x, stageLocCardList.y - this.screenHeight/2);
+		Rectangle deckRect = new Rectangle(modifiedSLCL.x, modifiedSLCL.y, this.cardsInDeckList.getWidth(), this.screenHeight);
+		
+		if (tableRect.overlaps(deckRect)) {
+			this.addEntity(cardView);
+			return true;
+		}
+		
+		return false;
+		
+		//these can be used to double check the location of the rectangles
+		/*
+		Image squareImage = new Image(new Texture(Gdx.files.internal("cardbg.png")));
+		squareImage.setPosition(modifiedSLCL.x, modifiedSLCL.y);
+		squareImage.setSize(deckRect.width, deckRect.height);
+		this.game.stage.addActor(squareImage);
+		*/
+		/*
+		Image squareImage = new Image(new Texture(Gdx.files.internal("cardbg.png")));
+		squareImage.setPosition(stageLoc.x, stageLoc.y);
+		squareImage.setSize(tableRect.width, tableRect.height);
+		this.game.stage.addActor(squareImage);
+		*/
+	}
 }

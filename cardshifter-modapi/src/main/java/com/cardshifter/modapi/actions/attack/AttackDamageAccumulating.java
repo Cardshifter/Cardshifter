@@ -6,6 +6,7 @@ import com.cardshifter.modapi.actions.SpecificActionSystem;
 import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.Entity;
 import com.cardshifter.modapi.base.PlayerComponent;
+import com.cardshifter.modapi.events.IEvent;
 import com.cardshifter.modapi.resources.ECSResource;
 import com.cardshifter.modapi.resources.ResourceRetriever;
 
@@ -45,10 +46,10 @@ public class AttackDamageAccumulating extends SpecificActionSystem {
             int attackHealth = health.getFor(source);
             int defenseHealth = health.getFor(target);
 			ECSGame game = source.getGame();
-			attackDamage = damage(attackDamage, target, source, game);
+			attackDamage = damage(attackEvent, attackDamage, target, source, game);
             boolean counterAttack = allowCounterAttack.test(source, target);
 			if (counterAttack) {
-				defenseDamage = damage(defenseDamage, source, target, game);
+				defenseDamage = damage(attackEvent, defenseDamage, source, target, game);
 			}
 
 			checkKill(target, attackDamage, defenseHealth);
@@ -64,11 +65,11 @@ public class AttackDamageAccumulating extends SpecificActionSystem {
 		}
 	}
 
-	private int damage(int damage, Entity target, Entity damagedBy, ECSGame game) {
+	private int damage(IEvent cause, int damage, Entity target, Entity damagedBy, ECSGame game) {
 		if (damage <= 0) {
 			return 0;
 		}
-        DamageEvent damageEvent = new DamageEvent(target, damagedBy, damage);
+        DamageEvent damageEvent = new DamageEvent(cause, target, damagedBy, damage);
 		game.getEvents().executeEvent(damageEvent, e -> health.resFor(target).change(-e.getDamage()));
         return damageEvent.getDamage();
 	}

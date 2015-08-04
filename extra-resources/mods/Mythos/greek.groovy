@@ -1,14 +1,12 @@
-package mythos
 /* See modding documentation for all available keywords. */
 /* GENERIC TEMPLATE
 card('ChangeMe') {
-    creature "Greek"
-    flavor "hello"
-    maxInDeck 1
-    attack 1
+    creature 'Greek'
+    flavor 'hello'
     health 1
-    manaCost 1
     sickness 1
+    manaCost 1
+    attack 1
 }
 */
 
@@ -18,8 +16,8 @@ card('ChangeMe') {
 //// GODS
 
 card('ZEUS') {
-    creature "Greek God"
-    flavor "God of the sky, ruler of Mount Olympus."
+    creature 'Greek God'
+    flavor 'God of the sky, ruler of Mount Olympus.'
     maxInDeck 1
     attack 8
     health 8
@@ -36,8 +34,8 @@ card('ZEUS') {
     */
 }
 card('URANUS') {
-    creature "Greek God"
-    flavor "The God of the Heavens, father of the Titans"
+    creature 'Greek God'
+    flavor 'The God of the Heavens, father of the Titans'
     maxInDeck 1
     attack 6
     health 4
@@ -45,19 +43,19 @@ card('URANUS') {
     sickness 1
     // Add +3/+0 to all Titans on the field.
     whilePresent {
-        change ATTACK by 3 withPriority 1 onCards {
-            creatureType "Greek Titan"
-            zone "Battlefield"
+        change ATTACK by 3 withPriority 1 on {
+            creatureType 'Greek Titan'
+            zone 'Battlefield'
         }
     }
     // If this card is sent to the graveyard, bring one +4/+2 Titan token to the field.
     onDeath {
-        summon 1 of "Titan 4/2" to "you" zone "Battlefield"
+        summon 1 of 'Titan 4/2' to 'you' zone 'Battlefield'
     }
 }
 card('APOLLO') {
-    creature "Greek God"
-    flavor "God of music, arts, knowledge, healing, plague, and prophecy."
+    creature 'Greek God'
+    flavor 'God of music, arts, knowledge, healing, plague, and prophecy.'
     maxInDeck 1
     attack 2
     health 4
@@ -67,16 +65,16 @@ card('APOLLO') {
     // target player or unit looses +2 health.
     /*
     pickAction ( // #270
-        { heal 2 to "you" },
+        { heal 2 on 'you' },
         { heal 2 to cards { target() } },
-        { damage 2 to "opponent" },
+        { damage 2 on 'opponent' },
         { damage 2 to cards { target() } }
     )
     */
 }
 card('ARES') {
-    creature "Greek God"
-    flavor "God of war, bloodshed and violence."
+    creature 'Greek God'
+    flavor 'God of war, bloodshed and violence.'
     maxInDeck 1
     attack 3
     health 4
@@ -87,13 +85,13 @@ card('ARES') {
     /*
     onKill { // #272
         // #274
-        set hasAttacked to false onCards { thisCard() }
+        set hasAttacked to false on { thisCard() }
     }
     */
 }
 card('ARTEMIS') {
-    creature "Greek God"
-    flavor "Virgin Goddess of the hunt, wilderness and animals."
+    creature 'Greek God'
+    flavor 'Virgin Goddess of the hunt, wilderness and animals.'
     maxInDeck 1
     attack 2
     health 3
@@ -101,12 +99,12 @@ card('ARTEMIS') {
     sickness 1
     // When this card comes into play, add one +2/+2 Bear token onto the field.
     afterPlay {
-        summon 1 of "Bear" to "you" zone "Battlefield"
+        summon 1 of 'Bear' to 'you' zone 'Battlefield'
     }
 }
 card('ATHENA') {
-    creature "Greek God"
-    flavor "Goddess of intelligence, skill, peace, warfare, battle strategy, and wisdom."
+    creature 'Greek God'
+    flavor 'Goddess of intelligence, skill, peace, warfare, battle strategy, and wisdom.'
     maxInDeck 1
     attack 3
     health 2
@@ -114,9 +112,9 @@ card('ATHENA') {
     sickness 1
     // Give +1/+1 to all God cards on the field.
     whilePresent {
-        change ATTACK, HEALTH by 1 withPriority 1 onCards {
-            creatureType "Greek God"
-            zone "Battlefield"
+        change ATTACK, HEALTH by 1 withPriority 1 on {
+            creatureType 'Greek God'
+            zone 'Battlefield'
         }
     }
     // (3) If a player targets this card for an attack,
@@ -130,8 +128,8 @@ card('ATHENA') {
     */
 }
 card('HERMES') {
-    creature "Greek God"
-    flavor "God of boundaries, travel, communication, trade, language, and writing."
+    creature 'Greek God'
+    flavor 'God of boundaries, travel, communication, trade, language, and writing.'
     maxInDeck 1
     attack 2
     health 2
@@ -140,8 +138,8 @@ card('HERMES') {
     denyCounterAttack() // ranged
 }
 card('HERA') {
-    creature "Greek God"
-    flavor "Queen of the Gods and the wife of Zeus."
+    creature 'Greek God'
+    flavor 'Queen of the Gods and the wife of Zeus.'
     maxInDeck 1
     attack 3
     health 2
@@ -150,8 +148,8 @@ card('HERA') {
     // phase() // #262
 }
 card('POSEIDON') {
-    creature "Greek God"
-    flavor "God of the sea, rivers, floods, droughts, and earthquakes."
+    creature 'Greek God'
+    flavor 'God of the sea, rivers, floods, droughts, and earthquakes.'
     maxInDeck 1
     attack 4
     health 4
@@ -159,16 +157,16 @@ card('POSEIDON') {
     sickness 0 // Rush
     // Once per turn: Freeze (random) enemy unit for 2 turns.
     onStartOfTurn {
-        set SICKNESS to 3 onCards 1 random {
+        set SICKNESS to 3 on 1 random {
             creature true
-            ownedBy "opponent"
-            zone "Battlefield"
+            ownedBy 'opponent'
+            zone 'Battlefield'
         }
     }
 }
 card('EROS') {
-    creature "Greek God"
-    flavor "The God of love and attraction."
+    creature 'Greek God'
+    flavor 'The God of love and attraction.'
     maxInDeck 1
     attack 3
     health 2
@@ -183,8 +181,8 @@ card('EROS') {
     */
 }
 card('GAIA') {
-    creature "Greek God"
-    flavor "Personification of the Earth, mother of the Titans."
+    creature 'Greek God'
+    flavor 'Personification of the Earth, mother of the Titans.'
     maxInDeck 1
     attack 4
     health 4
@@ -192,22 +190,22 @@ card('GAIA') {
     sickness 1
     // Add +0/+3 to all Titans on the field.
     whilePresent {
-        change HEALTH by 1 withPriority 1 onCards {
-            creatureType "Greek Titan"
-            zone "Battlefield"
+        change HEALTH by 1 withPriority 1 on {
+            creatureType 'Greek Titan'
+            zone 'Battlefield'
         }
     }
     // If this card is sent to the graveyard, bring two +2/+2 Titan tokens to the field.
     onDeath {
-        summon 2 of "Titan 2/2" to "you" zone "Battlefield"
+        summon 2 of 'Titan 2/2' to 'you' zone 'Battlefield'
     }
 }
 
 //// CHTHONIC DEITIES
 
 card('HADES') {
-    creature "Greek Chthonic Deity"
-    flavor "God of the Underworld."
+    creature 'Greek Chthonic Deity'
+    flavor 'God of the Underworld.'
     maxInDeck 1
     attack 8
     health 8
@@ -216,19 +214,19 @@ card('HADES') {
     // plague() // #264
     // Add +1/+1 to all Chthonic Deities on the field.
     whilePresent {
-        change ATTACK, HEALTH by 1 withPriority 1 onCards {
-            creatureType "Greek Chthonic Deity"
-            zone "Battlefield"
+        change ATTACK, HEALTH by 1 withPriority 1 on {
+            creatureType 'Greek Chthonic Deity'
+            zone 'Battlefield'
         }
     }
     // When Hades is sent to the graveyard, add three +1/+1 Lost Soul tokens to the field.
     onDeath {
-        summon 3 of "Lost Soul" to "you" zone "Battlefield"
+        summon 3 of 'Lost Soul' to 'you' zone 'Battlefield'
     }
 }
 card('CRONUS') {
-    creature "Greek Titan"
-    flavor "Deposed King of the Titans; also father of Zeus, Hades, and Poseidon."
+    creature 'Greek Titan'
+    flavor 'Deposed King of the Titans; also father of Zeus, Hades, and Poseidon.'
     maxInDeck 1
     attack 4
     health 8
@@ -237,17 +235,17 @@ card('CRONUS') {
     // phase() // #262
     // When this creature is put into play, add one +2/+2 Titan Token to the field.
     afterPlay {
-        summon 1 of "Titan 2/2" to "you" zone "Battlefield"
+        summon 1 of 'Titan 2/2' to 'you' zone 'Battlefield'
     }
     // When this creature is sent to the graveyard, add one +4/+2 Titan Token to the Field.
     onDeath {
-        summon 1 of "Titan 4/2" to "you" zone "Battlefield"
+        summon 1 of 'Titan 4/2' to 'you' zone 'Battlefield'
     }
 }
 
 card('Lernaean Hydra') {
-    creature "Greek"
-    flavor "A many-headed, serpent-like creature that guarded an Underworld entrance beneath Lake Lerna."
+    creature 'Greek'
+    flavor 'A many-headed, serpent-like creature that guarded an Underworld entrance beneath Lake Lerna.'
     maxInDeck 1
     attack 6
     health 3
@@ -257,20 +255,20 @@ card('Lernaean Hydra') {
     // When this card is attacked, but not destroyed, it gains +1 attack.
     /*
     afterAttacked { // #266
-        change ATTACK by 1 onCards { thisCard() }
+        change ATTACK by 1 on { thisCard() }
     }
     */
     // Give all Creature units +1/+1
     whilePresent {
-        change ATTACK, HEALTH by 1 withPriority 1 onCards {
+        change ATTACK, HEALTH by 1 withPriority 1 on {
             creature true
-            zone "Battlefield"
+            zone 'Battlefield'
         }
     }
 }
 card('The Underworld') {
-    creature "Greek Location"
-    flavor "The realm of the Dead."
+    creature 'Greek Location'
+    flavor 'The realm of the Dead.'
     maxInDeck 1
     attack 0
     noAttack()
@@ -279,21 +277,21 @@ card('The Underworld') {
     sickness 1
     // Add +2/+2 to all Chthonic Deities on the field.
     whilePresent {
-        change ATTACK, HEALTH by 2 withPriority 1 onCards {
-            creatureType "Greek Chthonic Deity"
-            zone "Battlefield"
+        change ATTACK, HEALTH by 2 withPriority 1 on {
+            creatureType 'Greek Chthonic Deity'
+            zone 'Battlefield'
         }
     }
     // Add +5 attack to this card if Hades is on the field.
     /*
-    ifPresent (cardName "HADES" zone "Battlefield") { // #261
-        change ATTACK by 5 withPriority 2 onCards { thisCard() }
+    ifPresent (cardName 'HADES' zone 'Battlefield') { // #261
+        change ATTACK by 5 withPriority 2 on { thisCard() }
     }
     */
 }
 card('CHARON') {
-    creature "Greek Chthonic Deity"
-    flavor "The Ferryman of the Underworld."
+    creature 'Greek Chthonic Deity'
+    flavor 'The Ferryman of the Underworld.'
     maxInDeck 1
     attack 1
     health 4
@@ -303,20 +301,20 @@ card('CHARON') {
     // goes to the graveyard, this card gains +1/+1.
     /*
     onKill { // #272
-        change ATTACK, HEALTH by 1 onCards { thisCard() }
+        change ATTACK, HEALTH by 1 on { thisCard() }
     }
     */
     /*
     // When this card is sent to the graveyard, destroy target creature.
     onDeath {
         // #282
-        set HEALTH to 0 onCards { attacker() }
+        set HEALTH to 0 on { attacker() }
     }
     */
 }
 card('EMPUSA') {
-    creature "Greek Chthonic Deity"
-    flavor "A monstrous underworld spirit with flaming hair, the leg of a goat and a leg of bronze."
+    creature 'Greek Chthonic Deity'
+    flavor 'A monstrous underworld spirit with flaming hair, the leg of a goat and a leg of bronze.'
     maxInDeck 1
     attack 1
     health 2
@@ -325,8 +323,8 @@ card('EMPUSA') {
     taunt()
 }
 card('MOIRAI') {
-    creature "Greek Chthonic Deity"
-    flavor "The white-robed incarnations of Fate."
+    creature 'Greek Chthonic Deity'
+    flavor 'The white-robed incarnations of Fate.'
     maxInDeck 1
     attack 1
     health 3
@@ -341,8 +339,8 @@ card('MOIRAI') {
     */
 }
 card('HECATE') {
-    creature "Greek Chthonic Deity"
-    flavor "Goddess of magic, witchcraft, the night, moon, ghosts and necromancy."
+    creature 'Greek Chthonic Deity'
+    flavor 'Goddess of magic, witchcraft, the night, moon, ghosts and necromancy.'
     maxInDeck 1
     attack 3
     health 2
@@ -352,7 +350,7 @@ card('HECATE') {
     // add a +1/+1 Lost Soul token to the field.
     /*
     onKill { // #272
-        summon 1 of "Lost Soul" to "you" zone "Battlefield"
+        summon 1 of 'Lost Soul' to 'you' zone 'Battlefield'
     }
     // When Hecate is sent to the graveyard,
     // return random creature from the graveyard to your hand except Hecate.
@@ -362,8 +360,8 @@ card('HECATE') {
     */
 }
 card('Judges of the Dead') {
-    creature "Greek Chthonic Deity"
-    flavor "Three judges sat in judgment on those who entered the Underworld."
+    creature 'Greek Chthonic Deity'
+    flavor 'Three judges sat in judgment on those who entered the Underworld.'
     maxInDeck 1
     attack 3
     health 3
@@ -371,8 +369,8 @@ card('Judges of the Dead') {
     sickness 1
 }
 card('LAMIA') {
-    creature "Greek Chthonic Deity"
-    flavor "A vampiric Underworld spirit."
+    creature 'Greek Chthonic Deity'
+    flavor 'A vampiric Underworld spirit.'
     maxInDeck 1
     attack 1
     health 3
@@ -381,13 +379,13 @@ card('LAMIA') {
     // When this creature deals damage to another creature, it gains +0/+1.
     /*
     afterAttacking {
-        change HEALTH by 1 onCards { thisCard() }
+        change HEALTH by 1 on { thisCard() }
     }
     */
 }
 card('MACARIA') {
-    creature "Greek Chthonic Deity"
-    flavor "The daughter of Hades and goddess of blessed death."
+    creature 'Greek Chthonic Deity'
+    flavor 'The daughter of Hades and goddess of blessed death.'
     maxInDeck 1
     attack 3
     health 2
@@ -396,13 +394,13 @@ card('MACARIA') {
     // When this creature destroys another creature, owner/player gains (2) health.
     /*
     onKill { // #272
-        heal 1 to "you"
+        heal 1 on 'you'
     }
     */
 }
 card('PERSEPHONE') {
-    creature "Greek Chthonic Deity"
-    flavor "The queen of the underworld, wife of Hades and goddess of spring growth."
+    creature 'Greek Chthonic Deity'
+    flavor 'The queen of the underworld, wife of Hades and goddess of spring growth.'
     maxInDeck 1
     attack 4
     health 3
@@ -411,12 +409,12 @@ card('PERSEPHONE') {
     // phase() // #262
     // Owner gains (1) health at the end of each turn this card is on the field.
     onEndOfTurn {
-        heal 1 on "you"
+        heal 1 on 'you'
     }
 }
 card('THANATOS') {
-    creature "Greek Chthonic Deity"
-    flavor "Spirit of death and minister of the Underworld."
+    creature 'Greek Chthonic Deity'
+    flavor 'Spirit of death and minister of the Underworld.'
     maxInDeck 1
     attack 2
     health 2
@@ -425,8 +423,8 @@ card('THANATOS') {
     // plague() // #264
 }
 card('TARTARUS') {
-    creature "Greek Chthonic Deity"
-    flavor "The primeval god of the dark, stormy pit of the Underworld, the Tartarean pit that houses the Titans."
+    creature 'Greek Chthonic Deity'
+    flavor 'The primeval god of the dark, stormy pit of the Underworld, the Tartarean pit that houses the Titans.'
     maxInDeck 1
     attack 3
     health 2
@@ -434,15 +432,15 @@ card('TARTARUS') {
     sickness 1
     // When this creature comes into play, add two +2/+2 Titan Tokens to the Field.
     afterPlay {
-        summon 2 of "Titan 2/2" to "you" zone "Battlefield"
+        summon 2 of 'Titan 2/2' to 'you' zone 'Battlefield'
     }
 }
 
 //// LOCATIONS
 
 card('Mount Olympus') {
-    creature "Greek Location"
-    flavor "Paradise for the Gods."
+    creature 'Greek Location'
+    flavor 'Paradise for the Gods.'
     maxInDeck 1
     attack 0
     noAttack()
@@ -451,22 +449,22 @@ card('Mount Olympus') {
     sickness 1
     // Add +2/+2 to all gods on the field.
     whilePresent {
-        change ATTACK, HEALTH by 2 withPriority 1 onCards {
-            creatureType "Greek God"
-            zone "Battlefield"
+        change ATTACK, HEALTH by 2 withPriority 1 on {
+            creatureType 'Greek God'
+            zone 'Battlefield'
         }
     }
     // Add +5 attack to this card if Zeus is on the field.
     /*
-    ifPresent (cardName "ZEUS" zone "Battlefield") { // #261
-        change ATTACK by 5 withPriority 2 onCards { thisCard() }
+    ifPresent (cardName 'ZEUS' zone 'Battlefield') { // #261
+        change ATTACK by 5 withPriority 2 on { thisCard() }
     }
     */
 }
 
 card('Tartarean Pit') {
-    creature "Greek Location"
-    flavor "Prison of the Titans."
+    creature 'Greek Location'
+    flavor 'Prison of the Titans.'
     maxInDeck 1
     attack 0
     noAttack()
@@ -477,7 +475,7 @@ card('Tartarean Pit') {
     /*
     // #240
     whilePresent {
-        set ATTACK, HEALTH to count({creatureType "Greek Titan"; zone "Battlefield"}) withPriority 1 onCards { thisCard() }
+        set ATTACK, HEALTH to count({creatureType 'Greek Titan'; zone 'Battlefield'}) withPriority 1 on { thisCard() }
     }
     */
     // At the end of your turn, if a unit was sent to the graveyard
@@ -485,7 +483,7 @@ card('Tartarean Pit') {
     /*
     onEndOfTurn {
         ifAnyCardDied { // #280
-            summon 2 of "Titan 2/2" to "you" zone "Battlefield"
+            summon 2 of 'Titan 2/2' to 'you' zone 'Battlefield'
         }
     }
     */
@@ -494,8 +492,8 @@ card('Tartarean Pit') {
 /// TITANS
 
 card('Hyperion') {
-    creature "Greek Titan"
-    flavor "Titan of Light."
+    creature 'Greek Titan'
+    flavor 'Titan of Light.'
     maxInDeck 1
     attack 4
     health 2
@@ -503,8 +501,8 @@ card('Hyperion') {
     sickness 0 // Rush
 }
  card('Mnemosyne') {
-    creature "Greek Titan"
-    flavor "Titaness of memory and remembrance, and mother of the Nine Muses."
+    creature 'Greek Titan'
+    flavor 'Titaness of memory and remembrance, and mother of the Nine Muses.'
     maxInDeck 1
     attack 2
     health 3
@@ -513,8 +511,8 @@ card('Hyperion') {
     // phase() // #262
 }
 card('Styx') {
-    creature "Greek Titan"
-    flavor "Titaness of the Underworld river Styx and personification of hatred."
+    creature 'Greek Titan'
+    flavor 'Titaness of the Underworld river Styx and personification of hatred.'
     maxInDeck 1
     attack 3
     health 3
@@ -522,15 +520,15 @@ card('Styx') {
     sickness 1
     // Effect – Gives +1/+0 to all Titans on the field.
     whilePresent {
-        change ATTACK by 1 withPriority 1 onCards {
-            creatureType "Greek Titan"
-            zone "Battlefield"
+        change ATTACK by 1 withPriority 1 on {
+            creatureType 'Greek Titan'
+            zone 'Battlefield'
         }
     }
 }
 card('Rhea') {
-    creature "Greek Titan"
-    flavor "Titaness of fertility, motherhood and the mountain wilds."
+    creature 'Greek Titan'
+    flavor 'Titaness of fertility, motherhood and the mountain wilds.'
     maxInDeck 1
     attack 2
     health 1
@@ -538,12 +536,12 @@ card('Rhea') {
     sickness 1
     // When this card is sent to the graveyard, bring a +2/+2 Bear token onto the field.
     onDeath {
-        summon 1 of "Bear" to "you" zone "Battlefield"
+        summon 1 of 'Bear' to 'you' zone 'Battlefield'
     }
 }
 card('Menoetius') {
-    creature "Greek Titan"
-    flavor "Titan of violent anger, rash action, and human mortality."
+    creature 'Greek Titan'
+    flavor 'Titan of violent anger, rash action, and human mortality.'
     maxInDeck 1
     attack 4
     health 4
@@ -554,8 +552,8 @@ card('Menoetius') {
 //// HEROES
 
 card('Heracles') {
-    creature "Greek Hero"
-    flavor "Ascended hero, Son of Zeus, and divine protector of mankind."
+    creature 'Greek Hero'
+    flavor 'Ascended hero, Son of Zeus, and divine protector of mankind.'
     maxInDeck 1
     attack 6
     health 8
@@ -564,21 +562,21 @@ card('Heracles') {
     // When Heracles comes into play, deal +3 damage randomly to target unit or player.
     afterPlay {
         pick 1 atRandom (
-            { damage 3 to "opponent" },
-            { damage 3 to 1 random { creature true; ownedBy "opponent" } }
+            { damage 3 on 'opponent' },
+            { damage 3 on 1 random { creature true; ownedBy 'opponent' } }
         )
     }
     // Add +1/+1 to all Hero units on the field.
     whilePresent {
-        change ATTACK, HEALTH by 1 withPriority 1 onCards {
-            creatureType "Greek Hero"
-            zone "Battlefield"
+        change ATTACK, HEALTH by 1 withPriority 1 on {
+            creatureType 'Greek Hero'
+            zone 'Battlefield'
         }
     }
 }
 card('Achilles') {
-    creature "Greek Hero"
-    flavor "Hero of the Trojan War."
+    creature 'Greek Hero'
+    flavor 'Hero of the Trojan War.'
     maxInDeck 1
     attack 3
     health 3
@@ -587,8 +585,8 @@ card('Achilles') {
     // dodge() // #263
 }
 card('Perseus') {
-    creature "Greek Hero"
-    flavor "Son of Zeus and the slayer of the Gorgon Medusa."
+    creature 'Greek Hero'
+    flavor 'Son of Zeus and the slayer of the Gorgon Medusa.'
     maxInDeck 1
     attack 5
     health 4
@@ -600,16 +598,16 @@ card('Perseus') {
     /*
     afterAttacked { // #266
         // #281 & #282
-        counterAttack set SICKNESS to 2 onCards { attacker() }
+        counterAttack set SICKNESS to 2 on { attacker() }
     }
     afterAttacking { // #275
-        set SICKNESS to 2 onCards { target() }
+        set SICKNESS to 2 on { target() }
     }
     */
 }
 card('Iolaus') {
-    creature "Greek Hero"
-    flavor "Nephew of Heracles who aided his uncle in one of his Labors."
+    creature 'Greek Hero'
+    flavor 'Nephew of Heracles who aided his uncle in one of his Labors.'
     maxInDeck 1
     attack 2
     health 2
@@ -617,24 +615,24 @@ card('Iolaus') {
     sickness 1
     // Gains +1/+1 if Heracles is on the field.
     /*
-    ifPresent (cardName "HERACLES" zone "Battlefield") { // #261
-        change ATTACK, HEALTH by 1 withPriority 1 onCards { thisCard() }
+    ifPresent (cardName 'HERACLES' zone 'Battlefield') { // #261
+        change ATTACK, HEALTH by 1 withPriority 1 on { thisCard() }
     }
     */
 }
 card('Theseus') {
-    creature "Greek Hero"
-    flavor "Son of Poseidon, King of Athens and slayer of the Minotaur."
+    creature 'Greek Hero'
+    flavor 'Son of Poseidon, King of Athens and slayer of the Minotaur.'
     maxInDeck 1
     attack 3
     health 2
     manaCost 5
     sickness 1
-    ranged()
+    denyCounterAttack() // ranged
 }
 card('Odysseus') {
-    creature "Greek Hero"
-    flavor "King of Ithaca whose adventures are the subject of Homer’s Odyssey."
+    creature 'Greek Hero'
+    flavor 'King of Ithaca whose adventures are the subject of Homer’s Odyssey.'
     maxInDeck 1
     attack 2
     health 1
@@ -642,8 +640,8 @@ card('Odysseus') {
     sickness 1
 }
 card('Daedalus') {
-    creature "Greek Hero"
-    flavor "Creator of the Labyrinth and a great inventor, until King Minos trapped him in his own creation."
+    creature 'Greek Hero'
+    flavor 'Creator of the Labyrinth and a great inventor, until King Minos trapped him in his own creation.'
     maxInDeck 1
     attack 3
     health 4
@@ -651,12 +649,12 @@ card('Daedalus') {
     sickness 1
     // When Daedalus is sent to the graveyard, summon a +4/+4 Minotaur token to the field.
     onDeath {
-        summon 1 of "Minotaur" to "you" zone "Battlefield"
+        summon 1 of 'Minotaur' to 'you' zone 'Battlefield'
     }
 }
 card('Hector') {
-    creature "Greek Hero"
-    flavor "Hero of the Trojan War and champion of the Trojan people."
+    creature 'Greek Hero'
+    flavor 'Hero of the Trojan War and champion of the Trojan people.'
     maxInDeck 1
     attack 4
     health 4
@@ -664,15 +662,15 @@ card('Hector') {
     sickness 0 // Rush
     // Give +1/+1 to all other Hero cards on the field.
     whilePresent {
-        change ATTACK, HEALTH by 1 withPriority 1 onCards {
-            creatureType "Greek Hero"
-            zone "Battlefield"
+        change ATTACK, HEALTH by 1 withPriority 1 on {
+            creatureType 'Greek Hero'
+            zone 'Battlefield'
         }
     }
 }
 card('Ajax The Great') {
-    creature "Greek Hero"
-    flavor "Hero of the Trojan War and king of Salamis."
+    creature 'Greek Hero'
+    flavor 'Hero of the Trojan War and king of Salamis.'
     maxInDeck 1
     attack 2
     health 3
@@ -683,8 +681,8 @@ card('Ajax The Great') {
 //// CREATURES
 
 card('Medusa') {
-    creature "Greek"
-    flavor "A mortal woman transformed into a hideous Gorgon by Athena."
+    creature 'Greek'
+    flavor 'A mortal woman transformed into a hideous Gorgon by Athena.'
     maxInDeck 1
     attack 4
     health 3
@@ -694,20 +692,20 @@ card('Medusa') {
     /*
     afterAttacked { // #266
         // #281 & #282
-        counterAttack set SICKNESS to 4 onCards { attacker() }
+        counterAttack set SICKNESS to 4 on { attacker() }
     }
     afterAttacking { // #275
-        set SICKNESS to 4 onCards { target() }
+        set SICKNESS to 4 on { target() }
     }
     */
     // When Medusa is sent to the graveyard, summon three +1/+1 snake tokens to the field.
     onDeath {
-        summon 3 of "Medusa Snake" to "you" zone "Battlefield"
+        summon 3 of 'Medusa Snake' to 'you' zone 'Battlefield'
     }
 }
 card('Nemean Lion') {
-    creature "Greek"
-    flavor "A gigantic lion whose skin was impervious to weapons; Heracles strangled it."
+    creature 'Greek'
+    flavor 'A gigantic lion whose skin was impervious to weapons; Heracles strangled it.'
     maxInDeck 1
     attack 3
     health 6
@@ -716,8 +714,8 @@ card('Nemean Lion') {
     taunt()
 }
 card('Erymanthian Boar') {
-    creature "Greek"
-    flavor "A gigantic boar, which Heracles was sent to retrieve as one of his labors."
+    creature 'Greek'
+    flavor 'A gigantic boar, which Heracles was sent to retrieve as one of his labors.'
     maxInDeck 1
     attack 5
     health 4
@@ -725,8 +723,8 @@ card('Erymanthian Boar') {
     sickness 0 // Rush
 }
 card('Pegasus') {
-    creature "Greek"
-    flavor "A divine winged stallion that is pure white, son of Medusa and Poseidon, and father of winged horses."
+    creature 'Greek'
+    flavor 'A divine winged stallion that is pure white, son of Medusa and Poseidon, and father of winged horses.'
     maxInDeck 1
     attack 2
     health 2
@@ -734,14 +732,14 @@ card('Pegasus') {
     sickness 1
     // dodge() // #263
     /*
-    ifPresent (creatureType "Greek Hero"; zone "Battlefield") {
-        change ATTACK, HEALTH by 2 withPriority 1 onCards { thisCard() }
+    ifPresent (creatureType 'Greek Hero'; zone 'Battlefield') {
+        change ATTACK, HEALTH by 2 withPriority 1 on { thisCard() }
     }
     */
 }
 card('Ararchne') {
-    creature "Greek"
-    flavor "Half-spider half-female, she is the mother of all spiders."
+    creature 'Greek'
+    flavor 'Half-spider half-female, she is the mother of all spiders.'
     maxInDeck 1
     attack 3
     health 3
@@ -751,12 +749,12 @@ card('Ararchne') {
     // When Ararchne is sent to the graveyard,
     // summon two +2/+2 Spider tokens to the field with Plague.
     onDeath {
-        summon 2 of "Ararchne Spider" to "you" zone "Battlefield"
+        summon 2 of 'Arachne Spider' to 'you' zone 'Battlefield'
     }
 }
 card('Griffin') {
-    creature "Greek"
-    flavor "A creature that combines the body of a lion and the head and wings of an eagle."
+    creature 'Greek'
+    flavor 'A creature that combines the body of a lion and the head and wings of an eagle.'
     maxInDeck 1
     attack 3
     health 2
@@ -765,8 +763,8 @@ card('Griffin') {
     // dodge() // #263
 }
 card('Caucasian Eagle') {
-    creature "Greek"
-    flavor "A giant eagle set by Zeus to feed on the ever-regenerating liver of Prometheus."
+    creature 'Greek'
+    flavor 'A giant eagle set by Zeus to feed on the ever-regenerating liver of Prometheus.'
     maxInDeck 1
     attack 2
     health 3
@@ -775,8 +773,8 @@ card('Caucasian Eagle') {
     // dodge() // #263
 }
 card('Chiron') {
-    creature "Greek"
-    flavor "The eldest and wisest of the centaurs, the ancient trainer of heroes."
+    creature 'Greek'
+    flavor 'The eldest and wisest of the centaurs, the ancient trainer of heroes.'
     maxInDeck 1
     attack 4
     health 3
@@ -784,14 +782,14 @@ card('Chiron') {
     sickness 0 // Rush
     // When Chiron comes into play add +1/+0 to all Creatures on the field
     afterPlay {
-        change ATTACK by 1 onCards {
+        change ATTACK by 1 on {
             creature true
         }
     }
 }
 card('Cerberus') {
-    creature "Greek"
-    flavor "The Three-headed hound that guards the gates of the Underworld."
+    creature 'Greek'
+    flavor 'The Three-headed hound that guards the gates of the Underworld.'
     maxInDeck 1
     attack 3
     health 4
@@ -800,8 +798,8 @@ card('Cerberus') {
     taunt()
     // Cerberus gains +2/+2 if Hades is on the field.
     /*
-    ifPresent (cardName "HADES"; zone "Battlefield") {
-        change ATTACK, HEALTH by 1 withPriority 1 onCards { thisCard() }
+    ifPresent (cardName 'HADES'; zone 'Battlefield') {
+        change ATTACK, HEALTH by 1 withPriority 1 on { thisCard() }
 
     }
     */
@@ -810,8 +808,8 @@ card('Cerberus') {
 //// TOKENS
 
 card('Bear') {
-    creature "Greek"
-    flavor ""
+    creature 'Greek'
+    flavor ''
     attack 2
     health 2
     manaCost 0
@@ -820,17 +818,17 @@ card('Bear') {
 }
 
 card('Lost Soul') {
-    creature "Greek"
-    flavor ""
+    creature 'Greek'
+    flavor ''
     attack 1
     health 1
     manaCost 0
     sickness 1
     token()
 }
-card("Titan 2/2") {
-    creature "Greek Titan"
-    flavor ""
+card('Titan 2/2') {
+    creature 'Greek Titan'
+    flavor ''
     attack 2
     health 2
     manaCost 0
@@ -838,8 +836,7 @@ card("Titan 2/2") {
     token()
 }
 card('Titan 4/2') {
-    creature "Greek Titan"
-    flavor ""
+    creature 'Greek Titan'
     attack 4
     health 2
     manaCost 0
@@ -847,8 +844,7 @@ card('Titan 4/2') {
     token()
 }
 card('Minotaur') {
-    creature "Greek"
-    flavor ""
+    creature 'Greek'
     attack 4
     health 4
     manaCost 0
@@ -856,8 +852,7 @@ card('Minotaur') {
     token()
 }
 card('Medusa Snake') {
-    creature "Greek"
-    flavor ""
+    creature 'Greek'
     maxInDeck 1
     attack 1
     health 1
@@ -865,9 +860,8 @@ card('Medusa Snake') {
     sickness 1
     token()
 }
-card('Ararchne Spider') {
-    creature "Greek"
-    flavor ""
+card('Arachne Spider') {
+    creature 'Greek'
     maxInDeck 1
     attack 2
     health 2
@@ -884,8 +878,8 @@ card('Ararchne Spider') {
 //// SPELLS
 
 /* DOES NOTHING RIGHT NOW
-card('Apollo’s Bow') {
-    flavor ""
+card('Apollo\'s Bow') {
+    flavor ''
     maxInDeck 1
     manaCost 5
     spell {
@@ -894,10 +888,10 @@ card('Apollo’s Bow') {
         // Target player or unit looses +3 health.
         //afterPlay {
             //pickAction ( // #270
-            //    { heal 3 to "you" },
-            //    { heal 3 to cards { target() } }, // #282
-            //    { damage 3 to "opponent" },
-            //    { damage 3 to cards { target() } } // #282
+            //    { heal 3 on 'you' },
+            //    { heal 3 on cards { target() } }, // #282
+            //    { damage 3 on 'opponent' },
+            //    { damage 3 on cards { target() } } // #282
             //)
         //}
     }
@@ -905,7 +899,7 @@ card('Apollo’s Bow') {
 */
 /* DOES NOTHING RIGHT NOW
 card('Tale of the Three Brothers') {
-    flavor ""
+    flavor ''
     maxInDeck 1
     manaCost 20
     spell {
@@ -914,8 +908,8 @@ card('Tale of the Three Brothers') {
         // but no more than 3, and destroy them.
         afterplay {
             // #284
-                ifPresent (cardName "HADES", "POSEIDON", "ZEUS"; zone "Battlefield") {
-                    destroyUpTo 3 cards { ownedBy "opponent"; zone "Battlefield" }
+                ifPresent (cardName 'HADES', 'POSEIDON', 'ZEUS'; zone 'Battlefield') {
+                    destroyUpTo 3 cards { ownedBy 'opponent'; zone 'Battlefield' }
                 }
         }
     }
@@ -923,115 +917,118 @@ card('Tale of the Three Brothers') {
 */
 /* DOES NOTHING RIGHT NOW
 card('The Wrath of Zeus') {
-    flavor "hello"
+    flavor 'hello'
     maxInDeck 1
     manaCost 15
     spell {
         // Deal +5 damage to target player or unit.
     //    // #284
     //    afterPlay {
-    //        damage n to { target() }
+    //        damage n on { target() }
     //    }
     }
 }
 */
 /* DOES NOTHING RIGHT NOW
 card('The Might of Hercules') {
-    flavor ""
+    flavor ''
     maxInDeck 1
     manaCost 10
     spell {
         afterPlay {
             // Give target unit +3/+0 until the end of turn.
-            change ATTACK by 3 untilEndOfTurn onCards { target() } // #282 & #285
+            change ATTACK by 3 untilEndOfTurn on { target() } // #282 & #285
         }
         // If that target unit is a Hero give it Range as well.
-        ifTarget (creatureType: "Greek Hero") { // #286
+        ifTarget (creatureType: 'Greek Hero') { // #286
             set ranged() toCards { target() }
         }
     }
 }
 */
+
+//// ENCHANTMENTS
+
 card('Golden Fleece') {
-    flavor ""
+    enchantment true
     maxInDeck 1
     manaCost 5
-    enchantment()
     // Equipped unit gains +0/+3.
     addHealth 3
+
 }
-card('Achilles’ Armor') {
-    flavor ""
+card('Achilles\' Armor') {
+    enchantment true
     maxInDeck 1
     manaCost 10
-    enchantment()
     addAttack 1
     addHealth 2
+
     // If that unit is a Hero it gains Taunt.
     /*
     spell {
-        ifTarget (creatureType: "Greek Hero") { // #286
+        ifTarget (creatureType: 'Greek Hero') { // #286
             set taunt() toCards { target() }
         }
     }
     */
 }
-card('Hades’ Bident') {
-    flavor ""
+card('Hades\' Bident') {
+    enchantment true
     maxInDeck 1
     manaCost 10
-    enchantment()
     addAttack 3
+
     // If that unit is a Chthonic Deity it gains Plague.
     /*
     spell {
-        ifTarget (creatureType: "Greek Chthonic Deity") { // #286
+        ifTarget (creatureType: 'Greek Chthonic Deity') { // #286
             set taunt() toCards { target() }
         }
     }
     */
 }
 card('Helm of Darkness') {
-    flavor ""
+    enchantment true
     maxInDeck 1
     manaCost 5
-    enchantment()
     // Target unit gains +1/+1 and Phase.
     addAttack 1
     addHealth 1
+
     /*
     spell {
             set phase() toCards { target() }
     }
     */
 }
-card('Poseidon’s Trident') {
-    flavor ""
+card('Poseidon\'s Trident') {
+    enchantment true
     maxInDeck 1
     manaCost 10
-    enchantment()
     addAttack 2
     addHealth 2
+
     // If that unit is a God it gains Dodge.
     /*
     spell {
-        ifTarget (creatureType: "Greek God") { // #286
+        ifTarget (creatureType: 'Greek God') { // #286
             set dodge() toCards { target() }
         }
     }
     */
 }
-card('Cronus’ Scythe') {
-    flavor ""
+card('Cronus\' Scythe') {
+    enchantment true
     maxInDeck 1
     manaCost 10
-    enchantment()
     addAttack 2
     addHealth 1
+
     // If that unit is a Titan it gains Taunt.
     /*
     spell {
-        ifTarget (creatureType: "Greek Titan") { // #286
+        ifTarget (creatureType: 'Greek Titan') { // #286
             set taunt() toCards { target() }
         }
     }

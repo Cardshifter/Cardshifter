@@ -1,9 +1,9 @@
-import com.cardshifter.modapi.actions.ActionComponent
+package com.cardshifter.core.groovy
+
 import com.cardshifter.modapi.attributes.Attributes
 import com.cardshifter.modapi.attributes.ECSAttributeMap
 import com.cardshifter.modapi.base.Entity
 import com.cardshifter.modapi.cards.ZoneComponent
-import com.cardshifter.modapi.resources.ECSResourceMap
 import org.codehaus.groovy.control.CompilerConfiguration
 
 class ZoneDelegate {

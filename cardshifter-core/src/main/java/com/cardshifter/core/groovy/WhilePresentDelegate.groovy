@@ -1,10 +1,11 @@
+package com.cardshifter.core.groovy
+
 import com.cardshifter.modapi.base.Entity
 import com.cardshifter.modapi.resources.ECSResource
 import com.cardshifter.modapi.resources.ECSResourceBiStrategy
 import com.cardshifter.modapi.resources.EntityModifier
 import net.zomis.cardshifter.ecs.effects.TargetFilter
 
-import java.util.function.BiPredicate
 import java.util.function.Function
 import java.util.function.Predicate
 

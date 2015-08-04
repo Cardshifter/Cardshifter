@@ -39,7 +39,7 @@ public abstract class DefaultCardView implements CardView {
 
                 next.addAction(Actions.alpha(0.7f, 0.3f));
                 Gdx.app.log("test", "next is " + next);
-                getActor().addAction(Actions.delay(0.3f, Actions.run(new Runnable() {
+                getActor().addAction(Actions.delay(0.2f, Actions.run(new Runnable() {
                     @Override
                     public void run() {
                         Actor actor = next;
@@ -53,10 +53,10 @@ public abstract class DefaultCardView implements CardView {
                         destination = next.localToStageCoordinates(destination);
                         Gdx.app.log("CardView", "Position2 " + destination.x + ", " + destination.y);
                         //    next.addAction(Actions.hide());
-                        getActor().addAction(Actions.sequence(Actions.moveTo(destination.x, destination.y, 2.0f), Actions.run(new Runnable() {
+                        getActor().addAction(Actions.sequence(Actions.moveTo(destination.x, destination.y, 0.2f), Actions.run(new Runnable() {
                             @Override
                             public void run() {
-                                final float delay = 1.5f;
+                                final float delay = 0.3f;
                                 getActor().addAction(Actions.sequence(Actions.fadeOut(delay), removeThis()));
                                 next.addAction(Actions.sequence(Actions.show(), Actions.fadeIn(delay)));
                             }

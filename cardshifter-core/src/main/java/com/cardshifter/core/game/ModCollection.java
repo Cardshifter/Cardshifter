@@ -32,7 +32,7 @@ public class ModCollection {
 	/**
 	 * All the mods to initialize.
 	 */
-	private final Map<String, Supplier<ECSMod>> mods = new HashMap<>();
+	private final Map<String, Supplier<ECSMod>> mods = new LinkedHashMap<>();
 	
 	/**
 	 * Initializes the AIs and Mods and puts them in the collections.
@@ -42,19 +42,25 @@ public class ModCollection {
 		ais.put("Idiot", new ScoringAI(AIs.idiot()));
 		ais.put("Medium", new ScoringAI(AIs.medium(), AIs::mediumDeck));
 		ais.put("Fighter", new ScoringAI(AIs.fighter(), AIs::fighterDeck));
-		
-        loadExternal(new File("mods/").toPath());
 	}
+
+    public static ModCollection defaultMods() {
+        return new ModCollection().loadDefault();
+    }
+
+    public ModCollection loadDefault() {
+        return loadExternal(new File("mods/").toPath());
+    }
 	
 	/**
 	 * Load all the external mods inside a directory
 	 * 
 	 * @param directory The directory to search for more mods.
 	 */
-	public void loadExternal(Path directory) {
+	public ModCollection loadExternal(Path directory) {
         if (!Files.isDirectory(directory)) {
             logger.warn(directory.toAbsolutePath() + " not found. External mod directory not loaded");
-            return;
+            return this;
         }
         logger.info("Loading mods in " + directory.toAbsolutePath());
         File[] groovyMods = directory.toFile().listFiles();
@@ -65,6 +71,7 @@ public class ModCollection {
                     .peek(f -> logger.info("Loading mod " + f.getAbsolutePath()))
                     .forEach(f -> mods.put(f.getName(), () -> new GroovyMod(f, f.getName())));
         }
+        return this;
 	}
 	
 	/**

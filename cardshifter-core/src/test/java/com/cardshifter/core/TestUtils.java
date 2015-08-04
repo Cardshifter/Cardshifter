@@ -8,6 +8,7 @@ import com.cardshifter.core.modloader.GroovyMod;
 import com.cardshifter.modapi.actions.ECSAction;
 import com.cardshifter.modapi.ai.CardshifterAI;
 import com.cardshifter.modapi.base.ECSGame;
+import com.cardshifter.modapi.base.ECSGameState;
 import com.cardshifter.modapi.base.ECSMod;
 import com.cardshifter.modapi.base.Entity;
 import com.cardshifter.modapi.players.Players;
@@ -15,11 +16,14 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import net.zomis.cardshifter.ecs.config.ConfigComponent;
+import org.apache.log4j.PropertyConfigurator;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -28,15 +32,23 @@ import static org.junit.Assert.fail;
  */
 public class TestUtils {
 
-    TestSuite testSuite() {
-        TestSuite suite = new TestSuite();
-
+    ModCollection createModCollection() {
         ModCollection mods = new ModCollection();
+        mods.loadExternal(new File("../test-resources/mods").toPath());
+        return mods.loadDefault();
+    }
+
+    TestSuite testSuite() {
+        PropertyConfigurator.configure(getClass().getClassLoader().getResource("log4j.properties"));
+        TestSuite suite = new TestSuite();
+        ModCollection mods = createModCollection();
+
         System.out.println("Mods found " + mods.getAvailableMods().size());
         suite.addTest(new TestCase("Testing mods " + mods.getAvailableMods()) {
             @Override
             protected void runTest() throws Throwable {
                 assertNotSame(0, mods.getAvailableMods().size());
+                assertNotNull("TestMod not found", mods.getModFor("TestMod"));
             }
         });
 
@@ -180,5 +192,54 @@ public class TestUtils {
             protected void tearDown() throws Exception {
             }
         };
+    }
+
+    public TestSuite testCreateSuite() {
+        System.out.println(new File("").getAbsolutePath());
+        TestSuite suite = new TestSuite();
+        ModCollection mods = createModCollection();
+
+        System.out.println("Mods found " + mods.getAvailableMods().size());
+        suite.addTest(new TestCase("Mods available " + mods.getAvailableMods()) {
+            @Override
+            protected void runTest() throws Throwable {
+                assertNotSame(0, mods.getAvailableMods().size());
+            }
+        });
+
+        for (String modName : mods.getAvailableMods()) {
+            System.out.println("Adding tests for " + modName);
+            suite.addTest(new TestCase(modName) {
+                @Override
+                protected void runTest() throws Throwable {
+                    ECSMod mod = mods.getModFor(modName);
+                    ECSGame game = new ECSGame();
+                    CardshifterAI ai = new ScoringAI(AIs.fighter());
+                    mod.declareConfiguration(game);
+                    List<Entity> players = Players.getPlayersInGame(game);
+                    for (Entity entity : players) {
+                        ai.configure(entity, entity.getComponent(ConfigComponent.class));
+                    }
+                    mod.setupGame(game);
+                    game.startGame();
+                    assertEquals(ECSGameState.RUNNING, game.getGameState());
+                    for (int i = 0; i < 5; i++) {
+                        boolean performed = false;
+                        for (Entity entity : players) {
+                            ECSAction action = ai.getAction(entity);
+                            if (action != null) {
+                                boolean doSomething = action.perform(entity);
+                                if (doSomething) {
+                                    System.out.println(entity + " performed " + action);
+                                }
+                                performed = performed || doSomething;
+                            }
+                        }
+                        assertTrue("No player perfored any action: " + players, performed);
+                    }
+                }
+            });
+        }
+        return suite;
     }
 }

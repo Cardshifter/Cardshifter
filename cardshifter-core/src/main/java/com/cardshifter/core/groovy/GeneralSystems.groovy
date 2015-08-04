@@ -1,3 +1,5 @@
+package com.cardshifter.core.groovy
+
 import com.cardshifter.modapi.actions.ActionComponent
 import com.cardshifter.modapi.actions.ActionPerformEvent
 import com.cardshifter.modapi.actions.ECSAction
@@ -64,8 +66,6 @@ import java.util.function.Consumer
 import java.util.function.Predicate
 import java.util.function.ToIntFunction
 import java.util.function.UnaryOperator
-import EffectDelegate
-
 import java.util.stream.Collectors
 
 class AttackSystemDelegate {
@@ -213,6 +213,39 @@ public class GeneralSystems {
         game.getEntityMeta().getActions << {delegate.getComponent(ActionComponent)}
         game.getEntityMeta().getAi << {delegate.getComponent(AIComponent)}
         game.getEntityMeta().getPlayer << {delegate.getComponent(PlayerComponent)}
+        game.getEntityMeta().getOpponent << {
+            Players.getNextPlayer(Players.findOwnerFor(delegate as Entity))
+        }
+        game.getEntityMeta().drawCards << {Integer count ->
+            for (int i = 0; i < count; i++) {
+                DrawStartCards.drawCard(delegate as Entity)
+            }
+        }
+        game.getEntityMeta().drawCard << {
+            DrawStartCards.drawCard(delegate as Entity)
+        }
+        game.getEntityMeta().moveTo << {String name ->
+            Entity e = delegate as Entity
+            CardComponent card = e.getComponent(CardComponent)
+            Collection<ZoneComponent> zones = card.owner.getSuperComponents(ZoneComponent)
+            def zone = zones.find {it.name == name}
+            card.moveToBottom(zone)
+        }
+        game.getEntityMeta().moveTo << {String owner, String name ->
+            Entity e = delegate as Entity
+            CardComponent card = e.getComponent(CardComponent)
+            Entity zoneOwner = card.owner
+            if (owner == 'opponent') {
+                zoneOwner = Players.getNextPlayer(zoneOwner)
+            } else if (owner == 'you') {
+                zoneOwner = card.owner
+            } else {
+                throw new IllegalArgumentException("owner value $owner is not supported yet")
+            }
+            Collection<ZoneComponent> zones = zoneOwner.getSuperComponents(ZoneComponent)
+            def zone = zones.find {it.name == name}
+            card.moveToBottom(zone)
+        }
 
         CardDelegate.metaClass.onEndOfTurn << {Closure closure ->
             onEndOfTurn('your', closure)
@@ -313,33 +346,6 @@ public class GeneralSystems {
             addSystem new EffectTargetFilterSystem(name)
         }
 
-        SystemsDelegate.metaClass.GameOverIfNoHealth << {ECSResource resource ->
-            addSystem new GameOverIfNoHealth(resource)
-        }
-        SystemsDelegate.metaClass.LastPlayersStandingEndsGame << {
-            addSystem new LastPlayersStandingEndsGame()
-        }
-        SystemsDelegate.metaClass.RemoveDeadEntityFromZoneSystem << {
-            addSystem new RemoveDeadEntityFromZoneSystem()
-        }
-        SystemsDelegate.metaClass.ResourceRecountSystem << {
-            addSystem new ResourceRecountSystem()
-        }
-
-        SystemsDelegate.metaClass.removeDead << {ECSResource resource ->
-            addSystem {ECSGame g ->
-                g.events.registerHandlerAfter(this, ActionPerformEvent.class, {event ->
-                    List<Entity> remove = event.entity.game.getEntitiesWithComponent(BattlefieldComponent)
-                            .stream().flatMap({entity -> entity.getComponent(BattlefieldComponent).stream()})
-                            .peek({Entity e -> println("$e has ${resource.getFor(e)}")})
-                            .filter({Entity e -> resource.getFor(e) <= 0})
-                            .collect(Collectors.toList());
-                    for (Entity e in remove) {
-                        e.destroy();
-                    }
-                })
-            }
-        }
     }
 
     static def resourceSystems() {
@@ -389,6 +395,7 @@ public class GeneralSystems {
                     if (event.destination.name == zoneName) {
                         if (event.card.hasComponent(EffectComponent)) {
                             EffectComponent comp = event.card.getComponent(EffectComponent)
+                            assert event.card.owner : 'Effect no owner for ' + event.card.debug()
                             comp.perform(event.card);
                         }
                     }
@@ -439,12 +446,6 @@ public class GeneralSystems {
         }
         SystemsDelegate.metaClass.DrawCardAtBeginningOfTurnSystem << {
             addSystem new DrawCardAtBeginningOfTurnSystem()
-        }
-        SystemsDelegate.metaClass.DamageConstantWhenOutOfCardsSystem << {ECSResource resource, int count ->
-            addSystem new DamageConstantWhenOutOfCardsSystem(resource, count)
-        }
-        SystemsDelegate.metaClass.LimitedHandSizeSystem << {int limit, Consumer<DrawCardEvent> whenFull ->
-            addSystem new LimitedHandSizeSystem(limit, whenFull)
         }
     }
 }

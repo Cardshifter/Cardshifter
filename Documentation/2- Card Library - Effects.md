@@ -21,7 +21,7 @@ It is important to note that the keywords and identifiers must be typed **exactl
 An effect generally takes this form for resource modification:
 
     trigger {
-        action RESOURCE n [withPriority n] onCards [n random] [repeat(n)] {
+        action RESOURCE n [withPriority n] on [n random] [repeat(n)] {
             // filters
         }
     }
@@ -72,6 +72,8 @@ Various triggers are available for actions to be applied on.
 - This is a sub-trigger and picks `X` actions from the available list whenever the trigger is activated.
 - Note that the available actions list (but not individual actions) need to be enclosed in parentheses rather than curly brackets.
 
+**NOTE**: Please see the examples below for valid actions inside `pick n atRandom` blocks. The examples will be updated as new actions are made available.
+
 Syntax:
 
     trigger {
@@ -89,10 +91,40 @@ Example:
         pick 1 atRandom (
             { summon 1 of "Conscript" to "you" zone "Hand" },
             { heal 1 to 'you' },
-            { damage 1 to 'opponent' }
+            { damage 1 to 'opponent' },
+            { change HEALTH by 2 on { creature true; ownedBy "you"; zone "Battlefield" } },
+            { set ATTACK to 0 on 1 random { creature true; ownedBy "opponent"; zone "Battlefield" } },
+            { doNothing() }
         )
     }
 
+####`withProbability(0.n)`
+
+- Works on all cards.
+- This is a sub-trigger and assigns a percentage probability to an action.
+- Ranges are decimal, from `withProbability(0.0)`, or 0%, to `withProbability(1.0)` or 100%.
+
+Syntax:
+
+    trigger {
+        withProbability(0.n) {
+            action
+        }
+    }
+    
+Example:
+    
+    afterPlay {
+        // 75% chance to summon creature
+        withProbability(0.75) { 
+            summon 1 of 'Conscript to 'you' zone 'Battlefield'
+        }
+    onEndOfTurn {
+        // 50% change to heal you
+        withProbability(0.50) {
+            heal 1 to 'you'
+        }
+    }
 
 ---
 
@@ -147,7 +179,7 @@ Examples:
     }
     // subtract two attack from opponent creatures while present
     whilePresent {
-        change ATTACK by -2 withPriority 1 onCards {
+        change ATTACK by -2 withPriority 1 on {
             creature true
             ownedBy 'opponent'
             zone 'Battlefield'
@@ -209,11 +241,11 @@ Examples:
     }
     // with change|set effects
     onEndOfTurn {
-        change ATTACK by 1 onCards 2 random {
+        change ATTACK by 1 on 2 random {
             ownedBy 'you'
             zone 'Battlefield'
         }
-        set HEALTH to 1 onCards 2 random {
+        set HEALTH to 1 on 2 random {
             ownedBy 'opponent'
             zone 'Battlefield'
         }
@@ -229,7 +261,7 @@ Example:
 
     onEndOfTurn {
         repeat(3) {
-            change ATTACK by 1 onCards 1 random {
+            change ATTACK by 1 on 1 random {
                 creature true
                 ownedBy 'you'
                 zone 'Battlefield'
@@ -252,15 +284,15 @@ Example:
 
 
         // Both these are valid:
-        onCards {
+        on {
             creature true
             ownedBy "you"
             zone "Battlefield"
         }
-        onCards { creature true; ownedBy "you"; zone "Battlefield }
+        on { creature true; ownedBy "you"; zone "Battlefield }
         //
-        // But this one is not valid:
-        onCards { creature true ownedBy "you" zone "Battlefield }
+        // !!! But this one is not valid:
+        on { creature true ownedBy "you" zone "Battlefield }
 
 
 ####`ownedBy`
@@ -306,7 +338,7 @@ Affects one or more _specific cards_, referencing their `card("hello")` name in 
 
 Example:
 
-    onCards {
+    on {
         cardName "foo", "bar"
         ownedBy "you"
         zone "Battlefield"

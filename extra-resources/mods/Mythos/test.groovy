@@ -20,7 +20,9 @@ from clearState test('summon on battlefield') using {
         }
     }
     def player = you
+    assert player.battlefield.size() == 0
     uses 'Play' on card ok
+    assert player.battlefield.size() == 2
     assert player.health == 29
     assert opponent.health == 29
     uses 'End Turn' ok

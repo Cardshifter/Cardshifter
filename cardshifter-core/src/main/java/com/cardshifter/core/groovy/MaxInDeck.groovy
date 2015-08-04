@@ -1,3 +1,5 @@
+package com.cardshifter.core.groovy
+
 import com.cardshifter.api.config.DeckConfig
 import com.cardshifter.modapi.base.ECSGame
 import com.cardshifter.modapi.base.Entity
