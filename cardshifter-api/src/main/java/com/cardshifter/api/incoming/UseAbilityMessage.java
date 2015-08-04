@@ -29,7 +29,7 @@ public class UseAbilityMessage extends CardMessage {
 	 * Used for multiple target actions.
 	 * 
 	 * @param gameId  This current game
-	 * @param entity  This game entity performing an action
+	 * @param id  This game entity performing an action
 	 * @param action  This action
 	 * @param targets  The set of multiple targets affected by this action
 	 */
@@ -45,7 +45,7 @@ public class UseAbilityMessage extends CardMessage {
 	 * <p>
 	 * Used for single target actions.
 	 * 
-	 * @param gameId  This current game
+	 * @param id  This current game
 	 * @param entity  This game entity performing an action
 	 * @param action  This action
 	 * @param target  The single target affected by this action
