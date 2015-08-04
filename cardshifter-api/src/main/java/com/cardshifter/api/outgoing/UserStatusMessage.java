@@ -49,7 +49,7 @@ public class UserStatusMessage extends Message {
 	@Override
 	public String toString() {
 		return "UserStatusMessage ["
-			+ userId=" + userId 
+			+ "userId=" + userId 
 			+ ", status=" + status
 			+ ", name=" + name 
 		+ "]";
