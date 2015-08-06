@@ -59,7 +59,7 @@ public class ModCollection {
 	 */
 	public ModCollection loadExternal(Path directory) {
         if (!Files.isDirectory(directory)) {
-            logger.warn(directory.toAbsolutePath() + " not found. External mod directory not loaded");
+            logger.info(directory.toAbsolutePath() + " not found. External mod directory not loaded");
             return this;
         }
         logger.info("Loading mods in " + directory.toAbsolutePath());
