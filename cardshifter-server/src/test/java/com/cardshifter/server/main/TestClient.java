@@ -37,8 +37,8 @@ public class TestClient {
 	private final LinkedBlockingQueue<Message> messages = new LinkedBlockingQueue<>();
 	private final Thread thread;
 	
-	public TestClient() throws UnknownHostException, IOException {
-		this.socket = new Socket("127.0.0.1", 4242);
+	public TestClient(int port) throws UnknownHostException, IOException {
+		this.socket = new Socket("127.0.0.1", port);
 		this.mapper = CardshifterIO.mapper();
 		out = socket.getOutputStream();
 		in = socket.getInputStream();
