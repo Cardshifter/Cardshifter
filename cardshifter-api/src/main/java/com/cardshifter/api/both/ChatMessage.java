@@ -19,9 +19,11 @@ public class ChatMessage extends Message {
 	}
 	/**
 	 * Constructor.
-	 * @param chatId  The Id of this chat message
-	 * @param from  The Id of the sender of this message
+	 * @param chatId  The Id of the Chat Area of this message, not null; always 1 unless there are muliple chat areas
+	 * @param from  The name of the sender of this message, not null; should be "unused" when sent from client to server; the server will populate this value by itself when broadcasting the message
 	 * @param message  The content of this chat message
+	 *
+	 * @example <code>{"chatId":1,"from":"unused","message":"Hello, World!","command":"chat"}</code>
 	 */
 	public ChatMessage(int chatId, String from, String message) {
 		super("chat");
@@ -29,11 +31,11 @@ public class ChatMessage extends Message {
 		this.from = from;
 		this.message = message;
 	}
-	/** @return  The Id of this chat message */
+	/** @return  The Id of the Chat Area of this message */
 	public int getChatId() {
 		return chatId;
 	}
-	/** @return  The Id of the sender of this message */
+	/** @return  The name of the sender of this message */
 	public String getFrom() {
 		return from;
 	}
@@ -41,11 +43,18 @@ public class ChatMessage extends Message {
 	public String getMessage() {
 		return message;
 	}
-	/** @return  This message as converted to String */
+	/**
+	 * @return  This message as converted to String
+	 *
+	 * @example <code>ChatMessage [chatId=1, message=Hello, World!, from=unused]</code>
+	 */
 	@Override
 	public String toString() {
-		return "ChatMessage [chatId=" + chatId + ", message=" + message
-				+ ", from=" + from + "]";
+		return "ChatMessage ["
+			+ "chatId=" + chatId
+			+ ", message=" + message
+			+ ", from=" + from
+		+ "]";
 	}
 	
 }
