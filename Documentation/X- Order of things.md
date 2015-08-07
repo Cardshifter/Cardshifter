@@ -2,7 +2,7 @@
 
 ---
 
-#Card Library Guide - Order of things
+#Cardshifter DSL Guide - Order of things
 
 This guide will explain how the order of events (a.k.a. "things") goes on in Cardshifter. There are many events going on while a game is in play, and this is an attempt to document that.  
 

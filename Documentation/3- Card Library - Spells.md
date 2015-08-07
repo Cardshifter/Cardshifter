@@ -2,17 +2,17 @@
 
 ---
 
-#Card Library Guide - Spells
+#Cardshifter DSL Guide - Spells
 
 This guide will explain how to create custom spell cards. We created an easy-to-use, flexible system that allows for creative spells to be applied to your mod. 
 
-Spells are cards that are played once and do not persist after playing; in other words, they are discarded from the game after they are played. 
+Spells are cards that are played once and do not persist after playing; in other words, they are discarded from the game after being played. 
 
 ---
 
 ###On precise grammar...
 
-It is important to note that the keywords and identifiers must be typed **exactly** as listed to be trustworthy of working. Misspelled words will not work at all. Capilatization must also be respected to ensure functionality.
+It is important to note that the keywords and identifiers must be typed **exactly** as listed to work. Misspelled words will not work at all. Cardshifter DSL is case sensitive: `card` and `CARD` are distinct identifiers and can not be used interchangeably.
 
 ---
 
@@ -40,13 +40,13 @@ The specifics of each section of the syntax will be explained in more detail.
 
 ##`spell` declaration
 
-This declares that a card is a spell, which means it will not persist in play after it is played/cast, but rather moved to the graveyard. 
+Declares that a card is a spell, which means it will not remain in play after being played/cast. Spells are moved to the graveyard after use. 
 
 ---
 
 ##`targets`
 
-A spell can have either of 1, multiple, or zero targets. Depending on what targets are allowed determines how the card will be played. 
+A spell can have either zero, one or multiple targets. The number of targets determines how the card can be played.
 
 _Note: The `cards` keyword in `target n cards` must always be plural, even if the number of card is less than 2.
 
@@ -133,7 +133,7 @@ Syntax:
 Examples:
 
     card('Acid rain') {
-        // damage 1 to call creatures on Battlefield
+        // damage 1 to all creatures on the Battlefield
         spell()
         afterPlay {
             damage 1 to {
@@ -147,7 +147,7 @@ Examples:
 
 ##Spell effects
 
-The effects declared after the spell targets are according to the **2- Card Library - Effects** documentation. The following effects are available for spells:
+The effects declared for a spell have the same semantics as other effects, described in **2- Card Library - Effects**. The following effects are available for spells:
 
 ####Triggers:
 
