@@ -15,13 +15,37 @@ import com.cardshifter.server.main.ServerMain;
 import com.cardshifter.server.model.MainServer;
 import com.cardshifter.server.model.Server;
 
+import static org.junit.Assert.assertTrue;
+
 public class ExportTest {
+
+	private final int MAX_SERVER_PORT_TRY = 10;
 
 	@Test
 	public void test() {
 		PropertyConfigurator.configure(ServerMain.class.getResourceAsStream("log4j.properties"));
-		
-		Server server = new MainServer(ServerConfiguration.defaults()).start();
+
+		ServerConfiguration config = ServerConfiguration.defaults();
+		int basePortSocket = config.getPortSocket();
+		int basePortWebsocket = config.getPortWebsocket();
+		Server server = null;
+
+		// The ports might be in use by another instance or application
+		// Could use port = 0, but would need access to the ServerSocket to get the real port number
+		for (int i = 0; i < MAX_SERVER_PORT_TRY; i++) {
+			config.setPortSocket(basePortSocket + i * 10);
+			config.setPortWebsocket(basePortWebsocket + i * 10);
+
+			server = new MainServer(config).start();
+
+			if (server.getClients().size() > 0) {
+				break;
+			}
+		}
+
+		assertTrue("Server did not start correctly after " + MAX_SERVER_PORT_TRY + " retries.",
+				server != null && server.getClients().size() > 0);
+
 		String modName = server.getGameFactories().keySet().iterator().next();
 		ServerGame game = server.createGame(modName);
         FakeClient fakeClient = new FakeClient(server, e -> {});
