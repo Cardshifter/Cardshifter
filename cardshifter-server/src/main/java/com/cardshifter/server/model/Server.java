@@ -1,12 +1,6 @@
 package com.cardshifter.server.model;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -118,6 +112,17 @@ public class Server implements ClientServerInterface {
 	 */
 	public Map<Integer, ClientIO> getClients() {
 		return Collections.unmodifiableMap(clients);
+	}
+
+	/**
+	 * @return Collection of client user names
+	 */
+	@Override
+	public Collection getClientNames() {
+		List<String> names = new ArrayList<String>();
+
+		clients.forEach((id, client) -> names.add(client.getName()));
+		return names;
 	}
 	
 	/**

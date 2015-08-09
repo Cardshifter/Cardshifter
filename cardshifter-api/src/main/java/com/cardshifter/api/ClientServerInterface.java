@@ -2,6 +2,8 @@ package com.cardshifter.api;
 
 import com.cardshifter.api.messages.Message;
 
+import java.util.Collection;
+
 public interface ClientServerInterface {
 
 	void handleMessage(ClientIO clientIO, String message);
@@ -13,5 +15,7 @@ public interface ClientServerInterface {
 	int newClientId();
 
     LogInterface getLogger();
+
+	Collection getClientNames();
 
 }
