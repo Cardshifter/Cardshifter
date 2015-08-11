@@ -177,10 +177,6 @@ public final class GameClientLauncherController implements Initializable {
                 return new Log4jAdapter();
             }
 
-			@Override
-			public Collection getClientNames() {
-				throw new UnsupportedOperationException();
-			}
         };
 		
 		try {

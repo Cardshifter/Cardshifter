@@ -70,10 +70,7 @@ public abstract class ClientIO implements IdObject {
 		return isLoggedIn() ? "online" : "offline";
 	}
 	
-	public synchronized void setName(String name) throws UserNameAlreadyInUseException {
-		if (server.getClientNames().contains(name)) {
-			throw new UserNameAlreadyInUseException("A client with name \"" + name + "\" is already logged in");
-		}
+	public void setName(String name) {
 		this.name = name;
 	}
 

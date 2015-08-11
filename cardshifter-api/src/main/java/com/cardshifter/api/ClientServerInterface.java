@@ -16,6 +16,4 @@ public interface ClientServerInterface {
 
     LogInterface getLogger();
 
-	Collection getClientNames();
-
 }
