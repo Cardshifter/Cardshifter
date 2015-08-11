@@ -69,20 +69,8 @@ public class Handlers {
 		try {
 			server.trySetClientName(client, message.getUsername());
 		}
-		catch (UserNameException e) {
-			String response = "";
-
-			if (e instanceof InvalidUserNameException) {
-				response = "User name is invalid";
-			}
-			else if (e instanceof UserNameAlreadyInUseException) {
-				response = "A user with that name is already logged in";
-			}
-			else {
-				assert false;
-			}
-
-			client.sendToClient(new WelcomeMessage(0, false, response));
+		catch (UserNameAlreadyInUseException | InvalidUserNameException e) {
+			client.sendToClient(new WelcomeMessage(0, false, e.getMessage()));
 			return;
 		}
 

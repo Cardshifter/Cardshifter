@@ -131,7 +131,8 @@ public class Server implements ClientServerInterface {
 	 * @throws UserNameAlreadyInUseException If name is already used by another client
 	 * @throws InvalidUserNameException If name is not a valid user name as determined by isValidUserName
 	 */
-	public void trySetClientName(ClientIO client, String name) throws UserNameException {
+	public void trySetClientName(ClientIO client, String name)
+			throws UserNameAlreadyInUseException, InvalidUserNameException {
 		if (!isValidUserName(name)) {
 			throw new InvalidUserNameException();
 		}
