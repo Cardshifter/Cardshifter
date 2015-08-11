@@ -1,25 +1,17 @@
 package com.cardshifter.server.model;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-import com.cardshifter.api.LogInterface;
+import com.cardshifter.api.*;
 import com.cardshifter.core.Log4jAdapter;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import com.cardshifter.api.ClientIO;
-import com.cardshifter.api.ClientServerInterface;
 import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.both.InviteResponse;
 import com.cardshifter.api.both.PlayerConfigMessage;
@@ -118,6 +110,42 @@ public class Server implements ClientServerInterface {
 	 */
 	public Map<Integer, ClientIO> getClients() {
 		return Collections.unmodifiableMap(clients);
+	}
+
+	/**
+	 * Validate a user name
+	 *
+	 * @param name The user name to be validated
+	 * @return true if user name is valid
+	 */
+	public static boolean isValidUserName(String name) {
+		return   name.length() > 0 &&
+				!name.startsWith("x");
+	}
+
+	/**
+	 * Set the user name of a client or fail
+	 *
+	 * @param client The client
+	 * @param name The user name to set
+	 * @throws UserNameAlreadyInUseException If name is already used by another client
+	 * @throws InvalidUserNameException If name is not a valid user name as determined by isValidUserName
+	 */
+	public void trySetClientName(ClientIO client, String name)
+			throws UserNameAlreadyInUseException, InvalidUserNameException {
+		if (!isValidUserName(name)) {
+			throw new InvalidUserNameException();
+		}
+
+		synchronized (this) {
+			for (ClientIO other : clients.values()) {
+				if (other.getName().equals(name)) {
+					throw new UserNameAlreadyInUseException();
+				}
+			}
+
+			client.setName(name);
+		}
 	}
 	
 	/**

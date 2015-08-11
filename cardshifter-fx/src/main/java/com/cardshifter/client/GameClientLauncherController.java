@@ -1,11 +1,8 @@
 package com.cardshifter.client;
 
 import java.net.URL;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.ResourceBundle;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.prefs.Preferences;
@@ -180,6 +177,7 @@ public final class GameClientLauncherController implements Initializable {
             public LogInterface getLogger() {
                 return new Log4jAdapter();
             }
+
         };
 		
 		try {

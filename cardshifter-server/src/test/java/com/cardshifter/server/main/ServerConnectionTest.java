@@ -50,6 +50,7 @@ public class ServerConnectionTest {
 	private Server server;
 	private TestClient client1;
 	private int userId;
+	private final String client1UserName = "Tester1";
     private AvailableModsMessage mods;
 
     @Before
@@ -61,7 +62,7 @@ public class ServerConnectionTest {
 		assertTrue("Server did not start correctly. Perhaps it is already running?", server.getClients().size() > 0);
 		
 		client1 = new TestClient();
-		client1.send(new LoginMessage("Tester"));
+		client1.send(new LoginMessage(client1UserName));
 		
 		WelcomeMessage welcome = client1.await(WelcomeMessage.class);
 		assertEquals(200, welcome.getStatus());
@@ -104,7 +105,7 @@ public class ServerConnectionTest {
 		List<UserStatusMessage> users = client2.awaitMany(6, UserStatusMessage.class);
 		System.out.println("Online users: " + users);
 		// There is no determined order in which the UserStatusMessages are received, so it is harder to make any assertions.
-		assertTrue(users.stream().filter(mess -> mess.getName().equals("Tester")).findAny().isPresent());
+		assertTrue(users.stream().filter(mess -> mess.getName().equals(client1UserName)).findAny().isPresent());
 		assertTrue(users.stream().filter(mess -> mess.getName().equals("Test2")).findAny().isPresent());
 		assertTrue(users.stream().filter(mess -> mess.getName().equals("AI Fighter")).findAny().isPresent());
 		assertTrue(users.stream().filter(mess -> mess.getName().equals("AI Loser")).findAny().isPresent());
@@ -118,6 +119,14 @@ public class ServerConnectionTest {
 		assertEquals(Status.OFFLINE, statusMessage.getStatus());
 		assertEquals(client2id, statusMessage.getUserId());
 		assertEquals("Test2", statusMessage.getName());
+	}
+
+	@Test(timeout = 5000)
+	public void testSameUserName() throws IOException, InterruptedException {
+		TestClient client2 = new TestClient();
+		client2.send(new LoginMessage(client1UserName));
+		WelcomeMessage welcomeMessage = client2.await(WelcomeMessage.class);
+		assertEquals(false, welcomeMessage.isOK());
 	}
 	
 	@Test(timeout = 10000)

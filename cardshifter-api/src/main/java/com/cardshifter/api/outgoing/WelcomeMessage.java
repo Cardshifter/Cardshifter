@@ -11,12 +11,12 @@ public class WelcomeMessage extends Message {
 	private String message;
 
 	public WelcomeMessage() {
-		this(-42, true);
+		this(-42, true, "");
 	}
-	public WelcomeMessage(int id, boolean success) {
+	public WelcomeMessage(int id, boolean success, String message) {
 		super("loginresponse");
 		this.status = success ? STATUS_OK : 404;
-		this.message = success ? "OK" : "Wrong username or password";
+		this.message = message;
 		this.userId = id;
 	}
 	
