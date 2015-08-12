@@ -5,12 +5,15 @@
  * @author Francis Gaboury [docs]
  */
 
-/** Check for Owned Battlefield Creatures
- *  @param entity A card entity.
- *  @return Boolean value indicating whether or not:
+/**
+ * Check for Owned Battlefield Creatures.
+ *
+ * @param entity  A card entity.
+ * @return Boolean  value indicating whether or not:
  *   - the entity is a creature,
  *   - is on battlefield,
- *   - and is owned by the current player. */
+ *   - and is owned by the current player.
+ */
 def ownedBattlefieldCreatures = {entity ->
     def Cards = com.cardshifter.modapi.cards.Cards;
     return entity.hasComponent(com.cardshifter.modapi.base.CreatureTypeComponent.class) &&
@@ -49,58 +52,87 @@ MANA_MAX = createResource("MANA_MAX")
 /* Which Groovy files to include for this mod.
  * See extra-resources/mods for details. */
 include 'creatures'
-include 'noAttack'
 include 'enchantment'
+include 'noAttack'
 include 'spells'
 
 // General game configuration
 
 config {
+    println 'Game closure! (Mythos)'
+
     neutral {
         resourceModifier()
         phases()
-        /* List of cardsets to load into the game entity.
-         * Note: The 'Cards' zone contains all cards available to the game entity. */
+        /**
+         * List of cardsets to load into the game entity.
+         * <p>
+         * Note: The 'Cards' zone contains all cards available to the game entity.
+         */
         zone('Cards') {
             cardset 'common'
             cardset 'chinese'
-            //cardset 'egyptian'
             cardset 'greek'
-            //cardset 'norse'
             cardset 'hindu'
+            /* Future cardsets to be added | 2015-08-11 @Phrancis */
+            //cardset 'egyptian'
+            //cardset 'norse'
             //cardset 'roman'
             //cardset 'nature'
         }
     }
 
-    /* Player configuration
-     *  Creates identical configuration for each player. */
-
-    /* Note: As of current time 2015-06-18, only two players are supported.
-     *  This entry will be updated if/when this changes. */
+    /**
+     * Player configurations
+     * <p>
+     * Creates identical configuration for each player. As of current time (2015-08-11),
+     * only 2-player play is supported.
+     * This entry will be updated if or when this changes.
+     */
     players(2) {
         phase 'Main'
         config {
+            /**
+             * General deck configuration.
+             *
+             * @param minSize  Minimum number of cards allowed in a deck
+             * @param maxSize  Maximum number of cards allowed in a deck
+             * @param zone  Name of the zone for cards, default 'Cards'
+             * @param maxCardsPerType  Default maximum of any given card in a deck,
+             *   except those for which this value is overridden by
+             *   the optional maxInDeck property available for any card.
+             */
             deck {
-                // minimum cards in deck
                 minSize 30
-                // maximum cards in deck
                 maxSize 30
-                /* maximum number of copies of a card
-                 *  - can be overridden by the maxInDeck property on individual cards */
                 maxCardsPerType 3
-                // zone where all available cards are added
                 zone 'Cards'
             }
         }
         endTurnAction()
         hand()
         battlefield()
-        // players' starting health and maximum health
+        /**
+         * Players' resources at the very beginning of a game.
+         * <p>
+         *     These resources are applied before any actions are allowed
+         *     to either player by the server. These resources can and do get
+         *     modified during the course of a game, which various depending
+         *     on a game mod's configuration.
+         * <p>
+         *     See each mod's documentation and game rules for details.
+         *
+         * @param health  The initial health before the first turn
+         * @param mana  The initial mana before the first turn
+         * @param scrap  The initial scrap before the first turn
+         *
+         * @param max_health  The health which cannot be exceeded by the players
+         * @param mana_max  The mana which cannot be exceeded by the players
+         */
         health 30
-        max_health 30
-        // initializing players' mana and mana max, which are set in the "rules" method in this file
         mana 0
+        scrap 0
+        max_health 30
         mana_max 0
     }
 }
@@ -110,31 +142,31 @@ config {
 rules {
     // Initial config
     init {
-        // Allow mulligan at start of game
-        mulliganIndividual()
         // For each player...
         game.players.each {
             // ...create play deck from Deck Builder
             it.deck.createFromConfig('Deck')
             // ...shuffle it
             it.deck.shuffle()
-        }
-    }
-
-    onStart {
-        game.players.each {
             // ...draw 5 cards
             it.drawCards(5)
         }
+        // Allow mulligan at start of game
+        mulliganIndividual()
     }
 
-    // Define how to Play a card
+    /** Define the action of playing a card. */
     action('Play') {
-        // only allow if...
+        /**
+         * Which cards are allowed to be played.
+         *
+         * @param ownedBy  The owner player of the playable card,
+     *      default 'active' (i.e., the player whose turn it currently is)
+         * @param zone  The zone where the playable card must be prior to
+         *  being played, default 'Hand'
+         */
         allowFor {
-            // ...card is owned by active player
             ownedBy 'active'
-            // ...card is on hand
             zone 'Hand'
         }
         /* 1) this action costs MANA to play
