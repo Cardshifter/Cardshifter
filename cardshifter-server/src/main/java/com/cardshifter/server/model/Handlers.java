@@ -68,7 +68,8 @@ public class Handlers {
 		logger.info("Login request: " + message.getUsername() + " for client " + client);
 
 		try {
-			server.trySetClientName(client, message.getUsername());
+			UserName name = UserName.create(message.getUsername());
+			server.trySetClientName(client, name);
 		}
 		catch (UserNameAlreadyInUseException | InvalidUserNameException e) {
 			client.sendToClient(new WelcomeMessage(0, false, e.getMessage()));

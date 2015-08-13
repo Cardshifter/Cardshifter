@@ -113,17 +113,6 @@ public class Server implements ClientServerInterface {
 	}
 
 	/**
-	 * Validate a user name
-	 *
-	 * @param name The user name to be validated
-	 * @return true if user name is valid
-	 */
-	public static boolean isValidUserName(String name) {
-		return   name.length() > 0 &&
-				!name.startsWith("x");
-	}
-
-	/**
 	 * Set the user name of a client or fail
 	 *
 	 * @param client The client
@@ -131,12 +120,7 @@ public class Server implements ClientServerInterface {
 	 * @throws UserNameAlreadyInUseException If name is already used by another client
 	 * @throws InvalidUserNameException If name is not a valid user name as determined by isValidUserName
 	 */
-	public void trySetClientName(ClientIO client, String name)
-			throws UserNameAlreadyInUseException, InvalidUserNameException {
-		if (!isValidUserName(name)) {
-			throw new InvalidUserNameException();
-		}
-
+	public void trySetClientName(ClientIO client, UserName name) throws UserNameAlreadyInUseException {
 		synchronized (this) {
 			for (ClientIO other : clients.values()) {
 				if (other.getName().equals(name)) {
@@ -144,7 +128,7 @@ public class Server implements ClientServerInterface {
 				}
 			}
 
-			client.setName(name);
+			client.setName(name.getString());
 		}
 	}
 	
