@@ -9,6 +9,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import com.cardshifter.api.*;
 import com.cardshifter.core.Log4jAdapter;
+import com.cardshifter.core.username.*;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -118,9 +119,10 @@ public class Server implements ClientServerInterface {
 	 * @param client The client
 	 * @param name The user name to set
 	 * @throws UserNameAlreadyInUseException If name is already used by another client
-	 * @throws InvalidUserNameException If name is not a valid user name as determined by isValidUserName
 	 */
-	public void trySetClientName(ClientIO client, UserName name) throws UserNameAlreadyInUseException {
+	public void trySetClientName(ClientIO client, UserName userName) throws UserNameAlreadyInUseException {
+		String name = userName.asString();
+
 		synchronized (this) {
 			for (ClientIO other : clients.values()) {
 				if (other.getName().equals(name)) {
@@ -128,7 +130,7 @@ public class Server implements ClientServerInterface {
 				}
 			}
 
-			client.setName(name.getString());
+			client.setName(name);
 		}
 	}
 	

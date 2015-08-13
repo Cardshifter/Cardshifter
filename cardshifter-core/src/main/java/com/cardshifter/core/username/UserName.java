@@ -1,4 +1,4 @@
-package com.cardshifter.server.model;
+package com.cardshifter.core.username;
 
 import java.util.*;
 
@@ -37,7 +37,7 @@ public class UserName {
             throw new InvalidUserNameException("Starts or ends with space");
         }
 
-        if (!name.matches("^[a-zA-Z0-9_ ]$")) {
+        if (!name.matches("^[a-zA-Z0-9_ ]*$")) {
             throw new InvalidUserNameException("Invalid characters");
         }
 
@@ -48,7 +48,7 @@ public class UserName {
         return new UserName(name);
     }
 
-    public String getString() {
+    public String asString() {
         return name;
     }
 

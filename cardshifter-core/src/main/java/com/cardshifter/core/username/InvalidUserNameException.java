@@ -1,4 +1,4 @@
-package com.cardshifter.server.model;
+package com.cardshifter.core.username;
 
 public class InvalidUserNameException extends Exception {
 
