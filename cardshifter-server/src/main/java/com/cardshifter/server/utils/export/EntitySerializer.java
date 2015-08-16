@@ -48,7 +48,7 @@ public class EntitySerializer extends JsonSerializer<Entity> {
 
         ComponentRetriever<CreatureTypeComponent> creatureType = Retrievers.component(CreatureTypeComponent.class);
 		if (creatureType.has(value)) {
-			jgen.writeObjectField("type", creatureType.get(value).getCreatureType());
+			jgen.writeObjectField("type", String.join(" ", creatureType.get(value).getCreatureTypes()));
 		}
 		
 		jgen.writeEndObject();		

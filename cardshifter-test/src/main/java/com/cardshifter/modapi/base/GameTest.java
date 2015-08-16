@@ -63,7 +63,7 @@ public abstract class GameTest {
 
 	protected Predicate<Entity> isCreatureType(String creatureType) {
 		return entity -> entity.hasComponent(CreatureTypeComponent.class) &&
-				entity.getComponent(CreatureTypeComponent.class).getCreatureType().equals(creatureType);
+				entity.getComponent(CreatureTypeComponent.class).hasCreatureType(creatureType);
 	}
 
 	protected void assertResource(Entity entity, ECSResource resource, int expected) {

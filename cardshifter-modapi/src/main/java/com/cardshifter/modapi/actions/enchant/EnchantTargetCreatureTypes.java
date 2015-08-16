@@ -1,6 +1,6 @@
 package com.cardshifter.modapi.actions.enchant;
 
-import java.util.Arrays;
+import java.util.*;
 
 import com.cardshifter.modapi.actions.TargetableCheckEvent;
 import com.cardshifter.modapi.actions.attack.SpecificActionTargetSystem;
@@ -37,8 +37,9 @@ public class EnchantTargetCreatureTypes extends SpecificActionTargetSystem {
 			event.setAllowed(false);
 			return;
 		}
-		String creatureType = type.get(event.getTarget()).getCreatureType();
-		if (Arrays.stream(allowedCreatureTypes).noneMatch(str -> str.equals(creatureType))) {
+
+		List<String> creatureTypes = type.get(event.getTarget()).getCreatureTypes();
+		if (Arrays.stream(allowedCreatureTypes).noneMatch(str -> creatureTypes.stream().anyMatch(str::equals))) {
 			event.setAllowed(false);
 		}
 	}
