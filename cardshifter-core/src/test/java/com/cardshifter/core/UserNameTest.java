@@ -42,6 +42,7 @@ public class UserNameTest {
                     { "abcdef ", "Starts or ends with space"},
                     { "", "Too short" },
                     { "abcdefghijklmnopqrstu", "Too long" },
+                    { "abc  def", "More than one consecutive space" }
             });
         }
 

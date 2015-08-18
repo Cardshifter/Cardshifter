@@ -41,6 +41,10 @@ public class UserName {
             throw new InvalidUserNameException("Invalid characters");
         }
 
+        if (name.matches(".*  .*")) {
+            throw new InvalidUserNameException("More than one consecutive space");
+        }
+
         if (reservedNames.contains(name)) {
             throw new InvalidUserNameException("Reserved");
         }
