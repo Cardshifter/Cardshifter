@@ -9,7 +9,7 @@ public class UserName {
 
     private static final int MIN_LENGTH = 1;
     private static final int MAX_LENGTH = 20;
-    private static final Collection<String> reservedNames = Arrays.asList("Server", "undefined");
+    private static final Collection<String> reservedNames = new HashSet<>(Arrays.asList("Server", "undefined"));
 
     private String name;
 
