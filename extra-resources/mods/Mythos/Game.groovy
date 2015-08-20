@@ -131,7 +131,6 @@ config {
          */
         health 30
         mana 0
-        scrap 0
         max_health 30
         mana_max 0
     }

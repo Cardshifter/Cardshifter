@@ -45,25 +45,51 @@ public class ServerConnectionTest {
 	private String getTestMod() {
         return mods.getMods()[0];
     }
+
+	private TestClient createTestClient() throws IOException {
+		return new TestClient(socketPort);
+	}
 	
 	private MainServer main;
 	private Server server;
+	private int socketPort;
 	private TestClient client1;
 	private int userId;
 	private final String client1UserName = "Tester1";
     private AvailableModsMessage mods;
 
+	private final int MAX_SERVER_PORT_TRY = 10;
+
     @Before
 	public void setup() throws IOException, InterruptedException {
 		PropertyConfigurator.configure(getClass().getResourceAsStream("log4j.properties"));
-		main = new MainServer(ServerConfiguration.defaults());
-        main.getMods().loadExternal(Paths.get("../extra-resources/groovy"));
-		server = main.start();
-		assertTrue("Server did not start correctly. Perhaps it is already running?", server.getClients().size() > 0);
-		
-		client1 = new TestClient();
-		client1.send(new LoginMessage(client1UserName));
-		
+		ServerConfiguration config = ServerConfiguration.defaults();
+
+		int basePortSocket = config.getPortSocket();
+		int basePortWebsocket = config.getPortWebsocket();
+
+		// The ports might be in use by another instance or application
+		// Could use port = 0, but would need access to the ServerSocket to get the real port number
+		for (int i = 0; i < MAX_SERVER_PORT_TRY; i++) {
+			config.setPortSocket(basePortSocket + i * 10);
+			config.setPortWebsocket(basePortWebsocket + i * 10);
+
+			main = new MainServer(config);
+			main.getMods().loadExternal(Paths.get("../extra-resources/groovy"));
+			server = main.start();
+
+			if (server.getClients().size() > 0) {
+				break;
+			}
+		}
+
+		assertTrue("Server did not start correctly after " + MAX_SERVER_PORT_TRY + " retries.",
+				   server.getClients().size() > 0);
+
+		socketPort = config.getPortSocket();
+		client1 = createTestClient();
+		client1.send(new LoginMessage("Tester"));
+
 		WelcomeMessage welcome = client1.await(WelcomeMessage.class);
 		assertEquals(200, welcome.getStatus());
 		System.out.println(server.getClients());
@@ -85,8 +111,7 @@ public class ServerConnectionTest {
 	
 	@Test(timeout = 20000)
 	public void testUserOnlineOffline() throws InterruptedException, UnknownHostException, IOException {
-		
-		TestClient client2 = new TestClient();
+		TestClient client2 = createTestClient();
 		client2.send(new LoginMessage("Test2"));
 		client2.await(WelcomeMessage.class);
 		client2.await(ChatMessage.class);
