@@ -117,7 +117,7 @@ public class Server implements ClientServerInterface {
 	 * Set the user name of a client or fail
 	 *
 	 * @param client The client
-	 * @param name The user name to set
+	 * @param userName The user name to set
 	 * @throws UserNameAlreadyInUseException If name is already used by another client
 	 */
 	public void trySetClientName(ClientIO client, UserName userName) throws UserNameAlreadyInUseException {

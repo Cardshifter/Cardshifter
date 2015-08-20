@@ -1,13 +1,10 @@
 package com.cardshifter.server.main;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.nio.file.Paths;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Predicate;
@@ -39,6 +36,8 @@ import com.cardshifter.modapi.base.Entity;
 import com.cardshifter.modapi.base.PlayerComponent;
 import com.cardshifter.server.model.MainServer;
 import com.cardshifter.server.model.Server;
+
+import static org.junit.Assert.*;
 
 public class ServerConnectionTest {
 
@@ -88,7 +87,7 @@ public class ServerConnectionTest {
 
 		socketPort = config.getPortSocket();
 		client1 = createTestClient();
-		client1.send(new LoginMessage("Tester"));
+		client1.send(new LoginMessage(client1UserName));
 
 		WelcomeMessage welcome = client1.await(WelcomeMessage.class);
 		assertEquals(200, welcome.getStatus());
@@ -130,13 +129,13 @@ public class ServerConnectionTest {
 		List<UserStatusMessage> users = client2.awaitMany(6, UserStatusMessage.class);
 		System.out.println("Online users: " + users);
 		// There is no determined order in which the UserStatusMessages are received, so it is harder to make any assertions.
-		assertTrue(users.stream().filter(mess -> mess.getName().equals(client1UserName)).findAny().isPresent());
-		assertTrue(users.stream().filter(mess -> mess.getName().equals("Test2")).findAny().isPresent());
-		assertTrue(users.stream().filter(mess -> mess.getName().equals("AI Fighter")).findAny().isPresent());
-		assertTrue(users.stream().filter(mess -> mess.getName().equals("AI Loser")).findAny().isPresent());
-		assertTrue(users.stream().filter(mess -> mess.getName().equals("AI Medium")).findAny().isPresent());
-		assertTrue(users.stream().filter(mess -> mess.getName().equals("AI Idiot")).findAny().isPresent());
-		
+        assertUserFound(users, client1UserName);
+        assertUserFound(users, "Test2");
+        assertUserFound(users, "AI Fighter");
+        assertUserFound(users, "AI Loser");
+        assertUserFound(users, "AI Medium");
+        assertUserFound(users, "AI Idiot");
+
 		client2.disconnect();
 		
 		System.out.println(chat);
@@ -146,12 +145,16 @@ public class ServerConnectionTest {
 		assertEquals("Test2", statusMessage.getName());
 	}
 
-	@Test(timeout = 5000)
+    private static void assertUserFound(Collection<UserStatusMessage> users, String name) {
+        assertTrue("User '" + name + "' not found", users.stream().filter(mess -> mess.getName().equals(name)).findAny().isPresent());
+    }
+
+    @Test(timeout = 5000)
 	public void testSameUserName() throws IOException, InterruptedException {
-		TestClient client2 = new TestClient();
+		TestClient client2 = createTestClient();
 		client2.send(new LoginMessage(client1UserName));
 		WelcomeMessage welcomeMessage = client2.await(WelcomeMessage.class);
-		assertEquals(false, welcomeMessage.isOK());
+		assertFalse(welcomeMessage.isOK());
 	}
 	
 	@Test(timeout = 10000)
