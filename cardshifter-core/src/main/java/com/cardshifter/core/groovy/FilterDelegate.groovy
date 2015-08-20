@@ -63,7 +63,7 @@ class FilterDelegate {
         predicate = predicate.and({Entity source, Entity target ->
             CreatureTypeComponent creatureType = target.getComponent(CreatureTypeComponent)
             if (creatureType) {
-                return creatureType.getCreatureTypes().stream().anyMatch({it in type})
+                return creatureType.hasAny(type)
             } else {
                 return false
             }

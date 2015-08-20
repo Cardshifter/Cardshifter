@@ -38,8 +38,8 @@ public class EnchantTargetCreatureTypes extends SpecificActionTargetSystem {
 			return;
 		}
 
-		List<String> creatureTypes = type.get(event.getTarget()).getCreatureTypes();
-		if (Arrays.stream(allowedCreatureTypes).noneMatch(str -> creatureTypes.stream().anyMatch(str::equals))) {
+        CreatureTypeComponent types = type.get(event.getTarget());
+		if (types.noneMatch(allowedCreatureTypes)) {
 			event.setAllowed(false);
 		}
 	}

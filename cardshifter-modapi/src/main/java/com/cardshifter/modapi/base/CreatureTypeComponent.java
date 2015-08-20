@@ -16,10 +16,6 @@ public class CreatureTypeComponent extends Component implements CopyableComponen
 		creatureTypes.add(creatureType);
 	}
 
-	public List<String> getCreatureTypes() {
-		return Collections.unmodifiableList(creatureTypes);
-	}
-
 	public boolean hasCreatureType(String creatureType) {
 		return creatureTypes.stream().anyMatch(type -> creatureType.equals(type));
 	}
@@ -34,4 +30,16 @@ public class CreatureTypeComponent extends Component implements CopyableComponen
 		return "CreatureTypeComponent [creatureType=" + String.join(",", creatureTypes) + "]";
 	}
 
+    public boolean hasAny(String... types) {
+        Set<String> lookingFor = new HashSet<>(Arrays.asList(types));
+        return creatureTypes.stream().anyMatch(lookingFor::contains);
+    }
+
+    public boolean noneMatch(String... types) {
+        return !hasAny(types);
+    }
+
+    public String getAllTypes() {
+        return String.join(" ", creatureTypes);
+    }
 }
