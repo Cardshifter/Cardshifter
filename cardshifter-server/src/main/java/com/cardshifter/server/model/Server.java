@@ -9,6 +9,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import com.cardshifter.api.*;
 import com.cardshifter.core.Log4jAdapter;
+import com.cardshifter.core.username.*;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -113,29 +114,14 @@ public class Server implements ClientServerInterface {
 	}
 
 	/**
-	 * Validate a user name
-	 *
-	 * @param name The user name to be validated
-	 * @return true if user name is valid
-	 */
-	public static boolean isValidUserName(String name) {
-		return   name.length() > 0 &&
-				!name.startsWith("x");
-	}
-
-	/**
 	 * Set the user name of a client or fail
 	 *
 	 * @param client The client
 	 * @param name The user name to set
 	 * @throws UserNameAlreadyInUseException If name is already used by another client
-	 * @throws InvalidUserNameException If name is not a valid user name as determined by isValidUserName
 	 */
-	public void trySetClientName(ClientIO client, String name)
-			throws UserNameAlreadyInUseException, InvalidUserNameException {
-		if (!isValidUserName(name)) {
-			throw new InvalidUserNameException();
-		}
+	public void trySetClientName(ClientIO client, UserName userName) throws UserNameAlreadyInUseException {
+		String name = userName.asString();
 
 		synchronized (this) {
 			for (ClientIO other : clients.values()) {

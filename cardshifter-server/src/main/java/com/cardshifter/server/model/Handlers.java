@@ -4,10 +4,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
+import com.cardshifter.api.*;
+import com.cardshifter.core.username.*;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import com.cardshifter.api.ClientIO;
 import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.both.InviteResponse;
 import com.cardshifter.api.both.PlayerConfigMessage;
@@ -68,7 +69,8 @@ public class Handlers {
 		logger.info("Login request: " + message.getUsername() + " for client " + client);
 
 		try {
-			server.trySetClientName(client, message.getUsername());
+			UserName name = UserName.create(message.getUsername());
+			server.trySetClientName(client, name);
 		}
 		catch (UserNameAlreadyInUseException | InvalidUserNameException e) {
 			client.sendToClient(new WelcomeMessage(0, false, e.getMessage()));
