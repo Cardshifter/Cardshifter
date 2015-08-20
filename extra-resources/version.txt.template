@@ -1,0 +1,5 @@
+This Cardshifter distribution was built ${date}.
+
+Git details:
+- Branch name: ${branchName}
+- Commit hash: ${commitHash}

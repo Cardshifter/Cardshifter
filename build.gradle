@@ -1,7 +1,7 @@
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import org.ajoberstar.grgit.Grgit
 
 buildscript {
     repositories {
@@ -9,6 +9,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.1'
+        classpath 'org.ajoberstar:gradle-git:1.2.0'
     }
 }
 
@@ -91,8 +92,22 @@ task copyResources(type: Copy) {
     include('mods/**')
 }
 
+task createVersionFile(type: Copy) {
+    from('extra-resources')
+    include('version.txt.template')
+    into("$project.buildDir/libs")
+    rename { 'version.txt' }
+    def repo = Grgit.open(project.file('.'))
+    expand([
+            date: DateTimeFormatter.ISO_LOCAL_DATE.format(LocalDateTime.now()),
+            branchName: repo.branch.getCurrent().getName(),
+            commitHash: repo.log(maxCommits: 1)[0].id
+    ])
+}
+
 task dist(type: Zip) {
     dependsOn 'copyResources'
+    dependsOn 'createVersionFile'
     String outputDateString = DateTimeFormatter.ofPattern("yyyyMMdd-HHmm").format(LocalDateTime.now());
     classifier = outputDateString
     from "$project.buildDir/libs"
