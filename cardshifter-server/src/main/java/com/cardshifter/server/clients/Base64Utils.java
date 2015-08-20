@@ -15,6 +15,11 @@
  */
 package com.cardshifter.server.clients;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * A utility to decode and encode byte arrays as Strings, using only "safe"
  * characters.
@@ -32,6 +37,44 @@ public class Base64Utils {
       'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p',
       'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3',
       '4', '5', '6', '7', '8', '9', '$', '_'};
+
+    /**
+     * Checks if the specified part of the given string solely consists of base64 characters
+     * @param string The string to check
+     * @param fromIndex Starting index to check
+     * @param length Number of characters to check
+     * @return True if all characters from fromIndex to toIndex are base 64, false otherwise
+     */
+    public static boolean isBase64(String string, int fromIndex, int length) {
+        for (int i = 0; i < length; i++) {
+            char ch = string.charAt(i + fromIndex);
+            if (!isBase64(ch)) {
+                System.out.println("char '" + ch + "' is not Base 64");
+                return false;
+            } else {
+                System.out.println("char '" + ch + "' **is** Base 64");
+            }
+        }
+        return true;
+    }
+
+    private static final Set<Character> BASE64_APPROVED_CHARS;
+    static {
+        Set<Character> chars = new HashSet<>();
+        for (char ch : base64Chars) {
+            chars.add(ch);
+        }
+        BASE64_APPROVED_CHARS = Collections.unmodifiableSet(chars);
+    }
+
+    /**
+     * Checks if a given character is Base64-approved
+     * @param c Character to check
+     * @return True if it is a Base64-approved character
+     */
+    private static boolean isBase64(char c) {
+        return BASE64_APPROVED_CHARS.contains(c);
+    }
 
   /**
    * An array mapping legal base 64 characters [a-zA-Z0-9$_] to their associated
