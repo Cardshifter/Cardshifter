@@ -134,10 +134,16 @@ public final class GameClientLauncherController implements Initializable {
 	
 	public void setAI(String aiName) {
 		this.aiChoice = this.aiChoices.get(aiName);
-        this.localGameButton.setDisable(false);
+        this.checkLocalGameButtonEnable();
 	}
-	
-	private void localGameStart(ActionEvent event) {
+
+    private void checkLocalGameButtonEnable() {
+        boolean aiSelected = this.aiChoice != null;
+        boolean modChosen = this.modChoice.getSelectionModel().getSelectedItem() != null;
+        this.localGameButton.setDisable(!aiSelected || !modChosen);
+    }
+
+    private void localGameStart(ActionEvent event) {
         String modName = modChoice.getValue();
 		ECSMod mod = mods.getModFor(modName);
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
