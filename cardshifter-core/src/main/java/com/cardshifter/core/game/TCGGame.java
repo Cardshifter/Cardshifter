@@ -14,6 +14,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import com.cardshifter.api.config.PlayerConfig;
+import com.cardshifter.modapi.base.*;
 import com.cardshifter.modapi.resources.ResourceViewUpdate;
 import net.zomis.cardshifter.ecs.EntitySerialization;
 import net.zomis.cardshifter.ecs.config.ConfigComponent;
@@ -46,13 +47,6 @@ import com.cardshifter.modapi.actions.TargetSet;
 import com.cardshifter.modapi.ai.AIComponent;
 import com.cardshifter.modapi.ai.AISystem;
 import com.cardshifter.modapi.ai.CardshifterAI;
-import com.cardshifter.modapi.base.ComponentRetriever;
-import com.cardshifter.modapi.base.ECSGame;
-import com.cardshifter.modapi.base.ECSGameState;
-import com.cardshifter.modapi.base.ECSMod;
-import com.cardshifter.modapi.base.Entity;
-import com.cardshifter.modapi.base.PlayerComponent;
-import com.cardshifter.modapi.base.PlayerEliminatedEvent;
 import com.cardshifter.modapi.cards.CardComponent;
 import com.cardshifter.modapi.cards.ZoneChangeEvent;
 import com.cardshifter.modapi.cards.ZoneComponent;
@@ -249,7 +243,9 @@ public class TCGGame extends ServerGame {
 				targetAction.addTarget(game.getEntity(target));
 			}
 		}
-		boolean allowed = action.perform(playerFor(client));
+
+        Entity performer = playerFor(client);
+		boolean allowed = action.perform(performer);
 		if (!allowed) {
 			client.sendToClient(new ServerErrorMessage("Action not allowed: " + action));
 		}
@@ -293,6 +289,17 @@ public class TCGGame extends ServerGame {
 		File directory = new File("replays", modName);
 		directory.mkdirs();
 		game.addSystem(new ReplayRecordSystem(game, modName, new File(directory, "replay-" + getId() + "-" + time + ".json")));
+        game.addSystem(new ECSSystem() {
+            @Override
+            public void startGame(ECSGame game) {
+                game.getEvents().registerHandlerBefore(TCGGame.this, ActionPerformEvent.class, action -> {
+                    UseAbilityMessage useAbilityMessage = new UseAbilityMessage(getId(), action.getEntity().getId(),
+                            action.getAction().getName(),
+                            action.getAction().getAllTargets().mapToInt(e -> e.getId()).toArray());
+                    send(useAbilityMessage.withPerformer(action.getPerformer().getId()));
+                });
+            }
+        });
 		
 		if (!preStartForConfiguration()) {
 			this.startECSGame();
