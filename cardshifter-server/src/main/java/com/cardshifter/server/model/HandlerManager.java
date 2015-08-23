@@ -24,11 +24,11 @@ public class HandlerManager {
         Handlers handlers = new Handlers(server);
 
         addUnauthorizedHandler("login", LoginMessage.class, handlers::loginMessage);
+        addUnauthorizedHandler("query", ServerQueryMessage.class, handlers::query);
 
         addHandler("chat", ChatMessage.class, handlers::chat);
         addHandler("startgame", StartGameRequest.class, handlers::play);
         addHandler("inviteResponse", InviteResponse.class, handlers::inviteResponse);
-        addHandler("query", ServerQueryMessage.class, handlers::query);
 
         // Directly game-related
         addHandler("use", UseAbilityMessage.class, handlers::useAbility);
