@@ -60,6 +60,10 @@ onCard('creature') {entity, args ->
     entity.taunt = 1
 }
 
+onCard('#after') {entity ->
+    imagePath 'img'
+}
+
 /**
  * General game configuration
  */

@@ -29,7 +29,7 @@ cardExtension('flavor') {String value ->
  *      imagePath "https://upload.wikimedia.org/wikipedia/commons/c/c8/Jupiter_Smyrna_Louvre_Ma13.jpg"
  */
 cardExtension('imagePath') {String value ->
-    ESCAttributeMap.createOrGetFor(entity).set(Attributes.IMAGE_PATH, value)
+    ECSAttributeMap.createOrGetFor(entity).set(Attributes.IMAGE_PATH, value)
 }
 
 // Define creature entity and related actions and values

@@ -51,6 +51,10 @@ onCard('creature') {entity, args ->
     entity.taunt = 1
 }
 
+onCard('#after') {entity ->
+    imagePath 'cyborg-chronicles/default.png'
+}
+
 // General game configuration
 
 config {

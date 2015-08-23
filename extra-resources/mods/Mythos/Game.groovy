@@ -42,6 +42,10 @@ include 'spells'
 
 // General game configuration
 
+onCard('#after') {entity ->
+    imagePath 'mythos/default.png'
+}
+
 config {
     println 'Game closure! (Mythos)'
 
