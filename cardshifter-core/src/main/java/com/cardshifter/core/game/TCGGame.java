@@ -4,6 +4,7 @@ import java.io.File;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -355,7 +356,10 @@ public class TCGGame extends ServerGame {
 			plData.setName(pl.getName());
 			this.send(new PlayerMessage(playerEntity.getId(), plData.getIndex(), plData.getName(), Resources.map(playerEntity)));
 		});
-		this.game.findEntities(e -> true).stream().flatMap(e -> e.getSuperComponents(ZoneComponent.class).stream()).forEach(this::sendZone);
+        this.game.findEntities(e -> true).stream()
+                .flatMap(e -> e.getSuperComponents(ZoneComponent.class).stream())
+                .sorted(Comparator.comparingInt(ZoneComponent::getZoneId))
+                .forEach(this::sendZone);
 		this.sendAvailableActions();
 	}
 
