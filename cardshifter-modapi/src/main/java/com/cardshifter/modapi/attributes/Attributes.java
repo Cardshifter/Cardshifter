@@ -9,6 +9,7 @@ import com.cardshifter.modapi.base.Entity;
 public final class Attributes {
 	public static final ECSAttribute NAME = new ECSAttributeDefault("name");
 	public static final ECSAttribute FLAVOR = new ECSAttributeDefault("flavor");
+	public static final ECSAttribute IMAGE_PATH = new ECSAttributeDefault("imagePath");
 	
 	private Attributes() {
 		throw new UnsupportedOperationException();

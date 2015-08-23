@@ -21,6 +21,17 @@ cardExtension('denyCounterAttack') {
 cardExtension('flavor') {String value ->
     ECSAttributeMap.createOrGetFor(entity).set(Attributes.FLAVOR, value)
 }
+/**
+ * Define creatures' imagePath property, for use client-side to specify a partial or full directory path.
+ * @example (partial path, preferred usage):
+ *      imagePath "mods/mythos/zeus.jpg"
+ * @example (full path, not recommended due to dependency on other web servers:
+ *      imagePath "https://upload.wikimedia.org/wikipedia/commons/c/c8/Jupiter_Smyrna_Louvre_Ma13.jpg"
+ */
+cardExtension('imagePath') {String value ->
+    ESCAttributeMap.createOrGetFor(entity).set(Attributes.IMAGE_PATH, value)
+}
+
 // Define creature entity and related actions and values
 cardExtension('creature') {String type ->
     // Creatures must have a type
