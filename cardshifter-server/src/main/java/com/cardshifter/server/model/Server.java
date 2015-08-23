@@ -22,7 +22,6 @@ import com.cardshifter.api.incoming.ServerQueryMessage;
 import com.cardshifter.api.incoming.StartGameRequest;
 import com.cardshifter.api.incoming.UseAbilityMessage;
 import com.cardshifter.api.messages.Message;
-import com.cardshifter.api.outgoing.ClientDisconnectedMessage;
 import com.cardshifter.api.outgoing.ServerErrorMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage.Status;
@@ -46,8 +45,7 @@ public class Server implements ClientServerInterface {
 	/**
 	 * The IncomingHandler receives messages and passes them to the correct Handler
 	 */
-	private final IncomingHandler incomingHandler;
-	private final CommandHandler commandHandler;
+	private final HandlerManager handlerManager;
 	
 	private final Map<Integer, ClientIO> clients = new ConcurrentHashMap<>();
 	private final Map<Integer, ChatArea> chats = new ConcurrentHashMap<>();
@@ -62,26 +60,9 @@ public class Server implements ClientServerInterface {
 	private final ChatArea mainChat;
 
 	public Server() {
-		this.incomingHandler = new IncomingHandler();
-		this.commandHandler = new CommandHandler(this);
+		this.handlerManager = new HandlerManager(this);
 		this.scheduler = Executors.newScheduledThreadPool(2, new ThreadFactoryBuilder().setNameFormat("ai-thread-%d").build());
 		mainChat = this.newChatRoom("Main");
-		
-		Handlers handlers = new Handlers(this);
-		
-		/**
-		 * Add a handler for each type of command, message, and method in Handlers
-		 */
-		incomingHandler.addHandler("login", LoginMessage.class, handlers::loginMessage);
-		incomingHandler.addHandler("chat", ChatMessage.class, handlers::chat);
-		incomingHandler.addHandler("startgame", StartGameRequest.class, handlers::play);
-		incomingHandler.addHandler("inviteResponse", InviteResponse.class, handlers::inviteResponse);
-		incomingHandler.addHandler("query", ServerQueryMessage.class, handlers::query);
-		
-		// Directly game-related
-		incomingHandler.addHandler("use", UseAbilityMessage.class, handlers::useAbility);
-		incomingHandler.addHandler("requestTargets", RequestTargetsMessage.class, handlers::requestTargets);
-		incomingHandler.addHandler("playerconfig", PlayerConfigMessage.class, handlers::incomingConfig);
 	}
 	
 	/**
@@ -139,28 +120,18 @@ public class Server implements ClientServerInterface {
 	 * @return Returns the IncomingHandler for the Server
 	 */
 	public IncomingHandler getIncomingHandler() {
-		return incomingHandler;
+		return handlerManager.getIncomingHandler();
 	}
 
 	/**
-	 * Passes the message to incomingHandler which will parse and perform it
+	 * Passes the message to the IncomingHandler which will parse and perform it
 	 * 
 	 * @param client The client sending the message
 	 * @param json The actual contents of the message
 	 */
 	@Override
 	public void handleMessage(ClientIO client, String json) {
-		Objects.requireNonNull(client, "Cannot handle message from a null client");
-		logger.info("Handle message " + client + ": " + json);
-		Message message;
-		try {
-			message = incomingHandler.parse(json);
-			logger.info("Parsed Message: " + message);
-			incomingHandler.perform(message, client);
-		} catch (Exception e) {
-			logger.error("Unable to parse incoming json: " + json, e);
-			client.sendToClient(new ServerErrorMessage(e.getMessage()));
-		}
+		handlerManager.handleMessage(client, json);
 	}
 
 	/**
@@ -304,7 +275,7 @@ public class Server implements ClientServerInterface {
 	 * @return The CommandHandler object
 	 */
 	public CommandHandler getCommandHandler() {
-		return commandHandler;
+		return handlerManager.getCommandHandler();
 	}
 
 	@Override
