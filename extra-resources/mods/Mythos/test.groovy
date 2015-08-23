@@ -28,3 +28,36 @@ from clearState test('summon on battlefield') using {
     uses 'End Turn' ok
     assert player.health == 30
 }
+
+from clearState test('mana upkeep default') using {
+    def card = to you zone 'Hand' create {
+        creature 'Chinese'
+        health 1
+        manaCost 3
+    }
+    assert card.mana_upkeep == card.mana_cost
+    def player = you
+    assert player.mana == 10
+    uses 'Play' on card ok
+    assert player.mana == 7
+    uses 'End Turn' ok
+    uses 'End Turn' ok
+    assert player.mana == 17
+}
+
+from clearState test('mana upkeep with manaUpkeep') using {
+    def card = to you zone 'Hand' create {
+        creature 'Chinese'
+        health 1
+        manaCost 3
+        manaUpkeep 5
+    }
+    assert card.mana_upkeep == 5
+    def player = you
+    assert player.mana == 10
+    uses 'Play' on card ok
+    assert player.mana == 7
+    uses 'End Turn' ok
+    uses 'End Turn' ok
+    assert player.mana == 15
+}

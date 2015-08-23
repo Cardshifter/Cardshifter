@@ -8,6 +8,9 @@ import com.cardshifter.modapi.attributes.*
 cardExtension('manaCost') {int value ->
     mana_cost(value)
 }
+cardExtension('manaUpkeep') {int value ->
+    mana_upkeep(value)
+}
 // Define creatures' health and max health values
 cardExtension('health') {int value ->
     setResource('health', value)

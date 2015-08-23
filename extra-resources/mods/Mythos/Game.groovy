@@ -11,6 +11,7 @@ ATTACK = createResource('ATTACK')
 HEALTH = createResource("HEALTH")
 MAX_HEALTH = createResource("MAX_HEALTH")
 MANA_COST = createResource("MANA_COST")
+MANA_UPKEEP = createResource("MANA_UPKEEP")
 
 // Resources that declare a specific special behavior to creature cards
 
@@ -239,7 +240,7 @@ rules {
             /* MYTHOS MECHANIC:
              * your mana is reduced by...
              * ...the mana cost of cards on your Battlefield */
-            you.mana -= it.mana_cost
+            you.mana -= it.mana_upkeep
             // ...cards that can attack are set to have an attack available
             it.attack_available = 1
             // cards that have any sickness...
