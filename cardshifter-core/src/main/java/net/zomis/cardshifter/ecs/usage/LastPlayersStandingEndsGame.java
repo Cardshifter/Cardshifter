@@ -5,6 +5,9 @@ import com.cardshifter.modapi.base.ECSSystem;
 import com.cardshifter.modapi.base.PlayerComponent;
 import com.cardshifter.modapi.base.PlayerEliminatedEvent;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * Adds functionality that ends the game when there's only one (or less) players remaining in the game
  * 
@@ -37,12 +40,13 @@ public class LastPlayersStandingEndsGame implements ECSSystem {
 	}
 	
 	private void onPlayerEliminated(PlayerEliminatedEvent event) {
-		long numAlive = event.getEntity().getGame()
+		List<PlayerComponent> alive = event.getEntity().getGame()
 			.getEntitiesWithComponent(PlayerComponent.class).stream()
 			.map(e -> e.getComponent(PlayerComponent.class))
 			.filter(pl -> !pl.isEliminated())
-			.count();
-		if (numAlive <= playersRemainingToEnd) {
+            .collect(Collectors.toList());
+		if (alive.size() <= playersRemainingToEnd) {
+            alive.forEach(PlayerComponent::winGame);
 			event.getEntity().getGame().endGame();
 		}
 	}
