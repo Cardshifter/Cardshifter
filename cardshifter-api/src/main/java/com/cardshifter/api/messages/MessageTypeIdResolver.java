@@ -13,24 +13,7 @@ import com.cardshifter.api.incoming.ServerQueryMessage;
 import com.cardshifter.api.incoming.StartGameRequest;
 import com.cardshifter.api.incoming.TransformerMessage;
 import com.cardshifter.api.incoming.UseAbilityMessage;
-import com.cardshifter.api.outgoing.AvailableModsMessage;
-import com.cardshifter.api.outgoing.AvailableTargetsMessage;
-import com.cardshifter.api.outgoing.CardInfoMessage;
-import com.cardshifter.api.outgoing.ClientDisconnectedMessage;
-import com.cardshifter.api.outgoing.EntityRemoveMessage;
-import com.cardshifter.api.outgoing.GameMessage;
-import com.cardshifter.api.outgoing.GameOverMessage;
-import com.cardshifter.api.outgoing.NewGameMessage;
-import com.cardshifter.api.outgoing.PlayerMessage;
-import com.cardshifter.api.outgoing.ResetAvailableActionsMessage;
-import com.cardshifter.api.outgoing.ServerErrorMessage;
-import com.cardshifter.api.outgoing.UpdateMessage;
-import com.cardshifter.api.outgoing.UsableActionMessage;
-import com.cardshifter.api.outgoing.UserStatusMessage;
-import com.cardshifter.api.outgoing.WaitMessage;
-import com.cardshifter.api.outgoing.WelcomeMessage;
-import com.cardshifter.api.outgoing.ZoneChangeMessage;
-import com.cardshifter.api.outgoing.ZoneMessage;
+import com.cardshifter.api.outgoing.*;
 
 /**
  * Message Type ID Resolver.
@@ -71,6 +54,7 @@ public class MessageTypeIdResolver {
 		clazzes.put("useable", UsableActionMessage.class);
 		clazzes.put("targets", AvailableTargetsMessage.class);
 		clazzes.put("availableMods", AvailableModsMessage.class);
+        clazzes.put("elimination", PlayerEliminatedMessage.class);
 		// Messages both incoming and outgoing
 		clazzes.put("inviteRequest", InviteRequest.class);
 		clazzes.put("inviteResponse", InviteResponse.class);

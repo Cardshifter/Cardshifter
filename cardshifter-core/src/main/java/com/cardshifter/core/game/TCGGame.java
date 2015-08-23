@@ -14,6 +14,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import com.cardshifter.api.config.PlayerConfig;
+import com.cardshifter.api.outgoing.*;
 import com.cardshifter.modapi.base.*;
 import com.cardshifter.modapi.resources.ResourceViewUpdate;
 import net.zomis.cardshifter.ecs.EntitySerialization;
@@ -28,16 +29,6 @@ import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.both.PlayerConfigMessage;
 import com.cardshifter.api.incoming.RequestTargetsMessage;
 import com.cardshifter.api.incoming.UseAbilityMessage;
-import com.cardshifter.api.outgoing.AvailableTargetsMessage;
-import com.cardshifter.api.outgoing.CardInfoMessage;
-import com.cardshifter.api.outgoing.EntityRemoveMessage;
-import com.cardshifter.api.outgoing.PlayerMessage;
-import com.cardshifter.api.outgoing.ResetAvailableActionsMessage;
-import com.cardshifter.api.outgoing.ServerErrorMessage;
-import com.cardshifter.api.outgoing.UpdateMessage;
-import com.cardshifter.api.outgoing.UsableActionMessage;
-import com.cardshifter.api.outgoing.ZoneChangeMessage;
-import com.cardshifter.api.outgoing.ZoneMessage;
 import com.cardshifter.core.replays.ReplayRecordSystem;
 import com.cardshifter.modapi.actions.ActionComponent;
 import com.cardshifter.modapi.actions.ActionPerformEvent;
@@ -331,7 +322,9 @@ public class TCGGame extends ServerGame {
 	private void playerEliminated(PlayerEliminatedEvent event) {
 		String winStatus = event.isDeclaredWinner() ? "won" : "lost";
 		PlayerComponent player = event.getEntity().getComponent(PlayerComponent.class);
-		this.sendChat(player.getName() + " " + winStatus + " game " + getId());		
+        this.send(new PlayerEliminatedMessage(event.getEntity().getId(), event.isDeclaredWinner(),
+                event.getResultPosition()));
+		this.sendChat(player.getName() + " " + winStatus + " game " + getId());
 	}
 	
 	public void sendChat(String message) {
