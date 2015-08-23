@@ -87,8 +87,19 @@ task copyResources(type: Copy) {
     from('extra-resources')
     into("$project.buildDir/libs")
     include('server.properties.example')
-    include('decks/Cyborg-Chronicles/Balanced.deck')
-    include('decks/Cyborg-Chronicles/Defensive.deck')
+    for (File mod : new File('extra-resources/decks').listFiles()) {
+        println 'Checking mod ' + mod.getName()
+        for (File deck : mod.listFiles()) {
+            def modName = mod.getName()
+            def deckName = deck.getName()
+            if (Character.isUpperCase(deck.getName().charAt(0))) {
+                println("Include decks/${modName}/${deckName}")
+                include("decks/${modName}/${deckName}")
+            } else {
+                println("Deck name does not start with capital letter, skipping: decks/${modName}/${deckName}")
+            }
+        }
+    }
     include('mods/**')
 }
 
