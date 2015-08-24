@@ -34,7 +34,7 @@ public class ResourceRetriever {
 	public boolean has(Entity entity) {
 		Objects.requireNonNull(entity, "Cannot retrieve resource map for null entity");
 		ECSResourceMap map = entity.getComponent(ECSResourceMap.class);
-		return map != null && resFor(entity) != null;
+		return map != null && map.get(resource).isPresent();
 	}
 
 	public ECSResourceData resFor(Entity entity) {
