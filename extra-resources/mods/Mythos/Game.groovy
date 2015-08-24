@@ -1,3 +1,5 @@
+import com.cardshifter.modapi.resources.*
+
 /*
  * The Game class sets up all the parameters upon a game being started for a mod using the client.
  * It is imported during run time, hence errors with the mod will be logged to the server console at run time.
@@ -45,6 +47,15 @@ include 'spells'
 
 onCard('#after') {entity ->
     imagePath 'mythos/default.png'
+
+    // Set mana upkeep to mana cost if it's not set explicitly
+    ECSResourceMap map = entity.getComponent(ECSResourceMap.class);
+    if (map != null) {
+        Optional<ECSResourceData> resData = map.get(MANA_UPKEEP);
+        if (!resData.isPresent()) {
+            manaUpkeep MANA_COST.retriever().getFor(entity)
+        }
+    }
 }
 
 config {
