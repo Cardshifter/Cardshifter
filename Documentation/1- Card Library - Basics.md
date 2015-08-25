@@ -111,6 +111,10 @@ A creature card with `n` attack can cause `n` damage  to a target card or player
 
 A card with `n` manaCost requires spending `n` player mana points in order to play it. Usage: `manaCost n`
 
+#####_"Mythos"_ mod only: `manaUpkeep`
+
+In addition to mana cost when playing a card, a card also costs mana to keep on the battlefield. This is called mana upkeep. The mana upkeep cost defaults to the mana cost of the card, but can be set separately. Usage: `manaUpkeep n`
+
 ####`sickness`
 
 A creature card with `n` sickness must wait `n` turns after being played before it can perform an action. A creature with `0` sickness is often referred to as having "Rush" or immediate action. Usage: `sickness n`
