@@ -98,7 +98,7 @@ class EffectDelegate {
     def withProbability(double probability, @DelegatesTo(EffectDelegate) Closure action) {
         EffectDelegate deleg = create(action, false)
         assert deleg.closures.size() > 0 : 'probability condition needs to have some actions'
-        description.append("$probability % chance to $deleg.description")
+        description.append("${probability * 100 as int}% chance to $deleg.description")
         closures.add({Entity source, Object data ->
             double random = source.game.random.nextDouble()
             println "random $random probability $probability perform ${random < probability}"
