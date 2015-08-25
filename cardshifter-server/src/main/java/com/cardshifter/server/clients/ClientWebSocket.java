@@ -86,6 +86,15 @@ public class ClientWebSocket extends ClientIO {
 
 	@Override
 	public String getRemoteAddress() {
+        if (conn == null) {
+            return "null connection";
+        }
+        if (conn.isOpen()) {
+            return "connection not open";
+        }
+        if (conn.getRemoteSocketAddress() == null) {
+            return "null address";
+        }
 		return conn.getRemoteSocketAddress().toString();
 	}
 
