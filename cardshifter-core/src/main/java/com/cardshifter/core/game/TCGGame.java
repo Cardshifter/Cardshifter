@@ -177,9 +177,9 @@ public class TCGGame extends ServerGame {
 			return;
 		}
 		
-		Entity entity = event.getEntity();
-		UpdateMessage updateEvent = new UpdateMessage(entity.getId(), event.getResource().toString(), event.getNewValue());
-		broadcast(entity, updateEvent);
+	//	Entity entity = event.getEntity();
+	//	UpdateMessage updateEvent = new UpdateMessage(entity.getId(), event.getResource().toString(), event.getNewValue());
+	//	broadcast(entity, updateEvent);
 	}
 	
 	/**
