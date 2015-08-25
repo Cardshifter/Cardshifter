@@ -9,6 +9,7 @@ public abstract class ClientIO implements IdObject {
 	private final ClientServerInterface server;
     private final LogInterface logger;
 	private int id;
+    private boolean disconnected;
 
 	public ClientIO(ClientServerInterface server) {
 		this.server = server;
@@ -22,8 +23,11 @@ public abstract class ClientIO implements IdObject {
 	 * @param message Message to send
 	 * @throws IllegalArgumentException If message is not serializable
 	 */
-	public final void sendToClient(Message message) throws IllegalArgumentException {
+	public final void sendToClient(Message message) {
 		logger.info("Send to " + this.getName() + ": " + message);
+        if (this.disconnected) {
+            return;
+        }
 		this.onSendToClient(message);
 	}
 	
@@ -53,7 +57,8 @@ public abstract class ClientIO implements IdObject {
 	/**
 	 * Inform the server that this client has disconnected
 	 */
-	protected void disconnected() {
+	protected final void disconnected() {
+        this.disconnected = true;
 		server.onDisconnected(this);
 	}
 	
