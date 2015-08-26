@@ -18,7 +18,7 @@ class ZoneDelegate {
     }
 
     def cardset(String name) {
-        File file = new File(mod.modDirectory, "${name}.groovy")
+        File file = new File(mod.modDirectory, "${name}.cardset")
         CompilerConfiguration cc = new CompilerConfiguration()
         cc.setScriptBaseClass(DelegatingScript.class.getName())
         GroovyShell sh = new GroovyShell(mod.loader, mod.binding, cc)
