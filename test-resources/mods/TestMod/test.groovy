@@ -87,3 +87,20 @@ from clearState test 'Pick One Change' using {
     uses 'End Turn' ok
 }
 
+from clearState test 'enchantment with afterPlay' using {
+    def enchant = to you zone 'Hand' create {
+        enchantment2()
+        afterPlay {
+            change ATTACK by 1 on targets
+        }
+    }
+    def creatur = to you zone 'Battlefield' create {
+        creature 'Bio'
+        attack 1
+        health 1
+    }
+
+    assert creatur.attack == 1
+    uses 'Use' on enchant withTarget creatur ok
+    assert creatur.attack == 2
+}

@@ -9,6 +9,8 @@ import com.cardshifter.modapi.attributes.*
  * @author Simon Forsberg [code]
  * @author Francis Gaboury [docs] */
 
+include 'spells'
+
 // Define the Enchantments' addAttack value
 cardExtension('addAttack') {int value ->
     attack value
@@ -47,3 +49,11 @@ cardExtension('set') {resource, val ->
     );
 }
 
+cardExtension('enchantment2') {
+    spell {
+        targets 1 cards {
+            creature true
+            zone 'Battlefield'
+        }
+    }
+}
