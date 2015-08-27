@@ -17,7 +17,7 @@ allprojects {
     version = '1.0'
     ext {
         appName = 'cardshifter-gdx'
-        cardshifterVersion = '0.6-SNAPSHOT'
+        cardshifterVersion = '0.6.1-SNAPSHOT'
         gdxVersion = '1.5.3'
         roboVMVersion = '1.4.0'
         box2DLightsVersion = '1.3'
