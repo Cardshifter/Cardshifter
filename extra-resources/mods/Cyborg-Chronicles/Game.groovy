@@ -52,7 +52,10 @@ onCard('creature') {entity, args ->
 }
 
 onCard('#after') {entity ->
-    imagePath 'cyborg-chronicles/default.png'
+    if (!entity.imagePath) {
+        println 'Adding default image path for ' + entity.name
+        imagePath 'cyborg-chronicles/default.png'
+    }
 }
 
 // General game configuration

@@ -44,7 +44,10 @@ include 'spells'
 // General game configuration
 
 onCard('#after') {entity ->
-    imagePath 'mythos/default.png'
+    if (!entity.imagePath) {
+        println 'Adding default image path for ' + entity.name
+        imagePath 'mythos/default.png'
+    }
 
     // Set mana upkeep to mana cost if it's not set explicitly
     if (!MANA_UPKEEP.retriever.has(entity)) {

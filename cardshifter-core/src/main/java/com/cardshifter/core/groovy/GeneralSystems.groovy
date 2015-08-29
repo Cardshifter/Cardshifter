@@ -199,6 +199,7 @@ public class GeneralSystems {
         // this adds properties to entities so that it's possible to write `entity.name` to get the name (if there is one)
         game.getEntityMeta().getName << {Attributes.NAME.getOrDefault(delegate, null)}
         game.getEntityMeta().getFlavor << {Attributes.FLAVOR.getOrDefault(delegate, null)}
+        game.getEntityMeta().getImagePath << {Attributes.IMAGE_PATH.getOrDefault(delegate, null)}
         game.getEntityMeta().getOwner << {Players.findOwnerFor(delegate)}
         game.getEntityMeta().getCard << {delegate.getComponent(CardComponent)}
         game.getEntityMeta().getDeck << {delegate.getComponent(DeckComponent)}

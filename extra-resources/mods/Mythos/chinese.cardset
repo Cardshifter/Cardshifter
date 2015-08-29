@@ -18,12 +18,13 @@ card('ChangeMe') {
 
 // PANTHEON
 
+// Info: http://en.wikipedia.org/wiki/Jade_Emperor
+// Image: http://upload.wikimedia.org/wikipedia/commons/2/24/Jade_Emperor._Ming_Dynasty.jpg
+// License: Public Domain
 card('JADE EMPEROR') {
     creature 'Chinese God'
     flavor 'The Great Grandfather, Emperor of all Deities, Vanquisher of Evil.'
-    // Info: http://en.wikipedia.org/wiki/Jade_Emperor
-    // Image: http://upload.wikimedia.org/wikipedia/commons/2/24/Jade_Emperor._Ming_Dynasty.jpg
-    // License: Public Domain
+    imagePath 'mythos/chinese/jade-emperor.jpg'
     maxInDeck 1
     health 10
     sickness 1
@@ -41,13 +42,13 @@ card('JADE EMPEROR') {
         }
     }
 }
+// Info: http://en.wikipedia.org/wiki/N%C3%BCwa
+// Image: https://upload.wikimedia.org/wikipedia/commons/0/02/Xiaoyuncong_nvwa.jpg
+// License: Public Domain
 card('NUWA') {
     creature 'Chinese God'
     flavor 'Serpent Creator Goddess of Mankind and Repairer of the Pillar of Heaven.'
-    
-    // Info: http://en.wikipedia.org/wiki/N%C3%BCwa
-    // Image: http://upload.wikimedia.org/wikipedia/commons/4/49/Nuwa.jpg
-    // License: Public Domain
+    imagePath 'mythos/chinese/nuwa.jpg'
     maxInDeck 1
     health 10
     sickness 1
@@ -67,13 +68,13 @@ card('NUWA') {
         )
     }
 }
+// Info: http://en.wikipedia.org/wiki/Diyu
+// Image: http://upload.wikimedia.org/wikipedia/commons/c/cb/Jade_Record_1.PNG
+// License: Public Domain
 card('DIYU') {
     creature 'Chinese Place'
     flavor 'The Realm of the Dead, containing the Ten Courts of Hell.'
-    
-    // Info: http://en.wikipedia.org/wiki/Diyu
-    // Image: http://upload.wikimedia.org/wikipedia/commons/c/cb/Jade_Record_1.PNG
-    // License: Public Domain
+    imagePath 'mythos/chinese/diyu.jpg'
     maxInDeck 1
     health 10
     sickness 0
@@ -98,10 +99,11 @@ card('DIYU') {
     }
 }
 // Tokens for DIYU
+// Info: http://en.wikipedia.org/wiki/Yaoguai
 card('Yaoguai') {
     creature 'Chinese'
     flavor 'Freak'
-    // Info: http://en.wikipedia.org/wiki/Yaoguai
+    imagePath 'mythos/chinese/yaoguai.jpg'
     token()
     sickness 1
     manaCost 0
@@ -112,7 +114,7 @@ card('Yaoguai') {
 card('Yaomo') {
     creature 'Chinese'
     flavor 'Demon'
-    // Info: http://en.wikipedia.org/wiki/Yaoguai
+    imagePath 'mythos/chinese/yaomo.jpg'
     token()
     sickness 1
     manaCost 0
@@ -122,7 +124,7 @@ card('Yaomo') {
 card('Yaojing') {
     creature 'Chinese'
     flavor 'Pixie'
-    // Info: http://en.wikipedia.org/wiki/Yaoguai
+    imagePath 'mythos/chinese/yaojing.jpg'
     token()
     sickness 1
     manaCost 0
@@ -132,13 +134,13 @@ card('Yaojing') {
     taunt()
 }
 
+// Info: http://en.wikipedia.org/wiki/Sun_Wukong
+// Image: http://upload.wikimedia.org/wikipedia/commons/2/25/Sun_Wukong_and_Jade_Rabbit.jpg
+// License: Public Domain
 card('MONKING') {
     creature 'Chinese Hero'
     flavor 'Monkey King Warrior of Immense Strength.'
-    
-    // Info: http://en.wikipedia.org/wiki/Sun_Wukong
-    // Image: http://upload.wikimedia.org/wikipedia/commons/2/25/Sun_Wukong_and_Jade_Rabbit.jpg
-    // License: Public Domain
+    imagePath 'mythos/chinese/monking.jpg'
     maxInDeck 2
     health 5
     sickness 0
@@ -151,14 +153,14 @@ card('MONKING') {
         }
     }
 }
+// Info: http://en.wikipedia.org/wiki/Guan_Yu
+// Image: http://upload.wikimedia.org/wikipedia/commons/e/eb/Guan_yu_-Summer_Palace%2C_Beijing.JPG
+// License: CC BY-SA 3.0
+// Author: http://commons.wikimedia.org/wiki/User:Shizhao
 card('GUAN YU') {
     creature 'Chinese God'
     flavor 'God of War and Martial Arts.'
-    
-    // Info: http://en.wikipedia.org/wiki/Guan_Yu
-    // Image: http://upload.wikimedia.org/wikipedia/commons/e/eb/Guan_yu_-Summer_Palace%2C_Beijing.JPG
-    // License: CC BY-SA 3.0
-    // Author: http://commons.wikimedia.org/wiki/User:Shizhao
+    imagePath 'mythos/chinese/guan-yu.jpg'
     maxInDeck 2
     health 10
     sickness 1
@@ -168,13 +170,13 @@ card('GUAN YU') {
         summon 2 of 'Terracotta Soldier' to 'you' zone 'Hand'
     }
 }
+// Info: http://en.wikipedia.org/wiki/Eight_Immortals
+// Image: http://upload.wikimedia.org/wikipedia/commons/9/9a/Eight_Immortals_Crossing_the_Sea_-_Project_Gutenberg_eText_15250.jpg
+// License: Public Domain
 card('EIGHT IMMORTALS') {
     creature 'Chinese'
     flavor 'Their power can be transferred to a tool that can bestow life or destroy evil.'
-    
-    // Info: http://en.wikipedia.org/wiki/Eight_Immortals
-    // Image: http://upload.wikimedia.org/wikipedia/commons/9/9a/Eight_Immortals_Crossing_the_Sea_-_Project_Gutenberg_eText_15250.jpg
-    // License: Public Domain
+    imagePath 'mythos/chinese/eight-immortals.jpg'
     health 5
     sickness 1
     manaCost 10
@@ -190,6 +192,7 @@ card('EIGHT IMMORTALS') {
 card('Life Tool') {
     creature 'Chinese'
     flavor 'Restores life.'
+    imagePath 'mythos/chinese/life-tool.jpg'
     token()
     health 3
     attack 0
@@ -201,6 +204,7 @@ card('Life Tool') {
 card('Destruction Tool') {
     creature 'Chinese'
     flavor 'Causes damage.'
+    imagePath 'mythos/chinese/destruction-tool.jpg'
     token()
     health 3
     attack 0
@@ -210,13 +214,13 @@ card('Destruction Tool') {
     }
 }
 
+// Info: http://en.wikipedia.org/wiki/Yama_(East_Asia)#Yama_in_Tibetan_Buddhism
+// Image: http://upload.wikimedia.org/wikipedia/commons/5/54/Yama_tibet.jpg
+// License: Public Domain
 card('SHINJE') {
     creature 'Chinese God'
     flavor 'Wrathful God of Death and Guardian of Spiritual Practice.'
-    
-    // Info: http://en.wikipedia.org/wiki/Yama_(East_Asia)#Yama_in_Tibetan_Buddhism
-    // Image: http://upload.wikimedia.org/wikipedia/commons/5/54/Yama_tibet.jpg
-    // License: Püblic Domain
+    imagePath 'mythos/chinese/shinje.jpg'
     maxInDeck 1
     health 6
     sickness 1
@@ -234,14 +238,15 @@ card('SHINJE') {
         }
     }
 }
+
+// Info: http://en.wikipedia.org/wiki/Guanyin
+// Image: http://upload.wikimedia.org/wikipedia/commons/8/89/Daienin_Kannon.JPG
+// License: CC BY-SA 3.0
+// Author: ':...---...SOS' | http://commons.wikimedia.org/w/index.php?title=User:...---...SOS&action=edit&redlink=1
 card('GUANYIN') {
     creature 'Chinese God'
     flavor 'Perceives the Cries of the World'
-    
-    // Info: http://en.wikipedia.org/wiki/Guanyin
-    // Image: http://upload.wikimedia.org/wikipedia/commons/8/89/Daienin_Kannon.JPG
-    // License: CC BY-SA 3.0
-    // Author: ':...---...SOS' | http://commons.wikimedia.org/w/index.php?title=User:...---...SOS&action=edit&redlink=1
+    imagePath 'mythos/chinese/guanyin.jpg'
     maxInDeck 2
     health 10
     sickness 1
@@ -260,14 +265,14 @@ card('GUANYIN') {
         change HEALTH by -1 on { thisCard() }
     }
 }
+// Info: http://en.wikipedia.org/wiki/Mazu_(goddess)
+// Image: http://upload.wikimedia.org/wikipedia/commons/c/cf/Mazu_statue.JPG
+// License: CC BY-SA 3.0
+// Author: http://commons.wikimedia.org/wiki/User:Dli184
 card('MAZU') {
     creature 'Chinese God'
     flavor 'Silent Goddess watching over Seafarers.'
-    
-    // Info: http://en.wikipedia.org/wiki/Mazu_(goddess)
-    // Image: http://upload.wikimedia.org/wikipedia/commons/c/cf/Mazu_statue.JPG
-    // License: CC BY-SA 3.0
-    // Author: http://commons.wikimedia.org/wiki/User:Dli184
+    imagePath 'mythos/chinese/mazu.jpg'
     health 8
     sickness 1
     manaCost 10
@@ -288,41 +293,41 @@ card('MAZU') {
 
 // COMMON UNITS
 
+// Info: http://en.wikipedia.org/wiki/Terracotta_Army
+// Image: http://upload.wikimedia.org/wikipedia/commons/2/22/Officer_Terrakottaarm%C3%A9n.jpg
+// License: CC BY-SA 3.0
+// Author: Tor Svensson | http://sv.wikipedia.org/wiki/User:Kemitsv
 card('Terracotta Soldier') {
     creature 'Chinese'
     flavor 'Armies of Qin Shi Huang, the first Emperor of China.'
-    
-    // Info: http://en.wikipedia.org/wiki/Terracotta_Army
-    // Image: http://upload.wikimedia.org/wikipedia/commons/2/22/Officer_Terrakottaarm%C3%A9n.jpg
-    // License: CC BY-SA 3.0
-    // Author: Tor Svensson | http://sv.wikipedia.org/wiki/User:Kemitsv
+    imagePath 'mythos/chinese/terracotta-soldier.jpg'
     manaCost 5
     sickness 1
     health 3
     attack 3
     taunt()
 }
+// Info: http://en.wikipedia.org/wiki/Chinese_archery
+// Image: http://upload.wikimedia.org/wikipedia/commons/2/20/Manchuguard.jpg
+// License: Public Domain
 card('Manchu Archer') {
     creature 'Chinese'
     flavor: 'Archers have played a pivotal role in Chinese society.'
-    
-    // Info: http://en.wikipedia.org/wiki/Chinese_archery
-    // Image: http://upload.wikimedia.org/wikipedia/commons/2/20/Manchuguard.jpg
-    // License: Public Domain
+    imagePath 'mythos/chinese/manchu-archer.jpg'
     manaCost 5
     sickness 1
     health 4
     attack 2
     denyCounterAttack()
 }
+// Info: http://en.wikipedia.org/wiki/Chinese_martial_arts
+// Image: https://upload.wikimedia.org/wikipedia/en/9/9f/Shi_DeRu_and_Shi_DeYang.jpg
+// License: CC BY-SA 3.0
+// Author: Bigpeteb | https://en.wikipedia.org/wiki/User:Bigpeteb
 card('Kung Fu Fighter') {
     creature 'Chinese'
     flavor: 'Chinese Martial Artist.'
-    
-    // Info: http://en.wikipedia.org/wiki/Chinese_martial_arts
-    // Image: https://upload.wikimedia.org/wikipedia/commons/0/0b/Beddar.jpg
-    // License: CC-BY-SA-3.0
-    // Author: Scrozentalis | https://commons.wikimedia.org/w/index.php?title=User:Srozentalis&action=edit&redlink=1
+    imagePath 'mythos/chinese/kung-fu-fighter.jpg'
     manaCost 5
     sickness 0
     health 3
