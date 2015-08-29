@@ -43,7 +43,10 @@ include 'spells'
 // General game configuration
 
 onCard('#after') {entity ->
-    imagePath 'mythos/default.png'
+    if (!entity.imagePath) {
+        println 'Adding default image path for ' + entity.name
+        imagePath 'mythos/default.png'
+    }
 }
 
 config {
