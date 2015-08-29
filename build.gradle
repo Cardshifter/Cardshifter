@@ -1,7 +1,7 @@
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import org.ajoberstar.grgit.Grgit
 
 buildscript {
     repositories {
@@ -9,6 +9,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.1'
+        classpath 'org.ajoberstar:gradle-git:1.2.0'
     }
 }
 
@@ -86,13 +87,38 @@ task copyResources(type: Copy) {
     from('extra-resources')
     into("$project.buildDir/libs")
     include('server.properties.example')
-    include('decks/Cyborg-Chronicles/Balanced.deck')
-    include('decks/Cyborg-Chronicles/Defensive.deck')
+    for (File mod : new File('extra-resources/decks').listFiles()) {
+        println 'Checking mod ' + mod.getName()
+        for (File deck : mod.listFiles()) {
+            def modName = mod.getName()
+            def deckName = deck.getName()
+            if (Character.isUpperCase(deck.getName().charAt(0))) {
+                println("Include decks/${modName}/${deckName}")
+                include("decks/${modName}/${deckName}")
+            } else {
+                println("Deck name does not start with capital letter, skipping: decks/${modName}/${deckName}")
+            }
+        }
+    }
     include('mods/**')
+}
+
+task createVersionFile(type: Copy) {
+    from('extra-resources')
+    include('version.txt.template')
+    into("$project.buildDir/libs")
+    rename { 'version.txt' }
+    def repo = Grgit.open(project.file('.'))
+    expand([
+            date: DateTimeFormatter.ISO_LOCAL_DATE.format(LocalDateTime.now()),
+            branchName: repo.branch.getCurrent().getName(),
+            commitHash: repo.log(maxCommits: 1)[0].id
+    ])
 }
 
 task dist(type: Zip) {
     dependsOn 'copyResources'
+    dependsOn 'createVersionFile'
     String outputDateString = DateTimeFormatter.ofPattern("yyyyMMdd-HHmm").format(LocalDateTime.now());
     classifier = outputDateString
     from "$project.buildDir/libs"

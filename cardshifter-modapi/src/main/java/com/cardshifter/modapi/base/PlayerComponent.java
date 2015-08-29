@@ -1,8 +1,6 @@
 package com.cardshifter.modapi.base;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class PlayerComponent extends Component {
 
@@ -48,22 +46,24 @@ public class PlayerComponent extends Component {
 		
 		// if no one else has been eliminated, the player is at 1st place. Because the player itself has not been eliminated, it should get increased below.
 		int playerResultPosition = winner ? 0 : players.size() + 1;
-		
-		boolean posTaken = false;
+
+        Set<Integer> takenPositions = new HashSet<>();
+        for (Entity pp : players) {
+            PlayerComponent playerComponent = pp.getComponent(PlayerComponent.class);
+            if (playerComponent.isEliminated()) {
+                takenPositions.add(playerComponent.getResultPosition());
+            }
+        }
+
+        boolean posTaken;
 		do {
-			posTaken = false;
-			playerResultPosition += winner ? -1 : +1;
-			for (Entity pp : players) {
-				PlayerComponent playerComponent = pp.getComponent(PlayerComponent.class);
-				if (playerComponent.isEliminated() && playerComponent.getResultPosition() == playerResultPosition) {
-					posTaken = true;
-					break;
-				}
-			}
-		}
-		while (posTaken);
-		
-		this.eliminate(winner, playerResultPosition);
+			playerResultPosition += winner ? +1 : -1;
+            posTaken = takenPositions.contains(playerResultPosition);
+		} while (posTaken);
+
+        System.out.println("eliminating " + this + " as " + winner + ": taken positions is " + takenPositions + " ending up at " + playerResultPosition);
+
+        this.eliminate(winner, playerResultPosition);
 	}
 	
 	private void eliminate(boolean winner, int resultPosition) {

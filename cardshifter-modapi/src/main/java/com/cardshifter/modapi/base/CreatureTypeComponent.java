@@ -1,26 +1,45 @@
 package com.cardshifter.modapi.base;
 
 
+import java.util.*;
+
 public class CreatureTypeComponent extends Component implements CopyableComponent {
 
-	private final String creatureType;
+	private final List<String> creatureTypes;
+
+	public CreatureTypeComponent(List<String> creatureTypes) {
+		this.creatureTypes = new ArrayList<>(creatureTypes);
+	}
 
 	public CreatureTypeComponent(String creatureType) {
-		this.creatureType = creatureType;
+		creatureTypes = new ArrayList<>(1);
+		creatureTypes.add(creatureType);
 	}
-	
-	public String getCreatureType() {
-		return creatureType;
+
+	public boolean hasCreatureType(String creatureType) {
+		return creatureTypes.stream().anyMatch(type -> creatureType.equals(type));
 	}
 
 	@Override
 	public Component copy(Entity copyTo) {
-		return new CreatureTypeComponent(creatureType);
+		return new CreatureTypeComponent(creatureTypes);
 	}
 
 	@Override
 	public String toString() {
-		return "CreatureTypeComponent [creatureType=" + creatureType + "]";
+		return "CreatureTypeComponent [creatureType=" + String.join(",", creatureTypes) + "]";
 	}
 
+    public boolean hasAny(String... types) {
+        Set<String> lookingFor = new HashSet<>(Arrays.asList(types));
+        return creatureTypes.stream().anyMatch(lookingFor::contains);
+    }
+
+    public boolean noneMatch(String... types) {
+        return !hasAny(types);
+    }
+
+    public String getAllTypes() {
+        return String.join(" ", creatureTypes);
+    }
 }

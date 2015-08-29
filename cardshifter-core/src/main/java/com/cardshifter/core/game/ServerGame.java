@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.cardshifter.api.outgoing.ClientDisconnectedMessage;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -143,5 +144,9 @@ public abstract class ServerGame {
 	public void addPlayer(ClientIO client) {
 		 this.players.add(client);
 	}
-	
+
+    public void disconnect(ClientIO client) {
+        ClientDisconnectedMessage data = new ClientDisconnectedMessage(client.getName(), this.getPlayers().indexOf(client));
+        players.stream().filter(player -> player != client).forEach(player -> player.sendToClient(data));
+    }
 }

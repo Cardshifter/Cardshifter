@@ -5,22 +5,6 @@
  * @author Francis Gaboury [docs]
  */
 
-/**
- * Check for Owned Battlefield Creatures.
- *
- * @param entity  A card entity.
- * @return Boolean  value indicating whether or not:
- *   - the entity is a creature,
- *   - is on battlefield,
- *   - and is owned by the current player.
- */
-def ownedBattlefieldCreatures = {entity ->
-    def Cards = com.cardshifter.modapi.cards.Cards;
-    return entity.hasComponent(com.cardshifter.modapi.base.CreatureTypeComponent.class) &&
-            Cards.isOnZone(entity, com.cardshifter.modapi.cards.BattlefieldComponent.class) &&
-            Cards.isOwnedByCurrentPlayer(entity)
-}
-
 // Resources related to cards
 
 ATTACK = createResource('ATTACK')
@@ -65,6 +49,10 @@ include 'scrap' // Cyborg-Chronicles mechanic
  */
 onCard('creature') {entity, args ->
     entity.taunt = 1
+}
+
+onCard('#after') {entity ->
+    imagePath 'cyborg-chronicles/default.png'
 }
 
 // General game configuration

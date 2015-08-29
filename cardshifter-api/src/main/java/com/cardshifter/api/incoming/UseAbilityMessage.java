@@ -17,6 +17,7 @@ public class UseAbilityMessage extends CardMessage {
 	private final String action;
 	private final int gameId;
 	private final int[] targets;
+    private int performer; // only used on messages from server to clients
 	
 	/** Constructor. (no params) */
 	public UseAbilityMessage() {
@@ -45,7 +46,7 @@ public class UseAbilityMessage extends CardMessage {
 	 * <p>
 	 * Used for single target actions.
 	 * 
-	 * @param id  This current game
+	 * @param gameid  This current game
 	 * @param entity  This game entity performing an action
 	 * @param action  This action
 	 * @param target  The single target affected by this action
@@ -76,9 +77,26 @@ public class UseAbilityMessage extends CardMessage {
 		return "UseAbilityMessage ["
 				+ "id=" + id 
 				+ ", action=" + action
-				+ ", gameId=" + gameId 
-				+ ", targets=" + Arrays.toString(targets) 
+				+ ", gameId=" + gameId
+                + ", performer=" + performer
+				+ ", targets=" + Arrays.toString(targets)
 			+ "]";
 	}
+
+    /**
+     * Create a message that can be sent to clients with information about the entity that activated the action.
+     * @param performerEntityId Entity that chose to perform the action
+     * @return A new UseAbilityMessage with a performer-id set.
+     */
+    public UseAbilityMessage withPerformer(int performerEntityId) {
+        UseAbilityMessage copy = new UseAbilityMessage(gameId, id, action,
+                Arrays.copyOf(targets, targets.length));
+        copy.performer = performerEntityId;
+        return copy;
+    }
+
+    public int getPerformer() {
+        return performer;
+    }
 
 }

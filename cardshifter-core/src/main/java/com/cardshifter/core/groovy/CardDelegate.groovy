@@ -20,6 +20,14 @@ class CardDelegate implements GroovyInterceptable {
         closure.delegate = this
         closure.setResolveStrategy(resolveStrategy)
         closure.call()
+        def closures = mod.cardMethodListeners.get('#after');
+        if (closures) {
+            closures.each {
+                it.delegate = this
+                it.setResolveStrategy(resolveStrategy)
+                it.call(entity)
+            }
+        }
         return card
     }
 
@@ -65,6 +73,8 @@ class CardDelegate implements GroovyInterceptable {
                     result = cl.call(args[0], args[1], args[2])
                 } else if (args.length == 4) {
                     result = cl.call(args[0], args[1], args[2], args[3])
+                } else {
+                    throw new IllegalArgumentException("too many arguments for calling method " + name);
                 }
             } else {
                 result = missingMethod(entity, mod, name, args)

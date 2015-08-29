@@ -1,11 +1,8 @@
 package com.cardshifter.client;
 
 import java.net.URL;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.ResourceBundle;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.prefs.Preferences;
@@ -137,10 +134,16 @@ public final class GameClientLauncherController implements Initializable {
 	
 	public void setAI(String aiName) {
 		this.aiChoice = this.aiChoices.get(aiName);
-        this.localGameButton.setDisable(false);
+        this.checkLocalGameButtonEnable();
 	}
-	
-	private void localGameStart(ActionEvent event) {
+
+    private void checkLocalGameButtonEnable() {
+        boolean aiSelected = this.aiChoice != null;
+        boolean modChosen = this.modChoice.getSelectionModel().getSelectedItem() != null;
+        this.localGameButton.setDisable(!aiSelected || !modChosen);
+    }
+
+    private void localGameStart(ActionEvent event) {
         String modName = modChoice.getValue();
 		ECSMod mod = mods.getModFor(modName);
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
@@ -180,6 +183,7 @@ public final class GameClientLauncherController implements Initializable {
             public LogInterface getLogger() {
                 return new Log4jAdapter();
             }
+
         };
 		
 		try {
