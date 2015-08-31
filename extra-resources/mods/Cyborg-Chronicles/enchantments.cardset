@@ -60,9 +60,11 @@ card('Cybernetic Arm Cannon') {
 }
 
 card('Exoskeleton') {
-    enchantment true
+    enchantment()
     flavor "This very invasive operation reinforces bone tissue with titanium."
-    addHealth 3
+    afterPlay {
+        change HEALTH by 3 on targets
+    }
     scrapCost 2
 }
 
