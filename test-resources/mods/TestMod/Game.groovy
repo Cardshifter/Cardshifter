@@ -217,24 +217,27 @@ rules {
             zone 'Hand'        // ...Enchantment card is on hand
         }
         targets 1 of {         // number of allowed targets...
-            zone 'Battlefield' // ...present on Battlefield
+            //zone 'Battlefield' // ...present on Battlefield
             creatureType 'Bio' // CYBORG-CHRONICLES MECHANIC: ...of type Bio
-            ownedBy 'you'      // ...owned by you
+            //ownedBy 'you'      // ...owned by you
         }
+
+
+
+        cardTargetFilter()    // with card-defined target filter(s)
+        effectAction()        // perform an effect associated with the card
 
         // 1) this action costs MANA to play
         // 2) the value it costs is equal to mana_cost value of the card
         // 3) card.owner indicates that the card's owner should pay this cost
         cost MANA value { card.mana_cost } on { card.owner }
 
-        effectAction()  // perform an effect associated with the card
-
         perform {
-            targets.forEach {                // for each target card...
-                it.attack += card.attack     // ...add Enchantment's attack to the target's attack
-                it.health += card.health     // ...add Enchantment's health to the target's health
-                it.max_health += card.health // ...add Enchantment's health to the target's max_health
-            }
+//            targets.forEach {                // for each target card...
+//                it.attack += card.attack     // ...add Enchantment's attack to the target's attack
+//                it.health += card.health     // ...add Enchantment's health to the target's health
+//                it.max_health += card.health // ...add Enchantment's health to the target's max_health
+//            }
             it.destroy() // destroy the Enchantment card after use
         }
     }
