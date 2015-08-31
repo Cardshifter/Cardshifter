@@ -81,7 +81,7 @@ card('Full-body Cybernetics Upgrade') {
     enchantment()
     afterPlay {
         change ATTACK by 3 on targets
-        chant HEALTH by 3 on targets
+        change HEALTH by 3 on targets
     }
     scrapCost 5
 }
