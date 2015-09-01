@@ -210,6 +210,7 @@ from clearState test 'enchant' using {
     assert targets.size() == 1
 
     uses 'Enchant' on scrappy withTarget card ok
+    assert scrappy.removed
     assert you.scrap == 9
     assert card.attack == 3
     assert card.health == 3
