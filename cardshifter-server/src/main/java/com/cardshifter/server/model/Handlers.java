@@ -1,11 +1,18 @@
 package com.cardshifter.server.model;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
+import com.cardshifter.ai.FakeAIClientTCG;
 import com.cardshifter.api.*;
+import com.cardshifter.api.outgoing.*;
 import com.cardshifter.core.username.*;
+import com.cardshifter.server.clients.ClientSocketHandler;
+import com.cardshifter.server.clients.ClientWebSocket;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -17,12 +24,7 @@ import com.cardshifter.api.incoming.RequestTargetsMessage;
 import com.cardshifter.api.incoming.ServerQueryMessage;
 import com.cardshifter.api.incoming.StartGameRequest;
 import com.cardshifter.api.incoming.UseAbilityMessage;
-import com.cardshifter.api.outgoing.AvailableModsMessage;
-import com.cardshifter.api.outgoing.ServerErrorMessage;
-import com.cardshifter.api.outgoing.UserStatusMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage.Status;
-import com.cardshifter.api.outgoing.WaitMessage;
-import com.cardshifter.api.outgoing.WelcomeMessage;
 import com.cardshifter.core.game.FakeClient;
 import com.cardshifter.core.game.ServerGame;
 import com.cardshifter.core.game.TCGGame;
@@ -58,6 +60,19 @@ public class Handlers {
 				}
 				
 				break;
+            case STATUS:
+                List<ClientIO> clients = server.getClients().values().stream()
+                    .collect(Collectors.toList());
+                Predicate<ClientIO> aiFilter = cl -> cl instanceof FakeAIClientTCG;
+                int ais = (int) clients.stream().filter(aiFilter).count();
+                int users = (int) clients.stream()
+                    .filter(cl -> cl instanceof ClientWebSocket || cl instanceof ClientSocketHandler)
+                    .count();
+
+                int games = server.getGames().size();
+                String[] mods = (String[]) server.getGameFactories().keySet().stream().toArray();
+                client.sendToClient(new ServerStatusMessage(users, ais, games, mods));
+                break;
 			default:
 				client.sendToClient(new ServerErrorMessage("No such query request"));
 				break;

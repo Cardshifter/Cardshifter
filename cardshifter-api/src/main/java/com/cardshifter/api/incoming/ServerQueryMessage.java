@@ -15,7 +15,9 @@ public class ServerQueryMessage extends Message {
 	 * <li>DECK_BUILDER : Request the deck builder, which queries information both server-side (card sets) and client-side (saved decks).
 	 */
 	public enum Request {
-		USERS, DECK_BUILDER;
+		USERS,
+        DECK_BUILDER,
+        STATUS,
 	}
 
 	private final Request request;
