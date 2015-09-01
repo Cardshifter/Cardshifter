@@ -87,8 +87,10 @@ from clearState test 'attack opponent with enchanted rush' using {
 
     def enchantment = to you zone 'Hand' create {
         println 'Sickness is ' + SICKNESS
-        enchantment true
-        set(SICKNESS, 0)
+        enchantment()
+        afterPlay {
+            set SICKNESS to 0 on targets
+        }
     }
     expect failure when enchantedCreature uses 'Attack' ok
     uses 'Enchant' on enchantment withTarget enchantedCreature ok
@@ -192,9 +194,11 @@ from clearState test 'enchant' using {
         health 1
     }
     def scrappy = to you zone 'Hand' create {
-        enchantment true
-        addAttack 3
-        addHealth 2
+        enchantment()
+        afterPlay {
+            change ATTACK by 3 on targets
+            change HEALTH by 2 on targets
+        }
         scrapCost 1
     }
 
@@ -206,6 +210,7 @@ from clearState test 'enchant' using {
     assert targets.size() == 1
 
     uses 'Enchant' on scrappy withTarget card ok
+    assert scrappy.removed
     assert you.scrap == 9
     assert card.attack == 3
     assert card.health == 3

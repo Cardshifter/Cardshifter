@@ -32,6 +32,10 @@ onCard('creature') {entity, args ->
 // TODO: Change to:   entity.actions.add('Scrap')
 }
 
+cardExtension('scrapCost') {int value ->
+    scrap_cost(value)
+}
+
 rules {
     // Define how a card is scrapped.
     action('Scrap') {

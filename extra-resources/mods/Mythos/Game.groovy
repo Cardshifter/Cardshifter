@@ -277,31 +277,17 @@ rules {
             // ...Enchantment card is on hand
             zone 'Hand'
         }
-        // number of allowed targets...
-        targets 1 of {
-            // ...present on Battlefield
-            zone 'Battlefield'
-            // ...owned by you
-            ownedBy 'you'
-        }
 
         /* 1) this action costs MANA to play
          * 2) the value it costs is equal to mana_cost value of the card
          * 3) card.owner indicates that the card's owner should pay this cost */
         cost MANA value { card.mana_cost } on { card.owner }
+        // with card-defined target filter(s)
+        cardTargetFilter()
         // perform an effect associated with the card
         effectAction()  // perform an effect associated with the card
         // Perform when Enchanting:
         perform {
-            // for each target card...
-            targets.forEach {
-                // ...add Enchantment's attack to the target's attack
-                it.attack += card.attack
-                // ...add Enchantment's health to the target's health
-                it.health += card.health
-                // ...add Enchantment's health to the target's max_health
-                it.max_health += card.health
-            }
             // destroy the Enchantment card after use
             it.destroy()
         }
