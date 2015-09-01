@@ -278,14 +278,16 @@ rules {
             zone 'Hand'
         }
 
-        /* 1) this action costs MANA to play
-         * 2) the value it costs is equal to mana_cost value of the card
-         * 3) card.owner indicates that the card's owner should pay this cost */
-        cost MANA value { card.mana_cost } on { card.owner }
         // with card-defined target filter(s)
         cardTargetFilter()
         // perform an effect associated with the card
         effectAction()
+
+        /* 1) this action costs MANA to play
+         * 2) the value it costs is equal to mana_cost value of the card
+         * 3) card.owner indicates that the card's owner should pay this cost */
+        cost MANA value { card.mana_cost } on { card.owner }
+
         // Perform when Enchanting:
         perform {
             // destroy the Enchantment card after use
