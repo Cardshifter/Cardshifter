@@ -12,7 +12,7 @@ _Updated 2015-02-03_
 
 Cardshifter is an open-source, online Trading Card Game (TCG). The idea was born in summer of 2014 when a handful of software developers and programming enthusiasts from [Code Review Stack Exchange](http://codereview.stackexchange.com/) were tossing around ideas around on how to come up with an innovative, flexible and fun game. 
 
-The game is cross-platform compatible on desktop and eventually will feature mobile versions as well. It is early in development, but we are working hard on adding new gameplay features, improving the user interfaces, and will eventually feature original art from content creators who have since joined the project. 
+The primary game client as of August 2015 is web based and is hosted at http://play.cardshifter.com. Its source code can be found in the [Cardshifter/HTML-Client](https://github.com/Cardshifter/HTML-Client) repository. The server is cross-platform compatible and runs on Windows, OS X and Linux. There are plans to feature a mobile client as well. The game is early in development, but we are working hard on adding new gameplay features, improving the user interface, and will eventually feature original art from content creators who have since joined the project.
 
 - [Official Website](http://www.Cardshifter.com/)
 
