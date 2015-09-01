@@ -73,6 +73,22 @@ class ActionDelegate {
         })
     }
 
+    void requireTarget(Closure closure) {
+        game.addSystem(new ECSSystem() {
+            @Override
+            void startGame(ECSGame game) {
+                game.getEvents().registerHandlerAfter(this, TargetableCheckEvent, {
+                    if (it.action.name == name) {
+                        Object result = closure.call(it)
+                        if (!result) {
+                            it.setAllowed(false)
+                        }
+                    }
+                })
+            }
+        })
+    }
+
     private static class RequiresDelegate {
         Entity card
         Entity performer

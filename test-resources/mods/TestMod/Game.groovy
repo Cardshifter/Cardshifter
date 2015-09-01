@@ -220,6 +220,10 @@ rules {
         cardTargetFilter()    // with card-defined target filter(s)
         effectAction()        // perform an effect associated with the card
 
+        requireTarget {
+            it.target.creatureType?.has('Bio')
+        }
+
         // 1) this action costs MANA to play
         // 2) the value it costs is equal to mana_cost value of the card
         // 3) card.owner indicates that the card's owner should pay this cost

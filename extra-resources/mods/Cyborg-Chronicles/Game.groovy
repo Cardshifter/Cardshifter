@@ -283,6 +283,13 @@ rules {
         // perform an effect associated with the card
         effectAction()
 
+        requireTarget {
+            // `it` is a TargetableCheckEvent
+            // `?.` is a null coalescing operator, if the previous is null then it will return null directly
+            //   otherwise it will call the `has` method.
+            it.target.creatureType?.has('Bio')
+        }
+
         /* 1) this action costs MANA to play
          * 2) the value it costs is equal to mana_cost value of the card
          * 3) card.owner indicates that the card's owner should pay this cost */
