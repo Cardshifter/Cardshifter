@@ -164,3 +164,42 @@ The effects declared for a spell have the same semantics as other effects, descr
 - `set RESOURCE to n on ...`
 
 - `summon n of 'Some Card' ...`
+
+---
+
+##Enchantments
+
+An enchantments is a special kind of spell that can be cast on a single creature on the battlefield. Enchantments usually modify the target card's resources. All triggers and effects that apply to spells work for enchantments too.
+
+####`enchantment()`
+
+When declared an `enchantment()`, a card is treated as an enchantment. An enchantment can be cast on a `"Bio"` creature in Cyborg-Chronicles.
+
+This is roughly equal to just writing the following:
+
+    spell {
+        targets 1 cards {
+            creature true
+            zone 'Battlefield'
+            ownedBy 'you'
+        }
+    }
+
+_Note that a card cannot be both a creature and an enchantment._
+
+####`afterPlay { ... }`
+
+Enchantment cards usually use this trigger to apply their effects to their target. Even though there can only be one target, `on targets` has to be plural.
+
+####Example
+
+    card('Bionic Arms') {
+        flavor "These arms will give strength to even the most puny individual."
+        enchantment()   // is an enchantment
+        afterPlay {
+            change ATTACK by 2 on targets   // add 2 to the attack of the target creature
+        }
+        scrapCost 1     // costs 1 scrap
+    }
+    
+For more examples, see `extra-resources/mods/Cyborg-Chronicles/enchantments.cardset`.

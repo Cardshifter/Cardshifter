@@ -177,26 +177,4 @@ _Note: This is a shortcut to_ `maxInDeck 0` _which would produce the same effect
 
 ---
 
-##Enchantments
-
-Enchantments are cards that can be cast upon creature cards which are in play. They modify the target card's properties.
-
-**Important note:** As of 2015-07-11, the scrap related resources_must_ be included in the mod's **Game.groovy** file for enchantment cards to function correctly. This will be addressed in the near future. 
-
-####`enchantment true`
-
-When declared `enchantment true`, a card is treated as an enchantment. An enchantment can be cast on a `"Bio"` creature in Cyborg-Chronicles to make changes to its resources.
-
-_Note that a card cannot be both a creature and an enchantment._
-
-####`addHealth`
-
-Add `n` health to the target card. Usage: `addHealth n`
-
-####`addAttack`
-
-Add `n` attack to the target card. Usage: `addAttack n`
-
----
-
 **Note**: More advanced effects are described in `2) Card Library - Effects.md`.
