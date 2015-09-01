@@ -20,7 +20,11 @@ public class CreatureTypeComponent extends Component implements CopyableComponen
 		return creatureTypes.stream().anyMatch(type -> creatureType.equals(type));
 	}
 
-	@Override
+    public boolean has(String creatureType) {
+        return hasCreatureType(creatureType);
+    }
+
+    @Override
 	public Component copy(Entity copyTo) {
 		return new CreatureTypeComponent(creatureTypes);
 	}
