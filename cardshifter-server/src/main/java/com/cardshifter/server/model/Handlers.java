@@ -104,18 +104,14 @@ public class Handlers {
 				return;
 			}
 			
-			ServerGame game = server.createGame(message.getGameType());
-			ServerHandler<GameInvite> invites = server.getInvites();
-			GameInvite invite = new GameInvite(invites, server.getMainChat(), client, game, message.getGameType());
-			invites.add(invite);
+			GameInvite invite = server.getInviteManager().createInvite(client, target, message.getGameType());
 			client.sendToClient(new WaitMessage());
-			
 			invite.sendInvite(target);
 		}
 	}
 	
 	public void inviteResponse(InviteResponse message, ClientIO client) {
-		GameInvite invite = server.getInvites().get(message.getInviteId());
+		GameInvite invite = server.getInviteManager().getInviteHandler().get(message.getInviteId());
 		if (invite != null) {
 			invite.handleResponse(client, message.isAccepted());
 		}
@@ -133,7 +129,7 @@ public class Handlers {
 			ClientIO opponent = playAny.getAndSet(null);
 			
 			ServerGame game = server.createGame(message.getGameType());
-			ServerHandler<GameInvite> invites = server.getInvites();
+			ServerHandler<GameInvite> invites = server.getInviteManager().getInviteHandler();
 			GameInvite invite = new GameInvite(invites, server.getMainChat(), client, game, message.getGameType());
 			invites.add(invite);
 			invite.addPlayer(opponent);

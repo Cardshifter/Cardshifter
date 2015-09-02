@@ -135,7 +135,7 @@ public class MainServer {
 	 */
 	private void showInvites(Command command) {
 		CommandContext context = new CommandContext(server, command, command.getSender());
-		for (Entry<Integer, GameInvite> ee : server.getInvites().all().entrySet()) {
+		for (Entry<Integer, GameInvite> ee : server.getInviteManager().getInviteHandler().all().entrySet()) {
 			context.sendChatResponse(ee.getKey() + " = " + ee.getValue());
 		}
 	}
