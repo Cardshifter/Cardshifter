@@ -71,14 +71,7 @@ public class NetworkConsoleController {
 
 		this.send(new StartGameRequest(-1, modName));
         message = messages.take();
-		if (message instanceof WaitMessage) {
-			System.out.println(((WaitMessage) message).getMessage());
-			NewGameMessage game = (NewGameMessage) messages.take();
-			this.playLoop(game, input);
-		}
-		else {
-			this.playLoop((NewGameMessage) message, input);
-		}
+		this.playLoop((NewGameMessage) message, input);
 	}
 	
 	private void listen() {

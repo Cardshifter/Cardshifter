@@ -21,7 +21,6 @@ import com.cardshifter.api.outgoing.AvailableModsMessage;
 import com.cardshifter.api.outgoing.ServerErrorMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage.Status;
-import com.cardshifter.api.outgoing.WaitMessage;
 import com.cardshifter.api.outgoing.WelcomeMessage;
 import com.cardshifter.core.game.FakeClient;
 import com.cardshifter.core.game.ServerGame;
@@ -105,7 +104,6 @@ public class Handlers {
 			}
 			
 			GameInvite invite = server.getInviteManager().createInvite(client, target, message.getGameType());
-			client.sendToClient(new WaitMessage());
 			invite.sendInvite(target);
 		}
 	}
@@ -122,10 +120,7 @@ public class Handlers {
 
 	private void playAny(StartGameRequest message, ClientIO client) {
 		AtomicReference<ClientIO> playAny = server.getPlayAny();
-		if (playAny.compareAndSet(null, client)) {
-			client.sendToClient(new WaitMessage());
-		}
-		else {
+		if (!playAny.compareAndSet(null, client)) {
 			ClientIO opponent = playAny.getAndSet(null);
 			
 			ServerGame game = server.createGame(message.getGameType());

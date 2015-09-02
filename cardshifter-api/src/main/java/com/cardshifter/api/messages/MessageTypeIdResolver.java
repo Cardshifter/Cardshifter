@@ -44,7 +44,6 @@ public class MessageTypeIdResolver {
 		clazzes.put("resetActions", ResetAvailableActionsMessage.class);
 		clazzes.put("game", GameMessage.class);
 		clazzes.put("gameover", GameOverMessage.class);
-		clazzes.put("wait", WaitMessage.class);
 		clazzes.put("loginresponse", WelcomeMessage.class);
 		clazzes.put("newgame", NewGameMessage.class);
 		clazzes.put("player", PlayerMessage.class);

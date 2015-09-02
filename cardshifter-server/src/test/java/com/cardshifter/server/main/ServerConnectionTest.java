@@ -160,7 +160,6 @@ public class ServerConnectionTest {
 	@Test(timeout = 10000)
 	public void testStartGame() throws InterruptedException, IOException {
 		client1.send(new StartGameRequest(2, getTestMod()));
-		client1.await(WaitMessage.class);
 		NewGameMessage gameMessage = client1.await(NewGameMessage.class);
 		assertEquals(1, gameMessage.getGameId());
         client1.awaitUntil(PlayerConfigMessage.class);
