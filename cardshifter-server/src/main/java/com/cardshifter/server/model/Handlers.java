@@ -103,8 +103,7 @@ public class Handlers {
 				return;
 			}
 			
-			GameInvite invite = server.getInviteManager().createInvite(client, target, message.getGameType());
-			invite.sendInvite(target);
+			server.getInviteManager().createInvite(client, target, message.getGameType());
 		}
 	}
 	

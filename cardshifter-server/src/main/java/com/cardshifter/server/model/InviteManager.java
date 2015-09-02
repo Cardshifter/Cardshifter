@@ -16,12 +16,11 @@ public class InviteManager {
         return inviteHandler;
     }
 
-    public GameInvite createInvite(ClientIO sender, ClientIO receiver, String gameType) {
+    public void createInvite(ClientIO sender, ClientIO receiver, String gameType) {
         ServerGame game = server.createGame(gameType);
         GameInvite invite = new GameInvite(inviteHandler, server.getMainChat(), sender, game, gameType);
         inviteHandler.add(invite);
-
-        return invite;
+        invite.sendInvite(receiver);
     }
 
 }
