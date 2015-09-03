@@ -13,7 +13,7 @@ public class InviteManager {
 
     private final Server server;
     private final ServerHandler<GameInvite> inviteHandler = new ServerHandler<>();
-    private final Set<ClientIO> currentInvitors = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    private final Set<Integer> currentInvitors = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     public InviteManager(Server server) {
         this.server = server;
@@ -21,7 +21,7 @@ public class InviteManager {
 
     private GameInvite createInvite(ClientIO sender, String gameType) {
         // Can only have one open invite at a time, see https://github.com/Cardshifter/Cardshifter/issues/373
-        if (!currentInvitors.add(sender)) {
+        if (!currentInvitors.add(sender.getId())) {
             logger.info("[" + sender + "] already has an open invitation");
             return null;
         }
@@ -52,7 +52,7 @@ public class InviteManager {
     public void remove(GameInvite invite) {
         logger.info("Removing [" + invite + "]");
         inviteHandler.remove(invite);
-        currentInvitors.remove(invite.getHost());
+        currentInvitors.remove(invite.getHost().getId());
     }
 
     public GameInvite getInvite(int id) {
