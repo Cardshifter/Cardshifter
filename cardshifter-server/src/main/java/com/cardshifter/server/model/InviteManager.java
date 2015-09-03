@@ -1,6 +1,7 @@
 package com.cardshifter.server.model;
 
 import com.cardshifter.api.*;
+import com.cardshifter.api.outgoing.*;
 import com.cardshifter.core.game.*;
 import org.apache.log4j.*;
 
@@ -40,6 +41,8 @@ public class InviteManager {
         if (invite != null) {
             logger.info("Sending [" + invite + "] to [" + receiver + "]");
             invite.sendInvite(receiver);
+        } else {
+            sender.sendToClient(new ServerErrorMessage("You already have a game invitation open."));
         }
     }
 

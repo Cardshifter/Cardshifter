@@ -228,11 +228,8 @@ public class ServerConnectionTest {
 		client1.await(PlayerConfigMessage.class);
 		client1.await(ChatMessage.class);
 
-		// Don't expect a new game to be started, ensure that no NewGameMessage is sent by
-		// awaiting a request made after the StartGameRequest
 		client1.send(new StartGameRequest(2, getTestMod()));
-		client1.send(new ServerQueryMessage(Request.USERS));
-		client1.await(UserStatusMessage.class);
+		client1.await(ServerErrorMessage.class);
 	}
 	
 }
