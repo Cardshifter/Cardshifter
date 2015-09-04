@@ -715,6 +715,13 @@ card('Heracles') {
             zone 'Battlefield'
         }
     }
+    // +1/+1 to 'Iolaus' if it is in play
+    whilePresent {
+        change ATTACK, HEALTH by 1 withPriority 1 on {
+            cardName 'Iolaus'
+            zone 'Battlefield'
+        }
+    }
 }
 
 // https://en.wikipedia.org/wiki/Achilles
@@ -772,12 +779,12 @@ card('Iolaus') {
     manaCost 5
     sickness 1
     // Gains +1/+1 if Heracles is on the field.
-    /*
-    ifPresent (cardName 'HERACLES' zone 'Battlefield') { // #261
-        change ATTACK, HEALTH by 1 withPriority 1 on { thisCard() }
-    }
-    */
+        // Added to card 'Heracles' as an effect applied on this card.
 }
+
+// https://en.wikipedia.org/wiki/Theseus
+// https://upload.wikimedia.org/wikipedia/commons/b/be/Kadmos_dragon_Louvre_E707.jpg
+// Public Domain
 card('Theseus') {
     creature 'Greek Hero'
     flavor 'Son of Poseidon, King of Athens and slayer of the Minotaur.'
