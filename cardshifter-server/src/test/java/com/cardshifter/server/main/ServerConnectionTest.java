@@ -233,11 +233,6 @@ public class ServerConnectionTest {
 		client1.await(ChatMessage.class);
 
 		client1.send(new StartGameRequest(client2id, getTestMod()));
-		NewGameMessage gameMessage = client1.await(NewGameMessage.class);
-		assertEquals(1, gameMessage.getGameId());
-		client1.await(PlayerConfigMessage.class);
-		client1.await(ChatMessage.class);
-
 		client1.send(new StartGameRequest(client2id, getTestMod()));
 		client1.await(ServerErrorMessage.class);
 	}
