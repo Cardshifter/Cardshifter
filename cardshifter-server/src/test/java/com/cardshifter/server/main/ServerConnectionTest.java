@@ -160,7 +160,6 @@ public class ServerConnectionTest {
 	@Test(timeout = 10000)
 	public void testStartGame() throws InterruptedException, IOException {
 		client1.send(new StartGameRequest(2, getTestMod()));
-		client1.await(WaitMessage.class);
 		NewGameMessage gameMessage = client1.await(NewGameMessage.class);
 		assertEquals(1, gameMessage.getGameId());
         client1.awaitUntil(PlayerConfigMessage.class);
@@ -219,6 +218,23 @@ public class ServerConnectionTest {
 		assertEquals(1, gameMessage.getGameId());
 		ServerGame game = server.getGames().get(1);
 		assertTrue(game.hasPlayer(server.getClients().get(userId)));
+	}
+
+	@Test(timeout = 10000)
+	public void testOnlyOneInvite() throws IOException, InterruptedException {
+		TestClient client2 = createTestClient();
+
+		client2.send(new LoginMessage("client2"));
+		WelcomeMessage welcomeMessage = client2.await(WelcomeMessage.class);
+		assertTrue(welcomeMessage.isOK());
+		int client2id = welcomeMessage.getUserId();
+
+		client1.await(UserStatusMessage.class);
+		client1.await(ChatMessage.class);
+
+		client1.send(new StartGameRequest(client2id, getTestMod()));
+		client1.send(new StartGameRequest(client2id, getTestMod()));
+		client1.await(ServerErrorMessage.class);
 	}
 	
 }

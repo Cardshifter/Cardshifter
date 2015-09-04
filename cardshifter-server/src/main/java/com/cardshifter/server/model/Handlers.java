@@ -25,8 +25,8 @@ import com.cardshifter.api.incoming.ServerQueryMessage;
 import com.cardshifter.api.incoming.StartGameRequest;
 import com.cardshifter.api.incoming.UseAbilityMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage.Status;
+import com.cardshifter.api.outgoing.WelcomeMessage;
 import com.cardshifter.core.game.FakeClient;
-import com.cardshifter.core.game.ServerGame;
 import com.cardshifter.core.game.TCGGame;
 
 public class Handlers {
@@ -119,18 +119,12 @@ public class Handlers {
 				return;
 			}
 			
-			ServerGame game = server.createGame(message.getGameType());
-			ServerHandler<GameInvite> invites = server.getInvites();
-			GameInvite invite = new GameInvite(invites, server.getMainChat(), client, game, message.getGameType());
-			invites.add(invite);
-			client.sendToClient(new WaitMessage());
-			
-			invite.sendInvite(target);
+			server.getInviteManager().createAndSend(client, target, message.getGameType());
 		}
 	}
 	
 	public void inviteResponse(InviteResponse message, ClientIO client) {
-		GameInvite invite = server.getInvites().get(message.getInviteId());
+		GameInvite invite = server.getInviteManager().getInvite(message.getInviteId());
 		if (invite != null) {
 			invite.handleResponse(client, message.isAccepted());
 		}
@@ -141,17 +135,9 @@ public class Handlers {
 
 	private void playAny(StartGameRequest message, ClientIO client) {
 		AtomicReference<ClientIO> playAny = server.getPlayAny();
-		if (playAny.compareAndSet(null, client)) {
-			client.sendToClient(new WaitMessage());
-		}
-		else {
+		if (!playAny.compareAndSet(null, client)) {
 			ClientIO opponent = playAny.getAndSet(null);
-			
-			ServerGame game = server.createGame(message.getGameType());
-			ServerHandler<GameInvite> invites = server.getInvites();
-			GameInvite invite = new GameInvite(invites, server.getMainChat(), client, game, message.getGameType());
-			invites.add(invite);
-			invite.addPlayer(opponent);
+			server.getInviteManager().createAndAdd(client, opponent, message.getGameType());
 		}
 	}
 

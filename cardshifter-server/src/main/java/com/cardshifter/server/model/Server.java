@@ -13,16 +13,7 @@ import com.cardshifter.core.username.*;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import com.cardshifter.api.both.ChatMessage;
-import com.cardshifter.api.both.InviteResponse;
-import com.cardshifter.api.both.PlayerConfigMessage;
-import com.cardshifter.api.incoming.LoginMessage;
-import com.cardshifter.api.incoming.RequestTargetsMessage;
-import com.cardshifter.api.incoming.ServerQueryMessage;
-import com.cardshifter.api.incoming.StartGameRequest;
-import com.cardshifter.api.incoming.UseAbilityMessage;
 import com.cardshifter.api.messages.Message;
-import com.cardshifter.api.outgoing.ServerErrorMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage.Status;
 import com.cardshifter.core.game.ServerGame;
@@ -45,12 +36,12 @@ public class Server implements ClientServerInterface {
 	/**
 	 * The IncomingHandler receives messages and passes them to the correct Handler
 	 */
-	private final HandlerManager handlerManager;
+	private final HandlerManager handlerManager = new HandlerManager(this);
+	private final InviteManager inviteManager = new InviteManager(this);
 	
 	private final Map<Integer, ClientIO> clients = new ConcurrentHashMap<>();
 	private final Map<Integer, ChatArea> chats = new ConcurrentHashMap<>();
 	private final Map<Integer, ServerGame> games = new ConcurrentHashMap<>();
-	private final ServerHandler<GameInvite> invites = new ServerHandler<>();
 	private final Map<String, GameFactory> gameFactories = new ConcurrentHashMap<>();
 
 	private final Set<ConnectionHandler> handlers = Collections.synchronizedSet(new HashSet<>());
@@ -60,7 +51,6 @@ public class Server implements ClientServerInterface {
 	private final ChatArea mainChat;
 
 	public Server() {
-		this.handlerManager = new HandlerManager(this);
 		this.scheduler = Executors.newScheduledThreadPool(2, new ThreadFactoryBuilder().setNameFormat("ai-thread-%d").build());
 		mainChat = this.newChatRoom("Main");
 	}
@@ -222,8 +212,8 @@ public class Server implements ClientServerInterface {
 	 * 
 	 * @return The invites ServerHandler object
 	 */
-	public ServerHandler<GameInvite> getInvites() {
-		return invites;
+	public InviteManager getInviteManager() {
+		return inviteManager;
 	}
 
 	/**

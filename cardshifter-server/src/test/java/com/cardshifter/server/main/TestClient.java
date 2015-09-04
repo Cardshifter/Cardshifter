@@ -77,12 +77,11 @@ public class TestClient {
 	
 	public <T> T await(Class<T> class1) throws IOException, InterruptedException {
 		Message message = messages.take();
-		if (message instanceof ServerErrorMessage) {
-			Assert.fail(message.toString());
-		}
+
 		if (!class1.isAssignableFrom(message.getClass())) {
 			Assert.fail("Expected " + class1 + " but was " + message);
 		}
+
 		return class1.cast(message);
 	}
 
