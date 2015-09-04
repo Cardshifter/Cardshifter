@@ -223,7 +223,14 @@ public class ServerConnectionTest {
 	@Test(timeout = 10000)
 	public void testOnlyOneInvite() throws IOException, InterruptedException {
 		TestClient client2 = createTestClient();
-		int client2id = userId + 1;
+
+		client2.send(new LoginMessage("client2"));
+		WelcomeMessage welcomeMessage = client2.await(WelcomeMessage.class);
+		assertTrue(welcomeMessage.isOK());
+		int client2id = welcomeMessage.getUserId();
+
+		client1.await(UserStatusMessage.class);
+		client1.await(ChatMessage.class);
 
 		client1.send(new StartGameRequest(client2id, getTestMod()));
 		NewGameMessage gameMessage = client1.await(NewGameMessage.class);
