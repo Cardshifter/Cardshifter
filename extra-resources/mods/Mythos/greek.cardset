@@ -911,18 +911,29 @@ card('Nemean Lion') {
     sickness 1
     taunt()
 }
+
+// https://en.wikipedia.org/wiki/Erymanthian_Boar
+// https://upload.wikimedia.org/wikipedia/commons/f/f6/Herakles_Eurystheus_boar_Louvre_F202.jpg
+// Public Domain
 card('Erymanthian Boar') {
     creature 'Greek'
     flavor 'A gigantic boar, which Heracles was sent to retrieve as one of his labors.'
+    imagePath 'mythos/greek/erymanthian-boar.jpg'
     maxInDeck 1
     attack 5
     health 4
     manaCost 10
     sickness 0 // Rush
 }
+
+// https://en.wikipedia.org/wiki/Pegasus
+// https://upload.wikimedia.org/wikipedia/commons/5/5c/Winged_horse_Dodona_Louvre_Br149.jpg
+// CC BY 3.0
+// https://commons.wikimedia.org/wiki/User:Jastrow
 card('Pegasus') {
     creature 'Greek'
     flavor 'A divine winged stallion that is pure white, son of Medusa and Poseidon, and father of winged horses.'
+    imagePath 'mythos/greek/pegasus.jpg'
     maxInDeck 1
     attack 2
     health 2
@@ -935,9 +946,13 @@ card('Pegasus') {
     }
     */
 }
-card('Ararchne') {
+// https://en.wikipedia.org/wiki/Arachne
+// https://upload.wikimedia.org/wikipedia/commons/b/b0/Pur_12_aracne.jpg
+// Public Domain
+card('Arachne') {
     creature 'Greek'
-    flavor 'Half-spider half-female, she is the mother of all spiders.'
+    flavor 'Half-spider half-human, she is the mother of all spiders.'
+    imagePath 'mythos/greek/arachne.jpg'
     maxInDeck 1
     attack 3
     health 3
@@ -950,9 +965,15 @@ card('Ararchne') {
         summon 2 of 'Arachne Spider' to 'you' zone 'Battlefield'
     }
 }
+
+// https://en.wikipedia.org/wiki/Griffin
+// CC BY-SA 3.0
+// https://upload.wikimedia.org/wikipedia/commons/0/0a/Knossos_fresco_in_throne_palace.JPG
+// https://commons.wikimedia.org/wiki/User:Paginazero
 card('Griffin') {
     creature 'Greek'
     flavor 'A creature that combines the body of a lion and the head and wings of an eagle.'
+    imagePath 'mythos/greek/griffin.jpg'
     maxInDeck 1
     attack 3
     health 2
@@ -990,9 +1011,14 @@ card('Chiron') {
         }
     }
 }
+
+// https://en.wikipedia.org/wiki/Cerberus
+// https://upload.wikimedia.org/wikipedia/commons/1/1a/Herakles_Kerberos_Eurystheus_Louvre_E701.jpg
+// Public Domain
 card('Cerberus') {
     creature 'Greek'
     flavor 'The Three-headed hound that guards the gates of the Underworld.'
+    imagePath 'mythos/greek/cerberus.jpg'
     maxInDeck 1
     attack 3
     health 4
@@ -1010,25 +1036,8 @@ card('Cerberus') {
 
 //// TOKENS
 
-card('Bear') {
-    creature 'Greek'
-    flavor ''
-    attack 2
-    health 2
-    manaCost 0
-    sickness 1
-    token()
-}
 
-card('Lost Soul') {
-    creature 'Greek'
-    flavor ''
-    attack 1
-    health 1
-    manaCost 0
-    sickness 1
-    token()
-}
+
 card('Titan 2/2') {
     creature 'Greek Titan'
     flavor ''
