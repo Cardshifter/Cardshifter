@@ -40,7 +40,6 @@ If you are not a developer, you can also help by playing the game and [reporting
 ---------------
  
  - `cardshifter-api` - Classes for data being sent between client and server.
- - `cardshifter-console` - Console client _(deprecated / discontinued)_.
  - `cardshifter-core` - Contains our core TCG mod implementation, as well as various features for inclusion in the server and the JavaFX client.
  - `cardshifter-fx` - JavaFX Client.
  - `cardshifter-modapi` - Contains the core Entity-Component-System code and several components and systems for some common TCG features.
