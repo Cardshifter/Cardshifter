@@ -783,11 +783,13 @@ card('Iolaus') {
 }
 
 // https://en.wikipedia.org/wiki/Theseus
-// https://upload.wikimedia.org/wikipedia/commons/b/be/Kadmos_dragon_Louvre_E707.jpg
-// Public Domain
+// https://upload.wikimedia.org/wikipedia/commons/9/9a/Theseus_Minotaur_BM_Vase_E84_n4.jpg
+// CC BY 2.5
+// https://commons.wikimedia.org/wiki/User:Jastrow
 card('Theseus') {
     creature 'Greek Hero'
     flavor 'Son of Poseidon, King of Athens and slayer of the Minotaur.'
+    imagePath 'mythos/greek/theseus.jpg'
     maxInDeck 1
     attack 3
     health 2
@@ -795,18 +797,28 @@ card('Theseus') {
     sickness 1
     denyCounterAttack() // ranged
 }
+
+// https://en.wikipedia.org/wiki/Odysseus
+// https://upload.wikimedia.org/wikipedia/commons/f/f4/Caught_between_a_rock_and_a_hard_place.jpg
+// Public Domain
 card('Odysseus') {
     creature 'Greek Hero'
     flavor 'King of Ithaca whose adventures are the subject of Homer’s Odyssey.'
+    imagePath 'mythos/greek/odysseus.jpg'
     maxInDeck 1
     attack 2
     health 1
     manaCost 5
     sickness 1
 }
+
+// https://en.wikipedia.org/wiki/Daedalus
+// https://upload.wikimedia.org/wikipedia/commons/f/fe/Pompeii_-_Casa_dei_Vettii_-_Pasiphae.jpg
+// Public Domain
 card('Daedalus') {
     creature 'Greek Hero'
     flavor 'Creator of the Labyrinth and a great inventor, until King Minos trapped him in his own creation.'
+    imagePath 'mythos/greek/daedalus.jpg'
     maxInDeck 1
     attack 3
     health 4
@@ -817,9 +829,15 @@ card('Daedalus') {
         summon 1 of 'Minotaur' to 'you' zone 'Battlefield'
     }
 }
+
+// https://en.wikipedia.org/wiki/Hector
+// https://upload.wikimedia.org/wikipedia/commons/b/b7/Hektor_wirft_Paris_seine_Weichlichkeit_vor_%28Tischbein%29.jpg
+// CC BY-SA 3.0
+// https://commons.wikimedia.org/wiki/User:Jdsteakley
 card('Hector') {
     creature 'Greek Hero'
     flavor 'Hero of the Trojan War and champion of the Trojan people.'
+    imagePath 'mythos/greek/hector.jpg'
     maxInDeck 1
     attack 4
     health 4
@@ -833,9 +851,14 @@ card('Hector') {
         }
     }
 }
+
+// https://en.wikipedia.org/wiki/Ajax_(mythology)
+// https://upload.wikimedia.org/wikipedia/commons/8/89/Ajax_suicide_BM_F480.jpg
+// Public Domain
 card('Ajax The Great') {
     creature 'Greek Hero'
     flavor 'Hero of the Trojan War and king of Salamis.'
+    imagePath 'mythos/greek/ajax.jpg'
     maxInDeck 1
     attack 2
     health 3
@@ -845,9 +868,14 @@ card('Ajax The Great') {
 
 //// CREATURES
 
+// https://en.wikipedia.org/wiki/Medusa
+// https://upload.wikimedia.org/wikipedia/commons/0/0c/Close_up_of_Gorgon_at_the_pediment_of_Artemis_temple_in_Corfu.jpg
+// CC BY-SA 3.0
+// https://commons.wikimedia.org/wiki/User:Dr.K.
 card('Medusa') {
     creature 'Greek'
     flavor 'A mortal woman transformed into a hideous Gorgon by Athena.'
+    imagePath 'mythos/greek/medusa.jpg'
     maxInDeck 1
     attack 4
     health 3
@@ -868,9 +896,14 @@ card('Medusa') {
         summon 3 of 'Medusa Snake' to 'you' zone 'Battlefield'
     }
 }
+
+// https://en.wikipedia.org/wiki/Nemean_lion
+// https://upload.wikimedia.org/wikipedia/commons/1/14/Herakles_Nemean_lion_BM_B621.jpg
+// Public Domain
 card('Nemean Lion') {
     creature 'Greek'
     flavor 'A gigantic lion whose skin was impervious to weapons; Heracles strangled it.'
+    imagePath 'mythos/greek/nemean-lion.jpg'
     maxInDeck 1
     attack 3
     health 6
