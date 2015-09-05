@@ -71,6 +71,7 @@ Various triggers are available for actions to be applied on.
 - Works on all cards.
 - This is a sub-trigger and picks `n` actions from the available list whenever the trigger is activated.
 - Note that the available actions list (but not individual actions) need to be enclosed in parentheses rather than curly brackets.
+- There is a special `doNothing()` value that can be used where there will be no action performed if that action block is picked.
 
 **NOTE**: Please see the examples below for valid actions inside `pick n atRandom` blocks. The examples will be updated as new actions are made available.
 
