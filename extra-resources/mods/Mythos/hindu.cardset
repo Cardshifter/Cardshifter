@@ -41,7 +41,6 @@ card('Airavata') {
     attack 2
     health 8
     sickness 1
-    manaCost 10
     whilePresent {
         change ATTACK, HEALTH by 3 withPriority 1 on {
             cardName 'INDRA'
@@ -88,7 +87,6 @@ card('Hansa') {
     token()
     attack 2
     health 5
-    manaCost 5
     whilePresent {
         change HEALTH by 2 withPriority 1 on {
             cardName 'BRAHMA'

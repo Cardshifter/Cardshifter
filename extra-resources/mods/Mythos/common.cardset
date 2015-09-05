@@ -271,7 +271,6 @@ card('Lost Soul') {
     imagePath 'mythos/common/lost-soul.jpg'
     attack 1
     health 1
-    manaCost 0
     sickness 1
     token()
 }
@@ -288,7 +287,6 @@ card('Bear') {
     imagePath 'mythos/common/bear.jpg'
     attack 2
     health 2
-    manaCost 0
     sickness 1
     token()
 }
@@ -301,7 +299,6 @@ card('Snake') {
     maxInDeck 1
     attack 1
     health 1
-    manaCost 0
     sickness 1
     token()
 }
@@ -314,7 +311,6 @@ card('Spider') {
     maxInDeck 1
     attack 2
     health 2
-    manaCost 0
     sickness 1
     token()
     // plague() // #264
