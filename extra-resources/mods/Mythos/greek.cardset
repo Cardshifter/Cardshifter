@@ -893,7 +893,7 @@ card('Medusa') {
     */
     // When Medusa is sent to the graveyard, summon three +1/+1 snake tokens to the field.
     onDeath {
-        summon 3 of 'Medusa Snake' to 'you' zone 'Battlefield'
+        summon 3 of 'Snake' to 'you' zone 'Battlefield'
     }
 }
 
@@ -962,7 +962,7 @@ card('Arachne') {
     // When Ararchne is sent to the graveyard,
     // summon two +2/+2 Spider tokens to the field with Plague.
     onDeath {
-        summon 2 of 'Arachne Spider' to 'you' zone 'Battlefield'
+        summon 2 of 'Spider' to 'you' zone 'Battlefield'
     }
 }
 
@@ -1036,8 +1036,7 @@ card('Cerberus') {
 
 //// TOKENS
 
-
-
+// no image found
 card('Titan 2/2') {
     creature 'Greek Titan'
     flavor ''
@@ -1047,6 +1046,7 @@ card('Titan 2/2') {
     sickness 1
     token()
 }
+// no image found
 card('Titan 4/2') {
     creature 'Greek Titan'
     attack 4
@@ -1055,34 +1055,19 @@ card('Titan 4/2') {
     sickness 1
     token()
 }
+
+// https://en.wikipedia.org/wiki/Minotaur
+// https://upload.wikimedia.org/wikipedia/commons/d/db/Blake_Dante_Hell_XII.jpg
+// Public Domain
 card('Minotaur') {
     creature 'Greek'
+    imagePath 'mythos/greek/minotaur.jpg'
     attack 4
     health 4
     manaCost 0
     sickness 1
     token()
 }
-card('Medusa Snake') {
-    creature 'Greek'
-    maxInDeck 1
-    attack 1
-    health 1
-    manaCost 0
-    sickness 1
-    token()
-}
-card('Arachne Spider') {
-    creature 'Greek'
-    maxInDeck 1
-    attack 2
-    health 2
-    manaCost 0
-    sickness 1
-    token()
-    // plague() // #264
-}
-
 
 ////// NOT CREATURES
 
@@ -1161,21 +1146,26 @@ card('The Might of Hercules') {
 
 //// ENCHANTMENTS
 
+
+// https://upload.wikimedia.org/wikipedia/commons/d/dc/Jason_Pelias_Louvre_K127.jpg
+// Public Domain
 card('Golden Fleece') {
+    imagePath 'mythos/greek/golden-fleece.jpg'
     enchantment true
     maxInDeck 1
     manaCost 5
     // Equipped unit gains +0/+3.
     addHealth 3
-
 }
-card('Achilles\' Armor') {
+// https://en.wikipedia.org/wiki/Shield_of_Achilles#/media/File:Angelo_monticelli_shield-of-achilles.jpg
+// Public Domain
+card('Achilles\' Shield') {
     enchantment true
+    imagePath 'mythos/greek/achilles-shield'
     maxInDeck 1
     manaCost 10
     addAttack 1
     addHealth 2
-
     // If that unit is a Hero it gains Taunt.
     /*
     spell {
@@ -1185,7 +1175,11 @@ card('Achilles\' Armor') {
     }
     */
 }
+
+// https://upload.wikimedia.org/wikipedia/commons/0/08/Raffaello%2C_concilio_degli_dei_02.jpg
+// Public Domain
 card('Hades\' Bident') {
+    imagePath 'mythos/greek/bident.jpg'
     enchantment true
     maxInDeck 1
     manaCost 10
@@ -1200,27 +1194,33 @@ card('Hades\' Bident') {
     }
     */
 }
+
+// CC BY-SA 3.0
+// https://commons.wikimedia.org/wiki/User:Dodo
 card('Helm of Darkness') {
+    flavor 'Helm that can turn the wearer invisible.'
+    imagePath 'mythos/greek/helm-of-darkness.jpg'
     enchantment true
     maxInDeck 1
     manaCost 5
     // Target unit gains +1/+1 and Phase.
     addAttack 1
     addHealth 1
-
     /*
     spell {
             set phase() toCards { target() }
     }
     */
 }
+// https://upload.wikimedia.org/wikipedia/commons/0/08/Raffaello%2C_concilio_degli_dei_02.jpg
+// Public Domain
 card('Poseidon\'s Trident') {
+    imagePath 'mythos/greek/trident.jpg'
     enchantment true
     maxInDeck 1
     manaCost 10
     addAttack 2
     addHealth 2
-
     // If that unit is a God it gains Dodge.
     /*
     spell {
@@ -1230,7 +1230,11 @@ card('Poseidon\'s Trident') {
     }
     */
 }
+
+// https://upload.wikimedia.org/wikipedia/commons/d/dd/Death-and-the-woodcutter-jean-francois-millet3.jpg
+// Public Domain
 card('Cronus\' Scythe') {
+    imagePath 'mythos/greek/scythe.jpg'
     enchantment true
     maxInDeck 1
     manaCost 10

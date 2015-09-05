@@ -252,6 +252,33 @@ card('Bear') {
     token()
 }
 
+// https://upload.wikimedia.org/wikipedia/commons/d/d8/Python_natalensis_G._J._Alexander.JPG
+// Public Domain
+card('Snake') {
+    creature 'Common'
+    flavor ''
+    imagePath 'mythos/common/snake-python.jpg'
+    maxInDeck 1
+    attack 1
+    health 1
+    manaCost 0
+    sickness 1
+    token()
+}
+
+// https://upload.wikimedia.org/wikipedia/commons/7/76/Clynotis_severus%2C_AF_2.jpg
+// CC BY-SA 3.0
+// https://commons.wikimedia.org/wiki/User:JJ%20Harrison
+card('Spider') {
+    creature 'Common'
+    maxInDeck 1
+    attack 2
+    health 2
+    manaCost 0
+    sickness 1
+    token()
+    // plague() // #264
+}
 
 //// SPELLS
 
