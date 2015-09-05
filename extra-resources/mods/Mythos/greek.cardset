@@ -1039,7 +1039,6 @@ card('Cerberus') {
 // no image found
 card('Titan 2/2') {
     creature 'Greek Titan'
-    flavor ''
     attack 2
     health 2
     manaCost 0
@@ -1076,7 +1075,6 @@ card('Minotaur') {
 
 /* DOES NOTHING RIGHT NOW
 card('Apollo\'s Bow') {
-    flavor ''
     maxInDeck 1
     manaCost 5
     spell {
@@ -1096,7 +1094,6 @@ card('Apollo\'s Bow') {
 */
 /* DOES NOTHING RIGHT NOW
 card('Tale of the Three Brothers') {
-    flavor ''
     maxInDeck 1
     manaCost 20
     spell {
@@ -1128,7 +1125,6 @@ card('The Wrath of Zeus') {
 */
 /* DOES NOTHING RIGHT NOW
 card('The Might of Hercules') {
-    flavor ''
     maxInDeck 1
     manaCost 10
     spell {

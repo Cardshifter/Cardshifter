@@ -268,7 +268,6 @@ card('Undead') {
 // Public Domain
 card('Lost Soul') {
     creature 'Common'
-    flavor ''
     imagePath 'mythos/common/lost-soul.jpg'
     attack 1
     health 1
@@ -286,7 +285,6 @@ card('Lost Soul') {
 // https://commons.wikimedia.org/wiki/User:Baresi%20franco
 card('Bear') {
     creature 'Common'
-    flavor ''
     imagePath 'mythos/common/bear.jpg'
     attack 2
     health 2
@@ -299,7 +297,6 @@ card('Bear') {
 // Public Domain
 card('Snake') {
     creature 'Common'
-    flavor ''
     imagePath 'mythos/common/snake-python.jpg'
     maxInDeck 1
     attack 1
