@@ -9,27 +9,37 @@
 
 //// CREATURES
 
+// https://upload.wikimedia.org/wikipedia/commons/e/e3/Fechtende_adelige_Studenten_um_1590.jpg
+// Public Domain
 card('Swordsman') {
     creature 'Common'
     flavor 'Armed with a sharp sword.'
+    imagePath 'mythos/common/swordsman.jpg'
     maxInDeck 5
     health 3
     sickness 1
     manaCost 5
     attack 3
 }
+// https://commons.wikimedia.org/wiki/File:Batalla_de_rocroi_por_Augusto_Ferrer-Dalmau.jpg#/media/File:Batalla_de_rocroi_por_Augusto_Ferrer-Dalmau.jpg
+// CC BY-SA 3.0
+// https://commons.wikimedia.org/wiki/User:Augusto%20ferrer%20dalmau
 card('Pikeman') {
     creature 'Common'
     flavor 'Armed with a long armor-piercing pike.'
+    imagePath 'mythos/common/pikeman.jpg'
     maxInDeck 5
     health 2
     sickness 1
     manaCost 5
     attack 4
 }
+// https://upload.wikimedia.org/wikipedia/commons/6/67/Maximilian_1470.png
+// Public Domain
 card('Archer') {
     creature 'Common'
     flavor 'Fires arrows from a distance.'
+    imagePath 'mythos/common/archer.jpg'
     maxInDeck 5
     health 2
     sickness 1
@@ -37,6 +47,8 @@ card('Archer') {
     attack 3
     denyCounterAttack() // ranged
 }
+// https://upload.wikimedia.org/wikipedia/commons/2/24/Battle_of_crecy_froissart.jpg
+// Public Domain
 card('Longbowman') {
     creature 'Common'
     flavor 'Fires devastating arrows from a very long distance.'
@@ -46,9 +58,12 @@ card('Longbowman') {
     attack 5
     denyCounterAttack() // ranged
 }
+// https://upload.wikimedia.org/wikipedia/commons/1/12/Geoffrey_of_Anjou_Monument.jpg
+// Public Domain
 card('Defender') {
     creature 'Common'
     flavor 'Wields a large shield to protect troops.'
+    imagePath 'mythos/common/defender.jpg'
     health 6
     sickness 1
     manaCost 10
@@ -56,18 +71,24 @@ card('Defender') {
     noAttack()
     taunt()
 }
+// https://upload.wikimedia.org/wikipedia/commons/8/8d/Asabah2.jpg
+// Public Domain
 card('Assassin') {
     creature 'Common'
     flavor 'Strikes with speed and stealth.'
+    imagePath 'mythos/common/assassin.jpg'
     health 2
     sickness 0
     manaCost 10
     attack 6
     denyCounterAttack() // taunt
 }
-card('Spy') {
+// https://upload.wikimedia.org/wikipedia/commons/f/f2/Actor-as-nikki-danjo-kunisada-1857.jpg
+// Public Domain
+card('Ninja Spy') {
     creature 'Common'
     flavor 'Weakens the enemy by revealing their secrets.'
+    imagePath 'mythos/common/ninja-spy.jpg'
     maxInDeck 2
     health 4
     sickness 1
@@ -83,9 +104,12 @@ card('Spy') {
         }
     }
 }
-card('Slingman') {
+// https://upload.wikimedia.org/wikipedia/commons/5/54/Slingers_on_Trajan%27s_Column.JPG
+// Public Domain
+card('Slinger') {
     creature 'Common'
     flavor 'Slings stones to break enemy weapons.'
+    imagePath 'mythos/common/slinger.jpg'
     maxInDeck 2
     health 3
     sickness 1
@@ -100,9 +124,12 @@ card('Slingman') {
         }
     }
 }
+// https://upload.wikimedia.org/wikipedia/commons/5/57/Paul_F%C3%BCrst%2C_Der_Doctor_Schnabel_von_Rom_%28Holl%C3%A4nder_version%29.png
+// Public Domain
 card('Healer') {
     creature 'Common'
     flavor 'Supports troops by providing healing.'
+    imagePath 'mythos/common/healer.jpg'
     maxInDeck 2
     health 5
     sickness 1
@@ -118,8 +145,12 @@ card('Healer') {
         }
     }
 }
+// https://upload.wikimedia.org/wikipedia/commons/e/ec/Ricci_Guangqi_2.jpg
+// CC BY-SA 3.0
+// https://commons.wikimedia.org/wiki/User:SteveMcCluskey
 card('Holy Man') {
     creature 'Common'
+    imagePath 'mythos/common/holy-man.jpg'
     attack 0
     health 6
     noAttack()
@@ -141,8 +172,11 @@ card('Holy Man') {
         }
     }
 }
+// https://upload.wikimedia.org/wikipedia/commons/3/36/Witsen%27s_Shaman.JPG
+// Public Domain
 card('Shaman') {
     creature 'Common'
+    imagePath 'mythos/common/shaman.jpg'
     maxInDeck 2
     attack 2
     health 4
@@ -158,7 +192,10 @@ card('Shaman') {
         )
     }
 }
+// https://upload.wikimedia.org/wikipedia/commons/0/00/Blunden_harbour_totems_Emily_Carr.jpeg
+// Public Domain
 card('Earth Totem') {
+    imagePath 'mythos/common/totem.jpg'
     token()
     health 1
     attack 0
@@ -172,6 +209,7 @@ card('Earth Totem') {
     }
 }
 card('Tree Totem') {
+    imagePath 'mythos/common/totem.jpg'
     token()
     health 1
     attack 0
@@ -181,6 +219,7 @@ card('Tree Totem') {
     }
 }
 card('Burning Totem') {
+    imagePath 'mythos/common/totem.jpg'
     token()
     health 1
     attack 0
@@ -190,9 +229,11 @@ card('Burning Totem') {
         damage 1 on 'opponent'
     }
 }
-
+// https://upload.wikimedia.org/wikipedia/commons/b/bf/Danse_macabre_by_Michael_Wolgemut.png
+// Public Domain
 card('Skeleton') {
     creature 'Common'
+    imagePath 'mythos/common/skeleton.jpg'
     attack 5
     health 2
     sickness 1
@@ -205,9 +246,11 @@ card('Skeleton') {
         }
     }
 }
-
-card('Zombie') {
+// https://upload.wikimedia.org/wikipedia/commons/0/0c/Les_amants_tr%C3%A9pass%C3%A9s%2C_The_deceased_lovers.jpg
+// Public Domain
+card('Undead') {
     creature 'Common'
+    imagePath 'mythos/common/undead.jpg'
     attack 3
     health 5
     sickness 1
