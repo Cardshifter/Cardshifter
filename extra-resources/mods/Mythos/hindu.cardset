@@ -6,7 +6,7 @@ package mythos
  */
 
 // https://en.wikipedia.org/wiki/Indra
-// https://upload.wikimedia.org/wikipedia/commons/3/36/Indra_deva.jpg
+// https://commons.wikimedia.org/wiki/File:Indra_deva.jpg
 // Public domain
 card('INDRA') {
     creature 'Hindu God'
@@ -31,7 +31,7 @@ card('INDRA') {
 // INDRA token
 
 // https://en.wikipedia.org/wiki/Airavata
-// https://upload.wikimedia.org/wikipedia/commons/4/4e/Indradeva.jpg
+// https://commons.wikimedia.org/wiki/File:Indradeva.jpg
 // Public domain
 card('Airavata') {
     creature 'Hindu'
@@ -51,7 +51,7 @@ card('Airavata') {
 }
 
 // https://en.wikipedia.org/wiki/Brahma
-// https://upload.wikimedia.org/wikipedia/commons/e/e4/Brahma_on_hamsa.jpg
+// https://commons.wikimedia.org/wiki/File:Brahma_on_hamsa.jpg
 // Public Domain
 card('BRAHMA') {
     creature 'Hindu God'
@@ -78,7 +78,7 @@ card('BRAHMA') {
 // BRAHMA TOKEN
 
 // https://en.wikipedia.org/wiki/Hamsa_(bird)
-// https://upload.wikimedia.org/wikipedia/commons/4/45/Hansa_Damayanthi.jpg
+// https://commons.wikimedia.org/wiki/File:Hansa_Damayanthi.jpg
 // Public Domain
 card('Hansa') {
     creature 'Hindu'
@@ -97,7 +97,7 @@ card('Hansa') {
 }
 
 // https://en.wikipedia.org/wiki/Vishnu
-// https://upload.wikimedia.org/wikipedia/commons/c/c2/Bhagavan_Vishnu.jpg
+// https://commons.wikimedia.org/wiki/File:Bhagavan_Vishnu.jpg
 // Public Domain
 card('VISHNU') {
     creature 'Hindu God'
@@ -120,7 +120,7 @@ card('VISHNU') {
 }
 
 // https://en.wikipedia.org/wiki/Krishna
-// https://upload.wikimedia.org/wikipedia/commons/7/70/Krishna_Holding_Mount_Govardhan_-_Crop.jpg
+// https://commons.wikimedia.org/wiki/File:Krishna_Holding_Mount_Govardhan_-_Crop.jpg
 // Public Domain
 card('KRISHNA') {
     creature 'Hindu God'
@@ -141,7 +141,7 @@ card('KRISHNA') {
 }
 
 // https://en.wikipedia.org/wiki/Shiva
-// https://upload.wikimedia.org/wikipedia/commons/a/a7/6_%C5%9Aiva_and_P%C4%81rvat%C4%AB_seated_on_a_terrace._1800_%28circa%29_BM.jpg
+// https://commons.wikimedia.org/wiki/File:6_%C5%9Aiva_and_P%C4%81rvat%C4%AB_seated_on_a_terrace._1800_%28circa%29_BM.jpg
 // Public Domain
 card('SHIVA') {
     creature 'Hindu God'
@@ -161,7 +161,7 @@ card('SHIVA') {
 }
 
 // https://en.wikipedia.org/wiki/Yama
-// https://upload.wikimedia.org/wikipedia/commons/3/33/Yama_on_buffalo.jpg
+// https://commons.wikimedia.org/wiki/File:Yama_on_buffalo.jpg
 // Public Domain
 card('YAMA') {
     creature 'Hindu God'
@@ -177,7 +177,7 @@ card('YAMA') {
 }
 
 // https://en.wikipedia.org/wiki/Durga
-// https://upload.wikimedia.org/wikipedia/commons/f/f5/Durga_Mahisasuramardini.JPG
+// https://commons.wikimedia.org/wiki/File:Durga_Mahisasuramardini.JPG
 // Public Domain
 card('DURGA') {
     creature 'Hindu God'
@@ -201,7 +201,7 @@ card('DURGA') {
 }
 
 // https://en.wikipedia.org/wiki/Varuna
-// https://upload.wikimedia.org/wikipedia/commons/4/48/Varunadeva.jpg
+// https://commons.wikimedia.org/wiki/File:Varunadeva.jpg
 // Public Domain
 card('VARUNA') {
     creature 'Hindu God'
@@ -221,7 +221,7 @@ card('VARUNA') {
 }
 
 // https://en.wikipedia.org/wiki/Gautama_Buddha
-// https://upload.wikimedia.org/wikipedia/commons/c/c1/Astasahasrika_Prajnaparamita_Victory_Over_Mara.jpeg
+// https://commons.wikimedia.org/wiki/File:Astasahasrika_Prajnaparamita_Victory_Over_Mara.jpeg
 // Public Domain
 card('Gautama Buddha') {
     creature 'Hindu Hero'
@@ -242,7 +242,7 @@ card('Gautama Buddha') {
 }
 
 // https://en.wikipedia.org/wiki/Maitreya
-// https://upload.wikimedia.org/wikipedia/commons/2/2d/Maitreya_Buddha%2C_Nubra.jpg
+// https://commons.wikimedia.org/wiki/File:Maitreya_Buddha%2C_Nubra.jpg
 // CC BY-SA 3.0
 // https://commons.wikimedia.org/wiki/User:John%20Hill
 card('Maitreya Buddha') {
