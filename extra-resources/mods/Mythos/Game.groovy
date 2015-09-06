@@ -49,9 +49,25 @@ onCard('#after') {entity ->
         imagePath 'mythos/default.png'
     }
 
-    // Set mana upkeep to mana cost if it's not set explicitly
+    /**
+     * Logic for manaUpkeep value, if it is not set explicitly at the card level in the cardset file
+     * <p>
+     *     The logic is to avoid odd numbers and use only even numbers, except if the odd
+     *     number is divisible by 5. For example:
+     *      <li>manaUpkeep 8 is OK
+     *      <li>manaUpkeep 5 is OK
+     *      <li>manaUpkeep 7 is not OK and will be set to 8 instead
+     */
     if (!MANA_UPKEEP.retriever.has(entity)) {
-        manaUpkeep MANA_COST.retriever.getFor(entity)
+        int halfOfManaCost = MANA_COST.retriever.getFor(entity) / 2
+        boolean manaUpkeepIsDivisibleByFive = halfOfManaCost % 5 == 0
+        if ( manaUpkeepIsDivisibleByFive ) {
+            manaUpkeep halfOfManaCost
+        } else if ( !manaUpkeepIsDivisibleByFive && halfOfManaCost % 2 == 0 ) {
+            manaUpkeep halfOfManaCost
+        } else {
+            manaUpkeep halfOfManaCost + 1
+        }
     }
 }
 
