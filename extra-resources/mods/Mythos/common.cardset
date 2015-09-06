@@ -9,7 +9,7 @@
 
 //// CREATURES
 
-// https://upload.wikimedia.org/wikipedia/commons/e/e3/Fechtende_adelige_Studenten_um_1590.jpg
+// https://commons.wikimedia.org/wiki/File:Fechtende_adelige_Studenten_um_1590.jpg
 // Public Domain
 card('Swordsman') {
     creature 'Common'
@@ -34,7 +34,7 @@ card('Pikeman') {
     manaCost 5
     attack 4
 }
-// https://upload.wikimedia.org/wikipedia/commons/6/67/Maximilian_1470.png
+// https://commons.wikimedia.org/wiki/File:Maximilian_1470.png
 // Public Domain
 card('Archer') {
     creature 'Common'
@@ -47,7 +47,7 @@ card('Archer') {
     attack 3
     denyCounterAttack() // ranged
 }
-// https://upload.wikimedia.org/wikipedia/commons/2/24/Battle_of_crecy_froissart.jpg
+// https://commons.wikimedia.org/wiki/File:Battle_of_crecy_froissart.jpg
 // Public Domain
 card('Longbowman') {
     creature 'Common'
@@ -58,7 +58,7 @@ card('Longbowman') {
     attack 5
     denyCounterAttack() // ranged
 }
-// https://upload.wikimedia.org/wikipedia/commons/1/12/Geoffrey_of_Anjou_Monument.jpg
+// https://commons.wikimedia.org/wiki/File:Geoffrey_of_Anjou_Monument.jpg
 // Public Domain
 card('Defender') {
     creature 'Common'
@@ -71,7 +71,7 @@ card('Defender') {
     noAttack()
     taunt()
 }
-// https://upload.wikimedia.org/wikipedia/commons/8/8d/Asabah2.jpg
+// https://commons.wikimedia.org/wiki/File:Asabah2.jpg
 // Public Domain
 card('Assassin') {
     creature 'Common'
@@ -83,7 +83,7 @@ card('Assassin') {
     attack 6
     denyCounterAttack() // taunt
 }
-// https://upload.wikimedia.org/wikipedia/commons/f/f2/Actor-as-nikki-danjo-kunisada-1857.jpg
+// https://commons.wikimedia.org/wiki/File:Actor-as-nikki-danjo-kunisada-1857.jpg
 // Public Domain
 card('Ninja Spy') {
     creature 'Common'
@@ -104,7 +104,7 @@ card('Ninja Spy') {
         }
     }
 }
-// https://upload.wikimedia.org/wikipedia/commons/5/54/Slingers_on_Trajan%27s_Column.JPG
+// https://commons.wikimedia.org/wiki/File:Slingers_on_Trajan%27s_Column.JPG
 // Public Domain
 card('Slinger') {
     creature 'Common'
@@ -124,7 +124,7 @@ card('Slinger') {
         }
     }
 }
-// https://upload.wikimedia.org/wikipedia/commons/5/57/Paul_F%C3%BCrst%2C_Der_Doctor_Schnabel_von_Rom_%28Holl%C3%A4nder_version%29.png
+// https://commons.wikimedia.org/wiki/File:Paul_F%C3%BCrst%2C_Der_Doctor_Schnabel_von_Rom_%28Holl%C3%A4nder_version%29.png
 // Public Domain
 card('Healer') {
     creature 'Common'
@@ -145,7 +145,7 @@ card('Healer') {
         }
     }
 }
-// https://upload.wikimedia.org/wikipedia/commons/e/ec/Ricci_Guangqi_2.jpg
+// https://commons.wikimedia.org/wiki/File:Ricci_Guangqi_2.jpg
 // CC BY-SA 3.0
 // https://commons.wikimedia.org/wiki/User:SteveMcCluskey
 card('Holy Man') {
@@ -172,7 +172,7 @@ card('Holy Man') {
         }
     }
 }
-// https://upload.wikimedia.org/wikipedia/commons/3/36/Witsen%27s_Shaman.JPG
+// https://commons.wikimedia.org/wiki/File:Witsen%27s_Shaman.JPG
 // Public Domain
 card('Shaman') {
     creature 'Common'
@@ -192,7 +192,7 @@ card('Shaman') {
         )
     }
 }
-// https://upload.wikimedia.org/wikipedia/commons/0/00/Blunden_harbour_totems_Emily_Carr.jpeg
+// https://commons.wikimedia.org/wiki/File:Blunden_harbour_totems_Emily_Carr.jpeg
 // Public Domain
 card('Earth Totem') {
     imagePath 'mythos/common/totem.jpg'
@@ -229,7 +229,7 @@ card('Burning Totem') {
         damage 1 on 'opponent'
     }
 }
-// https://upload.wikimedia.org/wikipedia/commons/b/bf/Danse_macabre_by_Michael_Wolgemut.png
+// https://commons.wikimedia.org/wiki/File:Danse_macabre_by_Michael_Wolgemut.png
 // Public Domain
 card('Skeleton') {
     creature 'Common'
@@ -246,7 +246,7 @@ card('Skeleton') {
         }
     }
 }
-// https://upload.wikimedia.org/wikipedia/commons/0/0c/Les_amants_tr%C3%A9pass%C3%A9s%2C_The_deceased_lovers.jpg
+// https://commons.wikimedia.org/wiki/File:Les_amants_tr%C3%A9pass%C3%A9s%2C_The_deceased_lovers.jpg
 // Public Domain
 card('Undead') {
     creature 'Common'
@@ -264,7 +264,7 @@ card('Undead') {
     }
 }
 
-// https://upload.wikimedia.org/wikipedia/commons/4/47/Michelangelo%2C_Damned_Soul.jpg
+// https://commons.wikimedia.org/wiki/File:Michelangelo%2C_Damned_Soul.jpg
 // Public Domain
 card('Lost Soul') {
     creature 'Common'
@@ -279,7 +279,7 @@ card('Lost Soul') {
 
 //// ANIMALS
 
-// https://upload.wikimedia.org/wikipedia/commons/7/7f/European_Brown_Bear.jpg
+// https://commons.wikimedia.org/wiki/File:European_Brown_Bear.jpg
 // CC BY-SA 3.0
 // https://commons.wikimedia.org/wiki/User:Baresi%20franco
 card('Bear') {
@@ -291,7 +291,7 @@ card('Bear') {
     token()
 }
 
-// https://upload.wikimedia.org/wikipedia/commons/d/d8/Python_natalensis_G._J._Alexander.JPG
+// https://commons.wikimedia.org/wiki/File:Python_natalensis_G._J._Alexander.JPG
 // Public Domain
 card('Snake') {
     creature 'Common'
@@ -303,7 +303,7 @@ card('Snake') {
     token()
 }
 
-// https://upload.wikimedia.org/wikipedia/commons/7/76/Clynotis_severus%2C_AF_2.jpg
+// https://commons.wikimedia.org/wiki/File:Clynotis_severus%2C_AF_2.jpg
 // CC BY-SA 3.0
 // https://commons.wikimedia.org/wiki/User:JJ%20Harrison
 card('Spider') {

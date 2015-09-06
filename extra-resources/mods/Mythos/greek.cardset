@@ -7,7 +7,7 @@ package Mythos
 //// GODS
 
 // https://en.wikipedia.org/wiki/Zeus
-// https://upload.wikimedia.org/wikipedia/commons/c/c8/Jupiter_Smyrna_Louvre_Ma13.jpg
+// https://commons.wikimedia.org/wiki/File:Jupiter_Smyrna_Louvre_Ma13.jpg
 // Public Domain
 card('ZEUS') {
     creature 'Greek God'
@@ -30,7 +30,7 @@ card('ZEUS') {
 }
 
 // https://en.wikipedia.org/wiki/Uranus_(mythology)
-// https://upload.wikimedia.org/wikipedia/commons/4/4e/Aion_mosaic_Glyptothek_Munich_W504.jpg
+// https://commons.wikimedia.org/wiki/File:Aion_mosaic_Glyptothek_Munich_W504.jpg
 // Public Domain
 card('URANUS') {
     creature 'Greek God'
@@ -55,7 +55,7 @@ card('URANUS') {
 }
 
 // https://en.wikipedia.org/wiki/Apollo
-// https://upload.wikimedia.org/wikipedia/commons/1/19/Apollo_of_the_Belvedere.jpg
+// https://commons.wikimedia.org/wiki/File:Apollo_of_the_Belvedere.jpg
 // CC BY-SA 4.0
 // Author: Livioandronico2013 - https://commons.wikimedia.org/wiki/User:Livioandronico2013
 card('APOLLO') {
@@ -80,7 +80,7 @@ card('APOLLO') {
 }
 
 // https://en.wikipedia.org/wiki/Ares
-// https://upload.wikimedia.org/wikipedia/commons/7/75/Ares_Ludovisi_Altemps_Inv8602_n2.jpg
+// https://commons.wikimedia.org/wiki/File:Ares_Ludovisi_Altemps_Inv8602_n2.jpg
 // Public Domain
 card('ARES') {
     creature 'Greek God'
@@ -102,7 +102,7 @@ card('ARES') {
 }
 
 // https://en.wikipedia.org/wiki/Artemis
-// https://upload.wikimedia.org/wikipedia/commons/c/c7/Apollo_Artemis_Brygos_Louvre_G151.jpg
+// https://commons.wikimedia.org/wiki/File:Apollo_Artemis_Brygos_Louvre_G151.jpg
 // Public Domain
 card('ARTEMIS') {
     creature 'Greek God'
@@ -120,7 +120,7 @@ card('ARTEMIS') {
 }
 
 // https://en.wikipedia.org/wiki/Athena
-// https://upload.wikimedia.org/wikipedia/commons/4/4f/Athena_Herakles_Staatliche_Antikensammlungen_2648.jpg
+// https://commons.wikimedia.org/wiki/File:Athena_Herakles_Staatliche_Antikensammlungen_2648.jpg
 // Public Domain
 card('ATHENA') {
     creature 'Greek God'
@@ -150,7 +150,7 @@ card('ATHENA') {
 }
 
 // https://en.wikipedia.org/wiki/Hermes
-// https://upload.wikimedia.org/wikipedia/commons/6/64/Hermes_Maia_Staatliche_Antikensammlungen_2304.jpg
+// https://commons.wikimedia.org/wiki/File:Hermes_Maia_Staatliche_Antikensammlungen_2304.jpg
 // Public Domain
 card('HERMES') {
     creature 'Greek God'
@@ -165,7 +165,7 @@ card('HERMES') {
 }
 
 // https://en.wikipedia.org/wiki/Hera
-// https://upload.wikimedia.org/wikipedia/commons/7/7c/Hera_Prometheus_Cdm_Paris_542.jpg
+// https://commons.wikimedia.org/wiki/File:Hera_Prometheus_Cdm_Paris_542.jpg
 // Public Domain
 card('HERA') {
     creature 'Greek God'
@@ -180,7 +180,7 @@ card('HERA') {
 }
 
 // https://en.wikipedia.org/wiki/Poseidon
-// https://upload.wikimedia.org/wikipedia/commons/2/2f/Poseidon_Penteskouphia_Louvre_CA452.jpg
+// https://commons.wikimedia.org/wiki/File:Poseidon_Penteskouphia_Louvre_CA452.jpg
 // Public Domain
 card('POSEIDON') {
     creature 'Greek God'
@@ -202,7 +202,7 @@ card('POSEIDON') {
 }
 
 // https://en.wikipedia.org/wiki/Eros
-// https://upload.wikimedia.org/wikipedia/commons/a/ae/Eros_bobbin_Louvre_CA1798.jpg
+// https://commons.wikimedia.org/wiki/File:Eros_bobbin_Louvre_CA1798.jpg
 // Public Domain
 card('EROS') {
     creature 'Greek God'
@@ -223,7 +223,7 @@ card('EROS') {
 }
 
 // https://en.wikipedia.org/wiki/Gaia_(mythology)
-// https://upload.wikimedia.org/wikipedia/commons/b/ba/Feuerbach_Gaea.jpg
+// https://commons.wikimedia.org/wiki/File:Feuerbach_Gaea.jpg
 // Public Domain
 card('GAIA') {
     creature 'Greek God'
@@ -250,7 +250,7 @@ card('GAIA') {
 //// CHTHONIC DEITIES
 
 // https://en.wikipedia.org/wiki/Hades
-// https://upload.wikimedia.org/wikipedia/commons/7/71/Hades-et-Cerberus-III.jpg
+// https://commons.wikimedia.org/wiki/File:Hades-et-Cerberus-III.jpg
 // CC BY 3.0
 // https://commons.wikimedia.org/wiki/User:Stella%20maris
 card('HADES') {
@@ -276,7 +276,7 @@ card('HADES') {
     }
 }
 // https://en.wikipedia.org/wiki/Cronus
-// https://upload.wikimedia.org/wikipedia/commons/d/d7/The_Mutiliation_of_Uranus_by_Saturn.jpg
+// https://commons.wikimedia.org/wiki/File:The_Mutiliation_of_Uranus_by_Saturn.jpg
 // Public Domain
 card('CRONUS') {
     creature 'Greek Titan'
@@ -299,7 +299,7 @@ card('CRONUS') {
 }
 
 // https://en.wikipedia.org/wiki/Lernaean_Hydra
-// https://upload.wikimedia.org/wikipedia/commons/b/be/Lernaean_Hydra_Getty_Villa_83.AE.346.jpg
+// https://commons.wikimedia.org/wiki/File:Lernaean_Hydra_Getty_Villa_83.AE.346.jpg
 // CC BY-SA 3.0
 // https://commons.wikimedia.org/wiki/User:Bibi%20Saint-Pol
 card('Lernaean Hydra') {
@@ -328,7 +328,7 @@ card('Lernaean Hydra') {
 }
 
 // https://en.wikipedia.org/wiki/Greek_underworld
-// https://upload.wikimedia.org/wikipedia/commons/1/14/Orestes_Delphi_BM_GR1917.12-10.1.jpg
+// https://commons.wikimedia.org/wiki/File:Orestes_Delphi_BM_GR1917.12-10.1.jpg
 // Public Domain
 card('The Underworld') {
     creature 'Greek Location'
@@ -356,7 +356,7 @@ card('The Underworld') {
 }
 
 // https://en.wikipedia.org/wiki/Charon_(mythology)
-// https://upload.wikimedia.org/wikipedia/commons/6/6b/Lytovchenko_Olexandr_Kharon.jpg
+// https://commons.wikimedia.org/wiki/File:Lytovchenko_Olexandr_Kharon.jpg
 // Public Domain
 card('CHARON') {
     creature 'Greek Chthonic Deity'
@@ -384,7 +384,7 @@ card('CHARON') {
 }
 
 // https://en.wikipedia.org/wiki/Empusa
-// http://www.worldsofimagination.co.uk/417px-Wiertz_Junge_Hexe.jpeg
+// https://www.worldsofimagination.co.uk/417px-Wiertz_Junge_Hexe.jpeg
 // Public Domain
 card('EMPUSA') {
     creature 'Greek Chthonic Deity'
@@ -399,7 +399,7 @@ card('EMPUSA') {
 }
 
 // https://en.wikipedia.org/wiki/Moirai
-// https://upload.wikimedia.org/wikipedia/commons/1/1b/Rundscheibe_Drei_Parzen_KGM_AE470.jpg
+// https://commons.wikimedia.org/wiki/File:Rundscheibe_Drei_Parzen_KGM_AE470.jpg
 // Public Domain
 card('MOIRAI') {
     creature 'Greek Chthonic Deity'
@@ -420,7 +420,7 @@ card('MOIRAI') {
 }
 
 // https://en.wikipedia.org/wiki/Hecate
-// https://upload.wikimedia.org/wikipedia/commons/2/2e/AN00969955_001_l.jpg
+// https://commons.wikimedia.org/wiki/File:AN00969955_001_l.jpg
 // Public Domain
 card('HECATE') {
     creature 'Greek Chthonic Deity'
@@ -445,8 +445,8 @@ card('HECATE') {
     */
 }
 
-// http://www.theoi.com/Khthonios/Rhadamanthys.html
-// http://www.theoi.com/image/K42.1Judges.jpg
+// https://www.theoi.com/Khthonios/Rhadamanthys.html
+// https://www.theoi.com/image/K42.1Judges.jpg
 // Public Domain
 card('Judges of the Dead') {
     creature 'Greek Chthonic Deity'
@@ -460,7 +460,7 @@ card('Judges of the Dead') {
 }
 
 // https://en.wikipedia.org/wiki/Lamia
-// https://upload.wikimedia.org/wikipedia/commons/0/00/Draper-Lamia.jpg
+// https://commons.wikimedia.org/wiki/File:Draper-Lamia.jpg
 // Public Domain
 card('LAMIA') {
     creature 'Greek Chthonic Deity'
@@ -498,7 +498,7 @@ card('MACARIA') {
 }
 
 // https://en.wikipedia.org/wiki/Persephone
-// https://upload.wikimedia.org/wikipedia/commons/8/8c/Locri_Pinax_Persephone_Opens_Liknon_Mystikon.jpg
+// https://commons.wikimedia.org/wiki/File:Locri_Pinax_Persephone_Opens_Liknon_Mystikon.jpg
 // CC BY-SA 2.5
 // https://commons.wikimedia.org/wiki/User:AlMare
 card('PERSEPHONE') {
@@ -518,7 +518,7 @@ card('PERSEPHONE') {
 }
 
 // https://en.wikipedia.org/wiki/Thanatos
-// https://upload.wikimedia.org/wikipedia/commons/a/af/Hermes_e_Sarpedon.jpg
+// https://commons.wikimedia.org/wiki/File:Hermes_e_Sarpedon.jpg
 // Public Domain
 card('THANATOS') {
     creature 'Greek Chthonic Deity'
@@ -551,7 +551,7 @@ card('TARTARUS') {
 //// LOCATIONS
 
 // https://en.wikipedia.org/wiki/Mount_Olympus
-// https://upload.wikimedia.org/wikipedia/commons/1/17/Mytikas.jpg
+// https://commons.wikimedia.org/wiki/File:Mytikas.jpg
 // CC BY 2.0
 // https://commons.wikimedia.org/wiki/User:File%20Upload%20Bot%20(Magnus%20Manske)
 card('Mount Olympus') {
@@ -622,7 +622,7 @@ card('Hyperion') {
 }
 
 // https://en.wikipedia.org/wiki/Mnemosyne
-// https://upload.wikimedia.org/wikipedia/commons/6/6d/Mnemosyne_%28color%29_Rossetti.jpg
+// https://commons.wikimedia.org/wiki/File:Mnemosyne_%28color%29_Rossetti.jpg
 // Public Domain
  card('Mnemosyne') {
     creature 'Greek Titan'
@@ -656,7 +656,7 @@ card('Styx') {
 }
 
 // https://en.wikipedia.org/wiki/Rhea_(mythology)
-// https://upload.wikimedia.org/wikipedia/commons/3/38/Pergamonmuseum_-_Antikensammlung_-_Pergamonaltar_37.JPG
+// https://commons.wikimedia.org/wiki/File:Pergamonmuseum_-_Antikensammlung_-_Pergamonaltar_37.JPG
 // CC BY-SA 3.0
 // https://commons.wikimedia.org/wiki/User:BetacommandBot
 card('Rhea') {
@@ -689,7 +689,7 @@ card('Menoetius') {
 //// HEROES
 
 // https://en.wikipedia.org/wiki/Heracles
-// https://upload.wikimedia.org/wikipedia/commons/4/4a/0_Plaque_Campana_-_Hercule_capturant_le_taureau_cr%C3%A9tois.JPG
+// https://commons.wikimedia.org/wiki/File:0_Plaque_Campana_-_Hercule_capturant_le_taureau_cr%C3%A9tois.JPG
 // CC BY-SA 3.0
 // https://commons.wikimedia.org/wiki/User:Jean-Pol%20GRANDMONT
 card('Heracles') {
@@ -725,7 +725,7 @@ card('Heracles') {
 }
 
 // https://en.wikipedia.org/wiki/Achilles
-// https://upload.wikimedia.org/wikipedia/commons/e/ed/Achilles_departure_Eretria_Painter_CdM_Paris_851.jpg
+// https://commons.wikimedia.org/wiki/File:Achilles_departure_Eretria_Painter_CdM_Paris_851.jpg
 // CC BY 2.5
 // https://commons.wikimedia.org/wiki/User:Jastrow
 card('Achilles') {
@@ -741,7 +741,7 @@ card('Achilles') {
 }
 
 // https://en.wikipedia.org/wiki/Perseus
-// https://upload.wikimedia.org/wikipedia/commons/4/49/Firenze.Loggia.Perseus02.JPG
+// https://commons.wikimedia.org/wiki/File:Firenze.Loggia.Perseus02.JPG
 // Public Domain
 card('Perseus') {
     creature 'Greek Hero'
@@ -767,7 +767,7 @@ card('Perseus') {
 }
 
 // https://en.wikipedia.org/wiki/Iolaus
-// https://upload.wikimedia.org/wikipedia/commons/d/d4/Heracles%2C_Iolaus_and_Eros_-_Cista_Ficoroni_foot.jpg
+// https://commons.wikimedia.org/wiki/File:Heracles%2C_Iolaus_and_Eros_-_Cista_Ficoroni_foot.jpg
 // Public Domain
 card('Iolaus') {
     creature 'Greek Hero'
@@ -783,7 +783,7 @@ card('Iolaus') {
 }
 
 // https://en.wikipedia.org/wiki/Theseus
-// https://upload.wikimedia.org/wikipedia/commons/9/9a/Theseus_Minotaur_BM_Vase_E84_n4.jpg
+// https://commons.wikimedia.org/wiki/File:Theseus_Minotaur_BM_Vase_E84_n4.jpg
 // CC BY 2.5
 // https://commons.wikimedia.org/wiki/User:Jastrow
 card('Theseus') {
@@ -799,7 +799,7 @@ card('Theseus') {
 }
 
 // https://en.wikipedia.org/wiki/Odysseus
-// https://upload.wikimedia.org/wikipedia/commons/f/f4/Caught_between_a_rock_and_a_hard_place.jpg
+// https://commons.wikimedia.org/wiki/File:Caught_between_a_rock_and_a_hard_place.jpg
 // Public Domain
 card('Odysseus') {
     creature 'Greek Hero'
@@ -813,7 +813,7 @@ card('Odysseus') {
 }
 
 // https://en.wikipedia.org/wiki/Daedalus
-// https://upload.wikimedia.org/wikipedia/commons/f/fe/Pompeii_-_Casa_dei_Vettii_-_Pasiphae.jpg
+// https://commons.wikimedia.org/wiki/File:Pompeii_-_Casa_dei_Vettii_-_Pasiphae.jpg
 // Public Domain
 card('Daedalus') {
     creature 'Greek Hero'
@@ -831,7 +831,7 @@ card('Daedalus') {
 }
 
 // https://en.wikipedia.org/wiki/Hector
-// https://upload.wikimedia.org/wikipedia/commons/b/b7/Hektor_wirft_Paris_seine_Weichlichkeit_vor_%28Tischbein%29.jpg
+// https://commons.wikimedia.org/wiki/File:Hektor_wirft_Paris_seine_Weichlichkeit_vor_%28Tischbein%29.jpg
 // CC BY-SA 3.0
 // https://commons.wikimedia.org/wiki/User:Jdsteakley
 card('Hector') {
@@ -853,7 +853,7 @@ card('Hector') {
 }
 
 // https://en.wikipedia.org/wiki/Ajax_(mythology)
-// https://upload.wikimedia.org/wikipedia/commons/8/89/Ajax_suicide_BM_F480.jpg
+// https://commons.wikimedia.org/wiki/File:Ajax_suicide_BM_F480.jpg
 // Public Domain
 card('Ajax The Great') {
     creature 'Greek Hero'
@@ -869,7 +869,7 @@ card('Ajax The Great') {
 //// CREATURES
 
 // https://en.wikipedia.org/wiki/Medusa
-// https://upload.wikimedia.org/wikipedia/commons/0/0c/Close_up_of_Gorgon_at_the_pediment_of_Artemis_temple_in_Corfu.jpg
+// https://commons.wikimedia.org/wiki/File:Close_up_of_Gorgon_at_the_pediment_of_Artemis_temple_in_Corfu.jpg
 // CC BY-SA 3.0
 // https://commons.wikimedia.org/wiki/User:Dr.K.
 card('Medusa') {
@@ -898,7 +898,7 @@ card('Medusa') {
 }
 
 // https://en.wikipedia.org/wiki/Nemean_lion
-// https://upload.wikimedia.org/wikipedia/commons/1/14/Herakles_Nemean_lion_BM_B621.jpg
+// https://commons.wikimedia.org/wiki/File:Herakles_Nemean_lion_BM_B621.jpg
 // Public Domain
 card('Nemean Lion') {
     creature 'Greek'
@@ -913,7 +913,7 @@ card('Nemean Lion') {
 }
 
 // https://en.wikipedia.org/wiki/Erymanthian_Boar
-// https://upload.wikimedia.org/wikipedia/commons/f/f6/Herakles_Eurystheus_boar_Louvre_F202.jpg
+// https://commons.wikimedia.org/wiki/File:Herakles_Eurystheus_boar_Louvre_F202.jpg
 // Public Domain
 card('Erymanthian Boar') {
     creature 'Greek'
@@ -927,7 +927,7 @@ card('Erymanthian Boar') {
 }
 
 // https://en.wikipedia.org/wiki/Pegasus
-// https://upload.wikimedia.org/wikipedia/commons/5/5c/Winged_horse_Dodona_Louvre_Br149.jpg
+// https://commons.wikimedia.org/wiki/File:Winged_horse_Dodona_Louvre_Br149.jpg
 // CC BY 3.0
 // https://commons.wikimedia.org/wiki/User:Jastrow
 card('Pegasus') {
@@ -947,7 +947,7 @@ card('Pegasus') {
     */
 }
 // https://en.wikipedia.org/wiki/Arachne
-// https://upload.wikimedia.org/wikipedia/commons/b/b0/Pur_12_aracne.jpg
+// https://commons.wikimedia.org/wiki/File:Pur_12_aracne.jpg
 // Public Domain
 card('Arachne') {
     creature 'Greek'
@@ -968,7 +968,7 @@ card('Arachne') {
 
 // https://en.wikipedia.org/wiki/Griffin
 // CC BY-SA 3.0
-// https://upload.wikimedia.org/wikipedia/commons/0/0a/Knossos_fresco_in_throne_palace.JPG
+// https://commons.wikimedia.org/wiki/File:Knossos_fresco_in_throne_palace.JPG
 // https://commons.wikimedia.org/wiki/User:Paginazero
 card('Griffin') {
     creature 'Greek'
@@ -993,7 +993,7 @@ card('Caucasian Eagle') {
 }
 
 // https://en.wikipedia.org/wiki/Chiron
-// https://upload.wikimedia.org/wikipedia/commons/6/6e/Chiron_instructs_young_Achilles_-_Ancient_Roman_fresco.jpg
+// https://commons.wikimedia.org/wiki/File:Chiron_instructs_young_Achilles_-_Ancient_Roman_fresco.jpg
 // Public Domain
 card('Chiron') {
     creature 'Greek'
@@ -1013,7 +1013,7 @@ card('Chiron') {
 }
 
 // https://en.wikipedia.org/wiki/Cerberus
-// https://upload.wikimedia.org/wikipedia/commons/1/1a/Herakles_Kerberos_Eurystheus_Louvre_E701.jpg
+// https://commons.wikimedia.org/wiki/File:Herakles_Kerberos_Eurystheus_Louvre_E701.jpg
 // Public Domain
 card('Cerberus') {
     creature 'Greek'
@@ -1054,7 +1054,7 @@ card('Titan 4/2') {
 }
 
 // https://en.wikipedia.org/wiki/Minotaur
-// https://upload.wikimedia.org/wikipedia/commons/d/db/Blake_Dante_Hell_XII.jpg
+// https://commons.wikimedia.org/wiki/File:Blake_Dante_Hell_XII.jpg
 // Public Domain
 card('Minotaur') {
     creature 'Greek'
@@ -1140,7 +1140,7 @@ card('The Might of Hercules') {
 //// ENCHANTMENTS
 
 
-// https://upload.wikimedia.org/wikipedia/commons/d/dc/Jason_Pelias_Louvre_K127.jpg
+// https://commons.wikimedia.org/wiki/File:Jason_Pelias_Louvre_K127.jpg
 // Public Domain
 card('Golden Fleece') {
     imagePath 'mythos/greek/golden-fleece.jpg'
@@ -1169,7 +1169,7 @@ card('Achilles\' Shield') {
     */
 }
 
-// https://upload.wikimedia.org/wikipedia/commons/0/08/Raffaello%2C_concilio_degli_dei_02.jpg
+// https://commons.wikimedia.org/wiki/File:Raffaello%2C_concilio_degli_dei_02.jpg
 // Public Domain
 card('Hades\' Bident') {
     imagePath 'mythos/greek/bident.jpg'
@@ -1205,7 +1205,7 @@ card('Helm of Darkness') {
     }
     */
 }
-// https://upload.wikimedia.org/wikipedia/commons/0/08/Raffaello%2C_concilio_degli_dei_02.jpg
+// https://commons.wikimedia.org/wiki/File:Raffaello%2C_concilio_degli_dei_02.jpg
 // Public Domain
 card('Poseidon\'s Trident') {
     imagePath 'mythos/greek/trident.jpg'
@@ -1224,7 +1224,7 @@ card('Poseidon\'s Trident') {
     */
 }
 
-// https://upload.wikimedia.org/wikipedia/commons/d/dd/Death-and-the-woodcutter-jean-francois-millet3.jpg
+// https://commons.wikimedia.org/wiki/File:Death-and-the-woodcutter-jean-francois-millet3.jpg
 // Public Domain
 card('Cronus\' Scythe') {
     imagePath 'mythos/greek/scythe.jpg'
