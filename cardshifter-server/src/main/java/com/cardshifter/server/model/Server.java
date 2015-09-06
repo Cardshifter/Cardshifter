@@ -210,7 +210,7 @@ public class Server implements ClientServerInterface {
 	
 	/**
 	 * 
-	 * @return The invites ServerHandler object
+	 * @return The the server's invite manager
 	 */
 	public InviteManager getInviteManager() {
 		return inviteManager;
@@ -227,8 +227,8 @@ public class Server implements ClientServerInterface {
 	}
 
 	/**
-	 * 
-	 * @return This could be used for randomly pairing up clients
+	 * This could be used for randomly pairing up clients
+	 * @return Atomic reference that will reference a client that is looking to play if one exists
 	 */
 	public AtomicReference<ClientIO> getPlayAny() {
 		return playAny;
