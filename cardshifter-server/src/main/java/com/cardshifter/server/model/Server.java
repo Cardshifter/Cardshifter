@@ -246,7 +246,8 @@ public class Server implements ClientServerInterface {
 	 * Closes all clients, shuts down all handlers, shuts down the scheduler
 	 */
 	public void stop() {
-		clients.values().forEach(ClientIO::close);
+		// Use a copy to avoid ConcurrentModificationException
+		new ArrayList<>(clients.values()).forEach(ClientIO::close);
 
 		for (ConnectionHandler handler : handlers) {
 			try {
