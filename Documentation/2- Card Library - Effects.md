@@ -26,7 +26,7 @@ An effect generally takes this form for resource modification:
         }
     }
 
-There are also summoning effects, but those will be covered separately.
+There are also summoning effects, documented further down in this file.
 
 _Note that `withPriority` only applies to the `whilePresent` trigger and should be omitted for other triggers._
 
@@ -132,24 +132,27 @@ Example:
 
 Many effects manipulate resources. Following is a list of the different resources. For a description of what each resource does, please see the `Card Library - Basics.md` guide.
 
-###Important note
-
-The name of the resource must always be `ALL_CAPS_WITH_UNDERSCORES`.
-
-####Basic Resources
+####Basic resources
 
 - `ATTACK`
 - `HEALTH`
+- `MAX_HEALTH`
 - `SICKNESS`
+- `MANA`
+- `MANA_MAX`
 - `MANA_COST`
 - `SCRAP`
 - `SCRAP_COST`
 
-####Behaviour-specific Resources
+####Behaviour-specific resources
 
 - `ATTACK_AVAILABLE`
 - `DENY_COUNTERATTACK`
 - `TAUNT`
+
+###Special resources
+
+- `HEALTH_ALL` - `HEALTH` and `MAX_HEALTH` combined
 
 ---
 
@@ -157,6 +160,7 @@ The name of the resource must always be `ALL_CAPS_WITH_UNDERSCORES`.
 
 The primary resource actions are `change` and `set`. The important distinction is that you either _change value(s) by `n`_ from its current value, or _set value(s) to `n`_ regardless of their current value. Therefore, be careful to use the correct keyword, `change` or `set`, according to your intentions. `change` can be thought of as addition, while `set` is like an equals sign.
 
+`RESOURCE` below can either be a normal resource, for instance `HEALTH`, or a list of resources. `HEALTH_ALL` is the same thing as writing `[MAX_HEALTH, HEALTH]`, i.e. a list containing the elements `MAX_HEALTH` and `HEALTH`.
 ####`change`
 
 Syntax:
