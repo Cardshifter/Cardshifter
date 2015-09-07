@@ -13,7 +13,7 @@ card('Body Armor') {
     flavor "Steel-reinforced armor to absord damage from blows and shots."
     enchantment()
     afterPlay {
-        change HEALTH by 2 on targets
+        change HEALTH_ALL by 2 on targets
     }
     scrapCost 1
 }
@@ -24,7 +24,7 @@ card('Adrenalin Injection') {
     afterPlay {
         set SICKNESS to 0 on targets // give "Rush"
         change ATTACK by 1 on targets
-        change HEALTH by 1 on targets
+        change HEALTH_ALL by 1 on targets
     }
     scrapCost 1
 }
@@ -34,7 +34,7 @@ card('Steroid Implants') {
     enchantment()
     afterPlay {
         change ATTACK by 2 on targets
-        change HEALTH by 1 on targets
+        change HEALTH_ALL by 1 on targets
     }
     scrapCost 2
 }
@@ -44,7 +44,7 @@ card('Reinforced Cranial Implants') {
     enchantment()
     afterPlay {
         change ATTACK by 1 on targets
-        change HEALTH by 2 on targets
+        change HEALTH_ALL by 2 on targets
     }
     scrapCost 2
 }
@@ -63,7 +63,7 @@ card('Exoskeleton') {
     enchantment()
     flavor "This very invasive operation reinforces bone tissue with titanium."
     afterPlay {
-        change HEALTH by 3 on targets
+        change HEALTH_ALL by 3 on targets
     }
     scrapCost 2
 }
@@ -73,7 +73,7 @@ card('Artificial Intelligence Implants') {
     enchantment()
     afterPlay {
         change ATTACK by 2 on targets
-        change HEALTH by 3 on targets
+        change HEALTH_ALL by 3 on targets
     }
     scrapCost 3
 }
@@ -83,7 +83,7 @@ card('Full-body Cybernetics Upgrade') {
     enchantment()
     afterPlay {
         change ATTACK by 3 on targets
-        change HEALTH by 3 on targets
+        change HEALTH_ALL by 3 on targets
     }
     scrapCost 5
 }

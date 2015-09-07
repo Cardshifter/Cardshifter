@@ -12,6 +12,8 @@ HEALTH = createResource("HEALTH")
 MAX_HEALTH = createResource("MAX_HEALTH")
 MANA_COST = createResource("MANA_COST")
 
+HEALTH_ALL = [MAX_HEALTH, HEALTH]
+
 // Resources that declare a specific special behavior to creature cards
 
 ATTACK_AVAILABLE = createResource("ATTACK_AVAILABLE")
