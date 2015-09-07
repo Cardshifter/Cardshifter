@@ -210,7 +210,7 @@ public class Server implements ClientServerInterface {
 	
 	/**
 	 * 
-	 * @return The the server's invite manager
+	 * @return The server's invite manager
 	 */
 	public InviteManager getInviteManager() {
 		return inviteManager;
