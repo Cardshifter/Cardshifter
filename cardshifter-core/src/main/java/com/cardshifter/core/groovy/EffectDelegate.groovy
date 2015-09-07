@@ -178,20 +178,36 @@ class EffectDelegate {
     }
 
     def change(ECSResource resource) {
+        change([resource])
+    }
+
+    def change(Collection<ECSResource> resources) {
         [by: {int amount ->
             EntityConsumer action = {Entity source, Entity target ->
-                resource.retriever.resFor(target).change(amount)
+                resources.each {
+                    it.retriever.resFor(target).change(amount)
+                }
             }
-            targetedAction(action, "Change $resource by $amount on %who%\n")
+            // No [brackets] around resources
+            def resStr = resources.stream().map({it.toString()}).collect(Collectors.joining(", "))
+            targetedAction(action, "Change $resStr by $amount on %who%\n")
         }]
     }
 
     def set(ECSResource resource) {
+        set([resource])
+    }
+
+    def set(Collection<ECSResource> resources) {
         [to: {int amount ->
             EntityConsumer action = {Entity source, Entity target ->
-                resource.retriever.resFor(target).set(amount)
+                resources.each {
+                    it.retriever.resFor(target).set(amount)
+                }
             }
-            targetedAction(action, "Set $resource to $amount on %who%\n")
+            // No [brackets] around resources
+            def resStr = String.join(", ", resources.stream().map({it.toString()}).collect(Collectors.toList()))
+            targetedAction(action, "Set $resStr to $amount on %who%\n")
         }]
     }
 
