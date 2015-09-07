@@ -56,7 +56,7 @@ If you are not a developer, you can also help by playing the game and [reporting
 All files in this repository, unless explicitly specified otherwise in the files itself 
 are licensed under Apache Software License, Version 2.0 (the "License");
 
-Authors: Simon Forsberg, Frank van Heeswijk, Francis Veilleux-Gaboury, Matt Olsen, Jeremiah Smith
+Copyright 2014-2015 Simon Forsberg, Frank van Heeswijk, Francis Veilleux-Gaboury, Matt Olsen, Jeremiah Smith, Jacob Wahlgren
 
 You may not use the files except in compliance with the License.
 You may obtain a copy of the License at
