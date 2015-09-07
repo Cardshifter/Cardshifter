@@ -238,3 +238,21 @@ from clearState test 'heal creatures at end of turn' using {
     assert defender.health == 4
 }
 
+from clearState test 'Body Armor enchantment' using {
+    def enchantment = to you zone 'Hand' create 'Body Armor'
+    def creature = to you zone 'Battlefield' create {
+        creature 'Bio'
+        health 1
+    }
+
+    assert creature.max_health == 1
+    assert creature.health == 1
+    you.scrap = 1
+    uses 'Enchant' on enchantment withTarget creature ok
+    assert creature.max_health == 3
+    assert creature.health == 3
+    uses 'End Turn' ok
+    uses 'End Turn' ok
+    assert creature.max_health == 3
+    assert creature.health == 3
+}
