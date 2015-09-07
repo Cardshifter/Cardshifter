@@ -189,7 +189,7 @@ class EffectDelegate {
                 }
             }
             // No [brackets] around resources
-            def resStr = String.join(", ", resources.stream().map({it.toString()}).collect(Collectors.toList()))
+            def resStr = resources.stream().map({it.toString()}).collect(Collectors.joining(", "))
             targetedAction(action, "Change $resStr by $amount on %who%\n")
         }]
     }
