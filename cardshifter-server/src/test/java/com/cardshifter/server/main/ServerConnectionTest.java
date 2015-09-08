@@ -54,7 +54,6 @@ public class ServerConnectionTest {
 	private int socketPort;
 	private TestClient client1;
 	private int userId;
-	private final String client1UserName = "Tester1";
     private AvailableModsMessage mods;
 
 	private final int MAX_SERVER_PORT_TRY = 10;
@@ -87,7 +86,7 @@ public class ServerConnectionTest {
 
 		socketPort = config.getPortSocket();
 		client1 = createTestClient();
-		client1.send(new LoginMessage(client1UserName));
+		client1.send(new LoginMessage("Tester1"));
 
 		WelcomeMessage welcome = client1.await(WelcomeMessage.class);
 		assertEquals(200, welcome.getStatus());
@@ -118,19 +117,21 @@ public class ServerConnectionTest {
 		UserStatusMessage statusMessage = client1.await(UserStatusMessage.class);
 		ChatMessage chat = client1.await(ChatMessage.class);
 		String message = chat.getMessage();
-		assertTrue("Unexpected message: " + message, message.contains("Test2") && message.contains("joined"));
+		assertTrue("Unexpected message: " + message, message.contains(client2.getName()) && message.contains("joined"));
+
 		int client2id = statusMessage.getUserId();
 		assertEquals(Status.ONLINE, statusMessage.getStatus());
 		assertEquals(server.getClients().size() + 1, client2id);
-		assertEquals("Test2", statusMessage.getName());
+		assertEquals(client2.getName(), statusMessage.getName());
 		
 		client2.send(new ServerQueryMessage(Request.USERS));
 		client2.await(AvailableModsMessage.class);
 		List<UserStatusMessage> users = client2.awaitMany(6, UserStatusMessage.class);
 		System.out.println("Online users: " + users);
+
 		// There is no determined order in which the UserStatusMessages are received, so it is harder to make any assertions.
-        assertUserFound(users, client1UserName);
-        assertUserFound(users, "Test2");
+        assertUserFound(users, client1.getName());
+        assertUserFound(users, client2.getName());
         assertUserFound(users, "AI Fighter");
         assertUserFound(users, "AI Loser");
         assertUserFound(users, "AI Medium");
@@ -142,7 +143,7 @@ public class ServerConnectionTest {
 		statusMessage = client1.await(UserStatusMessage.class);
 		assertEquals(Status.OFFLINE, statusMessage.getStatus());
 		assertEquals(client2id, statusMessage.getUserId());
-		assertEquals("Test2", statusMessage.getName());
+		assertEquals(client2.getName(), statusMessage.getName());
 	}
 
     private static void assertUserFound(Collection<UserStatusMessage> users, String name) {
@@ -152,7 +153,7 @@ public class ServerConnectionTest {
     @Test(timeout = 5000)
 	public void testSameUserName() throws IOException, InterruptedException {
 		TestClient client2 = createTestClient();
-		client2.send(new LoginMessage(client1UserName));
+		client2.send(new LoginMessage(client1.getName()));
 		WelcomeMessage welcomeMessage = client2.await(WelcomeMessage.class);
 		assertFalse(welcomeMessage.isOK());
 	}
