@@ -2,14 +2,15 @@ language: groovy
 
 jdk:
     - oraclejdk8
-    
-before_install:
-    - sudo apt-get update -qq
-    - sudo apt-get install oracle-java8-installer
+
+# Use container build
+sudo: false
+
+before_script:
     - export GRADLE_OPTS='-Dorg.gradle.parallel=false'
     - chmod +x gradlew
 
-install: /bin/true
+script: "./gradlew distAndTest --info"
 
 notifications:
     webhooks:
@@ -17,17 +18,14 @@ notifications:
             - secure: "SPXpxdUqqEMqGJK1WbNOo4RxS9Sx2CKvmIUaadwFsSg34qR0KSOhXMnWEo6s+uFLv8OB+Q/nYtWvD9Xg6n+QfgkgmyOLiYsN8cGTG4B8KFKn3Kbl6mfG8IzRP+nQYzXCqcuQ6gf+eurAX3LIvYWF+D2qcHedbZHQfVZ12ai2dTU="
         on_success: always
         on_failure: always
-        on_start: false
-
-script: "./gradlew distAndTest --info"
+        on_start: never
 
 deploy:
   provider: releases
   api-key: 
     secure: "CJyVgIoL/G0a233WuqPi14eOAk8JlWdErxqbJZYawGmCt5CBJW9l5+4CO4mJqho+EKHmpr+OgGVFq5HV4zQVqVJNFhL86yEucY52v3uQqqT26UmyJwLEtNOpHzVw0pXKvE5LbBOQdl+/8nNhakd6VwGE3qs05F+0ZYyu9LXaal4="
   file_glob: true
-  file: 
-      - "build/distributions/cardshifter-*.zip"
+  file: "build/distributions/cardshifter-*.zip"
   skip_cleanup: true
   on:
     tags: true
