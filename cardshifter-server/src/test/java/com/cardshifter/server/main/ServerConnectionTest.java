@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import com.cardshifter.api.outgoing.*;
+import com.fasterxml.jackson.core.JsonGenerationException;
 import org.apache.log4j.PropertyConfigurator;
 import org.junit.After;
 import org.junit.Before;
@@ -135,16 +136,16 @@ public class ServerConnectionTest {
 		assertEquals(client2.getName(), statusMessage.getName());
 	}
 
-    private static void assertUserFound(Collection<UserStatusMessage> users, String name) {
-        assertTrue("User '" + name + "' not found", users.stream().filter(mess -> mess.getName().equals(name)).findAny().isPresent());
-    }
-
     @Test(timeout = 5000)
 	public void testSameUserName() throws IOException, InterruptedException {
 		TestClient client2 = createTestClient();
 		client2.send(new LoginMessage(client1.getName()));
 		WelcomeMessage welcomeMessage = client2.await(WelcomeMessage.class);
 		assertFalse(welcomeMessage.isOK());
+	}
+
+	private static void assertUserFound(Collection<UserStatusMessage> users, String name) {
+		assertTrue("User '" + name + "' not found", users.stream().filter(mess -> mess.getName().equals(name)).findAny().isPresent());
 	}
 	
 	@Test(timeout = 10000)
@@ -225,6 +226,33 @@ public class ServerConnectionTest {
 		client1.send(new StartGameRequest(client2id, getTestMod()));
 		client1.send(new StartGameRequest(client2id, getTestMod()));
 		client1.await(ServerErrorMessage.class);
+	}
+
+	/**
+	 * Assert that no message is in the queue or being sent from the server.
+	 * DOES NOT WORK IF THE MESSAGE IN THE QUEUE IS ServerStatusMessage!
+	 */
+	private static void assertNoMessage(TestClient client) throws IOException, InterruptedException {
+		client.send(new ServerQueryMessage(Request.STATUS, ""));
+		client.await(ServerStatusMessage.class);
+	}
+
+	@Test(timeout = 5000)
+	public void testUsersQueryNotLoggedIn() throws IOException, InterruptedException {
+		TestClient client2 = createTestClient();
+
+		client1.send(new ServerQueryMessage(Request.USERS, ""));
+
+		List<UserStatusMessage> users = client1.awaitMany(5, UserStatusMessage.class);
+
+		assertUserFound(users, client1.getName());
+		assertUserFound(users, "AI Fighter");
+		assertUserFound(users, "AI Loser");
+		assertUserFound(users, "AI Medium");
+		assertUserFound(users, "AI Idiot");
+
+		// There shouldn't be a UserStatusMessage for client2
+		assertNoMessage(client1);
 	}
 	
 }
