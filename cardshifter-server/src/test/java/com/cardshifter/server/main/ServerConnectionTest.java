@@ -57,8 +57,6 @@ public class ServerConnectionTest {
 	private int userId;
     private AvailableModsMessage mods;
 
-	private final int MAX_SERVER_PORT_TRY = 10;
-
     @Before
 	public void setup() throws IOException, InterruptedException {
 		PropertyConfigurator.configure(getClass().getResourceAsStream("log4j.properties"));
