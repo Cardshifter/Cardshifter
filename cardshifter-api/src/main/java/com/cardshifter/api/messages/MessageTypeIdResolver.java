@@ -41,6 +41,7 @@ public class MessageTypeIdResolver {
 		clazzes.put("entityRemoved", EntityRemoveMessage.class);
 		clazzes.put("disconnect", ClientDisconnectedMessage.class);
 		// Outgoing messages from server
+        clazzes.put("status", ServerStatusMessage.class);
 		clazzes.put("resetActions", ResetAvailableActionsMessage.class);
 		clazzes.put("game", GameMessage.class);
 		clazzes.put("gameover", GameOverMessage.class);

@@ -8,6 +8,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.cardshifter.server.main.ServerConfiguration;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -22,11 +23,22 @@ public class ServerSock implements ConnectionHandler {
 	private final Server server;
 	private final Thread thread;
 	private final ServerSocket serverSocket;
-	
-	public ServerSock(Server server, int port) throws IOException {
+
+	/**
+	 * Constructor.
+	 * @param server Server instance
+	 * @param config Uses the value of {@code config.getPortSocket} as port. If {@code port == 0} any available port is
+	 *                  used and the real port number is set in {@code config} before returning.
+	 * @throws IOException
+	 */
+	public ServerSock(Server server, ServerConfiguration config) throws IOException {
 		this.server = server;
 		this.executor = Executors.newCachedThreadPool(r -> new Thread(r, "Conn-" + threadCounter.getAndIncrement()));
-		this.serverSocket = new ServerSocket(port);
+
+		// If port = 0, use any open port. Set the config port to the real port used.
+		this.serverSocket = new ServerSocket(config.getPortSocket());
+		config.setPortSocket(serverSocket.getLocalPort());
+
 		this.thread = new Thread(this::run);
 	}
 

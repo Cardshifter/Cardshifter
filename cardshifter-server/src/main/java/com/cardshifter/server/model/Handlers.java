@@ -1,9 +1,11 @@
 package com.cardshifter.server.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -41,9 +43,12 @@ public class Handlers {
 	public void query(ServerQueryMessage message, ClientIO client) {
 		switch (message.getRequest()) {
 			case USERS:
-				for (ClientIO cl : server.getClients().values()) {
-					client.sendToClient(new UserStatusMessage(cl.getId(), cl.getName(), Status.ONLINE));
-				}
+				List<ClientIO> clientsCopy = new ArrayList<>(server.getClients().values());
+				Consumer<ClientIO> sendUser = cl -> client.sendToClient(new UserStatusMessage(cl.getId(), cl.getName(), Status.ONLINE));
+
+				clientsCopy.stream()
+					       .filter(ClientIO::isLoggedIn)
+					       .forEach(sendUser);
 				break;
 			case DECK_BUILDER:
                 Map<String, GameFactory> gameFactories = server.getGameFactories();
@@ -70,7 +75,7 @@ public class Handlers {
                     .count();
 
                 int games = server.getGames().size();
-                String[] mods = (String[]) server.getGameFactories().keySet().stream().toArray();
+                String[] mods = server.getGameFactories().keySet().stream().toArray(size -> new String[size]);
                 client.sendToClient(new ServerStatusMessage(users, ais, games, mods));
                 break;
 			default:
