@@ -1,17 +1,12 @@
 package com.cardshifter.server.model;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.cardshifter.api.CardshifterSerializationException;
-import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.serial.ByteTransformer;
-import com.cardshifter.server.clients.Base64Utils;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.cardshifter.server.main.ServerConfiguration;
 import net.zomis.cardshifter.ecs.usage.CardshifterIO;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -26,9 +21,16 @@ public class ServerWeb implements ConnectionHandler {
 	private static final Logger logger = LogManager.getLogger(ServerWeb.class);
 	
 	private final InnerServer websocketServer;
-	
-	public ServerWeb(Server server, int port) {
-		this.websocketServer = new InnerServer(server, port);
+
+	/**
+	 * Constructor.
+	 * @param server Server instance
+	 * @param config Uses the value of {@code config.getPortWebsocket} as port. If {@code port == 0} any available port
+	 *                  is used and the real port number is set in {@code config} before returning.
+	 */
+	public ServerWeb(Server server, ServerConfiguration config) {
+		this.websocketServer = new InnerServer(server, config.getPortWebsocket());
+		config.setPortWebsocket(websocketServer.getPort());
 	}
 
 	private static class InnerServer extends WebSocketServer {

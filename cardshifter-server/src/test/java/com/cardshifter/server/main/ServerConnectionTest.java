@@ -63,26 +63,15 @@ public class ServerConnectionTest {
 		PropertyConfigurator.configure(getClass().getResourceAsStream("log4j.properties"));
 		ServerConfiguration config = ServerConfiguration.defaults();
 
-		int basePortSocket = config.getPortSocket();
-		int basePortWebsocket = config.getPortWebsocket();
+		// Use any available port
+		config.setPortSocket(0);
+		config.setPortWebsocket(0);
 
-		// The ports might be in use by another instance or application
-		// Could use port = 0, but would need access to the ServerSocket to get the real port number
-		for (int i = 0; i < MAX_SERVER_PORT_TRY; i++) {
-			config.setPortSocket(basePortSocket + i * 10);
-			config.setPortWebsocket(basePortWebsocket + i * 10);
+		main = new MainServer(config);
+		main.getMods().loadExternal(Paths.get("../extra-resources/groovy"));
+		server = main.start();
 
-			main = new MainServer(config);
-			main.getMods().loadExternal(Paths.get("../extra-resources/groovy"));
-			server = main.start();
-
-			if (server.getClients().size() > 0) {
-				break;
-			}
-		}
-
-		assertTrue("Server did not start correctly after " + MAX_SERVER_PORT_TRY + " retries.",
-				   server.getClients().size() > 0);
+		assertTrue("Server should start correctly.", server.getClients().size() > 0);
 
 		socketPort = config.getPortSocket();
 		client1 = createTestClient();

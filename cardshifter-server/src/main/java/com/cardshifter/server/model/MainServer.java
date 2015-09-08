@@ -69,8 +69,8 @@ public class MainServer {
 		try {
 			logger.info("Starting Server...");
 			
-			server.addConnections(new ServerSock(server, config.getPortSocket()));
-			server.addConnections(new ServerWeb(server, config.getPortWebsocket()));
+			server.addConnections(new ServerSock(server, config));
+			server.addConnections(new ServerWeb(server, config));
 			
 			logger.info("Starting Console...");
 			CommandHandler commandHandler = server.getCommandHandler();
