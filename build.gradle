@@ -78,9 +78,6 @@ subprojects {
                 exceptionFormat "short"
             }
         }
-        tasks.withType(Test) {
-            maxParallelForks = Runtime.runtime.availableProcessors()
-        }
     }
 }
 
