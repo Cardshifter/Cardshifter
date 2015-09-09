@@ -6,6 +6,9 @@ jdk:
 # Use container build
 sudo: false
 
+cache:
+    - $HOME/.gradle
+
 before_script:
     - export GRADLE_OPTS='-Dorg.gradle.parallel=false'
     - chmod +x gradlew
