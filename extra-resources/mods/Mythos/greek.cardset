@@ -8,7 +8,7 @@ package Mythos
 
 // https://en.wikipedia.org/wiki/Zeus
 // https://commons.wikimedia.org/wiki/File:Jupiter_Smyrna_Louvre_Ma13.jpg
-// Public Domain
+// Attribution: By UnknownMarie-Lan Nguyen (Own work) [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AJupiter_Smyrna_Louvre_Ma13.jpg">via Wikimedia Commons</a>
 card('ZEUS') {
     creature 'Greek God'
     flavor 'God of the sky, ruler of Mount Olympus.'
@@ -31,7 +31,7 @@ card('ZEUS') {
 
 // https://en.wikipedia.org/wiki/Uranus_(mythology)
 // https://commons.wikimedia.org/wiki/File:Aion_mosaic_Glyptothek_Munich_W504.jpg
-// Public Domain
+// Attribution: See page for author [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AAion_mosaic_Glyptothek_Munich_W504.jpg">via Wikimedia Commons</a>
 card('URANUS') {
     creature 'Greek God'
     flavor 'The God of the Heavens, father of the Titans'
@@ -56,8 +56,7 @@ card('URANUS') {
 
 // https://en.wikipedia.org/wiki/Apollo
 // https://commons.wikimedia.org/wiki/File:Apollo_of_the_Belvedere.jpg
-// CC BY-SA 4.0
-// Author: Livioandronico2013 - https://commons.wikimedia.org/wiki/User:Livioandronico2013
+// Attribution: By Livioandronico2013 (Own work) [<a href="http://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>], <a href="https://commons.wikimedia.org/wiki/File%3AApollo_of_the_Belvedere.jpg">via Wikimedia Commons</a>
 card('APOLLO') {
     creature 'Greek God'
     flavor 'God of music, arts, knowledge, healing, plague, and prophecy.'
@@ -81,7 +80,7 @@ card('APOLLO') {
 
 // https://en.wikipedia.org/wiki/Ares
 // https://commons.wikimedia.org/wiki/File:Ares_Ludovisi_Altemps_Inv8602_n2.jpg
-// Public Domain
+// Attribution: See page for author [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AAres_Ludovisi_Altemps_Inv8602_n2.jpg">via Wikimedia Commons</a>
 card('ARES') {
     creature 'Greek God'
     flavor 'God of war, bloodshed and violence.'
@@ -103,7 +102,7 @@ card('ARES') {
 
 // https://en.wikipedia.org/wiki/Artemis
 // https://commons.wikimedia.org/wiki/File:Apollo_Artemis_Brygos_Louvre_G151.jpg
-// Public Domain
+// Attribution: Briseis Painter [Public domain or Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AApollo_Artemis_Brygos_Louvre_G151.jpg">via Wikimedia Commons</a>
 card('ARTEMIS') {
     creature 'Greek God'
     flavor 'Virgin Goddess of the hunt, wilderness and animals.'
@@ -121,7 +120,7 @@ card('ARTEMIS') {
 
 // https://en.wikipedia.org/wiki/Athena
 // https://commons.wikimedia.org/wiki/File:Athena_Herakles_Staatliche_Antikensammlungen_2648.jpg
-// Public Domain
+// Attribution: Public Domain
 card('ATHENA') {
     creature 'Greek God'
     flavor 'Goddess of intelligence, skill, peace, warfare, battle strategy, and wisdom.'
@@ -151,7 +150,7 @@ card('ATHENA') {
 
 // https://en.wikipedia.org/wiki/Hermes
 // https://commons.wikimedia.org/wiki/File:Hermes_Maia_Staatliche_Antikensammlungen_2304.jpg
-// Public Domain
+// Attribution: Public Domain
 card('HERMES') {
     creature 'Greek God'
     flavor 'God of boundaries, travel, communication, trade, language, and writing.'
@@ -166,7 +165,7 @@ card('HERMES') {
 
 // https://en.wikipedia.org/wiki/Hera
 // https://commons.wikimedia.org/wiki/File:Hera_Prometheus_Cdm_Paris_542.jpg
-// Public Domain
+// Attribution: Douris [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AHera_Prometheus_Cdm_Paris_542.jpg">via Wikimedia Commons</a>
 card('HERA') {
     creature 'Greek God'
     flavor 'Queen of the Gods and the wife of Zeus.'
@@ -181,7 +180,7 @@ card('HERA') {
 
 // https://en.wikipedia.org/wiki/Poseidon
 // https://commons.wikimedia.org/wiki/File:Poseidon_Penteskouphia_Louvre_CA452.jpg
-// Public Domain
+// Attribution: See page for author [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3APoseidon_Penteskouphia_Louvre_CA452.jpg">via Wikimedia Commons</a>
 card('POSEIDON') {
     creature 'Greek God'
     flavor 'God of the sea, rivers, floods, droughts, and earthquakes.'
@@ -203,7 +202,7 @@ card('POSEIDON') {
 
 // https://en.wikipedia.org/wiki/Eros
 // https://commons.wikimedia.org/wiki/File:Eros_bobbin_Louvre_CA1798.jpg
-// Public Domain
+// Attribution: Public Domain
 card('EROS') {
     creature 'Greek God'
     flavor 'The God of love and attraction.'
@@ -224,7 +223,7 @@ card('EROS') {
 
 // https://en.wikipedia.org/wiki/Gaia_(mythology)
 // https://commons.wikimedia.org/wiki/File:Feuerbach_Gaea.jpg
-// Public Domain
+// Attribution: Anselm Feuerbach [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AFeuerbach_Gaea.jpg">via Wikimedia Commons</a>
 card('GAIA') {
     creature 'Greek God'
     flavor 'Personification of the Earth, mother of the Titans.'
@@ -251,8 +250,7 @@ card('GAIA') {
 
 // https://en.wikipedia.org/wiki/Hades
 // https://commons.wikimedia.org/wiki/File:Hades-et-Cerberus-III.jpg
-// CC BY 3.0
-// https://commons.wikimedia.org/wiki/User:Stella%20maris
+// Attribution: CC BY 3.0
 card('HADES') {
     creature 'Greek Chthonic Deity'
     flavor 'God of the Underworld.'
@@ -277,7 +275,7 @@ card('HADES') {
 }
 // https://en.wikipedia.org/wiki/Cronus
 // https://commons.wikimedia.org/wiki/File:The_Mutiliation_of_Uranus_by_Saturn.jpg
-// Public Domain
+// Attribution: Giorgio Vasari [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AThe_Mutiliation_of_Uranus_by_Saturn.jpg">via Wikimedia Commons</a>
 card('CRONUS') {
     creature 'Greek Titan'
     flavor 'Deposed King of the Titans; also father of Zeus, Hades, and Poseidon.'
@@ -300,8 +298,7 @@ card('CRONUS') {
 
 // https://en.wikipedia.org/wiki/Lernaean_Hydra
 // https://commons.wikimedia.org/wiki/File:Lernaean_Hydra_Getty_Villa_83.AE.346.jpg
-// CC BY-SA 3.0
-// https://commons.wikimedia.org/wiki/User:Bibi%20Saint-Pol
+// Attribution: By Eagle PainterWolfgang Sauber (User:Xenophon). Image renamed from Image:Herakles gegen Hydra.jpg (Own work) [<a href="http://www.gnu.org/copyleft/fdl.html">GFDL</a> or <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>], <a href="https://commons.wikimedia.org/wiki/File%3ALernaean_Hydra_Getty_Villa_83.AE.346.jpg">via Wikimedia Commons</a>
 card('Lernaean Hydra') {
     creature 'Greek'
     flavor 'A many-headed, serpent-like creature that guarded an Underworld entrance beneath Lake Lerna.'
@@ -329,7 +326,7 @@ card('Lernaean Hydra') {
 
 // https://en.wikipedia.org/wiki/Greek_underworld
 // https://commons.wikimedia.org/wiki/File:Orestes_Delphi_BM_GR1917.12-10.1.jpg
-// Public Domain
+// Attribution: Public Domain
 card('The Underworld') {
     creature 'Greek Location'
     flavor 'The realm of the Dead.'
@@ -357,7 +354,7 @@ card('The Underworld') {
 
 // https://en.wikipedia.org/wiki/Charon_(mythology)
 // https://commons.wikimedia.org/wiki/File:Lytovchenko_Olexandr_Kharon.jpg
-// Public Domain
+// Attribution: Alexander Litovchenko [Public domain or Public domain], <a href="https://commons.wikimedia.org/wiki/File%3ALytovchenko_Olexandr_Kharon.jpg">via Wikimedia Commons</a>
 card('CHARON') {
     creature 'Greek Chthonic Deity'
     flavor 'The Ferryman of the Underworld.'
@@ -385,7 +382,7 @@ card('CHARON') {
 
 // https://en.wikipedia.org/wiki/Empusa
 // https://www.worldsofimagination.co.uk/417px-Wiertz_Junge_Hexe.jpeg
-// Public Domain
+// Attribution: Public Domain
 card('EMPUSA') {
     creature 'Greek Chthonic Deity'
     flavor 'A monstrous underworld spirit with flaming hair, the leg of a goat and a leg of bronze.'
@@ -400,7 +397,7 @@ card('EMPUSA') {
 
 // https://en.wikipedia.org/wiki/Moirai
 // https://commons.wikimedia.org/wiki/File:Rundscheibe_Drei_Parzen_KGM_AE470.jpg
-// Public Domain
+// Attribution: By attributed to Hans Vischer d. J.Photo User:FA2010 (Own work) [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3ARundscheibe_Drei_Parzen_KGM_AE470.jpg">via Wikimedia Commons</a>
 card('MOIRAI') {
     creature 'Greek Chthonic Deity'
     flavor 'The three white-robed incarnations of Fate.'
@@ -421,7 +418,7 @@ card('MOIRAI') {
 
 // https://en.wikipedia.org/wiki/Hecate
 // https://commons.wikimedia.org/wiki/File:AN00969955_001_l.jpg
-// Public Domain
+// Attribution: Richard Cosway [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AAN00969955_001_l.jpg">via Wikimedia Commons</a>
 card('HECATE') {
     creature 'Greek Chthonic Deity'
     flavor 'Goddess of magic, witchcraft, the night, moon, ghosts and necromancy.'
@@ -447,7 +444,7 @@ card('HECATE') {
 
 // https://www.theoi.com/Khthonios/Rhadamanthys.html
 // https://www.theoi.com/image/K42.1Judges.jpg
-// Public Domain
+// Attribution: Public Domain
 card('Judges of the Dead') {
     creature 'Greek Chthonic Deity'
     flavor 'Three judges sat in judgment on those who entered the Underworld.'
@@ -461,7 +458,7 @@ card('Judges of the Dead') {
 
 // https://en.wikipedia.org/wiki/Lamia
 // https://commons.wikimedia.org/wiki/File:Draper-Lamia.jpg
-// Public Domain
+// Attribution: Herbert James Draper [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3ADraper-Lamia.jpg">via Wikimedia Commons</a>
 card('LAMIA') {
     creature 'Greek Chthonic Deity'
     flavor 'Mistress of Zeus, turned into a monster by jealous Hera.'
@@ -499,8 +496,7 @@ card('MACARIA') {
 
 // https://en.wikipedia.org/wiki/Persephone
 // https://commons.wikimedia.org/wiki/File:Locri_Pinax_Persephone_Opens_Liknon_Mystikon.jpg
-// CC BY-SA 2.5
-// https://commons.wikimedia.org/wiki/User:AlMare
+// Attribution: CC BY-SA 2.5
 card('PERSEPHONE') {
     creature 'Greek Chthonic Deity'
     flavor 'The queen of the underworld, wife of Hades and goddess of spring growth.'
@@ -519,7 +515,7 @@ card('PERSEPHONE') {
 
 // https://en.wikipedia.org/wiki/Thanatos
 // https://commons.wikimedia.org/wiki/File:Hermes_e_Sarpedon.jpg
-// Public Domain
+// Attribution: By Jaime Ardiles-Arce (photographer). Krater by Euphronios (painter) and Euxitheos (potter). (File:Euphronios krater - front.jpg) [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AHermes_e_Sarpedon.jpg">via Wikimedia Commons</a>
 card('THANATOS') {
     creature 'Greek Chthonic Deity'
     flavor 'Spirit of death and minister of the Underworld.'
@@ -552,8 +548,7 @@ card('TARTARUS') {
 
 // https://en.wikipedia.org/wiki/Mount_Olympus
 // https://commons.wikimedia.org/wiki/File:Mytikas.jpg
-// CC BY 2.0
-// https://commons.wikimedia.org/wiki/User:File%20Upload%20Bot%20(Magnus%20Manske)
+// Attribution: By stefg74 from Larisa, Greece (MYTIKASUploaded by Hike395) [<a href="http://creativecommons.org/licenses/by/2.0">CC BY 2.0</a>], <a href="https://commons.wikimedia.org/wiki/File%3AMytikas.jpg">via Wikimedia Commons</a>
 card('Mount Olympus') {
     creature 'Greek Location'
     flavor 'Paradise for the Gods.'
@@ -623,7 +618,7 @@ card('Hyperion') {
 
 // https://en.wikipedia.org/wiki/Mnemosyne
 // https://commons.wikimedia.org/wiki/File:Mnemosyne_%28color%29_Rossetti.jpg
-// Public Domain
+// Attribution: Delaware Art Museum, Samuel and Mary R. Bancroft Memorial [Public domain, Public domain or <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>], <a href="https://commons.wikimedia.org/wiki/File%3AMnemosyne_(color)_Rossetti.jpg">via Wikimedia Commons</a>
  card('Mnemosyne') {
     creature 'Greek Titan'
     flavor 'Titaness of memory and remembrance, and mother of the Nine Muses.'
@@ -657,8 +652,7 @@ card('Styx') {
 
 // https://en.wikipedia.org/wiki/Rhea_(mythology)
 // https://commons.wikimedia.org/wiki/File:Pergamonmuseum_-_Antikensammlung_-_Pergamonaltar_37.JPG
-// CC BY-SA 3.0
-// https://commons.wikimedia.org/wiki/User:BetacommandBot
+// Attribution: By Claus Ableiter (Own work) [<a href="http://www.gnu.org/copyleft/fdl.html">GFDL</a>, <a href="http://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA-3.0</a> or <a href="http://creativecommons.org/licenses/by-sa/2.5-2.0-1.0">CC BY-SA 2.5-2.0-1.0</a>], <a href="https://commons.wikimedia.org/wiki/File%3APergamonmuseum_-_Antikensammlung_-_Pergamonaltar_37.JPG">via Wikimedia Commons</a>
 card('Rhea') {
     creature 'Greek Titan'
     flavor 'Titaness of fertility, motherhood and the mountain wilds.'
@@ -690,8 +684,7 @@ card('Menoetius') {
 
 // https://en.wikipedia.org/wiki/Heracles
 // https://commons.wikimedia.org/wiki/File:0_Plaque_Campana_-_Hercule_capturant_le_taureau_cr%C3%A9tois.JPG
-// CC BY-SA 3.0
-// https://commons.wikimedia.org/wiki/User:Jean-Pol%20GRANDMONT
+// Attribution: By Jean-Pol GRANDMONT (Own work) [<a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a> or <a href="http://www.gnu.org/copyleft/fdl.html">GFDL</a>], <a href="https://commons.wikimedia.org/wiki/File%3A0_Plaque_Campana_-_Hercule_capturant_le_taureau_cr%C3%A9tois.JPG">via Wikimedia Commons</a>
 card('Heracles') {
     creature 'Greek Hero'
     flavor 'Ascended hero, Son of Zeus, and divine protector of mankind.'
@@ -726,8 +719,7 @@ card('Heracles') {
 
 // https://en.wikipedia.org/wiki/Achilles
 // https://commons.wikimedia.org/wiki/File:Achilles_departure_Eretria_Painter_CdM_Paris_851.jpg
-// CC BY 2.5
-// https://commons.wikimedia.org/wiki/User:Jastrow
+// Attribution: CC BY 2.5
 card('Achilles') {
     creature 'Greek Hero'
     flavor 'Hero of the Trojan War.'
@@ -742,7 +734,7 @@ card('Achilles') {
 
 // https://en.wikipedia.org/wiki/Perseus
 // https://commons.wikimedia.org/wiki/File:Firenze.Loggia.Perseus02.JPG
-// Public Domain
+// Attribution: By JoJan (Own work) [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AFirenze.Loggia.Perseus02.JPG">via Wikimedia Commons</a>
 card('Perseus') {
     creature 'Greek Hero'
     flavor 'Son of Zeus and the slayer of the Gorgon Medusa.'
@@ -768,7 +760,7 @@ card('Perseus') {
 
 // https://en.wikipedia.org/wiki/Iolaus
 // https://commons.wikimedia.org/wiki/File:Heracles%2C_Iolaus_and_Eros_-_Cista_Ficoroni_foot.jpg
-// Public Domain
+// Attribution: By Haiduc (Own work) [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AHeracles%2C_Iolaus_and_Eros_-_Cista_Ficoroni_foot.jpg">via Wikimedia Commons</a>
 card('Iolaus') {
     creature 'Greek Hero'
     flavor 'Nephew of Heracles who aided his uncle in one of his Labors.'
@@ -784,8 +776,7 @@ card('Iolaus') {
 
 // https://en.wikipedia.org/wiki/Theseus
 // https://commons.wikimedia.org/wiki/File:Theseus_Minotaur_BM_Vase_E84_n4.jpg
-// CC BY 2.5
-// https://commons.wikimedia.org/wiki/User:Jastrow
+// Attribution: See page for author [<a href="http://creativecommons.org/licenses/by/2.5">CC BY 2.5</a>], <a href="https://commons.wikimedia.org/wiki/File%3ATheseus_Minotaur_BM_Vase_E84_n4.jpg">via Wikimedia Commons</a>
 card('Theseus') {
     creature 'Greek Hero'
     flavor 'Son of Poseidon, King of Athens and slayer of the Minotaur.'
@@ -800,7 +791,7 @@ card('Theseus') {
 
 // https://en.wikipedia.org/wiki/Odysseus
 // https://commons.wikimedia.org/wiki/File:Caught_between_a_rock_and_a_hard_place.jpg
-// Public Domain
+// Attribution: By The painting is an Italian fresco [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3ACaught_between_a_rock_and_a_hard_place.jpg">via Wikimedia Commons</a>
 card('Odysseus') {
     creature 'Greek Hero'
     flavor 'King of Ithaca whose adventures are the subject of Homer’s Odyssey.'
@@ -814,7 +805,7 @@ card('Odysseus') {
 
 // https://en.wikipedia.org/wiki/Daedalus
 // https://commons.wikimedia.org/wiki/File:Pompeii_-_Casa_dei_Vettii_-_Pasiphae.jpg
-// Public Domain
+// Attribution: By WolfgangRieger [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3APompeii_-_Casa_dei_Vettii_-_Pasiphae.jpg">via Wikimedia Commons</a>
 card('Daedalus') {
     creature 'Greek Hero'
     flavor 'Creator of the Labyrinth and a great inventor, until King Minos trapped him in his own creation.'
@@ -832,8 +823,7 @@ card('Daedalus') {
 
 // https://en.wikipedia.org/wiki/Hector
 // https://commons.wikimedia.org/wiki/File:Hektor_wirft_Paris_seine_Weichlichkeit_vor_%28Tischbein%29.jpg
-// CC BY-SA 3.0
-// https://commons.wikimedia.org/wiki/User:Jdsteakley
+// Attribution: Johann Heinrich Wilhelm Tischbein [<a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a> or <a href="http://www.gnu.org/copyleft/fdl.html">GFDL</a>], <a href="https://commons.wikimedia.org/wiki/File%3AHektor_wirft_Paris_seine_Weichlichkeit_vor_(Tischbein).jpg">via Wikimedia Commons</a>
 card('Hector') {
     creature 'Greek Hero'
     flavor 'Hero of the Trojan War and champion of the Trojan people.'
@@ -854,7 +844,7 @@ card('Hector') {
 
 // https://en.wikipedia.org/wiki/Ajax_(mythology)
 // https://commons.wikimedia.org/wiki/File:Ajax_suicide_BM_F480.jpg
-// Public Domain
+// Attribution: See page for author [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AAjax_suicide_BM_F480.jpg">via Wikimedia Commons</a>
 card('Ajax The Great') {
     creature 'Greek Hero'
     flavor 'Hero of the Trojan War and king of Salamis.'
@@ -870,8 +860,7 @@ card('Ajax The Great') {
 
 // https://en.wikipedia.org/wiki/Medusa
 // https://commons.wikimedia.org/wiki/File:Close_up_of_Gorgon_at_the_pediment_of_Artemis_temple_in_Corfu.jpg
-// CC BY-SA 3.0
-// https://commons.wikimedia.org/wiki/User:Dr.K.
+// Attribution: By Dr.K. (Own work) [<a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>], <a href="https://commons.wikimedia.org/wiki/File%3AClose_up_of_Gorgon_at_the_pediment_of_Artemis_temple_in_Corfu.jpg">via Wikimedia Commons</a>
 card('Medusa') {
     creature 'Greek'
     flavor 'A mortal woman transformed into a hideous Gorgon by Athena.'
@@ -899,7 +888,7 @@ card('Medusa') {
 
 // https://en.wikipedia.org/wiki/Nemean_lion
 // https://commons.wikimedia.org/wiki/File:Herakles_Nemean_lion_BM_B621.jpg
-// Public Domain
+// Attribution: Public Domain
 card('Nemean Lion') {
     creature 'Greek'
     flavor 'A gigantic lion whose skin was impervious to weapons; Heracles strangled it.'
@@ -914,7 +903,7 @@ card('Nemean Lion') {
 
 // https://en.wikipedia.org/wiki/Erymanthian_Boar
 // https://commons.wikimedia.org/wiki/File:Herakles_Eurystheus_boar_Louvre_F202.jpg
-// Public Domain
+// Attribution: Public Domain
 card('Erymanthian Boar') {
     creature 'Greek'
     flavor 'A gigantic boar, which Heracles was sent to retrieve as one of his labors.'
@@ -928,8 +917,7 @@ card('Erymanthian Boar') {
 
 // https://en.wikipedia.org/wiki/Pegasus
 // https://commons.wikimedia.org/wiki/File:Winged_horse_Dodona_Louvre_Br149.jpg
-// CC BY 3.0
-// https://commons.wikimedia.org/wiki/User:Jastrow
+// Attribution: See page for author [<a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>], <a href="https://commons.wikimedia.org/wiki/File%3AWinged_horse_Dodona_Louvre_Br149.jpg">via Wikimedia Commons</a>
 card('Pegasus') {
     creature 'Greek'
     flavor 'A divine winged stallion that is pure white, son of Medusa and Poseidon, and father of winged horses.'
@@ -948,7 +936,7 @@ card('Pegasus') {
 }
 // https://en.wikipedia.org/wiki/Arachne
 // https://commons.wikimedia.org/wiki/File:Pur_12_aracne.jpg
-// Public Domain
+// Attribution: Public Domain
 card('Arachne') {
     creature 'Greek'
     flavor 'Half-spider half-human, she is the mother of all spiders.'
@@ -967,8 +955,8 @@ card('Arachne') {
 }
 
 // https://en.wikipedia.org/wiki/Griffin
-// CC BY-SA 3.0
 // https://commons.wikimedia.org/wiki/File:Knossos_fresco_in_throne_palace.JPG
+// Attribution: CC BY-SA 3.0
 // https://commons.wikimedia.org/wiki/User:Paginazero
 card('Griffin') {
     creature 'Greek'
@@ -994,7 +982,7 @@ card('Caucasian Eagle') {
 
 // https://en.wikipedia.org/wiki/Chiron
 // https://commons.wikimedia.org/wiki/File:Chiron_instructs_young_Achilles_-_Ancient_Roman_fresco.jpg
-// Public Domain
+// Attribution: By sconosciuto. Il prototipo era probabilmente un gruppo scultoreo esposto a Roma nei Saepta. (Unknown) [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AChiron_instructs_young_Achilles_-_Ancient_Roman_fresco.jpg">via Wikimedia Commons</a>
 card('Chiron') {
     creature 'Greek'
     flavor 'The eldest and wisest of the centaurs, the ancient trainer of heroes.'
@@ -1014,7 +1002,7 @@ card('Chiron') {
 
 // https://en.wikipedia.org/wiki/Cerberus
 // https://commons.wikimedia.org/wiki/File:Herakles_Kerberos_Eurystheus_Louvre_E701.jpg
-// Public Domain
+// Attribution: By Eagle Painter (User:Bibi Saint-Pol, Own work, 1 June 2007) [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AHerakles_Kerberos_Eurystheus_Louvre_E701.jpg">via Wikimedia Commons</a>
 card('Cerberus') {
     creature 'Greek'
     flavor 'The Three-headed hound that guards the gates of the Underworld.'
@@ -1055,7 +1043,7 @@ card('Titan 4/2') {
 
 // https://en.wikipedia.org/wiki/Minotaur
 // https://commons.wikimedia.org/wiki/File:Blake_Dante_Hell_XII.jpg
-// Public Domain
+// Attribution: William Blake [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3ABlake_Dante_Hell_XII.jpg">via Wikimedia Commons</a>
 card('Minotaur') {
     creature 'Greek'
     imagePath 'mythos/greek/minotaur.jpg'
@@ -1141,7 +1129,7 @@ card('The Might of Hercules') {
 
 
 // https://commons.wikimedia.org/wiki/File:Jason_Pelias_Louvre_K127.jpg
-// Public Domain
+// Attribution: Underworld Painter [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AJason_Pelias_Louvre_K127.jpg">via Wikimedia Commons</a>
 card('Golden Fleece') {
     imagePath 'mythos/greek/golden-fleece.jpg'
     enchantment true
@@ -1150,8 +1138,8 @@ card('Golden Fleece') {
     // Equipped unit gains +0/+3.
     addHealth 3
 }
-// https://en.wikipedia.org/wiki/Shield_of_Achilles#/media/File:Angelo_monticelli_shield-of-achilles.jpg
-// Public Domain
+// https://en.wikipedia.org/wiki/Shield_of_Achilles
+// Attribution: Public Domain
 card('Achilles\' Shield') {
     enchantment true
     imagePath 'mythos/greek/achilles-shield'
@@ -1170,7 +1158,7 @@ card('Achilles\' Shield') {
 }
 
 // https://commons.wikimedia.org/wiki/File:Raffaello%2C_concilio_degli_dei_02.jpg
-// Public Domain
+// Attribution: Raphael [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3ARaffaello%2C_concilio_degli_dei_02.jpg">via Wikimedia Commons</a>
 card('Hades\' Bident') {
     imagePath 'mythos/greek/bident.jpg'
     enchantment true
@@ -1188,7 +1176,7 @@ card('Hades\' Bident') {
     */
 }
 
-// CC BY-SA 3.0
+// Attribution: CC BY-SA 3.0
 // https://commons.wikimedia.org/wiki/User:Dodo
 card('Helm of Darkness') {
     flavor 'Helm that can turn the wearer invisible.'
@@ -1206,7 +1194,7 @@ card('Helm of Darkness') {
     */
 }
 // https://commons.wikimedia.org/wiki/File:Raffaello%2C_concilio_degli_dei_02.jpg
-// Public Domain
+// Attribution: Raphael [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3ARaffaello%2C_concilio_degli_dei_02.jpg">via Wikimedia Commons</a>
 card('Poseidon\'s Trident') {
     imagePath 'mythos/greek/trident.jpg'
     enchantment true
@@ -1225,7 +1213,7 @@ card('Poseidon\'s Trident') {
 }
 
 // https://commons.wikimedia.org/wiki/File:Death-and-the-woodcutter-jean-francois-millet3.jpg
-// Public Domain
+// Attribution: Public Domain
 card('Cronus\' Scythe') {
     imagePath 'mythos/greek/scythe.jpg'
     enchantment true
