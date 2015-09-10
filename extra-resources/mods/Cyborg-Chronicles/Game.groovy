@@ -30,7 +30,7 @@ ENCHANT_ACTION = "Enchant";
 // Player mana resources
 
 MANA = createResource("MANA")
-MANA_MAX = createResource("MANA_MAX")
+MAX_MANA = createResource("MAX_MANA")
 
 /* Which Groovy files to include for this mod.
  * See extra-resources/mods for details. */
@@ -124,13 +124,13 @@ config {
          * @param scrap  The initial scrap before the first turn
          *
          * @param max_health  The health which cannot be exceeded by the players
-         * @param mana_max  The mana which cannot be exceeded by the players
+         * @param max_mana  The mana which cannot be exceeded by the players
          */
         health 30
         mana 0
         scrap 0
         max_health 30
-        mana_max 0
+        max_mana 0
     }
 }
 
@@ -233,12 +233,12 @@ rules {
             // ...draw a card
             you.drawCard()
         }
-        /* 1)  your mana_max is the lesser of...
-         * 2) ...1 + your mana_max
+        /* 1)  your max_mana is the lesser of...
+         * 2) ...1 + your max_mana
          * 3) ... or 10, the maximum possible mana */
-        you.mana_max = Math.min(1 + (int) you.mana_max, 10)
-        // current mana is set to mana_max
-        you.mana = you.mana_max
+        you.max_mana = Math.min(1 + (int) you.max_mana, 10)
+        // current mana is set to max_mana
+        you.mana = you.max_mana
         // for each card on your Battlefield...
         you.battlefield.forEach {
             // ...cards that can attack are set to have an attack available
