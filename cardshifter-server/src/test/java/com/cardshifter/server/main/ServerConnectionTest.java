@@ -157,7 +157,7 @@ public class ServerConnectionTest {
 		assertFalse(welcomeMessage.isOK());
 	}
 	
-	@Test(timeout = 10000)
+	@Test(timeout = 50000)
 	public void testStartGame() throws InterruptedException, IOException {
 		client1.send(new StartGameRequest(2, getTestMod()));
 		NewGameMessage gameMessage = client1.await(NewGameMessage.class);
