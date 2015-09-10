@@ -140,10 +140,8 @@ card('MONKING') {
 }
 // https://en.wikipedia.org/wiki/Guan_Yu
 // https://commons.wikimedia.org/wiki/File:Guan_yu_-Summer_Palace%2C_Beijing.JPG
-// Exception: <class 'selenium.common.exceptions.NoSuchElementException'>
 // Attribution: CC BY-SA 3.0
 // https://commons.wikimedia.org/wiki/User:Shizhao
-// Exception: <class 'selenium.common.exceptions.NoSuchElementException'>
 card('GUAN YU') {
     creature 'Chinese God'
     flavor 'God of War and Martial Arts.'
@@ -228,7 +226,7 @@ card('SHINJE') {
 
 // https://en.wikipedia.org/wiki/Guanyin
 // https://commons.wikimedia.org/wiki/File:Daienin_Kannon.JPG
-// Attribution: By No machine readable author provided. ...---...SOS assumed (based on copyright claims). [<a href="http://www.gnu.org/copyleft/fdl.html">GFDL</a> or <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>], <a href="https://commons.wikimedia.org/wiki/File%3ADaienin_Kannon.JPG">via Wikimedia Commons</a>
+// Attribution: No machine readable author provided. [<a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>], <a href="https://commons.wikimedia.org/wiki/File%3ADaienin_Kannon.JPG">via Wikimedia Commons</a>
 card('GUANYIN') {
     creature 'Chinese God'
     flavor 'Perceives the Cries of the World'
@@ -280,7 +278,7 @@ card('MAZU') {
 
 // https://en.wikipedia.org/wiki/Terracotta_Army
 // https://commons.wikimedia.org/wiki/File:Officer_Terrakottaarm%C3%A9n.jpg
-// Attribution: By Tor Svensson (user Kemitsv on the Swedish Wikipedia) [<a href="http://www.gnu.org/copyleft/fdl.html">GFDL</a> or <a href="http://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA-3.0</a>], <a href="https://commons.wikimedia.org/wiki/File%3AOfficer_Terrakottaarm%C3%A9n.jpg">via Wikimedia Commons</a>
+// Attribution: By Tor Svensson (user Kemitsv on the Swedish Wikipedia) [<a href="http://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA-3.0</a>], <a href="https://commons.wikimedia.org/wiki/File%3AOfficer_Terrakottaarm%C3%A9n.jpg">via Wikimedia Commons</a>
 card('Terracotta Soldier') {
     creature 'Chinese'
     flavor 'Armies of Qin Shi Huang, the first Emperor of China.'
