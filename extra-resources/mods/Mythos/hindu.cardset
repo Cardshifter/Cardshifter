@@ -7,7 +7,7 @@ package mythos
 
 // https://en.wikipedia.org/wiki/Indra
 // https://commons.wikimedia.org/wiki/File:Indra_deva.jpg
-// Public domain
+// Attribution: See page for author [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AIndra_deva.jpg">via Wikimedia Commons</a>
 card('INDRA') {
     creature 'Hindu God'
     flavor 'The one who rides the Clouds, the Lord of the Gods and of Heaven.'
@@ -32,7 +32,7 @@ card('INDRA') {
 
 // https://en.wikipedia.org/wiki/Airavata
 // https://commons.wikimedia.org/wiki/File:Indradeva.jpg
-// Public domain
+// Attribution: By Unknown, India, Rajasthan, Amber, South Asia (from LACMA [1]) [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AIndradeva.jpg">via Wikimedia Commons</a>
 card('Airavata') {
     creature 'Hindu'
     flavor 'Indra\'s sacred three-headed white elephant.'
@@ -52,7 +52,7 @@ card('Airavata') {
 
 // https://en.wikipedia.org/wiki/Brahma
 // https://commons.wikimedia.org/wiki/File:Brahma_on_hamsa.jpg
-// Public Domain
+// Attribution: By Probably Nurpur, Punjab Hills, Northern India [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3ABrahma_on_hamsa.jpg">via Wikimedia Commons</a>
 card('BRAHMA') {
     creature 'Hindu God'
     flavor 'Creator of the Universe, grand-father of all humans.'
@@ -79,7 +79,7 @@ card('BRAHMA') {
 
 // https://en.wikipedia.org/wiki/Hamsa_(bird)
 // https://commons.wikimedia.org/wiki/File:Hansa_Damayanthi.jpg
-// Public Domain
+// Attribution: Raja Ravi Varma [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AHansa_Damayanthi.jpg">via Wikimedia Commons</a>
 card('Hansa') {
     creature 'Hindu'
     flavor 'Brahma\'s white swan mount.'
@@ -98,7 +98,7 @@ card('Hansa') {
 
 // https://en.wikipedia.org/wiki/Vishnu
 // https://commons.wikimedia.org/wiki/File:Bhagavan_Vishnu.jpg
-// Public Domain
+// Attribution: By Ramanarayanadatta astri (http://archive.org/details/mahabharata06ramauoft) [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3ABhagavan_Vishnu.jpg">via Wikimedia Commons</a>
 card('VISHNU') {
     creature 'Hindu God'
     flavor 'The All-Pervading One. "Whatever that is there is the world of change."'
@@ -121,7 +121,7 @@ card('VISHNU') {
 
 // https://en.wikipedia.org/wiki/Krishna
 // https://commons.wikimedia.org/wiki/File:Krishna_Holding_Mount_Govardhan_-_Crop.jpg
-// Public Domain
+// Attribution: By Mola Ram (1760-1833) (English Wikipedia) [Public domain or Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AKrishna_Holding_Mount_Govardhan_-_Crop.jpg">via Wikimedia Commons</a>
 card('KRISHNA') {
     creature 'Hindu God'
     flavor 'Eighth incarnation of Lord Vishnu. Handsome blue-skinned Hero God.'
@@ -142,7 +142,7 @@ card('KRISHNA') {
 
 // https://en.wikipedia.org/wiki/Shiva
 // https://commons.wikimedia.org/wiki/File:6_%C5%9Aiva_and_P%C4%81rvat%C4%AB_seated_on_a_terrace._1800_%28circa%29_BM.jpg
-// Public Domain
+// Attribution: By anonimus (British Museum) [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3A6_%C5%9Aiva_and_P%C4%81rvat%C4%AB_seated_on_a_terrace._1800_(circa)_BM.jpg">via Wikimedia Commons</a>
 card('SHIVA') {
     creature 'Hindu God'
     flavor 'The Auspicious One, He has many Benevolent and Fearsome forms.'
@@ -162,7 +162,7 @@ card('SHIVA') {
 
 // https://en.wikipedia.org/wiki/Yama
 // https://commons.wikimedia.org/wiki/File:Yama_on_buffalo.jpg
-// Public Domain
+// Attribution: See page for author [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AYama_on_buffalo.jpg">via Wikimedia Commons</a>
 card('YAMA') {
     creature 'Hindu God'
     flavor 'The first mortal who died, now the Ruler of the Departed.'
@@ -178,7 +178,7 @@ card('YAMA') {
 
 // https://en.wikipedia.org/wiki/Durga
 // https://commons.wikimedia.org/wiki/File:Durga_Mahisasuramardini.JPG
-// Public Domain
+// Attribution: See page for author [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3ADurga_Mahisasuramardini.JPG">via Wikimedia Commons</a>
 card('DURGA') {
     creature 'Hindu God'
     flavor 'Goddess armed with Celestial Weapons of all Deities.'
@@ -202,7 +202,7 @@ card('DURGA') {
 
 // https://en.wikipedia.org/wiki/Varuna
 // https://commons.wikimedia.org/wiki/File:Varunadeva.jpg
-// Public Domain
+// Attribution: By unknown author [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AVarunadeva.jpg">via Wikimedia Commons</a>
 card('VARUNA') {
     creature 'Hindu God'
     flavor 'God of the Oceans and of Law and Morals.'
@@ -222,7 +222,7 @@ card('VARUNA') {
 
 // https://en.wikipedia.org/wiki/Gautama_Buddha
 // https://commons.wikimedia.org/wiki/File:Astasahasrika_Prajnaparamita_Victory_Over_Mara.jpeg
-// Public Domain
+// Attribution: By Asia Society created the file. Artwork created by an anonymous ancient source. [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AAstasahasrika_Prajnaparamita_Victory_Over_Mara.jpeg">via Wikimedia Commons</a>
 card('Gautama Buddha') {
     creature 'Hindu Hero'
     flavor 'The Enlightened One, discoverer of the Middle Way.'
@@ -243,8 +243,7 @@ card('Gautama Buddha') {
 
 // https://en.wikipedia.org/wiki/Maitreya
 // https://commons.wikimedia.org/wiki/File:Maitreya_Buddha%2C_Nubra.jpg
-// CC BY-SA 3.0
-// https://commons.wikimedia.org/wiki/User:John%20Hill
+// Attribution: By John Hill (Own work) [<a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a> or <a href="http://www.gnu.org/copyleft/fdl.html">GFDL</a>], <a href="https://commons.wikimedia.org/wiki/File%3AMaitreya_Buddha%2C_Nubra.jpg">via Wikimedia Commons</a>
 card('Maitreya Buddha') {
     creature 'Hindu Hero'
     flavor 'Successor of Prophecy of the Buddha, to achieve Complete Enlightenment and teach the Pure Dharma'
