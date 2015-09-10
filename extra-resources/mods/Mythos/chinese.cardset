@@ -32,7 +32,7 @@ card('JADE EMPEROR') {
 }
 // https://en.wikipedia.org/wiki/N%C3%BCwa
 // https://commons.wikimedia.org/wiki/File:Xiaoyuncong_nvwa.jpg
-// Attribution: Public Domain
+// Attribution: By Xiao Yuncong (蕭雲從), 1596-1673 [Public domain], via Wikimedia Commons
 card('NUWA') {
     creature 'Chinese God'
     flavor 'Serpent Creator Goddess of Mankind and Repairer of the Pillar of Heaven.'
@@ -140,7 +140,7 @@ card('MONKING') {
 }
 // https://en.wikipedia.org/wiki/Guan_Yu
 // https://commons.wikimedia.org/wiki/File:Guan_yu_-Summer_Palace%2C_Beijing.JPG
-// Attribution: CC BY-SA 3.0
+// License: CC BY-SA 3.0
 // https://commons.wikimedia.org/wiki/User:Shizhao
 card('GUAN YU') {
     creature 'Chinese God'
@@ -302,9 +302,9 @@ card('Manchu Archer') {
     denyCounterAttack()
 }
 // https://en.wikipedia.org/wiki/Chinese_martial_arts
-// https://upload.wikimedia.org/wikipedia/en/9/9f/Shi_DeRu_and_Shi_DeYang.jpg
-// Attribution: CC BY-SA 3.0
-// https://en.wikipedia.org/wiki/User:Bigpeteb
+// https://en.wikipedia.org/wiki/File:Shi_DeRu_and_Shi_DeYang.jpg
+// Author: Shi Deru (a.k.a. Shawn Xiangyang Liu)
+// License: CC BY-SA 3.0
 card('Kung Fu Fighter') {
     creature 'Chinese'
     flavor: 'Chinese Martial Artist.'
