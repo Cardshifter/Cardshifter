@@ -2,15 +2,15 @@
  * List of available Common cards Cardshifter 'Mythos' mod.
  * The intention of Common cards is that a player will be able to select from these cards regardless of faction chosen.
  * This is not implemented as of 2015-06-18 and is planned to be implemented during the 0.7 milestone
- * See: https://github.com/Cardshifter/Cardshifter/issues/175
- * @author https://github.com/Phrancis
- * @author https://github.com/jay1148
+// https://github.com/Cardshifter/Cardshifter/issues/175
  */
+
+package Mythos
 
 //// CREATURES
 
 // https://commons.wikimedia.org/wiki/File:Fechtende_adelige_Studenten_um_1590.jpg
-// Public Domain
+// Attribution: Public Domain
 card('Swordsman') {
     creature 'Common'
     flavor 'Armed with a sharp sword.'
@@ -21,9 +21,8 @@ card('Swordsman') {
     manaCost 5
     attack 3
 }
-// https://commons.wikimedia.org/wiki/File:Batalla_de_rocroi_por_Augusto_Ferrer-Dalmau.jpg#/media/File:Batalla_de_rocroi_por_Augusto_Ferrer-Dalmau.jpg
-// CC BY-SA 3.0
-// https://commons.wikimedia.org/wiki/User:Augusto%20ferrer%20dalmau
+// https://commons.wikimedia.org/wiki/File:Batalla_de_rocroi_por_Augusto_Ferrer-Dalmau.jpg
+// Attribution: By Augusto Ferrer-Dalmau (Own work) [<a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>], <a href="https://commons.wikimedia.org/wiki/File%3ABatalla_de_rocroi_por_Augusto_Ferrer-Dalmau.jpg">via Wikimedia Commons</a>
 card('Pikeman') {
     creature 'Common'
     flavor 'Armed with a long armor-piercing pike.'
@@ -35,7 +34,7 @@ card('Pikeman') {
     attack 4
 }
 // https://commons.wikimedia.org/wiki/File:Maximilian_1470.png
-// Public Domain
+// Attribution: Public Domain
 card('Archer') {
     creature 'Common'
     flavor 'Fires arrows from a distance.'
@@ -48,7 +47,7 @@ card('Archer') {
     denyCounterAttack() // ranged
 }
 // https://commons.wikimedia.org/wiki/File:Battle_of_crecy_froissart.jpg
-// Public Domain
+// Attribution: Jean Froissart [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3ABattle_of_crecy_froissart.jpg">via Wikimedia Commons</a>
 card('Longbowman') {
     creature 'Common'
     flavor 'Fires devastating arrows from a very long distance.'
@@ -59,7 +58,7 @@ card('Longbowman') {
     denyCounterAttack() // ranged
 }
 // https://commons.wikimedia.org/wiki/File:Geoffrey_of_Anjou_Monument.jpg
-// Public Domain
+// Attribution: By Original creater of enamel unknown. (Photograph of enamel on tomb.) [Public domain or Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AGeoffrey_of_Anjou_Monument.jpg">via Wikimedia Commons</a>
 card('Defender') {
     creature 'Common'
     flavor 'Wields a large shield to protect troops.'
@@ -72,7 +71,7 @@ card('Defender') {
     taunt()
 }
 // https://commons.wikimedia.org/wiki/File:Asabah2.jpg
-// Public Domain
+// Attribution: See page for author [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AAsabah2.jpg">via Wikimedia Commons</a>
 card('Assassin') {
     creature 'Common'
     flavor 'Strikes with speed and stealth.'
@@ -84,7 +83,7 @@ card('Assassin') {
     denyCounterAttack() // taunt
 }
 // https://commons.wikimedia.org/wiki/File:Actor-as-nikki-danjo-kunisada-1857.jpg
-// Public Domain
+// Attribution: Utagawa Kunisada [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AActor-as-nikki-danjo-kunisada-1857.jpg">via Wikimedia Commons</a>
 card('Ninja Spy') {
     creature 'Common'
     flavor 'Weakens the enemy by revealing their secrets.'
@@ -105,7 +104,7 @@ card('Ninja Spy') {
     }
 }
 // https://commons.wikimedia.org/wiki/File:Slingers_on_Trajan%27s_Column.JPG
-// Public Domain
+// Attribution: Public Domain
 card('Slinger') {
     creature 'Common'
     flavor 'Slings stones to break enemy weapons.'
@@ -146,8 +145,7 @@ card('Healer') {
     }
 }
 // https://commons.wikimedia.org/wiki/File:Ricci_Guangqi_2.jpg
-// CC BY-SA 3.0
-// https://commons.wikimedia.org/wiki/User:SteveMcCluskey
+// Attribution: By Kircher, Athanasius, 1602-1680. [<a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>], <a href="https://commons.wikimedia.org/wiki/File%3ARicci_Guangqi_2.jpg">via Wikimedia Commons</a>
 card('Holy Man') {
     creature 'Common'
     imagePath 'mythos/common/holy-man.jpg'
@@ -173,7 +171,7 @@ card('Holy Man') {
     }
 }
 // https://commons.wikimedia.org/wiki/File:Witsen%27s_Shaman.JPG
-// Public Domain
+// Attribution: See page for author [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AWitsen&#039;s_Shaman.JPG">via Wikimedia Commons</a>
 card('Shaman') {
     creature 'Common'
     imagePath 'mythos/common/shaman.jpg'
@@ -193,7 +191,7 @@ card('Shaman') {
     }
 }
 // https://commons.wikimedia.org/wiki/File:Blunden_harbour_totems_Emily_Carr.jpeg
-// Public Domain
+// Attribution: Emily Carr [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3ABlunden_harbour_totems_Emily_Carr.jpeg">via Wikimedia Commons</a>
 card('Earth Totem') {
     imagePath 'mythos/common/totem.jpg'
     token()
@@ -230,7 +228,7 @@ card('Burning Totem') {
     }
 }
 // https://commons.wikimedia.org/wiki/File:Danse_macabre_by_Michael_Wolgemut.png
-// Public Domain
+// Attribution: Public Domain
 card('Skeleton') {
     creature 'Common'
     imagePath 'mythos/common/skeleton.jpg'
@@ -247,7 +245,7 @@ card('Skeleton') {
     }
 }
 // https://commons.wikimedia.org/wiki/File:Les_amants_tr%C3%A9pass%C3%A9s%2C_The_deceased_lovers.jpg
-// Public Domain
+// Attribution: See page for author [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3ALes_amants_tr%C3%A9pass%C3%A9s%2C_The_deceased_lovers.jpg">via Wikimedia Commons</a>
 card('Undead') {
     creature 'Common'
     imagePath 'mythos/common/undead.jpg'
@@ -265,7 +263,7 @@ card('Undead') {
 }
 
 // https://commons.wikimedia.org/wiki/File:Michelangelo%2C_Damned_Soul.jpg
-// Public Domain
+// Attribution: By see filename or category (www.wga.hu) [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AMichelangelo%2C_Damned_Soul.jpg">via Wikimedia Commons</a>
 card('Lost Soul') {
     creature 'Common'
     imagePath 'mythos/common/lost-soul.jpg'
@@ -292,7 +290,7 @@ card('Bear') {
 }
 
 // https://commons.wikimedia.org/wiki/File:Python_natalensis_G._J._Alexander.JPG
-// Public Domain
+// Attribution: By Graham J. Alexander, University of the Witwatersrand [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3APython_natalensis_G._J._Alexander.JPG">via Wikimedia Commons</a>
 card('Snake') {
     creature 'Common'
     imagePath 'mythos/common/snake-python.jpg'
@@ -304,8 +302,7 @@ card('Snake') {
 }
 
 // https://commons.wikimedia.org/wiki/File:Clynotis_severus%2C_AF_2.jpg
-// CC BY-SA 3.0
-// https://commons.wikimedia.org/wiki/User:JJ%20Harrison
+// Attribution: By JJ Harrison (jjharrison89@facebook.com) (Own work) [<a href="http://www.gnu.org/licenses/old-licenses/fdl-1.2.html">GFDL 1.2</a> or <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>], <a href="https://commons.wikimedia.org/wiki/File%3AClynotis_severus%2C_AF_2.jpg">via Wikimedia Commons</a>
 card('Spider') {
     creature 'Common'
     maxInDeck 1
