@@ -1,23 +1,18 @@
-/* See modding documentation for all available keywords. */
-/* GENERIC TEMPLATE
-card('ChangeMe') {
-    creature 'Greek'
-    flavor 'hello'
-    health 1
-    sickness 1
-    manaCost 1
-    attack 1
-}
-*/
+package Mythos
 
-////// CREATURES
-
+/*
+ * This file contains all the cards for Mythos 'Greek' cardset.
+ */
 
 //// GODS
 
+// https://en.wikipedia.org/wiki/Zeus
+// https://commons.wikimedia.org/wiki/File:Jupiter_Smyrna_Louvre_Ma13.jpg
+// Attribution: By UnknownMarie-Lan Nguyen (Own work) [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AJupiter_Smyrna_Louvre_Ma13.jpg">via Wikimedia Commons</a>
 card('ZEUS') {
     creature 'Greek God'
     flavor 'God of the sky, ruler of Mount Olympus.'
+    imagePath 'mythos/greek/zeus.jpg'
     maxInDeck 1
     attack 8
     health 8
@@ -33,9 +28,14 @@ card('ZEUS') {
     )
     */
 }
+
+// https://en.wikipedia.org/wiki/Uranus_(mythology)
+// https://commons.wikimedia.org/wiki/File:Aion_mosaic_Glyptothek_Munich_W504.jpg
+// Attribution: See page for author [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AAion_mosaic_Glyptothek_Munich_W504.jpg">via Wikimedia Commons</a>
 card('URANUS') {
     creature 'Greek God'
     flavor 'The God of the Heavens, father of the Titans'
+    imagePath 'mythos/greek/uranus.jpg'
     maxInDeck 1
     attack 6
     health 4
@@ -53,9 +53,14 @@ card('URANUS') {
         summon 1 of 'Titan 4/2' to 'you' zone 'Battlefield'
     }
 }
+
+// https://en.wikipedia.org/wiki/Apollo
+// https://commons.wikimedia.org/wiki/File:Apollo_of_the_Belvedere.jpg
+// Attribution: By Livioandronico2013 (Own work) [<a href="http://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>], <a href="https://commons.wikimedia.org/wiki/File%3AApollo_of_the_Belvedere.jpg">via Wikimedia Commons</a>
 card('APOLLO') {
     creature 'Greek God'
     flavor 'God of music, arts, knowledge, healing, plague, and prophecy.'
+    imagePath 'mythos/greek/apollo.jpg'
     maxInDeck 1
     attack 2
     health 4
@@ -72,9 +77,14 @@ card('APOLLO') {
     )
     */
 }
+
+// https://en.wikipedia.org/wiki/Ares
+// https://commons.wikimedia.org/wiki/File:Ares_Ludovisi_Altemps_Inv8602_n2.jpg
+// Attribution: See page for author [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AAres_Ludovisi_Altemps_Inv8602_n2.jpg">via Wikimedia Commons</a>
 card('ARES') {
     creature 'Greek God'
     flavor 'God of war, bloodshed and violence.'
+    imagePath 'mythos/greek/ares.jpg'
     maxInDeck 1
     attack 3
     health 4
@@ -89,9 +99,14 @@ card('ARES') {
     }
     */
 }
+
+// https://en.wikipedia.org/wiki/Artemis
+// https://commons.wikimedia.org/wiki/File:Apollo_Artemis_Brygos_Louvre_G151.jpg
+// Attribution: Briseis Painter [Public domain or Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AApollo_Artemis_Brygos_Louvre_G151.jpg">via Wikimedia Commons</a>
 card('ARTEMIS') {
     creature 'Greek God'
     flavor 'Virgin Goddess of the hunt, wilderness and animals.'
+    imagePath 'mythos/greek/artemis.jpg'
     maxInDeck 1
     attack 2
     health 3
@@ -102,9 +117,14 @@ card('ARTEMIS') {
         summon 1 of 'Bear' to 'you' zone 'Battlefield'
     }
 }
+
+// https://en.wikipedia.org/wiki/Athena
+// https://commons.wikimedia.org/wiki/File:Athena_Herakles_Staatliche_Antikensammlungen_2648.jpg
+// Attribution: Public Domain
 card('ATHENA') {
     creature 'Greek God'
     flavor 'Goddess of intelligence, skill, peace, warfare, battle strategy, and wisdom.'
+    imagePath 'mythos/greek/athena.jpg'
     maxInDeck 1
     attack 3
     health 2
@@ -127,9 +147,14 @@ card('ATHENA') {
     )
     */
 }
+
+// https://en.wikipedia.org/wiki/Hermes
+// https://commons.wikimedia.org/wiki/File:Hermes_Maia_Staatliche_Antikensammlungen_2304.jpg
+// Attribution: Public Domain
 card('HERMES') {
     creature 'Greek God'
     flavor 'God of boundaries, travel, communication, trade, language, and writing.'
+    imagePath 'mythos/greek/hermes.jpg'
     maxInDeck 1
     attack 2
     health 2
@@ -137,9 +162,14 @@ card('HERMES') {
     sickness 1
     denyCounterAttack() // ranged
 }
+
+// https://en.wikipedia.org/wiki/Hera
+// https://commons.wikimedia.org/wiki/File:Hera_Prometheus_Cdm_Paris_542.jpg
+// Attribution: Douris [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AHera_Prometheus_Cdm_Paris_542.jpg">via Wikimedia Commons</a>
 card('HERA') {
     creature 'Greek God'
     flavor 'Queen of the Gods and the wife of Zeus.'
+    imagePath 'mythos/greek/hera.jpg'
     maxInDeck 1
     attack 3
     health 2
@@ -147,9 +177,14 @@ card('HERA') {
     sickness 1
     // phase() // #262
 }
+
+// https://en.wikipedia.org/wiki/Poseidon
+// https://commons.wikimedia.org/wiki/File:Poseidon_Penteskouphia_Louvre_CA452.jpg
+// Attribution: See page for author [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3APoseidon_Penteskouphia_Louvre_CA452.jpg">via Wikimedia Commons</a>
 card('POSEIDON') {
     creature 'Greek God'
     flavor 'God of the sea, rivers, floods, droughts, and earthquakes.'
+    imagePath 'mythos/greek/poseidon.jpg'
     maxInDeck 1
     attack 4
     health 4
@@ -164,9 +199,14 @@ card('POSEIDON') {
         }
     }
 }
+
+// https://en.wikipedia.org/wiki/Eros
+// https://commons.wikimedia.org/wiki/File:Eros_bobbin_Louvre_CA1798.jpg
+// Attribution: Public Domain
 card('EROS') {
     creature 'Greek God'
     flavor 'The God of love and attraction.'
+    imagePath 'mythos/greek/eros.jpg'
     maxInDeck 1
     attack 3
     health 2
@@ -180,9 +220,14 @@ card('EROS') {
     }
     */
 }
+
+// https://en.wikipedia.org/wiki/Gaia_(mythology)
+// https://commons.wikimedia.org/wiki/File:Feuerbach_Gaea.jpg
+// Attribution: Anselm Feuerbach [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AFeuerbach_Gaea.jpg">via Wikimedia Commons</a>
 card('GAIA') {
     creature 'Greek God'
     flavor 'Personification of the Earth, mother of the Titans.'
+    imagePath 'mythos/greek/gaia.jpg'
     maxInDeck 1
     attack 4
     health 4
@@ -203,9 +248,13 @@ card('GAIA') {
 
 //// CHTHONIC DEITIES
 
+// https://en.wikipedia.org/wiki/Hades
+// https://commons.wikimedia.org/wiki/File:Hades-et-Cerberus-III.jpg
+// Attribution: CC BY 3.0
 card('HADES') {
     creature 'Greek Chthonic Deity'
     flavor 'God of the Underworld.'
+    imagePath 'mythos/greek/hades.jpg'
     maxInDeck 1
     attack 8
     health 8
@@ -224,9 +273,13 @@ card('HADES') {
         summon 3 of 'Lost Soul' to 'you' zone 'Battlefield'
     }
 }
+// https://en.wikipedia.org/wiki/Cronus
+// https://commons.wikimedia.org/wiki/File:The_Mutiliation_of_Uranus_by_Saturn.jpg
+// Attribution: Giorgio Vasari [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AThe_Mutiliation_of_Uranus_by_Saturn.jpg">via Wikimedia Commons</a>
 card('CRONUS') {
     creature 'Greek Titan'
     flavor 'Deposed King of the Titans; also father of Zeus, Hades, and Poseidon.'
+    imagePath 'mythos/greek/cronus.jpg'
     maxInDeck 1
     attack 4
     health 8
@@ -243,9 +296,13 @@ card('CRONUS') {
     }
 }
 
+// https://en.wikipedia.org/wiki/Lernaean_Hydra
+// https://commons.wikimedia.org/wiki/File:Lernaean_Hydra_Getty_Villa_83.AE.346.jpg
+// Attribution: By Eagle PainterWolfgang Sauber (User:Xenophon). Image renamed from Image:Herakles gegen Hydra.jpg (Own work) [<a href="http://www.gnu.org/copyleft/fdl.html">GFDL</a> or <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>], <a href="https://commons.wikimedia.org/wiki/File%3ALernaean_Hydra_Getty_Villa_83.AE.346.jpg">via Wikimedia Commons</a>
 card('Lernaean Hydra') {
     creature 'Greek'
     flavor 'A many-headed, serpent-like creature that guarded an Underworld entrance beneath Lake Lerna.'
+    imagePath 'mythos/greek/lernaean-hydra.jpg'
     maxInDeck 1
     attack 6
     health 3
@@ -266,9 +323,14 @@ card('Lernaean Hydra') {
         }
     }
 }
+
+// https://en.wikipedia.org/wiki/Greek_underworld
+// https://commons.wikimedia.org/wiki/File:Orestes_Delphi_BM_GR1917.12-10.1.jpg
+// Attribution: Public Domain
 card('The Underworld') {
     creature 'Greek Location'
     flavor 'The realm of the Dead.'
+    imagePath 'mythos/greek/underworld.jpg'
     maxInDeck 1
     attack 0
     noAttack()
@@ -289,9 +351,14 @@ card('The Underworld') {
     }
     */
 }
+
+// https://en.wikipedia.org/wiki/Charon_(mythology)
+// https://commons.wikimedia.org/wiki/File:Lytovchenko_Olexandr_Kharon.jpg
+// Attribution: Alexander Litovchenko [Public domain or Public domain], <a href="https://commons.wikimedia.org/wiki/File%3ALytovchenko_Olexandr_Kharon.jpg">via Wikimedia Commons</a>
 card('CHARON') {
     creature 'Greek Chthonic Deity'
     flavor 'The Ferryman of the Underworld.'
+    imagePath 'mythos/greek/charon.jpg'
     maxInDeck 1
     attack 1
     health 4
@@ -312,9 +379,14 @@ card('CHARON') {
     }
     */
 }
+
+// https://en.wikipedia.org/wiki/Empusa
+// https://www.worldsofimagination.co.uk/417px-Wiertz_Junge_Hexe.jpeg
+// Attribution: Public Domain
 card('EMPUSA') {
     creature 'Greek Chthonic Deity'
     flavor 'A monstrous underworld spirit with flaming hair, the leg of a goat and a leg of bronze.'
+    imagePath 'mythos/greek/empusa.jpg'
     maxInDeck 1
     attack 1
     health 2
@@ -322,9 +394,14 @@ card('EMPUSA') {
     sickness 1
     taunt()
 }
+
+// https://en.wikipedia.org/wiki/Moirai
+// https://commons.wikimedia.org/wiki/File:Rundscheibe_Drei_Parzen_KGM_AE470.jpg
+// Attribution: By attributed to Hans Vischer d. J.Photo User:FA2010 (Own work) [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3ARundscheibe_Drei_Parzen_KGM_AE470.jpg">via Wikimedia Commons</a>
 card('MOIRAI') {
     creature 'Greek Chthonic Deity'
-    flavor 'The white-robed incarnations of Fate.'
+    flavor 'The three white-robed incarnations of Fate.'
+    imagePath 'mythos/greek/moirai.jpg'
     maxInDeck 1
     attack 1
     health 3
@@ -338,9 +415,14 @@ card('MOIRAI') {
     )
     */
 }
+
+// https://en.wikipedia.org/wiki/Hecate
+// https://commons.wikimedia.org/wiki/File:AN00969955_001_l.jpg
+// Attribution: Richard Cosway [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AAN00969955_001_l.jpg">via Wikimedia Commons</a>
 card('HECATE') {
     creature 'Greek Chthonic Deity'
     flavor 'Goddess of magic, witchcraft, the night, moon, ghosts and necromancy.'
+    imagePath 'mythos/greek/hecate.jpg'
     maxInDeck 1
     attack 3
     health 2
@@ -359,18 +441,28 @@ card('HECATE') {
     }
     */
 }
+
+// https://www.theoi.com/Khthonios/Rhadamanthys.html
+// https://www.theoi.com/image/K42.1Judges.jpg
+// Attribution: Public Domain
 card('Judges of the Dead') {
     creature 'Greek Chthonic Deity'
     flavor 'Three judges sat in judgment on those who entered the Underworld.'
+    imagePath 'mythos/greek/judges-of-the-dead.jpg'
     maxInDeck 1
     attack 3
     health 3
     manaCost 10
     sickness 1
 }
+
+// https://en.wikipedia.org/wiki/Lamia
+// https://commons.wikimedia.org/wiki/File:Draper-Lamia.jpg
+// Attribution: Herbert James Draper [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3ADraper-Lamia.jpg">via Wikimedia Commons</a>
 card('LAMIA') {
     creature 'Greek Chthonic Deity'
-    flavor 'A vampiric Underworld spirit.'
+    flavor 'Mistress of Zeus, turned into a monster by jealous Hera.'
+    imagePath 'mythos/greek/lamia.jpg'
     maxInDeck 1
     attack 1
     health 3
@@ -383,6 +475,9 @@ card('LAMIA') {
     }
     */
 }
+
+// https://en.wikipedia.org/wiki/Macaria
+// NO IMAGE FOUND
 card('MACARIA') {
     creature 'Greek Chthonic Deity'
     flavor 'The daughter of Hades and goddess of blessed death.'
@@ -398,9 +493,14 @@ card('MACARIA') {
     }
     */
 }
+
+// https://en.wikipedia.org/wiki/Persephone
+// https://commons.wikimedia.org/wiki/File:Locri_Pinax_Persephone_Opens_Liknon_Mystikon.jpg
+// Attribution: CC BY-SA 2.5
 card('PERSEPHONE') {
     creature 'Greek Chthonic Deity'
     flavor 'The queen of the underworld, wife of Hades and goddess of spring growth.'
+    imagePath 'mythos/greek/persephone.jpg'
     maxInDeck 1
     attack 4
     health 3
@@ -412,9 +512,14 @@ card('PERSEPHONE') {
         heal 1 on 'you'
     }
 }
+
+// https://en.wikipedia.org/wiki/Thanatos
+// https://commons.wikimedia.org/wiki/File:Hermes_e_Sarpedon.jpg
+// Attribution: By Jaime Ardiles-Arce (photographer). Krater by Euphronios (painter) and Euxitheos (potter). (File:Euphronios krater - front.jpg) [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AHermes_e_Sarpedon.jpg">via Wikimedia Commons</a>
 card('THANATOS') {
     creature 'Greek Chthonic Deity'
     flavor 'Spirit of death and minister of the Underworld.'
+    imagePath 'mythos/greek/thanatos.jpg'
     maxInDeck 1
     attack 2
     health 2
@@ -422,6 +527,9 @@ card('THANATOS') {
     sickness 1
     // plague() // #264
 }
+
+// https://en.wikipedia.org/wiki/Tartarus
+// NO IMAGE FOUND
 card('TARTARUS') {
     creature 'Greek Chthonic Deity'
     flavor 'The primeval god of the dark, stormy pit of the Underworld, the Tartarean pit that houses the Titans.'
@@ -438,9 +546,13 @@ card('TARTARUS') {
 
 //// LOCATIONS
 
+// https://en.wikipedia.org/wiki/Mount_Olympus
+// https://commons.wikimedia.org/wiki/File:Mytikas.jpg
+// Attribution: By stefg74 from Larisa, Greece (MYTIKASUploaded by Hike395) [<a href="http://creativecommons.org/licenses/by/2.0">CC BY 2.0</a>], <a href="https://commons.wikimedia.org/wiki/File%3AMytikas.jpg">via Wikimedia Commons</a>
 card('Mount Olympus') {
     creature 'Greek Location'
     flavor 'Paradise for the Gods.'
+    imagePath 'mythos/greek/mount-olympus.jpg'
     maxInDeck 1
     attack 0
     noAttack()
@@ -461,7 +573,8 @@ card('Mount Olympus') {
     }
     */
 }
-
+// https://en.wikipedia.org/wiki/Tartarus
+// NO IMAGE FOUND
 card('Tartarean Pit') {
     creature 'Greek Location'
     flavor 'Prison of the Titans.'
@@ -491,6 +604,8 @@ card('Tartarean Pit') {
 
 /// TITANS
 
+// https://en.wikipedia.org/wiki/Hyperion_(mythology)
+// NO IMAGE FOUND
 card('Hyperion') {
     creature 'Greek Titan'
     flavor 'Titan of Light.'
@@ -500,9 +615,14 @@ card('Hyperion') {
     manaCost 15
     sickness 0 // Rush
 }
+
+// https://en.wikipedia.org/wiki/Mnemosyne
+// https://commons.wikimedia.org/wiki/File:Mnemosyne_%28color%29_Rossetti.jpg
+// Attribution: Delaware Art Museum, Samuel and Mary R. Bancroft Memorial [Public domain, Public domain or <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>], <a href="https://commons.wikimedia.org/wiki/File%3AMnemosyne_(color)_Rossetti.jpg">via Wikimedia Commons</a>
  card('Mnemosyne') {
     creature 'Greek Titan'
     flavor 'Titaness of memory and remembrance, and mother of the Nine Muses.'
+    imagePath 'mythos/greek/mnemosyne.jpg'
     maxInDeck 1
     attack 2
     health 3
@@ -510,6 +630,9 @@ card('Hyperion') {
     sickness 1
     // phase() // #262
 }
+
+// https://en.wikipedia.org/wiki/Styx
+// NO IMAGE FOUND
 card('Styx') {
     creature 'Greek Titan'
     flavor 'Titaness of the Underworld river Styx and personification of hatred.'
@@ -526,9 +649,14 @@ card('Styx') {
         }
     }
 }
+
+// https://en.wikipedia.org/wiki/Rhea_(mythology)
+// https://commons.wikimedia.org/wiki/File:Pergamonmuseum_-_Antikensammlung_-_Pergamonaltar_37.JPG
+// Attribution: By Claus Ableiter (Own work) [<a href="http://www.gnu.org/copyleft/fdl.html">GFDL</a>, <a href="http://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA-3.0</a> or <a href="http://creativecommons.org/licenses/by-sa/2.5-2.0-1.0">CC BY-SA 2.5-2.0-1.0</a>], <a href="https://commons.wikimedia.org/wiki/File%3APergamonmuseum_-_Antikensammlung_-_Pergamonaltar_37.JPG">via Wikimedia Commons</a>
 card('Rhea') {
     creature 'Greek Titan'
     flavor 'Titaness of fertility, motherhood and the mountain wilds.'
+    imagePath 'mythos/greek/rhea.jpg'
     maxInDeck 1
     attack 2
     health 1
@@ -539,6 +667,9 @@ card('Rhea') {
         summon 1 of 'Bear' to 'you' zone 'Battlefield'
     }
 }
+
+// https://en.wikipedia.org/wiki/Menoetius_(Greek_mythology)
+// NO IMAGE FOUND
 card('Menoetius') {
     creature 'Greek Titan'
     flavor 'Titan of violent anger, rash action, and human mortality.'
@@ -551,9 +682,13 @@ card('Menoetius') {
 
 //// HEROES
 
+// https://en.wikipedia.org/wiki/Heracles
+// https://commons.wikimedia.org/wiki/File:0_Plaque_Campana_-_Hercule_capturant_le_taureau_cr%C3%A9tois.JPG
+// Attribution: By Jean-Pol GRANDMONT (Own work) [<a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a> or <a href="http://www.gnu.org/copyleft/fdl.html">GFDL</a>], <a href="https://commons.wikimedia.org/wiki/File%3A0_Plaque_Campana_-_Hercule_capturant_le_taureau_cr%C3%A9tois.JPG">via Wikimedia Commons</a>
 card('Heracles') {
     creature 'Greek Hero'
     flavor 'Ascended hero, Son of Zeus, and divine protector of mankind.'
+    imagePath 'mythos/greek/heracles.jpg'
     maxInDeck 1
     attack 6
     health 8
@@ -573,10 +708,22 @@ card('Heracles') {
             zone 'Battlefield'
         }
     }
+    // +1/+1 to 'Iolaus' if it is in play
+    whilePresent {
+        change ATTACK, HEALTH by 1 withPriority 1 on {
+            cardName 'Iolaus'
+            zone 'Battlefield'
+        }
+    }
 }
+
+// https://en.wikipedia.org/wiki/Achilles
+// https://commons.wikimedia.org/wiki/File:Achilles_departure_Eretria_Painter_CdM_Paris_851.jpg
+// Attribution: CC BY 2.5
 card('Achilles') {
     creature 'Greek Hero'
     flavor 'Hero of the Trojan War.'
+    imagePath 'mythos/greek/achilles.jpg'
     maxInDeck 1
     attack 3
     health 3
@@ -584,9 +731,14 @@ card('Achilles') {
     sickness 1
     // dodge() // #263
 }
+
+// https://en.wikipedia.org/wiki/Perseus
+// https://commons.wikimedia.org/wiki/File:Firenze.Loggia.Perseus02.JPG
+// Attribution: By JoJan (Own work) [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AFirenze.Loggia.Perseus02.JPG">via Wikimedia Commons</a>
 card('Perseus') {
     creature 'Greek Hero'
     flavor 'Son of Zeus and the slayer of the Gorgon Medusa.'
+    imagePath 'mythos/greek/perseus.jpg'
     maxInDeck 1
     attack 5
     health 4
@@ -605,24 +757,30 @@ card('Perseus') {
     }
     */
 }
+
+// https://en.wikipedia.org/wiki/Iolaus
+// https://commons.wikimedia.org/wiki/File:Heracles%2C_Iolaus_and_Eros_-_Cista_Ficoroni_foot.jpg
+// Attribution: By Haiduc (Own work) [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AHeracles%2C_Iolaus_and_Eros_-_Cista_Ficoroni_foot.jpg">via Wikimedia Commons</a>
 card('Iolaus') {
     creature 'Greek Hero'
     flavor 'Nephew of Heracles who aided his uncle in one of his Labors.'
+    imagePath 'mythos/greek/iolaus.jpg'
     maxInDeck 1
     attack 2
     health 2
     manaCost 5
     sickness 1
     // Gains +1/+1 if Heracles is on the field.
-    /*
-    ifPresent (cardName 'HERACLES' zone 'Battlefield') { // #261
-        change ATTACK, HEALTH by 1 withPriority 1 on { thisCard() }
-    }
-    */
+        // Added to card 'Heracles' as an effect applied on this card.
 }
+
+// https://en.wikipedia.org/wiki/Theseus
+// https://commons.wikimedia.org/wiki/File:Theseus_Minotaur_BM_Vase_E84_n4.jpg
+// Attribution: See page for author [<a href="http://creativecommons.org/licenses/by/2.5">CC BY 2.5</a>], <a href="https://commons.wikimedia.org/wiki/File%3ATheseus_Minotaur_BM_Vase_E84_n4.jpg">via Wikimedia Commons</a>
 card('Theseus') {
     creature 'Greek Hero'
     flavor 'Son of Poseidon, King of Athens and slayer of the Minotaur.'
+    imagePath 'mythos/greek/theseus.jpg'
     maxInDeck 1
     attack 3
     health 2
@@ -630,18 +788,28 @@ card('Theseus') {
     sickness 1
     denyCounterAttack() // ranged
 }
+
+// https://en.wikipedia.org/wiki/Odysseus
+// https://commons.wikimedia.org/wiki/File:Caught_between_a_rock_and_a_hard_place.jpg
+// Attribution: By The painting is an Italian fresco [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3ACaught_between_a_rock_and_a_hard_place.jpg">via Wikimedia Commons</a>
 card('Odysseus') {
     creature 'Greek Hero'
     flavor 'King of Ithaca whose adventures are the subject of Homer’s Odyssey.'
+    imagePath 'mythos/greek/odysseus.jpg'
     maxInDeck 1
     attack 2
     health 1
     manaCost 5
     sickness 1
 }
+
+// https://en.wikipedia.org/wiki/Daedalus
+// https://commons.wikimedia.org/wiki/File:Pompeii_-_Casa_dei_Vettii_-_Pasiphae.jpg
+// Attribution: By WolfgangRieger [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3APompeii_-_Casa_dei_Vettii_-_Pasiphae.jpg">via Wikimedia Commons</a>
 card('Daedalus') {
     creature 'Greek Hero'
     flavor 'Creator of the Labyrinth and a great inventor, until King Minos trapped him in his own creation.'
+    imagePath 'mythos/greek/daedalus.jpg'
     maxInDeck 1
     attack 3
     health 4
@@ -652,9 +820,14 @@ card('Daedalus') {
         summon 1 of 'Minotaur' to 'you' zone 'Battlefield'
     }
 }
+
+// https://en.wikipedia.org/wiki/Hector
+// https://commons.wikimedia.org/wiki/File:Hektor_wirft_Paris_seine_Weichlichkeit_vor_%28Tischbein%29.jpg
+// Attribution: Johann Heinrich Wilhelm Tischbein [<a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a> or <a href="http://www.gnu.org/copyleft/fdl.html">GFDL</a>], <a href="https://commons.wikimedia.org/wiki/File%3AHektor_wirft_Paris_seine_Weichlichkeit_vor_(Tischbein).jpg">via Wikimedia Commons</a>
 card('Hector') {
     creature 'Greek Hero'
     flavor 'Hero of the Trojan War and champion of the Trojan people.'
+    imagePath 'mythos/greek/hector.jpg'
     maxInDeck 1
     attack 4
     health 4
@@ -668,9 +841,14 @@ card('Hector') {
         }
     }
 }
+
+// https://en.wikipedia.org/wiki/Ajax_(mythology)
+// https://commons.wikimedia.org/wiki/File:Ajax_suicide_BM_F480.jpg
+// Attribution: See page for author [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AAjax_suicide_BM_F480.jpg">via Wikimedia Commons</a>
 card('Ajax The Great') {
     creature 'Greek Hero'
     flavor 'Hero of the Trojan War and king of Salamis.'
+    imagePath 'mythos/greek/ajax.jpg'
     maxInDeck 1
     attack 2
     health 3
@@ -680,9 +858,13 @@ card('Ajax The Great') {
 
 //// CREATURES
 
+// https://en.wikipedia.org/wiki/Medusa
+// https://commons.wikimedia.org/wiki/File:Close_up_of_Gorgon_at_the_pediment_of_Artemis_temple_in_Corfu.jpg
+// Attribution: By Dr.K. (Own work) [<a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>], <a href="https://commons.wikimedia.org/wiki/File%3AClose_up_of_Gorgon_at_the_pediment_of_Artemis_temple_in_Corfu.jpg">via Wikimedia Commons</a>
 card('Medusa') {
     creature 'Greek'
     flavor 'A mortal woman transformed into a hideous Gorgon by Athena.'
+    imagePath 'mythos/greek/medusa.jpg'
     maxInDeck 1
     attack 4
     health 3
@@ -700,12 +882,17 @@ card('Medusa') {
     */
     // When Medusa is sent to the graveyard, summon three +1/+1 snake tokens to the field.
     onDeath {
-        summon 3 of 'Medusa Snake' to 'you' zone 'Battlefield'
+        summon 3 of 'Snake' to 'you' zone 'Battlefield'
     }
 }
+
+// https://en.wikipedia.org/wiki/Nemean_lion
+// https://commons.wikimedia.org/wiki/File:Herakles_Nemean_lion_BM_B621.jpg
+// Attribution: Public Domain
 card('Nemean Lion') {
     creature 'Greek'
     flavor 'A gigantic lion whose skin was impervious to weapons; Heracles strangled it.'
+    imagePath 'mythos/greek/nemean-lion.jpg'
     maxInDeck 1
     attack 3
     health 6
@@ -713,18 +900,28 @@ card('Nemean Lion') {
     sickness 1
     taunt()
 }
+
+// https://en.wikipedia.org/wiki/Erymanthian_Boar
+// https://commons.wikimedia.org/wiki/File:Herakles_Eurystheus_boar_Louvre_F202.jpg
+// Attribution: Public Domain
 card('Erymanthian Boar') {
     creature 'Greek'
     flavor 'A gigantic boar, which Heracles was sent to retrieve as one of his labors.'
+    imagePath 'mythos/greek/erymanthian-boar.jpg'
     maxInDeck 1
     attack 5
     health 4
     manaCost 10
     sickness 0 // Rush
 }
+
+// https://en.wikipedia.org/wiki/Pegasus
+// https://commons.wikimedia.org/wiki/File:Winged_horse_Dodona_Louvre_Br149.jpg
+// Attribution: See page for author [<a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>], <a href="https://commons.wikimedia.org/wiki/File%3AWinged_horse_Dodona_Louvre_Br149.jpg">via Wikimedia Commons</a>
 card('Pegasus') {
     creature 'Greek'
     flavor 'A divine winged stallion that is pure white, son of Medusa and Poseidon, and father of winged horses.'
+    imagePath 'mythos/greek/pegasus.jpg'
     maxInDeck 1
     attack 2
     health 2
@@ -737,9 +934,13 @@ card('Pegasus') {
     }
     */
 }
-card('Ararchne') {
+// https://en.wikipedia.org/wiki/Arachne
+// https://commons.wikimedia.org/wiki/File:Pur_12_aracne.jpg
+// Attribution: Public Domain
+card('Arachne') {
     creature 'Greek'
-    flavor 'Half-spider half-female, she is the mother of all spiders.'
+    flavor 'Half-spider half-human, she is the mother of all spiders.'
+    imagePath 'mythos/greek/arachne.jpg'
     maxInDeck 1
     attack 3
     health 3
@@ -749,12 +950,18 @@ card('Ararchne') {
     // When Ararchne is sent to the graveyard,
     // summon two +2/+2 Spider tokens to the field with Plague.
     onDeath {
-        summon 2 of 'Arachne Spider' to 'you' zone 'Battlefield'
+        summon 2 of 'Spider' to 'you' zone 'Battlefield'
     }
 }
+
+// https://en.wikipedia.org/wiki/Griffin
+// https://commons.wikimedia.org/wiki/File:Knossos_fresco_in_throne_palace.JPG
+// Attribution: CC BY-SA 3.0
+// https://commons.wikimedia.org/wiki/User:Paginazero
 card('Griffin') {
     creature 'Greek'
     flavor 'A creature that combines the body of a lion and the head and wings of an eagle.'
+    imagePath 'mythos/greek/griffin.jpg'
     maxInDeck 1
     attack 3
     health 2
@@ -772,9 +979,14 @@ card('Caucasian Eagle') {
     sickness 1
     // dodge() // #263
 }
+
+// https://en.wikipedia.org/wiki/Chiron
+// https://commons.wikimedia.org/wiki/File:Chiron_instructs_young_Achilles_-_Ancient_Roman_fresco.jpg
+// Attribution: By sconosciuto. Il prototipo era probabilmente un gruppo scultoreo esposto a Roma nei Saepta. (Unknown) [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AChiron_instructs_young_Achilles_-_Ancient_Roman_fresco.jpg">via Wikimedia Commons</a>
 card('Chiron') {
     creature 'Greek'
     flavor 'The eldest and wisest of the centaurs, the ancient trainer of heroes.'
+    imagePath 'mythos/greek/chiron.jpg'
     maxInDeck 1
     attack 4
     health 3
@@ -787,9 +999,14 @@ card('Chiron') {
         }
     }
 }
+
+// https://en.wikipedia.org/wiki/Cerberus
+// https://commons.wikimedia.org/wiki/File:Herakles_Kerberos_Eurystheus_Louvre_E701.jpg
+// Attribution: By Eagle Painter (User:Bibi Saint-Pol, Own work, 1 June 2007) [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AHerakles_Kerberos_Eurystheus_Louvre_E701.jpg">via Wikimedia Commons</a>
 card('Cerberus') {
     creature 'Greek'
     flavor 'The Three-headed hound that guards the gates of the Underworld.'
+    imagePath 'mythos/greek/cerberus.jpg'
     maxInDeck 1
     attack 3
     health 4
@@ -807,70 +1024,34 @@ card('Cerberus') {
 
 //// TOKENS
 
-card('Bear') {
-    creature 'Greek'
-    flavor ''
-    attack 2
-    health 2
-    manaCost 0
-    sickness 1
-    token()
-}
-
-card('Lost Soul') {
-    creature 'Greek'
-    flavor ''
-    attack 1
-    health 1
-    manaCost 0
-    sickness 1
-    token()
-}
+// no image found
 card('Titan 2/2') {
     creature 'Greek Titan'
-    flavor ''
     attack 2
     health 2
-    manaCost 0
     sickness 1
     token()
 }
+// no image found
 card('Titan 4/2') {
     creature 'Greek Titan'
     attack 4
     health 2
-    manaCost 0
     sickness 1
     token()
-}
-card('Minotaur') {
-    creature 'Greek'
-    attack 4
-    health 4
-    manaCost 0
-    sickness 1
-    token()
-}
-card('Medusa Snake') {
-    creature 'Greek'
-    maxInDeck 1
-    attack 1
-    health 1
-    manaCost 0
-    sickness 1
-    token()
-}
-card('Arachne Spider') {
-    creature 'Greek'
-    maxInDeck 1
-    attack 2
-    health 2
-    manaCost 0
-    sickness 1
-    token()
-    // plague() // #264
 }
 
+// https://en.wikipedia.org/wiki/Minotaur
+// https://commons.wikimedia.org/wiki/File:Blake_Dante_Hell_XII.jpg
+// Attribution: William Blake [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3ABlake_Dante_Hell_XII.jpg">via Wikimedia Commons</a>
+card('Minotaur') {
+    creature 'Greek'
+    imagePath 'mythos/greek/minotaur.jpg'
+    attack 4
+    health 4
+    sickness 1
+    token()
+}
 
 ////// NOT CREATURES
 
@@ -879,7 +1060,6 @@ card('Arachne Spider') {
 
 /* DOES NOTHING RIGHT NOW
 card('Apollo\'s Bow') {
-    flavor ''
     maxInDeck 1
     manaCost 5
     spell {
@@ -899,7 +1079,6 @@ card('Apollo\'s Bow') {
 */
 /* DOES NOTHING RIGHT NOW
 card('Tale of the Three Brothers') {
-    flavor ''
     maxInDeck 1
     manaCost 20
     spell {
@@ -931,7 +1110,6 @@ card('The Wrath of Zeus') {
 */
 /* DOES NOTHING RIGHT NOW
 card('The Might of Hercules') {
-    flavor ''
     maxInDeck 1
     manaCost 10
     spell {
@@ -949,21 +1127,26 @@ card('The Might of Hercules') {
 
 //// ENCHANTMENTS
 
+
+// https://commons.wikimedia.org/wiki/File:Jason_Pelias_Louvre_K127.jpg
+// Attribution: Underworld Painter [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AJason_Pelias_Louvre_K127.jpg">via Wikimedia Commons</a>
 card('Golden Fleece') {
+    imagePath 'mythos/greek/golden-fleece.jpg'
     enchantment true
     maxInDeck 1
     manaCost 5
     // Equipped unit gains +0/+3.
     addHealth 3
-
 }
-card('Achilles\' Armor') {
+// https://en.wikipedia.org/wiki/Shield_of_Achilles
+// Attribution: Public Domain
+card('Achilles\' Shield') {
     enchantment true
+    imagePath 'mythos/greek/achilles-shield'
     maxInDeck 1
     manaCost 10
     addAttack 1
     addHealth 2
-
     // If that unit is a Hero it gains Taunt.
     /*
     spell {
@@ -973,7 +1156,11 @@ card('Achilles\' Armor') {
     }
     */
 }
+
+// https://commons.wikimedia.org/wiki/File:Raffaello%2C_concilio_degli_dei_02.jpg
+// Attribution: Raphael [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3ARaffaello%2C_concilio_degli_dei_02.jpg">via Wikimedia Commons</a>
 card('Hades\' Bident') {
+    imagePath 'mythos/greek/bident.jpg'
     enchantment true
     maxInDeck 1
     manaCost 10
@@ -988,27 +1175,33 @@ card('Hades\' Bident') {
     }
     */
 }
+
+// Attribution: CC BY-SA 3.0
+// https://commons.wikimedia.org/wiki/User:Dodo
 card('Helm of Darkness') {
+    flavor 'Helm that can turn the wearer invisible.'
+    imagePath 'mythos/greek/helm-of-darkness.jpg'
     enchantment true
     maxInDeck 1
     manaCost 5
     // Target unit gains +1/+1 and Phase.
     addAttack 1
     addHealth 1
-
     /*
     spell {
             set phase() toCards { target() }
     }
     */
 }
+// https://commons.wikimedia.org/wiki/File:Raffaello%2C_concilio_degli_dei_02.jpg
+// Attribution: Raphael [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3ARaffaello%2C_concilio_degli_dei_02.jpg">via Wikimedia Commons</a>
 card('Poseidon\'s Trident') {
+    imagePath 'mythos/greek/trident.jpg'
     enchantment true
     maxInDeck 1
     manaCost 10
     addAttack 2
     addHealth 2
-
     // If that unit is a God it gains Dodge.
     /*
     spell {
@@ -1018,7 +1211,11 @@ card('Poseidon\'s Trident') {
     }
     */
 }
+
+// https://commons.wikimedia.org/wiki/File:Death-and-the-woodcutter-jean-francois-millet3.jpg
+// Attribution: Public Domain
 card('Cronus\' Scythe') {
+    imagePath 'mythos/greek/scythe.jpg'
     enchantment true
     maxInDeck 1
     manaCost 10

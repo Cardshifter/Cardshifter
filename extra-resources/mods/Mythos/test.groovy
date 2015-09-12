@@ -1,4 +1,4 @@
-package mythos
+package Mythos
 
 def clearState = {
     def players = game.players
@@ -30,19 +30,34 @@ from clearState test('summon on battlefield') using {
 }
 
 from clearState test('mana upkeep default') using {
-    def card = to you zone 'Hand' create {
+    def cardWithUpkeepDivisibleByFive = to you zone 'Hand' create {
+        creature 'Chinese'
+        health 1
+        manaCost 10
+    }
+    assert cardWithUpkeepDivisibleByFive.mana_upkeep == 5
+
+    def cardWithEvenNumberUpkeep = to you zone 'Hand' create {
+        creature 'Chinese'
+        health 1
+        manaCost 4
+    }
+    assert cardWithEvenNumberUpkeep.mana_upkeep == 2
+
+    def cardWithOddNumberUpkeep = to you zone 'Hand' create {
         creature 'Chinese'
         health 1
         manaCost 3
     }
-    assert card.mana_upkeep == card.mana_cost
+    assert cardWithOddNumberUpkeep.mana_upkeep == 2
+
     def player = you
     assert player.mana == 10
-    uses 'Play' on card ok
+    uses 'Play' on cardWithOddNumberUpkeep ok
     assert player.mana == 7
     uses 'End Turn' ok
     uses 'End Turn' ok
-    assert player.mana == 17
+    assert player.mana == 18
 }
 
 from clearState test('mana upkeep with manaUpkeep') using {
