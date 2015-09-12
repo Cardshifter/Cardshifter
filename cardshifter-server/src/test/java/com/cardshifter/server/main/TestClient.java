@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.outgoing.ResetAvailableActionsMessage;
 import net.zomis.cardshifter.ecs.usage.CardshifterIO;
 
@@ -36,6 +37,8 @@ public class TestClient {
 	private final OutputStream out;
 	private final LinkedBlockingQueue<Message> messages = new LinkedBlockingQueue<>();
 	private final Thread thread;
+
+	private String name = "";
 	
 	public TestClient(int port) throws UnknownHostException, IOException {
 		this.socket = new Socket("127.0.0.1", port);
@@ -46,6 +49,10 @@ public class TestClient {
 		mapper.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
 		thread = new Thread(this::listen);
 		thread.start();
+	}
+
+	public String getName() {
+		return name;
 	}
 	
 	private void listen() {
@@ -63,6 +70,9 @@ public class TestClient {
 	}
 	
 	public void send(Message message) throws JsonGenerationException, JsonMappingException, IOException {
+		if (message instanceof LoginMessage) {
+			name = ((LoginMessage) message).getUsername();
+		}
 		mapper.writeValue(out, message);
 	}
 

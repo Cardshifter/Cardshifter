@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import com.cardshifter.api.outgoing.*;
+import com.fasterxml.jackson.core.JsonGenerationException;
 import org.apache.log4j.PropertyConfigurator;
 import org.junit.After;
 import org.junit.Before;
@@ -54,40 +55,26 @@ public class ServerConnectionTest {
 	private int socketPort;
 	private TestClient client1;
 	private int userId;
-	private final String client1UserName = "Tester1";
     private AvailableModsMessage mods;
-
-	private final int MAX_SERVER_PORT_TRY = 10;
 
     @Before
 	public void setup() throws IOException, InterruptedException {
 		PropertyConfigurator.configure(getClass().getResourceAsStream("log4j.properties"));
 		ServerConfiguration config = ServerConfiguration.defaults();
 
-		int basePortSocket = config.getPortSocket();
-		int basePortWebsocket = config.getPortWebsocket();
+		// Use any available port
+		config.setPortSocket(0);
+		config.setPortWebsocket(0);
 
-		// The ports might be in use by another instance or application
-		// Could use port = 0, but would need access to the ServerSocket to get the real port number
-		for (int i = 0; i < MAX_SERVER_PORT_TRY; i++) {
-			config.setPortSocket(basePortSocket + i * 10);
-			config.setPortWebsocket(basePortWebsocket + i * 10);
+		main = new MainServer(config);
+		main.getMods().loadExternal(Paths.get("../extra-resources/groovy"));
+		server = main.start();
 
-			main = new MainServer(config);
-			main.getMods().loadExternal(Paths.get("../extra-resources/groovy"));
-			server = main.start();
-
-			if (server.getClients().size() > 0) {
-				break;
-			}
-		}
-
-		assertTrue("Server did not start correctly after " + MAX_SERVER_PORT_TRY + " retries.",
-				   server.getClients().size() > 0);
+		assertTrue("Server should start correctly.", server.getClients().size() > 0);
 
 		socketPort = config.getPortSocket();
 		client1 = createTestClient();
-		client1.send(new LoginMessage(client1UserName));
+		client1.send(new LoginMessage("Tester1"));
 
 		WelcomeMessage welcome = client1.await(WelcomeMessage.class);
 		assertEquals(200, welcome.getStatus());
@@ -118,19 +105,21 @@ public class ServerConnectionTest {
 		UserStatusMessage statusMessage = client1.await(UserStatusMessage.class);
 		ChatMessage chat = client1.await(ChatMessage.class);
 		String message = chat.getMessage();
-		assertTrue("Unexpected message: " + message, message.contains("Test2") && message.contains("joined"));
+		assertTrue("Unexpected message: " + message, message.contains(client2.getName()) && message.contains("joined"));
+
 		int client2id = statusMessage.getUserId();
 		assertEquals(Status.ONLINE, statusMessage.getStatus());
 		assertEquals(server.getClients().size() + 1, client2id);
-		assertEquals("Test2", statusMessage.getName());
+		assertEquals(client2.getName(), statusMessage.getName());
 		
 		client2.send(new ServerQueryMessage(Request.USERS));
 		client2.await(AvailableModsMessage.class);
 		List<UserStatusMessage> users = client2.awaitMany(6, UserStatusMessage.class);
 		System.out.println("Online users: " + users);
+
 		// There is no determined order in which the UserStatusMessages are received, so it is harder to make any assertions.
-        assertUserFound(users, client1UserName);
-        assertUserFound(users, "Test2");
+        assertUserFound(users, client1.getName());
+        assertUserFound(users, client2.getName());
         assertUserFound(users, "AI Fighter");
         assertUserFound(users, "AI Loser");
         assertUserFound(users, "AI Medium");
@@ -142,22 +131,22 @@ public class ServerConnectionTest {
 		statusMessage = client1.await(UserStatusMessage.class);
 		assertEquals(Status.OFFLINE, statusMessage.getStatus());
 		assertEquals(client2id, statusMessage.getUserId());
-		assertEquals("Test2", statusMessage.getName());
+		assertEquals(client2.getName(), statusMessage.getName());
 	}
-
-    private static void assertUserFound(Collection<UserStatusMessage> users, String name) {
-        assertTrue("User '" + name + "' not found", users.stream().filter(mess -> mess.getName().equals(name)).findAny().isPresent());
-    }
 
     @Test(timeout = 5000)
 	public void testSameUserName() throws IOException, InterruptedException {
 		TestClient client2 = createTestClient();
-		client2.send(new LoginMessage(client1UserName));
+		client2.send(new LoginMessage(client1.getName()));
 		WelcomeMessage welcomeMessage = client2.await(WelcomeMessage.class);
 		assertFalse(welcomeMessage.isOK());
 	}
+
+	private static void assertUserFound(Collection<UserStatusMessage> users, String name) {
+		assertTrue("User '" + name + "' not found", users.stream().filter(mess -> mess.getName().equals(name)).findAny().isPresent());
+	}
 	
-	@Test(timeout = 10000)
+	@Test(timeout = 50000)
 	public void testStartGame() throws InterruptedException, IOException {
 		client1.send(new StartGameRequest(2, getTestMod()));
 		NewGameMessage gameMessage = client1.await(NewGameMessage.class);
@@ -235,6 +224,33 @@ public class ServerConnectionTest {
 		client1.send(new StartGameRequest(client2id, getTestMod()));
 		client1.send(new StartGameRequest(client2id, getTestMod()));
 		client1.await(ServerErrorMessage.class);
+	}
+
+	/**
+	 * Assert that no message is in the queue or being sent from the server.
+	 * DOES NOT WORK IF THE MESSAGE IN THE QUEUE IS ServerStatusMessage!
+	 */
+	private static void assertNoMessage(TestClient client) throws IOException, InterruptedException {
+		client.send(new ServerQueryMessage(Request.STATUS, ""));
+		client.await(ServerStatusMessage.class);
+	}
+
+	@Test(timeout = 5000)
+	public void testUsersQueryNotLoggedIn() throws IOException, InterruptedException {
+		TestClient client2 = createTestClient();
+
+		client1.send(new ServerQueryMessage(Request.USERS, ""));
+
+		List<UserStatusMessage> users = client1.awaitMany(5, UserStatusMessage.class);
+
+		assertUserFound(users, client1.getName());
+		assertUserFound(users, "AI Fighter");
+		assertUserFound(users, "AI Loser");
+		assertUserFound(users, "AI Medium");
+		assertUserFound(users, "AI Idiot");
+
+		// There shouldn't be a UserStatusMessage for client2
+		assertNoMessage(client1);
 	}
 	
 }
