@@ -156,11 +156,10 @@ card('GUAN YU') {
     }
 }
 // https://en.wikipedia.org/wiki/Eight_Immortals
-// https://commons.wikimedia.org/wiki/File:Eight_Immortals_Crossing_the_Sea_-_Project_Gutenberg_eText_15250.jpg
+// NO IMAGE FOUND
 card('EIGHT IMMORTALS') {
     creature 'Chinese'
     flavor 'Their power can be transferred to a tool that can bestow life or destroy evil.'
-    imagePath 'mythos/chinese/eight-immortals.jpg'
     health 5
     sickness 1
     manaCost 10
