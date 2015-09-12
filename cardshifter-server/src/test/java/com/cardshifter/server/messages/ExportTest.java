@@ -15,13 +15,24 @@ import com.cardshifter.server.main.ServerMain;
 import com.cardshifter.server.model.MainServer;
 import com.cardshifter.server.model.Server;
 
+import static org.junit.Assert.assertTrue;
+
 public class ExportTest {
 
 	@Test
 	public void test() {
 		PropertyConfigurator.configure(ServerMain.class.getResourceAsStream("log4j.properties"));
-		
-		Server server = new MainServer(ServerConfiguration.defaults()).start();
+
+		ServerConfiguration config = ServerConfiguration.defaults();
+
+		// Use any available port
+		config.setPortSocket(0);
+		config.setPortWebsocket(0);
+
+		Server server = new MainServer(config).start();
+
+		assertTrue("Server should start correctly.", server.getClients().size() > 0);
+
 		String modName = server.getGameFactories().keySet().iterator().next();
 		ServerGame game = server.createGame(modName);
         FakeClient fakeClient = new FakeClient(server, e -> {});

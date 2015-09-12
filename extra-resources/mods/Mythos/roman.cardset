@@ -1,0 +1,101 @@
+package mythos
+/* See modding documentation for all available keywords. */
+/* GENERIC TEMPLATE
+card('Change Me') {
+    creature "Roman"
+    flavor "hello"
+    health 1
+    sickness 1
+    manaCost 1
+    attack 1
+}
+*/
+
+card('JUPITER') {
+    creature "Roman"
+    flavor "Ruler god of heaven & earth, father of the gods."
+    health 1
+    sickness 1
+    manaCost 1
+    attack 1
+}
+card('VENUS') {
+    creature "Roman"
+    flavor "Goddess of love."
+    health 1
+    sickness 1
+    manaCost 1
+    attack 1
+}
+card('PLUTO') {
+    creature "Roman"
+    flavor "God of the underworld and judge of the dead."
+    health 1
+    sickness 1
+    manaCost 1
+    attack 1
+}
+card('MARS') {
+    creature "Roman"
+    flavor "God of war and unquenchable energy."
+    health 1
+    sickness 1
+    manaCost 1
+    attack 1
+}
+card('LUCIFER') {
+    creature "Roman"
+    flavor "Son of the dawn and star god."
+    health 1
+    sickness 1
+    manaCost 1
+    attack 1
+}
+card('BACCHUS') {
+    creature "Roman"
+    flavor "Gof of drunkenness, wine and orgies."
+    health 1
+    sickness 1
+    manaCost 1
+    attack 1
+}
+card('CUPID') {
+    creature "Roman"
+    flavor "God of love."
+    health 1
+    sickness 1
+    manaCost 1
+    attack 1
+}
+card('JANUS') {
+    creature "Roman"
+    flavor "God of crossroads and change."
+    health 1
+    sickness 1
+    manaCost 1
+    attack 1
+}
+card('VULCAN') {
+    creature "Roman"
+    flavor "God of fire and volcanoes."
+    health 1
+    sickness 1
+    manaCost 1
+    attack 1
+}
+card('NEPTUNE') {
+    creature "Roman"
+    flavor "God of the sea."
+    health 1
+    sickness 1
+    manaCost 1
+    attack 1
+}
+card('SATURNUS') {
+    creature "Roman"
+    flavor "God of farming."
+    health 1
+    sickness 1
+    manaCost 1
+    attack 1
+}

@@ -2,7 +2,7 @@
 
 ---
 
-#Card Library Guide - Effects
+#Cardshifter DSL Guide - Effects
 
 This guide will explain how to create custom effects for cards. We created an easy-to-use, flexible system that allows for creative effects to be applied to your mod.
 
@@ -12,7 +12,7 @@ Effects are modifiers that are attached to specific cards, and affect the game e
 
 ###On precise grammar...
 
-It is important to note that the keywords and identifiers must be typed **exactly** as listed to be trustworthy of working. Misspelled words will not work at all. Capilatization must also be respected to ensure functionality.
+It is important to note that the keywords and identifiers must be typed **exactly** as listed to work. Misspelled words will not work at all. Cardshifter DSL is case sensitive: `card` and `CARD` are distinct identifiers and can not be used interchangeably.
 
 ---
 
@@ -21,14 +21,14 @@ It is important to note that the keywords and identifiers must be typed **exactl
 An effect generally takes this form for resource modification:
 
     trigger {
-        action RESOURCE n [withPriority n] onCards [n random] [repeat(n)] {
+        action RESOURCE n [withPriority n] on [n random] [repeat(n)] {
             // filters
         }
     }
 
-There are also summoning effects, but those will be covered separately.
+There are also summoning effects, documented further down in this file.
 
-_Note that `priority` only applies to the `whilePresent` trigger and should be omitted for other triggers._
+_Note that `withPriority` only applies to the `whilePresent` trigger and should be omitted for other triggers._
 
 ---
 
@@ -43,12 +43,12 @@ Various triggers are available for actions to be applied on.
 
 ####`whilePresent`
 
-- Not _technically_ a trigger. It's more a kind of "constant effect"
+- Not _technically_ a trigger. It's a kind of "constant effect".
 - Only works on creature cards.
 - Applies the nested effects while the card is present on the Battlefield.
-- It is not possible at all to use `heal` and `damage` effects inside whilePresent.
+- It is not possible to use `heal` or `damage` effects inside whilePresent.
 
-####`onStartOfTurn` & `onEndOfTurn`
+####`onStartOfTurn` and `onEndOfTurn`
 
 - Only works on creature cards.
 - Applies the nested effects at the start or end of each of the owner's turns.
@@ -69,8 +69,11 @@ Various triggers are available for actions to be applied on.
 ####`pick n atRandom`
 
 - Works on all cards.
-- This is a sub-trigger and picks `X` actions from the available list whenever the trigger is activated.
+- This is a sub-trigger and picks `n` actions from the available list whenever the trigger is activated.
 - Note that the available actions list (but not individual actions) need to be enclosed in parentheses rather than curly brackets.
+- There is a special `doNothing()` value that can be used where there will be no action performed if that action block is picked.
+
+**NOTE**: Please see the examples below for valid actions inside `pick n atRandom` blocks. The examples will be updated as new actions are made available.
 
 Syntax:
 
@@ -88,11 +91,41 @@ Example:
     afterPlay {
         pick 1 atRandom (
             { summon 1 of "Conscript" to "you" zone "Hand" },
-            { heal 1 to 'you' },
-            { damage 1 to 'opponent' }
+            { heal 1 to "you" },
+            { damage 1 to "opponent" },
+            { change HEALTH by 2 on { creature true; ownedBy "you"; zone "Battlefield" } },
+            { set ATTACK to 0 on 1 random { creature true; ownedBy "opponent"; zone "Battlefield" } },
+            { doNothing() }
         )
     }
 
+####`withProbability(n)`
+
+- Works on all cards.
+- This is a sub-trigger and assigns a percentage probability to an action.
+- Ranges are decimal, from `withProbability(0.0)`, or 0%, to `withProbability(1.0)` or 100%.
+
+Syntax:
+
+    trigger {
+        withProbability(n) {
+            action
+        }
+    }
+    
+Example:
+    
+    afterPlay {
+        // 75% chance to summon creature
+        withProbability(0.75) { 
+            summon 1 of 'Conscript' to 'you' zone 'Battlefield'
+        }
+    onEndOfTurn {
+        // 50% change to heal you
+        withProbability(0.50) {
+            heal 1 to 'you'
+        }
+    }
 
 ---
 
@@ -100,32 +133,35 @@ Example:
 
 Many effects manipulate resources. Following is a list of the different resources. For a description of what each resource does, please see the `Card Library - Basics.md` guide.
 
-
-###Important note
-
-The name of the resource must always be `ALL_CAPS_WITH_UNDERSCORES` as this is what the game server is expecting.
-
-####Basic Resources
+####Basic resources
 
 - `ATTACK`
 - `HEALTH`
+- `MAX_HEALTH`
 - `SICKNESS`
+- `MANA`
+- `MANA_MAX`
 - `MANA_COST`
 - `SCRAP`
 - `SCRAP_COST`
 
-####Behaviour-specific Resources
+####Behaviour-specific resources
 
 - `ATTACK_AVAILABLE`
 - `DENY_COUNTERATTACK`
 - `TAUNT`
 
+###Special resources
+
+- `HEALTH_ALL` - `HEALTH` and `MAX_HEALTH` combined
+
 ---
 
 ##Actions
 
-The primary resource actions are `change` and `set`. The important distinction is that you either _change value(s) by `n`_ from its current value, or that you _set value(s) to `n`_ regardless of their current value. Therefore, be careful to use the correct keyword, `change` or `set`, according to your intentions.
+The primary resource actions are `change` and `set`. The important distinction is that you either _change value(s) by `n`_ from its current value, or _set value(s) to `n`_ regardless of their current value. Therefore, be careful to use the correct keyword, `change` or `set`, according to your intentions. `change` can be thought of as addition, while `set` is like an equals sign.
 
+`RESOURCE` below can either be a normal resource, for instance `HEALTH`, or a list of resources. `HEALTH_ALL` is the same thing as writing `[MAX_HEALTH, HEALTH]`, i.e. a list containing the elements `MAX_HEALTH` and `HEALTH`.
 ####`change`
 
 Syntax:
@@ -147,7 +183,7 @@ Examples:
     }
     // subtract two attack from opponent creatures while present
     whilePresent {
-        change ATTACK by -2 withPriority 1 onCards {
+        change ATTACK by -2 withPriority 1 on {
             creature true
             ownedBy 'opponent'
             zone 'Battlefield'
@@ -189,7 +225,7 @@ Examples:
 ####`withPriority`
 
 
-This is only used with the `whilePresent` filter. It specifies in which order the actions are applied when the creature is present, i.e., when it enters play or upon a new turn while it is in play. Actions with the same priority are applied simultaneously. It can be any whole number but it is simpler to use `1, 2, 3` etc. The default value if not specified is `1`.
+`withPriority` is only used with the `whilePresent` filter. It specifies in which order the actions are applied when the creature is present, i.e. either when it enters play or at the start of a turn when the card is in play. Actions with the same priority are applied simultaneously. The priority can be any integer, but it is simpler to use `1, 2, 3` etc. The default value if not specified is `1`.
 
 ---
 
@@ -209,11 +245,11 @@ Examples:
     }
     // with change|set effects
     onEndOfTurn {
-        change ATTACK by 1 onCards 2 random {
+        change ATTACK by 1 on 2 random {
             ownedBy 'you'
             zone 'Battlefield'
         }
-        set HEALTH to 1 onCards 2 random {
+        set HEALTH to 1 on 2 random {
             ownedBy 'opponent'
             zone 'Battlefield'
         }
@@ -229,7 +265,7 @@ Example:
 
     onEndOfTurn {
         repeat(3) {
-            change ATTACK by 1 onCards 1 random {
+            change ATTACK by 1 on 1 random {
                 creature true
                 ownedBy 'you'
                 zone 'Battlefield'
@@ -244,7 +280,7 @@ Example:
 - These are used to filter the effects to a particular set of targets.
 - A filter uses a number of keys such as `ownedBy`, `zone`, `creature true`, `creatureType` and `thisCard()`.
 - A variety of filters are available for effects, and will be explained in detail below.
-- If a filter needs to take multiple arguments, seperate them with a comma. For example:
+- If a filter takes multiple arguments, separate them with a comma. For example:
 
     owned by "you", "opponent"
 
@@ -252,15 +288,15 @@ Example:
 
 
         // Both these are valid:
-        onCards {
+        on {
             creature true
             ownedBy "you"
             zone "Battlefield"
         }
-        onCards { creature true; ownedBy "you"; zone "Battlefield }
+        on { creature true; ownedBy "you"; zone "Battlefield }
         //
-        // But this one is not valid:
-        onCards { creature true ownedBy "you" zone "Battlefield }
+        // !!! But this one is not valid:
+        on { creature true ownedBy "you" zone "Battlefield }
 
 
 ####`ownedBy`
@@ -302,11 +338,11 @@ Affects the card which has the effect itself, and no other.
 
 ####`cardName`
 
-Affects one or more _specific cards_, referencing their `card("hello")` name in the card library for a mod.
+Affects one or more _specific cards_, referencing their `card("")` name in the card library for a mod.
 
 Example:
 
-    onCards {
+    on {
         cardName "foo", "bar"
         ownedBy "you"
         zone "Battlefield"
@@ -314,7 +350,7 @@ Example:
 
 ##`heal`, `damage` _(cards)_
 
-Causes `n` points of healing or damage to the target card(s). You should refrain to use these with a `whilePresent` trigger, as it will likely have undesired effects.
+Cause `n` points of healing or damage to the target card(s). You should refrain to use these with a `whilePresent` trigger, as it will likely have undesired effects.
 
 Syntax:
 
@@ -368,7 +404,7 @@ Examples
 
 ####`heal`, `damage` _(players)_
 
-This heals or damages a target player.
+Heal or damage a target player.
 
 Syntax:
 
@@ -389,7 +425,7 @@ Examples:
 
 ##Summoning effects
 
-Summoning effects create new entities of specific cards into a specified zone. This is particularly important for cards with the `token()` attribute as it is the only way to bring them into play.
+Summoning effects create new entities of specific cards and places them in a specified zone. This is particularly important for cards with the `token()` attribute as it is the only way to bring them into play.
 
 Syntax:
 

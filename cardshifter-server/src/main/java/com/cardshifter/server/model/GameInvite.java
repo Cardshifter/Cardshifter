@@ -27,23 +27,31 @@ public class GameInvite implements IdObject {
 	private final List<ClientIO> players;
 	private final ChatArea chatArea;
 	private final String gameType;
-	private final ServerHandler<GameInvite> handler;
+	private final InviteManager manager;
 
-	public GameInvite(ServerHandler<GameInvite> handler, ChatArea chatlog, ClientIO host, ServerGame game, String gameType) {
-		this.id = handler.newId();
+	public GameInvite(InviteManager manager, ChatArea chatlog, ClientIO host, ServerGame game, String gameType, int id) {
+		this.id = id;
 		this.host = host;
 		this.game = game;
 		this.chatArea = chatlog;
 		this.invited = Collections.synchronizedList(new ArrayList<>());
 		this.players = Collections.synchronizedList(new ArrayList<>());
 		this.gameType = gameType;
-		this.handler = handler;
+		this.manager = manager;
 		players.add(host);
 	}
 
 	@Override
 	public int getId() {
 		return id;
+	}
+
+	@Override
+	public String toString() {
+		String playerString = players.stream()
+									 .map(ClientIO::toString)
+									 .collect(Collectors.joining(", "));
+		return String.format("GameInvite: { Id: %d, Host: %s, Players: [ %s ] }", id, host, playerString);
 	}
 	
 	public void sendInvite(ClientIO to) {
@@ -72,7 +80,7 @@ public class GameInvite implements IdObject {
 	}
 	
 	private void removeInvite() {
-		handler.remove(this);
+		manager.remove(this);
 	}
 
 	public boolean start() {
@@ -98,6 +106,10 @@ public class GameInvite implements IdObject {
 		if (players.size() == 2) {
 			start();
 		}
+	}
+
+	public ClientIO getHost() {
+		return host;
 	}
 	
 }

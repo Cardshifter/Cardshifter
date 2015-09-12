@@ -28,7 +28,7 @@ public class EntitySerialization {
 		Map<String, Object> result = new HashMap<>();
 		result.putAll(Resources.map(entity));
 		result.putAll(Attributes.map(entity));
-		saveIfHave(entity, result, creatureType, "creatureType", comp -> comp.getCreatureType());
+		saveIfHave(entity, result, creatureType, "creatureType", comp -> comp.getAllTypes());
 		saveIfHave(entity, result, effect, "effect", comp -> comp.getDescription());
 		return result;
 	}

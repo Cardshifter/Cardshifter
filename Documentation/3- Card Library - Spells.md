@@ -2,17 +2,17 @@
 
 ---
 
-#Card Library Guide - Spells
+#Cardshifter DSL Guide - Spells
 
 This guide will explain how to create custom spell cards. We created an easy-to-use, flexible system that allows for creative spells to be applied to your mod. 
 
-Spells are cards that are played once and do not persist after playing; in other words, they are discarded from the game after they are played. 
+Spells are cards that are played once and do not persist after playing; in other words, they are discarded from the game after being played. 
 
 ---
 
 ###On precise grammar...
 
-It is important to note that the keywords and identifiers must be typed **exactly** as listed to be trustworthy of working. Misspelled words will not work at all. Capilatization must also be respected to ensure functionality.
+It is important to note that the keywords and identifiers must be typed **exactly** as listed to work. Misspelled words will not work at all. Cardshifter DSL is case sensitive: `card` and `CARD` are distinct identifiers and can not be used interchangeably.
 
 ---
 
@@ -24,7 +24,7 @@ A spell card, in general, uses this type of syntax:
         // declare the card is a spell
         spell {
             // declares the number of targets
-            targets n {
+            targets n cards {
                 [filters]
             }
         }
@@ -40,13 +40,15 @@ The specifics of each section of the syntax will be explained in more detail.
 
 ##`spell` declaration
 
-This declares that a card is a spell, which means it will not persist in play after it is played/cast, but rather moved to the graveyard. 
+Declares that a card is a spell, which means it will not remain in play after being played/cast. Spells are moved to the graveyard after use. 
 
 ---
 
 ##`targets`
 
-A spell can have either of 1, multiple, or zero targets. Depending on what targets are allowed determines how the card will be played. 
+A spell can have either zero, one or multiple targets. The number of targets determines how the card can be played.
+
+_Note: The `cards` keyword in `target n cards` must always be plural, even if the number of card is less than 2.
 
 ###Defined number of targets
 
@@ -56,7 +58,7 @@ Syntax:
 
     card('name') {
         spell {
-            targets n {
+            targets n cards {
                 [filters]
             }
         }
@@ -69,8 +71,9 @@ Example:
 
     // deal 1 damage to a target
     card('Fireball') {
+        // damage 1 on 1 creature on opponent's Battlefield
         spell {
-            targets 1 {
+            targets 1 cards {
                 creature true
                 ownedBy 'opponent'
                 zone 'Battlefield'
@@ -89,7 +92,7 @@ Syntax:
 
     card('name') {
         spell {
-            targets m to n {
+            targets m to n cards {
                 [filters]
             }
         }
@@ -101,6 +104,7 @@ Syntax:
 Examples:
 
     card('Healing rain') {
+        // heal 1 on 2 to 4 creatures on your Battlefield
         spell {
             targets 2 to 4 cards {
                 creature true
@@ -129,9 +133,11 @@ Syntax:
 Examples:
 
     card('Acid rain') {
+        // damage 1 to all creatures on the Battlefield
         spell()
         afterPlay {
             damage 1 to {
+            creature true
                 zone 'Battlefield'
             }
         }
@@ -141,4 +147,59 @@ Examples:
 
 ##Spell effects
 
-The effects declared after the spell targets are according to the `2) Card Library - Effects` documentation. 
+The effects declared for a spell have the same semantics as other effects, described in **2- Card Library - Effects**. The following effects are available for spells:
+
+####Triggers:
+
+- `afterPlay`
+
+####Effects
+
+- `damage n on ...`
+
+- `heal n on ...`
+
+- `change RESOURCE by n on ...`
+
+- `set RESOURCE to n on ...`
+
+- `summon n of 'Some Card' ...`
+
+---
+
+##Enchantments
+
+An enchantments is a special kind of spell that can be cast on a single creature on the battlefield. Enchantments usually modify the target card's resources. All triggers and effects that apply to spells work for enchantments too.
+
+####`enchantment()`
+
+When declared an `enchantment()`, a card is treated as an enchantment. An enchantment can be cast on a `"Bio"` creature in Cyborg-Chronicles.
+
+This is roughly equal to just writing the following:
+
+    spell {
+        targets 1 cards {
+            creature true
+            zone 'Battlefield'
+            ownedBy 'you'
+        }
+    }
+
+_Note that a card cannot be both a creature and an enchantment._
+
+####`afterPlay { ... }`
+
+Enchantment cards usually use this trigger to apply their effects to their target. Even though there can only be one target, `on targets` has to be plural.
+
+####Example
+
+    card('Bionic Arms') {
+        flavor "These arms will give strength to even the most puny individual."
+        enchantment()   // is an enchantment
+        afterPlay {
+            change ATTACK by 2 on targets   // add 2 to the attack of the target creature
+        }
+        scrapCost 1     // costs 1 scrap
+    }
+    
+For more examples, see `extra-resources/mods/Cyborg-Chronicles/enchantments.cardset`.

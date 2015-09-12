@@ -4,6 +4,7 @@ import java.io.File;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -14,6 +15,8 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import com.cardshifter.api.config.PlayerConfig;
+import com.cardshifter.api.outgoing.*;
+import com.cardshifter.modapi.base.*;
 import com.cardshifter.modapi.resources.ResourceViewUpdate;
 import net.zomis.cardshifter.ecs.EntitySerialization;
 import net.zomis.cardshifter.ecs.config.ConfigComponent;
@@ -27,16 +30,6 @@ import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.both.PlayerConfigMessage;
 import com.cardshifter.api.incoming.RequestTargetsMessage;
 import com.cardshifter.api.incoming.UseAbilityMessage;
-import com.cardshifter.api.outgoing.AvailableTargetsMessage;
-import com.cardshifter.api.outgoing.CardInfoMessage;
-import com.cardshifter.api.outgoing.EntityRemoveMessage;
-import com.cardshifter.api.outgoing.PlayerMessage;
-import com.cardshifter.api.outgoing.ResetAvailableActionsMessage;
-import com.cardshifter.api.outgoing.ServerErrorMessage;
-import com.cardshifter.api.outgoing.UpdateMessage;
-import com.cardshifter.api.outgoing.UsableActionMessage;
-import com.cardshifter.api.outgoing.ZoneChangeMessage;
-import com.cardshifter.api.outgoing.ZoneMessage;
 import com.cardshifter.core.replays.ReplayRecordSystem;
 import com.cardshifter.modapi.actions.ActionComponent;
 import com.cardshifter.modapi.actions.ActionPerformEvent;
@@ -46,13 +39,6 @@ import com.cardshifter.modapi.actions.TargetSet;
 import com.cardshifter.modapi.ai.AIComponent;
 import com.cardshifter.modapi.ai.AISystem;
 import com.cardshifter.modapi.ai.CardshifterAI;
-import com.cardshifter.modapi.base.ComponentRetriever;
-import com.cardshifter.modapi.base.ECSGame;
-import com.cardshifter.modapi.base.ECSGameState;
-import com.cardshifter.modapi.base.ECSMod;
-import com.cardshifter.modapi.base.Entity;
-import com.cardshifter.modapi.base.PlayerComponent;
-import com.cardshifter.modapi.base.PlayerEliminatedEvent;
 import com.cardshifter.modapi.cards.CardComponent;
 import com.cardshifter.modapi.cards.ZoneChangeEvent;
 import com.cardshifter.modapi.cards.ZoneComponent;
@@ -191,9 +177,9 @@ public class TCGGame extends ServerGame {
 			return;
 		}
 		
-		Entity entity = event.getEntity();
-		UpdateMessage updateEvent = new UpdateMessage(entity.getId(), event.getResource().toString(), event.getNewValue());
-		broadcast(entity, updateEvent);
+	//	Entity entity = event.getEntity();
+	//	UpdateMessage updateEvent = new UpdateMessage(entity.getId(), event.getResource().toString(), event.getNewValue());
+	//	broadcast(entity, updateEvent);
 	}
 	
 	/**
@@ -249,7 +235,9 @@ public class TCGGame extends ServerGame {
 				targetAction.addTarget(game.getEntity(target));
 			}
 		}
-		boolean allowed = action.perform(playerFor(client));
+
+        Entity performer = playerFor(client);
+		boolean allowed = action.perform(performer);
 		if (!allowed) {
 			client.sendToClient(new ServerErrorMessage("Action not allowed: " + action));
 		}
@@ -293,6 +281,17 @@ public class TCGGame extends ServerGame {
 		File directory = new File("replays", modName);
 		directory.mkdirs();
 		game.addSystem(new ReplayRecordSystem(game, modName, new File(directory, "replay-" + getId() + "-" + time + ".json")));
+        game.addSystem(new ECSSystem() {
+            @Override
+            public void startGame(ECSGame game) {
+                game.getEvents().registerHandlerBefore(TCGGame.this, ActionPerformEvent.class, action -> {
+                    UseAbilityMessage useAbilityMessage = new UseAbilityMessage(getId(), action.getEntity().getId(),
+                            action.getAction().getName(),
+                            action.getAction().getAllTargets().mapToInt(e -> e.getId()).toArray());
+                    send(useAbilityMessage.withPerformer(action.getPerformer().getId()));
+                });
+            }
+        });
 		
 		if (!preStartForConfiguration()) {
 			this.startECSGame();
@@ -324,7 +323,9 @@ public class TCGGame extends ServerGame {
 	private void playerEliminated(PlayerEliminatedEvent event) {
 		String winStatus = event.isDeclaredWinner() ? "won" : "lost";
 		PlayerComponent player = event.getEntity().getComponent(PlayerComponent.class);
-		this.sendChat(player.getName() + " " + winStatus + " game " + getId());		
+        this.send(new PlayerEliminatedMessage(event.getEntity().getId(), event.isDeclaredWinner(),
+                event.getResultPosition()));
+		this.sendChat(player.getName() + " " + winStatus + " game " + getId());
 	}
 	
 	public void sendChat(String message) {
@@ -355,7 +356,10 @@ public class TCGGame extends ServerGame {
 			plData.setName(pl.getName());
 			this.send(new PlayerMessage(playerEntity.getId(), plData.getIndex(), plData.getName(), Resources.map(playerEntity)));
 		});
-		this.game.findEntities(e -> true).stream().flatMap(e -> e.getSuperComponents(ZoneComponent.class).stream()).forEach(this::sendZone);
+        this.game.findEntities(e -> true).stream()
+                .flatMap(e -> e.getSuperComponents(ZoneComponent.class).stream())
+                .sorted(Comparator.comparingInt(ZoneComponent::getZoneId))
+                .forEach(this::sendZone);
 		this.sendAvailableActions();
 	}
 

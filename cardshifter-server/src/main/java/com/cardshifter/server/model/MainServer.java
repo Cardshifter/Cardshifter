@@ -48,7 +48,7 @@ public class MainServer {
 	/**
 	 * ModCollection is where the Phrancis mods are initialized
 	 */
-	private final ModCollection mods = new ModCollection();
+	private final ModCollection mods = ModCollection.defaultMods();
     private final ServerConfiguration config;
 
     private Thread consoleThread;
@@ -69,8 +69,8 @@ public class MainServer {
 		try {
 			logger.info("Starting Server...");
 			
-			server.addConnections(new ServerSock(server, config.getPortSocket()));
-			server.addConnections(new ServerWeb(server, config.getPortWebsocket()));
+			server.addConnections(new ServerSock(server, config));
+			server.addConnections(new ServerWeb(server, config));
 			
 			logger.info("Starting Console...");
 			CommandHandler commandHandler = server.getCommandHandler();
@@ -135,8 +135,8 @@ public class MainServer {
 	 */
 	private void showInvites(Command command) {
 		CommandContext context = new CommandContext(server, command, command.getSender());
-		for (Entry<Integer, GameInvite> ee : server.getInvites().all().entrySet()) {
-			context.sendChatResponse(ee.getKey() + " = " + ee.getValue());
+		for (GameInvite e : server.getInviteManager().getInvites()) {
+			context.sendChatResponse(e.toString());
 		}
 	}
 	

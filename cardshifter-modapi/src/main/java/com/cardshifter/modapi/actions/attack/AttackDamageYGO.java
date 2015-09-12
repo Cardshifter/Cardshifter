@@ -6,6 +6,7 @@ import com.cardshifter.modapi.actions.SpecificActionSystem;
 import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.Entity;
 import com.cardshifter.modapi.base.PlayerComponent;
+import com.cardshifter.modapi.events.IEvent;
 import com.cardshifter.modapi.resources.ECSResource;
 import com.cardshifter.modapi.resources.ResourceRetriever;
 
@@ -41,10 +42,10 @@ public class AttackDamageYGO extends SpecificActionSystem {
 		int defenseDamage = attack.getFor(target);
 		
 		if (target.hasComponent(PlayerComponent.class)) {
-			damage(attackDamage, target, source, game);
+			damage(event, attackDamage, target, source, game);
 		}
 		else {
-			DamageEvent damageEvent = new DamageEvent(target, source, attackDamage);
+			DamageEvent damageEvent = new DamageEvent(event, target, source, attackDamage);
 			game.getEvents().executeEvent(damageEvent, e -> {
 			});
 			destroyOrNothing(damageEvent.getDamage(), target);
@@ -55,14 +56,12 @@ public class AttackDamageYGO extends SpecificActionSystem {
 		}
 	}
 
-	private void damage(int damage, Entity target, Entity damagedBy, ECSGame game) {
-		if (damage == 0) {
+	private void damage(IEvent cause, int damage, Entity target, Entity damagedBy, ECSGame game) {
+		if (damage <= 0) {
 			return;
 		}
-		if (damage < 0) {
-			throw new IllegalArgumentException("damage must be positive");
-		}
-		game.getEvents().executeEvent(new DamageEvent(target, damagedBy, damage), e -> health.resFor(target).change(-e.getDamage()));
+		game.getEvents().executeEvent(new DamageEvent(cause, target, damagedBy, damage),
+                e -> health.resFor(target).change(-e.getDamage()));
 	}
 
 	private int destroyOrNothing(int damage, Entity target) {

@@ -40,7 +40,6 @@ If you are not a developer, you can also help by playing the game and [reporting
 ---------------
  
  - `cardshifter-api` - Classes for data being sent between client and server.
- - `cardshifter-console` - Console client _(deprecated / discontinued)_.
  - `cardshifter-core` - Contains our core TCG mod implementation, as well as various features for inclusion in the server and the JavaFX client.
  - `cardshifter-fx` - JavaFX Client.
  - `cardshifter-modapi` - Contains the core Entity-Component-System code and several components and systems for some common TCG features.
@@ -57,7 +56,7 @@ If you are not a developer, you can also help by playing the game and [reporting
 All files in this repository, unless explicitly specified otherwise in the files itself 
 are licensed under Apache Software License, Version 2.0 (the "License");
 
-Authors: Simon Forsberg, Frank van Heeswijk, Francis Veilleux-Gaboury, Matt Olsen, Jeremiah Smith
+Copyright 2014-2015 Simon Forsberg, Frank van Heeswijk, Francis Veilleux-Gaboury, Matt Olsen, Jeremiah Smith, Jacob Wahlgren
 
 You may not use the files except in compliance with the License.
 You may obtain a copy of the License at

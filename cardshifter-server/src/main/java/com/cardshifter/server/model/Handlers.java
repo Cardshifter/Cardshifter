@@ -1,12 +1,23 @@
 package com.cardshifter.server.model;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
+import com.cardshifter.ai.FakeAIClientTCG;
+import com.cardshifter.api.*;
+import com.cardshifter.api.outgoing.*;
+import com.cardshifter.core.username.*;
+import com.cardshifter.server.clients.ClientSocketHandler;
+import com.cardshifter.server.clients.ClientWebSocket;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import com.cardshifter.api.ClientIO;
 import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.api.both.InviteResponse;
 import com.cardshifter.api.both.PlayerConfigMessage;
@@ -15,14 +26,9 @@ import com.cardshifter.api.incoming.RequestTargetsMessage;
 import com.cardshifter.api.incoming.ServerQueryMessage;
 import com.cardshifter.api.incoming.StartGameRequest;
 import com.cardshifter.api.incoming.UseAbilityMessage;
-import com.cardshifter.api.outgoing.AvailableModsMessage;
-import com.cardshifter.api.outgoing.ServerErrorMessage;
-import com.cardshifter.api.outgoing.UserStatusMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage.Status;
-import com.cardshifter.api.outgoing.WaitMessage;
 import com.cardshifter.api.outgoing.WelcomeMessage;
 import com.cardshifter.core.game.FakeClient;
-import com.cardshifter.core.game.ServerGame;
 import com.cardshifter.core.game.TCGGame;
 
 public class Handlers {
@@ -37,17 +43,20 @@ public class Handlers {
 	public void query(ServerQueryMessage message, ClientIO client) {
 		switch (message.getRequest()) {
 			case USERS:
-				for (ClientIO cl : server.getClients().values()) {
-					client.sendToClient(new UserStatusMessage(cl.getId(), cl.getName(), Status.ONLINE));
-				}
+				List<ClientIO> clientsCopy = new ArrayList<>(server.getClients().values());
+				Consumer<ClientIO> sendUser = cl -> client.sendToClient(new UserStatusMessage(cl.getId(), cl.getName(), Status.ONLINE));
+
+				clientsCopy.stream()
+					       .filter(ClientIO::isLoggedIn)
+					       .forEach(sendUser);
 				break;
 			case DECK_BUILDER:
-				GameFactory factory = server.getGameFactories().get(message.getMessage());
-				if (factory == null) {
-					client.sendToClient(new ServerErrorMessage("No such game factory found"));
-					return;
-				}
-				
+                Map<String, GameFactory> gameFactories = server.getGameFactories();
+                if (message.getMessage() == null || !gameFactories.containsKey(message.getMessage())) {
+                    client.sendToClient(new ServerErrorMessage("Invalid gameType specified."));
+                    return;
+                }
+
 				TCGGame game = (TCGGame) server.createGame(message.getMessage());
 				game.addPlayer(client);
 				game.addPlayer(new FakeClient(server, e -> {}));
@@ -56,6 +65,19 @@ public class Handlers {
 				}
 				
 				break;
+            case STATUS:
+                List<ClientIO> clients = server.getClients().values().stream()
+                    .collect(Collectors.toList());
+                Predicate<ClientIO> aiFilter = cl -> cl instanceof FakeAIClientTCG;
+                int ais = (int) clients.stream().filter(aiFilter).count();
+                int users = (int) clients.stream()
+                    .filter(cl -> cl instanceof ClientWebSocket || cl instanceof ClientSocketHandler)
+                    .count();
+
+                int games = server.getGames().size();
+                String[] mods = server.getGameFactories().keySet().stream().toArray(size -> new String[size]);
+                client.sendToClient(new ServerStatusMessage(users, ais, games, mods));
+                break;
 			default:
 				client.sendToClient(new ServerErrorMessage("No such query request"));
 				break;
@@ -65,13 +87,18 @@ public class Handlers {
 	
 	public void loginMessage(LoginMessage message, ClientIO client) {
 		logger.info("Login request: " + message.getUsername() + " for client " + client);
-		if (message.getUsername().startsWith("x")) {
-			client.sendToClient(new WelcomeMessage(0, false));
+
+		try {
+			UserName name = UserName.create(message.getUsername());
+			server.trySetClientName(client, name);
+		}
+		catch (UserNameAlreadyInUseException | InvalidUserNameException e) {
+			client.sendToClient(new WelcomeMessage(0, false, e.getMessage()));
 			return;
 		}
+
 		logger.info("Client is welcome!");
-		client.setName(message.getUsername());
-		client.sendToClient(new WelcomeMessage(client.getId(), true));
+		client.sendToClient(new WelcomeMessage(client.getId(), true, "OK"));
 		UserStatusMessage statusMessage = new UserStatusMessage(client.getId(), client.getName(), Status.ONLINE);
 		server.getClients().values().stream()
 			.filter(cl -> cl != client)
@@ -97,18 +124,12 @@ public class Handlers {
 				return;
 			}
 			
-			ServerGame game = server.createGame(message.getGameType());
-			ServerHandler<GameInvite> invites = server.getInvites();
-			GameInvite invite = new GameInvite(invites, server.getMainChat(), client, game, message.getGameType());
-			invites.add(invite);
-			client.sendToClient(new WaitMessage());
-			
-			invite.sendInvite(target);
+			server.getInviteManager().createAndSend(client, target, message.getGameType());
 		}
 	}
 	
 	public void inviteResponse(InviteResponse message, ClientIO client) {
-		GameInvite invite = server.getInvites().get(message.getInviteId());
+		GameInvite invite = server.getInviteManager().getInvite(message.getInviteId());
 		if (invite != null) {
 			invite.handleResponse(client, message.isAccepted());
 		}
@@ -119,17 +140,9 @@ public class Handlers {
 
 	private void playAny(StartGameRequest message, ClientIO client) {
 		AtomicReference<ClientIO> playAny = server.getPlayAny();
-		if (playAny.compareAndSet(null, client)) {
-			client.sendToClient(new WaitMessage());
-		}
-		else {
+		if (!playAny.compareAndSet(null, client)) {
 			ClientIO opponent = playAny.getAndSet(null);
-			
-			ServerGame game = server.createGame(message.getGameType());
-			ServerHandler<GameInvite> invites = server.getInvites();
-			GameInvite invite = new GameInvite(invites, server.getMainChat(), client, game, message.getGameType());
-			invites.add(invite);
-			invite.addPlayer(opponent);
+			server.getInviteManager().createAndAdd(client, opponent, message.getGameType());
 		}
 	}
 

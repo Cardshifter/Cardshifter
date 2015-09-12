@@ -1,6 +1,7 @@
 package com.cardshifter.gdx;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -8,12 +9,13 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.cardshifter.gdx.screens.MenuScreen;
 
 public class CardshifterGame extends Game {
-    private static final float STAGE_WIDTH = 800;
-    private static final float STAGE_HEIGHT = 480;
+	
+    public static float STAGE_WIDTH;
+    public static float STAGE_HEIGHT;
     private final CardshifterPlatform platform;
     private SpriteBatch batch;
     public Skin skin;
@@ -27,14 +29,30 @@ public class CardshifterGame extends Game {
 
     @Override
 	public void create () {
-        Gdx.app.setLogLevel(Application.LOG_INFO);
+    	
+		//configure screen size
+		if (Gdx.app.getType() == ApplicationType.Desktop ||
+			Gdx.app.getType() == ApplicationType.WebGL) {
+	        CardshifterGame.STAGE_WIDTH = Gdx.graphics.getWidth();
+	        CardshifterGame.STAGE_HEIGHT = Gdx.graphics.getHeight();
+		} else {
+			//good for phone shape
+	        CardshifterGame.STAGE_WIDTH = 800; //Gdx.graphics.getWidth();
+	        CardshifterGame.STAGE_HEIGHT = 480; //Gdx.graphics.getHeight();
+		}
+    	
+		Gdx.app.setLogLevel(Application.LOG_INFO);
+		if (Gdx.app.getType() == ApplicationType.WebGL) {
+			Gdx.app.setLogLevel(Application.LOG_NONE);
+		}
+        
         batch = new SpriteBatch();
         skin = new Skin(Gdx.files.internal("data/uiskin.json"));
         camera = new OrthographicCamera(STAGE_WIDTH, STAGE_HEIGHT);
         camera.setToOrtho(false, STAGE_WIDTH, STAGE_HEIGHT);
 
         batch = new SpriteBatch();
-        stage = new Stage(new FitViewport(STAGE_WIDTH, STAGE_HEIGHT, camera), batch);
+        stage = new Stage(new StretchViewport(STAGE_WIDTH, STAGE_HEIGHT, camera), batch);
 
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(stage);

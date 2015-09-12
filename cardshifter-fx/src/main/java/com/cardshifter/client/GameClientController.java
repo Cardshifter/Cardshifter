@@ -40,7 +40,6 @@ import com.cardshifter.api.outgoing.PlayerMessage;
 import com.cardshifter.api.outgoing.ResetAvailableActionsMessage;
 import com.cardshifter.api.outgoing.UpdateMessage;
 import com.cardshifter.api.outgoing.UsableActionMessage;
-import com.cardshifter.api.outgoing.WaitMessage;
 import com.cardshifter.api.outgoing.WelcomeMessage;
 import com.cardshifter.api.outgoing.ZoneChangeMessage;
 import com.cardshifter.api.outgoing.ZoneMessage;
@@ -156,8 +155,6 @@ public class GameClientController {
 		//this.performIncoming(message);
 		
 		if (message instanceof WelcomeMessage) {
-			Platform.runLater(() -> loginMessage.setText(message.toString()));
-		} else if (message instanceof WaitMessage) {
 			Platform.runLater(() -> loginMessage.setText(message.toString()));
 		} else if (message instanceof PlayerMessage) {
 			this.processPlayerMessage((PlayerMessage)message);

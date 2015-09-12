@@ -1,0 +1,1233 @@
+package Mythos
+
+/*
+ * This file contains all the cards for Mythos 'Greek' cardset.
+ */
+
+//// GODS
+
+// https://en.wikipedia.org/wiki/Zeus
+// https://commons.wikimedia.org/wiki/File:Jupiter_Smyrna_Louvre_Ma13.jpg
+// Attribution: By UnknownMarie-Lan Nguyen (Own work) [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AJupiter_Smyrna_Louvre_Ma13.jpg">via Wikimedia Commons</a>
+card('ZEUS') {
+    creature 'Greek God'
+    flavor 'God of the sky, ruler of Mount Olympus.'
+    imagePath 'mythos/greek/zeus.jpg'
+    maxInDeck 1
+    attack 8
+    health 8
+    manaCost 30
+    sickness 1
+    denyCounterAttack() // ranged
+    /*
+    pickAction ( // #270
+        // (3) Deal +1 damage to target creature or player per turn.
+        { damage 1 to target cost 3 mana }
+        // (5) Deal +5 damage to target creature or player per turn.
+        { damage 3 to target cost 3 mana }
+    )
+    */
+}
+
+// https://en.wikipedia.org/wiki/Uranus_(mythology)
+// https://commons.wikimedia.org/wiki/File:Aion_mosaic_Glyptothek_Munich_W504.jpg
+// Attribution: See page for author [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AAion_mosaic_Glyptothek_Munich_W504.jpg">via Wikimedia Commons</a>
+card('URANUS') {
+    creature 'Greek God'
+    flavor 'The God of the Heavens, father of the Titans'
+    imagePath 'mythos/greek/uranus.jpg'
+    maxInDeck 1
+    attack 6
+    health 4
+    manaCost 20
+    sickness 1
+    // Add +3/+0 to all Titans on the field.
+    whilePresent {
+        change ATTACK by 3 withPriority 1 on {
+            creatureType 'Greek Titan'
+            zone 'Battlefield'
+        }
+    }
+    // If this card is sent to the graveyard, bring one +4/+2 Titan token to the field.
+    onDeath {
+        summon 1 of 'Titan 4/2' to 'you' zone 'Battlefield'
+    }
+}
+
+// https://en.wikipedia.org/wiki/Apollo
+// https://commons.wikimedia.org/wiki/File:Apollo_of_the_Belvedere.jpg
+// Attribution: By Livioandronico2013 (Own work) [<a href="http://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>], <a href="https://commons.wikimedia.org/wiki/File%3AApollo_of_the_Belvedere.jpg">via Wikimedia Commons</a>
+card('APOLLO') {
+    creature 'Greek God'
+    flavor 'God of music, arts, knowledge, healing, plague, and prophecy.'
+    imagePath 'mythos/greek/apollo.jpg'
+    maxInDeck 1
+    attack 2
+    health 4
+    manaCost 5
+    sickness 1
+    // (3) Choose one per turn: Target player or unit gains +2 health,
+    // target player or unit looses +2 health.
+    /*
+    pickAction ( // #270
+        { heal 2 on 'you' },
+        { heal 2 to cards { target() } },
+        { damage 2 on 'opponent' },
+        { damage 2 to cards { target() } }
+    )
+    */
+}
+
+// https://en.wikipedia.org/wiki/Ares
+// https://commons.wikimedia.org/wiki/File:Ares_Ludovisi_Altemps_Inv8602_n2.jpg
+// Attribution: See page for author [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AAres_Ludovisi_Altemps_Inv8602_n2.jpg">via Wikimedia Commons</a>
+card('ARES') {
+    creature 'Greek God'
+    flavor 'God of war, bloodshed and violence.'
+    imagePath 'mythos/greek/ares.jpg'
+    maxInDeck 1
+    attack 3
+    health 4
+    manaCost 10
+    sickness 1
+    // If this card sends another card to the graveyard as a result of battle,
+    //this card can attack a second time in the same turn.
+    /*
+    onKill { // #272
+        // #274
+        set hasAttacked to false on { thisCard() }
+    }
+    */
+}
+
+// https://en.wikipedia.org/wiki/Artemis
+// https://commons.wikimedia.org/wiki/File:Apollo_Artemis_Brygos_Louvre_G151.jpg
+// Attribution: Briseis Painter [Public domain or Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AApollo_Artemis_Brygos_Louvre_G151.jpg">via Wikimedia Commons</a>
+card('ARTEMIS') {
+    creature 'Greek God'
+    flavor 'Virgin Goddess of the hunt, wilderness and animals.'
+    imagePath 'mythos/greek/artemis.jpg'
+    maxInDeck 1
+    attack 2
+    health 3
+    manaCost 5
+    sickness 1
+    // When this card comes into play, add one +2/+2 Bear token onto the field.
+    afterPlay {
+        summon 1 of 'Bear' to 'you' zone 'Battlefield'
+    }
+}
+
+// https://en.wikipedia.org/wiki/Athena
+// https://commons.wikimedia.org/wiki/File:Athena_Herakles_Staatliche_Antikensammlungen_2648.jpg
+// Attribution: Public Domain
+card('ATHENA') {
+    creature 'Greek God'
+    flavor 'Goddess of intelligence, skill, peace, warfare, battle strategy, and wisdom.'
+    imagePath 'mythos/greek/athena.jpg'
+    maxInDeck 1
+    attack 3
+    health 2
+    manaCost 5
+    sickness 1
+    // Give +1/+1 to all God cards on the field.
+    whilePresent {
+        change ATTACK, HEALTH by 1 withPriority 1 on {
+            creatureType 'Greek God'
+            zone 'Battlefield'
+        }
+    }
+    // (3) If a player targets this card for an attack,
+    // redirect that damage to another target unit or player.
+    /*
+    pickAction ( // #270
+        {
+            redirectAtRandom() // #277
+        }
+    )
+    */
+}
+
+// https://en.wikipedia.org/wiki/Hermes
+// https://commons.wikimedia.org/wiki/File:Hermes_Maia_Staatliche_Antikensammlungen_2304.jpg
+// Attribution: Public Domain
+card('HERMES') {
+    creature 'Greek God'
+    flavor 'God of boundaries, travel, communication, trade, language, and writing.'
+    imagePath 'mythos/greek/hermes.jpg'
+    maxInDeck 1
+    attack 2
+    health 2
+    manaCost 5
+    sickness 1
+    denyCounterAttack() // ranged
+}
+
+// https://en.wikipedia.org/wiki/Hera
+// https://commons.wikimedia.org/wiki/File:Hera_Prometheus_Cdm_Paris_542.jpg
+// Attribution: Douris [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AHera_Prometheus_Cdm_Paris_542.jpg">via Wikimedia Commons</a>
+card('HERA') {
+    creature 'Greek God'
+    flavor 'Queen of the Gods and the wife of Zeus.'
+    imagePath 'mythos/greek/hera.jpg'
+    maxInDeck 1
+    attack 3
+    health 2
+    manaCost 5
+    sickness 1
+    // phase() // #262
+}
+
+// https://en.wikipedia.org/wiki/Poseidon
+// https://commons.wikimedia.org/wiki/File:Poseidon_Penteskouphia_Louvre_CA452.jpg
+// Attribution: See page for author [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3APoseidon_Penteskouphia_Louvre_CA452.jpg">via Wikimedia Commons</a>
+card('POSEIDON') {
+    creature 'Greek God'
+    flavor 'God of the sea, rivers, floods, droughts, and earthquakes.'
+    imagePath 'mythos/greek/poseidon.jpg'
+    maxInDeck 1
+    attack 4
+    health 4
+    manaCost 15
+    sickness 0 // Rush
+    // Once per turn: Freeze (random) enemy unit for 2 turns.
+    onStartOfTurn {
+        set SICKNESS to 3 on 1 random {
+            creature true
+            ownedBy 'opponent'
+            zone 'Battlefield'
+        }
+    }
+}
+
+// https://en.wikipedia.org/wiki/Eros
+// https://commons.wikimedia.org/wiki/File:Eros_bobbin_Louvre_CA1798.jpg
+// Attribution: Public Domain
+card('EROS') {
+    creature 'Greek God'
+    flavor 'The God of love and attraction.'
+    imagePath 'mythos/greek/eros.jpg'
+    maxInDeck 1
+    attack 3
+    health 2
+    manaCost 10
+    sickness 1
+    // When Eros enters the field, take control of target creature for one turn.
+    /*
+    afterPlay {
+        // #267
+        charm 1 target for 1 turn
+    }
+    */
+}
+
+// https://en.wikipedia.org/wiki/Gaia_(mythology)
+// https://commons.wikimedia.org/wiki/File:Feuerbach_Gaea.jpg
+// Attribution: Anselm Feuerbach [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AFeuerbach_Gaea.jpg">via Wikimedia Commons</a>
+card('GAIA') {
+    creature 'Greek God'
+    flavor 'Personification of the Earth, mother of the Titans.'
+    imagePath 'mythos/greek/gaia.jpg'
+    maxInDeck 1
+    attack 4
+    health 4
+    manaCost 15
+    sickness 1
+    // Add +0/+3 to all Titans on the field.
+    whilePresent {
+        change HEALTH by 1 withPriority 1 on {
+            creatureType 'Greek Titan'
+            zone 'Battlefield'
+        }
+    }
+    // If this card is sent to the graveyard, bring two +2/+2 Titan tokens to the field.
+    onDeath {
+        summon 2 of 'Titan 2/2' to 'you' zone 'Battlefield'
+    }
+}
+
+//// CHTHONIC DEITIES
+
+// https://en.wikipedia.org/wiki/Hades
+// https://commons.wikimedia.org/wiki/File:Hades-et-Cerberus-III.jpg
+// Attribution: CC BY 3.0
+card('HADES') {
+    creature 'Greek Chthonic Deity'
+    flavor 'God of the Underworld.'
+    imagePath 'mythos/greek/hades.jpg'
+    maxInDeck 1
+    attack 8
+    health 8
+    manaCost 30
+    sickness 1
+    // plague() // #264
+    // Add +1/+1 to all Chthonic Deities on the field.
+    whilePresent {
+        change ATTACK, HEALTH by 1 withPriority 1 on {
+            creatureType 'Greek Chthonic Deity'
+            zone 'Battlefield'
+        }
+    }
+    // When Hades is sent to the graveyard, add three +1/+1 Lost Soul tokens to the field.
+    onDeath {
+        summon 3 of 'Lost Soul' to 'you' zone 'Battlefield'
+    }
+}
+// https://en.wikipedia.org/wiki/Cronus
+// https://commons.wikimedia.org/wiki/File:The_Mutiliation_of_Uranus_by_Saturn.jpg
+// Attribution: Giorgio Vasari [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AThe_Mutiliation_of_Uranus_by_Saturn.jpg">via Wikimedia Commons</a>
+card('CRONUS') {
+    creature 'Greek Titan'
+    flavor 'Deposed King of the Titans; also father of Zeus, Hades, and Poseidon.'
+    imagePath 'mythos/greek/cronus.jpg'
+    maxInDeck 1
+    attack 4
+    health 8
+    manaCost 30
+    sickness 1
+    // phase() // #262
+    // When this creature is put into play, add one +2/+2 Titan Token to the field.
+    afterPlay {
+        summon 1 of 'Titan 2/2' to 'you' zone 'Battlefield'
+    }
+    // When this creature is sent to the graveyard, add one +4/+2 Titan Token to the Field.
+    onDeath {
+        summon 1 of 'Titan 4/2' to 'you' zone 'Battlefield'
+    }
+}
+
+// https://en.wikipedia.org/wiki/Lernaean_Hydra
+// https://commons.wikimedia.org/wiki/File:Lernaean_Hydra_Getty_Villa_83.AE.346.jpg
+// Attribution: By Eagle PainterWolfgang Sauber (User:Xenophon). Image renamed from Image:Herakles gegen Hydra.jpg (Own work) [<a href="http://www.gnu.org/copyleft/fdl.html">GFDL</a> or <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>], <a href="https://commons.wikimedia.org/wiki/File%3ALernaean_Hydra_Getty_Villa_83.AE.346.jpg">via Wikimedia Commons</a>
+card('Lernaean Hydra') {
+    creature 'Greek'
+    flavor 'A many-headed, serpent-like creature that guarded an Underworld entrance beneath Lake Lerna.'
+    imagePath 'mythos/greek/lernaean-hydra.jpg'
+    maxInDeck 1
+    attack 6
+    health 3
+    manaCost 25
+    sickness 1
+    taunt()
+    // When this card is attacked, but not destroyed, it gains +1 attack.
+    /*
+    afterAttacked { // #266
+        change ATTACK by 1 on { thisCard() }
+    }
+    */
+    // Give all Creature units +1/+1
+    whilePresent {
+        change ATTACK, HEALTH by 1 withPriority 1 on {
+            creature true
+            zone 'Battlefield'
+        }
+    }
+}
+
+// https://en.wikipedia.org/wiki/Greek_underworld
+// https://commons.wikimedia.org/wiki/File:Orestes_Delphi_BM_GR1917.12-10.1.jpg
+// Attribution: Public Domain
+card('The Underworld') {
+    creature 'Greek Location'
+    flavor 'The realm of the Dead.'
+    imagePath 'mythos/greek/underworld.jpg'
+    maxInDeck 1
+    attack 0
+    noAttack()
+    health 8
+    manaCost 20
+    sickness 1
+    // Add +2/+2 to all Chthonic Deities on the field.
+    whilePresent {
+        change ATTACK, HEALTH by 2 withPriority 1 on {
+            creatureType 'Greek Chthonic Deity'
+            zone 'Battlefield'
+        }
+    }
+    // Add +5 attack to this card if Hades is on the field.
+    /*
+    ifPresent (cardName 'HADES' zone 'Battlefield') { // #261
+        change ATTACK by 5 withPriority 2 on { thisCard() }
+    }
+    */
+}
+
+// https://en.wikipedia.org/wiki/Charon_(mythology)
+// https://commons.wikimedia.org/wiki/File:Lytovchenko_Olexandr_Kharon.jpg
+// Attribution: Alexander Litovchenko [Public domain or Public domain], <a href="https://commons.wikimedia.org/wiki/File%3ALytovchenko_Olexandr_Kharon.jpg">via Wikimedia Commons</a>
+card('CHARON') {
+    creature 'Greek Chthonic Deity'
+    flavor 'The Ferryman of the Underworld.'
+    imagePath 'mythos/greek/charon.jpg'
+    maxInDeck 1
+    attack 1
+    health 4
+    manaCost 10
+    sickness 1
+    // When this card destroys another creature card and that card
+    // goes to the graveyard, this card gains +1/+1.
+    /*
+    onKill { // #272
+        change ATTACK, HEALTH by 1 on { thisCard() }
+    }
+    */
+    /*
+    // When this card is sent to the graveyard, destroy target creature.
+    onDeath {
+        // #282
+        set HEALTH to 0 on { attacker() }
+    }
+    */
+}
+
+// https://en.wikipedia.org/wiki/Empusa
+// https://www.worldsofimagination.co.uk/417px-Wiertz_Junge_Hexe.jpeg
+// Attribution: Public Domain
+card('EMPUSA') {
+    creature 'Greek Chthonic Deity'
+    flavor 'A monstrous underworld spirit with flaming hair, the leg of a goat and a leg of bronze.'
+    imagePath 'mythos/greek/empusa.jpg'
+    maxInDeck 1
+    attack 1
+    health 2
+    manaCost 5
+    sickness 1
+    taunt()
+}
+
+// https://en.wikipedia.org/wiki/Moirai
+// https://commons.wikimedia.org/wiki/File:Rundscheibe_Drei_Parzen_KGM_AE470.jpg
+// Attribution: By attributed to Hans Vischer d. J.Photo User:FA2010 (Own work) [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3ARundscheibe_Drei_Parzen_KGM_AE470.jpg">via Wikimedia Commons</a>
+card('MOIRAI') {
+    creature 'Greek Chthonic Deity'
+    flavor 'The three white-robed incarnations of Fate.'
+    imagePath 'mythos/greek/moirai.jpg'
+    maxInDeck 1
+    attack 1
+    health 3
+    manaCost 10
+    sickness 1
+    /*
+    pickAction ( // #270
+        // (3) Look at the top three cards of your deck, return them in any order.
+        // (5) Look at the top three cards of your opponent’s deck, return them in any order.
+        // (10) Your opponent discards the top three cards of his deck.
+    )
+    */
+}
+
+// https://en.wikipedia.org/wiki/Hecate
+// https://commons.wikimedia.org/wiki/File:AN00969955_001_l.jpg
+// Attribution: Richard Cosway [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AAN00969955_001_l.jpg">via Wikimedia Commons</a>
+card('HECATE') {
+    creature 'Greek Chthonic Deity'
+    flavor 'Goddess of magic, witchcraft, the night, moon, ghosts and necromancy.'
+    imagePath 'mythos/greek/hecate.jpg'
+    maxInDeck 1
+    attack 3
+    health 2
+    manaCost 10
+    // phase() // #262
+    // When this creature destroys another creature and sends it to the graveyard,
+    // add a +1/+1 Lost Soul token to the field.
+    /*
+    onKill { // #272
+        summon 1 of 'Lost Soul' to 'you' zone 'Battlefield'
+    }
+    // When Hecate is sent to the graveyard,
+    // return random creature from the graveyard to your hand except Hecate.
+    onDeath {
+
+    }
+    */
+}
+
+// https://www.theoi.com/Khthonios/Rhadamanthys.html
+// https://www.theoi.com/image/K42.1Judges.jpg
+// Attribution: Public Domain
+card('Judges of the Dead') {
+    creature 'Greek Chthonic Deity'
+    flavor 'Three judges sat in judgment on those who entered the Underworld.'
+    imagePath 'mythos/greek/judges-of-the-dead.jpg'
+    maxInDeck 1
+    attack 3
+    health 3
+    manaCost 10
+    sickness 1
+}
+
+// https://en.wikipedia.org/wiki/Lamia
+// https://commons.wikimedia.org/wiki/File:Draper-Lamia.jpg
+// Attribution: Herbert James Draper [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3ADraper-Lamia.jpg">via Wikimedia Commons</a>
+card('LAMIA') {
+    creature 'Greek Chthonic Deity'
+    flavor 'Mistress of Zeus, turned into a monster by jealous Hera.'
+    imagePath 'mythos/greek/lamia.jpg'
+    maxInDeck 1
+    attack 1
+    health 3
+    manaCost 10
+    sickness 1
+    // When this creature deals damage to another creature, it gains +0/+1.
+    /*
+    afterAttacking {
+        change HEALTH by 1 on { thisCard() }
+    }
+    */
+}
+
+// https://en.wikipedia.org/wiki/Macaria
+// NO IMAGE FOUND
+card('MACARIA') {
+    creature 'Greek Chthonic Deity'
+    flavor 'The daughter of Hades and goddess of blessed death.'
+    maxInDeck 1
+    attack 3
+    health 2
+    manaCost 10
+    sickness 0 // Rush
+    // When this creature destroys another creature, owner/player gains (2) health.
+    /*
+    onKill { // #272
+        heal 1 on 'you'
+    }
+    */
+}
+
+// https://en.wikipedia.org/wiki/Persephone
+// https://commons.wikimedia.org/wiki/File:Locri_Pinax_Persephone_Opens_Liknon_Mystikon.jpg
+// Attribution: CC BY-SA 2.5
+card('PERSEPHONE') {
+    creature 'Greek Chthonic Deity'
+    flavor 'The queen of the underworld, wife of Hades and goddess of spring growth.'
+    imagePath 'mythos/greek/persephone.jpg'
+    maxInDeck 1
+    attack 4
+    health 3
+    manaCost 15
+    sickness 1
+    // phase() // #262
+    // Owner gains (1) health at the end of each turn this card is on the field.
+    onEndOfTurn {
+        heal 1 on 'you'
+    }
+}
+
+// https://en.wikipedia.org/wiki/Thanatos
+// https://commons.wikimedia.org/wiki/File:Hermes_e_Sarpedon.jpg
+// Attribution: By Jaime Ardiles-Arce (photographer). Krater by Euphronios (painter) and Euxitheos (potter). (File:Euphronios krater - front.jpg) [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AHermes_e_Sarpedon.jpg">via Wikimedia Commons</a>
+card('THANATOS') {
+    creature 'Greek Chthonic Deity'
+    flavor 'Spirit of death and minister of the Underworld.'
+    imagePath 'mythos/greek/thanatos.jpg'
+    maxInDeck 1
+    attack 2
+    health 2
+    manaCost 5
+    sickness 1
+    // plague() // #264
+}
+
+// https://en.wikipedia.org/wiki/Tartarus
+// NO IMAGE FOUND
+card('TARTARUS') {
+    creature 'Greek Chthonic Deity'
+    flavor 'The primeval god of the dark, stormy pit of the Underworld, the Tartarean pit that houses the Titans.'
+    maxInDeck 1
+    attack 3
+    health 2
+    manaCost 10
+    sickness 1
+    // When this creature comes into play, add two +2/+2 Titan Tokens to the Field.
+    afterPlay {
+        summon 2 of 'Titan 2/2' to 'you' zone 'Battlefield'
+    }
+}
+
+//// LOCATIONS
+
+// https://en.wikipedia.org/wiki/Mount_Olympus
+// https://commons.wikimedia.org/wiki/File:Mytikas.jpg
+// Attribution: By stefg74 from Larisa, Greece (MYTIKASUploaded by Hike395) [<a href="http://creativecommons.org/licenses/by/2.0">CC BY 2.0</a>], <a href="https://commons.wikimedia.org/wiki/File%3AMytikas.jpg">via Wikimedia Commons</a>
+card('Mount Olympus') {
+    creature 'Greek Location'
+    flavor 'Paradise for the Gods.'
+    imagePath 'mythos/greek/mount-olympus.jpg'
+    maxInDeck 1
+    attack 0
+    noAttack()
+    health 8
+    manaCost 20
+    sickness 1
+    // Add +2/+2 to all gods on the field.
+    whilePresent {
+        change ATTACK, HEALTH by 2 withPriority 1 on {
+            creatureType 'Greek God'
+            zone 'Battlefield'
+        }
+    }
+    // Add +5 attack to this card if Zeus is on the field.
+    /*
+    ifPresent (cardName 'ZEUS' zone 'Battlefield') { // #261
+        change ATTACK by 5 withPriority 2 on { thisCard() }
+    }
+    */
+}
+// https://en.wikipedia.org/wiki/Tartarus
+// NO IMAGE FOUND
+card('Tartarean Pit') {
+    creature 'Greek Location'
+    flavor 'Prison of the Titans.'
+    maxInDeck 1
+    attack 0
+    noAttack()
+    health 8
+    manaCost 20
+    sickness 1
+    // Attack and health are equal to the number of Titans cards on the field.
+    /*
+    // #240
+    whilePresent {
+        set ATTACK, HEALTH to count({creatureType 'Greek Titan'; zone 'Battlefield'}) withPriority 1 on { thisCard() }
+    }
+    */
+    // At the end of your turn, if a unit was sent to the graveyard
+    // add two +2/+2 Titan token to the field.
+    /*
+    onEndOfTurn {
+        ifAnyCardDied { // #280
+            summon 2 of 'Titan 2/2' to 'you' zone 'Battlefield'
+        }
+    }
+    */
+}
+
+/// TITANS
+
+// https://en.wikipedia.org/wiki/Hyperion_(mythology)
+// NO IMAGE FOUND
+card('Hyperion') {
+    creature 'Greek Titan'
+    flavor 'Titan of Light.'
+    maxInDeck 1
+    attack 4
+    health 2
+    manaCost 15
+    sickness 0 // Rush
+}
+
+// https://en.wikipedia.org/wiki/Mnemosyne
+// https://commons.wikimedia.org/wiki/File:Mnemosyne_%28color%29_Rossetti.jpg
+// Attribution: Delaware Art Museum, Samuel and Mary R. Bancroft Memorial [Public domain, Public domain or <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>], <a href="https://commons.wikimedia.org/wiki/File%3AMnemosyne_(color)_Rossetti.jpg">via Wikimedia Commons</a>
+ card('Mnemosyne') {
+    creature 'Greek Titan'
+    flavor 'Titaness of memory and remembrance, and mother of the Nine Muses.'
+    imagePath 'mythos/greek/mnemosyne.jpg'
+    maxInDeck 1
+    attack 2
+    health 3
+    manaCost 5
+    sickness 1
+    // phase() // #262
+}
+
+// https://en.wikipedia.org/wiki/Styx
+// NO IMAGE FOUND
+card('Styx') {
+    creature 'Greek Titan'
+    flavor 'Titaness of the Underworld river Styx and personification of hatred.'
+    maxInDeck 1
+    attack 3
+    health 3
+    manaCost 5
+    sickness 1
+    // Effect – Gives +1/+0 to all Titans on the field.
+    whilePresent {
+        change ATTACK by 1 withPriority 1 on {
+            creatureType 'Greek Titan'
+            zone 'Battlefield'
+        }
+    }
+}
+
+// https://en.wikipedia.org/wiki/Rhea_(mythology)
+// https://commons.wikimedia.org/wiki/File:Pergamonmuseum_-_Antikensammlung_-_Pergamonaltar_37.JPG
+// Attribution: By Claus Ableiter (Own work) [<a href="http://www.gnu.org/copyleft/fdl.html">GFDL</a>, <a href="http://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA-3.0</a> or <a href="http://creativecommons.org/licenses/by-sa/2.5-2.0-1.0">CC BY-SA 2.5-2.0-1.0</a>], <a href="https://commons.wikimedia.org/wiki/File%3APergamonmuseum_-_Antikensammlung_-_Pergamonaltar_37.JPG">via Wikimedia Commons</a>
+card('Rhea') {
+    creature 'Greek Titan'
+    flavor 'Titaness of fertility, motherhood and the mountain wilds.'
+    imagePath 'mythos/greek/rhea.jpg'
+    maxInDeck 1
+    attack 2
+    health 1
+    manaCost 5
+    sickness 1
+    // When this card is sent to the graveyard, bring a +2/+2 Bear token onto the field.
+    onDeath {
+        summon 1 of 'Bear' to 'you' zone 'Battlefield'
+    }
+}
+
+// https://en.wikipedia.org/wiki/Menoetius_(Greek_mythology)
+// NO IMAGE FOUND
+card('Menoetius') {
+    creature 'Greek Titan'
+    flavor 'Titan of violent anger, rash action, and human mortality.'
+    maxInDeck 1
+    attack 4
+    health 4
+    manaCost 10
+    sickness 0 // Rush
+}
+
+//// HEROES
+
+// https://en.wikipedia.org/wiki/Heracles
+// https://commons.wikimedia.org/wiki/File:0_Plaque_Campana_-_Hercule_capturant_le_taureau_cr%C3%A9tois.JPG
+// Attribution: By Jean-Pol GRANDMONT (Own work) [<a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a> or <a href="http://www.gnu.org/copyleft/fdl.html">GFDL</a>], <a href="https://commons.wikimedia.org/wiki/File%3A0_Plaque_Campana_-_Hercule_capturant_le_taureau_cr%C3%A9tois.JPG">via Wikimedia Commons</a>
+card('Heracles') {
+    creature 'Greek Hero'
+    flavor 'Ascended hero, Son of Zeus, and divine protector of mankind.'
+    imagePath 'mythos/greek/heracles.jpg'
+    maxInDeck 1
+    attack 6
+    health 8
+    manaCost 25
+    sickness 0 // Rush
+    // When Heracles comes into play, deal +3 damage randomly to target unit or player.
+    afterPlay {
+        pick 1 atRandom (
+            { damage 3 on 'opponent' },
+            { damage 3 on 1 random { creature true; ownedBy 'opponent' } }
+        )
+    }
+    // Add +1/+1 to all Hero units on the field.
+    whilePresent {
+        change ATTACK, HEALTH by 1 withPriority 1 on {
+            creatureType 'Greek Hero'
+            zone 'Battlefield'
+        }
+    }
+    // +1/+1 to 'Iolaus' if it is in play
+    whilePresent {
+        change ATTACK, HEALTH by 1 withPriority 1 on {
+            cardName 'Iolaus'
+            zone 'Battlefield'
+        }
+    }
+}
+
+// https://en.wikipedia.org/wiki/Achilles
+// https://commons.wikimedia.org/wiki/File:Achilles_departure_Eretria_Painter_CdM_Paris_851.jpg
+// Attribution: CC BY 2.5
+card('Achilles') {
+    creature 'Greek Hero'
+    flavor 'Hero of the Trojan War.'
+    imagePath 'mythos/greek/achilles.jpg'
+    maxInDeck 1
+    attack 3
+    health 3
+    manaCost 10
+    sickness 1
+    // dodge() // #263
+}
+
+// https://en.wikipedia.org/wiki/Perseus
+// https://commons.wikimedia.org/wiki/File:Firenze.Loggia.Perseus02.JPG
+// Attribution: By JoJan (Own work) [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AFirenze.Loggia.Perseus02.JPG">via Wikimedia Commons</a>
+card('Perseus') {
+    creature 'Greek Hero'
+    flavor 'Son of Zeus and the slayer of the Gorgon Medusa.'
+    imagePath 'mythos/greek/perseus.jpg'
+    maxInDeck 1
+    attack 5
+    health 4
+    manaCost 15
+    sickness 1
+    taunt()
+    // Freeze unit for 1 turn who was dealt damage from
+    // or who dealt damage to this unit.
+    /*
+    afterAttacked { // #266
+        // #281 & #282
+        counterAttack set SICKNESS to 2 on { attacker() }
+    }
+    afterAttacking { // #275
+        set SICKNESS to 2 on { target() }
+    }
+    */
+}
+
+// https://en.wikipedia.org/wiki/Iolaus
+// https://commons.wikimedia.org/wiki/File:Heracles%2C_Iolaus_and_Eros_-_Cista_Ficoroni_foot.jpg
+// Attribution: By Haiduc (Own work) [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AHeracles%2C_Iolaus_and_Eros_-_Cista_Ficoroni_foot.jpg">via Wikimedia Commons</a>
+card('Iolaus') {
+    creature 'Greek Hero'
+    flavor 'Nephew of Heracles who aided his uncle in one of his Labors.'
+    imagePath 'mythos/greek/iolaus.jpg'
+    maxInDeck 1
+    attack 2
+    health 2
+    manaCost 5
+    sickness 1
+    // Gains +1/+1 if Heracles is on the field.
+        // Added to card 'Heracles' as an effect applied on this card.
+}
+
+// https://en.wikipedia.org/wiki/Theseus
+// https://commons.wikimedia.org/wiki/File:Theseus_Minotaur_BM_Vase_E84_n4.jpg
+// Attribution: See page for author [<a href="http://creativecommons.org/licenses/by/2.5">CC BY 2.5</a>], <a href="https://commons.wikimedia.org/wiki/File%3ATheseus_Minotaur_BM_Vase_E84_n4.jpg">via Wikimedia Commons</a>
+card('Theseus') {
+    creature 'Greek Hero'
+    flavor 'Son of Poseidon, King of Athens and slayer of the Minotaur.'
+    imagePath 'mythos/greek/theseus.jpg'
+    maxInDeck 1
+    attack 3
+    health 2
+    manaCost 5
+    sickness 1
+    denyCounterAttack() // ranged
+}
+
+// https://en.wikipedia.org/wiki/Odysseus
+// https://commons.wikimedia.org/wiki/File:Caught_between_a_rock_and_a_hard_place.jpg
+// Attribution: By The painting is an Italian fresco [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3ACaught_between_a_rock_and_a_hard_place.jpg">via Wikimedia Commons</a>
+card('Odysseus') {
+    creature 'Greek Hero'
+    flavor 'King of Ithaca whose adventures are the subject of Homer’s Odyssey.'
+    imagePath 'mythos/greek/odysseus.jpg'
+    maxInDeck 1
+    attack 2
+    health 1
+    manaCost 5
+    sickness 1
+}
+
+// https://en.wikipedia.org/wiki/Daedalus
+// https://commons.wikimedia.org/wiki/File:Pompeii_-_Casa_dei_Vettii_-_Pasiphae.jpg
+// Attribution: By WolfgangRieger [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3APompeii_-_Casa_dei_Vettii_-_Pasiphae.jpg">via Wikimedia Commons</a>
+card('Daedalus') {
+    creature 'Greek Hero'
+    flavor 'Creator of the Labyrinth and a great inventor, until King Minos trapped him in his own creation.'
+    imagePath 'mythos/greek/daedalus.jpg'
+    maxInDeck 1
+    attack 3
+    health 4
+    manaCost 10
+    sickness 1
+    // When Daedalus is sent to the graveyard, summon a +4/+4 Minotaur token to the field.
+    onDeath {
+        summon 1 of 'Minotaur' to 'you' zone 'Battlefield'
+    }
+}
+
+// https://en.wikipedia.org/wiki/Hector
+// https://commons.wikimedia.org/wiki/File:Hektor_wirft_Paris_seine_Weichlichkeit_vor_%28Tischbein%29.jpg
+// Attribution: Johann Heinrich Wilhelm Tischbein [<a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a> or <a href="http://www.gnu.org/copyleft/fdl.html">GFDL</a>], <a href="https://commons.wikimedia.org/wiki/File%3AHektor_wirft_Paris_seine_Weichlichkeit_vor_(Tischbein).jpg">via Wikimedia Commons</a>
+card('Hector') {
+    creature 'Greek Hero'
+    flavor 'Hero of the Trojan War and champion of the Trojan people.'
+    imagePath 'mythos/greek/hector.jpg'
+    maxInDeck 1
+    attack 4
+    health 4
+    manaCost 15
+    sickness 0 // Rush
+    // Give +1/+1 to all other Hero cards on the field.
+    whilePresent {
+        change ATTACK, HEALTH by 1 withPriority 1 on {
+            creatureType 'Greek Hero'
+            zone 'Battlefield'
+        }
+    }
+}
+
+// https://en.wikipedia.org/wiki/Ajax_(mythology)
+// https://commons.wikimedia.org/wiki/File:Ajax_suicide_BM_F480.jpg
+// Attribution: See page for author [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AAjax_suicide_BM_F480.jpg">via Wikimedia Commons</a>
+card('Ajax The Great') {
+    creature 'Greek Hero'
+    flavor 'Hero of the Trojan War and king of Salamis.'
+    imagePath 'mythos/greek/ajax.jpg'
+    maxInDeck 1
+    attack 2
+    health 3
+    manaCost 5
+    sickness 1
+}
+
+//// CREATURES
+
+// https://en.wikipedia.org/wiki/Medusa
+// https://commons.wikimedia.org/wiki/File:Close_up_of_Gorgon_at_the_pediment_of_Artemis_temple_in_Corfu.jpg
+// Attribution: By Dr.K. (Own work) [<a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>], <a href="https://commons.wikimedia.org/wiki/File%3AClose_up_of_Gorgon_at_the_pediment_of_Artemis_temple_in_Corfu.jpg">via Wikimedia Commons</a>
+card('Medusa') {
+    creature 'Greek'
+    flavor 'A mortal woman transformed into a hideous Gorgon by Athena.'
+    imagePath 'mythos/greek/medusa.jpg'
+    maxInDeck 1
+    attack 4
+    health 3
+    manaCost 15
+    sickness 1
+    // Freeze unit for 3 turns that was dealt or dealt damage to this unit.
+    /*
+    afterAttacked { // #266
+        // #281 & #282
+        counterAttack set SICKNESS to 4 on { attacker() }
+    }
+    afterAttacking { // #275
+        set SICKNESS to 4 on { target() }
+    }
+    */
+    // When Medusa is sent to the graveyard, summon three +1/+1 snake tokens to the field.
+    onDeath {
+        summon 3 of 'Snake' to 'you' zone 'Battlefield'
+    }
+}
+
+// https://en.wikipedia.org/wiki/Nemean_lion
+// https://commons.wikimedia.org/wiki/File:Herakles_Nemean_lion_BM_B621.jpg
+// Attribution: Public Domain
+card('Nemean Lion') {
+    creature 'Greek'
+    flavor 'A gigantic lion whose skin was impervious to weapons; Heracles strangled it.'
+    imagePath 'mythos/greek/nemean-lion.jpg'
+    maxInDeck 1
+    attack 3
+    health 6
+    manaCost 15
+    sickness 1
+    taunt()
+}
+
+// https://en.wikipedia.org/wiki/Erymanthian_Boar
+// https://commons.wikimedia.org/wiki/File:Herakles_Eurystheus_boar_Louvre_F202.jpg
+// Attribution: Public Domain
+card('Erymanthian Boar') {
+    creature 'Greek'
+    flavor 'A gigantic boar, which Heracles was sent to retrieve as one of his labors.'
+    imagePath 'mythos/greek/erymanthian-boar.jpg'
+    maxInDeck 1
+    attack 5
+    health 4
+    manaCost 10
+    sickness 0 // Rush
+}
+
+// https://en.wikipedia.org/wiki/Pegasus
+// https://commons.wikimedia.org/wiki/File:Winged_horse_Dodona_Louvre_Br149.jpg
+// Attribution: See page for author [<a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>], <a href="https://commons.wikimedia.org/wiki/File%3AWinged_horse_Dodona_Louvre_Br149.jpg">via Wikimedia Commons</a>
+card('Pegasus') {
+    creature 'Greek'
+    flavor 'A divine winged stallion that is pure white, son of Medusa and Poseidon, and father of winged horses.'
+    imagePath 'mythos/greek/pegasus.jpg'
+    maxInDeck 1
+    attack 2
+    health 2
+    manaCost 5
+    sickness 1
+    // dodge() // #263
+    /*
+    ifPresent (creatureType 'Greek Hero'; zone 'Battlefield') {
+        change ATTACK, HEALTH by 2 withPriority 1 on { thisCard() }
+    }
+    */
+}
+// https://en.wikipedia.org/wiki/Arachne
+// https://commons.wikimedia.org/wiki/File:Pur_12_aracne.jpg
+// Attribution: Public Domain
+card('Arachne') {
+    creature 'Greek'
+    flavor 'Half-spider half-human, she is the mother of all spiders.'
+    imagePath 'mythos/greek/arachne.jpg'
+    maxInDeck 1
+    attack 3
+    health 3
+    manaCost 5
+    sickness 1
+    // plague() // #264
+    // When Ararchne is sent to the graveyard,
+    // summon two +2/+2 Spider tokens to the field with Plague.
+    onDeath {
+        summon 2 of 'Spider' to 'you' zone 'Battlefield'
+    }
+}
+
+// https://en.wikipedia.org/wiki/Griffin
+// https://commons.wikimedia.org/wiki/File:Knossos_fresco_in_throne_palace.JPG
+// Attribution: CC BY-SA 3.0
+// https://commons.wikimedia.org/wiki/User:Paginazero
+card('Griffin') {
+    creature 'Greek'
+    flavor 'A creature that combines the body of a lion and the head and wings of an eagle.'
+    imagePath 'mythos/greek/griffin.jpg'
+    maxInDeck 1
+    attack 3
+    health 2
+    manaCost 5
+    sickness 1
+    // dodge() // #263
+}
+card('Caucasian Eagle') {
+    creature 'Greek'
+    flavor 'A giant eagle set by Zeus to feed on the ever-regenerating liver of Prometheus.'
+    maxInDeck 1
+    attack 2
+    health 3
+    manaCost 5
+    sickness 1
+    // dodge() // #263
+}
+
+// https://en.wikipedia.org/wiki/Chiron
+// https://commons.wikimedia.org/wiki/File:Chiron_instructs_young_Achilles_-_Ancient_Roman_fresco.jpg
+// Attribution: By sconosciuto. Il prototipo era probabilmente un gruppo scultoreo esposto a Roma nei Saepta. (Unknown) [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AChiron_instructs_young_Achilles_-_Ancient_Roman_fresco.jpg">via Wikimedia Commons</a>
+card('Chiron') {
+    creature 'Greek'
+    flavor 'The eldest and wisest of the centaurs, the ancient trainer of heroes.'
+    imagePath 'mythos/greek/chiron.jpg'
+    maxInDeck 1
+    attack 4
+    health 3
+    manaCost 10
+    sickness 0 // Rush
+    // When Chiron comes into play add +1/+0 to all Creatures on the field
+    afterPlay {
+        change ATTACK by 1 on {
+            creature true
+        }
+    }
+}
+
+// https://en.wikipedia.org/wiki/Cerberus
+// https://commons.wikimedia.org/wiki/File:Herakles_Kerberos_Eurystheus_Louvre_E701.jpg
+// Attribution: By Eagle Painter (User:Bibi Saint-Pol, Own work, 1 June 2007) [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AHerakles_Kerberos_Eurystheus_Louvre_E701.jpg">via Wikimedia Commons</a>
+card('Cerberus') {
+    creature 'Greek'
+    flavor 'The Three-headed hound that guards the gates of the Underworld.'
+    imagePath 'mythos/greek/cerberus.jpg'
+    maxInDeck 1
+    attack 3
+    health 4
+    manaCost 15
+    sickness 1
+    taunt()
+    // Cerberus gains +2/+2 if Hades is on the field.
+    /*
+    ifPresent (cardName 'HADES'; zone 'Battlefield') {
+        change ATTACK, HEALTH by 1 withPriority 1 on { thisCard() }
+
+    }
+    */
+}
+
+//// TOKENS
+
+// no image found
+card('Titan 2/2') {
+    creature 'Greek Titan'
+    attack 2
+    health 2
+    sickness 1
+    token()
+}
+// no image found
+card('Titan 4/2') {
+    creature 'Greek Titan'
+    attack 4
+    health 2
+    sickness 1
+    token()
+}
+
+// https://en.wikipedia.org/wiki/Minotaur
+// https://commons.wikimedia.org/wiki/File:Blake_Dante_Hell_XII.jpg
+// Attribution: William Blake [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3ABlake_Dante_Hell_XII.jpg">via Wikimedia Commons</a>
+card('Minotaur') {
+    creature 'Greek'
+    imagePath 'mythos/greek/minotaur.jpg'
+    attack 4
+    health 4
+    sickness 1
+    token()
+}
+
+////// NOT CREATURES
+
+
+//// SPELLS
+
+/* DOES NOTHING RIGHT NOW
+card('Apollo\'s Bow') {
+    maxInDeck 1
+    manaCost 5
+    spell {
+        // Choose one effect:
+        // Target player or unit gains +3 health.
+        // Target player or unit looses +3 health.
+        //afterPlay {
+            //pickAction ( // #270
+            //    { heal 3 on 'you' },
+            //    { heal 3 on cards { target() } }, // #282
+            //    { damage 3 on 'opponent' },
+            //    { damage 3 on cards { target() } } // #282
+            //)
+        //}
+    }
+}
+*/
+/* DOES NOTHING RIGHT NOW
+card('Tale of the Three Brothers') {
+    maxInDeck 1
+    manaCost 20
+    spell {
+        // If you possess Hades, Poseidon, and Zeus on the field or in the graveyard
+        // when this card is activated, choose any number of units your opponent controls,
+        // but no more than 3, and destroy them.
+        afterplay {
+            // #284
+                ifPresent (cardName 'HADES', 'POSEIDON', 'ZEUS'; zone 'Battlefield') {
+                    destroyUpTo 3 cards { ownedBy 'opponent'; zone 'Battlefield' }
+                }
+        }
+    }
+}
+*/
+/* DOES NOTHING RIGHT NOW
+card('The Wrath of Zeus') {
+    flavor 'hello'
+    maxInDeck 1
+    manaCost 15
+    spell {
+        // Deal +5 damage to target player or unit.
+    //    // #284
+    //    afterPlay {
+    //        damage n on { target() }
+    //    }
+    }
+}
+*/
+/* DOES NOTHING RIGHT NOW
+card('The Might of Hercules') {
+    maxInDeck 1
+    manaCost 10
+    spell {
+        afterPlay {
+            // Give target unit +3/+0 until the end of turn.
+            change ATTACK by 3 untilEndOfTurn on { target() } // #282 & #285
+        }
+        // If that target unit is a Hero give it Range as well.
+        ifTarget (creatureType: 'Greek Hero') { // #286
+            set ranged() toCards { target() }
+        }
+    }
+}
+*/
+
+//// ENCHANTMENTS
+
+
+// https://commons.wikimedia.org/wiki/File:Jason_Pelias_Louvre_K127.jpg
+// Attribution: Underworld Painter [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AJason_Pelias_Louvre_K127.jpg">via Wikimedia Commons</a>
+card('Golden Fleece') {
+    imagePath 'mythos/greek/golden-fleece.jpg'
+    enchantment true
+    maxInDeck 1
+    manaCost 5
+    // Equipped unit gains +0/+3.
+    addHealth 3
+}
+// https://en.wikipedia.org/wiki/Shield_of_Achilles
+// Attribution: Public Domain
+card('Achilles\' Shield') {
+    enchantment true
+    imagePath 'mythos/greek/achilles-shield'
+    maxInDeck 1
+    manaCost 10
+    addAttack 1
+    addHealth 2
+    // If that unit is a Hero it gains Taunt.
+    /*
+    spell {
+        ifTarget (creatureType: 'Greek Hero') { // #286
+            set taunt() toCards { target() }
+        }
+    }
+    */
+}
+
+// https://commons.wikimedia.org/wiki/File:Raffaello%2C_concilio_degli_dei_02.jpg
+// Attribution: Raphael [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3ARaffaello%2C_concilio_degli_dei_02.jpg">via Wikimedia Commons</a>
+card('Hades\' Bident') {
+    imagePath 'mythos/greek/bident.jpg'
+    enchantment true
+    maxInDeck 1
+    manaCost 10
+    addAttack 3
+
+    // If that unit is a Chthonic Deity it gains Plague.
+    /*
+    spell {
+        ifTarget (creatureType: 'Greek Chthonic Deity') { // #286
+            set taunt() toCards { target() }
+        }
+    }
+    */
+}
+
+// Attribution: CC BY-SA 3.0
+// https://commons.wikimedia.org/wiki/User:Dodo
+card('Helm of Darkness') {
+    flavor 'Helm that can turn the wearer invisible.'
+    imagePath 'mythos/greek/helm-of-darkness.jpg'
+    enchantment true
+    maxInDeck 1
+    manaCost 5
+    // Target unit gains +1/+1 and Phase.
+    addAttack 1
+    addHealth 1
+    /*
+    spell {
+            set phase() toCards { target() }
+    }
+    */
+}
+// https://commons.wikimedia.org/wiki/File:Raffaello%2C_concilio_degli_dei_02.jpg
+// Attribution: Raphael [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3ARaffaello%2C_concilio_degli_dei_02.jpg">via Wikimedia Commons</a>
+card('Poseidon\'s Trident') {
+    imagePath 'mythos/greek/trident.jpg'
+    enchantment true
+    maxInDeck 1
+    manaCost 10
+    addAttack 2
+    addHealth 2
+    // If that unit is a God it gains Dodge.
+    /*
+    spell {
+        ifTarget (creatureType: 'Greek God') { // #286
+            set dodge() toCards { target() }
+        }
+    }
+    */
+}
+
+// https://commons.wikimedia.org/wiki/File:Death-and-the-woodcutter-jean-francois-millet3.jpg
+// Attribution: Public Domain
+card('Cronus\' Scythe') {
+    imagePath 'mythos/greek/scythe.jpg'
+    enchantment true
+    maxInDeck 1
+    manaCost 10
+    addAttack 2
+    addHealth 1
+
+    // If that unit is a Titan it gains Taunt.
+    /*
+    spell {
+        ifTarget (creatureType: 'Greek Titan') { // #286
+            set taunt() toCards { target() }
+        }
+    }
+    */
+}

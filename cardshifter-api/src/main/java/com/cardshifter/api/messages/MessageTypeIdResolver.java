@@ -13,32 +13,25 @@ import com.cardshifter.api.incoming.ServerQueryMessage;
 import com.cardshifter.api.incoming.StartGameRequest;
 import com.cardshifter.api.incoming.TransformerMessage;
 import com.cardshifter.api.incoming.UseAbilityMessage;
-import com.cardshifter.api.outgoing.AvailableModsMessage;
-import com.cardshifter.api.outgoing.AvailableTargetsMessage;
-import com.cardshifter.api.outgoing.CardInfoMessage;
-import com.cardshifter.api.outgoing.ClientDisconnectedMessage;
-import com.cardshifter.api.outgoing.EntityRemoveMessage;
-import com.cardshifter.api.outgoing.GameMessage;
-import com.cardshifter.api.outgoing.GameOverMessage;
-import com.cardshifter.api.outgoing.NewGameMessage;
-import com.cardshifter.api.outgoing.PlayerMessage;
-import com.cardshifter.api.outgoing.ResetAvailableActionsMessage;
-import com.cardshifter.api.outgoing.ServerErrorMessage;
-import com.cardshifter.api.outgoing.UpdateMessage;
-import com.cardshifter.api.outgoing.UsableActionMessage;
-import com.cardshifter.api.outgoing.UserStatusMessage;
-import com.cardshifter.api.outgoing.WaitMessage;
-import com.cardshifter.api.outgoing.WelcomeMessage;
-import com.cardshifter.api.outgoing.ZoneChangeMessage;
-import com.cardshifter.api.outgoing.ZoneMessage;
+import com.cardshifter.api.outgoing.*;
 
+/**
+ * Message Type ID Resolver.
+ * <p>
+ * Resolves all messages' type ID to the correct class corresponding to this particular type.
+ * Please note the use of the names <code>clazz / clazzes</code> in lieu of <code>class / classes</code> 
+ * because <code>class</code> is a reserved Java keyword.
+ */
 public class MessageTypeIdResolver {
 	
+	/** This value is used to map a String message ID to its corresponding message class */
 	private static final Map<String, Class<? extends Message>> clazzes = new HashMap<String, Class<? extends Message>>();
 	
+	/** Array used to map this message ID key to its corresponding class */
 	static {
+		// Serialize message (used principally for libGDX client)
 		clazzes.put("serial", TransformerMessage.class);
-		
+		// Incoming messages to server
 		clazzes.put("chat", ChatMessage.class);
 		clazzes.put("login", LoginMessage.class);
 		clazzes.put("startgame", StartGameRequest.class);
@@ -47,11 +40,11 @@ public class MessageTypeIdResolver {
 		clazzes.put("zoneChange", ZoneChangeMessage.class);
 		clazzes.put("entityRemoved", EntityRemoveMessage.class);
 		clazzes.put("disconnect", ClientDisconnectedMessage.class);
-		
+		// Outgoing messages from server
+        clazzes.put("status", ServerStatusMessage.class);
 		clazzes.put("resetActions", ResetAvailableActionsMessage.class);
 		clazzes.put("game", GameMessage.class);
 		clazzes.put("gameover", GameOverMessage.class);
-		clazzes.put("wait", WaitMessage.class);
 		clazzes.put("loginresponse", WelcomeMessage.class);
 		clazzes.put("newgame", NewGameMessage.class);
 		clazzes.put("player", PlayerMessage.class);
@@ -61,7 +54,8 @@ public class MessageTypeIdResolver {
 		clazzes.put("useable", UsableActionMessage.class);
 		clazzes.put("targets", AvailableTargetsMessage.class);
 		clazzes.put("availableMods", AvailableModsMessage.class);
-		
+        clazzes.put("elimination", PlayerEliminatedMessage.class);
+		// Messages both incoming and outgoing
 		clazzes.put("inviteRequest", InviteRequest.class);
 		clazzes.put("inviteResponse", InviteResponse.class);
 		clazzes.put("error", ServerErrorMessage.class);
@@ -69,9 +63,9 @@ public class MessageTypeIdResolver {
 		clazzes.put("query", ServerQueryMessage.class);
 		clazzes.put("playerconfig", PlayerConfigMessage.class);
 	}
-
-    public static Class<? extends Message> get(String key) {
-        return clazzes.get(key);
-    }
+        /** @return message ID key */
+	public static Class<? extends Message> get(String key) {
+	        return clazzes.get(key);
+	}
 	
 }

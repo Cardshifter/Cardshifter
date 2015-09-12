@@ -1,11 +1,8 @@
 package com.cardshifter.client;
 
 import java.net.URL;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.ResourceBundle;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.prefs.Preferences;
@@ -63,7 +60,7 @@ public final class GameClientLauncherController implements Initializable {
 	private AIComponent aiChoice;
 	private final Preferences settings = Preferences.userNodeForPackage(GameClientLauncherController.class);
 	private ClientIO human;
-	private final ModCollection mods = new ModCollection();
+	private final ModCollection mods = ModCollection.defaultMods();
 	
 	private static final String CONF_NAME = "name";
 
@@ -137,9 +134,16 @@ public final class GameClientLauncherController implements Initializable {
 	
 	public void setAI(String aiName) {
 		this.aiChoice = this.aiChoices.get(aiName);
+        this.checkLocalGameButtonEnable();
 	}
-	
-	private void localGameStart(ActionEvent event) {
+
+    private void checkLocalGameButtonEnable() {
+        boolean aiSelected = this.aiChoice != null;
+        boolean modChosen = this.modChoice.getSelectionModel().getSelectedItem() != null;
+        this.localGameButton.setDisable(!aiSelected || !modChosen);
+    }
+
+    private void localGameStart(ActionEvent event) {
         String modName = modChoice.getValue();
 		ECSMod mod = mods.getModFor(modName);
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
@@ -179,6 +183,7 @@ public final class GameClientLauncherController implements Initializable {
             public LogInterface getLogger() {
                 return new Log4jAdapter();
             }
+
         };
 		
 		try {
@@ -264,6 +269,7 @@ public final class GameClientLauncherController implements Initializable {
 		this.ipAddressBox.setText("127.0.0.1");
 		this.portBox.setText("4242");
 		this.userNameBox.setText(settings.get(CONF_NAME, "Enter Name"));
+        this.localGameButton.setDisable(true);
 		this.createAIChoices();
 	}	
 

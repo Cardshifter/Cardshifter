@@ -2,6 +2,8 @@ package com.cardshifter.gdx.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -14,6 +16,7 @@ import com.cardshifter.gdx.ui.CardshifterClientContext;
 import com.cardshifter.gdx.ui.EntityView;
 import com.cardshifter.gdx.ui.PlayerView;
 import com.cardshifter.gdx.ui.cards.CardView;
+import com.cardshifter.gdx.ui.cards.CardViewSmall;
 import com.cardshifter.gdx.ui.zones.CompactHiddenZoneView;
 import com.cardshifter.gdx.ui.zones.DefaultZoneView;
 import com.cardshifter.gdx.ui.zones.ZoneView;
@@ -24,7 +27,7 @@ import java.util.List;
 /**
  * Created by Simon on 1/31/2015.
  */
-public class GameScreen implements Screen {
+public class GameScreen implements Screen, TargetableCallback {
 
     private final CardshifterGame game;
     private final CardshifterClient client;
@@ -60,6 +63,8 @@ public class GameScreen implements Screen {
         }
     };
     private final CardshifterClientContext context;
+    //private final float screenWidth;
+    private final float screenHeight;
 
     public GameScreen(final CardshifterGame game, final CardshifterClient client, NewGameMessage message, final Screen parentScreen) {
         this.parentScreen = parentScreen;
@@ -68,12 +73,14 @@ public class GameScreen implements Screen {
         this.playerIndex = message.getPlayerIndex();
         this.gameId = message.getGameId();
         this.context = new CardshifterClientContext(game.skin, message.getGameId(), client, game.stage);
+        //this.screenWidth = CardshifterGame.STAGE_WIDTH;
+        this.screenHeight = CardshifterGame.STAGE_HEIGHT;
 
         this.table = new Table(game.skin);
 
         Table leftTable = new Table(game.skin);
         Table topTable = new Table(game.skin);
-        Table rightTable = new Table(game.skin);
+        //Table rightTable = new Table(game.skin);
         Table centerTable = new Table(game.skin);
 
         TextButton backToMenu = new TextButton("Back to menu", game.skin);
@@ -86,7 +93,7 @@ public class GameScreen implements Screen {
         leftTable.add(backToMenu).expandX().fill().row();
         addZoneHolder(leftTable, 1 - this.playerIndex, "").expandY().fillY();
         addZoneHolder(leftTable, this.playerIndex, "").expandY().fillY();
-        rightTable.add("controls").row();
+        leftTable.add("controls").row();
         TextButton actionDone = new TextButton("Done", game.skin);
         actionDone.addListener(new ClickListener() {
             @Override
@@ -104,16 +111,16 @@ public class GameScreen implements Screen {
                 }
             }
         });
-        rightTable.add(actionDone);
-        topTable.add(leftTable).left().width(150).expandY().fillY();
+        leftTable.add(actionDone);
+        topTable.add(leftTable).left().expandY().fillY();
         topTable.add(centerTable).center().expandX().expandY().fill();
-        topTable.add(rightTable).right().width(150).expandY().fillY();
+        //topTable.add(rightTable).right().width(150).expandY().fillY();
 
-        addZoneHolder(centerTable, 1 - this.playerIndex, "Hand").top().height(80);
-        addZoneHolder(centerTable, 1 - this.playerIndex, "Battlefield").height(130);
-        addZoneHolder(centerTable, this.playerIndex, "Battlefield").bottom().expandX().fill().height(130);
+        addZoneHolder(centerTable, 1 - this.playerIndex, "Hand").top().height(this.screenHeight/4);
+        addZoneHolder(centerTable, 1 - this.playerIndex, "Battlefield").height(this.screenHeight/4);
+        addZoneHolder(centerTable, this.playerIndex, "Battlefield").height(this.screenHeight/4);
 
-        this.table.add(topTable).expandY().fill().row();
+        this.table.add(topTable).expand().fill().row();
         addZoneHolder(this.table, this.playerIndex, "Hand").height(140).expandX().fill();
 
         this.table.setFillParent(true);
@@ -121,6 +128,7 @@ public class GameScreen implements Screen {
 
     private Cell<Container<Actor>> addZoneHolder(Table table, int i, String name) {
         Container<Actor> container = new Container<Actor>();
+        container.setName(name);
 //        container.fill();
         Cell<Container<Actor>> cell = table.add(container).expandX().fillX();
         table.row();
@@ -190,7 +198,11 @@ public class GameScreen implements Screen {
                 EntityView view = entityViews.get(id);
                 if (view != null) {
                     view.usableAction(message);
+                    if (view instanceof CardViewSmall) {
+                    	((CardViewSmall)view).setUsable(GameScreen.this);
+                    }
                 }
+                
             }
         });
         handlers.put(CardInfoMessage.class, new SpecificHandler<CardInfoMessage>() {
@@ -338,7 +350,7 @@ when cards are created from nowhere, ZoneChange with source -1 is sent and then 
         }
         if (type.equals("Hand")) {
             return new DefaultZoneView(context, message, this.entityViews);
-        }
+        } 
         if (type.equals("Deck")) {
             return new CompactHiddenZoneView(game, message);
         }
@@ -351,4 +363,54 @@ when cards are created from nowhere, ZoneChange with source -1 is sent and then 
     private ZoneView getZoneView(int id) {
         return this.zoneViews.get(id);
     }
+    
+	public boolean checkCardDrop(CardViewSmall cardView) {
+		Table table = (Table)cardView.getActor();
+		Vector2 stageLoc = table.localToStageCoordinates(new Vector2());
+		Rectangle tableRect = new Rectangle(stageLoc.x, stageLoc.y, table.getWidth(), table.getHeight());
+
+		for (Container<Actor> actor : this.holders.values()) {
+			if (actor.getName() == "Battlefield") {
+				Vector2 stageBattlefieldLoc = actor.localToStageCoordinates(new Vector2(actor.getActor().getX(), actor.getActor().getY()));
+				Vector2 modifiedSBL = new Vector2(stageBattlefieldLoc.x - actor.getWidth()/2, stageBattlefieldLoc.y - actor.getHeight()/2);
+				Rectangle deckRect = new Rectangle(modifiedSBL.x, modifiedSBL.y, actor.getWidth() * 0.8f, actor.getHeight());
+				
+				//uncomment this to see the bug where battlefields pop up in strange places
+				/*
+				Image squareImage = new Image(new Texture(Gdx.files.internal("cardbg.png")));
+				squareImage.setPosition(modifiedSBL.x, modifiedSBL.y);
+				squareImage.setSize(deckRect.width, deckRect.height);
+				this.game.stage.addActor(squareImage);
+				*/
+				
+				if (tableRect.overlaps(deckRect)) {
+					//this.addEntity(cardView);
+					System.out.println("target found!");
+					return true;
+				}
+			}
+		}
+		
+		return false;
+		
+		//these can be used to double check the location of the rectangles
+		/*
+		Image squareImage = new Image(new Texture(Gdx.files.internal("cardbg.png")));
+		squareImage.setPosition(modifiedSBL.x, modifiedSBL.y);
+		squareImage.setSize(deckRect.width, deckRect.height);
+		this.game.stage.addActor(squareImage);
+		*/
+		/*
+		Image squareImage = new Image(new Texture(Gdx.files.internal("cardbg.png")));
+		squareImage.setPosition(stageLoc.x, stageLoc.y);
+		squareImage.setSize(tableRect.width, tableRect.height);
+		this.game.stage.addActor(squareImage);
+		*/
+	}
+
+	@Override
+	public boolean addEntity(EntityView view) {
+		//called by the CardViewSmall when not in mulligan mode, nothing will happen
+		return false;
+	}
 }

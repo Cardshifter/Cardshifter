@@ -2,8 +2,10 @@ package net.zomis.cardshifter.ecs.usage;
 
 import com.cardshifter.modapi.resources.*;
 
+@Deprecated
 public class CyborgChroniclesGame {
 
+    @Deprecated
 	public enum CyborgChroniclesResources implements ECSResource {
 		MAX_HEALTH, HEALTH, SCRAP, ATTACK, SCRAP_COST
 	}

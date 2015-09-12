@@ -9,6 +9,31 @@ def clearState = {
     }
 }
 
+from clearState test 'enchant without scrap' using {
+    def handCard = to you zone 'Hand' create 'Bionic Arms'
+    def creature = to you zone 'Battlefield' create 'Cyberpimp'
+
+    assert you.scrap == 0
+    expect failure when handCard uses 'Enchant' ok
+    assert you.scrap == 0
+}
+
+from clearState test 'play Inside Man' using {
+    def handCard = to you zone 'Hand' create 'Inside Man'
+    println 'handCard debug ' + handCard.debug()
+    assert handCard.owner == you
+    for (int i = 0; i < 8; i++) {
+        uses 'End Turn' ok
+        uses 'End Turn' ok
+    }
+
+    uses 'Play' on handCard ok
+    assert you.battlefield.size() == 3
+
+    def card = to you zone 'Battlefield' create 'Inside Man'
+    assert you.battlefield.size() == 6
+}
+
 from clearState test 'fight kill and no-kill' using {
     def attacker = to you zone 'Battlefield' create {
         creature 'Mech'
@@ -62,8 +87,10 @@ from clearState test 'attack opponent with enchanted rush' using {
 
     def enchantment = to you zone 'Hand' create {
         println 'Sickness is ' + SICKNESS
-        enchantment true
-        set(SICKNESS, 0)
+        enchantment()
+        afterPlay {
+            set SICKNESS to 0 on targets
+        }
     }
     expect failure when enchantedCreature uses 'Attack' ok
     uses 'Enchant' on enchantment withTarget enchantedCreature ok
@@ -85,7 +112,7 @@ from clearState test 'max mana' using {
     assert you.mana == 10
 }
 
-from clearState test 'max mana' using {
+from clearState test 'heal at end of turn' using {
     def healer = to you zone 'Hand' create {
         creature 'Bio'
         health 1
@@ -142,4 +169,90 @@ from clearState test 'negative mana cost' using {
     uses 'Play' on handCard ok
     assert you.mana == 0
 
+}
+
+from clearState test 'scrap' using {
+    def scrappy = {
+        creature 'Mech'
+        manaCost 1
+        health 1
+        scrap 1
+    }
+    def card = to you zone 'Hand' create scrappy
+
+    uses 'Play' on card ok
+    uses 'End Turn' ok
+    uses 'End Turn' ok
+    uses 'Scrap' on card ok
+    assert you.scrap == 1
+}
+
+from clearState test 'enchant' using {
+    def card = to you zone 'Battlefield' create {
+        creature 'Bio'
+        attack 0
+        health 1
+    }
+    def scrappy = to you zone 'Hand' create {
+        enchantment()
+        afterPlay {
+            change ATTACK by 3 on targets
+            change HEALTH by 2 on targets
+        }
+        scrapCost 1
+    }
+
+    assert you.scrap == 0
+    you.scrap = 10
+    assert you.scrap == 10
+
+    def targets = uses 'Enchant' on scrappy getAvailableTargets()
+    assert targets.size() == 1
+
+    uses 'Enchant' on scrappy withTarget card ok
+    assert scrappy.removed
+    assert you.scrap == 9
+    assert card.attack == 3
+    assert card.health == 3
+}
+
+from clearState test 'heal creatures at end of turn' using {
+    def attacker = to you zone 'Battlefield' create {
+        creature 'Mech'
+        attack 2
+        health 2
+    }
+    def defender = to opponent zone 'Battlefield' create {
+        creature 'Mech'
+        attack 1
+        health 4
+    }
+
+    uses 'End Turn' ok
+    uses 'End Turn' ok
+    uses 'Attack' on attacker withTarget defender ok
+    assert attacker.health == 1
+    assert defender.health == 2
+    uses 'End Turn' ok
+    assert attacker.health == 2
+    assert defender.health == 4
+}
+
+from clearState test 'Body Armor enchantment' using {
+    def enchantment = to you zone 'Hand' create 'Body Armor'
+    def creature = to you zone 'Battlefield' create {
+        creature 'Bio'
+        health 1
+    }
+
+    assert creature.max_health == 1
+    assert creature.health == 1
+    you.scrap = 1
+    uses 'Enchant' on enchantment withTarget creature ok
+    assert creature.max_health == 3
+    assert creature.health == 3
+    uses 'End Turn' ok
+    uses 'End Turn' ok
+    assert creature.max_health == 3
+    assert creature.health == 3
 }

@@ -1,18 +1,16 @@
 package com.cardshifter.server.main;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.nio.file.Paths;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Predicate;
 
 import com.cardshifter.api.outgoing.*;
+import com.fasterxml.jackson.core.JsonGenerationException;
 import org.apache.log4j.PropertyConfigurator;
 import org.junit.After;
 import org.junit.Before;
@@ -40,14 +38,21 @@ import com.cardshifter.modapi.base.PlayerComponent;
 import com.cardshifter.server.model.MainServer;
 import com.cardshifter.server.model.Server;
 
+import static org.junit.Assert.*;
+
 public class ServerConnectionTest {
 
 	private String getTestMod() {
         return mods.getMods()[0];
     }
+
+	private TestClient createTestClient() throws IOException {
+		return new TestClient(socketPort);
+	}
 	
 	private MainServer main;
 	private Server server;
+	private int socketPort;
 	private TestClient client1;
 	private int userId;
     private AvailableModsMessage mods;
@@ -55,14 +60,22 @@ public class ServerConnectionTest {
     @Before
 	public void setup() throws IOException, InterruptedException {
 		PropertyConfigurator.configure(getClass().getResourceAsStream("log4j.properties"));
-		main = new MainServer(ServerConfiguration.defaults());
-        main.getMods().loadExternal(Paths.get("../extra-resources/groovy"));
+		ServerConfiguration config = ServerConfiguration.defaults();
+
+		// Use any available port
+		config.setPortSocket(0);
+		config.setPortWebsocket(0);
+
+		main = new MainServer(config);
+		main.getMods().loadExternal(Paths.get("../extra-resources/groovy"));
 		server = main.start();
-		assertTrue("Server did not start correctly. Perhaps it is already running?", server.getClients().size() > 0);
-		
-		client1 = new TestClient();
-		client1.send(new LoginMessage("Tester"));
-		
+
+		assertTrue("Server should start correctly.", server.getClients().size() > 0);
+
+		socketPort = config.getPortSocket();
+		client1 = createTestClient();
+		client1.send(new LoginMessage("Tester1"));
+
 		WelcomeMessage welcome = client1.await(WelcomeMessage.class);
 		assertEquals(200, welcome.getStatus());
 		System.out.println(server.getClients());
@@ -84,8 +97,7 @@ public class ServerConnectionTest {
 	
 	@Test(timeout = 20000)
 	public void testUserOnlineOffline() throws InterruptedException, UnknownHostException, IOException {
-		
-		TestClient client2 = new TestClient();
+		TestClient client2 = createTestClient();
 		client2.send(new LoginMessage("Test2"));
 		client2.await(WelcomeMessage.class);
 		client2.await(ChatMessage.class);
@@ -93,37 +105,50 @@ public class ServerConnectionTest {
 		UserStatusMessage statusMessage = client1.await(UserStatusMessage.class);
 		ChatMessage chat = client1.await(ChatMessage.class);
 		String message = chat.getMessage();
-		assertTrue("Unexpected message: " + message, message.contains("Test2") && message.contains("joined"));
+		assertTrue("Unexpected message: " + message, message.contains(client2.getName()) && message.contains("joined"));
+
 		int client2id = statusMessage.getUserId();
 		assertEquals(Status.ONLINE, statusMessage.getStatus());
 		assertEquals(server.getClients().size() + 1, client2id);
-		assertEquals("Test2", statusMessage.getName());
+		assertEquals(client2.getName(), statusMessage.getName());
 		
 		client2.send(new ServerQueryMessage(Request.USERS));
 		client2.await(AvailableModsMessage.class);
 		List<UserStatusMessage> users = client2.awaitMany(6, UserStatusMessage.class);
 		System.out.println("Online users: " + users);
+
 		// There is no determined order in which the UserStatusMessages are received, so it is harder to make any assertions.
-		assertTrue(users.stream().filter(mess -> mess.getName().equals("Tester")).findAny().isPresent());
-		assertTrue(users.stream().filter(mess -> mess.getName().equals("Test2")).findAny().isPresent());
-		assertTrue(users.stream().filter(mess -> mess.getName().equals("AI Fighter")).findAny().isPresent());
-		assertTrue(users.stream().filter(mess -> mess.getName().equals("AI Loser")).findAny().isPresent());
-		assertTrue(users.stream().filter(mess -> mess.getName().equals("AI Medium")).findAny().isPresent());
-		assertTrue(users.stream().filter(mess -> mess.getName().equals("AI Idiot")).findAny().isPresent());
-		
+        assertUserFound(users, client1.getName());
+        assertUserFound(users, client2.getName());
+        assertUserFound(users, "AI Fighter");
+        assertUserFound(users, "AI Loser");
+        assertUserFound(users, "AI Medium");
+        assertUserFound(users, "AI Idiot");
+
 		client2.disconnect();
 		
 		System.out.println(chat);
 		statusMessage = client1.await(UserStatusMessage.class);
 		assertEquals(Status.OFFLINE, statusMessage.getStatus());
 		assertEquals(client2id, statusMessage.getUserId());
-		assertEquals("Test2", statusMessage.getName());
+		assertEquals(client2.getName(), statusMessage.getName());
+	}
+
+    @Test(timeout = 5000)
+	public void testSameUserName() throws IOException, InterruptedException {
+		TestClient client2 = createTestClient();
+		client2.send(new LoginMessage(client1.getName()));
+		WelcomeMessage welcomeMessage = client2.await(WelcomeMessage.class);
+		assertFalse(welcomeMessage.isOK());
+	}
+
+	private static void assertUserFound(Collection<UserStatusMessage> users, String name) {
+		assertTrue("User '" + name + "' not found", users.stream().filter(mess -> mess.getName().equals(name)).findAny().isPresent());
 	}
 	
-	@Test(timeout = 10000)
+	@Test(timeout = 50000)
 	public void testStartGame() throws InterruptedException, IOException {
 		client1.send(new StartGameRequest(2, getTestMod()));
-		client1.await(WaitMessage.class);
 		NewGameMessage gameMessage = client1.await(NewGameMessage.class);
 		assertEquals(1, gameMessage.getGameId());
         client1.awaitUntil(PlayerConfigMessage.class);
@@ -182,6 +207,50 @@ public class ServerConnectionTest {
 		assertEquals(1, gameMessage.getGameId());
 		ServerGame game = server.getGames().get(1);
 		assertTrue(game.hasPlayer(server.getClients().get(userId)));
+	}
+
+	@Test(timeout = 10000)
+	public void testOnlyOneInvite() throws IOException, InterruptedException {
+		TestClient client2 = createTestClient();
+
+		client2.send(new LoginMessage("client2"));
+		WelcomeMessage welcomeMessage = client2.await(WelcomeMessage.class);
+		assertTrue(welcomeMessage.isOK());
+		int client2id = welcomeMessage.getUserId();
+
+		client1.await(UserStatusMessage.class);
+		client1.await(ChatMessage.class);
+
+		client1.send(new StartGameRequest(client2id, getTestMod()));
+		client1.send(new StartGameRequest(client2id, getTestMod()));
+		client1.await(ServerErrorMessage.class);
+	}
+
+	/**
+	 * Assert that no message is in the queue or being sent from the server.
+	 * DOES NOT WORK IF THE MESSAGE IN THE QUEUE IS ServerStatusMessage!
+	 */
+	private static void assertNoMessage(TestClient client) throws IOException, InterruptedException {
+		client.send(new ServerQueryMessage(Request.STATUS, ""));
+		client.await(ServerStatusMessage.class);
+	}
+
+	@Test(timeout = 5000)
+	public void testUsersQueryNotLoggedIn() throws IOException, InterruptedException {
+		TestClient client2 = createTestClient();
+
+		client1.send(new ServerQueryMessage(Request.USERS, ""));
+
+		List<UserStatusMessage> users = client1.awaitMany(5, UserStatusMessage.class);
+
+		assertUserFound(users, client1.getName());
+		assertUserFound(users, "AI Fighter");
+		assertUserFound(users, "AI Loser");
+		assertUserFound(users, "AI Medium");
+		assertUserFound(users, "AI Idiot");
+
+		// There shouldn't be a UserStatusMessage for client2
+		assertNoMessage(client1);
 	}
 	
 }

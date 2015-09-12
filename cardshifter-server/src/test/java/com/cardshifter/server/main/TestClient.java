@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import com.cardshifter.api.incoming.LoginMessage;
 import com.cardshifter.api.outgoing.ResetAvailableActionsMessage;
 import net.zomis.cardshifter.ecs.usage.CardshifterIO;
 
@@ -36,9 +37,11 @@ public class TestClient {
 	private final OutputStream out;
 	private final LinkedBlockingQueue<Message> messages = new LinkedBlockingQueue<>();
 	private final Thread thread;
+
+	private String name = "";
 	
-	public TestClient() throws UnknownHostException, IOException {
-		this.socket = new Socket("127.0.0.1", 4242);
+	public TestClient(int port) throws UnknownHostException, IOException {
+		this.socket = new Socket("127.0.0.1", port);
 		this.mapper = CardshifterIO.mapper();
 		out = socket.getOutputStream();
 		in = socket.getInputStream();
@@ -46,6 +49,10 @@ public class TestClient {
 		mapper.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
 		thread = new Thread(this::listen);
 		thread.start();
+	}
+
+	public String getName() {
+		return name;
 	}
 	
 	private void listen() {
@@ -63,6 +70,9 @@ public class TestClient {
 	}
 	
 	public void send(Message message) throws JsonGenerationException, JsonMappingException, IOException {
+		if (message instanceof LoginMessage) {
+			name = ((LoginMessage) message).getUsername();
+		}
 		mapper.writeValue(out, message);
 	}
 
@@ -77,12 +87,11 @@ public class TestClient {
 	
 	public <T> T await(Class<T> class1) throws IOException, InterruptedException {
 		Message message = messages.take();
-		if (message instanceof ServerErrorMessage) {
-			Assert.fail(message.toString());
-		}
+
 		if (!class1.isAssignableFrom(message.getClass())) {
 			Assert.fail("Expected " + class1 + " but was " + message);
 		}
+
 		return class1.cast(message);
 	}
 

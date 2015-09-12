@@ -83,14 +83,14 @@ public class PhaseController extends Component {
 
 	public Phase nextPhase() {
 		Phase oldPhase = getCurrentPhase();
-		executeEvent(new PhaseEndEvent(this, oldPhase));
+		executeEvent(new PhaseEndEvent(this, getEntity().getGame(), oldPhase));
 		phaseNumber++;
 		upcomingPhases.removeFirst();
 		Phase currentPhase = getCurrentPhase();
 		if (currentPhase == permanentPhases.peekFirst()) {
 			recreateCount++;
 		}
-		executeEvent(new PhaseStartEvent(this, oldPhase, currentPhase));
+		executeEvent(new PhaseStartEvent(this, getEntity().getGame(), oldPhase, currentPhase));
 		
 		return currentPhase;
 	}

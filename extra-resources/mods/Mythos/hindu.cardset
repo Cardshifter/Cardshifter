@@ -1,0 +1,267 @@
+package mythos
+
+/*
+ * The Hindu cardset uses many variants of random and probabilities, to create a lively
+ * and unpredictable strategy that often benefits the player, but sometimes the opponent.
+ */
+
+// https://en.wikipedia.org/wiki/Indra
+// https://commons.wikimedia.org/wiki/File:Indra_deva.jpg
+// Attribution: See page for author [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AIndra_deva.jpg">via Wikimedia Commons</a>
+card('INDRA') {
+    creature 'Hindu God'
+    flavor 'The one who rides the Clouds, the Lord of the Gods and of Heaven.'
+    imagePath 'mythos/hindu/indra.jpg'
+    maxInDeck 1
+    attack 5
+    health 8
+    sickness 1
+    manaCost 15
+    afterPlay {
+        summon 1 of 'Airavata' to 'you' zone 'Hand'
+    }
+    // give Rush to all creatures on Battlefield, counters "freeze" type effects
+    whilePresent {
+        set SICKNESS to 0 withPriority 1 on {
+            creature true
+            zone 'Battlefield'
+        }
+    }
+}
+// INDRA token
+
+// https://en.wikipedia.org/wiki/Airavata
+// https://commons.wikimedia.org/wiki/File:Indradeva.jpg
+// Attribution: By Unknown, India, Rajasthan, Amber, South Asia (from LACMA [1]) [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AIndradeva.jpg">via Wikimedia Commons</a>
+card('Airavata') {
+    creature 'Hindu'
+    flavor 'Indra\'s sacred three-headed white elephant.'
+    imagePath 'mythos/hindu/airavata.jpg'
+    token()
+    attack 2
+    health 8
+    sickness 1
+    whilePresent {
+        change ATTACK, HEALTH by 3 withPriority 1 on {
+            cardName 'INDRA'
+            ownedBy 'you'
+            zone 'Battlefield'
+        }
+    }
+}
+
+// https://en.wikipedia.org/wiki/Brahma
+// https://commons.wikimedia.org/wiki/File:Brahma_on_hamsa.jpg
+// Attribution: By Probably Nurpur, Punjab Hills, Northern India [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3ABrahma_on_hamsa.jpg">via Wikimedia Commons</a>
+card('BRAHMA') {
+    creature 'Hindu God'
+    flavor 'Creator of the Universe, grand-father of all humans.'
+    imagePath 'mythos/hindu/brahma.jpg'
+    maxInDeck 1
+    attack 5
+    health 6
+    sickness 1
+    manaCost 15
+    afterPlay {
+        summon 1 of 'Hansa' to 'you' zone 'Hand'
+    }
+    // give +2/+2 to Common creatures
+    whilePresent {
+        change ATTACK, HEALTH by 2 withPriority 1 on {
+            creatureType 'Common'
+            zone 'Battlefield'
+        }
+    }
+}
+
+
+// BRAHMA TOKEN
+
+// https://en.wikipedia.org/wiki/Hamsa_(bird)
+// https://commons.wikimedia.org/wiki/File:Hansa_Damayanthi.jpg
+// Attribution: Raja Ravi Varma [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AHansa_Damayanthi.jpg">via Wikimedia Commons</a>
+card('Hansa') {
+    creature 'Hindu'
+    flavor 'Brahma\'s white swan mount.'
+    imagePath 'mythos/hindu/hansa.jpg'
+    token()
+    attack 2
+    health 5
+    whilePresent {
+        change HEALTH by 2 withPriority 1 on {
+            cardName 'BRAHMA'
+            ownedBy 'you'
+            zone 'Battlefield'
+        }
+    }
+}
+
+// https://en.wikipedia.org/wiki/Vishnu
+// https://commons.wikimedia.org/wiki/File:Bhagavan_Vishnu.jpg
+// Attribution: By Ramanarayanadatta astri (http://archive.org/details/mahabharata06ramauoft) [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3ABhagavan_Vishnu.jpg">via Wikimedia Commons</a>
+card('VISHNU') {
+    creature 'Hindu God'
+    flavor 'The All-Pervading One. "Whatever that is there is the world of change."'
+    imagePath 'mythos/hindu/vishnu.jpg'
+    maxInDeck 1
+    attack 5
+    health 5
+    sickness 1
+    manaCost 10
+    onEndOfTurn {
+        pick 1 atRandom (
+                { change HEALTH by 1  on { thisCard() } },
+                { change ATTACK by 1  on { thisCard() } },
+                { change HEALTH by -1 on { thisCard() } },
+                { change ATTACK by 2  on { thisCard() } },
+                { set SICKNESS to 2   on { thisCard() } }
+        )
+    }
+}
+
+// https://en.wikipedia.org/wiki/Krishna
+// https://commons.wikimedia.org/wiki/File:Krishna_Holding_Mount_Govardhan_-_Crop.jpg
+// Attribution: By Mola Ram (1760-1833) (English Wikipedia) [Public domain or Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AKrishna_Holding_Mount_Govardhan_-_Crop.jpg">via Wikimedia Commons</a>
+card('KRISHNA') {
+    creature 'Hindu God'
+    flavor 'Eighth incarnation of Lord Vishnu. Handsome blue-skinned Hero God.'
+    imagePath 'mythos/hindu/krishna.jpg'
+    maxInDeck 1
+    attack 5
+    health 7
+    sickness 0 // rush
+    manaCost 15
+    whilePresent {
+        change ATTACK, HEALTH by 1 withPriority 1 on {
+            creature true
+            ownedBy 'you'
+            zone 'Battlefield'
+        }
+    }
+}
+
+// https://en.wikipedia.org/wiki/Shiva
+// https://commons.wikimedia.org/wiki/File:6_%C5%9Aiva_and_P%C4%81rvat%C4%AB_seated_on_a_terrace._1800_%28circa%29_BM.jpg
+// Attribution: By anonimus (British Museum) [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3A6_%C5%9Aiva_and_P%C4%81rvat%C4%AB_seated_on_a_terrace._1800_(circa)_BM.jpg">via Wikimedia Commons</a>
+card('SHIVA') {
+    creature 'Hindu God'
+    flavor 'The Auspicious One, He has many Benevolent and Fearsome forms.'
+    imagePath 'mythos/hindu/shiva.jpg'
+    maxInDeck 1
+    attack 4
+    health 5
+    sickness 1
+    manaCost 10
+    afterPlay {
+        pick 1 atRandom (
+                { damage 3  on { creature true; ownedBy 'opponent'; zone 'Battlefield' } },
+                { heal 3    on { creature true; ownedBy      'you'; zone 'Battlefield' } }
+        )
+    }
+}
+
+// https://en.wikipedia.org/wiki/Yama
+// https://commons.wikimedia.org/wiki/File:Yama_on_buffalo.jpg
+// Attribution: See page for author [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AYama_on_buffalo.jpg">via Wikimedia Commons</a>
+card('YAMA') {
+    creature 'Hindu God'
+    flavor 'The first mortal who died, now the Ruler of the Departed.'
+    imagePath 'mythos/hindu/yama.jpg'
+    maxInDeck 1
+    attack 4
+    health 6
+    sickness 1
+    manaCost 10
+    onDeath { withProbability(0.7) { heal 2    on { creature true; ownedBy 'you'; zone 'Battlefield' } } }
+    onDeath { withProbability(0.7) { damage 2  on { creature true; ownedBy 'opponent'; zone 'Battlefield' } } }
+}
+
+// https://en.wikipedia.org/wiki/Durga
+// https://commons.wikimedia.org/wiki/File:Durga_Mahisasuramardini.JPG
+// Attribution: See page for author [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3ADurga_Mahisasuramardini.JPG">via Wikimedia Commons</a>
+card('DURGA') {
+    creature 'Hindu God'
+    flavor 'Goddess armed with Celestial Weapons of all Deities.'
+    imagePath 'mythos/hindu/durga.jpg'
+    maxInDeck 1
+    attack 7
+    health 4
+    sickness 1
+    manaCost 15
+    afterPlay {
+        repeat(2) {
+            damage 1 on 1 random { creature true; ownedBy 'opponent'; zone 'Battlefield' }
+        }
+    }
+    onStartOfTurn {
+        withProbability(0.5) {
+            damage 1 on 1 random { creature true; ownedBy 'opponent'; zone 'Battlefield' }
+        }
+    }
+}
+
+// https://en.wikipedia.org/wiki/Varuna
+// https://commons.wikimedia.org/wiki/File:Varunadeva.jpg
+// Attribution: By unknown author [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AVarunadeva.jpg">via Wikimedia Commons</a>
+card('VARUNA') {
+    creature 'Hindu God'
+    flavor 'God of the Oceans and of Law and Morals.'
+    imagePath 'mythos/hindu/varuna.jpg'
+    maxInDeck 1
+    attack 3
+    health 6
+    sickness 1
+    manaCost 10
+    onStartOfTurn {
+        heal 1 on 2 random { creature true; zone 'Battlefield' }
+    }
+    whilePresent {
+        change HEALTH by 1 withPriority 1 on { creature true; ownedBy 'you'; zone 'Battlefield' }
+    }
+}
+
+// https://en.wikipedia.org/wiki/Gautama_Buddha
+// https://commons.wikimedia.org/wiki/File:Astasahasrika_Prajnaparamita_Victory_Over_Mara.jpeg
+// Attribution: By Asia Society created the file. Artwork created by an anonymous ancient source. [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AAstasahasrika_Prajnaparamita_Victory_Over_Mara.jpeg">via Wikimedia Commons</a>
+card('Gautama Buddha') {
+    creature 'Hindu Hero'
+    flavor 'The Enlightened One, discoverer of the Middle Way.'
+    imagePath 'mythos/hindu/gautama-buddha.jpg'
+    attack 4
+    health 6
+    sickness 1
+    manaCost 10
+    onEndOfTurn {
+        pick 1 atRandom (
+                { heal 1    on 'you' },
+                { heal 1    on 1 random { creature true; zone 'Battlefield' } },
+                { damage 1  on 'opponent' },
+                { damage 1  on 1 random { creature true; zone 'Battlefield' } }
+        )
+    }
+}
+
+// https://en.wikipedia.org/wiki/Maitreya
+// https://commons.wikimedia.org/wiki/File:Maitreya_Buddha%2C_Nubra.jpg
+// Attribution: By John Hill (Own work) [<a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a> or <a href="http://www.gnu.org/copyleft/fdl.html">GFDL</a>], <a href="https://commons.wikimedia.org/wiki/File%3AMaitreya_Buddha%2C_Nubra.jpg">via Wikimedia Commons</a>
+card('Maitreya Buddha') {
+    creature 'Hindu Hero'
+    flavor 'Successor of Prophecy of the Buddha, to achieve Complete Enlightenment and teach the Pure Dharma'
+    imagePath 'mythos/hindu/maitreya-buddha.jpg'
+    maxInDeck 1
+    attack 3
+    health 9
+    sickness 1
+    manaCost 20
+    whilePresent {
+        change HEALTH by 2 withPriority 1 on { creature true; ownedBy 'you'; zone 'Battlefield' }
+    }
+    onEndOfTurn {
+        withProbability(0.75) {
+            pick 1 atRandom (
+                    { heal 1 on    'you' },
+                    { damage 1 on  'opponent' }
+            )
+        }
+    }
+}
