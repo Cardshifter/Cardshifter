@@ -1176,7 +1176,8 @@ card('Hades\' Bident') {
     */
 }
 
-// Attribution: CC BY-SA 3.0
+// https://en.wikipedia.org/wiki/File:Persee-florence.jpg
+// Attribution: Image file by Dodo. Benvenuto_Cellini 1545-1554. File [<a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a> or <a href="http://www.gnu.org/copyleft/fdl.html">GFDL</a>], <a href="https://commons.wikimedia.org/wiki/File:Persee-florence.jpg">via Wikimedia Commons</a>
 // https://commons.wikimedia.org/wiki/User:Dodo
 card('Helm of Darkness') {
     flavor 'Helm that can turn the wearer invisible.'
