@@ -12,13 +12,11 @@ import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import com.cardshifter.api.incoming.LoginMessage;
-import com.cardshifter.api.outgoing.ResetAvailableActionsMessage;
 import net.zomis.cardshifter.ecs.usage.CardshifterIO;
 
 import org.junit.Assert;
 
 import com.cardshifter.api.messages.Message;
-import com.cardshifter.api.outgoing.ServerErrorMessage;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;

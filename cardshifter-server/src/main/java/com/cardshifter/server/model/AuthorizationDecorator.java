@@ -19,7 +19,7 @@ public class AuthorizationDecorator<T extends Message> implements MessageHandler
             handler.handle(message, client);
         }
         else {
-            client.sendToClient(new ServerErrorMessage("Login required"));
+            client.sendToClient(new ErrorMessage("Login required"));
         }
     }
 

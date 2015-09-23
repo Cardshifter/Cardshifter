@@ -53,7 +53,7 @@ public class Handlers {
 			case DECK_BUILDER:
                 Map<String, GameFactory> gameFactories = server.getGameFactories();
                 if (message.getMessage() == null || !gameFactories.containsKey(message.getMessage())) {
-                    client.sendToClient(new ServerErrorMessage("Invalid gameType specified."));
+                    client.sendToClient(new ErrorMessage("Invalid gameType specified."));
                     return;
                 }
 
@@ -61,7 +61,7 @@ public class Handlers {
 				game.addPlayer(client);
 				game.addPlayer(new FakeClient(server, e -> {}));
 				if (!game.preStartForConfiguration()) {
-					client.sendToClient(new ServerErrorMessage("There is no configuration required for mod " + message.getMessage()));
+					client.sendToClient(new ErrorMessage("There is no configuration required for mod " + message.getMessage()));
 				}
 				
 				break;
@@ -79,7 +79,7 @@ public class Handlers {
                 client.sendToClient(new ServerStatusMessage(users, ais, games, mods));
                 break;
 			default:
-				client.sendToClient(new ServerErrorMessage("No such query request"));
+				client.sendToClient(new ErrorMessage("No such query request"));
 				break;
 		}
 		

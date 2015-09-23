@@ -63,7 +63,7 @@ public class HandlerManager {
             getIncomingHandler().perform(message, client);
         } catch (Exception e) {
             logger.error("Unable to parse incoming json: " + json, e);
-            client.sendToClient(new ServerErrorMessage(e.getMessage()));
+            client.sendToClient(new ErrorMessage(e.getMessage()));
         }
     }
 }

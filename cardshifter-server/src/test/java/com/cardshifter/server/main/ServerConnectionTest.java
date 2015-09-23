@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import com.cardshifter.api.outgoing.*;
-import com.fasterxml.jackson.core.JsonGenerationException;
 import org.apache.log4j.PropertyConfigurator;
 import org.junit.After;
 import org.junit.Before;
@@ -223,7 +222,7 @@ public class ServerConnectionTest {
 
 		client1.send(new StartGameRequest(client2id, getTestMod()));
 		client1.send(new StartGameRequest(client2id, getTestMod()));
-		client1.await(ServerErrorMessage.class);
+		client1.await(ErrorMessage.class);
 	}
 
 	/**
