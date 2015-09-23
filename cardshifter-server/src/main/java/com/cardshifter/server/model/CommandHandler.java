@@ -6,12 +6,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import com.cardshifter.api.outgoing.ErrorMessage;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameters;
-import com.cardshifter.api.both.ChatMessage;
 import com.cardshifter.server.commands.CommandContext;
 
 /**
@@ -83,7 +83,7 @@ public class CommandHandler {
 		try {
 			CommandInfo<?> handler = commands.get(command.getCommand());
 			if (handler == null) {
-				command.getSender().sendToClient(new ChatMessage(1, "Server", "Invalid command: " + command));
+				command.getSender().sendToClient(new ErrorMessage("Invalid command: " + command));
 			}
 			else {
 				handler.handleCommand(command);

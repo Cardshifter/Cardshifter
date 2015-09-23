@@ -93,7 +93,7 @@ public class Handlers {
 			server.trySetClientName(client, name);
 		}
 		catch (UserNameAlreadyInUseException | InvalidUserNameException e) {
-			client.sendToClient(new WelcomeMessage(0, false, e.getMessage()));
+			client.sendToClient(new ErrorMessage(e.getMessage()));
 			return;
 		}
 
@@ -110,7 +110,7 @@ public class Handlers {
 
 	public void play(StartGameRequest message, ClientIO client) {
         if (message.getOpponent() == client.getId()) {
-            client.sendToClient(new ChatMessage(server.getMainChat().getId(), "Server", "You cannot invite yourself."));
+            client.sendToClient(new ErrorMessage("You cannot invite yourself"));
             return;
         }
 		if (message.getOpponent() < 0) {
@@ -120,7 +120,7 @@ public class Handlers {
 			ClientIO target = server.getClients().get(message.getOpponent());
 			if (target == null) {
 				logger.warn("Invite sent to unknown user: " + message);
-				client.sendToClient(new InviteResponse(0, false));
+				client.sendToClient(new ErrorMessage("Invite sent to unknown user"));
 				return;
 			}
 			
