@@ -76,7 +76,6 @@ public class ServerConnectionTest {
 		client1.send(new LoginMessage("Tester1"));
 
 		WelcomeMessage welcome = client1.await(WelcomeMessage.class);
-		assertEquals(200, welcome.getStatus());
 		System.out.println(server.getClients());
 		assertEquals(server.getClients().size() + 1, welcome.getUserId());
 		userId = welcome.getUserId();
@@ -137,8 +136,8 @@ public class ServerConnectionTest {
 	public void testSameUserName() throws IOException, InterruptedException {
 		TestClient client2 = createTestClient();
 		client2.send(new LoginMessage(client1.getName()));
-		WelcomeMessage welcomeMessage = client2.await(WelcomeMessage.class);
-		assertFalse(welcomeMessage.isOK());
+		ErrorMessage message = client2.await(ErrorMessage.class);
+		assertEquals(message.getMessage(), "User name already in use by another client");
 	}
 
 	private static void assertUserFound(Collection<UserStatusMessage> users, String name) {
@@ -214,7 +213,6 @@ public class ServerConnectionTest {
 
 		client2.send(new LoginMessage("client2"));
 		WelcomeMessage welcomeMessage = client2.await(WelcomeMessage.class);
-		assertTrue(welcomeMessage.isOK());
 		int client2id = welcomeMessage.getUserId();
 
 		client1.await(UserStatusMessage.class);

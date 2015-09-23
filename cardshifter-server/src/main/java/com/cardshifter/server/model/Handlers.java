@@ -98,7 +98,7 @@ public class Handlers {
 		}
 
 		logger.info("Client is welcome!");
-		client.sendToClient(new WelcomeMessage(client.getId(), true, "OK"));
+		client.sendToClient(new WelcomeMessage(client.getId(), "OK"));
 		UserStatusMessage statusMessage = new UserStatusMessage(client.getId(), client.getName(), Status.ONLINE);
 		server.getClients().values().stream()
 			.filter(cl -> cl != client)
