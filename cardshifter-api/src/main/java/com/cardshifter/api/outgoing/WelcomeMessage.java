@@ -8,6 +8,7 @@ public class WelcomeMessage extends Message {
 	private static final int STATUS_OK = 200;
 	
 	private int userId;
+	private int status;
 	private String message;
 
 	/** Default constructor without params required for Jackson. */
@@ -24,6 +25,7 @@ public class WelcomeMessage extends Message {
 		super("loginresponse");
 		this.message = message;
 		this.userId = id;
+		this.status = STATUS_OK;
 	}
 
 	/** @return  This message */
@@ -36,7 +38,7 @@ public class WelcomeMessage extends Message {
 	 * @return Always 200.
 	 */
 	public int getStatus() {
-		return STATUS_OK;
+		return status;
 	}
 
 	/** @return  The Id of this user */
