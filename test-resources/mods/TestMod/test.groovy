@@ -121,3 +121,26 @@ from clearState test 'enchantment non bio' using {
     def player = you
     expect failure when enchant uses 'Enchant' withTarget creatur ok
 }
+
+from clearState test 'negated filter' using {
+    def spell = to you zone 'Hand' create {
+        spell {
+            targets 1 cards {
+                not {
+                    creatureType 'Bio'
+                }
+            }
+        }
+    }
+    def bio = to you zone 'Battlefield' create {
+        creature 'Bio'
+        health 1
+    }
+    def mech = to you zone 'Battlefield' create {
+        creature 'Mech'
+        health 1
+    }
+
+    expect failure when spell uses 'Use' withTarget bio ok
+    uses 'Use' on spell withTarget mech ok
+}

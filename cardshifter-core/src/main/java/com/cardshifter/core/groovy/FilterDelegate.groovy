@@ -20,7 +20,7 @@ class FilterDelegate {
         FilterDelegate filter = new FilterDelegate()
         def filterClosure = closure.rehydrate(filter, closure.owner, closure.thisObject)
         filterClosure.call()
-        assert !filter.isEmpty() : 'Filter cannot be empty.'
+        assert !filter.isEmpty() : 'Filter cannot be empty'
         return filter
     }
 
