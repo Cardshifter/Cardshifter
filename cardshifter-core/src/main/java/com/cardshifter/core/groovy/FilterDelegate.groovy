@@ -10,8 +10,9 @@ import com.cardshifter.modapi.phase.PhaseController
 import com.cardshifter.modapi.players.Players
 import net.zomis.cardshifter.ecs.effects.TargetFilter
 
+import java.util.stream.Collectors
+
 class FilterDelegate {
-    StringBuilder description = new StringBuilder()
 
     private List<GroovyFilter> filters = []
 
@@ -19,7 +20,7 @@ class FilterDelegate {
         FilterDelegate filter = new FilterDelegate()
         def filterClosure = closure.rehydrate(filter, closure.owner, closure.thisObject)
         filterClosure.call()
-        assert !filter.description.toString().isEmpty() : 'Empty filter detected.'
+        assert !filter.isEmpty() : 'Filter cannot be empty.'
         return filter
     }
 
@@ -34,15 +35,17 @@ class FilterDelegate {
                .inject(GroovyFilter.getIdentity().predicate) {result, element -> result.and(element.predicate)}
     }
 
-    private void addAnd() {
-        if (description.length() > 0) {
-            description.append(' ')
-        }
+    String getDescription() {
+        filters.stream()
+               .map({filter -> filter.description})
+               .collect(Collectors.joining(' '))
+    }
+
+    boolean isEmpty() {
+        filters.isEmpty()
     }
 
     def ownedBy(String owner) {
-        addAnd()
-        description.append("owned by $owner")
         filters.add(new GroovyFilter(
             predicate: {Entity source, Entity target ->
                 if (owner == 'you') {
@@ -67,8 +70,6 @@ class FilterDelegate {
     }
 
     def creatureType(String... type) {
-        addAnd()
-        description.append('creatures of type ' + String.join(' or ', type))
         filters.add(new GroovyFilter(
             predicate: {Entity source, Entity target ->
                 CreatureTypeComponent creatureType = target.getComponent(CreatureTypeComponent)
@@ -83,8 +84,6 @@ class FilterDelegate {
     }
 
     def zone(String... zone) {
-        addAnd()
-        description.append('on ' + String.join(' or ', zone))
         filters.add(new GroovyFilter(
             predicate: {Entity source, Entity target ->
                 CardComponent cardComponent = target.getComponent(CardComponent)
@@ -95,8 +94,6 @@ class FilterDelegate {
     }
 
     def creature(boolean creature) {
-        addAnd()
-        description.append(creature ? 'creatures' : 'non-creatures')
         filters.add(new GroovyFilter(
             predicate: {Entity source, Entity target ->
                 CreatureTypeComponent creatureType = target.getComponent(CreatureTypeComponent)
@@ -107,8 +104,6 @@ class FilterDelegate {
     }
 
     def player(boolean player) {
-        addAnd()
-        description.append(player ? 'players' : 'non-players')
         filters.add(new GroovyFilter(
             predicate: {Entity source, Entity target ->
                 PlayerComponent comp = target.getComponent(PlayerComponent)
@@ -119,8 +114,6 @@ class FilterDelegate {
     }
 
     def cardName(String... name) {
-        addAnd()
-        description.append('cards with name \'' + String.join("'/'", name) + '\'')
         filters.add(new GroovyFilter(
             predicate: {Entity source, Entity target ->
                 target.name in name
@@ -130,8 +123,6 @@ class FilterDelegate {
     }
 
     def thisCard() {
-        addAnd()
-        description.append('this card')
         filters.add(new GroovyFilter(
             predicate: {Entity source, Entity target ->
                 source == target
