@@ -121,3 +121,17 @@ from clearState test 'enchantment non bio' using {
     def player = you
     expect failure when enchant uses 'Enchant' withTarget creatur ok
 }
+
+from clearState test 'perish' using {
+    def card = to you zone 'Battlefield' create {
+        creature 'Mech'
+        health 1
+        onEndOfTurn {
+            perish()
+        }
+    }
+
+    assert !card.removed
+    uses 'End Turn' ok
+    assert card.removed
+}
