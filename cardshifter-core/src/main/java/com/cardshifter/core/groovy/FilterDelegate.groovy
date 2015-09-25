@@ -14,7 +14,7 @@ import java.util.stream.Collectors
 
 class FilterDelegate {
 
-    private List<GroovyFilter> filters = []
+    protected List<GroovyFilter> filters = []
 
     static FilterDelegate fromClosure(Closure closure) {
         FilterDelegate filter = new FilterDelegate()
@@ -128,6 +128,20 @@ class FilterDelegate {
                 source == target
             },
             description: 'this card'
+        ))
+    }
+
+    def not(Closure closure) {
+        closure.resolveStrategy = Closure.DELEGATE_FIRST
+        FilterDelegate deleg = fromClosure(closure)
+
+        filters.add(new GroovyFilter(
+            predicate: {Entity source, Entity target ->
+                !deleg.predicate.test(source, target)
+            },
+            description: deleg.filters.description.stream()
+                    .map({description -> "not $description"})
+                    .collect(Collectors.joining(' '))
         ))
     }
 
