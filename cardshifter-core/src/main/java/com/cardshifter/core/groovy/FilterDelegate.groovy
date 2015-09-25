@@ -72,12 +72,7 @@ class FilterDelegate {
     def creatureType(String... type) {
         filters.add(new GroovyFilter(
             predicate: {Entity source, Entity target ->
-                CreatureTypeComponent creatureType = target.getComponent(CreatureTypeComponent)
-                if (creatureType) {
-                    return creatureType.hasAny(type)
-                } else {
-                    return false
-                }
+                target.getComponent(CreatureTypeComponent)?.hasAny(type)
             },
             description: 'creatures of type ' + String.join(' or ', type)
         ))
@@ -96,8 +91,7 @@ class FilterDelegate {
     def creature(boolean creature) {
         filters.add(new GroovyFilter(
             predicate: {Entity source, Entity target ->
-                CreatureTypeComponent creatureType = target.getComponent(CreatureTypeComponent)
-                return creatureType != null
+                target.getComponent(CreatureTypeComponent) != null
             },
             description: creature ? 'creatures' : 'non-creatures'
         ))
@@ -106,8 +100,7 @@ class FilterDelegate {
     def player(boolean player) {
         filters.add(new GroovyFilter(
             predicate: {Entity source, Entity target ->
-                PlayerComponent comp = target.getComponent(PlayerComponent)
-                return comp != null
+                target.getComponent(PlayerComponent) != null
             },
             description: player ? 'players' : 'non-players'
         ))
