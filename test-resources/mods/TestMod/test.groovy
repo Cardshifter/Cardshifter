@@ -121,3 +121,74 @@ from clearState test 'enchantment non bio' using {
     def player = you
     expect failure when enchant uses 'Enchant' withTarget creatur ok
 }
+
+from clearState test 'negated filter' using {
+    def spell = to you zone 'Hand' create {
+        spell {
+            targets 1 cards {
+                not {
+                    creatureType 'Bio'
+                }
+            }
+        }
+    }
+    def bio = to you zone 'Battlefield' create {
+        creature 'Bio'
+        health 1
+    }
+    def mech = to you zone 'Battlefield' create {
+        creature 'Mech'
+        health 1
+    }
+
+    expect failure when spell uses 'Use' withTarget bio ok
+    uses 'Use' on spell withTarget mech ok
+}
+
+from clearState test 'complex negated filter' using {
+    def spell = to you zone 'Hand' create {
+        spell {
+            targets 1 cards {
+                not {
+                    creatureType "Greek"
+                    ownedBy "opponent"
+                }
+                zone 'Battlefield'
+            }
+        }
+    }
+
+    def yourGreek = to you zone 'Battlefield' create {creature 'Greek'}
+    def yourRoman = to you zone 'Battlefield' create {creature 'Roman'}
+    def theirGreek = to opponent zone 'Battlefield' create {creature 'Greek'}
+    def theirRoman = to opponent zone 'Battlefield' create {creature 'Roman'}
+
+    def targets = uses 'Use' on spell getAvailableTargets()
+    def expected = [yourGreek, yourRoman, theirRoman]
+    assert targets.containsAll(expected)
+    assert targets.size() == expected.size() // Shouldn't include anything else
+}
+
+from clearState test 'multiple negated filters' using {
+    def spell = to you zone 'Hand' create {
+        spell {
+            targets 1 cards {
+                not {
+                    creatureType "Greek"
+                }
+                not {
+                    ownedBy "opponent"
+                }
+                zone 'Battlefield'
+            }
+        }
+    }
+
+    def yourGreek = to you zone 'Battlefield' create {creature 'Greek'}
+    def yourRoman = to you zone 'Battlefield' create {creature 'Roman'}
+    def theirGreek = to opponent zone 'Battlefield' create {creature 'Greek'}
+    def theirRoman = to opponent zone 'Battlefield' create {creature 'Roman'}
+
+    def targets = uses 'Use' on spell getAvailableTargets()
+    assert targets == [yourRoman]
+}
