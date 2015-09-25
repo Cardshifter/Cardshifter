@@ -303,6 +303,11 @@ class EffectDelegate {
         }]
     }
 
+    def perish() {
+        description.append('Perish')
+        closures.add({source, event -> source.destroy()})
+    }
+
     static Entity cardModelByName(ECSGame game, String name) {
         def nameRetriever = AttributeRetriever.forAttribute(Attributes.NAME)
         def neutral = game.findEntities({entity ->
