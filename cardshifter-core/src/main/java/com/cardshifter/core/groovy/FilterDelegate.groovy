@@ -45,27 +45,27 @@ class FilterDelegate {
         filters.isEmpty()
     }
 
-    def ownedBy(String owner) {
+    def ownedBy(String player) {
         filters.add(new GroovyFilter(
             predicate: {Entity source, Entity target ->
-                if (owner == 'you') {
+                if (player == 'you') {
                     return Players.findOwnerFor(source) == Players.findOwnerFor(target)
                 }
-                if (owner == 'opponent') {
+                if (player == 'opponent') {
                     def targetOwner = Players.findOwnerFor(target)
                     return Players.findOwnerFor(source) != targetOwner && targetOwner != null
                 }
-                if (owner == 'current player' || owner == 'active') {
+                if (player == 'current player' || player == 'active') {
                     return ComponentRetriever.singleton(source.game, PhaseController).currentEntity ==
                             Players.findOwnerFor(target)
                 }
-                if (owner == 'inactive player') {
+                if (player == 'inactive player') {
                     return ComponentRetriever.singleton(source.game, PhaseController).currentEntity !=
                             Players.findOwnerFor(target)
                 }
-                assert false : 'Unknown owner string: ' + owner
-            },
-            description: "owned by $owner"
+                assert false : 'Unknown owner string: ' + player
+            } as TargetFilter,
+            description: "owned by $player"
         ))
     }
 
@@ -78,7 +78,7 @@ class FilterDelegate {
                 } else {
                     return false
                 }
-            },
+            } as TargetFilter,
             description: 'creatures of type ' + String.join(' or ', type)
         ))
     }
@@ -88,7 +88,7 @@ class FilterDelegate {
             predicate: {Entity source, Entity target ->
                 CardComponent cardComponent = target.getComponent(CardComponent)
                 Cards.isCard(target) && cardComponent.getCurrentZone() && cardComponent.getCurrentZone().getName() in zone
-            },
+            } as TargetFilter,
             description: 'on ' + String.join(' or ', zone)
         ))
     }
@@ -98,7 +98,7 @@ class FilterDelegate {
             predicate: {Entity source, Entity target ->
                 CreatureTypeComponent creatureType = target.getComponent(CreatureTypeComponent)
                 return creatureType != null
-            },
+            } as TargetFilter,
             description: creature ? 'creatures' : 'non-creatures'
         ))
     }
@@ -108,7 +108,7 @@ class FilterDelegate {
             predicate: {Entity source, Entity target ->
                 PlayerComponent comp = target.getComponent(PlayerComponent)
                 return comp != null
-            },
+            } as TargetFilter,
             description: player ? 'players' : 'non-players'
         ))
     }
@@ -117,7 +117,7 @@ class FilterDelegate {
         filters.add(new GroovyFilter(
             predicate: {Entity source, Entity target ->
                 target.name in name
-            },
+            } as TargetFilter,
             description: 'cards with name \'' + String.join("'/'", name) + '\''
         ))
     }
@@ -126,7 +126,7 @@ class FilterDelegate {
         filters.add(new GroovyFilter(
             predicate: {Entity source, Entity target ->
                 source == target
-            },
+            } as TargetFilter,
             description: 'this card'
         ))
     }
@@ -138,7 +138,7 @@ class FilterDelegate {
         filters.add(new GroovyFilter(
             predicate: {Entity source, Entity target ->
                 !deleg.predicate.test(source, target)
-            },
+            } as TargetFilter,
             description: deleg.filters.description.stream()
                     .map({description -> "not $description"})
                     .collect(Collectors.joining(' '))
