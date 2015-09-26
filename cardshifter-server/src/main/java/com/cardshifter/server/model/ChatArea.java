@@ -52,7 +52,7 @@ public class ChatArea implements IdObject {
 
 	public void incomingMessage(ChatMessage message, ClientIO client) {
 		if (!clients.contains(client)) {
-			client.sendToClient(new ErrorMessage("You are not inside chat " + id));
+			client.sendToClient(new ErrorMessage("You are not inside chat " + id, ErrorMessage.Cause.CLIENT));
 		}
 		else {
 			this.broadcast(new ChatMessage(id, client.getName(), message.getMessage()));

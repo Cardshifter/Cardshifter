@@ -83,7 +83,8 @@ public class CommandHandler {
 		try {
 			CommandInfo<?> handler = commands.get(command.getCommand());
 			if (handler == null) {
-				command.getSender().sendToClient(new ErrorMessage("Invalid command: " + command));
+				ErrorMessage message = new ErrorMessage("Invalid command: " + command, ErrorMessage.Cause.CLIENT);
+				command.getSender().sendToClient(message);
 			}
 			else {
 				handler.handleCommand(command);

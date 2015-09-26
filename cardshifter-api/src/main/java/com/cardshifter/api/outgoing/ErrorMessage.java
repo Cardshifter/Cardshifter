@@ -12,16 +12,13 @@ public class ErrorMessage extends Message {
 	private Cause cause;
 
 	public ErrorMessage() {
-		this("");
+		this("", Cause.SERVER);
 	}
 
 	/**
 	 * @param message Error message text
+	 * @param cause Who caused the error to occur?
 	 */
-	public ErrorMessage(String message) {
-		this(message, Cause.SERVER);
-	}
-
 	public ErrorMessage(String message, Cause cause) {
 		super("error");
 		this.message = message;

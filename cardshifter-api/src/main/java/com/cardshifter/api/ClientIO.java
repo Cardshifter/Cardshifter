@@ -50,7 +50,7 @@ public abstract class ClientIO implements IdObject {
 		}
 		catch (RuntimeException ex) {
 			logger.error("Error performing incoming message from " + this, ex);
-			sendToClient(new ErrorMessage(ex.toString()));
+			sendToClient(new ErrorMessage(ex.toString(), ErrorMessage.Cause.SERVER));
 		}
 	}
 	
