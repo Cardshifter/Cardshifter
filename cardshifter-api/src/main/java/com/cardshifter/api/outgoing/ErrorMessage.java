@@ -4,9 +4,14 @@ import com.cardshifter.api.messages.Message;
 
 public class ErrorMessage extends Message {
 
-	private String message;
+	public enum Cause {
+		CLIENT, SERVER
+	}
 
-    	public ErrorMessage() {
+	private String message;
+	private Cause cause;
+
+	public ErrorMessage() {
 		this("");
 	}
 
@@ -14,17 +19,26 @@ public class ErrorMessage extends Message {
 	 * @param message Error message text
 	 */
 	public ErrorMessage(String message) {
+		this(message, Cause.SERVER);
+	}
+
+	public ErrorMessage(String message, Cause cause) {
 		super("error");
 		this.message = message;
+		this.cause = cause;
 	}
 
 	public String getMessage() {
 		return message;
 	}
 
+	public Cause getCause() {
+		return cause;
+	}
+
 	@Override
 	public String toString() {
-		return "ErrorMessage [message=" + message + "]";
+		return "ErrorMessage [message=" + message + ", cause=" + cause + "]";
 	}
 
 }
