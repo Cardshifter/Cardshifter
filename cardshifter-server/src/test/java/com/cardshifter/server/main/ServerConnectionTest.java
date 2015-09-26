@@ -252,5 +252,16 @@ public class ServerConnectionTest {
 		// There shouldn't be a UserStatusMessage for client2
 		assertNoMessage(client1);
 	}
+
+	@Test(timeout = 5000)
+	public void testNoOfflineMessageIfNotLoggedIn() throws IOException, InterruptedException {
+		System.out.println("testNoOfflineMessageIfNotLoggedIn");
+		TestClient client2 = createTestClient();
+		client2.disconnect();
+
+		// Avoid race condition between UserStatusMessage and ServerStatusMessage sent by assertNoMessage
+        Thread.sleep(1000);
+		assertNoMessage(client1);
+	}
 	
 }
