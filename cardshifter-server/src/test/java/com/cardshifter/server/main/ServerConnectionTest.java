@@ -260,7 +260,7 @@ public class ServerConnectionTest {
 		client2.disconnect();
 
 		// Avoid race condition between UserStatusMessage and ServerStatusMessage sent by assertNoMessage
-        Thread.sleep(1000);
+		Thread.sleep(1000);
 		assertNoMessage(client1);
 	}
 	
