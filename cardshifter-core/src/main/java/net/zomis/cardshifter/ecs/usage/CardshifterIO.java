@@ -5,6 +5,7 @@ import com.cardshifter.api.config.DeckConfig;
 
 import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.outgoing.CardInfoMessage;
+import com.cardshifter.api.outgoing.ErrorMessage;
 import com.cardshifter.api.serial.ByteTransformer;
 import com.cardshifter.serialization.NormalReflection;
 import com.cardshifter.core.Log4jAdapter;
@@ -26,6 +27,7 @@ public class CardshifterIO {
 		module.setMixInAnnotation(Message.class, MixinMessage.class);
         module.setMixInAnnotation(CardInfoMessage.class, MixinCardInfoMessage.class);
         module.setMixInAnnotation(PlayerConfigMessage.class, MixinPlayerConfigMessage.class);
+		module.setMixInAnnotation(ErrorMessage.class, MixinErrorMessage.class);
 		mapper.registerModule(module);
 	}
 	

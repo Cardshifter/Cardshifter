@@ -29,13 +29,19 @@ public class ErrorMessage extends Message {
 		return message;
 	}
 
-	public Cause getCause() {
-		return cause;
+	/** Used when deserializing, see {@link net.zomis.cardshifter.ecs.usage.MixinErrorMessage}. */
+	public void setCause(String name) {
+		cause = Cause.valueOf(name.toUpperCase());
+	}
+
+	/** Used when serializing, see {@link net.zomis.cardshifter.ecs.usage.MixinErrorMessage}. */
+	public String getCause() {
+		return cause.toString().toLowerCase();
 	}
 
 	@Override
 	public String toString() {
-		return "ErrorMessage [message=" + message + ", cause=" + cause + "]";
+		return "ErrorMessage [message=" + message + ", cause=" + getCause() + "]";
 	}
 
 }
