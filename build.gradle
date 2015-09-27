@@ -159,6 +159,7 @@ ftpUpload.dependsOn javaModules().test
 
 task distAndTest(type: Zip) {
     dependsOn 'copyResources'
+    dependsOn 'createVersionFile'
     // same as 'dist' but without the classifier
     rename {
         println it
