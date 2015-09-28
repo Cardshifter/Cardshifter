@@ -21,8 +21,7 @@ class GroovyRunner implements GroovyModInterface {
     @Override
     void declareConfiguration(ECSGame game) {
         def scriptRunner = new ScriptRunner(classLoader, new Binding())
-        this.groovyMod = new GroovyMod(loader: classLoader, modDirectory: modDirectory,
-                binding: scriptRunner.binding, scriptRunner: scriptRunner)
+        this.groovyMod = new GroovyMod(modDirectory: modDirectory, scriptRunner: scriptRunner)
 
         File file = new File(modDirectory, "Game.groovy")
         scriptRunner.runScript(file, groovyMod)

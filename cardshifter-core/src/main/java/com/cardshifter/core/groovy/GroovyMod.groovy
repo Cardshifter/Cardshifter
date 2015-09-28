@@ -16,10 +16,8 @@ import static groovy.lang.Closure.DELEGATE_ONLY;
 
 public class GroovyMod {
 
-    ClassLoader loader
     File modDirectory
     ECSGame game
-    Binding binding
     ScriptRunner scriptRunner
     final CardDelegate cardDelegate = new CardDelegate(mod: this)
     private List<Closure> configClosure = []
