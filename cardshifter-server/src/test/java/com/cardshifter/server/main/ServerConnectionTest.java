@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.function.Predicate;
 
 import com.cardshifter.api.outgoing.*;
@@ -50,15 +51,18 @@ public class ServerConnectionTest {
 		return new TestClient(socketPort);
 	}
 	
-	private MainServer main;
 	private Server server;
 	private int socketPort;
 	private TestClient client1;
 	private int userId;
     private AvailableModsMessage mods;
 
-    @Before
-	public void setup() throws IOException, InterruptedException {
+	@Before
+	public void before() throws IOException, InterruptedException {
+		startServer(new Server());
+	}
+
+	private void startServer(Server serverInst) throws IOException, InterruptedException {
 		PropertyConfigurator.configure(getClass().getResourceAsStream("log4j.properties"));
 		ServerConfiguration config = ServerConfiguration.defaults();
 
@@ -66,7 +70,7 @@ public class ServerConnectionTest {
 		config.setPortSocket(0);
 		config.setPortWebsocket(0);
 
-		main = new MainServer(config);
+		MainServer main = new MainServer(config, serverInst);
 		main.getMods().loadExternal(Paths.get("../extra-resources/groovy"));
 		server = main.start();
 
@@ -255,12 +259,39 @@ public class ServerConnectionTest {
 
 	@Test(timeout = 5000)
 	public void testNoOfflineMessageIfNotLoggedIn() throws IOException, InterruptedException {
-		System.out.println("testNoOfflineMessageIfNotLoggedIn");
+		/* There's a race condition between a possible UserStatusMessage (if the test were to fail) and the
+		 * message sent by the server in response to the request from assertNoMessage. Therefore wait until
+		 * the server has processed the disconnection before continuing.
+		 *
+		 * See https://github.com/Cardshifter/Cardshifter/pull/410#discussion-diff-40526060 for discussion.
+		 */
+
+		shutdown();
+
+		class TestServer extends Server {
+			private CountDownLatch latch;
+
+			@Override
+			public void onDisconnected(ClientIO client) {
+				super.onDisconnected(client);
+				if (latch != null) {
+					latch.countDown();
+				}
+			}
+
+			public void setLatch(CountDownLatch latch) {
+				this.latch = latch;
+			}
+		}
+
+		CountDownLatch disconnectionLatch = new CountDownLatch(1);
+		startServer(new TestServer());
+		((TestServer) server).setLatch(disconnectionLatch);
+
 		TestClient client2 = createTestClient();
 		client2.disconnect();
 
-		// Avoid race condition between UserStatusMessage and ServerStatusMessage sent by assertNoMessage
-		Thread.sleep(1000);
+		disconnectionLatch.await();
 		assertNoMessage(client1);
 	}
 	
