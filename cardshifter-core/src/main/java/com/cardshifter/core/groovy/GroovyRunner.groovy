@@ -20,7 +20,7 @@ class GroovyRunner implements GroovyModInterface {
 
     @Override
     void declareConfiguration(ECSGame game) {
-        def scriptRunner = new ScriptRunner(classLoader, new Binding())
+        def scriptRunner = new ScriptRunner(classLoader)
         this.groovyMod = new GroovyMod(modDirectory: modDirectory, scriptRunner: scriptRunner)
 
         File file = new File(modDirectory, "Game.groovy")
@@ -43,7 +43,7 @@ class GroovyRunner implements GroovyModInterface {
         }
 
         def delegate = new TestDelegate(tests: result, mod: this)
-        def scriptRunner = new ScriptRunner(classLoader, new Binding())
+        def scriptRunner = new ScriptRunner(classLoader)
         scriptRunner.runScript(file, delegate)
 
         return result
@@ -63,9 +63,9 @@ class ScriptRunner {
     final ClassLoader classLoader
     final Binding binding
 
-    ScriptRunner(ClassLoader cl, Binding binding) {
+    ScriptRunner(ClassLoader cl) {
         this.classLoader = cl
-        this.binding = binding
+        this.binding = new Binding()
     }
 
     void runScript(File file, delegate) {
