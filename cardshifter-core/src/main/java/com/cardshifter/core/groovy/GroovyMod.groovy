@@ -20,6 +20,7 @@ public class GroovyMod {
     File modDirectory
     ECSGame game
     Binding binding
+    ScriptRunner scriptRunner
     final CardDelegate cardDelegate = new CardDelegate(mod: this)
     private List<Closure> configClosure = []
     private List<Closure> setupClosure = []
@@ -65,13 +66,7 @@ public class GroovyMod {
 
     void include(String fileName) {
         File file = findFile(fileName)
-
-        CompilerConfiguration cc = new CompilerConfiguration()
-        cc.setScriptBaseClass(DelegatingScript.class.getName())
-        GroovyShell sh = new GroovyShell(loader, binding, cc)
-        DelegatingScript script = (DelegatingScript) sh.parse(file)
-        script.setDelegate(this)
-        script.run()
+        scriptRunner.runScript(file, this)
         println "Included $fileName"
     }
 

@@ -19,14 +19,8 @@ class ZoneDelegate {
 
     def cardset(String name) {
         File file = new File(mod.modDirectory, "${name}.cardset")
-        CompilerConfiguration cc = new CompilerConfiguration()
-        cc.setScriptBaseClass(DelegatingScript.class.getName())
-        GroovyShell sh = new GroovyShell(mod.loader, mod.binding, cc)
-        DelegatingScript script = (DelegatingScript) sh.parse(file)
-        script.setDelegate(this)
-
         int size = zone.size()
-        script.run()
+        mod.scriptRunner.runScript(file, this)
         println "Include cardset $name: Included ${zone.size() - size} cards"
     }
 
