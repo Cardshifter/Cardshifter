@@ -44,7 +44,7 @@ ENCHANT_ACTION = "Enchant";
  */
 
 MANA = createResource("MANA")
-MANA_MAX = createResource("MANA_MAX")
+MAX_MANA = createResource("MAX_MANA")
 
 /**
  * Which Groovy files to include for this mod. See extra-resources/mods for details.
@@ -184,11 +184,11 @@ rules {
         if (event.oldPhase.owner != null) {  // if it's not the first turn of the game...
             you.drawCard()                   // ...draw a card
         }
-        // 1)  your mana_max is the lesser of...
-        // 2) ...1 + your mana_max
+        // 1)  your max_mana is the lesser of...
+        // 2) ...1 + your max_mana
         // 3) ... or 10, the maximum possible mana
-        you.mana_max = Math.min(1 + (int) you.mana_max, 10)
-        you.mana = you.mana_max      // current mana is set to mana_max
+        you.max_mana = Math.min(1 + (int) you.max_mana, 10)
+        you.mana = you.max_mana      // current mana is set to max_mana
 
         you.battlefield.forEach {    // for each card on your Battlefield...
             it.attack_available = 1  // cards that can attack are set to have an attack available
@@ -287,8 +287,8 @@ setup {
     playerDeckShuffle()
 
     systems {
-        gainResource(res: MANA_MAX, value: 1, untilMax: 10)
-        restoreResources(resource: MANA, value: MANA_MAX)
+        gainResource(res: MAX_MANA, value: 1, untilMax: 10)
+        restoreResources(resource: MANA, value: MAX_MANA)
 
         // Play
         playFromHand PLAY_ACTION
