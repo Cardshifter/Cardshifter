@@ -165,7 +165,7 @@ card('Waste Runner') {
     scrap 3
 }
 // testing for self-upgrading card
-card("Upgrado Mk I") {
+card("Konstructor Mk I") {
     creature "Mech"
     flavor "Upgrades itself on each new turn up to Mk V."
     attack 1
@@ -174,10 +174,10 @@ card("Upgrado Mk I") {
     manaCost 3
     scrap 1
     onStartOfTurn { summon 1 of "Upgrado Mk II" to "you" zone "Battlefield" }
-    onStartOfTurn { set HEALTH to 0 on { thisCard() } }
+    onStartOfTurn { perish() }
 }
-// tokens for Upgrado 
-card("Upgrado Mk II") {
+// tokens for Upgrado
+card("Konstructor Mk II") {
     creature "Mech"
     flavor "Upgrades itself on each new turn up to Mk V."
     token()
@@ -187,9 +187,9 @@ card("Upgrado Mk II") {
     scrap 2
     afterPlay { damage 1 on { creature true; ownedBy "opponent"; zone "Battlefield" } }
     onStartOfTurn { summon 1 of "Upgrado Mk III" to "you" zone "Battlefield" }
-    onStartOfTurn { set HEALTH to 0 on { thisCard() } }
+    onStartOfTurn { perish() }
 }
-card("Upgrado Mk III") {
+card("Konstructor Mk III") {
     creature "Mech"
     flavor "Upgrades itself on each new turn up to Mk V."
     token()
@@ -199,9 +199,9 @@ card("Upgrado Mk III") {
     scrap 3
     afterPlay { change SCRAP by 2 on "you" }
     onStartOfTurn { summon 1 of "Upgrado Mk IV" to "you" zone "Battlefield" }
-    onStartOfTurn { set HEALTH to 0 on { thisCard() } }
+    onStartOfTurn { perish() }
 }
-card("Upgrado Mk IV") {
+card("Konstructor Mk IV") {
     creature "Mech"
     flavor "Upgrades itself on each new turn up to Mk V."
     token()
@@ -211,9 +211,9 @@ card("Upgrado Mk IV") {
     scrap 4
     //whilePresent { change ATTACK, HEALTH by 1 withPriority 1 on { creatureType "Mech"; ownedBy "you"; zone "Battlefield" } }
     onStartOfTurn { summon 1 of "Upgrado Mk V" to "you" zone "Battlefield" }
-    onStartOfTurn { set HEALTH to 0 on { thisCard() } }
+    onStartOfTurn { perish() }
 }
-card("Upgrado Mk V") {
+card("Konstructor Mk V") {
     creature "Mech"
     flavor "Upgrades itself on each new turn up to Mk V."
     token()
