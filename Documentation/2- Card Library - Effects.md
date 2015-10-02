@@ -440,3 +440,19 @@ Examples:
     onDeath {
         summon 1 of "The Chopper" to "you" zone "Battlefield"
     }
+
+##Other miscellaneous effects
+
+####`perish()`
+
+When `perish()` is triggered, the card which has that property is removed from the Battlefield. 
+
+Examples:
+
+    // remove at end of opponent next turn
+    onEndOfTurn('opponent') { perish() }
+    // with random 10% roll at start of turn
+    onStartOfTurn { 
+        withProbably(0.1) { perish() }
+    }
+    
