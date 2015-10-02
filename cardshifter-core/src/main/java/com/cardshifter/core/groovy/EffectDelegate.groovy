@@ -308,6 +308,14 @@ class EffectDelegate {
         closures.add({source, event -> source.destroy()})
     }
 
+    def destroy(Object who) {
+        EntityConsumer action = {Entity source, Entity target ->
+            assert target : 'Invalid entity'
+            target.destroy()
+        }
+        targetedAction(action, "Destroy %who%").on(who)
+    }
+
     static Entity cardModelByName(ECSGame game, String name) {
         def nameRetriever = AttributeRetriever.forAttribute(Attributes.NAME)
         def neutral = game.findEntities({entity ->

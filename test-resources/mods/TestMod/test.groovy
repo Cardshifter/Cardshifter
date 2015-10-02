@@ -135,3 +135,24 @@ from clearState test 'perish' using {
     uses 'End Turn' ok
     assert card.removed
 }
+
+from clearState test 'destroy' using {
+    def card = to you zone 'Battlefield' create {
+        creature 'Mech'
+        health 999
+    }
+    def spell = to you zone 'Hand' create {
+        spell {
+            targets 1 cards {
+                creature true
+            }
+            afterPlay {
+                destroy targets
+            }
+        }
+    }
+
+    assert !card.removed
+    uses 'Use' on spell withTarget card ok
+    assert card.removed
+}
