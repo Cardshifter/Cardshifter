@@ -12,3 +12,17 @@ card('E.M.P.') {
 		damage 2 on targets
 	}
 }
+card('Trapped Socket') {
+    scrapCost 3
+    // destroy 1 target creature
+    spell {
+        targets 1 cards {
+            creature true
+            zone "Battlefield"
+        }
+    }
+    afterPlay {
+        // #417 destroy effect
+        damage 99 on targets
+    }
+}
