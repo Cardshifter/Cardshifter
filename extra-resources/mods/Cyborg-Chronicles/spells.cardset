@@ -13,7 +13,7 @@ card('E.M.P.') {
 	}
 }
 card('Trapped Socket') {
-flavor "Always put pointy stuff into power outlets!"
+    flavor "Always put pointy stuff into power outlets!"
     scrapCost 3
     // destroy 1 target creature
     spell {

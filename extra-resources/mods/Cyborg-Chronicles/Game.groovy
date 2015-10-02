@@ -145,7 +145,7 @@ rules {
             it.deck.shuffle()
             it.drawCards(5)
         }
-        // Allow mulligan at  startof game
+        // Allow mulligan at start of game
         mulliganIndividual()
     }
 
@@ -241,6 +241,11 @@ rules {
         you.mana = you.mana_max
         // for each card on your Battlefield...
         you.battlefield.forEach {
+
+            // CYBORG CHRONICLES MECHANIC:
+            // ...restore their health to their max_health
+            it.health = it.max_health
+
             // ...cards that can attack are set to have an attack available
             it.attack_available = 1
             // cards that have any sickness...
@@ -257,17 +262,6 @@ rules {
         if (you == null) {
             // ...return from this method without doing anything
             return
-        }
-        // CYBORG-CHRONICLES MECHANIC:
-        // for each of your cards on Battlefield...
-        you.battlefield.forEach {
-            // ...restore their health to their max_health
-            it.health = it.max_health
-        }
-        // for each of your opponent's cards on Battlefield...
-        you.opponent.battlefield.forEach {
-            // ...restore their health to their max_health
-            it.health = it.max_health
         }
     }
 
