@@ -164,7 +164,7 @@ card('Waste Runner') {
     manaCost 5
     scrap 3
 }
-// testing for self-upgrading card
+// self-upgrading card "Konstructor"
 card("Konstructor Mk I") {
     creature "Mech"
     flavor "Upgrades itself on each new turn up to Mk V."
@@ -176,7 +176,6 @@ card("Konstructor Mk I") {
     onStartOfTurn { summon 1 of "Upgrado Mk II" to "you" zone "Battlefield" }
     onStartOfTurn { perish() }
 }
-// tokens for Upgrado
 card("Konstructor Mk II") {
     creature "Mech"
     flavor "Upgrades itself on each new turn up to Mk V."
@@ -209,7 +208,7 @@ card("Konstructor Mk IV") {
     health 6
     sickness 0
     scrap 4
-    //whilePresent { change ATTACK, HEALTH by 1 withPriority 1 on { creatureType "Mech"; ownedBy "you"; zone "Battlefield" } }
+    whilePresent { change ATTACK, HEALTH by 1 withPriority 1 on { creatureType "Mech"; ownedBy "you"; zone "Battlefield" } }
     onStartOfTurn { summon 1 of "Upgrado Mk V" to "you" zone "Battlefield" }
     onStartOfTurn { perish() }
 }
@@ -223,5 +222,5 @@ card("Konstructor Mk V") {
     scrap 5
     afterPlay { heal 3 on "you" }
     afterPlay { damage 3 on "opponent" }
-    //whilePresent { change ATTACK, HEALTH by -1 withPriority 1 on { creatureType "Mech"; ownedBy "opponent"; zone "Battlefield" } }
+    whilePresent { change ATTACK, HEALTH by -1 withPriority 1 on { creatureType "Mech"; ownedBy "opponent"; zone "Battlefield" } }
 }
