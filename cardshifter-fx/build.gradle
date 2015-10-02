@@ -5,16 +5,5 @@ dependencies {
 }
 
 apply plugin: 'application'
-apply plugin: 'com.github.johnrengelman.shadow'
 
 mainClassName = 'com.cardshifter.client.GameClient'
-
-task createShadowedJar(type: Copy) {
-    dependsOn 'shadowJar'
-    from('build/libs')
-    into("$project.parent.buildDir/libs")
-    include('*.jar')
-    rename {
-        it.replace('-all', '')
-    }
-}
