@@ -50,7 +50,15 @@ class WhilePresentDelegate {
             [withPriority: {int priority ->
                 [on: {Closure filter ->
                     addModifier(resources, priority, filter, {deleg ->
-                        'Give ' + deleg.description + ' ' + change + ' ' + resources.join(' and ')
+                        String changeStr
+                        if (change == 0) {
+                            changeStr = 'unchanged'
+                        }
+                        else {
+                            changeStr = [change.abs(), change < 0 ? 'less' : 'more'].join(' ')
+                        }
+
+                        [deleg.description.capitalize(), 'have', changeStr, resources.join(' and ')].join(' ')
                     }, {Entity source, Entity target, ECSResource resource, int actualValue ->
                         actualValue + change
                     })
@@ -64,7 +72,7 @@ class WhilePresentDelegate {
             [withPriority: {int priority ->
                 [on: {Closure filter ->
                     addModifier(resources, priority, filter, { deleg ->
-                        'Set ' + resources.join(' and ') + ' to ' + deleg.description + ' ' + change
+                        [deleg.description.capitalize(), 'have', resources.join(' and '), 'set to', change].join(' ')
                     }, {Entity source, Entity target, ECSResource resource, int actualValue ->
                           change
                     })
