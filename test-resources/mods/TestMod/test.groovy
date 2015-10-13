@@ -156,3 +156,27 @@ from clearState test 'destroy' using {
     uses 'Use' on spell withTarget card ok
     assert card.removed
 }
+
+from clearState test 'simple effect description' using {
+    def card = to you zone 'Hand' create {
+        creature 'Bio'
+        afterPlay {
+            perish()
+        }
+    }
+    def descr = card.getComponent(net.zomis.cardshifter.ecs.effects.EffectComponent.class).getDescription()
+    assert descr == "Perish"
+}
+
+from clearState test 'onEndOfTurn effect description' using {
+    def card = to you zone 'Hand' create {
+        creature 'Bio'
+        onEndOfTurn {
+            change ATTACK by 1 on {
+                thisCard()
+            }
+        }
+    }
+    def descr = card.getComponent(net.zomis.cardshifter.ecs.effects.EffectComponent.class).getDescription()
+    assert descr == "Change ATTACK by 1 on this card\n\n at end of your turn"
+}
