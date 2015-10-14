@@ -157,6 +157,12 @@ from clearState test 'destroy' using {
     assert card.removed
 }
 
+String getDescription(entity) {
+    String descr = entity.getComponent(net.zomis.cardshifter.ecs.effects.EffectComponent.class).getDescription()
+    // Some descriptions includes newlines that are later stripped
+    descr.replace('\n', '')
+}
+
 from clearState test 'simple effect description' using {
     def card = to you zone 'Hand' create {
         creature 'Bio'
@@ -164,8 +170,7 @@ from clearState test 'simple effect description' using {
             perish()
         }
     }
-    def descr = card.getComponent(net.zomis.cardshifter.ecs.effects.EffectComponent.class).getDescription()
-    assert descr == "Perish"
+    assert getDescription(card) == "Perish"
 }
 
 from clearState test 'onEndOfTurn effect description' using {
@@ -177,6 +182,5 @@ from clearState test 'onEndOfTurn effect description' using {
             }
         }
     }
-    def descr = card.getComponent(net.zomis.cardshifter.ecs.effects.EffectComponent.class).getDescription()
-    assert descr == "Change ATTACK by 1 on this card\n\n at end of your turn"
+    assert getDescription(card) == "Change ATTACK by 1 on this card at end of your turn"
 }
