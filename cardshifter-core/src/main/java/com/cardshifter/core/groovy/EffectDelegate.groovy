@@ -24,7 +24,7 @@ class EffectDelegate {
         return delegate
     }
 
-    StringBuilder description = new StringBuilder()
+    EffectDescription description = new EffectDescription()
 
     /**
      * List of closures to perform, where each closure has the parameters (Entity, Object),
