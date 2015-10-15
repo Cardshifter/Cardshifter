@@ -158,17 +158,17 @@ public class GeneralSystems {
     static <T extends IEvent> void triggerEndOfTurn(Entity entity, String player, Class<T> eventClass, BiPredicate<Entity, T> predicate, Closure closure) {
         EffectDelegate effect = EffectDelegate.create(closure, false)
         switch (player) {
-            case 'you':
+            case 'your':
                 effect.description.trigger = Trigger.END_OF_YOUR_TURN
                 break
-            case 'opponent':
+            case 'opponents':
                 effect.description.trigger = Trigger.END_OF_OPPONENTS_TURN
                 break
             case 'all':
                 effect.description.trigger = Trigger.END_OF_ANY_TURN
                 break
             default:
-                assert false : 'Player should be either "you", "opponent" or "all"'
+                assert false : "Player should be either 'your', 'opponents' or 'all', not $player"
         }
         def eff = new Effects();
         addEffect(entity,
@@ -281,7 +281,7 @@ public class GeneralSystems {
         }
 
         CardDelegate.metaClass.onEndOfTurn << {String turn, Closure closure ->
-            triggerAfter((Entity) entity(), "%description% at end of $turn turn", PhaseStartEvent.class,
+            triggerEndOfTurn((Entity) entity(), turn, PhaseStartEvent.class,
                     {Entity source, PhaseStartEvent event -> ownerMatch(turn, Players.findOwnerFor(source), event.getOldPhase().getOwner())}, closure)
         }
 

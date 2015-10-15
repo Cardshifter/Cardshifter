@@ -182,5 +182,5 @@ from clearState test 'onEndOfTurn effect description' using {
             }
         }
     }
-    assert getDescription(card) == "Change ATTACK by 1 on this card at end of your turn"
+    assert getDescription(card) == "Change ATTACK by 1 on this card at the end of your turn"
 }

@@ -35,6 +35,9 @@ class EffectDescription {
         }
         descr.append(built)
 
+        if (descr.length() > 0 && trigger.text.length() > 0) {
+            descr.append(' ')
+        }
         descr.append(trigger.text)
     }
 
