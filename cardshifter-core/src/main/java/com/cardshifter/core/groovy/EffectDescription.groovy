@@ -66,6 +66,12 @@ class EffectDescription {
             descr.append(' ')
         }
         descr.append(trigger.text)
+
+        if (descr.length() > 0 && !descr.toString().endsWith('.')) {
+            descr.append('.')
+        }
+
+        return descr.toString()
     }
 
     public void append(String string) {
