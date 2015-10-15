@@ -155,6 +155,34 @@ public class GeneralSystems {
         )
     }
 
+    static <T extends IEvent> void triggerEndOfTurn(Entity entity, String player, Class<T> eventClass, BiPredicate<Entity, T> predicate, Closure closure) {
+        EffectDelegate effect = EffectDelegate.create(closure, false)
+        switch (player) {
+            case 'you':
+                effect.description.trigger = Trigger.END_OF_YOUR_TURN
+                break
+            case 'opponent':
+                effect.description.trigger = Trigger.END_OF_OPPONENTS_TURN
+                break
+            case 'all':
+                effect.description.trigger = Trigger.END_OF_ANY_TURN
+                break
+            default:
+                assert false : 'Player should be either "you", "opponent" or "all"'
+        }
+        def eff = new Effects();
+        addEffect(entity,
+                eff.described(effect.description.toString(),
+                        eff.giveSelf(
+                                eff.triggerSystem(eventClass,
+                                        {Entity me, T event -> predicate.test(me, event)},
+                                        {Entity source, T event -> effect.perform(source)}
+                                )
+                        )
+                )
+        )
+    }
+
     private static boolean ownerMatch(String str, Entity expected, Entity actual) {
         if (str == 'your') {
             return expected == actual
