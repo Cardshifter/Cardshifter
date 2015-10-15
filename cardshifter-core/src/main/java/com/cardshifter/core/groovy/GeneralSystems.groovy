@@ -157,19 +157,7 @@ public class GeneralSystems {
 
     static <T extends IEvent> void triggerEndOfTurn(Entity entity, String player, Class<T> eventClass, BiPredicate<Entity, T> predicate, Closure closure) {
         EffectDelegate effect = EffectDelegate.create(closure, false)
-        switch (player) {
-            case 'your':
-                effect.description.trigger = Trigger.END_OF_YOUR_TURN
-                break
-            case 'opponents':
-                effect.description.trigger = Trigger.END_OF_OPPONENTS_TURN
-                break
-            case 'all':
-                effect.description.trigger = Trigger.END_OF_ANY_TURN
-                break
-            default:
-                assert false : "Player should be either 'your', 'opponents' or 'all', not $player"
-        }
+        effect.description.trigger = Trigger.forEndOfTurn(player)
         def eff = new Effects();
         addEffect(entity,
                 eff.described(effect.description.toString(),

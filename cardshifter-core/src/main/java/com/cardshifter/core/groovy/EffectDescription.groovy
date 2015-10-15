@@ -14,6 +14,33 @@ enum Trigger {
     END_OF_ANY_TURN(text: 'at the end of a turn')
 
     String text
+
+    static Trigger forEndOfTurn(String player) {
+        switch (player) {
+            case 'your':
+                return END_OF_YOUR_TURN
+            case 'opponents':
+                return END_OF_OPPONENTS_TURN
+            case 'all':
+                return END_OF_ANY_TURN
+            default:
+                assert false : "Player should be either 'your', 'opponents' or 'all', not $player"
+        }
+    }
+
+    static Trigger forStartOfTurn(String player) {
+        switch (player) {
+            case 'your':
+                return END_OF_YOUR_TURN
+            case 'opponents':
+                return END_OF_OPPONENTS_TURN
+            case 'all':
+                return END_OF_ANY_TURN
+            default:
+                assert false : "Player should be either 'your', 'opponents' or 'all', not $player"
+        }
+    }
+
 }
 
 class EffectDescription {
