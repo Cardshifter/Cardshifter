@@ -23,17 +23,13 @@ import com.cardshifter.modapi.base.Entity
 import com.cardshifter.modapi.base.PlayerComponent
 import com.cardshifter.modapi.cards.BattlefieldComponent
 import com.cardshifter.modapi.cards.CardComponent
-import com.cardshifter.modapi.cards.DamageConstantWhenOutOfCardsSystem
 import com.cardshifter.modapi.cards.DeckComponent
 import com.cardshifter.modapi.cards.DrawCardAtBeginningOfTurnSystem
-import com.cardshifter.modapi.cards.DrawCardEvent
 import com.cardshifter.modapi.cards.DrawStartCards
 import com.cardshifter.modapi.cards.HandComponent
-import com.cardshifter.modapi.cards.LimitedHandSizeSystem
 import com.cardshifter.modapi.cards.MulliganSingleCards
 import com.cardshifter.modapi.cards.PlayEntersBattlefieldSystem
 import com.cardshifter.modapi.cards.PlayFromHandSystem
-import com.cardshifter.modapi.cards.RemoveDeadEntityFromZoneSystem
 import com.cardshifter.modapi.cards.ZoneChangeEvent
 import com.cardshifter.modapi.cards.ZoneComponent
 import com.cardshifter.modapi.events.EntityRemoveEvent
@@ -44,9 +40,7 @@ import com.cardshifter.modapi.phase.PhaseStartEvent
 import com.cardshifter.modapi.phase.RestoreResourcesSystem
 import com.cardshifter.modapi.players.Players
 import com.cardshifter.modapi.resources.ECSResource
-import com.cardshifter.modapi.resources.GameOverIfNoHealth
 import com.cardshifter.modapi.resources.ResourceModifierComponent
-import com.cardshifter.modapi.resources.ResourceRecountSystem
 import com.cardshifter.modapi.resources.RestoreResourcesToSystem
 import net.zomis.cardshifter.ecs.effects.EffectActionSystem
 import net.zomis.cardshifter.ecs.effects.EffectComponent
@@ -58,7 +52,6 @@ import net.zomis.cardshifter.ecs.effects.GameEffect
 import net.zomis.cardshifter.ecs.effects.TargetFilter
 import net.zomis.cardshifter.ecs.usage.ApplyAfterAttack
 import net.zomis.cardshifter.ecs.usage.DestroyAfterUseSystem
-import net.zomis.cardshifter.ecs.usage.LastPlayersStandingEndsGame
 import net.zomis.cardshifter.ecs.usage.ScrapSystem
 
 import java.util.function.BiPredicate
@@ -66,7 +59,6 @@ import java.util.function.Consumer
 import java.util.function.Predicate
 import java.util.function.ToIntFunction
 import java.util.function.UnaryOperator
-import java.util.stream.Collectors
 
 class AttackSystemDelegate {
     ECSGame game
@@ -140,24 +132,9 @@ public class GeneralSystems {
         )
     }
 
-    static <T extends IEvent> void triggerAfter(Entity entity, String description, Class<T> eventClass, BiPredicate<Entity, T> predicate, Closure closure) {
+    static <T extends IEvent> void triggerAfter(Entity entity, Trigger trigger, Class<T> eventClass, BiPredicate<Entity, T> predicate, Closure closure) {
         EffectDelegate effect = EffectDelegate.create(closure, false)
-        def eff = new Effects();
-        addEffect(entity,
-                eff.described(description.replace("%description%", effect.description.toString()),
-                        eff.giveSelf(
-                                eff.triggerSystem(eventClass,
-                                        {Entity me, T event -> predicate.test(me, event)},
-                                        {Entity source, T event -> effect.perform(source)}
-                                )
-                        )
-                )
-        )
-    }
-
-    static <T extends IEvent> void triggerEndOfTurn(Entity entity, String player, Class<T> eventClass, BiPredicate<Entity, T> predicate, Closure closure) {
-        EffectDelegate effect = EffectDelegate.create(closure, false)
-        effect.description.trigger = Trigger.forEndOfTurn(player)
+        effect.description.trigger = trigger
         def eff = new Effects();
         addEffect(entity,
                 eff.described(effect.description.toString(),
@@ -269,7 +246,7 @@ public class GeneralSystems {
         }
 
         CardDelegate.metaClass.onEndOfTurn << {String turn, Closure closure ->
-            triggerEndOfTurn((Entity) entity(), turn, PhaseStartEvent.class,
+            triggerAfter((Entity) entity(), Trigger.forEndOfTurn(turn), PhaseStartEvent.class,
                     {Entity source, PhaseStartEvent event -> ownerMatch(turn, Players.findOwnerFor(source), event.getOldPhase().getOwner())}, closure)
         }
 
@@ -278,7 +255,7 @@ public class GeneralSystems {
         }
 
         CardDelegate.metaClass.onStartOfTurn << {String turn, Closure closure ->
-            triggerAfter((Entity) entity(), "%description% at start of $turn turn", PhaseStartEvent.class,
+            triggerAfter((Entity) entity(), Trigger.forStartOfTurn(turn), PhaseStartEvent.class,
                     {Entity source, PhaseStartEvent event -> ownerMatch(turn, Players.findOwnerFor(source), event.getNewPhase().getOwner())}, closure)
         }
 

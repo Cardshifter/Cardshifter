@@ -31,11 +31,11 @@ enum Trigger {
     static Trigger forStartOfTurn(String player) {
         switch (player) {
             case 'your':
-                return END_OF_YOUR_TURN
+                return START_OF_YOUR_TURN
             case 'opponents':
-                return END_OF_OPPONENTS_TURN
+                return START_OF_OPPONENTS_TURN
             case 'all':
-                return END_OF_ANY_TURN
+                return START_OF_ANY_TURN
             default:
                 assert false : "Player should be either 'your', 'opponents' or 'all', not $player"
         }
