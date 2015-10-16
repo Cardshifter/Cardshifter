@@ -132,9 +132,9 @@ public class GeneralSystems {
         )
     }
 
-    static <T extends IEvent> void triggerAfter(Entity entity, Trigger trigger, Class<T> eventClass, BiPredicate<Entity, T> predicate, Closure closure) {
+    static <T extends IEvent> void triggerAfter(Entity entity, String triggerId, Class<T> eventClass, BiPredicate<Entity, T> predicate, Closure closure) {
         EffectDelegate effect = EffectDelegate.create(closure, false)
-        effect.description.trigger = trigger
+        effect.description.triggerId = triggerId
         def eff = new Effects();
         addEffect(entity,
                 eff.described(effect.description.toString(),
@@ -146,6 +146,37 @@ public class GeneralSystems {
                         )
                 )
         )
+    }
+
+    private static getTriggerId(String phase, String player) {
+        switch (phase) {
+            case 'startOfTurn':
+                switch (player) {
+                    case 'your':
+                        return 'startOfYourTurn'
+                    case 'opponents':
+                        return 'startOfOpponentsTurn'
+                    case 'all':
+                        return 'startOfAnyTurn'
+                    default:
+                        assert false: "Player should be either 'your', 'opponents' or 'all', not $player"
+                }
+                break
+            case 'endOfTurn':
+                switch (player) {
+                    case 'your':
+                        return 'endOfYourTurn'
+                    case 'opponents':
+                        return 'endOfOpponentsTurn'
+                    case 'all':
+                        return 'endOfAnyTurn'
+                    default:
+                        assert false: "Player should be either 'your', 'opponents' or 'all', not $player"
+                }
+                break
+            default:
+                assert false : "Phase should be 'startOfTurn' or 'endOfTurn', not $phase"
+        }
     }
 
     private static boolean ownerMatch(String str, Entity expected, Entity actual) {
@@ -246,7 +277,7 @@ public class GeneralSystems {
         }
 
         CardDelegate.metaClass.onEndOfTurn << {String turn, Closure closure ->
-            triggerAfter((Entity) entity(), Trigger.forEndOfTurn(turn), PhaseStartEvent.class,
+            triggerAfter((Entity) entity(), getTriggerId('endOfTurn', turn), PhaseStartEvent.class,
                     {Entity source, PhaseStartEvent event -> ownerMatch(turn, Players.findOwnerFor(source), event.getOldPhase().getOwner())}, closure)
         }
 
@@ -255,7 +286,7 @@ public class GeneralSystems {
         }
 
         CardDelegate.metaClass.onStartOfTurn << {String turn, Closure closure ->
-            triggerAfter((Entity) entity(), Trigger.forStartOfTurn(turn), PhaseStartEvent.class,
+            triggerAfter((Entity) entity(), getTriggerId('startOfTurn', turn), PhaseStartEvent.class,
                     {Entity source, PhaseStartEvent event -> ownerMatch(turn, Players.findOwnerFor(source), event.getNewPhase().getOwner())}, closure)
         }
 
@@ -339,6 +370,8 @@ public class GeneralSystems {
         SystemsDelegate.metaClass.targetFilterSystem << {String name ->
             addSystem new EffectTargetFilterSystem(name)
         }
+
+        EffectDescription.setupStandardTriggers()
 
     }
 
