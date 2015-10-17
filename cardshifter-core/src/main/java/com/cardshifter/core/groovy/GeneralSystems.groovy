@@ -117,11 +117,12 @@ public class GeneralSystems {
         entity.addComponent(effect)
     }
 
-    static <T extends IEvent> void triggerBefore(Entity entity, String description, Class<T> eventClass, BiPredicate<Entity, T> predicate, Closure closure) {
+    static <T extends IEvent> void triggerBefore(Entity entity, String triggerId, Class<T> eventClass, BiPredicate<Entity, T> predicate, Closure closure) {
         EffectDelegate effect = EffectDelegate.create(closure, false)
+        effect.description.triggerId = triggerId
         def eff = new Effects();
         addEffect(entity,
-                eff.described(description.replace("%description%", effect.description.toString()),
+                eff.described(effect.description.toString(),
                         eff.giveSelf(
                                 eff.triggerSystemBefore(eventClass,
                                         {Entity me, T event -> predicate.test(me, event)},
@@ -283,7 +284,7 @@ public class GeneralSystems {
         }
 
         CardDelegate.metaClass.onDeath << {Closure closure ->
-            triggerBefore((Entity) entity(), 'When this dies, %description%', EntityRemoveEvent.class,
+            triggerBefore((Entity) entity(), 'death', EntityRemoveEvent.class,
                     {Entity source, EntityRemoveEvent event -> source == event.entity}, closure)
         }
 

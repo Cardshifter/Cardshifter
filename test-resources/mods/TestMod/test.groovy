@@ -184,3 +184,13 @@ from clearState test 'onEndOfTurn effect description' using {
     }
     assert getDescription(card) == "Change ATTACK by 1 on this card at the end of your turn."
 }
+
+from clearState test 'onDeath effect description' using {
+    def card = to you zone 'Hand' create {
+        creature 'Bio'
+        onDeath {
+            perish()
+        }
+    }
+    assert getDescription(card) == 'Perish when this dies.'
+}

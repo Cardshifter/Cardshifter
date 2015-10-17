@@ -19,7 +19,8 @@ class EffectDescription {
                 startOfAnyTurn: 'at the start of a turn',
                 endOfYourTurn: 'at the end of your turn',
                 endOfOpponentsTurn: 'at the end of the opponent\'s turn',
-                endOfAnyTurn: 'at the end of a turn'
+                endOfAnyTurn: 'at the end of a turn',
+                death: 'when this dies'
         ])
     }
 
