@@ -6,7 +6,7 @@ class EffectDescription {
      * The description (value of map) should be cased and punctuated as if in the middle of a sentence. This makes it
      * possible to later change the ordering of description components. It's easier to capitalize and add punctuation
      * later than the reverse. A map is useful instead of enum et al because it's runtime extensible. */
-    static Map triggerDescription = new HashMap<String, String>()
+    static Map<String, String> triggerDescription = new HashMap()
 
     String triggerId
     private StringBuilder builder = new StringBuilder()
@@ -24,25 +24,11 @@ class EffectDescription {
     }
 
     public String toString() {
-        StringBuilder descr = new StringBuilder()
-
-        def built = builder.toString()
-        if (descr.length() == 0) {
-            built = built.capitalize()
+        SentenceBuilder.build {
+            text builder.toString()
+            separator ' '
+            text triggerDescription.getOrDefault(triggerId, '')
         }
-        descr.append(built)
-
-        String triggerText = triggerDescription.getOrDefault(triggerId, '')
-        if (descr.length() > 0 && triggerText.length() > 0) {
-            descr.append(' ')
-        }
-        descr.append(triggerText)
-
-        if (descr.length() > 0 && !descr.toString().endsWith('.')) {
-            descr.append('.')
-        }
-
-        return descr.toString()
     }
 
     public void append(String string) {
