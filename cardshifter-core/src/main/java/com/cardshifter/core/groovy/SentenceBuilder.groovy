@@ -33,7 +33,7 @@ class SentenceBuilder {
     }
 
     /**
-     * Add a separator if not already present, e.g. ' ' or ', '.
+     * Add a separator if not already present and it's not the start of the sentence, e.g. ' ' or ', '.
      */
     void separator(String sep) {
         if (stringBuilder.length() > 0 && !stringBuilder.toString().endsWith(sep)) {
