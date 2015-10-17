@@ -151,22 +151,16 @@ public class GeneralSystems {
     private static getTriggerId(String phase, String player) {
         def id = new StringBuilder();
 
-        if (phase == 'startOfTurn') {
-            id.append('start')
-        } else if (phase == 'endOfTurn') {
-            id.append('end')
-        } else {
-            assert false: "Phase cannot be $phase"
-        }
+        assert phase in ['start', 'end']
+        id.append(phase)
 
         id.append('Of')
 
-        if (player == 'your') {
-            id.append('Your')
-        } else if (player == 'opponents') {
-            id.append('Opponents')
+        assert player in ['your', 'opponents', 'all']
+        if (player == 'all') {
+            id.append('Any')
         } else {
-            assert false: "Player cannot be $player"
+            id.append(player.capitalize())
         }
 
         id.append('Turn')
@@ -272,7 +266,7 @@ public class GeneralSystems {
         }
 
         CardDelegate.metaClass.onEndOfTurn << {String turn, Closure closure ->
-            triggerAfter((Entity) entity(), getTriggerId('endOfTurn', turn), PhaseStartEvent.class,
+            triggerAfter((Entity) entity(), getTriggerId('end', turn), PhaseStartEvent.class,
                     {Entity source, PhaseStartEvent event -> ownerMatch(turn, Players.findOwnerFor(source), event.getOldPhase().getOwner())}, closure)
         }
 
@@ -281,7 +275,7 @@ public class GeneralSystems {
         }
 
         CardDelegate.metaClass.onStartOfTurn << {String turn, Closure closure ->
-            triggerAfter((Entity) entity(), getTriggerId('startOfTurn', turn), PhaseStartEvent.class,
+            triggerAfter((Entity) entity(), getTriggerId('start', turn), PhaseStartEvent.class,
                     {Entity source, PhaseStartEvent event -> ownerMatch(turn, Players.findOwnerFor(source), event.getNewPhase().getOwner())}, closure)
         }
 
