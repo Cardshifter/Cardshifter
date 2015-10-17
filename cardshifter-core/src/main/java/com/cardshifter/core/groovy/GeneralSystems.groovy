@@ -149,34 +149,29 @@ public class GeneralSystems {
     }
 
     private static getTriggerId(String phase, String player) {
-        switch (phase) {
-            case 'startOfTurn':
-                switch (player) {
-                    case 'your':
-                        return 'startOfYourTurn'
-                    case 'opponents':
-                        return 'startOfOpponentsTurn'
-                    case 'all':
-                        return 'startOfAnyTurn'
-                    default:
-                        assert false: "Player should be either 'your', 'opponents' or 'all', not $player"
-                }
-                break
-            case 'endOfTurn':
-                switch (player) {
-                    case 'your':
-                        return 'endOfYourTurn'
-                    case 'opponents':
-                        return 'endOfOpponentsTurn'
-                    case 'all':
-                        return 'endOfAnyTurn'
-                    default:
-                        assert false: "Player should be either 'your', 'opponents' or 'all', not $player"
-                }
-                break
-            default:
-                assert false : "Phase should be 'startOfTurn' or 'endOfTurn', not $phase"
+        def id = new StringBuilder();
+
+        if (phase == 'startOfTurn') {
+            id.append('start')
+        } else if (phase == 'endOfTurn') {
+            id.append('end')
+        } else {
+            assert false: "Phase cannot be $phase"
         }
+
+        id.append('Of')
+
+        if (player == 'your') {
+            id.append('Your')
+        } else if (player == 'opponents') {
+            id.append('Opponents')
+        } else {
+            assert false: "Player cannot be $player"
+        }
+
+        id.append('Turn')
+
+        return id.toString()
     }
 
     private static boolean ownerMatch(String str, Entity expected, Entity actual) {
