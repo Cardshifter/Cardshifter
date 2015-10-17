@@ -148,6 +148,9 @@ public class GeneralSystems {
         )
     }
 
+    /**
+     * @return A key into EffectDescription.triggerDescription
+     */
     private static getTriggerId(String phase, String player) {
         def id = new StringBuilder();
 

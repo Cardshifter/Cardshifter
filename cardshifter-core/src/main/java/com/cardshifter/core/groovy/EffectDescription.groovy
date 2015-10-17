@@ -7,13 +7,9 @@ class EffectDescription {
      * possible to later change the ordering of description components. It's easier to capitalize and add punctuation
      * later than the reverse. A map is useful instead of enum et al because it's runtime extensible. */
     static Map triggerDescription = new HashMap<String, String>()
+
     String triggerId
-
-    private StringBuilder builder
-
-    public EffectDescription() {
-        builder = new StringBuilder()
-    }
+    private StringBuilder builder = new StringBuilder()
 
     public static setupStandardTriggers() {
         triggerDescription.putAll([
