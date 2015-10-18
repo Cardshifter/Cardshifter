@@ -245,7 +245,6 @@ class EffectDelegate {
                         })
                     }
                     description.append(desc.replace('%who%', "$who random $filterDelegate.description"))
-                    description.append('\n')
                     closures.add(randomizedAction)
                 }]
             } else if (who instanceof Closure) {
@@ -260,7 +259,6 @@ class EffectDelegate {
             assert closure : "$description: Unknown target $who"
 
             description.append(desc.replace('%who%', targetStr))
-            description.append('\n')
             closures.add(closure)
         }]
     }
@@ -296,7 +294,6 @@ class EffectDelegate {
                     }
 
                     description.append(desc)
-                    description.append('\n')
                     closures.add(closure)
                 }]
             }]
