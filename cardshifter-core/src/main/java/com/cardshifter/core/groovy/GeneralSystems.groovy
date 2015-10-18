@@ -313,6 +313,7 @@ public class GeneralSystems {
             GameEffect eventConsumer = {Entity ent, ActionPerformEvent event ->
                 effect.perform(ent, event)
             } as GameEffect
+            effect.description.triggerId = 'afterPlay'
             addEffect(entity(), new EffectComponent(effect.description.toString(), eventConsumer))
         }
 
