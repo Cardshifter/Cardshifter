@@ -152,7 +152,7 @@ public class GeneralSystems {
     /**
      * @return A key into EffectDescription.triggerDescription
      */
-    private static getTriggerId(String phase, String player) {
+    private static getOnTurnTriggerId(String phase, String player) {
         def id = new StringBuilder();
 
         assert phase in ['start', 'end']
@@ -270,7 +270,7 @@ public class GeneralSystems {
         }
 
         CardDelegate.metaClass.onEndOfTurn << {String turn, Closure closure ->
-            triggerAfter((Entity) entity(), getTriggerId('end', turn), PhaseStartEvent.class,
+            triggerAfter((Entity) entity(), getOnTurnTriggerId('end', turn), PhaseStartEvent.class,
                     {Entity source, PhaseStartEvent event -> ownerMatch(turn, Players.findOwnerFor(source), event.getOldPhase().getOwner())}, closure)
         }
 
@@ -279,7 +279,7 @@ public class GeneralSystems {
         }
 
         CardDelegate.metaClass.onStartOfTurn << {String turn, Closure closure ->
-            triggerAfter((Entity) entity(), getTriggerId('start', turn), PhaseStartEvent.class,
+            triggerAfter((Entity) entity(), getOnTurnTriggerId('start', turn), PhaseStartEvent.class,
                     {Entity source, PhaseStartEvent event -> ownerMatch(turn, Players.findOwnerFor(source), event.getNewPhase().getOwner())}, closure)
         }
 
