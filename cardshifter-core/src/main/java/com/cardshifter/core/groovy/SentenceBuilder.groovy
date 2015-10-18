@@ -32,7 +32,7 @@ class SentenceBuilder {
      * Add some text.
      */
     void text(String string) {
-        stringBuilder.append(strings)
+        stringBuilder.append(string)
     }
 
     /**

@@ -39,6 +39,8 @@ class EffectDescription {
                 separator 'and '
                 text "choose $randomChoiceCount at random: "
                 list 'or', randomChoices*.toString()
+                        // Make choices easier to read
+                        .collect { '"' + (it.endsWith('.') ? it.substring(0, it.length() - 1) : it) + '"' }
             }
 
             text triggerDescription.getOrDefault(triggerId, '')

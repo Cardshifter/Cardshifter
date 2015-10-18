@@ -205,5 +205,5 @@ from clearState test 'pick at random description' using {
             )
         }
     }
-    assert getDescription(card) == 'Choose 1 at random: "Perish", "Do nothing" or "All players draw 1 card"'
+    assert getDescription(card) == 'Choose 1 at random: "Perish", "Do nothing" or "All players draw 1 card".'
 }
