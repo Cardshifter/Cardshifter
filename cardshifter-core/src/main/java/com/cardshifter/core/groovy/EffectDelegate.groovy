@@ -73,16 +73,15 @@ class EffectDelegate {
         [atRandom: {Closure... effects ->
             assert count > 0
             assert count <= effects.size()
-            // { summon 1 of "Bar" to 'you' zone 'Battlefield' }
 
             EffectDelegate[] deleg = new EffectDelegate[effects.length]
             for (int i = 0; i < deleg.length; i++) {
                 deleg[i] = create(effects[i], false)
                 assert deleg[i].closures.size() > 0 : 'probability condition needs to have some actions'
             }
-            String effectString = Arrays.stream(deleg).map({ef -> ef.description.toString()})
-                .collect(Collectors.joining(' or '))
-            description.append("Choose $count at random: " + effectString)
+            description.randomChoiceCount = count
+            description.randomChoices = deleg*.description
+
             closures.add({Entity source, Object data ->
                 List<EffectDelegate> list = new ArrayList<>(Arrays.asList(deleg))
                 Collections.shuffle(list, source.game.random)

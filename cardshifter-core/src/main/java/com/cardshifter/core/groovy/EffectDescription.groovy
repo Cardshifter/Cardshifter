@@ -8,7 +8,13 @@ class EffectDescription {
      * later than the reverse. A map is useful instead of enum et al because it's runtime extensible. */
     static Map<String, String> triggerDescription = new HashMap()
 
+    // Key into triggerDescription
     String triggerId
+
+    // choose $randomChoiceCount atRandom { $randomChoices... }
+    int randomChoiceCount
+    List<EffectDescription> randomChoices
+
     private StringBuilder builder = new StringBuilder()
 
     public static setupStandardTriggers() {
@@ -28,6 +34,13 @@ class EffectDescription {
         SentenceBuilder.build {
             text builder.toString()
             separator ' '
+
+            if (randomChoiceCount > 0) {
+                separator 'and '
+                text "choose $randomChoiceCount at random: "
+                list 'or', randomChoices*.toString()
+            }
+
             text triggerDescription.getOrDefault(triggerId, '')
         }
     }
