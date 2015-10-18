@@ -194,3 +194,16 @@ from clearState test 'onDeath effect description' using {
     }
     assert getDescription(card) == 'Perish when this dies.'
 }
+
+from clearState test 'pick at random description' using {
+    def card = to you zone 'Hand' create {
+        afterPlay {
+            pick 1 atRandom (
+                { perish() },
+                { doNothing() },
+                { drawCard 'all', 1 }
+            )
+        }
+    }
+    assert getDescription(card) == 'Choose 1 at random: "Perish", "Do nothing" or "All players draw 1 card"'
+}
