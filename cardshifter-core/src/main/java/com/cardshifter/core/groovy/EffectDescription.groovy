@@ -26,7 +26,8 @@ class EffectDescription {
                 onEndOfYourTurn: 'at the end of your turn',
                 onEndOfOpponentsTurn: 'at the end of the opponent\'s turn',
                 onEndOfAnyTurn: 'at the end of a turn',
-                onDeath: 'when this dies'
+                onDeath: 'when this dies',
+                pickAtRandom: 'choose %count% at random'
         ])
     }
 
@@ -37,10 +38,10 @@ class EffectDescription {
 
             if (randomChoiceCount > 0) {
                 separator 'and '
-                text "choose $randomChoiceCount at random: "
-                list 'or', randomChoices*.toString()
-                        // Make choices easier to read
-                        .collect { '"' + (it.endsWith('.') ? it.substring(0, it.length() - 1) : it) + '"' }
+                text vocabulary.getOrDefault('pickAtRandom', '').replace('%count%', "$randomChoiceCount")
+                separator ': '
+                def beautify = { '"' + (it.endsWith('.') ? it.substring(0, it.length() - 1) : it) + '"' }
+                list 'or', randomChoices*.toString().collect(beautify)
             }
 
             text vocabulary.getOrDefault(triggerId, '')
