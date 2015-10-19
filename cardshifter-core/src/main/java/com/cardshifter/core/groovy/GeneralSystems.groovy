@@ -150,13 +150,15 @@ public class GeneralSystems {
     }
 
     /**
-     * @return A key into EffectDescription.triggerDescription
+     * @return A key into EffectDescription.vocabulary
      */
     private static getOnTurnTriggerId(String phase, String player) {
         def id = new StringBuilder();
 
+        id.append('on')
+
         assert phase in ['start', 'end']
-        id.append(phase)
+        id.append(phase.capitalize())
 
         id.append('Of')
 
@@ -284,7 +286,7 @@ public class GeneralSystems {
         }
 
         CardDelegate.metaClass.onDeath << {Closure closure ->
-            triggerBefore((Entity) entity(), 'death', EntityRemoveEvent.class,
+            triggerBefore((Entity) entity(), 'onDeath', EntityRemoveEvent.class,
                     {Entity source, EntityRemoveEvent event -> source == event.entity}, closure)
         }
 
@@ -365,7 +367,7 @@ public class GeneralSystems {
             addSystem new EffectTargetFilterSystem(name)
         }
 
-        EffectDescription.setupStandardTriggers()
+        EffectDescription.setupStandardVocabulary()
 
     }
 
