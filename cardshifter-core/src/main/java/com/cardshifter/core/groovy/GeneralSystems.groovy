@@ -152,7 +152,7 @@ public class GeneralSystems {
     /**
      * @return A key into EffectDescription.vocabulary
      */
-    private static getOnTurnTriggerId(String phase, String player) {
+    private static String getOnTurnTriggerId(String phase, String player) {
         def id = new StringBuilder();
 
         id.append('on')
@@ -366,9 +366,6 @@ public class GeneralSystems {
         SystemsDelegate.metaClass.targetFilterSystem << {String name ->
             addSystem new EffectTargetFilterSystem(name)
         }
-
-        EffectDescription.setupStandardVocabulary()
-
     }
 
     static def resourceSystems() {

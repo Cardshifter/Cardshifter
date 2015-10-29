@@ -8,6 +8,10 @@ class EffectDescription {
      * later than the reverse. A map is useful instead of enum et al because it's runtime extensible. */
     static Map<String, String> vocabulary = new HashMap()
 
+    static {
+        setupStandardVocabulary()
+    }
+
     // Key into vocabulary
     String triggerId
 
@@ -17,7 +21,7 @@ class EffectDescription {
 
     private StringBuilder builder = new StringBuilder()
 
-    public static setupStandardVocabulary() {
+    private static void setupStandardVocabulary() {
         vocabulary.putAll([
                 afterPlay: '',
                 onStartOfYourTurn: 'at the start of your turn',
