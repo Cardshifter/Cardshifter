@@ -51,20 +51,23 @@ class SentenceBuilder {
      * @param elements A list of the elements, e.g. ['egg', 'bacon', 'ham'].
      */
     void list(String conjunction, List<String> elements) {
-        if (elements.size() > 0) {
-            stringBuilder.append(elements[0])
+        switch (elements.size) {
+            case 0:
+                break
 
-            if (elements.size() > 1) {
-                for (int i = 1; i < elements.size() - 1; i++) {
-                    separator(', ')
-                    stringBuilder.append(elements[i])
+            case 1:
+                stringBuilder.append(elements[0])
+                break
+
+            default:
+                stringBuilder.with {
+                    append elements.take(elements.size() - 1).join(', ')
+                    separator ' '
+                    append conjunction
+                    separator ' '
+                    append elements.last()
                 }
-
-                separator(' ')
-                stringBuilder.append(conjunction)
-                separator(' ')
-                stringBuilder.append(elements[elements.size() - 1])
-            }
+                break
         }
     }
 
