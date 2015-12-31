@@ -182,7 +182,7 @@ from clearState test 'onEndOfTurn effect description' using {
             }
         }
     }
-    assert getDescription(card) == "Change ATTACK by 1 on this card at the end of your turn."
+    assert getDescription(card) == "At the end of your turn, change ATTACK by 1 on this card."
 }
 
 from clearState test 'onDeath effect description' using {
@@ -192,7 +192,7 @@ from clearState test 'onDeath effect description' using {
             perish()
         }
     }
-    assert getDescription(card) == 'Perish when this dies.'
+    assert getDescription(card) == 'When this dies, perish.'
 }
 
 from clearState test 'pick at random description' using {

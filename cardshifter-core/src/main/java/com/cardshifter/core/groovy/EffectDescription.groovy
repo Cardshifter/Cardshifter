@@ -37,6 +37,9 @@ class EffectDescription {
 
     public String toString() {
         SentenceBuilder.build {
+            text vocabulary.getOrDefault(triggerId, '')
+            separator ', '
+
             text builder.toString()
             separator ' '
 
@@ -47,8 +50,6 @@ class EffectDescription {
                 def beautify = { '"' + (it.endsWith('.') ? it.substring(0, it.length() - 1) : it) + '"' }
                 list 'or', randomChoices*.toString().collect(beautify)
             }
-
-            text vocabulary.getOrDefault(triggerId, '')
         }
     }
 
