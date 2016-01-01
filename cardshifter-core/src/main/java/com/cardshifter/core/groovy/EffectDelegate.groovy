@@ -24,7 +24,7 @@ class EffectDelegate {
         return delegate
     }
 
-    StringBuilder description = new StringBuilder()
+    EffectDescription description = new EffectDescription()
 
     /**
      * List of closures to perform, where each closure has the parameters (Entity, Object),
@@ -73,16 +73,15 @@ class EffectDelegate {
         [atRandom: {Closure... effects ->
             assert count > 0
             assert count <= effects.size()
-            // { summon 1 of "Bar" to 'you' zone 'Battlefield' }
 
             EffectDelegate[] deleg = new EffectDelegate[effects.length]
             for (int i = 0; i < deleg.length; i++) {
                 deleg[i] = create(effects[i], false)
                 assert deleg[i].closures.size() > 0 : 'probability condition needs to have some actions'
             }
-            String effectString = Arrays.stream(deleg).map({ef -> ef.description.toString()})
-                .collect(Collectors.joining(' or '))
-            description.append("Choose $count at random: " + effectString)
+            description.randomChoiceCount = count
+            description.randomChoices = deleg*.description
+
             closures.add({Entity source, Object data ->
                 List<EffectDelegate> list = new ArrayList<>(Arrays.asList(deleg))
                 Collections.shuffle(list, source.game.random)
@@ -111,7 +110,7 @@ class EffectDelegate {
     }
 
     def doNothing() {
-        description.append("Do nothing")
+        description.append("do nothing")
         closures.add({Entity source, Object data -> })
     }
 
@@ -135,7 +134,7 @@ class EffectDelegate {
     def drawCard(String who, int count) {
         def s = count == 1 ? '' : 's'
         if (who == 'all') {
-            description.append("All players draw $count card$s\n")
+            description.append("all players draw $count card$s\n")
             closures.add({Entity source, Object data ->
                 Players.getPlayersInGame(source.game).forEach({Entity e ->
                     for (int i = 0; i < count; i++) {
@@ -163,7 +162,7 @@ class EffectDelegate {
             int max = target.max_health
             resource.retriever().resFor(target).changeBy(value, {i -> i >= max ? max : i})
         }
-        targetedAction(action, "Heal $value to %who%\n")
+        targetedAction(action, "heal $value to %who%\n")
     }
 
     def damage(int value) {
@@ -174,7 +173,7 @@ class EffectDelegate {
             assert resource : 'health resource not found'
             resource.retriever().resFor(target).change(-value)
         }
-        targetedAction(action, "Deal $value damage to %who%")
+        targetedAction(action, "deal $value damage to %who%")
     }
 
     def change(ECSResource resource) {
@@ -190,7 +189,7 @@ class EffectDelegate {
             }
             // No [brackets] around resources
             def resStr = resources.stream().map({it.toString()}).collect(Collectors.joining(", "))
-            targetedAction(action, "Change $resStr by $amount on %who%\n")
+            targetedAction(action, "change $resStr by $amount on %who%\n")
         }]
     }
 
@@ -207,7 +206,7 @@ class EffectDelegate {
             }
             // No [brackets] around resources
             def resStr = String.join(", ", resources.stream().map({it.toString()}).collect(Collectors.toList()))
-            targetedAction(action, "Set $resStr to $amount on %who%\n")
+            targetedAction(action, "set $resStr to $amount on %who%\n")
         }]
     }
 
@@ -245,7 +244,6 @@ class EffectDelegate {
                         })
                     }
                     description.append(desc.replace('%who%', "$who random $filterDelegate.description"))
-                    description.append('\n')
                     closures.add(randomizedAction)
                 }]
             } else if (who instanceof Closure) {
@@ -260,7 +258,6 @@ class EffectDelegate {
             assert closure : "$description: Unknown target $who"
 
             description.append(desc.replace('%who%', targetStr))
-            description.append('\n')
             closures.add(closure)
         }]
     }
@@ -279,7 +276,7 @@ class EffectDelegate {
                     } else {
                         ownerName = who + /'s/
                     }
-                    String desc = "Summon " + count + " " + cardName + " to " + ownerName + " " + zoneName;
+                    String desc = "summon " + count + " " + cardName + " to " + ownerName + " " + zoneName;
 
                     Closure closure = {Entity source, Object data ->
                         Entity zoneOwner = entityLookup(source, who)
@@ -296,7 +293,6 @@ class EffectDelegate {
                     }
 
                     description.append(desc)
-                    description.append('\n')
                     closures.add(closure)
                 }]
             }]
@@ -304,7 +300,7 @@ class EffectDelegate {
     }
 
     def perish() {
-        description.append('Perish')
+        description.append('perish')
         closures.add({source, event -> source.destroy()})
     }
 
@@ -313,7 +309,7 @@ class EffectDelegate {
             assert target : 'Invalid entity'
             target.destroy()
         }
-        targetedAction(action, "Destroy %who%").on(who)
+        targetedAction(action, "destroy %who%").on(who)
     }
 
     static Entity cardModelByName(ECSGame game, String name) {

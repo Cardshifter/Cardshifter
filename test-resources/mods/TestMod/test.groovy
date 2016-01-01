@@ -156,3 +156,54 @@ from clearState test 'destroy' using {
     uses 'Use' on spell withTarget card ok
     assert card.removed
 }
+
+String getDescription(entity) {
+    String descr = entity.getComponent(net.zomis.cardshifter.ecs.effects.EffectComponent.class).getDescription()
+    // Some descriptions includes newlines that are later stripped
+    descr.replace('\n', '')
+}
+
+from clearState test 'simple effect description' using {
+    def card = to you zone 'Hand' create {
+        creature 'Bio'
+        afterPlay {
+            perish()
+        }
+    }
+    assert getDescription(card) == "Perish."
+}
+
+from clearState test 'onEndOfTurn effect description' using {
+    def card = to you zone 'Hand' create {
+        creature 'Bio'
+        onEndOfTurn {
+            change ATTACK by 1 on {
+                thisCard()
+            }
+        }
+    }
+    assert getDescription(card) == "At the end of your turn, change ATTACK by 1 on this card."
+}
+
+from clearState test 'onDeath effect description' using {
+    def card = to you zone 'Hand' create {
+        creature 'Bio'
+        onDeath {
+            perish()
+        }
+    }
+    assert getDescription(card) == 'When this dies, perish.'
+}
+
+from clearState test 'pick at random description' using {
+    def card = to you zone 'Hand' create {
+        afterPlay {
+            pick 1 atRandom (
+                { perish() },
+                { doNothing() },
+                { drawCard 'all', 1 }
+            )
+        }
+    }
+    assert getDescription(card) == 'Choose 1 at random: "Perish", "Do nothing" or "All players draw 1 card".'
+}
