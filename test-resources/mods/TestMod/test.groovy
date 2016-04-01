@@ -163,11 +163,20 @@ String getDescription(entity) {
 
 from clearState test 'atRandom description' using {
     def card = to you zone 'Hand' create {
-        creature 'Mech'
         afterPlay {
             pick 1 atRandom ({ perish() }, { drawCard 'all', 1 })
         }
     }
 
     assert getDescription(card) == 'Choose 1 at random from "Perish", "All players draw 1 card"'
+}
+
+from clearState test 'onStartOfTurn description' using {
+    def card = to you zone 'Hand' create {
+        onStartOfTurn {
+            perish()
+        }
+    }
+
+    assert getDescription(card) == 'At the start of your turn, perish'
 }

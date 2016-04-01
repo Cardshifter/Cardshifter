@@ -253,7 +253,7 @@ public class GeneralSystems {
         }
 
         CardDelegate.metaClass.onEndOfTurn << {String turn, Closure closure ->
-            triggerAfter((Entity) entity(), "%description% at end of $turn turn", PhaseStartEvent.class,
+            triggerAfter((Entity) entity(), "At the end of $turn turn, %description%", PhaseStartEvent.class,
                     {Entity source, PhaseStartEvent event -> ownerMatch(turn, Players.findOwnerFor(source), event.getOldPhase().getOwner())}, closure)
         }
 
@@ -262,7 +262,7 @@ public class GeneralSystems {
         }
 
         CardDelegate.metaClass.onStartOfTurn << {String turn, Closure closure ->
-            triggerAfter((Entity) entity(), "%description% at start of $turn turn", PhaseStartEvent.class,
+            triggerAfter((Entity) entity(), "At the start of $turn turn, %description%", PhaseStartEvent.class,
                     {Entity source, PhaseStartEvent event -> ownerMatch(turn, Players.findOwnerFor(source), event.getNewPhase().getOwner())}, closure)
         }
 
