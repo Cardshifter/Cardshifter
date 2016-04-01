@@ -125,11 +125,15 @@ public class GeneralSystems {
         entity.addComponent(effect)
     }
 
+    private static String applyEachLine(String lines, Closure clos) {
+        // End all descriptions with newline for consistency
+        lines.split('\n').collect(clos).join('\n') + '\n'
+    }
+
     static <T extends IEvent> void triggerBefore(Entity entity, Closure lineTransform, Class<T> eventClass, BiPredicate<Entity, T> predicate, Closure closure) {
         EffectDelegate effect = EffectDelegate.create(closure, false)
         def eff = new Effects();
-        // End all descriptions with newline for consistency
-        String description = effect.description.toString().split('\n').collect(lineTransform).join('\n') + '\n'
+        String description = applyEachLine(effect.description.toString(), lineTransform)
         addEffect(entity,
                 eff.described(description,
                         eff.giveSelf(
@@ -145,8 +149,7 @@ public class GeneralSystems {
     static <T extends IEvent> void triggerAfter(Entity entity, Closure lineTransform, Class<T> eventClass, BiPredicate<Entity, T> predicate, Closure closure) {
         EffectDelegate effect = EffectDelegate.create(closure, false)
         def eff = new Effects();
-        // End all descriptions with newline for consistency
-        String description = effect.description.toString().split('\n').collect(lineTransform).join('\n') + '\n'
+        String description = applyEachLine(effect.description.toString(), lineTransform)
         addEffect(entity,
                 eff.described(description,
                         eff.giveSelf(
@@ -309,7 +312,7 @@ public class GeneralSystems {
             closure.delegate = effect
             closure.call()
             addEffect(entity(),
-                eff.described("${effect.description}",
+                eff.described(applyEachLine(effect.description.toString(), { "As long as this is on the battlefield, $it" }),
                     eff.toSelf({source ->
                         def resModifierObject = ComponentRetriever.singleton(source.game, ResourceModifierComponent)
                         def modifiers = effect.modifiers
