@@ -156,3 +156,18 @@ from clearState test 'destroy' using {
     uses 'Use' on spell withTarget card ok
     assert card.removed
 }
+
+String getDescription(entity) {
+    entity.getComponent(net.zomis.cardshifter.ecs.effects.EffectComponent.class).getDescription()
+}
+
+from clearState test 'atRandom description' using {
+    def card = to you zone 'Hand' create {
+        creature 'Mech'
+        afterPlay {
+            pick 1 atRandom ({ perish() }, { drawCard 'all', 1 })
+        }
+    }
+
+    assert getDescription(card) == 'Choose 1 at random from "Perish", "All players draw 1 card"'
+}

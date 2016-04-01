@@ -80,9 +80,9 @@ class EffectDelegate {
                 deleg[i] = create(effects[i], false)
                 assert deleg[i].closures.size() > 0 : 'probability condition needs to have some actions'
             }
-            String effectString = Arrays.stream(deleg).map({ef -> ef.description.toString()})
-                .collect(Collectors.joining(' or '))
-            description.append("Choose $count at random: " + effectString)
+            String effectString = Arrays.stream(deleg).map({ef -> '"' + ef.description.toString().trim() + '"'})
+                    .collect(Collectors.joining(', '))
+            description.append("Choose $count at random from " + effectString)
             closures.add({Entity source, Object data ->
                 List<EffectDelegate> list = new ArrayList<>(Arrays.asList(deleg))
                 Collections.shuffle(list, source.game.random)
