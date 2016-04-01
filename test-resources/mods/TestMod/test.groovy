@@ -181,3 +181,24 @@ from clearState test 'onStartOfTurn description' using {
     assert getDescription(card) == 'At the start of your turn, perish\n'
 }
 
+from clearState test 'multiple effects description' using {
+    def card = to you zone 'Hand' create {
+        onStartOfTurn {
+            perish()
+            destroy 'you'
+        }
+    }
+
+    assert getDescription(card) == 'At the start of your turn, perish\nAt the start of your turn, destroy you\n'
+}
+
+from clearState test 'multiple onDeath effects description' using {
+    def card = to you zone 'Hand' create {
+        onDeath {
+            perish()
+            destroy 'you'
+        }
+    }
+
+    assert getDescription(card) == 'When this dies, perish\nWhen this dies, destroy you\n'
+}

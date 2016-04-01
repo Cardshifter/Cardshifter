@@ -266,7 +266,7 @@ class EffectDelegate {
                     })
                 }
             }
-            assert closure : "$description: Unknown target $who"
+            assert closure : "Unknown target $who"
 
             description.append(desc.replace('%who%', targetStr) + '\n')
             closures.add(closure)
