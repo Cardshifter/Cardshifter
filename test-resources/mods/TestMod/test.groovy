@@ -202,3 +202,31 @@ from clearState test 'multiple onDeath effects description' using {
 
     assert getDescription(card) == 'When this dies, perish\nWhen this dies, destroy you\n'
 }
+
+from clearState test 'whilePresent description' using {
+    def card = to you zone 'Hand' create {
+        whilePresent {
+            change HEALTH by -1 withPriority 1 on {
+                thisCard()
+            }
+        }
+    }
+
+    assert getDescription(card) == 'As long as this is on the battlefield, give this card -1 HEALTH\n'
+}
+
+from clearState test 'whilePresent description muliple effects' using {
+    def card = to you zone 'Hand' create {
+        whilePresent {
+            change HEALTH by -1 withPriority 1 on {
+                thisCard()
+            }
+            change ATTACK by +1 withPriority 1 on {
+                thisCard()
+            }
+        }
+    }
+
+    assert getDescription(card) == 'As long as this is on the battlefield, give this card -1 HEALTH\n' +
+                                   'As long as this is on the battlefield, give this card 1 ATTACK\n'
+}
