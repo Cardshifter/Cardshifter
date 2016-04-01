@@ -296,7 +296,7 @@ public class GeneralSystems {
             GameEffect eventConsumer = {Entity ent, ActionPerformEvent event ->
                 effect.perform(ent, event)
             } as GameEffect
-            addEffect(entity(), new EffectComponent(effect.description.toString(), eventConsumer))
+            addEffect(entity(), new EffectComponent(effect.description.toString().capitalize(), eventConsumer))
         }
 
         CardDelegate.metaClass.whilePresent << {Closure closure ->

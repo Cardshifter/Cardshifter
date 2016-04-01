@@ -168,7 +168,7 @@ from clearState test 'atRandom description' using {
         }
     }
 
-    assert getDescription(card) == 'Choose 1 at random from "Perish", "All players draw 1 card"'
+    assert getDescription(card) == 'Choose 1 at random from "Perish", "All players draw 1 card"\n'
 }
 
 from clearState test 'onStartOfTurn description' using {
@@ -178,5 +178,6 @@ from clearState test 'onStartOfTurn description' using {
         }
     }
 
-    assert getDescription(card) == 'At the start of your turn, perish'
+    assert getDescription(card) == 'At the start of your turn, perish\n'
 }
+
