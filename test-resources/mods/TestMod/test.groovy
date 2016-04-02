@@ -168,7 +168,7 @@ from clearState test 'atRandom description' using {
         }
     }
 
-    assert getDescription(card) == 'Choose 1 at random from "Perish", "All players draw 1 card"\n'
+    assert getDescription(card) == 'Choose 1 at random from "Perish.", "All players draw 1 card."'
 }
 
 from clearState test 'onStartOfTurn description' using {
@@ -178,7 +178,7 @@ from clearState test 'onStartOfTurn description' using {
         }
     }
 
-    assert getDescription(card) == 'At the start of your turn, perish\n'
+    assert getDescription(card) == 'At the start of your turn, perish'
 }
 
 from clearState test 'multiple effects description' using {
@@ -189,7 +189,7 @@ from clearState test 'multiple effects description' using {
         }
     }
 
-    assert getDescription(card) == 'At the start of your turn, perish\nAt the start of your turn, destroy you\n'
+    assert getDescription(card) == 'At the start of your turn, perish\nAt the start of your turn, destroy you'
 }
 
 from clearState test 'multiple onDeath effects description' using {
@@ -200,7 +200,7 @@ from clearState test 'multiple onDeath effects description' using {
         }
     }
 
-    assert getDescription(card) == 'When this dies, perish\nWhen this dies, destroy you\n'
+    assert getDescription(card) == 'When this dies, perish\nWhen this dies, destroy you'
 }
 
 from clearState test 'whilePresent description' using {
@@ -212,7 +212,7 @@ from clearState test 'whilePresent description' using {
         }
     }
 
-    assert getDescription(card) == 'As long as this is on the battlefield, give this card -1 HEALTH\n'
+    assert getDescription(card) == 'As long as this is on the battlefield, give this card -1 HEALTH'
 }
 
 from clearState test 'whilePresent description muliple effects' using {
@@ -228,5 +228,5 @@ from clearState test 'whilePresent description muliple effects' using {
     }
 
     assert getDescription(card) == 'As long as this is on the battlefield, give this card -1 HEALTH\n' +
-                                   'As long as this is on the battlefield, give this card 1 ATTACK\n'
+                                   'As long as this is on the battlefield, give this card 1 ATTACK'
 }

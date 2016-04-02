@@ -21,7 +21,7 @@ class ModifierDelegate {
 
 class WhilePresentDelegate {
     List<ModifierDelegate> modifiers = new ArrayList<>()
-    StringBuilder description = new StringBuilder()
+    List<String> descriptionList = []
 
     private addModifier(ECSResource[] resources, int priority, Closure filter,
             Function<FilterDelegate, String> stringFunction, ECSResourceBiStrategy strategy) {
@@ -41,8 +41,7 @@ class WhilePresentDelegate {
         }
 
         String desc = stringFunction.apply(deleg)
-        description.append(desc)
-        description.append('\n')
+        descriptionList << desc
     }
 
     def change(ECSResource... resources) {
