@@ -215,7 +215,7 @@ from clearState test 'whilePresent description' using {
     assert getDescription(card) == 'As long as this is on the battlefield, give this card -1 HEALTH'
 }
 
-from clearState test 'whilePresent description muliple effects' using {
+from clearState test 'whilePresent description multiple effects' using {
     def card = to you zone 'Hand' create {
         whilePresent {
             change HEALTH by -1 withPriority 1 on {
@@ -230,3 +230,74 @@ from clearState test 'whilePresent description muliple effects' using {
     assert getDescription(card) == 'As long as this is on the battlefield, give this card -1 HEALTH\n' +
                                    'As long as this is on the battlefield, give this card 1 ATTACK'
 }
+
+from clearState test 'negated filter' using {
+    def spell = to you zone 'Hand' create {
+        spell {
+            targets 1 cards {
+                not {
+                    creatureType 'Bio'
+                }
+            }
+        }
+    }
+    def bio = to you zone 'Battlefield' create {
+        creature 'Bio'
+        health 1
+    }
+    def mech = to you zone 'Battlefield' create {
+        creature 'Mech'
+        health 1
+    }
+
+    expect failure when spell uses 'Use' withTarget bio ok
+    uses 'Use' on spell withTarget mech ok
+}
+
+from clearState test 'complex negated filter' using {
+    def spell = to you zone 'Hand' create {
+        spell {
+            targets 1 cards {
+                not {
+                    creatureType "Greek"
+                    ownedBy "opponent"
+                }
+                zone 'Battlefield'
+            }
+        }
+    }
+
+    def yourGreek = to you zone 'Battlefield' create {creature 'Greek'}
+    def yourRoman = to you zone 'Battlefield' create {creature 'Roman'}
+    def theirGreek = to opponent zone 'Battlefield' create {creature 'Greek'}
+    def theirRoman = to opponent zone 'Battlefield' create {creature 'Roman'}
+
+    def targets = uses 'Use' on spell getAvailableTargets()
+    def expected = [yourGreek, yourRoman, theirRoman]
+    assert targets.containsAll(expected)
+    assert targets.size() == expected.size() // Shouldn't include anything else
+}
+
+from clearState test 'multiple negated filters' using {
+    def spell = to you zone 'Hand' create {
+        spell {
+            targets 1 cards {
+                not {
+                    creatureType "Greek"
+                }
+                not {
+                    ownedBy "opponent"
+                }
+                zone 'Battlefield'
+            }
+        }
+    }
+    def yourGreek = to you zone 'Battlefield' create {creature 'Greek'}
+    def yourRoman = to you zone 'Battlefield' create {creature 'Roman'}
+    def theirGreek = to opponent zone 'Battlefield' create {creature 'Greek'}
+    def theirRoman = to opponent zone 'Battlefield' create {creature 'Roman'}
+
+    def targets = uses 'Use' on spell getAvailableTargets()
+    assert targets == [yourRoman]
+}
+
