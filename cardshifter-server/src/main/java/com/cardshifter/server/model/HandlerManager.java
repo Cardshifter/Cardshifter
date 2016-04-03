@@ -56,14 +56,23 @@ public class HandlerManager {
         Objects.requireNonNull(client, "Cannot handle message from a null client");
         logger.info("Handle message " + client + ": " + json);
 
-        Message message;
+        Message message = null;
+
         try {
             message = getIncomingHandler().parse(json);
             logger.info("Parsed Message: " + message);
-            getIncomingHandler().perform(message, client);
         } catch (Exception e) {
             logger.error("Unable to parse incoming json: " + json, e);
-            client.sendToClient(new ServerErrorMessage(e.getMessage()));
+            client.sendToClient(ErrorMessage.client(e.getMessage()));
+        }
+
+        if (message != null) {
+            try {
+                getIncomingHandler().perform(message, client);
+            } catch (Exception e) {
+                logger.error("Unable to perform on message " + message);
+                client.sendToClient(ErrorMessage.server(e.getMessage()));
+            }
         }
     }
 }

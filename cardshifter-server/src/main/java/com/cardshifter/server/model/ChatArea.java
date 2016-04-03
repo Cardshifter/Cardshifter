@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 import com.cardshifter.api.ClientIO;
 import com.cardshifter.api.IdObject;
 import com.cardshifter.api.both.ChatMessage;
-import com.cardshifter.api.outgoing.ServerErrorMessage;
+import com.cardshifter.api.outgoing.ErrorMessage;
 
 public class ChatArea implements IdObject {
 	private static final Logger logger = LogManager.getLogger(ChatArea.class);
@@ -52,7 +52,7 @@ public class ChatArea implements IdObject {
 
 	public void incomingMessage(ChatMessage message, ClientIO client) {
 		if (!clients.contains(client)) {
-			client.sendToClient(new ServerErrorMessage("You are not inside chat " + id));
+			client.sendToClient(ErrorMessage.client("You are not inside chat " + id));
 		}
 		else {
 			this.broadcast(new ChatMessage(id, client.getName(), message.getMessage()));

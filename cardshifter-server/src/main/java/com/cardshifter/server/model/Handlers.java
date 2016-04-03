@@ -53,7 +53,7 @@ public class Handlers {
 			case DECK_BUILDER:
                 Map<String, GameFactory> gameFactories = server.getGameFactories();
                 if (message.getMessage() == null || !gameFactories.containsKey(message.getMessage())) {
-                    client.sendToClient(new ServerErrorMessage("Invalid gameType specified."));
+                    client.sendToClient(ErrorMessage.client("Invalid gameType specified."));
                     return;
                 }
 
@@ -61,7 +61,7 @@ public class Handlers {
 				game.addPlayer(client);
 				game.addPlayer(new FakeClient(server, e -> {}));
 				if (!game.preStartForConfiguration()) {
-					client.sendToClient(new ServerErrorMessage("There is no configuration required for mod " + message.getMessage()));
+					client.sendToClient(ErrorMessage.client("There is no configuration required for mod " + message.getMessage()));
 				}
 				
 				break;
@@ -79,7 +79,7 @@ public class Handlers {
                 client.sendToClient(new ServerStatusMessage(users, ais, games, mods));
                 break;
 			default:
-				client.sendToClient(new ServerErrorMessage("No such query request"));
+				client.sendToClient(ErrorMessage.client("No such query request"));
 				break;
 		}
 		
@@ -93,12 +93,12 @@ public class Handlers {
 			server.trySetClientName(client, name);
 		}
 		catch (UserNameAlreadyInUseException | InvalidUserNameException e) {
-			client.sendToClient(new WelcomeMessage(0, false, e.getMessage()));
+			client.sendToClient(ErrorMessage.client(e.getMessage()));
 			return;
 		}
 
 		logger.info("Client is welcome!");
-		client.sendToClient(new WelcomeMessage(client.getId(), true, "OK"));
+		client.sendToClient(new WelcomeMessage(client.getId(), "OK"));
 		UserStatusMessage statusMessage = new UserStatusMessage(client.getId(), client.getName(), Status.ONLINE);
 		server.getClients().values().stream()
 			.filter(cl -> cl != client)
@@ -110,7 +110,7 @@ public class Handlers {
 
 	public void play(StartGameRequest message, ClientIO client) {
         if (message.getOpponent() == client.getId()) {
-            client.sendToClient(new ChatMessage(server.getMainChat().getId(), "Server", "You cannot invite yourself."));
+            client.sendToClient(ErrorMessage.client("You cannot invite yourself"));
             return;
         }
 		if (message.getOpponent() < 0) {
@@ -120,7 +120,7 @@ public class Handlers {
 			ClientIO target = server.getClients().get(message.getOpponent());
 			if (target == null) {
 				logger.warn("Invite sent to unknown user: " + message);
-				client.sendToClient(new InviteResponse(0, false));
+				client.sendToClient(ErrorMessage.client("Invite sent to unknown user"));
 				return;
 			}
 			
