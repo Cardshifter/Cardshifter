@@ -121,7 +121,7 @@ class EffectDelegate {
     }
 
     def doNothing() {
-        descriptionList << ("do nothing")
+        descriptionList << "do nothing"
         closures.add({Entity source, Object data -> })
     }
 
@@ -149,7 +149,7 @@ class EffectDelegate {
     def drawCard(String who, int count) {
         def s = count == 1 ? '' : 's'
         if (who == 'all') {
-            descriptionList << ("all players draw $count card$s")
+            descriptionList << "all players draw $count card$s"
             closures.add({Entity source, Object data ->
                 Players.getPlayersInGame(source.game).forEach({Entity e ->
                     for (int i = 0; i < count; i++) {
@@ -159,7 +159,7 @@ class EffectDelegate {
             })
             return;
         }
-        descriptionList << ("$who draws $count card$s")
+        descriptionList << "$who draws $count card$s"
         closures.add({Entity source, Object data ->
             Entity drawer = entityLookup(source, who)
             for (int i = 0; i < count; i++) {
@@ -270,7 +270,7 @@ class EffectDelegate {
                     })
                 }
             }
-            assert closure : "Unknown target $who"
+            assert closure : "Effect must have a valid target, not '$who'. Description list: $descriptionList"
 
             descriptionList << desc.replace('%who%', targetStr)
             closures.add(closure)
