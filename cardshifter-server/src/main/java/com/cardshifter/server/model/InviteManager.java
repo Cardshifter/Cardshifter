@@ -58,8 +58,7 @@ public class InviteManager {
             logger.info("Sending [" + invite + "] to [" + receiver + "]");
             invite.sendInvite(receiver);
         } else {
-            sender.sendToClient(new ErrorMessage("You already have a game invitation open.",
-                    ErrorMessage.Cause.CLIENT));
+            sender.sendToClient(ErrorMessage.client("You already have a game invitation open."));
         }
     }
 

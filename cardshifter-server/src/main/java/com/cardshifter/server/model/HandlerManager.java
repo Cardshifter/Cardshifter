@@ -63,7 +63,7 @@ public class HandlerManager {
             logger.info("Parsed Message: " + message);
         } catch (Exception e) {
             logger.error("Unable to parse incoming json: " + json, e);
-            client.sendToClient(new ErrorMessage(e.getMessage(), ErrorMessage.Cause.CLIENT));
+            client.sendToClient(ErrorMessage.client(e.getMessage()));
         }
 
         if (message != null) {
@@ -71,7 +71,7 @@ public class HandlerManager {
                 getIncomingHandler().perform(message, client);
             } catch (Exception e) {
                 logger.error("Unable to perform on message " + message);
-                client.sendToClient(new ErrorMessage(e.getMessage(), ErrorMessage.Cause.SERVER));
+                client.sendToClient(ErrorMessage.server(e.getMessage()));
             }
         }
     }

@@ -25,6 +25,14 @@ public class ErrorMessage extends Message {
 		this.cause = cause;
 	}
 
+	public static ErrorMessage client(String message) {
+		return new ErrorMessage(message, Cause.CLIENT);
+	}
+
+	public static ErrorMessage server(String message) {
+		return new ErrorMessage(message, Cause.SERVER);
+	}
+
 	public String getMessage() {
 		return message;
 	}

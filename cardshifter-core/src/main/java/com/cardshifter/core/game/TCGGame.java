@@ -239,7 +239,7 @@ public class TCGGame extends ServerGame {
         Entity performer = playerFor(client);
 		boolean allowed = action.perform(performer);
 		if (!allowed) {
-			client.sendToClient(new ErrorMessage("Action not allowed: " + action, ErrorMessage.Cause.CLIENT));
+			client.sendToClient(ErrorMessage.client("Action not allowed: " + action));
 		}
 		
 		sendAvailableActions();
