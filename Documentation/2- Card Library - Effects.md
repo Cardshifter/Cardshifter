@@ -286,7 +286,6 @@ Example:
 
 - Individual filters must be separated either by a new line/line break, or a semicolon `;` character.
 
-
         // Both these are valid:
         on {
             creature true
@@ -297,7 +296,14 @@ Example:
         //
         // !!! But this one is not valid:
         on { creature true ownedBy "you" zone "Battlefield }
+        
+- The __`not`__ modidier can be used to negate or reverse a filter:
 
+    // this filter applies to cards that are not creature and not owner by you
+    on not { 
+        creature: true
+        ownedBy: "you"
+    }
 
 ####`ownedBy`
 
