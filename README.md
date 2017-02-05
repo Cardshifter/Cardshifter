@@ -19,7 +19,7 @@ The primary game client as of August 2015 is web based and is hosted at http://p
 ####Playing the game
 --------------------
 
-To play the game, [download the latest release](https://github.com/Cardshifter/Cardshifter/releases). Start the client jar using the computer console/terminal with `java -jar cardshifter-fx-<version>.jar` or by saving to your computer and simply double-clicking `cardshifter-fx-<version>.jar`. There is usually a server running at `dwarftowers.com` port `4242` that you may connect to and play with other players as well as AI players. If this is your first time playing Cardshifter, you may want to have a look at the [Wiki](https://github.com/Cardshifter/Cardshifter/wiki).
+Simply visit http://play.cardshifter.com/, choose a server, build a deck and invite another player or AI to a game. There is usually a server running at `dwarftowers.com` port `4242` that you may connect to and play with other players as well as AI players. If this is your first time playing Cardshifter, you may want to have a look at the [Wiki](https://github.com/Cardshifter/Cardshifter/wiki).
 
 ####How can I get involved?
 ---------------------------
@@ -41,7 +41,6 @@ If you are not a developer, you can also help by playing the game and [reporting
  
  - `cardshifter-api` - Classes for data being sent between client and server.
  - `cardshifter-core` - Contains our core TCG mod implementation, as well as various features for inclusion in the server and the JavaFX client.
- - `cardshifter-fx` - JavaFX Client.
  - `cardshifter-modapi` - Contains the core Entity-Component-System code and several components and systems for some common TCG features.
  - `cardshifter-server` - Server for the game.
  - `cardshifter-test` - Code to simplify testing mods.
