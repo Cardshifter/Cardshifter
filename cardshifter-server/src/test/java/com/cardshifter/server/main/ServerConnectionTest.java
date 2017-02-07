@@ -11,6 +11,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.function.Predicate;
 
 import com.cardshifter.api.outgoing.*;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.junit.After;
 import org.junit.Before;
@@ -41,6 +43,7 @@ import com.cardshifter.server.model.Server;
 import static org.junit.Assert.*;
 
 public class ServerConnectionTest {
+	private static final Logger logger = LogManager.getLogger(ServerConnectionTest.class);
 
 	private String getTestMod() {
         return mods.getMods()[0];
@@ -80,7 +83,7 @@ public class ServerConnectionTest {
 		client1.send(new LoginMessage("Tester1"));
 
 		WelcomeMessage welcome = client1.await(WelcomeMessage.class);
-		System.out.println(server.getClients());
+		logger.info(server.getClients());
 		assertEquals(server.getClients().size() + 1, welcome.getUserId());
 		userId = welcome.getUserId();
 		client1.await(ChatMessage.class);
@@ -117,7 +120,7 @@ public class ServerConnectionTest {
 		client2.send(new ServerQueryMessage(Request.USERS));
 		client2.await(AvailableModsMessage.class);
 		List<UserStatusMessage> users = client2.awaitMany(6, UserStatusMessage.class);
-		System.out.println("Online users: " + users);
+		logger.info("Online users: " + users);
 
 		// There is no determined order in which the UserStatusMessages are received, so it is harder to make any assertions.
         assertUserFound(users, client1.getName());
@@ -184,17 +187,17 @@ public class ServerConnectionTest {
 		while (!game.isGameOver()) {
 			ECSAction action = humanActions.getAction(human);
 			if (action != null) {
-                System.out.println("Perform " + action);
+                logger.info("Perform " + action);
 				int[] targets = new int[]{ };
 				if (!action.getTargetSets().isEmpty()) {
 					targets = action.getTargetSets().get(0).getChosenTargets().stream().mapToInt(e -> e.getId()).toArray();
 				}
 				UseAbilityMessage message = new UseAbilityMessage(game.getId(), action.getOwner().getId(), action.getName(), targets);
-				System.out.println("Sending message: " + message);
+				logger.info("Sending message: " + message);
 				client1.send(message);
                 client1.awaitUntil(ResetAvailableActionsMessage.class);
 			} else {
-                System.out.println("Nothing to perform, busy-loop");
+               logger.info("Nothing to perform, busy-loop");
             }
 		}
 	}

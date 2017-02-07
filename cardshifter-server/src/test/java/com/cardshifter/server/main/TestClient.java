@@ -14,6 +14,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import com.cardshifter.api.incoming.LoginMessage;
 import net.zomis.cardshifter.ecs.usage.CardshifterIO;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.junit.Assert;
 
 import com.cardshifter.api.messages.Message;
@@ -28,6 +30,8 @@ import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class TestClient {
+
+	private static final Logger logger = LogManager.getLogger(TestClient.class);
 
 	private final Socket socket;
 	private final ObjectMapper mapper;
@@ -58,7 +62,7 @@ public class TestClient {
 			MappingIterator<Message> values = mapper.readValues(new JsonFactory().createParser(in), Message.class);
 			while (values.hasNext()) {
 				Message msg = values.next();
-				System.out.println("Incoming message " + msg);
+				logger.info("Incoming message " + msg);
 				messages.offer(msg);
 			}
 		} catch (IOException e) {
