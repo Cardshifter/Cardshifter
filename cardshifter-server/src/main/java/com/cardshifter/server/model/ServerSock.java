@@ -3,6 +3,7 @@ package com.cardshifter.server.model;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -60,7 +61,11 @@ public class ServerSock implements ConnectionHandler {
 			}
 		}
 		catch (Exception e) {
-			logger.error("Error in ServerSocket", e);
+			if(e.getCause() instanceof SocketException) {
+				logger.info("SocketException has happened in the server, the socket for the server is closed");
+			} else {
+				logger.error("Error in ServerSocket", e);
+			}
 		}
 	}
 
