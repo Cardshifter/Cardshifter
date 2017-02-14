@@ -52,16 +52,16 @@ public class AttackDamageAccumulating extends SpecificActionSystem {
 				defenseDamage = damage(attackEvent, defenseDamage, source, target, game);
 			}
 
-			checkKill(target, attackDamage, defenseHealth);
+			checkKill(target, attackDamage, defenseHealth, source);
             if (counterAttack) {
-                checkKill(source, defenseDamage, attackHealth);
+                checkKill(source, defenseDamage, attackHealth, target);
             }
 		});
 	}
 
-	private void checkKill(Entity target, int damage, int previousHealth) {
+	private void checkKill(Entity target, int damage, int previousHealth, Entity source) {
 		if (damage >= previousHealth && !target.hasComponent(PlayerComponent.class)) {
-			target.destroy();
+			target.destroy(source);
 		}
 	}
 

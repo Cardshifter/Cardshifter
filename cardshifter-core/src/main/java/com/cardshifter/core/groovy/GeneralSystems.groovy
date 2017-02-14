@@ -271,6 +271,10 @@ public class GeneralSystems {
                     {Entity source, EntityRemoveEvent event -> source == event.entity}, closure)
         }
 
+        CardDelegate.metaClass.onKill << {Closure closure ->
+            System.out.println("OnKill is called")
+        }
+
         CardDelegate.metaClass.spell << {String actionName ->
             spell(actionName, null)
         }

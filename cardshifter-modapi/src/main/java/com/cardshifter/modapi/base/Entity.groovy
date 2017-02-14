@@ -70,8 +70,8 @@ public final class Entity {
         return "Entity #" + id;
     }
 
-    public void destroy() {
-        getGame().executeEvent(new EntityRemoveEvent(this), {
+    public void destroy(Entity causeOfDeath) {
+        getGame().executeEvent(new EntityRemoveEvent(this, causeOfDeath), {
             components.clear();
             game.removeEntity(this);
             removed = true;
