@@ -272,7 +272,7 @@ public class GeneralSystems {
         }
 
         CardDelegate.metaClass.onKill << {Closure closure ->
-            System.out.println("OnKill is called")
+            triggerAfter((Entity) entity(), { "When it kills, $it"}, EntityRemoveEvent.class,{Entity source, EntityRemoveEvent event -> source == event.causeOfDeath}, closure)
         }
 
         CardDelegate.metaClass.spell << {String actionName ->

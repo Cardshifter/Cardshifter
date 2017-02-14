@@ -21,7 +21,7 @@ card('Swordsman') {
     manaCost 5
     attack 3
     onKill {
-        heal 1 on { thisCard() } }
+        heal 1 on { thisCard() } 
     }
 }
 // https://commons.wikimedia.org/wiki/File:Batalla_de_rocroi_por_Augusto_Ferrer-Dalmau.jpg
