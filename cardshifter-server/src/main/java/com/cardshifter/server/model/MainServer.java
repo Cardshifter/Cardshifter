@@ -72,7 +72,7 @@ public class MainServer {
         mods.loadExternal(mods.getDefaultModLocation());
         mods.loadExternal(Paths.get(config.getModsDirectory()));
 
-        if(mods.getAvailableMods().isEmpty()) {
+        if (mods.getAvailableMods().isEmpty()) {
         	logger.warn("No mods were loaded from the different folders. Please check your installation.");
         	throw new IllegalStateException("No mod loaded");
 		}
