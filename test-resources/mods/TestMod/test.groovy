@@ -231,6 +231,48 @@ from clearState test 'whilePresent description multiple effects' using {
                                    'As long as this is on the battlefield, give this card 1 ATTACK'
 }
 
+from clearState test 'description number of targets when count is 1' using {
+    def card = to you zone 'Hand' create {
+        spell {
+            targets 1 cards {
+            }
+        }
+        afterPlay {
+            damage 1 on targets
+        }
+    }
+
+    assert getDescription(card) == 'Deal 1 damage to 1 target'
+}
+
+from clearState test 'description number of targets when count is 2' using {
+    def card = to you zone 'Hand' create {
+        spell {
+            targets 2 cards {
+            }
+        }
+        afterPlay {
+            damage 1 on targets
+        }
+    }
+
+    assert getDescription(card) == 'Deal 1 damage to 2 targets'
+}
+
+from clearState test 'description includes range of number of targets' using {
+    def card = to you zone 'Hand' create {
+        spell {
+            targets 1 to 2 cards {
+            }
+        }
+        afterPlay {
+            damage 1 on targets
+        }
+    }
+
+    assert getDescription(card) == 'Deal 1 damage to 1 to 2 targets'
+}
+
 from clearState test 'negated filter' using {
     def spell = to you zone 'Hand' create {
         spell {
