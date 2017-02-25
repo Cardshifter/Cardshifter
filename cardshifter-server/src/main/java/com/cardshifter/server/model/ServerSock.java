@@ -62,7 +62,7 @@ public class ServerSock implements ConnectionHandler {
 		}
 		catch (Exception e) {
 			if(e.getCause() instanceof SocketException) {
-				logger.info("SocketException has happened in the server, the socket for the server is closed");
+				logger.info("SocketException has occurred in the server, the socket for the server is closed");
 			} else {
 				logger.error("Error in ServerSocket", e);
 			}

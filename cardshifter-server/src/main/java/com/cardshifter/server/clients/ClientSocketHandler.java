@@ -67,7 +67,7 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 				transformer.read(in, mess -> incomingMess(mess));
 			} catch (CardshifterSerializationException e) {
 				if(e.getCause() instanceof SocketException) {
-					logger.info("SocketException has happended, closing the socket");
+					logger.info("SocketException has occurred, closing the socket");
 				} else {
 					logger.error(e.getMessage(), e);
 				}
