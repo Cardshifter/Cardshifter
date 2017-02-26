@@ -74,7 +74,7 @@ public class MainServer {
 
         if (mods.getAvailableMods().isEmpty()) {
         	logger.warn("No mods were loaded from the different folders. Please check your installation.");
-        	throw new IllegalStateException("No mod loaded");
+        	throw new NoModsLoadedException("No mod loaded");
 		}
 		try {
 			logger.info("Starting Server...");
