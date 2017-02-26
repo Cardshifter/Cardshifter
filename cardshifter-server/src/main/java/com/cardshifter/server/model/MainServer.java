@@ -48,7 +48,7 @@ public class MainServer {
 	/**
 	 * ModCollection is where the Phrancis mods are initialized
 	 */
-	private final ModCollection mods = ModCollection.defaultMods();
+	private final ModCollection mods;
     private final ServerConfiguration config;
 
     private Thread consoleThread;
@@ -56,11 +56,24 @@ public class MainServer {
 	public MainServer(ServerConfiguration serverConfiguration, Server server) {
 		this.config = serverConfiguration;
 		this.server = server;
+		this.mods = ModCollection.defaultMods();
 	}
 
     public MainServer(ServerConfiguration serverConfiguration) {
 		this(serverConfiguration, new Server());
     }
+
+	/**
+	 * Protected constructor for test purpose only 
+	 * @param serverConfiguration
+	 * @param server
+	 * @param mods
+	 */
+    MainServer(ServerConfiguration serverConfiguration, Server server, ModCollection mods) {
+		this.config = serverConfiguration;
+		this.server = server;
+		this.mods = mods;
+	}
 
     /**
 	 * Adds connections, AIs, and GameFactories to the Server, and starts the ServerConsole.

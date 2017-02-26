@@ -1,8 +1,7 @@
-package com.cardshifter.server.main;
+package com.cardshifter.server.model;
 
-import com.cardshifter.server.model.MainServer;
-import com.cardshifter.server.model.NoModsLoadedException;
-import com.cardshifter.server.model.Server;
+import com.cardshifter.core.game.ModCollection;
+import com.cardshifter.server.main.ServerConfiguration;
 import org.apache.log4j.PropertyConfigurator;
 import org.junit.Test;
 
@@ -15,9 +14,9 @@ import java.nio.file.Path;
  */
 public class MainServerTest {
 
-    //@Test(expected = NoModsLoadedException.class)
+    @Test(expected = NoModsLoadedException.class)
     public void testThrowWhenNoModAreLoaded() throws IOException {
-        PropertyConfigurator.configure(getClass().getResourceAsStream("log4j.properties"));
+        PropertyConfigurator.configure(getClass().getResourceAsStream("../main/log4j.properties"));
 
         ServerConfiguration config = ServerConfiguration.defaults();
         Path tempFolder = Files.createTempDirectory("temp");
@@ -25,7 +24,7 @@ public class MainServerTest {
         config.setPortSocket(0);
         config.setPortWebsocket(0);
 
-        MainServer main = new MainServer(config, new Server());
+        MainServer main = new MainServer(config, new Server(), new ModCollection());
 
         main.start();
     }
