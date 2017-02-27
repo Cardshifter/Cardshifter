@@ -10,6 +10,7 @@ import com.cardshifter.modapi.cards.DrawStartCards
 import com.cardshifter.modapi.cards.ZoneComponent
 import com.cardshifter.modapi.players.Players
 import com.cardshifter.modapi.resources.ECSResource
+import net.zomis.cardshifter.ecs.effects.FilterComponent
 import net.zomis.cardshifter.ecs.usage.functional.EntityConsumer
 
 import java.util.stream.Collectors
@@ -38,6 +39,9 @@ class EffectDelegate {
      */
     List<Closure> closures = new ArrayList<>()
 
+    /**
+     * Sentinel value used in DSL.
+     */
     final Object targets = new Object()
 
     def perform(Entity source, ActionPerformEvent event) {
@@ -230,7 +234,14 @@ class EffectDelegate {
             String targetStr = '';
             Closure closure = null;
             if (who == targets) {
-                targetStr = 'targets'
+                // TODO: How to reference the current entity?
+                filterComponent = entity().getComponent(FilterComponent.class)
+                if (filterComponent) {
+                    targetStr = "${filterComponent.getMinTargetCount()} to ${filterComponent.getMaxTargetCount()} targets"
+                } else {
+                    targetStr = 'targets'
+                }
+
                 closure = {Entity source, Object data ->
                     assert data instanceof ActionPerformEvent
                     ActionPerformEvent event = data as ActionPerformEvent

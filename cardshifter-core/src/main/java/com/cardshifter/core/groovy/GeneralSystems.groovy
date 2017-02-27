@@ -14,6 +14,7 @@ import com.cardshifter.modapi.actions.enchant.EnchantPerform
 import com.cardshifter.modapi.actions.enchant.EnchantTargetCreatureTypes
 import com.cardshifter.modapi.ai.AIComponent
 import com.cardshifter.modapi.attributes.Attributes
+import com.cardshifter.modapi.attributes.ECSAttributeMap
 import com.cardshifter.modapi.base.Component
 import com.cardshifter.modapi.base.ComponentRetriever
 import com.cardshifter.modapi.base.CreatureTypeComponent
@@ -177,7 +178,7 @@ public class GeneralSystems {
             TargetFilter resultFilter = {Entity source, Entity target ->
                 filterDelegate.predicate.test(source, target)
             }
-            entity.addComponent(new FilterComponent(resultFilter))
+            entity.addComponent(new FilterComponent(resultFilter, min, max))
         }
 
         def targets(Map map, Closure closure) {
