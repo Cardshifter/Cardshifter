@@ -51,7 +51,7 @@ public class ECSAction {
             if (!this.isAllowed(performer)) {
                 return false;
             }
-            if (!this.targetSets.stream().allMatch(targets -> targets.hasEnoughTargets())) {
+            if (!this.hasEnoughTargets()) {
                 return false;
             }
 
@@ -83,6 +83,10 @@ public class ECSAction {
 		// TODO: Consider using an ECSAction builder and put `addTargetSet` there
 		this.targetSets.add(new TargetSet(this, min, max));
 		return this;
+	}
+
+	public boolean hasEnoughTargets() {
+		return targetSets.stream().allMatch(TargetSet::hasEnoughTargets);
 	}
 	
 	@Override
