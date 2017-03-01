@@ -64,7 +64,7 @@ public class MainServer {
     }
 
 	/**
-	 * Protected constructor for test purpose only 
+	 * Protected constructor for test purpose only
 	 * @param serverConfiguration
 	 * @param server
 	 * @param mods
@@ -86,8 +86,8 @@ public class MainServer {
         mods.loadExternal(Paths.get(config.getModsDirectory()));
 
         if (mods.getAvailableMods().isEmpty()) {
-        	logger.warn("No mods were loaded from the different folders. Please check your installation.");
-        	throw new NoModsLoadedException("No mod loaded");
+        	logger.warn(NoModsLoadedException.NO_MOD_MESSAGE);
+        	throw new NoModsLoadedException();
 		}
 		try {
 			logger.info("Starting Server...");
