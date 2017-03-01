@@ -20,12 +20,16 @@ import java.util.stream.Collectors
  */
 class EffectDelegate {
 
-    static EffectDelegate create(Closure effects, boolean delegateOnly) {
-        EffectDelegate delegate = new EffectDelegate()
+    static EffectDelegate create(Closure effects, Entity thisCard, boolean delegateOnly) {
+        EffectDelegate delegate = new EffectDelegate(thisCard)
         effects.setDelegate(delegate)
         effects.setResolveStrategy(delegateOnly ? Closure.DELEGATE_ONLY : Closure.DELEGATE_FIRST)
         effects.call()
         return delegate
+    }
+
+    public EffectDelegate(Entity thisCard) {
+        this.thisCard = thisCard;
     }
 
     /**
@@ -43,6 +47,8 @@ class EffectDelegate {
      * Sentinel value used in DSL.
      */
     final Object targets = new Object()
+
+    private final Entity thisCard;
 
     def perform(Entity source, ActionPerformEvent event) {
         closures.each {
@@ -87,7 +93,7 @@ class EffectDelegate {
 
             EffectDelegate[] delegs = new EffectDelegate[effects.length]
             for (int i = 0; i < delegs.length; i++) {
-                delegs[i] = create(effects[i], false)
+                delegs[i] = create(effects[i], thisCard, false)
                 assert delegs[i].closures.size() > 0 : 'probability condition needs to have some actions'
             }
 
@@ -110,7 +116,7 @@ class EffectDelegate {
     }
 
     def withProbability(double probability, @DelegatesTo(EffectDelegate) Closure action) {
-        EffectDelegate deleg = create(action, false)
+        EffectDelegate deleg = create(action, thisCard, false)
         assert deleg.closures.size() > 0 : 'probability condition needs to have some actions'
         descriptionList.addAll(deleg.descriptionList.collect {"${probability * 100 as int}% chance to $it"})
         closures.add({Entity source, Object data ->
@@ -130,7 +136,7 @@ class EffectDelegate {
     }
 
     def repeat(int count, @DelegatesTo(EffectDelegate) Closure action) {
-        EffectDelegate deleg = create(action, false)
+        EffectDelegate deleg = create(action, thisCard, false)
         assert deleg.closures.size() > 0 : 'repeat needs to have some actions'
 
         def collector
@@ -234,10 +240,9 @@ class EffectDelegate {
             String targetStr = '';
             Closure closure = null;
             if (who == targets) {
-                // TODO: How to reference the current entity?
-                filterComponent = entity().getComponent(FilterComponent.class)
-                if (filterComponent) {
-                    targetStr = "${filterComponent.getMinTargetCount()} to ${filterComponent.getMaxTargetCount()} targets"
+                FilterComponent filter = thisCard.getComponent(FilterComponent.class)
+                if (filter) {
+                    targetStr = "${filter.getMinTargetCount()} to ${filter.getMaxTargetCount()} targets"
                 } else {
                     targetStr = 'targets'
                 }

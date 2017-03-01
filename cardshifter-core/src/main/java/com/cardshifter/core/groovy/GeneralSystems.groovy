@@ -127,7 +127,7 @@ public class GeneralSystems {
     }
 
     static <T extends IEvent> void triggerBefore(Entity entity, Closure lineTransform, Class<T> eventClass, BiPredicate<Entity, T> predicate, Closure closure) {
-        EffectDelegate effect = EffectDelegate.create(closure, false)
+        EffectDelegate effect = EffectDelegate.create(closure, entity, false)
         def eff = new Effects();
         addEffect(entity,
                 eff.described(effect.descriptionList.collect(lineTransform).join('\n'),
@@ -142,7 +142,7 @@ public class GeneralSystems {
     }
 
     static <T extends IEvent> void triggerAfter(Entity entity, Closure lineTransform, Class<T> eventClass, BiPredicate<Entity, T> predicate, Closure closure) {
-        EffectDelegate effect = EffectDelegate.create(closure, false)
+        EffectDelegate effect = EffectDelegate.create(closure, entity, false)
         def eff = new Effects();
         addEffect(entity,
                 eff.described(effect.descriptionList.collect(lineTransform).join('\n'),
@@ -290,7 +290,7 @@ public class GeneralSystems {
 
         CardDelegate.metaClass.afterPlay << {Closure closure ->
             def eff = new net.zomis.cardshifter.ecs.effects.Effects();
-            EffectDelegate effect = new EffectDelegate()
+            EffectDelegate effect = new EffectDelegate(entity())
             closure.delegate = effect
             closure.setResolveStrategy(Closure.DELEGATE_FIRST)
             closure.call()
