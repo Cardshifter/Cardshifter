@@ -242,7 +242,11 @@ class EffectDelegate {
             if (who == targets) {
                 FilterComponent filter = thisCard.getComponent(FilterComponent.class)
                 if (filter) {
-                    targetStr = "${filter.getMinTargetCount()} to ${filter.getMaxTargetCount()} targets"
+                    if (filter.minTargetCount == filter.maxTargetCount) {
+                        targetStr = "${filter.minTargetCount} target${filter.minTargetCount == 1 ? '' : 's'}"
+                    } else {
+                        targetStr = "${filter.getMinTargetCount()} to ${filter.getMaxTargetCount()} targets"
+                    }
                 } else {
                     targetStr = 'targets'
                 }

@@ -172,8 +172,9 @@ public class GeneralSystems {
         private ECSAction action
 
         private void addTargetSet(int min, int max, Closure filter) {
-            action.addTargetSet(min, max)
             assert !entity.hasComponent(FilterComponent) : 'Only one target set is supported so far'
+            assert min <= max : 'Min target count cannot be greater than max'
+            action.addTargetSet(min, max)
             FilterDelegate filterDelegate = FilterDelegate.fromClosure filter
             TargetFilter resultFilter = {Entity source, Entity target ->
                 filterDelegate.predicate.test(source, target)
