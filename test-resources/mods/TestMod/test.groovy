@@ -235,6 +235,7 @@ from clearState test 'description number of targets when count is 1' using {
     def card = to you zone 'Hand' create {
         spell {
             targets 1 cards {
+                creatureType 'Bio'
             }
         }
         afterPlay {
@@ -249,6 +250,7 @@ from clearState test 'description number of targets when count is 2' using {
     def card = to you zone 'Hand' create {
         spell {
             targets 2 cards {
+                creatureType 'Bio'
             }
         }
         afterPlay {
@@ -263,6 +265,7 @@ from clearState test 'description includes range of number of targets' using {
     def card = to you zone 'Hand' create {
         spell {
             targets 1 to 2 cards {
+                creatureType 'Bio'
             }
         }
         afterPlay {
