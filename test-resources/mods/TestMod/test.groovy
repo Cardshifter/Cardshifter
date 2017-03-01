@@ -346,3 +346,82 @@ from clearState test 'multiple negated filters' using {
     assert targets == [yourRoman]
 }
 
+from clearState test 'multiple targets: too few' using {
+    def spell = to you zone 'Hand' create {
+        spell {
+            targets 2 to 4 cards {
+                zone 'Battlefield'
+            }
+        }
+        afterPlay {
+            damage 1 on targets
+        }
+    }
+    def cards = (0..5).collect {to you zone 'Battlefield' create {creature 'Greek'}}
+
+    expect failure when spell uses 'Use' withTarget cards.head() ok
+}
+
+from clearState test 'multiple targets: min count' using {
+    def spell = to you zone 'Hand' create {
+        spell {
+            targets 2 to 4 cards {
+                zone 'Battlefield'
+            }
+        }
+        afterPlay {
+            damage 1 on targets
+        }
+    }
+    def cards = (0..5).collect {to you zone 'Battlefield' create {creature 'Greek'}}
+
+    expect ok when spell uses 'Use' withTargets cards.take(2) ok
+}
+
+from clearState test 'multiple targets: max count' using {
+    def spell = to you zone 'Hand' create {
+        spell {
+            targets 2 to 4 cards {
+                zone 'Battlefield'
+            }
+        }
+        afterPlay {
+            damage 1 on targets
+        }
+    }
+    def cards = (0..5).collect {to you zone 'Battlefield' create {creature 'Greek'}}
+
+    expect ok when spell uses 'Use' withTargets cards.take(4) ok
+}
+
+from clearState test 'multiple targets: too many' using {
+    def spell = to you zone 'Hand' create {
+        spell {
+            targets 2 to 4 cards {
+                zone 'Battlefield'
+            }
+        }
+        afterPlay {
+            damage 1 on targets
+        }
+    }
+    def cards = (0..5).collect {to you zone 'Battlefield' create {creature 'Greek'}}
+
+    expect failure when spell uses 'Use' withTargets cards.take(5) ok
+}
+
+from clearState test 'multiple targets with only one allowed' using {
+    def spell = to you zone 'Hand' create {
+        spell {
+            targets 1 cards {
+                zone 'Battlefield'
+            }
+        }
+        afterPlay {
+            damage 1 on targets
+        }
+    }
+    def cards = (0..5).collect {to you zone 'Battlefield' create {creature 'Greek'}}
+
+    expect failure when spell uses 'Use' withTargets cards.take(2) ok
+}
