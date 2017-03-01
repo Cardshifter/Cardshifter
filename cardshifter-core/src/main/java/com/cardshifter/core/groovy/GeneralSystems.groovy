@@ -187,12 +187,13 @@ public class GeneralSystems {
             addTargetSet(min, max, closure)
         }
 
-        def targets(int count) {
-            def finalize = {Closure closure ->
-                addTargetSet(count, count, closure)
-            }
-            [to: {int max -> [cards: finalize]},
-                cards: finalize]
+        def targets(int min) {
+            [
+                    to: {int max ->
+                        [cards: {Closure clos -> addTargetSet(min, max, clos) }]
+                    },
+                    cards: {Closure clos -> addTargetSet(min, min, clos)}
+            ]
         }
     }
 
