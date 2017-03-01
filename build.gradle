@@ -82,7 +82,6 @@ subprojects {
 }
 
 task copyResources(type: Copy) {
-    dependsOn ':cardshifter-fx:createShadowedJar'
     dependsOn ':cardshifter-server:createShadowedJar'
     from('extra-resources')
     into("$project.buildDir/libs")

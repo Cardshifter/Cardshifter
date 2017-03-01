@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
@@ -65,7 +66,11 @@ public class ClientSocketHandler extends ClientIO implements Runnable {
 			try {
 				transformer.read(in, mess -> incomingMess(mess));
 			} catch (CardshifterSerializationException e) {
-				logger.error(e.getMessage(), e);
+				if(e.getCause() instanceof SocketException) {
+					logger.info("SocketException has occurred, closing the socket");
+				} else {
+					logger.error(e.getMessage(), e);
+				}
 				this.close();
 			}
 			if (Thread.interrupted()) {

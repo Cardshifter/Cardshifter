@@ -1,6 +1,0 @@
-/target
-
-### Ignore Netbeans workspace
-nb-configuration.xml
-nbactions.xml
-/bin
