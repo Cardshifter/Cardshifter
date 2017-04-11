@@ -1,12 +1,10 @@
-Cardshifter
-===========
+# Cardshifter
 
 - Master branch: [![Build Status](https://travis-ci.org/Cardshifter/Cardshifter.svg?branch=master)](https://travis-ci.org/Cardshifter/Cardshifter?branch=master)  
 
 - Develop branch: [![Build Status](https://travis-ci.org/Cardshifter/Cardshifter.svg?branch=develop)](https://travis-ci.org/Cardshifter/Cardshifter?branch=develop)
 
-####What is Cardshifter?
-------------------------
+## What is Cardshifter?
 
 Cardshifter is an open-source, online Trading Card Game (TCG). The idea was born in summer of 2014 when a handful of software developers and programming enthusiasts from [Code Review Stack Exchange](http://codereview.stackexchange.com/) were tossing around ideas around on how to come up with an innovative, flexible and fun game. 
 
@@ -14,13 +12,11 @@ The primary game client as of August 2015 is web based and is hosted at http://p
 
 - [Official Website](http://www.Cardshifter.com/)
 
-####Playing the game
---------------------
+## Playing the game
 
 To play the game, [download the latest release](https://github.com/Cardshifter/Cardshifter/releases). Start the client jar using the computer console/terminal with `java -jar cardshifter-fx-<version>.jar` or by saving to your computer and simply double-clicking `cardshifter-fx-<version>.jar`. There is usually a server running at `dwarftowers.com` port `4242` that you may connect to and play with other players as well as AI players. If this is your first time playing Cardshifter, you may want to have a look at the [Wiki](https://github.com/Cardshifter/Cardshifter/wiki).
 
-####How can I get involved?
----------------------------
+## How can I get involved?
 
 If you are interested in helping with the project, there are a number of ways you can go about it:
 
@@ -34,8 +30,7 @@ If you are interested in helping with the project, there are a number of ways yo
 
 If you are not a developer, you can also help by playing the game and [reporting any bug](http://www.Cardshifter.com/report-bug.html) you find or [requesting new features](http://www.Cardshifter.com/request-feature.html) you'd like to see added to the game. You can even become a game designer if you'd like to contribute gameplay ideas and/or game content, please join the [chatroom](http://chat.stackexchange.com/rooms/16134/tcg-creation) to discuss in more detail. 
 
-####Submodules: 
----------------
+### Submodules
  
  - `cardshifter-api` - Classes for data being sent between client and server.
  - `cardshifter-core` - Contains our core TCG mod implementation, as well as various features for inclusion in the server and the JavaFX client.
@@ -48,8 +43,7 @@ If you are not a developer, you can also help by playing the game and [reporting
  - `Documentation` - Guides for game developers and content creators.
  - `extra-resources` - Game content and configurations for the various mods available in Cardshifter. 
 
-### License
------------
+## License
 
 All files in this repository, unless explicitly specified otherwise in the files itself 
 are licensed under Apache Software License, Version 2.0 (the "License");
