@@ -15,7 +15,7 @@ pipeline {
         stage('Build') {
             steps {
                 sh './gradlew clean distAndTest'
-                sh 'mv cardshifter-server/build/libs/cardshifter-server-*.jar cardshifter-server/build/libs/cardshifter-server.jar'
+                sh 'mv build/libs/cardshifter-server-*.jar build/libs/cardshifter-server.jar'
             }
         }
 
@@ -30,7 +30,7 @@ pipeline {
                     sh 'echo "missing-security = IGNORE" > server.properties'
 
                     sh 'docker build . -t cardshifter-server'
-                    sh 'docker run -d --rm --name cardshifter_server -v $(pwd):/usr/src/cardshifter -p 192.168.0.110:22737:4242 -p 192.168.0.110:22738:4243 -v /home/zomis/jenkins/cardshifter:/data/logs -w /data/logs cardshifter-server'
+                    sh 'docker run -d --rm --name cardshifter_server -v $(pwd):/usr/src/cardshifter -p 192.168.0.110:22737:4242 -p 192.168.0.110:22738:4243 -v /home/zomis/jenkins/cardshifter:/data/logs cardshifter-server'
                 }
             }
         }
