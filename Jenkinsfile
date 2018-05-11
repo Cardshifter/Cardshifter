@@ -30,7 +30,7 @@ pipeline {
                     sh 'echo "missing-security = IGNORE" > build/libs/server.properties'
 
                     sh 'docker build . -t cardshifter-server'
-                    sh 'docker run -d --rm --name cardshifter_server -v $(pwd):/usr/src/cardshifter -p 192.168.0.110:22737:4242 -p 192.168.0.110:22738:4243 -v /home/zomis/jenkins/cardshifter:/data/logs cardshifter-server'
+                    sh 'docker run -d --rm --name cardshifter_server -p 192.168.0.110:22737:4242 -p 192.168.0.110:22738:4243 -v /home/zomis/jenkins/cardshifter:/data/logs cardshifter-server'
                 }
             }
         }
