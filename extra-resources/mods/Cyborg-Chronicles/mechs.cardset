@@ -174,7 +174,7 @@ card("Upgrado Mk I") {
     manaCost 3
     scrap 1
     onStartOfTurn { summon 1 of "Upgrado Mk II" to "you" zone "Battlefield" }
-    onStartOfTurn { set HEALTH to 0 on { thisCard() } }
+    onStartOfTurn { set HEALTH to -1000 on { thisCard() } }
 }
 // tokens for Upgrado 
 card("Upgrado Mk II") {
@@ -187,7 +187,7 @@ card("Upgrado Mk II") {
     scrap 2
     afterPlay { damage 1 on { creature true; ownedBy "opponent"; zone "Battlefield" } }
     onStartOfTurn { summon 1 of "Upgrado Mk III" to "you" zone "Battlefield" }
-    onStartOfTurn { set HEALTH to 0 on { thisCard() } }
+    onStartOfTurn { set HEALTH to -1000 on { thisCard() } }
 }
 card("Upgrado Mk III") {
     creature "Mech"
@@ -199,7 +199,7 @@ card("Upgrado Mk III") {
     scrap 3
     afterPlay { change SCRAP by 2 on "you" }
     onStartOfTurn { summon 1 of "Upgrado Mk IV" to "you" zone "Battlefield" }
-    onStartOfTurn { set HEALTH to 0 on { thisCard() } }
+    onStartOfTurn { set HEALTH to -1000 on { thisCard() } }
 }
 card("Upgrado Mk IV") {
     creature "Mech"
@@ -211,7 +211,7 @@ card("Upgrado Mk IV") {
     scrap 4
     //whilePresent { change ATTACK, HEALTH by 1 withPriority 1 on { creatureType "Mech"; ownedBy "you"; zone "Battlefield" } }
     onStartOfTurn { summon 1 of "Upgrado Mk V" to "you" zone "Battlefield" }
-    onStartOfTurn { set HEALTH to 0 on { thisCard() } }
+    onStartOfTurn { set HEALTH to -1000 on { thisCard() } }
 }
 card("Upgrado Mk V") {
     creature "Mech"
