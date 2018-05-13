@@ -11,37 +11,37 @@ import com.cardshifter.api.outgoing.CardInfoMessage;
 
 public class DeckConfig implements PlayerConfig {
 
-	private Map<Integer, CardInfoMessage> cardData;
-	private Map<Integer, Integer> chosen = new HashMap<Integer, Integer>();
-	private Map<Integer, Integer> max = new HashMap<Integer, Integer>();
+	private Map<String, CardInfoMessage> cardData;
+	private Map<String, Integer> chosen = new HashMap<String, Integer>();
+	private Map<String, Integer> max = new HashMap<String, Integer>();
 	private int minSize;
 	private int maxSize;
 	private int maxPerCard;
 	
 	public DeckConfig() {
-		this(0, 0, new HashMap<Integer, CardInfoMessage>(), 0);
+		this(0, 0, new HashMap<String, CardInfoMessage>(), 0);
 	}
-	public DeckConfig(int minSize, int maxSize, Map<Integer, CardInfoMessage> cardData, int maxPerCard) {
+	public DeckConfig(int minSize, int maxSize, Map<String, CardInfoMessage> cardData, int maxPerCard) {
 		this.minSize = minSize;
 		this.maxSize = maxSize;
 		this.maxPerCard = maxPerCard;
-		this.cardData = new HashMap<Integer, CardInfoMessage>(cardData);
+		this.cardData = new HashMap<String, CardInfoMessage>(cardData);
 	}
 	
-	public void setMax(int id, int max) {
+	public void setMax(String id, int max) {
 		this.max.put(id, max);
 	}
 	
-	public void setChosen(int id, int chosen) {
+	public void setChosen(String id, int chosen) {
 		this.chosen.put(id, chosen);
 	}
 	
-	public int getChosen(int id) {
-		Integer chosen = this.chosen.get(id);
-		return chosen == null ? 0 : chosen;
+	public int getChosen(String id) {
+		Integer value = this.chosen.get(id);
+		return value == null ? 0 : value;
 	}
 
-	public void removeChosen(int id) {
+	public void removeChosen(String id) {
 		if (this.chosen.get(id) > 1) {
 			this.setChosen(id, this.getChosen().get(id) - 1);
 		} else {
@@ -57,11 +57,11 @@ public class DeckConfig implements PlayerConfig {
 		return maxSize;
 	}
 	
-	public Map<Integer, CardInfoMessage> getCardData() {
+	public Map<String, CardInfoMessage> getCardData() {
 		return Collections.unmodifiableMap(cardData);
 	}
 	
-	public Map<Integer, Integer> getChosen() {
+	public Map<String, Integer> getChosen() {
 		return Collections.unmodifiableMap(chosen);
 	}
 	
@@ -69,8 +69,8 @@ public class DeckConfig implements PlayerConfig {
 		chosen.clear();
 	}
 	
-	public Map<Integer, Integer> getMax() {
-		return new HashMap<Integer, Integer>(max);
+	public Map<String, Integer> getMax() {
+		return new HashMap<String, Integer>(max);
 	}
 	
 	public int getMaxPerCard() {
@@ -92,14 +92,14 @@ public class DeckConfig implements PlayerConfig {
 	
 	public void generateRandom() {
 		Random random = new Random();
-		List<Integer> ids = new ArrayList<Integer>(this.getCardData().keySet());
+		List<String> ids = new ArrayList<String>(this.getCardData().keySet());
 		while (this.total() < this.getMinSize()) {
-			int randomId = ids.get(random.nextInt(ids.size()));
+			String randomId = ids.get(random.nextInt(ids.size()));
 			this.setChosen(randomId, this.getMaxFor(randomId));
 		}
 	}
 	
-	public void add(int cardId) {
+	public void add(String cardId) {
 		Integer current = chosen.get(cardId);
 		if (current == null) {
 			current = 0;
@@ -107,7 +107,7 @@ public class DeckConfig implements PlayerConfig {
 		chosen.put(cardId, current + 1);
 	}
 	
-	public int getMaxFor(int id) {
+	public int getMaxFor(String id) {
 		Integer value = this.max.get(id);
 		return value == null ? maxPerCard : value;
 	}
@@ -115,7 +115,7 @@ public class DeckConfig implements PlayerConfig {
     @Override
     public void beforeSend() {
         // Don't send information about cards that cannot be chosen
-        for (Map.Entry<Integer, Integer> ee : this.max.entrySet()) {
+        for (Map.Entry<String, Integer> ee : this.max.entrySet()) {
             if (ee.getValue() <= 0) {
                 this.cardData.remove(ee.getKey());
             }

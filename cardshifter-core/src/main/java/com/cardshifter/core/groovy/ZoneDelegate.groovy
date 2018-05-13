@@ -26,7 +26,9 @@ class ZoneDelegate {
 
     def card(String name, Closure<?> closure) {
         def card = entity.game.newEntity()
-        ECSAttributeMap.createOrGetFor(card).set(Attributes.NAME, name)
+        def attributes = ECSAttributeMap.createOrGetFor(card)
+        attributes.set(Attributes.NAME, name)
+        attributes.set(Attributes.ID, name.toLowerCase().replaceAll(" ", "-"))
         cardDelegate.createCard(card, closure, Closure.OWNER_FIRST)
         zone.addOnBottom(card)
     }
