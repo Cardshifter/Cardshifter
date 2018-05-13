@@ -121,4 +121,18 @@ public class DeckConfig implements PlayerConfig {
             }
         }
     }
+
+	@Override
+	public void validate(PlayerConfig original) {
+		DeckConfig originalDeck = (DeckConfig) original;
+		for (Map.Entry<String, Integer> ee : this.chosen.entrySet()) {
+			String id = ee.getKey();
+			int maxAllowed = originalDeck.getMaxFor(id);
+			if (ee.getValue() > maxAllowed) {
+				throw new RuntimeException("Invalid amount specified for " + id +
+					": Specified " + ee.getValue() + " but max is " + maxAllowed);
+			}
+		}
+	}
+
 }
