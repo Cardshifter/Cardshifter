@@ -40,6 +40,11 @@ public class CardModelAnalyze {
         StatsExtract<ECSGame> fight = new StatsExtract<ECSGame>()
             .indexes("playerIndex")
             .value("winner", WinResult.class, FightCollectors.stats())
+            .value("actionPerformed", String.class, Collectors.groupingBy(e -> e, Collectors.counting()))
+            .dataTuple("playerPerformsAction", Entity.class, ECSAction.class, (stats, player, action) -> {
+                int playerIndex = player.getComponent(PlayerComponent.class).getIndex();
+                stats.save("actionPerformed", playerIndex, action.getName());
+            })
             .data("gameOver", ECSGame.class, (stats, game, obj) -> {
                 List<Entity> players = Players.getPlayersInGame(game);
 
@@ -68,7 +73,7 @@ public class CardModelAnalyze {
             for (Entity player : Players.getPlayersInGame(ecsGame)) {
                 ECSAction action = ai.getAction(player);
                 if (action != null && action.isAllowed(player)) {
-                    statsInterface.post("action", action);
+                    statsInterface.postTuple("playerPerformsAction", player, action);
                     action.perform(player);
                 }
             }
