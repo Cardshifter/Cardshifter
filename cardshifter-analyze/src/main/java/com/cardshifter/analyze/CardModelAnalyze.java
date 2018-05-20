@@ -6,6 +6,8 @@ import com.cardshifter.core.game.ModCollection;
 import com.cardshifter.core.game.TCGGame;
 import com.cardshifter.modapi.actions.ECSAction;
 import com.cardshifter.modapi.ai.CardshifterAI;
+import com.cardshifter.modapi.attributes.Attributes;
+import com.cardshifter.modapi.attributes.ECSAttributeMap;
 import com.cardshifter.modapi.base.ECSGame;
 import com.cardshifter.modapi.base.ECSMod;
 import com.cardshifter.modapi.base.Entity;
@@ -17,7 +19,9 @@ import net.zomis.fight.ext.WinResult;
 import net.zomis.fight.v2.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -37,13 +41,19 @@ public class CardModelAnalyze {
     }
 
     private void fight() {
+        Collector<String, ?, Map<String, Long>> counting = Collectors.groupingBy(e -> e, Collectors.counting());
         StatsExtract<ECSGame> fight = new StatsExtract<ECSGame>()
             .indexes("playerIndex")
             .value("winner", WinResult.class, FightCollectors.stats())
-            .value("actionPerformed", String.class, Collectors.groupingBy(e -> e, Collectors.counting()))
+            .value("actionPerformed", String.class, counting)
+            .value("cardsPlayed", String.class, counting)
             .dataTuple("playerPerformsAction", Entity.class, ECSAction.class, (stats, player, action) -> {
                 int playerIndex = player.getComponent(PlayerComponent.class).getIndex();
                 stats.save("actionPerformed", playerIndex, action.getName());
+                if (action.getName().equals("Play")) {
+                    stats.save("cardsPlayed", playerIndex, action.getOwner().getComponent(ECSAttributeMap.class)
+                        .get(Attributes.NAME).get().get());
+                }
             })
             .data("gameOver", ECSGame.class, (stats, game, obj) -> {
                 List<Entity> players = Players.getPlayersInGame(game);
