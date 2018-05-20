@@ -12,3 +12,5 @@ project(':cardshifter-server').projectDir = "$rootDir/cardshifter-server" as Fil
 project(':cardshifter-api').projectDir = "$rootDir/cardshifter-api" as File
 project(':cardshifter-modapi').projectDir = "$rootDir/cardshifter-modapi" as File
 project(':cardshifter-test').projectDir = "$rootDir/cardshifter-test" as File
+include 'cardshifter-analyze'
+
