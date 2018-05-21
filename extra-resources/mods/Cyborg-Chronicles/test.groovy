@@ -216,7 +216,7 @@ from clearState test 'enchant' using {
     assert card.health == 3
 }
 
-from clearState test 'heal creatures at end of turn' using {
+from clearState test 'heal creatures at start of turn' using {
     def attacker = to you zone 'Battlefield' create {
         creature 'Mech'
         attack 2
@@ -234,6 +234,11 @@ from clearState test 'heal creatures at end of turn' using {
     assert attacker.health == 1
     assert defender.health == 2
     uses 'End Turn' ok
+    // Defender's turn starts, so defender is healed
+    assert attacker.health == 1
+    assert defender.health == 4
+    uses 'End Turn' ok
+    // Attacker's turn starts, so attacker is healed
     assert attacker.health == 2
     assert defender.health == 4
 }
