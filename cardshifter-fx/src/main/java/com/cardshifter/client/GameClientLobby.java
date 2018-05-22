@@ -50,7 +50,7 @@ import com.cardshifter.api.incoming.StartGameRequest;
 import com.cardshifter.api.messages.Message;
 import com.cardshifter.api.outgoing.AvailableModsMessage;
 import com.cardshifter.api.outgoing.NewGameMessage;
-import com.cardshifter.api.outgoing.ServerErrorMessage;
+import com.cardshifter.api.outgoing.ErrorMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage;
 import com.cardshifter.api.outgoing.UserStatusMessage.Status;
 import com.cardshifter.client.buttons.GameTypeButton;
@@ -177,8 +177,8 @@ public class GameClientLobby implements Initializable {
 		} else if (message instanceof ChatMessage) {
 			ChatMessage msg = (ChatMessage) message;
 			this.chatOutput(msg.getFrom() + ": " + msg.getMessage());
-		} else if (message instanceof ServerErrorMessage) {
-			ServerErrorMessage msg = (ServerErrorMessage) message;
+		} else if (message instanceof ErrorMessage) {
+			ErrorMessage msg = (ErrorMessage) message;
 			this.chatOutput("SERVER ERROR: " + msg.getMessage());
 		} else if (message instanceof PlayerConfigMessage) {
 			PlayerConfigMessage msg = (PlayerConfigMessage) message;

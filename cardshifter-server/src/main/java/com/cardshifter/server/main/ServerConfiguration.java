@@ -1,5 +1,7 @@
 package com.cardshifter.server.main;
 
+import org.apache.log4j.LogManager;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -10,7 +12,7 @@ import java.util.Properties;
  */
 public class ServerConfiguration {
 
-    public static enum WarningLevel {
+    public enum WarningLevel {
         FAIL, WARN, IGNORE
     }
 
@@ -25,7 +27,7 @@ public class ServerConfiguration {
         try (FileInputStream is = new FileInputStream(new File(s))) {
             properties.load(is);
         } catch (IOException ex) {
-            System.out.println("Cannot read properties: " + ex + ", using defaults.");
+            LogManager.getLogger(ServerConfiguration.class).warn("Cannot read properties: " + ex + ", using defaults.");
             // use defaults
         }
         ServerConfiguration config = new ServerConfiguration();

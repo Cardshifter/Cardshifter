@@ -44,7 +44,7 @@ public class MainServer {
 	/**
 	 * Server handles incoming messages and passes them to appropriate methods
 	 */
-	private final Server server = new Server();
+	private final Server server;
 	/**
 	 * ModCollection is where the Phrancis mods are initialized
 	 */
@@ -53,8 +53,13 @@ public class MainServer {
 
     private Thread consoleThread;
 
+	public MainServer(ServerConfiguration serverConfiguration, Server server) {
+		this.config = serverConfiguration;
+		this.server = server;
+	}
+
     public MainServer(ServerConfiguration serverConfiguration) {
-        this.config = serverConfiguration;
+		this(serverConfiguration, new Server());
     }
 
     /**

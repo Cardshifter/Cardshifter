@@ -7,10 +7,10 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.function.Predicate;
 
 import com.cardshifter.api.outgoing.*;
-import com.fasterxml.jackson.core.JsonGenerationException;
 import org.apache.log4j.PropertyConfigurator;
 import org.junit.After;
 import org.junit.Before;
@@ -50,15 +50,18 @@ public class ServerConnectionTest {
 		return new TestClient(socketPort);
 	}
 	
-	private MainServer main;
 	private Server server;
 	private int socketPort;
 	private TestClient client1;
 	private int userId;
     private AvailableModsMessage mods;
 
-    @Before
-	public void setup() throws IOException, InterruptedException {
+	@Before
+	public void before() throws IOException, InterruptedException {
+		startServer(new Server());
+	}
+
+	private void startServer(Server serverInst) throws IOException, InterruptedException {
 		PropertyConfigurator.configure(getClass().getResourceAsStream("log4j.properties"));
 		ServerConfiguration config = ServerConfiguration.defaults();
 
@@ -66,7 +69,7 @@ public class ServerConnectionTest {
 		config.setPortSocket(0);
 		config.setPortWebsocket(0);
 
-		main = new MainServer(config);
+		MainServer main = new MainServer(config, serverInst);
 		main.getMods().loadExternal(Paths.get("../extra-resources/groovy"));
 		server = main.start();
 
@@ -77,7 +80,6 @@ public class ServerConnectionTest {
 		client1.send(new LoginMessage("Tester1"));
 
 		WelcomeMessage welcome = client1.await(WelcomeMessage.class);
-		assertEquals(200, welcome.getStatus());
 		System.out.println(server.getClients());
 		assertEquals(server.getClients().size() + 1, welcome.getUserId());
 		userId = welcome.getUserId();
@@ -138,15 +140,15 @@ public class ServerConnectionTest {
 	public void testSameUserName() throws IOException, InterruptedException {
 		TestClient client2 = createTestClient();
 		client2.send(new LoginMessage(client1.getName()));
-		WelcomeMessage welcomeMessage = client2.await(WelcomeMessage.class);
-		assertFalse(welcomeMessage.isOK());
+		ErrorMessage message = client2.await(ErrorMessage.class);
+		assertEquals(message.getMessage(), "User name already in use by another client");
 	}
 
 	private static void assertUserFound(Collection<UserStatusMessage> users, String name) {
 		assertTrue("User '" + name + "' not found", users.stream().filter(mess -> mess.getName().equals(name)).findAny().isPresent());
 	}
 	
-	@Test(timeout = 10000)
+	@Test(timeout = 50000)
 	public void testStartGame() throws InterruptedException, IOException {
 		client1.send(new StartGameRequest(2, getTestMod()));
 		NewGameMessage gameMessage = client1.await(NewGameMessage.class);
@@ -215,7 +217,6 @@ public class ServerConnectionTest {
 
 		client2.send(new LoginMessage("client2"));
 		WelcomeMessage welcomeMessage = client2.await(WelcomeMessage.class);
-		assertTrue(welcomeMessage.isOK());
 		int client2id = welcomeMessage.getUserId();
 
 		client1.await(UserStatusMessage.class);
@@ -223,7 +224,7 @@ public class ServerConnectionTest {
 
 		client1.send(new StartGameRequest(client2id, getTestMod()));
 		client1.send(new StartGameRequest(client2id, getTestMod()));
-		client1.await(ServerErrorMessage.class);
+		client1.await(ErrorMessage.class);
 	}
 
 	/**
@@ -250,6 +251,44 @@ public class ServerConnectionTest {
 		assertUserFound(users, "AI Idiot");
 
 		// There shouldn't be a UserStatusMessage for client2
+		assertNoMessage(client1);
+	}
+
+	@Test(timeout = 5000)
+	public void testNoOfflineMessageIfNotLoggedIn() throws IOException, InterruptedException {
+		/* There's a race condition between a possible UserStatusMessage (if the test were to fail) and the
+		 * message sent by the server in response to the request from assertNoMessage. Therefore wait until
+		 * the server has processed the disconnection before continuing.
+		 *
+		 * See https://github.com/Cardshifter/Cardshifter/pull/410#discussion-diff-40526060 for discussion.
+		 */
+
+		shutdown();
+
+		class TestServer extends Server {
+			private CountDownLatch latch;
+
+			@Override
+			public void onDisconnected(ClientIO client) {
+				super.onDisconnected(client);
+				if (latch != null) {
+					latch.countDown();
+				}
+			}
+
+			public void setLatch(CountDownLatch latch) {
+				this.latch = latch;
+			}
+		}
+
+		CountDownLatch disconnectionLatch = new CountDownLatch(1);
+		startServer(new TestServer());
+		((TestServer) server).setLatch(disconnectionLatch);
+
+		TestClient client2 = createTestClient();
+		client2.disconnect();
+
+		disconnectionLatch.await();
 		assertNoMessage(client1);
 	}
 	

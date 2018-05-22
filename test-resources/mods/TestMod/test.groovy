@@ -121,3 +121,183 @@ from clearState test 'enchantment non bio' using {
     def player = you
     expect failure when enchant uses 'Enchant' withTarget creatur ok
 }
+
+from clearState test 'perish' using {
+    def card = to you zone 'Battlefield' create {
+        creature 'Mech'
+        health 1
+        onEndOfTurn {
+            perish()
+        }
+    }
+
+    assert !card.removed
+    uses 'End Turn' ok
+    assert card.removed
+}
+
+from clearState test 'destroy' using {
+    def card = to you zone 'Battlefield' create {
+        creature 'Mech'
+        health 999
+    }
+    def spell = to you zone 'Hand' create {
+        spell {
+            targets 1 cards {
+                creature true
+            }
+            afterPlay {
+                destroy targets
+            }
+        }
+    }
+
+    assert !card.removed
+    uses 'Use' on spell withTarget card ok
+    assert card.removed
+}
+
+String getDescription(entity) {
+    entity.getComponent(net.zomis.cardshifter.ecs.effects.EffectComponent.class).getDescription()
+}
+
+from clearState test 'atRandom description' using {
+    def card = to you zone 'Hand' create {
+        afterPlay {
+            pick 1 atRandom ({ perish() }, { drawCard 'all', 1 })
+        }
+    }
+
+    assert getDescription(card) == 'Choose 1 at random:\n - Perish\n - All players draw 1 card'
+}
+
+from clearState test 'onStartOfTurn description' using {
+    def card = to you zone 'Hand' create {
+        onStartOfTurn {
+            perish()
+        }
+    }
+
+    assert getDescription(card) == 'At the start of your turn, perish'
+}
+
+from clearState test 'multiple effects description' using {
+    def card = to you zone 'Hand' create {
+        onStartOfTurn {
+            perish()
+            destroy 'you'
+        }
+    }
+
+    assert getDescription(card) == 'At the start of your turn, perish\nAt the start of your turn, destroy you'
+}
+
+from clearState test 'multiple onDeath effects description' using {
+    def card = to you zone 'Hand' create {
+        onDeath {
+            perish()
+            destroy 'you'
+        }
+    }
+
+    assert getDescription(card) == 'When this dies, perish\nWhen this dies, destroy you'
+}
+
+from clearState test 'whilePresent description' using {
+    def card = to you zone 'Hand' create {
+        whilePresent {
+            change HEALTH by -1 withPriority 1 on {
+                thisCard()
+            }
+        }
+    }
+
+    assert getDescription(card) == 'As long as this is on the battlefield, give this card -1 HEALTH'
+}
+
+from clearState test 'whilePresent description multiple effects' using {
+    def card = to you zone 'Hand' create {
+        whilePresent {
+            change HEALTH by -1 withPriority 1 on {
+                thisCard()
+            }
+            change ATTACK by +1 withPriority 1 on {
+                thisCard()
+            }
+        }
+    }
+
+    assert getDescription(card) == 'As long as this is on the battlefield, give this card -1 HEALTH\n' +
+                                   'As long as this is on the battlefield, give this card 1 ATTACK'
+}
+
+from clearState test 'negated filter' using {
+    def spell = to you zone 'Hand' create {
+        spell {
+            targets 1 cards {
+                not {
+                    creatureType 'Bio'
+                }
+            }
+        }
+    }
+    def bio = to you zone 'Battlefield' create {
+        creature 'Bio'
+        health 1
+    }
+    def mech = to you zone 'Battlefield' create {
+        creature 'Mech'
+        health 1
+    }
+
+    expect failure when spell uses 'Use' withTarget bio ok
+    uses 'Use' on spell withTarget mech ok
+}
+
+from clearState test 'complex negated filter' using {
+    def spell = to you zone 'Hand' create {
+        spell {
+            targets 1 cards {
+                not {
+                    creatureType "Greek"
+                    ownedBy "opponent"
+                }
+                zone 'Battlefield'
+            }
+        }
+    }
+
+    def yourGreek = to you zone 'Battlefield' create {creature 'Greek'}
+    def yourRoman = to you zone 'Battlefield' create {creature 'Roman'}
+    def theirGreek = to opponent zone 'Battlefield' create {creature 'Greek'}
+    def theirRoman = to opponent zone 'Battlefield' create {creature 'Roman'}
+
+    def targets = uses 'Use' on spell getAvailableTargets()
+    def expected = [yourGreek, yourRoman, theirRoman]
+    assert targets.containsAll(expected)
+    assert targets.size() == expected.size() // Shouldn't include anything else
+}
+
+from clearState test 'multiple negated filters' using {
+    def spell = to you zone 'Hand' create {
+        spell {
+            targets 1 cards {
+                not {
+                    creatureType "Greek"
+                }
+                not {
+                    ownedBy "opponent"
+                }
+                zone 'Battlefield'
+            }
+        }
+    }
+    def yourGreek = to you zone 'Battlefield' create {creature 'Greek'}
+    def yourRoman = to you zone 'Battlefield' create {creature 'Roman'}
+    def theirGreek = to opponent zone 'Battlefield' create {creature 'Greek'}
+    def theirRoman = to opponent zone 'Battlefield' create {creature 'Roman'}
+
+    def targets = uses 'Use' on spell getAvailableTargets()
+    assert targets == [yourRoman]
+}
+

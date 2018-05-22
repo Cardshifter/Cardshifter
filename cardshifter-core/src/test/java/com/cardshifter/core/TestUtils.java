@@ -105,7 +105,7 @@ public class TestUtils {
                             performed = performed || doSomething;
                         }
                     }
-                    assertTrue("No player perfored any action: " + players, performed);
+                    assertTrue("No player performed an action: " + players, performed);
                 }
             }
         });
@@ -116,7 +116,6 @@ public class TestUtils {
         ECSModTest modTest = new ECSModTest("multithreaded test", new Runnable() {
             @Override
             public void run() {
-                //       Logger.getRootLogger().addAppender(new ConsoleAppender(new PatternLayout("%c %m\n"), "System.out"));
                 ECSMod mod = mods.getModFor(modName);
                 ECSGame game = new ECSGame();
                 CardshifterAI ai = new ScoringAI(AIs.fighter());
@@ -158,7 +157,7 @@ public class TestUtils {
                         fail("Thread interrupted");
                     }
                 }
-                assertTrue("Errors occured: " + errors, errors.isEmpty());
+                assertTrue("Errors occurred: " + errors, errors.isEmpty());
                 assertTrue(game.isGameOver());
             }
         });
@@ -235,7 +234,7 @@ public class TestUtils {
                                 performed = performed || doSomething;
                             }
                         }
-                        assertTrue("No player perfored any action: " + players, performed);
+                        assertTrue("No player performed an action: " + players, performed);
                     }
                 }
             });

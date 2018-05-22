@@ -57,7 +57,7 @@ public class DeckBuilderWindow {
 	
 	private static final int CARDS_PER_PAGE = 12;
 	private int currentPage = 0;
-	private Map<Integer, CardInfoMessage> cardList = new HashMap<>();
+	private Map<String, CardInfoMessage> cardList = new HashMap<>();
 	private List<List<CardInfoMessage>> pageList = new ArrayList<>();
 	private DeckConfig activeDeckConfig;
 	private CardInfoMessage cardBeingDragged;
@@ -117,7 +117,9 @@ public class DeckBuilderWindow {
 			if (this.activeDeckConfig.getChosen().get(message.getId()) != null) {
 				numChosenCards = this.activeDeckConfig.getChosen().get(message.getId());
 			}
-			Label numberOfCardsLabel = new Label(String.format("%d / %d", numChosenCards, this.activeDeckConfig.getMaxFor(message.getId())));
+			String id = (String) message.getProperties().get("id");
+
+			Label numberOfCardsLabel = new Label(String.format("%d / %d", numChosenCards, this.activeDeckConfig.getMaxFor(id)));
 			numberOfCardsLabel.setTextFill(Color.WHITE);
 			numberOfCardsBox.relocate(cardPane.getPrefWidth()/2.6, cardPane.getPrefHeight() - cardPane.getPrefHeight()/18);
 			numberOfCardsLabel.relocate(cardPane.getPrefWidth()/2.3, cardPane.getPrefHeight() - cardPane.getPrefHeight()/18);
@@ -158,9 +160,9 @@ public class DeckBuilderWindow {
 
 	private void displayActiveDeck() {
 		this.activeDeckBox.getChildren().clear();
-		List<Integer> sortedKeys = new ArrayList<>(this.activeDeckConfig.getChosen().keySet());
-		Collections.sort(sortedKeys, Comparator.comparingInt(key -> key));
-		for (Integer cardId : sortedKeys) {
+		List<String> sortedKeys = new ArrayList<>(this.activeDeckConfig.getChosen().keySet());
+		Collections.sort(sortedKeys);
+		for (String cardId : sortedKeys) {
 			if (!cardList.containsKey(cardId)) {
 				activeDeckConfig.setChosen(cardId, 0);
 				continue;
@@ -174,20 +176,25 @@ public class DeckBuilderWindow {
 	}
 
 	private void addCardToActiveDeck(MouseEvent event, CardInfoMessage message) {
+		String id = idFor(message);
 		if (this.activeDeckConfig.total() < this.activeDeckConfig.getMaxSize()) {
-			if(this.activeDeckConfig.getChosen().get(message.getId()) == null) {
-				this.activeDeckConfig.setChosen(message.getId(), 1);
+			if(this.activeDeckConfig.getChosen().get(id) == null) {
+				this.activeDeckConfig.setChosen(id, 1);
 			} else {
-				if (this.activeDeckConfig.getChosen().get(message.getId()) < this.activeDeckConfig.getMaxFor(message.getId())) {
-					this.activeDeckConfig.add(message.getId());
+				if (this.activeDeckConfig.getChosen().get(id) < this.activeDeckConfig.getMaxFor(id)) {
+					this.activeDeckConfig.add(id);
 				}
 			}
 		}
 		this.displayActiveDeck();
 		this.displayCurrentPage();
 	}
-	
-	private void removeCardFromDeck(MouseEvent event, int cardId) {
+
+	private String idFor(CardInfoMessage message) {
+		return (String) message.getProperties().get("id");
+	}
+
+	private void removeCardFromDeck(MouseEvent event, String cardId) {
 		if (this.activeDeckConfig.getChosen().get(cardId) != null) {
 			this.activeDeckConfig.removeChosen(cardId);
 		}
@@ -236,7 +243,7 @@ public class DeckBuilderWindow {
 		Map<Integer, Integer> scrapCostValues = new HashMap<>();
 		Map<String, Integer> creatureTypes = new HashMap<>();
 		
-		for (int cardId : this.activeDeckConfig.getChosen().keySet()) {
+		for (String cardId : this.activeDeckConfig.getChosen().keySet()) {
 			
 			CardInfoMessage card = this.cardList.get(cardId);
 			int cardCount = this.activeDeckConfig.getChosen().get(cardId);

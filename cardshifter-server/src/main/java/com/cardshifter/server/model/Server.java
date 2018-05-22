@@ -146,7 +146,10 @@ public class Server implements ClientServerInterface {
 			.forEach(game -> game.disconnect(client));
 		clients.remove(client.getId());
 		getMainChat().remove(client);
-		broadcast(new UserStatusMessage(client.getId(), client.getName(), Status.OFFLINE));
+
+		if (client.isLoggedIn()) {
+			broadcast(new UserStatusMessage(client.getId(), client.getName(), Status.OFFLINE));
+		}
 	}
 
 	/**
@@ -210,7 +213,7 @@ public class Server implements ClientServerInterface {
 	
 	/**
 	 * 
-	 * @return The the server's invite manager
+	 * @return The server's invite manager
 	 */
 	public InviteManager getInviteManager() {
 		return inviteManager;

@@ -58,7 +58,7 @@ public class MessageTypeIdResolver {
 		// Messages both incoming and outgoing
 		clazzes.put("inviteRequest", InviteRequest.class);
 		clazzes.put("inviteResponse", InviteResponse.class);
-		clazzes.put("error", ServerErrorMessage.class);
+		clazzes.put("error", ErrorMessage.class);
 		clazzes.put("userstatus", UserStatusMessage.class);
 		clazzes.put("query", ServerQueryMessage.class);
 		clazzes.put("playerconfig", PlayerConfigMessage.class);

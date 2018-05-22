@@ -1,26 +1,14 @@
 package mythos
-/* See modding documentation for all available keywords. */
-/* GENERIC TEMPLATE
-card('ChangeMe') {
-    creature 'Chinese'
-    flavor 'hello'
-    health 1
-    sickness 1
-    manaCost 1
-    attack 1
-}
-*/
 
-/**
- * List of available cards for Chinese panthon for Cardshifter 'Mythos' mod
- * @author www.github.com/Phrancis
+/*
+ * List of available cards for Chinese pantheon for Cardshifter 'Mythos' mod.
  */
 
 // PANTHEON
 
-// Info: http://en.wikipedia.org/wiki/Jade_Emperor
-// Image: http://upload.wikimedia.org/wikipedia/commons/2/24/Jade_Emperor._Ming_Dynasty.jpg
-// License: Public Domain
+// https://en.wikipedia.org/wiki/Jade_Emperor
+// https://commons.wikimedia.org/wiki/File:Jade_Emperor._Ming_Dynasty.jpg
+// Attribution: By Anonymous [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AJade_Emperor._Ming_Dynasty.jpg">via Wikimedia Commons</a>
 card('JADE EMPEROR') {
     creature 'Chinese God'
     flavor 'The Great Grandfather, Emperor of all Deities, Vanquisher of Evil.'
@@ -42,9 +30,9 @@ card('JADE EMPEROR') {
         }
     }
 }
-// Info: http://en.wikipedia.org/wiki/N%C3%BCwa
-// Image: https://upload.wikimedia.org/wikipedia/commons/0/02/Xiaoyuncong_nvwa.jpg
-// License: Public Domain
+// https://en.wikipedia.org/wiki/N%C3%BCwa
+// https://commons.wikimedia.org/wiki/File:Xiaoyuncong_nvwa.jpg
+// Attribution: By Xiao Yuncong (蕭雲從), 1596-1673 [Public domain], via Wikimedia Commons
 card('NUWA') {
     creature 'Chinese God'
     flavor 'Serpent Creator Goddess of Mankind and Repairer of the Pillar of Heaven.'
@@ -68,9 +56,9 @@ card('NUWA') {
         )
     }
 }
-// Info: http://en.wikipedia.org/wiki/Diyu
-// Image: http://upload.wikimedia.org/wikipedia/commons/c/cb/Jade_Record_1.PNG
-// License: Public Domain
+// https://en.wikipedia.org/wiki/Diyu
+// https://commons.wikimedia.org/wiki/File:Jade_Record_1.PNG
+// Attribution: See page for author [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AJade_Record_1.PNG">via Wikimedia Commons</a>
 card('DIYU') {
     creature 'Chinese Place'
     flavor 'The Realm of the Dead, containing the Ten Courts of Hell.'
@@ -99,14 +87,13 @@ card('DIYU') {
     }
 }
 // Tokens for DIYU
-// Info: http://en.wikipedia.org/wiki/Yaoguai
+// https://en.wikipedia.org/wiki/Yaoguai
 card('Yaoguai') {
     creature 'Chinese'
     flavor 'Freak'
     imagePath 'mythos/chinese/yaoguai.jpg'
     token()
     sickness 1
-    manaCost 0
     health 2
     attack 2
     denyCounterAttack()
@@ -117,7 +104,6 @@ card('Yaomo') {
     imagePath 'mythos/chinese/yaomo.jpg'
     token()
     sickness 1
-    manaCost 0
     health 2
     attack 3
 }
@@ -127,16 +113,15 @@ card('Yaojing') {
     imagePath 'mythos/chinese/yaojing.jpg'
     token()
     sickness 1
-    manaCost 0
     health 3
     attack 0
     noAttack()
     taunt()
 }
 
-// Info: http://en.wikipedia.org/wiki/Sun_Wukong
-// Image: http://upload.wikimedia.org/wikipedia/commons/2/25/Sun_Wukong_and_Jade_Rabbit.jpg
-// License: Public Domain
+// https://en.wikipedia.org/wiki/Sun_Wukong
+// https://commons.wikimedia.org/wiki/File:Sun_Wukong_and_Jade_Rabbit.jpg
+// Attribution: By Yoshitoshi Tsukioka (http://www.japaneseprints.net/viewitem.cfm?ID=2182) [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3ASun_Wukong_and_Jade_Rabbit.jpg">via Wikimedia Commons</a>
 card('MONKING') {
     creature 'Chinese Hero'
     flavor 'Monkey King Warrior of Immense Strength.'
@@ -153,10 +138,10 @@ card('MONKING') {
         }
     }
 }
-// Info: http://en.wikipedia.org/wiki/Guan_Yu
-// Image: http://upload.wikimedia.org/wikipedia/commons/e/eb/Guan_yu_-Summer_Palace%2C_Beijing.JPG
+// https://en.wikipedia.org/wiki/Guan_Yu
+// https://commons.wikimedia.org/wiki/File:Guan_yu_-Summer_Palace%2C_Beijing.JPG
 // License: CC BY-SA 3.0
-// Author: http://commons.wikimedia.org/wiki/User:Shizhao
+// https://commons.wikimedia.org/wiki/User:Shizhao
 card('GUAN YU') {
     creature 'Chinese God'
     flavor 'God of War and Martial Arts.'
@@ -170,13 +155,11 @@ card('GUAN YU') {
         summon 2 of 'Terracotta Soldier' to 'you' zone 'Hand'
     }
 }
-// Info: http://en.wikipedia.org/wiki/Eight_Immortals
-// Image: http://upload.wikimedia.org/wikipedia/commons/9/9a/Eight_Immortals_Crossing_the_Sea_-_Project_Gutenberg_eText_15250.jpg
-// License: Public Domain
+// https://en.wikipedia.org/wiki/Eight_Immortals
+// NO IMAGE FOUND
 card('EIGHT IMMORTALS') {
     creature 'Chinese'
     flavor 'Their power can be transferred to a tool that can bestow life or destroy evil.'
-    imagePath 'mythos/chinese/eight-immortals.jpg'
     health 5
     sickness 1
     manaCost 10
@@ -214,9 +197,9 @@ card('Destruction Tool') {
     }
 }
 
-// Info: http://en.wikipedia.org/wiki/Yama_(East_Asia)#Yama_in_Tibetan_Buddhism
-// Image: http://upload.wikimedia.org/wikipedia/commons/5/54/Yama_tibet.jpg
-// License: Public Domain
+// https://en.wikipedia.org/wiki/Yama_(East_Asia)
+// https://commons.wikimedia.org/wiki/File:Yama_tibet.jpg
+// Attribution: By unknown artist [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AYama_tibet.jpg">via Wikimedia Commons</a>
 card('SHINJE') {
     creature 'Chinese God'
     flavor 'Wrathful God of Death and Guardian of Spiritual Practice.'
@@ -239,10 +222,9 @@ card('SHINJE') {
     }
 }
 
-// Info: http://en.wikipedia.org/wiki/Guanyin
-// Image: http://upload.wikimedia.org/wikipedia/commons/8/89/Daienin_Kannon.JPG
-// License: CC BY-SA 3.0
-// Author: ':...---...SOS' | http://commons.wikimedia.org/w/index.php?title=User:...---...SOS&action=edit&redlink=1
+// https://en.wikipedia.org/wiki/Guanyin
+// https://commons.wikimedia.org/wiki/File:Daienin_Kannon.JPG
+// Attribution: No machine readable author provided. [<a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>], <a href="https://commons.wikimedia.org/wiki/File%3ADaienin_Kannon.JPG">via Wikimedia Commons</a>
 card('GUANYIN') {
     creature 'Chinese God'
     flavor 'Perceives the Cries of the World'
@@ -265,10 +247,9 @@ card('GUANYIN') {
         change HEALTH by -1 on { thisCard() }
     }
 }
-// Info: http://en.wikipedia.org/wiki/Mazu_(goddess)
-// Image: http://upload.wikimedia.org/wikipedia/commons/c/cf/Mazu_statue.JPG
-// License: CC BY-SA 3.0
-// Author: http://commons.wikimedia.org/wiki/User:Dli184
+// https://en.wikipedia.org/wiki/Mazu_(goddess)
+// https://commons.wikimedia.org/wiki/File:Mazu_statue.JPG
+// Attribution: By Dli184 (Own work) [<a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>], <a href="https://commons.wikimedia.org/wiki/File%3AMazu_statue.JPG">via Wikimedia Commons</a>
 card('MAZU') {
     creature 'Chinese God'
     flavor 'Silent Goddess watching over Seafarers.'
@@ -293,10 +274,9 @@ card('MAZU') {
 
 // COMMON UNITS
 
-// Info: http://en.wikipedia.org/wiki/Terracotta_Army
-// Image: http://upload.wikimedia.org/wikipedia/commons/2/22/Officer_Terrakottaarm%C3%A9n.jpg
-// License: CC BY-SA 3.0
-// Author: Tor Svensson | http://sv.wikipedia.org/wiki/User:Kemitsv
+// https://en.wikipedia.org/wiki/Terracotta_Army
+// https://commons.wikimedia.org/wiki/File:Officer_Terrakottaarm%C3%A9n.jpg
+// Attribution: By Tor Svensson (user Kemitsv on the Swedish Wikipedia) [<a href="http://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA-3.0</a>], <a href="https://commons.wikimedia.org/wiki/File%3AOfficer_Terrakottaarm%C3%A9n.jpg">via Wikimedia Commons</a>
 card('Terracotta Soldier') {
     creature 'Chinese'
     flavor 'Armies of Qin Shi Huang, the first Emperor of China.'
@@ -307,9 +287,9 @@ card('Terracotta Soldier') {
     attack 3
     taunt()
 }
-// Info: http://en.wikipedia.org/wiki/Chinese_archery
-// Image: http://upload.wikimedia.org/wikipedia/commons/2/20/Manchuguard.jpg
-// License: Public Domain
+// https://en.wikipedia.org/wiki/Chinese_archery
+// https://commons.wikimedia.org/wiki/File:Manchuguard.jpg
+// Attribution: See page for author [Public domain], <a href="https://commons.wikimedia.org/wiki/File%3AManchuguard.jpg">via Wikimedia Commons</a>
 card('Manchu Archer') {
     creature 'Chinese'
     flavor: 'Archers have played a pivotal role in Chinese society.'
@@ -320,10 +300,10 @@ card('Manchu Archer') {
     attack 2
     denyCounterAttack()
 }
-// Info: http://en.wikipedia.org/wiki/Chinese_martial_arts
-// Image: https://upload.wikimedia.org/wikipedia/en/9/9f/Shi_DeRu_and_Shi_DeYang.jpg
+// https://en.wikipedia.org/wiki/Chinese_martial_arts
+// https://en.wikipedia.org/wiki/File:Shi_DeRu_and_Shi_DeYang.jpg
+// Author: Shi Deru (a.k.a. Shawn Xiangyang Liu)
 // License: CC BY-SA 3.0
-// Author: Bigpeteb | https://en.wikipedia.org/wiki/User:Bigpeteb
 card('Kung Fu Fighter') {
     creature 'Chinese'
     flavor: 'Chinese Martial Artist.'

@@ -125,11 +125,11 @@ public class GeneralSystems {
         entity.addComponent(effect)
     }
 
-    static <T extends IEvent> void triggerBefore(Entity entity, String description, Class<T> eventClass, BiPredicate<Entity, T> predicate, Closure closure) {
+    static <T extends IEvent> void triggerBefore(Entity entity, Closure lineTransform, Class<T> eventClass, BiPredicate<Entity, T> predicate, Closure closure) {
         EffectDelegate effect = EffectDelegate.create(closure, false)
         def eff = new Effects();
         addEffect(entity,
-                eff.described(description.replace("%description%", effect.description.toString()),
+                eff.described(effect.descriptionList.collect(lineTransform).join('\n'),
                         eff.giveSelf(
                                 eff.triggerSystemBefore(eventClass,
                                         {Entity me, T event -> predicate.test(me, event)},
@@ -140,11 +140,11 @@ public class GeneralSystems {
         )
     }
 
-    static <T extends IEvent> void triggerAfter(Entity entity, String description, Class<T> eventClass, BiPredicate<Entity, T> predicate, Closure closure) {
+    static <T extends IEvent> void triggerAfter(Entity entity, Closure lineTransform, Class<T> eventClass, BiPredicate<Entity, T> predicate, Closure closure) {
         EffectDelegate effect = EffectDelegate.create(closure, false)
         def eff = new Effects();
         addEffect(entity,
-                eff.described(description.replace("%description%", effect.description.toString()),
+                eff.described(effect.descriptionList.collect(lineTransform).join('\n'),
                         eff.giveSelf(
                                 eff.triggerSystem(eventClass,
                                         {Entity me, T event -> predicate.test(me, event)},
@@ -253,7 +253,7 @@ public class GeneralSystems {
         }
 
         CardDelegate.metaClass.onEndOfTurn << {String turn, Closure closure ->
-            triggerAfter((Entity) entity(), "%description% at end of $turn turn", PhaseStartEvent.class,
+            triggerAfter((Entity) entity(), { "At the end of $turn turn, $it" }, PhaseStartEvent.class,
                     {Entity source, PhaseStartEvent event -> ownerMatch(turn, Players.findOwnerFor(source), event.getOldPhase().getOwner())}, closure)
         }
 
@@ -262,12 +262,12 @@ public class GeneralSystems {
         }
 
         CardDelegate.metaClass.onStartOfTurn << {String turn, Closure closure ->
-            triggerAfter((Entity) entity(), "%description% at start of $turn turn", PhaseStartEvent.class,
+            triggerAfter((Entity) entity(), { "At the start of $turn turn, $it" }, PhaseStartEvent.class,
                     {Entity source, PhaseStartEvent event -> ownerMatch(turn, Players.findOwnerFor(source), event.getNewPhase().getOwner())}, closure)
         }
 
         CardDelegate.metaClass.onDeath << {Closure closure ->
-            triggerBefore((Entity) entity(), 'When this dies, %description%', EntityRemoveEvent.class,
+            triggerBefore((Entity) entity(), { "When this dies, $it" }, EntityRemoveEvent.class,
                     {Entity source, EntityRemoveEvent event -> source == event.entity}, closure)
         }
 
@@ -296,7 +296,7 @@ public class GeneralSystems {
             GameEffect eventConsumer = {Entity ent, ActionPerformEvent event ->
                 effect.perform(ent, event)
             } as GameEffect
-            addEffect(entity(), new EffectComponent(effect.description.toString(), eventConsumer))
+            addEffect(entity(), new EffectComponent(effect.descriptionList.collect({it.capitalize()}).join('\n'), eventConsumer))
         }
 
         CardDelegate.metaClass.whilePresent << {Closure closure ->
@@ -305,7 +305,7 @@ public class GeneralSystems {
             closure.delegate = effect
             closure.call()
             addEffect(entity(),
-                eff.described("${effect.description}",
+                eff.described(effect.descriptionList.collect({ "As long as this is on the battlefield, $it" }).join('\n'),
                     eff.toSelf({source ->
                         def resModifierObject = ComponentRetriever.singleton(source.game, ResourceModifierComponent)
                         def modifiers = effect.modifiers

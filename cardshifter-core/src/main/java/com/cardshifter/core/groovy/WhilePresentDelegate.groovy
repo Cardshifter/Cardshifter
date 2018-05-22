@@ -21,7 +21,7 @@ class ModifierDelegate {
 
 class WhilePresentDelegate {
     List<ModifierDelegate> modifiers = new ArrayList<>()
-    StringBuilder description = new StringBuilder()
+    List<String> descriptionList = []
 
     private addModifier(ECSResource[] resources, int priority, Closure filter,
             Function<FilterDelegate, String> stringFunction, ECSResourceBiStrategy strategy) {
@@ -41,8 +41,7 @@ class WhilePresentDelegate {
         }
 
         String desc = stringFunction.apply(deleg)
-        description.append(desc)
-        description.append('\n')
+        descriptionList << desc
     }
 
     def change(ECSResource... resources) {
@@ -50,7 +49,7 @@ class WhilePresentDelegate {
             [withPriority: {int priority ->
                 [on: {Closure filter ->
                     addModifier(resources, priority, filter, {deleg ->
-                        'Give ' + deleg.description + ' ' + change + ' ' + resources.join(' and ')
+                        'give ' + deleg.description + ' ' + change + ' ' + resources.join(' and ')
                     }, {Entity source, Entity target, ECSResource resource, int actualValue ->
                         actualValue + change
                     })
@@ -64,7 +63,7 @@ class WhilePresentDelegate {
             [withPriority: {int priority ->
                 [on: {Closure filter ->
                     addModifier(resources, priority, filter, { deleg ->
-                        'Set ' + resources.join(' and ') + ' to ' + deleg.description + ' ' + change
+                        'set ' + resources.join(' and ') + ' to ' + deleg.description + ' ' + change
                     }, {Entity source, Entity target, ECSResource resource, int actualValue ->
                           change
                     })

@@ -1,6 +1,8 @@
 package com.cardshifter.core.groovy
 
 import com.cardshifter.api.config.DeckConfig
+import com.cardshifter.modapi.attributes.Attributes
+import com.cardshifter.modapi.attributes.ECSAttributeMap
 import com.cardshifter.modapi.base.ECSGame
 import com.cardshifter.modapi.base.Entity
 import com.cardshifter.modapi.players.Players
@@ -11,7 +13,7 @@ import net.zomis.cardshifter.ecs.config.ConfigComponent
  */
 class MaxInDeck {
 
-    private Map<Integer, Integer> cardCounts = [:]
+    private Map<String, Integer> cardCounts = [:]
 
     def setMaxCardCounts = {e ->
         ConfigComponent config = e.getComponent(ConfigComponent)
@@ -26,11 +28,11 @@ class MaxInDeck {
     void initialize(ECSGame game) {
         CardDelegate.metaClass.maxInDeck << {int count ->
             Entity e = entity()
-            cardCounts.put(e.id, count)
+            cardCounts.put(e.getComponent(ECSAttributeMap).get(Attributes.ID).get().get(), count)
         }
         CardDelegate.metaClass.token << {
             Entity e = entity()
-            cardCounts.put(e.id, 0)
+            cardCounts.put(e.getComponent(ECSAttributeMap).get(Attributes.ID).get().get(), 0)
         }
     }
 

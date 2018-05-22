@@ -53,14 +53,23 @@ public class AIs {
 
 	public static void mediumDeck(Entity entity, ConfigComponent config) {
 		DeckConfig deck = config.getConfig(DeckConfig.class);
-		createDeckFullWith(deck, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12); // All B0Ts
+		if (!cardExists(deck, "spareparts")) {
+			evilMythosDeck(deck);
+			return;
+		}
+		createDeckFullWith(deck, "spareparts", "gyrodroid", "the-chopper", "shieldmech", "robot-guard",
+				"humadroid", "assassinatrix", "fortimech", "scout-mech", "supply-mech"); // Some Mechs
 	}
-	
-	private static void createDeckFullWith(DeckConfig deck, int... ids) {
+
+	private static boolean cardExists(DeckConfig deck, String cardId) {
+		return deck.getCardData().containsKey(cardId);
+	}
+
+	private static void createDeckFullWith(DeckConfig deck, String... ids) {
 		if (deck == null) {
 			return;
 		}
-		for (int id : ids) {
+		for (String id : ids) {
 			if (deck.total() >= deck.getMaxSize()) {
 				return;
 			}
@@ -70,15 +79,28 @@ public class AIs {
 
 	public static void fighterDeck(Entity entity, ConfigComponent config) {
 		DeckConfig deck = config.getConfig(DeckConfig.class);
-		createDeckFullWith(deck, 4, 7, 8, 12, 16, 18, 24, 26, 27);
-		deckAdd(deck, 9, 9, 19);
+		if (!cardExists(deck, "humadroid")) {
+			evilMythosDeck(deck);
+			return;
+		}
+		createDeckFullWith(deck, "humadroid", "fortimech", "upgrado-mk-i", "body-armor");
+		deckAdd(deck, "robot-guard", "robot-guard", "scout-mech", "scout-mech", "supply-mech");
+		deckAdd(deck, "vetter", "wastelander", "cyberpimp", "web-boss", "inside-man");
+		deckAdd(deck, "reinforced-cranial-implants", "full-body-cybernetics-upgrade");
 	}
 
-	private static void deckAdd(DeckConfig deck, int... ids) {
+	private static void evilMythosDeck(DeckConfig deck) {
+		createDeckFullWith(deck, "ninja-spy", "monking", "poseidon", "tartarus", "zeus",
+			"maitreya-buddha", "krishna", "healer", "yama", "slinger");
+		deckAdd(deck, "guanyin", "archer", "archer", "varuna", "skeleton", "skeleton", "undead", "undead", "hades",
+				"eight-immortals", "eight-immortals", "holy-man", "holy-man", "cronus", "shinje", "nuwa");
+	}
+
+	private static void deckAdd(DeckConfig deck, String... ids) {
 		if (deck == null) {
 			return;
 		}
-		for (int id : ids) {
+		for (String id : ids) {
 			if (deck.total() >= deck.getMaxSize()) {
 				return;
 			}

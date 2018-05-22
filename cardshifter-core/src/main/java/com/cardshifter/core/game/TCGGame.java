@@ -239,7 +239,7 @@ public class TCGGame extends ServerGame {
         Entity performer = playerFor(client);
 		boolean allowed = action.perform(performer);
 		if (!allowed) {
-			client.sendToClient(new ServerErrorMessage("Action not allowed: " + action));
+			client.sendToClient(ErrorMessage.client("Action not allowed: " + action));
 		}
 		
 		sendAvailableActions();
@@ -493,6 +493,7 @@ public class TCGGame extends ServerGame {
 		Entity player = playerFor(client);
 		ConfigComponent config = player.getComponent(ConfigComponent.class);
 		for (Entry<String, PlayerConfig> entry : message.getConfigs().entrySet()) {
+			entry.getValue().validate(config.getConfig(entry.getValue().getClass()));
 			config.addConfig(entry.getKey(), entry.getValue());
 			logger.info("Incoming player config for " + player + ": " + entry.getValue());
 		}

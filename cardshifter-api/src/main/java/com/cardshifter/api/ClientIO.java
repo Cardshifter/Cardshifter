@@ -1,7 +1,7 @@
 package com.cardshifter.api;
 
 import com.cardshifter.api.messages.Message;
-import com.cardshifter.api.outgoing.ServerErrorMessage;
+import com.cardshifter.api.outgoing.ErrorMessage;
 
 public abstract class ClientIO implements IdObject {
 
@@ -50,7 +50,7 @@ public abstract class ClientIO implements IdObject {
 		}
 		catch (RuntimeException ex) {
 			logger.error("Error performing incoming message from " + this, ex);
-			sendToClient(new ServerErrorMessage(ex.toString()));
+			sendToClient(ErrorMessage.server(ex.toString()));
 		}
 	}
 	

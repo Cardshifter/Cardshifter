@@ -8,4 +8,6 @@ public interface PlayerConfig {
      * Called before sending the Player Configuration request, to make last-minute cleanup in what to send
      */
     void beforeSend();
+
+    void validate(PlayerConfig config);
 }
