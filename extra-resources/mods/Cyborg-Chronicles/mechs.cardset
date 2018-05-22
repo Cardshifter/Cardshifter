@@ -164,8 +164,8 @@ card('Waste Runner') {
     manaCost 5
     scrap 3
 }
-// self-upgrading card "Konstructor"
-card("Konstructor Mk I") {
+card("Upgrado Mk I") {
+    // self-upgrading card
     creature "Mech"
     flavor "Upgrades itself on each new turn up to Mk V."
     attack 1
@@ -176,7 +176,7 @@ card("Konstructor Mk I") {
     onStartOfTurn { summon 1 of "Upgrado Mk II" to "you" zone "Battlefield" }
     onStartOfTurn { perish() }
 }
-card("Konstructor Mk II") {
+card("Upgrado Mk II") {
     creature "Mech"
     flavor "Upgrades itself on each new turn up to Mk V."
     token()
@@ -188,7 +188,7 @@ card("Konstructor Mk II") {
     onStartOfTurn { summon 1 of "Upgrado Mk III" to "you" zone "Battlefield" }
     onStartOfTurn { perish() }
 }
-card("Konstructor Mk III") {
+card("Upgrado Mk III") {
     creature "Mech"
     flavor "Upgrades itself on each new turn up to Mk V."
     token()
@@ -200,7 +200,7 @@ card("Konstructor Mk III") {
     onStartOfTurn { summon 1 of "Upgrado Mk IV" to "you" zone "Battlefield" }
     onStartOfTurn { perish() }
 }
-card("Konstructor Mk IV") {
+card("Upgrado Mk IV") {
     creature "Mech"
     flavor "Upgrades itself on each new turn up to Mk V."
     token()
@@ -212,7 +212,7 @@ card("Konstructor Mk IV") {
     onStartOfTurn { summon 1 of "Upgrado Mk V" to "you" zone "Battlefield" }
     onStartOfTurn { perish() }
 }
-card("Konstructor Mk V") {
+card("Upgrado Mk V") {
     creature "Mech"
     flavor "Upgrades itself on each new turn up to Mk V."
     token()
