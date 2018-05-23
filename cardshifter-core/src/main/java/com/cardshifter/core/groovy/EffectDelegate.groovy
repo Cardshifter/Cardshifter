@@ -10,6 +10,7 @@ import com.cardshifter.modapi.cards.DrawStartCards
 import com.cardshifter.modapi.cards.ZoneComponent
 import com.cardshifter.modapi.players.Players
 import com.cardshifter.modapi.resources.ECSResource
+import net.zomis.cardshifter.ecs.effects.FilterComponent
 import net.zomis.cardshifter.ecs.usage.functional.EntityConsumer
 
 import java.util.stream.Collectors
@@ -19,12 +20,16 @@ import java.util.stream.Collectors
  */
 class EffectDelegate {
 
-    static EffectDelegate create(Closure effects, boolean delegateOnly) {
-        EffectDelegate delegate = new EffectDelegate()
+    static EffectDelegate create(Closure effects, Entity thisCard, boolean delegateOnly) {
+        EffectDelegate delegate = new EffectDelegate(thisCard)
         effects.setDelegate(delegate)
         effects.setResolveStrategy(delegateOnly ? Closure.DELEGATE_ONLY : Closure.DELEGATE_FIRST)
         effects.call()
         return delegate
+    }
+
+    public EffectDelegate(Entity thisCard) {
+        this.thisCard = thisCard;
     }
 
     /**
@@ -38,7 +43,12 @@ class EffectDelegate {
      */
     List<Closure> closures = new ArrayList<>()
 
+    /**
+     * Sentinel value used in DSL.
+     */
     final Object targets = new Object()
+
+    private final Entity thisCard;
 
     def perform(Entity source, ActionPerformEvent event) {
         closures.each {
@@ -83,7 +93,7 @@ class EffectDelegate {
 
             EffectDelegate[] delegs = new EffectDelegate[effects.length]
             for (int i = 0; i < delegs.length; i++) {
-                delegs[i] = create(effects[i], false)
+                delegs[i] = create(effects[i], thisCard, false)
                 assert delegs[i].closures.size() > 0 : 'probability condition needs to have some actions'
             }
 
@@ -106,7 +116,7 @@ class EffectDelegate {
     }
 
     def withProbability(double probability, @DelegatesTo(EffectDelegate) Closure action) {
-        EffectDelegate deleg = create(action, false)
+        EffectDelegate deleg = create(action, thisCard, false)
         assert deleg.closures.size() > 0 : 'probability condition needs to have some actions'
         descriptionList.addAll(deleg.descriptionList.collect {"${probability * 100 as int}% chance to $it"})
         closures.add({Entity source, Object data ->
@@ -126,7 +136,7 @@ class EffectDelegate {
     }
 
     def repeat(int count, @DelegatesTo(EffectDelegate) Closure action) {
-        EffectDelegate deleg = create(action, false)
+        EffectDelegate deleg = create(action, thisCard, false)
         assert deleg.closures.size() > 0 : 'repeat needs to have some actions'
 
         def collector
@@ -230,7 +240,17 @@ class EffectDelegate {
             String targetStr = '';
             Closure closure = null;
             if (who == targets) {
-                targetStr = 'targets'
+                FilterComponent filter = thisCard.getComponent(FilterComponent.class)
+                if (filter) {
+                    if (filter.minTargetCount == filter.maxTargetCount) {
+                        targetStr = "${filter.minTargetCount} target${filter.minTargetCount == 1 ? '' : 's'}"
+                    } else {
+                        targetStr = "${filter.getMinTargetCount()} to ${filter.getMaxTargetCount()} targets"
+                    }
+                } else {
+                    targetStr = 'targets'
+                }
+
                 closure = {Entity source, Object data ->
                     assert data instanceof ActionPerformEvent
                     ActionPerformEvent event = data as ActionPerformEvent

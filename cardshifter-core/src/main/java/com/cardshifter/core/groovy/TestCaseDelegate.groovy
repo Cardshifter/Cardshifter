@@ -107,7 +107,7 @@ class ActionChain {
                     failedTargets << target
                 }
             }
-            assert failedTargets.isEmpty() == expectedOK
+            assert (failedTargets.isEmpty() && action.hasEnoughTargets()) == expectedOK
         } else {
             assert action.isAllowed(performer) == expectedOK
         }

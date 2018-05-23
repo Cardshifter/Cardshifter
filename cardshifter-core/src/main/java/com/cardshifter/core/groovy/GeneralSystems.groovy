@@ -14,6 +14,7 @@ import com.cardshifter.modapi.actions.enchant.EnchantPerform
 import com.cardshifter.modapi.actions.enchant.EnchantTargetCreatureTypes
 import com.cardshifter.modapi.ai.AIComponent
 import com.cardshifter.modapi.attributes.Attributes
+import com.cardshifter.modapi.attributes.ECSAttributeMap
 import com.cardshifter.modapi.base.Component
 import com.cardshifter.modapi.base.ComponentRetriever
 import com.cardshifter.modapi.base.CreatureTypeComponent
@@ -126,7 +127,7 @@ public class GeneralSystems {
     }
 
     static <T extends IEvent> void triggerBefore(Entity entity, Closure lineTransform, Class<T> eventClass, BiPredicate<Entity, T> predicate, Closure closure) {
-        EffectDelegate effect = EffectDelegate.create(closure, false)
+        EffectDelegate effect = EffectDelegate.create(closure, entity, false)
         def eff = new Effects();
         addEffect(entity,
                 eff.described(effect.descriptionList.collect(lineTransform).join('\n'),
@@ -141,7 +142,7 @@ public class GeneralSystems {
     }
 
     static <T extends IEvent> void triggerAfter(Entity entity, Closure lineTransform, Class<T> eventClass, BiPredicate<Entity, T> predicate, Closure closure) {
-        EffectDelegate effect = EffectDelegate.create(closure, false)
+        EffectDelegate effect = EffectDelegate.create(closure, entity, false)
         def eff = new Effects();
         addEffect(entity,
                 eff.described(effect.descriptionList.collect(lineTransform).join('\n'),
@@ -171,13 +172,14 @@ public class GeneralSystems {
         private ECSAction action
 
         private void addTargetSet(int min, int max, Closure filter) {
-            action.addTargetSet(min, max)
             assert !entity.hasComponent(FilterComponent) : 'Only one target set is supported so far'
+            assert min <= max : 'Min target count cannot be greater than max'
+            action.addTargetSet(min, max)
             FilterDelegate filterDelegate = FilterDelegate.fromClosure filter
             TargetFilter resultFilter = {Entity source, Entity target ->
                 filterDelegate.predicate.test(source, target)
             }
-            entity.addComponent(new FilterComponent(resultFilter))
+            entity.addComponent(new FilterComponent(resultFilter, min, max))
         }
 
         def targets(Map map, Closure closure) {
@@ -186,12 +188,13 @@ public class GeneralSystems {
             addTargetSet(min, max, closure)
         }
 
-        def targets(int count) {
-            def finalize = {Closure closure ->
-                addTargetSet(count, count, closure)
-            }
-            [to: {int max -> [cards: finalize]},
-                cards: finalize]
+        def targets(int min) {
+            [
+                    to: {int max ->
+                        [cards: {Closure clos -> addTargetSet(min, max, clos) }]
+                    },
+                    cards: {Closure clos -> addTargetSet(min, min, clos)}
+            ]
         }
     }
 
@@ -289,7 +292,7 @@ public class GeneralSystems {
 
         CardDelegate.metaClass.afterPlay << {Closure closure ->
             def eff = new net.zomis.cardshifter.ecs.effects.Effects();
-            EffectDelegate effect = new EffectDelegate()
+            EffectDelegate effect = new EffectDelegate(entity())
             closure.delegate = effect
             closure.setResolveStrategy(Closure.DELEGATE_FIRST)
             closure.call()
