@@ -1,5 +1,5 @@
 card('E.M.P.') {
-	"Electromagnetic pulse that damages electronic circuitry."
+	flavor "Electromagnetic pulse that damages electronic circuitry."
 	manaCost 8
 	// damage 1 to 10 Mechs on the Battlefield
 	spell {
@@ -11,4 +11,19 @@ card('E.M.P.') {
 	afterPlay {
 		damage 2 on targets
 	}
+}
+card('Trapped Socket') {
+    flavor "Always put pointy stuff into power outlets!"
+    scrapCost 3
+    // destroy 1 target creature
+    spell {
+        targets 1 cards {
+            creature true
+            zone "Battlefield"
+        }
+    }
+    afterPlay {
+        // #417 destroy effect
+        damage 99 on targets
+    }
 }
