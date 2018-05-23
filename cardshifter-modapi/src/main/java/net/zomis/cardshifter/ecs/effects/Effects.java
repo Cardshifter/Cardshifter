@@ -61,7 +61,7 @@ public class Effects {
 	}
 
 	public EffectComponent toSelf(Consumer<Entity> effect) {
-		return new EffectComponent(effect.toString(), (entity, event) -> effect.accept(event.getEntity()));
+		return new EffectComponent(effect.toString(), (entity, event) -> effect.accept(entity));
 	}
 
 	public Component described(String description, EffectComponent effectComponent) {
