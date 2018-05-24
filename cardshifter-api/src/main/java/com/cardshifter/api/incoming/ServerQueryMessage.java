@@ -18,6 +18,7 @@ public class ServerQueryMessage extends Message {
 		USERS,
         DECK_BUILDER,
         STATUS,
+		MODS,
 	}
 
 	private final Request request;

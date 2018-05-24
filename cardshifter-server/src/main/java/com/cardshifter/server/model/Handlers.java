@@ -50,6 +50,9 @@ public class Handlers {
 					       .filter(ClientIO::isLoggedIn)
 					       .forEach(sendUser);
 				break;
+			case MODS:
+				client.sendToClient(new AvailableModsMessage(server.getGameFactories().keySet().toArray(new String[0])));
+				break;
 			case DECK_BUILDER:
                 Map<String, GameFactory> gameFactories = server.getGameFactories();
                 if (message.getMessage() == null || !gameFactories.containsKey(message.getMessage())) {
