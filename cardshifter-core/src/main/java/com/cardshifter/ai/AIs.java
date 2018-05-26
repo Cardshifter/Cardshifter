@@ -13,6 +13,11 @@ import com.cardshifter.ai.phrancis.AttackAnalyze;
 import com.cardshifter.modapi.actions.ECSAction;
 import com.cardshifter.modapi.base.Entity;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.function.BiConsumer;
+
 public class AIs {
 	
 	private static FScorer<Entity, ECSAction> playActionScorer = new PredicateScorer<>(action -> action.getName().equals(CyborgChroniclesGame.PLAY_ACTION));
@@ -107,5 +112,18 @@ public class AIs {
 			deck.add(id);
 		}
 	}
-	
+
+	public static BiConsumer<Entity, ConfigComponent> randomDeck(Random random) {
+		return (entity, config) -> {
+			DeckConfig deck = config.getConfig(DeckConfig.class);
+			List<String> cardList = new ArrayList<>(deck.getCardData().keySet());
+			while (deck.getChosen().values().stream().mapToInt(i -> i).sum() < deck.getMinSize()) {
+				int index = random.nextInt(cardList.size());
+				String chosen = cardList.get(index);
+				if (deck.getChosen(chosen) < deck.getMaxFor(chosen)) {
+					deck.add(chosen);
+				}
+			}
+		};
+	}
 }

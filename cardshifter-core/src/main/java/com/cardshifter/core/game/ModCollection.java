@@ -38,8 +38,8 @@ public class ModCollection {
 	 * Initializes the AIs and Mods and puts them in the collections.
 	 */
 	public ModCollection() {
-		ais.put("Loser", new ScoringAI(AIs.loser()));
-		ais.put("Idiot", new ScoringAI(AIs.idiot()));
+		ais.put("Loser", new ScoringAI(AIs.loser(), AIs.randomDeck(new Random())));
+		ais.put("Idiot", new ScoringAI(AIs.idiot(), AIs.randomDeck(new Random())));
 		ais.put("Medium", new ScoringAI(AIs.medium(), AIs::mediumDeck));
 		ais.put("Fighter", new ScoringAI(AIs.fighter(), AIs::fighterDeck));
 	}
