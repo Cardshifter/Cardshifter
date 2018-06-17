@@ -68,3 +68,25 @@ from clearState test 'refill deck' using {
 
     }
 }
+
+from clearState test 'attack wall first then castle' using {
+    def attacker = you
+    def attackCard = to attacker zone 'Hand' create 'Catapult'
+    def defender = opponent
+
+    you.bricks = 30
+
+    defender.castle = 10
+    defender.wall = 5
+
+    def oldTotal = opponent.castle + opponent.wall
+
+    assert attackCard.attack == 12
+    assert defender.castle == 10
+    assert defender.wall == 5
+    uses 'Play' on attackCard ok
+
+    assert defender.wall == 0
+    assert defender.castle == 3
+    assert defender.wall + defender.castle == oldTotal - attackCard.attack
+}

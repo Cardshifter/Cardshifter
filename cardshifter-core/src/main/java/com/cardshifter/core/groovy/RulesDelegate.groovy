@@ -3,9 +3,9 @@ package com.cardshifter.core.groovy
 import com.cardshifter.modapi.base.ECSGame
 import com.cardshifter.modapi.base.ECSSystem
 import com.cardshifter.modapi.cards.MulliganSingleCards
-import com.cardshifter.modapi.phase.PhaseChangeEvent
 import com.cardshifter.modapi.phase.PhaseEndEvent
 import com.cardshifter.modapi.phase.PhaseStartEvent
+import com.cardshifter.modapi.resources.ECSResource
 
 import static groovy.lang.Closure.DELEGATE_FIRST
 
@@ -38,6 +38,10 @@ class RulesDelegate {
 
     void discardMulliganAction(int minTargets, int maxTargets) {
         game.addSystem(new MulliganSingleCardsAction(game, minTargets, maxTargets))
+    }
+
+    void attackEnemy(ECSResource attackResource, ECSResource... defenses) {
+        game.addSystem(new AttackEnemySystem(attackResource, defenses))
     }
 
     void onStart(Closure closure) {

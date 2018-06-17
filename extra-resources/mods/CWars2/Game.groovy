@@ -10,6 +10,7 @@ import com.cardshifter.modapi.actions.*
 
 CASTLE = createResource('CASTLE')
 WALL = createResource("WALL")
+ATTACK = createResource("ATTACK")
 HANDSIZE = createResource("HANDSIZE")
 DISCARDS = createResource("DISCARDS")
 
@@ -97,13 +98,6 @@ config {
          *     on a game mod's configuration.
          * <p>
          *     See each mod's documentation and game rules for details.
-         *
-         * @param health  The initial health before the first turn
-         * @param mana  The initial mana before the first turn
-         * @param scrap  The initial scrap before the first turn
-         *
-         * @param max_health  The health which cannot be exceeded by the players
-         * @param max_mana  The mana which cannot be exceeded by the players
          */
         castle 25
         wall 15
@@ -191,6 +185,9 @@ rules {
 
         // Actions can only be performed by the player whose turn it is, a.k.a. 'active'
         PerformerMustBeCurrentPlayer()
+
+        // Attack wall first, then castle
+        attackEnemy(ATTACK, WALL, CASTLE)
 
         // Resource system
         ResourceRecountSystem()

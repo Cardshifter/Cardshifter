@@ -8,3 +8,47 @@ card('Tower') {
     afterPlay { change CASTLE by 10 on "you" }
 }
 
+card('Tavern') {
+    bricks 12
+    afterPlay { change CASTLE by 15 on "you" }
+}
+
+card('House') {
+    bricks 5
+    afterPlay { change CASTLE by 5 on "you" }
+}
+
+card('Babylon') {
+    bricks 25
+    afterPlay { change CASTLE by 30 on "you" }
+}
+
+card('Wall') {
+    bricks 4
+    afterPlay { change WALL by 6 on "you" }
+}
+
+card('School') {
+    bricks 30
+    afterPlay {
+        change BUILDERS by 1 on "you"
+        change RECRUITERS by 1 on "you"
+        change WIZARDS by 1 on "you"
+    }
+}
+
+card('Fence') {
+    bricks 5
+    afterPlay { change WALL by 9 on "you" }
+}
+
+card('Catapult') {
+    bricks 10
+    attack 12
+}
+
+card('Battering Ram') {
+    bricks 7
+    attack 9
+}
+
