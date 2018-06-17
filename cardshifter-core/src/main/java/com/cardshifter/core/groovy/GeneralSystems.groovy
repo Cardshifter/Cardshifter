@@ -23,17 +23,14 @@ import com.cardshifter.modapi.base.Entity
 import com.cardshifter.modapi.base.PlayerComponent
 import com.cardshifter.modapi.cards.BattlefieldComponent
 import com.cardshifter.modapi.cards.CardComponent
-import com.cardshifter.modapi.cards.DamageConstantWhenOutOfCardsSystem
 import com.cardshifter.modapi.cards.DeckComponent
+import com.cardshifter.modapi.cards.DiscardComponent
 import com.cardshifter.modapi.cards.DrawCardAtBeginningOfTurnSystem
-import com.cardshifter.modapi.cards.DrawCardEvent
 import com.cardshifter.modapi.cards.DrawStartCards
 import com.cardshifter.modapi.cards.HandComponent
-import com.cardshifter.modapi.cards.LimitedHandSizeSystem
 import com.cardshifter.modapi.cards.MulliganSingleCards
 import com.cardshifter.modapi.cards.PlayEntersBattlefieldSystem
 import com.cardshifter.modapi.cards.PlayFromHandSystem
-import com.cardshifter.modapi.cards.RemoveDeadEntityFromZoneSystem
 import com.cardshifter.modapi.cards.ZoneChangeEvent
 import com.cardshifter.modapi.cards.ZoneComponent
 import com.cardshifter.modapi.events.EntityRemoveEvent
@@ -44,9 +41,7 @@ import com.cardshifter.modapi.phase.PhaseStartEvent
 import com.cardshifter.modapi.phase.RestoreResourcesSystem
 import com.cardshifter.modapi.players.Players
 import com.cardshifter.modapi.resources.ECSResource
-import com.cardshifter.modapi.resources.GameOverIfNoHealth
 import com.cardshifter.modapi.resources.ResourceModifierComponent
-import com.cardshifter.modapi.resources.ResourceRecountSystem
 import com.cardshifter.modapi.resources.RestoreResourcesToSystem
 import net.zomis.cardshifter.ecs.effects.EffectActionSystem
 import net.zomis.cardshifter.ecs.effects.EffectComponent
@@ -58,7 +53,6 @@ import net.zomis.cardshifter.ecs.effects.GameEffect
 import net.zomis.cardshifter.ecs.effects.TargetFilter
 import net.zomis.cardshifter.ecs.usage.ApplyAfterAttack
 import net.zomis.cardshifter.ecs.usage.DestroyAfterUseSystem
-import net.zomis.cardshifter.ecs.usage.LastPlayersStandingEndsGame
 import net.zomis.cardshifter.ecs.usage.ScrapSystem
 
 import java.util.function.BiPredicate
@@ -66,7 +60,6 @@ import java.util.function.Consumer
 import java.util.function.Predicate
 import java.util.function.ToIntFunction
 import java.util.function.UnaryOperator
-import java.util.stream.Collectors
 
 class AttackSystemDelegate {
     ECSGame game
@@ -204,6 +197,7 @@ public class GeneralSystems {
         game.getEntityMeta().getCard << {delegate.getComponent(CardComponent)}
         game.getEntityMeta().getDeck << {delegate.getComponent(DeckComponent)}
         game.getEntityMeta().getHand << {delegate.getComponent(HandComponent)}
+        game.getEntityMeta().getDiscard << {delegate.getComponent(DiscardComponent)}
         game.getEntityMeta().getBattlefield << {delegate.getComponent(BattlefieldComponent)}
         game.getEntityMeta().getZone << {
             // get the current zone of the card

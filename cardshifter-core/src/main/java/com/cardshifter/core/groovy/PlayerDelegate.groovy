@@ -6,6 +6,7 @@ import com.cardshifter.modapi.base.ComponentRetriever
 import com.cardshifter.modapi.base.Entity
 import com.cardshifter.modapi.cards.BattlefieldComponent
 import com.cardshifter.modapi.cards.DeckComponent
+import com.cardshifter.modapi.cards.DiscardComponent
 import com.cardshifter.modapi.cards.HandComponent
 import com.cardshifter.modapi.cards.ZoneComponent
 import com.cardshifter.modapi.phase.Phase
@@ -44,6 +45,10 @@ public class PlayerDelegate {
 
     def hand() {
         entity.addComponent(new HandComponent(entity))
+    }
+
+    def discard() {
+        entity.addComponent(new DiscardComponent(entity))
     }
 
     def battlefield() {
