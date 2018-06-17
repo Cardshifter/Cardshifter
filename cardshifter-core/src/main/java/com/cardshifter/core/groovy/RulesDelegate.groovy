@@ -36,6 +36,10 @@ class RulesDelegate {
         game.addSystem(new MulliganSingleCards(game))
     }
 
+    void discardMulliganAction(int minTargets, int maxTargets) {
+        game.addSystem(new MulliganSingleCardsAction(game, minTargets, maxTargets))
+    }
+
     void onStart(Closure closure) {
         game.addSystem({game ->
             closure.setDelegate(this)
