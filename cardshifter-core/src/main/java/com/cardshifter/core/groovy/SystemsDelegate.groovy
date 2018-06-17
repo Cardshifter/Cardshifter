@@ -28,6 +28,10 @@ class SystemsDelegate {
         addSystem new LimitedHandSizeSystem(limit, whenFull)
     }
 
+    void reshuffleWhenOutOfCardsSystem() {
+        addSystem(new ReshuffleWhenOutOfCardsSystem())
+    }
+
     void winIfTarget(ECSResource resource, int target) {
         addSystem new GameOverIfTarget(resource, true, {count -> count >= target})
     }
