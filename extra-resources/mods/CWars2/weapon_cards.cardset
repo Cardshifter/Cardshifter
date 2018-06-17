@@ -1,0 +1,5 @@
+card('Recruit') {
+    weapons 8
+    afterPlay { change RECRUITERS by 1 on "you" }
+}
+

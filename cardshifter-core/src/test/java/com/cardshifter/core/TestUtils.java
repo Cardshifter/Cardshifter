@@ -22,6 +22,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -85,7 +86,7 @@ public class TestUtils {
             public void run() {
                 ECSMod mod = mods.getModFor(modName);
                 ECSGame game = new ECSGame();
-                CardshifterAI ai = new ScoringAI(AIs.fighter());
+                CardshifterAI ai = new ScoringAI(AIs.fighter(), AIs.randomDeck(new Random()));
                 mod.declareConfiguration(game);
                 List<Entity> players = Players.getPlayersInGame(game);
                 for (Entity entity : players) {
@@ -201,7 +202,7 @@ public class TestUtils {
         System.out.println("Mods found " + mods.getAvailableMods().size());
         suite.addTest(new TestCase("Mods available " + mods.getAvailableMods()) {
             @Override
-            protected void runTest() throws Throwable {
+            protected void runTest() {
                 assertNotSame(0, mods.getAvailableMods().size());
             }
         });
@@ -210,7 +211,7 @@ public class TestUtils {
             System.out.println("Adding tests for " + modName);
             suite.addTest(new TestCase(modName) {
                 @Override
-                protected void runTest() throws Throwable {
+                protected void runTest() {
                     ECSMod mod = mods.getModFor(modName);
                     ECSGame game = new ECSGame();
                     CardshifterAI ai = new ScoringAI(AIs.fighter());

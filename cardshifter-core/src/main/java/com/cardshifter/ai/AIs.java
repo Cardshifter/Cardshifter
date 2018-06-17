@@ -25,11 +25,14 @@ public class AIs {
 	public static ScoreConfigFactory<Entity, ECSAction> loser() {
 		ScoreConfigFactory<Entity, ECSAction> config = new ScoreConfigFactory<>();
 		config.withScorer(new PredicateScorer<>(action -> action.getName().equals(CyborgChroniclesGame.END_TURN_ACTION)));
+		config.withScorer(new SimpleScorer<>(AttackAnalyze::discardScore));
 		return config;
 	}
 
 	public static ScoreConfigFactory<Entity, ECSAction> idiot() {
-		return new ScoreConfigFactory<>();
+		ScoreConfigFactory<Entity, ECSAction> config = new ScoreConfigFactory<>();
+		config.withScorer(new SimpleScorer<>(AttackAnalyze::discardScore));
+		return config;
 	}
 
 	public static ScoreConfigFactory<Entity, ECSAction> medium() {
@@ -39,6 +42,7 @@ public class AIs {
 		config.withScorer(new PredicateScorer<>(action -> action.getName().equals(CyborgChroniclesGame.ENCHANT_ACTION)), -10); // this AI does not enchant
 		config.withScorer(new SimpleScorer<Entity, ECSAction>(AttackAnalyze::scrapScore));
 		config.withScorer(new SimpleScorer<Entity, ECSAction>(AttackAnalyze::attackScore));
+		config.withScorer(new SimpleScorer<Entity, ECSAction>(AttackAnalyze::discardScore));
 		return config;
 	}
 
@@ -53,6 +57,7 @@ public class AIs {
 //		config.withScorer(new SimpleScorer<>(AttackAnalyze::scrapScore));
 		config.withScorer(new SimpleScorer<Entity, ECSAction>(AttackAnalyze::attackScore));
 		config.withScorer(new SimpleScorer<Entity, ECSAction>(AttackAnalyze::enchantScore));
+		config.withScorer(new SimpleScorer<Entity, ECSAction>(AttackAnalyze::discardScore));
 		return config;
 	}
 

@@ -1,0 +1,10 @@
+card('Builder') {
+    bricks 8
+    afterPlay { change BUILDERS by 1 on "you" }
+}
+
+card('Tower') {
+    bricks 10
+    afterPlay { change CASTLE by 10 on "you" }
+}
+
