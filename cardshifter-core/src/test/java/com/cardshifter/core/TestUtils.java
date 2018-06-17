@@ -119,7 +119,7 @@ public class TestUtils {
             public void run() {
                 ECSMod mod = mods.getModFor(modName);
                 ECSGame game = new ECSGame();
-                CardshifterAI ai = new ScoringAI(AIs.fighter());
+                CardshifterAI ai = new ScoringAI(AIs.fighter(), AIs.randomDeck(new Random()));
                 mod.declareConfiguration(game);
                 List<Entity> players = Players.getPlayersInGame(game);
                 for (Entity entity : players) {
