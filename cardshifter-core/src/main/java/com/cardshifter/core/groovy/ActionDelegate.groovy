@@ -12,6 +12,7 @@ import com.cardshifter.modapi.actions.attack.TrampleSystem
 import com.cardshifter.modapi.base.ECSGame
 import com.cardshifter.modapi.base.ECSSystem
 import com.cardshifter.modapi.base.Entity
+import com.cardshifter.modapi.phase.PhaseController
 import com.cardshifter.modapi.resources.ECSResource
 import groovy.transform.Immutable
 import groovy.transform.PackageScope
@@ -189,6 +190,11 @@ class ActionDelegate {
             this.targets = this.event.action.targetSets.stream()
                 .flatMap({it.chosenTargets.stream()})
                 .collect(Collectors.toList())
+        }
+
+        void endTurn() {
+            Entity phaseOwner = event.getPerformer().game.getEntitiesWithComponent(PhaseController.class).first()
+            phaseOwner.getComponent(PhaseController.class).nextPhase()
         }
 
         List<Entity> targets(int index) {
