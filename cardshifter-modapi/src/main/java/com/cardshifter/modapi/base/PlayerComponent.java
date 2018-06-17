@@ -40,7 +40,7 @@ public class PlayerComponent extends Component {
 		this.eliminate(true);
 	}
 	
-	private void eliminate(boolean winner) {
+	public void eliminate(boolean winner) {
 		List<Entity> players = new ArrayList<>(getEntity().getGame().getEntitiesWithComponent(PlayerComponent.class));
 		players.sort(Comparator.comparing(e -> e.getComponent(PlayerComponent.class).getIndex()));
 		

@@ -10,7 +10,7 @@ import com.cardshifter.modapi.cards.DrawCardEvent
 import com.cardshifter.modapi.cards.LimitedHandSizeSystem
 import com.cardshifter.modapi.cards.RemoveDeadEntityFromZoneSystem
 import com.cardshifter.modapi.resources.ECSResource
-import com.cardshifter.modapi.resources.GameOverIfNoHealth
+import com.cardshifter.modapi.resources.GameOverIfTarget
 import com.cardshifter.modapi.resources.ResourceRecountSystem
 import net.zomis.cardshifter.ecs.usage.LastPlayersStandingEndsGame
 
@@ -28,12 +28,16 @@ class SystemsDelegate {
         addSystem new LimitedHandSizeSystem(limit, whenFull)
     }
 
+    void winIfTarget(ECSResource resource, int target) {
+        addSystem new GameOverIfTarget(resource, true, {count -> count >= target})
+    }
+
     void DamageConstantWhenOutOfCardsSystem(ECSResource resource, int count) {
         addSystem new DamageConstantWhenOutOfCardsSystem(resource, count)
     }
 
     void GameOverIfNo(ECSResource resource) {
-        addSystem new GameOverIfNoHealth(resource)
+        addSystem new GameOverIfTarget(resource, false, {count -> count <= 0})
     }
 
     void LastPlayersStandingEndsGame() {
