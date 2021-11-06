@@ -27,8 +27,8 @@ allprojects  {
         mavenCentral()
         mavenLocal()
     
-        maven { url "http://repo.maven.apache.org/maven2" }
-        maven { url "http://www.zomis.net/maven" }
+        maven { url "https://repo.maven.apache.org/maven2" }
+        maven { url "https://www.zomis.net/maven" }
     }
 }
 
